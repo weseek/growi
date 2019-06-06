@@ -4,36 +4,33 @@ import PropTypes from 'prop-types';
 import { throttle, debounce } from 'throttle-debounce';
 
 import * as toastr from 'toastr';
-import GrowiRenderer from '../util/GrowiRenderer';
 
-import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
+
+import { createSubscribedElement } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import EditorContainer from '../services/EditorContainer';
 
 
-export default class PageEditor extends React.Component {
+class PageEditor extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
-      pageId: this.props.pageId,
-      revisionId: this.props.revisionId,
-      markdown: this.props.markdown,
+      markdown: this.props.pageContainer.state.markdown,
       isUploadable,
       isUploadableFile,
       isMathJaxEnabled,
-      editorOptions: this.props.editorOptions,
-      previewOptions: this.props.previewOptions,
     };
-
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, { mode: 'editor' });
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -48,6 +45,9 @@ export default class PageEditor extends React.Component {
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.showUnsavedWarning = this.showUnsavedWarning.bind(this);
 
+    // get renderer
+    this.growiRenderer = this.props.appContainer.getRenderer('editor');
+
     // for scrolling
     this.lastScrolledDateWithCursor = null;
     this.isOriginOfScrollSyncEditor = false;
@@ -59,21 +59,24 @@ export default class PageEditor extends React.Component {
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
     this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
+
   }
 
   componentWillMount() {
+    this.props.appContainer.registerComponentInstance(this);
+
     // initial rendering
     this.renderPreview(this.state.markdown);
 
-    this.props.crowi.window.addEventListener('beforeunload', this.showUnsavedWarning);
+    window.addEventListener('beforeunload', this.showUnsavedWarning);
   }
 
   componentWillUnmount() {
-    this.props.crowi.window.removeEventListener('beforeunload', this.showUnsavedWarning);
+    window.removeEventListener('beforeunload', this.showUnsavedWarning);
   }
 
   showUnsavedWarning(e) {
-    if (!this.props.crowi.getIsDocSaved()) {
+    if (!this.props.appContainer.getIsDocSaved()) {
       // display browser default message
       e.returnValue = '';
       return '';
@@ -84,11 +87,8 @@ export default class PageEditor extends React.Component {
     return this.state.markdown;
   }
 
-  setMarkdown(markdown, updateEditorValue = true) {
-    this.setState({ markdown });
-    if (updateEditorValue) {
-      this.editor.setValue(markdown);
-    }
+  updateEditorValue(markdown) {
+    this.editor.setValue(markdown);
   }
 
   focusToEditor() {
@@ -105,34 +105,18 @@ export default class PageEditor extends React.Component {
   }
 
   /**
-   * set options (used from the outside)
-   * @param {object} editorOptions
-   */
-  setEditorOptions(editorOptions) {
-    this.setState({ editorOptions });
-  }
-
-  /**
-   * set options (used from the outside)
-   * @param {object} previewOptions
-   */
-  setPreviewOptions(previewOptions) {
-    this.setState({ previewOptions });
-  }
-
-  /**
    * the change event handler for `markdown` state
    * @param {string} value
    */
   onMarkdownChanged(value) {
     this.renderPreviewWithDebounce(value);
     this.saveDraftWithDebounce();
-    this.props.crowi.setIsDocSaved(false);
+    this.props.appContainer.setIsDocSaved(false);
   }
 
   onSave() {
     this.props.onSaveWithShortcut(this.state.markdown);
-    this.props.crowi.setIsDocSaved(true);
+    this.props.appContainer.setIsDocSaved(true);
   }
 
   /**
@@ -141,18 +125,22 @@ export default class PageEditor extends React.Component {
    */
   async onUpload(file) {
     try {
-      let res = await this.props.crowi.apiGet('/attachments.limit', { _csrf: this.props.crowi.csrfToken, fileSize: file.size });
+      let res = await this.props.appContainer.apiGet('/attachments.limit', {
+        _csrf: this.props.appContainer.csrfToken,
+        fileSize: file.size,
+      });
+
       if (!res.isUploadable) {
         throw new Error(res.errorMessage);
       }
 
       const formData = new FormData();
-      formData.append('_csrf', this.props.crowi.csrfToken);
+      formData.append('_csrf', this.props.appContainer.csrfToken);
       formData.append('file', file);
-      formData.append('path', this.props.pagePath);
+      formData.append('path', this.props.pageContainer.state.path);
       formData.append('page_id', this.state.pageId || 0);
 
-      res = await this.props.crowi.apiPost('/attachments.add', formData);
+      res = await this.props.appContainer.apiPost('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
@@ -275,14 +263,15 @@ export default class PageEditor extends React.Component {
   }
 
   saveDraft() {
+    const { pageContainer, editorContainer } = this.props;
     // only when the first time to edit
-    if (!this.state.revisionId) {
-      this.props.crowi.saveDraft(this.props.pagePath, this.state.markdown);
+    if (!pageContainer.state.revisionId) {
+      editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
     }
   }
 
   clearDraft() {
-    this.props.crowi.clearDraft(this.props.pagePath);
+    this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
   }
 
   renderPreview(value) {
@@ -295,7 +284,7 @@ export default class PageEditor extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRenderPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -332,9 +321,9 @@ export default class PageEditor extends React.Component {
   }
 
   render() {
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const noCdn = !!config.env.NO_CDN;
-    const emojiStrategy = this.props.crowi.getEmojiStrategy();
+    const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
       <div className="row">
@@ -342,9 +331,8 @@ export default class PageEditor extends React.Component {
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
-            editorOptions={this.state.editorOptions}
             noCdn={noCdn}
-            isMobile={this.props.crowi.isMobile}
+            isMobile={this.props.appContainer.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
             emojiStrategy={emojiStrategy}
@@ -362,7 +350,6 @@ export default class PageEditor extends React.Component {
             inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
-            previewOptions={this.state.previewOptions}
             onScroll={this.onPreviewScroll}
           />
         </div>
@@ -372,14 +359,19 @@ export default class PageEditor extends React.Component {
 
 }
 
-PageEditor.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
-  markdown: PropTypes.string.isRequired,
-  pageId: PropTypes.string,
-  revisionId: PropTypes.string,
-  pagePath: PropTypes.string,
-  editorOptions: PropTypes.instanceOf(EditorOptions),
-  previewOptions: PropTypes.instanceOf(PreviewOptions),
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorWrapper = (props) => {
+  return createSubscribedElement(PageEditor, props, [AppContainer, PageContainer, EditorContainer]);
 };
+
+PageEditor.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  onSaveWithShortcut: PropTypes.func.isRequired,
+};
+
+export default PageEditorWrapper;

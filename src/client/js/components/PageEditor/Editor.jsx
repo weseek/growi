@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Subscribe } from 'unstated';
+
 import Dropzone from 'react-dropzone';
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
@@ -8,6 +10,7 @@ import TextAreaEditor from './TextAreaEditor';
 
 
 import pasteHelper from './PasteHelper';
+import EditorContainer from '../../services/EditorContainer';
 
 export default class Editor extends AbstractEditor {
 
@@ -271,14 +274,19 @@ export default class Editor extends AbstractEditor {
 
                 {/* for PC */}
                 { !isMobile && (
-                  <CodeMirrorEditor
-                    ref={(c) => { this.cmEditor = c }}
-                    onPasteFiles={this.pasteFilesHandler}
-                    onDragEnter={this.dragEnterHandler}
-                    {...this.props}
-                  />
-                  )
-                }
+                  <Subscribe to={[EditorContainer]}>
+                    { editorContainer => (
+                      // eslint-disable-next-line arrow-body-style
+                      <CodeMirrorEditor
+                        ref={(c) => { this.cmEditor = c }}
+                        editorOptions={editorContainer.state.editorOptions}
+                        onPasteFiles={this.pasteFilesHandler}
+                        onDragEnter={this.dragEnterHandler}
+                        {...this.props}
+                      />
+                    )}
+                  </Subscribe>
+                )}
 
                 {/* for mobile */}
                 { isMobile && (
@@ -288,8 +296,7 @@ export default class Editor extends AbstractEditor {
                     onDragEnter={this.dragEnterHandler}
                     {...this.props}
                   />
-                  )
-                }
+                )}
 
                 <input {...getInputProps()} />
               </div>

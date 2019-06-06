@@ -1,6 +1,15 @@
 # CHANGES
 
-## 3.4.7-RC
+## 3.4.8-RC
+
+* Feature: Comment Thread
+* Improvement Draft list
+* Support: Apply unstated
+* Support: Upgrade libs
+    * mini-css-extract-plugin
+    * null-loader
+
+## 3.4.7
 
 * Improvement: Handle private pages on group deletion
 * Fix: Searching with `tag:xxx` syntax doesn't work

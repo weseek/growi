@@ -310,30 +310,6 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.updateTags = async function(newTags) {
-    const page = this;
-    const PageTagRelation = mongoose.model('PageTagRelation');
-    const Tag = mongoose.model('Tag');
-
-    // get tags relate this page
-    const relatedTags = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag').select('-_id relatedTag');
-
-    // unlink relations
-    const unlinkTagRelations = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
-    await PageTagRelation.deleteMany({
-      relatedPage: page._id,
-      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
-    });
-
-    // create tag and relations
-    /* eslint-disable no-await-in-loop */
-    for (const tag of newTags) {
-      const setTag = await Tag.findOrCreate(tag);
-      await PageTagRelation.createIfNotExist(page._id, setTag._id);
-    }
-  };
-
-
   pageSchema.methods.isPortal = function() {
     return isPortalPath(this.path);
   };
@@ -370,8 +346,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isLiked = function(userData) {
-    return this.liker.some((likedUser) => {
-      return likedUser === userData._id.toString();
+    return this.liker.some((likedUserId) => {
+      return likedUserId.toString() === userData._id.toString();
     });
   };
 
@@ -390,7 +366,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        this.logger.warn('liker not updated');
         return reject(self);
       }
     }));
@@ -993,7 +969,6 @@ module.exports = function(crowi) {
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
     const socketClientId = options.socketClientId || null;
-    const pageTags = options.pageTags || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -1027,10 +1002,6 @@ module.exports = function(crowi) {
       .populate('revision')
       .populate('creator');
 
-    if (pageTags != null) {
-      await page.updateTags(pageTags);
-    }
-
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
     }
@@ -1045,7 +1016,6 @@ module.exports = function(crowi) {
     const grantUserGroupId = options.grantUserGroupId || null;
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const socketClientId = options.socketClientId || null;
-    const pageTags = options.pageTags || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -1060,10 +1030,6 @@ module.exports = function(crowi) {
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
-    }
-
-    if (pageTags != null) {
-      await savedPage.updateTags(pageTags);
     }
 
     if (socketClientId != null) {

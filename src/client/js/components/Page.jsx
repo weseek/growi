@@ -1,26 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
+
+import MarkdownTable from '../models/MarkdownTable';
+
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
-import MarkdownTable from '../models/MarkdownTable';
 import mtu from './PageEditor/MarkdownTableUtil';
 
-export default class Page extends React.Component {
+class Page extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      markdown: this.props.markdown,
       currentTargetTableArea: null,
     };
 
-    this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
-  }
+    this.growiRenderer = this.props.appContainer.getRenderer('page');
 
-  setMarkdown(markdown) {
-    this.setState({ markdown });
+    this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
   }
 
   /**
@@ -29,7 +31,8 @@ export default class Page extends React.Component {
    * @param endLineNumber
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
-    const tableLines = this.state.markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
+    const markdown = this.props.pageContainer.state.markdown;
+    const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
     this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
     this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
@@ -37,7 +40,7 @@ export default class Page extends React.Component {
   saveHandlerForHandsontableModal(markdownTable) {
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
-      this.state.markdown,
+      this.props.pageContainer.state.markdown,
       this.state.currentTargetTableArea.beginLineNumber,
       this.state.currentTargetTableArea.endLineNumber,
     );
@@ -46,16 +49,12 @@ export default class Page extends React.Component {
   }
 
   render() {
-    const isMobile = this.props.crowi.isMobile;
+    const isMobile = this.props.appContainer.isMobile;
+    const { markdown } = this.props.pageContainer.state;
 
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
-        <RevisionRenderer
-          crowi={this.props.crowi}
-          crowiRenderer={this.props.crowiRenderer}
-          markdown={this.state.markdown}
-          pagePath={this.props.pagePath}
-        />
+        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
         <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
       </div>
     );
@@ -63,10 +62,19 @@ export default class Page extends React.Component {
 
 }
 
-Page.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
-  markdown: PropTypes.string.isRequired,
-  pagePath: PropTypes.string.isRequired,
+/**
+ * Wrapper component for using unstated
+ */
+const PageWrapper = (props) => {
+  return createSubscribedElement(Page, props, [AppContainer, PageContainer]);
 };
+
+
+Page.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  onSaveWithShortcut: PropTypes.func.isRequired,
+};
+
+export default PageWrapper;
