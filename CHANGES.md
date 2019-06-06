@@ -4,6 +4,7 @@
 
 * Feature: Comment Thread
 * Improvement Draft list
+* Fix: Deleting page completely
 * Support: Apply unstated
 * Support: Upgrade libs
     * mini-css-extract-plugin
