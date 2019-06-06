@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('user_management.User management')) }}{% endblock %}
+{% block html_title %}{{ customTitle(t('User_Management')) }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('user_management.User management') }}</h1>
+    <h1 id="admin-title" class="title">{{ t('User_Management') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -60,7 +60,7 @@
       <label>{{ t('user_management.cannot_invite_maximum_users') }}</label>
       {% endif %}
       {% if userUpperLimit !== 0 %}
-      <label>{{ t('user_management.current users') }}{{ activeUsers }}</label>
+      <label>{{ t('user_management.current_users') }}{{ activeUsers }}</label>
       {% endif %}
 
       {% set createdUser = req.flash('createdUser') %}
@@ -71,13 +71,13 @@
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">ユーザーを招待しました</div>
+              <div class="modal-title">{{ t('user_management.invited') }}</div>
             </div>
 
             <div class="modal-body">
               <p>
-                作成したユーザーは仮パスワードが設定されています。<br>
-                仮パスワードはこの画面を閉じると二度と表示できませんのでご注意ください。<span class="text-danger">招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。</span>
+                {{ t('user_management.temporary_password') }}<br>
+                {{ t('user_management.password.never.seen') }}<span class="text-danger">{{ t('user_management.send_temporary_password') }}</span>
               </p>
 
               <pre>{% for cUser in createdUser %}{% if cUser.user %}{{ cUser.email }} {{ cUser.password }}<br>{% else %}{{ cUser.email }} 作成失敗<br>{% endif %}{% endfor %}</pre>
@@ -94,23 +94,23 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">パスワードを新規発行しますか?</div>
+              <div class="modal-title">{{ t('user_management.reset_password')}}</div>
             </div>
 
             <div class="modal-body">
               <p>
-              新規発行したパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。<br>
-              <span class="text-danger">新規発行したパスワードを、対象ユーザーへ連絡してください。</span>
+                {{ t('user_management.password_never_seen') }}<br>
+              <span class="text-danger">{{ t('user_management.send_new_password') }}</span>
               </p>
               <p>
-              Reset user: <code id="admin-password-reset-user"></code>
+              {{ t('user_management.target_user') }}: <code id="admin-password-reset-user"></code>
               </p>
 
               <form method="post" id="admin-users-reset-password">
                 <input type="hidden" name="user_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
                 <button type="submit" value="" class="btn btn-primary">
-                  実行
+                  {{ t('user_management.reset_password')}}
                 </button>
               </form>
 
@@ -125,7 +125,7 @@
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">Password reset!</div>
+              <div class="modal-title">{{ t('user_management.reset_password') }}</div>
             </div>
 
             <div class="modal-body">
@@ -144,18 +144,18 @@
         </div><!-- /.modal-dialog -->
       </div>
 
-      <h2>{{ t("User List") }}</h2>
+      <h2>{{ t("User_Management") }}</h2>
 
       <table class="table table-default table-bordered table-user-list">
         <thead>
           <tr>
             <th width="100px">#</th>
-            <th>{{ t('user_management.Status') }}</th>
-            <th>{{ t('Name') }}</th>
+            <th>{{ t('status') }}</th>
+            <th><code>{{ t('User') }}</code></th>
             <th>{{ t('Name') }}</th>
             <th>{{ t('Email') }}</th>
             <th width="100px">{{ t('Created') }}</th>
-            <th width="150px">{{ t('Last Login') }}</th>
+            <th width="150px">{{ t('Last_Login') }}</th>
             <th width="70px"></th>
           </tr>
         </thead>
@@ -167,7 +167,7 @@
               <img src="{{ sUser|picture }}" class="picture img-circle" />
               {% if sUser.admin %}
               <span class="label label-inverse label-admin">
-                Admin
+              {{ t('administrator') }}
               </span>
               {% endif %}
             </td>
@@ -193,7 +193,7 @@
                   <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">{{ t('user_management.Edit menu') }}</li>
+                  <li class="dropdown-header">{{ t('user_management.edit_menu') }}</li>
                   <li>
                     <a href="#"
                         data-user-id="{{ sUserId }}"
@@ -201,11 +201,11 @@
                         data-target="#admin-password-reset-modal"
                         data-toggle="modal">
                       <i class="icon-fw icon-key"></i>
-                      {{ t('user_management.Reissue password') }}
+                      {{ t('user_management.reset_password') }}
                     </a>
                   </li>
                   <li class="divider"></li>
-                  <li class="dropdown-header">{{ t('user_management.Status') }}</li>
+                  <li class="dropdown-header">{{ t('status') }}</li>
 
                   {% if sUser.status == 1 %}
                   <form id="form_activate_{{ sUserId }}" action="/admin/user/{{ sUserId }}/activate" method="post">
@@ -226,12 +226,12 @@
                     {% if sUser.username != user.username %}
                     <a href="javascript:form_suspend_{{ sUserId }}.submit()">
                       <i class="icon-fw icon-ban"></i>
-                      {{ t('user_management.Deactivate account') }}
+                      {{ t('user_management.deactivate_account') }}
                     </a>
                     {% else %}
                     <a disabled>
                       <i class="icon-fw icon-ban"></i>
-                      {{ t('user_management.Deactivate account') }}
+                      {{ t('user_management.deactivate_account') }}
                     </a>
                     <p class="alert alert-danger m-l-10 m-r-10 p-10">{{ t("user_management.your_own") }}</p>
                     {% endif %}
@@ -256,7 +256,7 @@
                       <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
                     </a>
                   </li>
-                  {% endif  %}
+                  {% endif %}
 
                   {% if sUser.status == 1 || sUser.status == 5 %}
                   <form id="form_removeCompletely_{{ sUserId }}" action="/admin/user/{{ sUser._id.toString() }}/removeCompletely" method="post">
@@ -268,11 +268,11 @@
                       <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
                     </a>
                   </li>
-                  {% endif  %}
+                  {% endif %}
 
                   {% if sUser.status == 2 %} {# activated な人だけこのメニューを表示 #}
                   <li class="divider"></li>
-                  <li class="dropdown-header">{{ t('user_management.Administrator menu') }}</li>
+                  <li class="dropdown-header">{{ t('user_management.administrator_menu') }}</li>
 
                   {% if sUser.admin %}
                   <form id="form_removeFromAdmin_{{ sUserId }}" action="/admin/user/{{ sUser._id.toString() }}/removeFromAdmin" method="post">
