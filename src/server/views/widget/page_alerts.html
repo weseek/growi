@@ -1,6 +1,6 @@
 <div class="row row-alerts">
   <div class="col-xs-12">
-    {% if page && page.grant > 1 %}
+    {% if page && page.grant %}
       <p class="alert alert-inverse alert-grant">
       {% if page.grant == 2 %}
         <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
@@ -9,12 +9,6 @@
       {% elseif page.grant == 5 %}
         <i class="icon-fw icon-organization"></i><strong>'{{ page.grantedGroup.name | preventXss }}' only</strong> ({{ t('Browsing of this page is restricted') }})
       {% endif %}
-      </p>
-    {% endif %}
-
-    {% if page && page.grant == null %}
-      <p class="alert alert-inverse alert-grant">
-        The grant of this page is null, updated this page.
       </p>
     {% endif %}
 
