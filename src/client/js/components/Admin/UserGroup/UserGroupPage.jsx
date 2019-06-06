@@ -1,4 +1,3 @@
-/* eslint-disable react/no-multi-comp */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
@@ -8,7 +7,7 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserGroupPage extends React.Component {
 
@@ -40,7 +39,7 @@ class UserGroupPage extends React.Component {
       });
     }
     catch (err) {
-      apiErrorHandler(new Error('Unable to fetch groups from server'));
+      toastError(err);
     }
   }
 
@@ -86,10 +85,10 @@ class UserGroupPage extends React.Component {
         };
       });
 
-      apiSuccessHandler(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
+      toastSuccess(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
     }
     catch (err) {
-      apiErrorHandler(new Error('Unable to delete the group'));
+      toastError(new Error('Unable to delete the group'));
     }
   }
 
@@ -97,19 +96,24 @@ class UserGroupPage extends React.Component {
     let userGroups = [];
     let userGroupRelations = {};
 
-    const responses = await Promise.all([
-      this.props.appContainer.apiv3.get('/user-groups'),
-      this.props.appContainer.apiv3.get('/user-group-relations'),
-    ]);
+    try {
+      const responses = await Promise.all([
+        this.props.appContainer.apiv3.get('/user-groups'),
+        this.props.appContainer.apiv3.get('/user-group-relations'),
+      ]);
 
-    const [userGroupsRes, userGroupRelationsRes] = responses;
-    userGroups = userGroupsRes.data.userGroups;
-    userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
+      const [userGroupsRes, userGroupRelationsRes] = responses;
+      userGroups = userGroupsRes.data.userGroups;
+      userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
 
-    this.setState({
-      userGroups,
-      userGroupRelations,
-    });
+      this.setState({
+        userGroups,
+        userGroupRelations,
+      });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {

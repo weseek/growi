@@ -56,7 +56,7 @@ class TagLabels extends React.Component {
         pageContainer.setState({ tags });
         editorContainer.setState({ tags });
 
-        this.apiSuccessHandler();
+        this.toastSuccess();
       }
       catch (err) {
         this.apiErrorHandler(err);
@@ -69,7 +69,7 @@ class TagLabels extends React.Component {
     }
   }
 
-  apiSuccessHandler() {
+  toastSuccess() {
     toastr.success(undefined, 'updated tags successfully', {
       closeButton: true,
       progressBar: true,

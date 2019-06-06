@@ -1,11 +1,10 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserGroupCreateForm extends React.Component {
 
@@ -52,10 +51,10 @@ class UserGroupCreateForm extends React.Component {
 
       this.setState({ name: '' });
 
-      apiSuccessHandler(`Created a user group "${this.xss.process(userGroup.name)}"`);
+      toastSuccess(`Created a user group "${this.xss.process(userGroup.name)}"`);
     }
     catch (err) {
-      apiErrorHandler(err);
+      toastError(err);
     }
   }
 
