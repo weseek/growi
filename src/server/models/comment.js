@@ -82,7 +82,11 @@ module.exports = function(crowi) {
     const Comment = crowi.model('Comment');
 
     return await new Promise(((resolve, reject) => {
-      Comment.remove({ $or: [{ replyTo: this._id }, { _id: this._id }] }, (err, done) => {
+      Comment.remove({
+        $or: (
+          [{ replyTo: this._id }, { _id: this._id }]),
+      },
+      (err, done) => {
         if (err) {
           return reject(err);
         }
