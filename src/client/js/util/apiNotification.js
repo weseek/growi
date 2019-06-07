@@ -1,3 +1,5 @@
+// show API error/sucess toastr
+
 import * as toastr from 'toastr';
 import toArrayIfNot from '../../../lib/util/toArrayIfNot';
 
@@ -20,6 +22,7 @@ const toastrOption = {
   },
 };
 
+// accepts both a single error and an array of errors
 export const toastError = (err, header = 'Error', option = toastrOption.error) => {
   const errs = toArrayIfNot(err);
 
@@ -28,6 +31,7 @@ export const toastError = (err, header = 'Error', option = toastrOption.error) =
   }
 };
 
+// only accepts a single item
 export const toastSuccess = (body, header = 'Success', option = toastrOption.success) => {
   toastr.success(body, header, option);
 };

@@ -1,3 +1,5 @@
+// converts non-array item to array
+
 const toArrayIfNot = (item) => {
   if (item == null) {
     return [];
