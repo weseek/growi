@@ -70,6 +70,13 @@ export default class AppContainer extends Container {
     this.apiRequest = this.apiRequest.bind(this);
   }
 
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'AppContainer';
+  }
+
   initPlugins() {
     if (this.isPluginEnabled) {
       const growiPlugin = window.growiPlugin;
@@ -109,7 +116,7 @@ export default class AppContainer extends Container {
       throw new Error('The specified instance must not be null');
     }
 
-    const className = instance.constructor.name;
+    const className = instance.constructor.getClassName();
 
     if (this.containerInstances[className] != null) {
       throw new Error('The specified instance couldn\'t register because the same type object has already been registered');
