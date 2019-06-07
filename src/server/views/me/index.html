@@ -161,7 +161,6 @@
             <form id="remove-attachment" action="/_api/attachments.removeProfileImage" method="post" class="form-horizontal"
                 style="{% if not user.imageAttachment %}display: none{% endif %}">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <input type="hidden" name="attachment_id" value="{{ user.imageAttachment.id }}">
               <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
             </form>
             </p>
