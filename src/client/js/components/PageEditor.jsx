@@ -156,7 +156,7 @@ class PageEditor extends React.Component {
       formData.append('_csrf', appContainer.csrfToken);
       formData.append('file', file);
       formData.append('path', pageContainer.state.path);
-      formData.append('page_id', this.state.pageId || 0);
+      formData.append('page_id', pageContainer.state.pageId);
 
       res = await appContainer.apiPost('/attachments.add', formData);
       const attachment = res.attachment;
@@ -172,7 +172,7 @@ class PageEditor extends React.Component {
 
       // when if created newly
       if (res.pageCreated) {
-        // do nothing
+        logger.info('Page is created', res.pageCreated._id);
       }
     }
     catch (e) {

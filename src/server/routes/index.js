@@ -224,7 +224,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/attachments.removeProfileImage', accessTokenParser, loginRequired(crowi, app), csrf, attachment.api.removeProfileImage);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
-  app.get('/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
+  app.get('/_api/attachments.limit'   , accessTokenParser , loginRequired(crowi, app) , attachment.api.limit);
 
   app.get('/_api/revisions.get'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.get);
   app.get('/_api/revisions.ids'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.ids);
