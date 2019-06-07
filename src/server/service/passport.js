@@ -498,8 +498,8 @@ class PassportService {
     });
 
     passport.use('oidc', new OidcStrategy({
-      client: client,
-      params: {scope: 'openid email profile'}
+      client,
+      params: { scope: 'openid email profile' },
     },
     ((tokenset, userinfo, done) => {
       if (userinfo) {
