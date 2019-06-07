@@ -494,19 +494,21 @@ class PassportService {
       client_id: clientId,
       client_secret: clientSecret,
       redirect_uris: [redirectUri],
-      scope: 'openid email profile',
-      response: 'code',
+      response_types: ['code'],
     });
 
-    passport.use('oidc', new OidcStrategy({ client },
-      ((tokenset, userinfo, done) => {
-        if (userinfo) {
-          return done(null, userinfo);
-        }
+    passport.use('oidc', new OidcStrategy({
+      client,
+      params: { scope: 'openid email profile' },
+    },
+    ((tokenset, userinfo, done) => {
+      if (userinfo) {
+        return done(null, userinfo);
+      }
 
-        return done(null, false);
+      return done(null, false);
 
-      })));
+    })));
 
     this.isOidcStrategySetup = true;
     debug('OidcStrategy: setup is done');

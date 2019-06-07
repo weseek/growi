@@ -195,7 +195,7 @@
                 <span class="btn-label"><i class="fa fa-openid"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
-              <div class="small text-right">by OpenID Connect</div>
+              <div class="small text-right">{{ config.crowi['security:passport-oidc:providerName'] || "OpenID Connect" }}</div>
             </form>
             {% endif %}
             {% if passportSamlLoginEnabled() %}
