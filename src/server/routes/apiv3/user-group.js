@@ -18,7 +18,7 @@ const validator = {};
 
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
-  const { formValid } = require('../../middlewares');
+  const { ApiV3FormValidator } = crowi.middlewares;
 
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring
@@ -37,7 +37,7 @@ module.exports = (crowi) => {
     body('name', 'Group name is required').trim().exists(),
   ];
 
-  router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, formValid(crowi), async(req, res) => {
+  router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, ApiV3FormValidator, async(req, res) => {
     const { name } = req.body;
 
     try {
@@ -59,7 +59,7 @@ module.exports = (crowi) => {
     query('transferToUserGroupId').trim(),
   ];
 
-  router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, formValid(crowi), async(req, res) => {
+  router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, ApiV3FormValidator, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
