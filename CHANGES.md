@@ -9,6 +9,7 @@
 ### Updates
 
 * Feature: Comment Thread
+* Feature: OpenID Connect authentication
 * Improvement Draft list
 * Fix: Deleting page completely
 * I18n: User Management Details

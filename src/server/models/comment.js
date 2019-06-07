@@ -78,6 +78,14 @@ module.exports = function(crowi) {
     }));
   };
 
+  commentSchema.methods.removeWithReplies = async function() {
+    const Comment = crowi.model('Comment');
+    return Comment.remove({
+      $or: (
+        [{ replyTo: this._id }, { _id: this._id }]),
+    });
+  };
+
   /**
    * post save hook
    */

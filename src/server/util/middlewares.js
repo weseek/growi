@@ -147,6 +147,10 @@ module.exports = (crowi, app) => {
         return pathUtils.removeTrailingSlash(string);
       });
 
+      swig.setFilter('addTrailingSlash', (string) => {
+        return pathUtils.addTrailingSlash(string);
+      });
+
       swig.setFilter('presentation', (string) => {
         // 手抜き
         return string
