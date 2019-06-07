@@ -29,7 +29,7 @@ class Page extends React.Component {
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance(this);
+    this.props.appContainer.registerComponentInstance('Page', this);
   }
 
   /**

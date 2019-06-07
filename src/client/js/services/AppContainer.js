@@ -131,28 +131,27 @@ export default class AppContainer extends Container {
 
   /**
    * Register React component instance
+   * @param {string} id
    * @param {object} instance React component instance
    */
-  registerComponentInstance(instance) {
+  registerComponentInstance(id, instance) {
     if (instance == null) {
       throw new Error('The specified instance must not be null');
     }
 
-    const className = instance.constructor.name;
-
-    if (this.componentInstances[className] != null) {
-      throw new Error('The specified instance couldn\'t register because the same type object has already been registered');
+    if (this.componentInstances[id] != null) {
+      throw new Error('The specified instance couldn\'t register because the same id has already been registered');
     }
 
-    this.componentInstances[className] = instance;
+    this.componentInstances[id] = instance;
   }
 
   /**
    * Get registered React component instance
-   * @param {string} className
+   * @param {string} id
    */
-  getComponentInstance(className) {
-    return this.componentInstances[className];
+  getComponentInstance(id) {
+    return this.componentInstances[id];
   }
 
   getOriginRenderer() {
