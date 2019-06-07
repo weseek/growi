@@ -330,10 +330,39 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      req.user.deleteImage();
+      await Attachment.removeWithSubstanceById(id);
     }
     catch (err) {
       return res.status(500).json(ApiResponse.error('Error while deleting file'));
+    }
+
+    return res.json(ApiResponse.success({}));
+  };
+
+  /**
+   * @api {post} /attachments.removeProfileImage Remove profile image attachments
+   * @apiGroup Attachment
+   * @apiParam {String} attachment_id
+   */
+  api.removeProfileImage = async function(req, res) {
+    const id = req.body.attachment_id;
+
+    const attachment = await Attachment.findById(id);
+
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    const isDeletable = await isDeletableByUser(req.user, attachment);
+    if (!isDeletable) {
+      return res.json(ApiResponse.error(`Forbidden to remove the attachment '${attachment.id}'`));
+    }
+
+    try {
+      await req.user.deleteImage();
+    }
+    catch (err) {
+      return res.status(500).json(ApiResponse.error('Error while deleting image'));
     }
 
     return res.json(ApiResponse.success({}));

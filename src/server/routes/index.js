@@ -218,6 +218,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
   app.get('/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
+  app.post('/_api/attachments.removeProfileImage', accessTokenParser, loginRequired(crowi, app), csrf, attachment.api.removeProfileImage);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
   app.get('/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
