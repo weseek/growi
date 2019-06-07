@@ -345,21 +345,20 @@ module.exports = function(crowi, app) {
    * @apiParam {String} attachment_id
    */
   api.removeProfileImage = async function(req, res) {
-    const id = req.body.attachment_id;
-
-    const attachment = await Attachment.findById(id);
+    const user = req.user;
+    const attachment = await Attachment.findById(user.imageAttachment);
 
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    const isDeletable = await isDeletableByUser(req.user, attachment);
+    const isDeletable = await isDeletableByUser(user, attachment);
     if (!isDeletable) {
       return res.json(ApiResponse.error(`Forbidden to remove the attachment '${attachment.id}'`));
     }
 
     try {
-      await req.user.deleteImage();
+      await user.deleteImage();
     }
     catch (err) {
       return res.status(500).json(ApiResponse.error('Error while deleting image'));
