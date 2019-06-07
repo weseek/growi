@@ -126,6 +126,23 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByEmail-oidc" name="settingForm[security:passport-oidc:isSameEmailTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-oidc:isSameEmailTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByEmail-oidc">
+            {{ t("security_setting.Treat email matching as identical", "email") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat email matching as identical_warn", "email") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
   </fieldset>
 
   <div class="form-group" id="btn-update">
