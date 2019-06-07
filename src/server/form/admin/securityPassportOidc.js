@@ -7,8 +7,8 @@ module.exports = form(
   field('settingForm[security:passport-oidc:issuerHost]').trim(),
   field('settingForm[security:passport-oidc:clientId]').trim(),
   field('settingForm[security:passport-oidc:clientSecret]').trim(),
+  field('settingForm[security:passport-oidc:attrMapId]').trim(),
   field('settingForm[security:passport-oidc:attrMapUserName]').trim(),
   field('settingForm[security:passport-oidc:attrMapMail]').trim(),
-  field('settingForm[security:passport-oidc:attrMapId]').trim(),
   field('settingForm[security:passport-oidc:isSameUsernameTreatedAsIdenticalUser]').trim().toBooleanStrict(),
 );
