@@ -365,6 +365,7 @@ module.exports = function(crowi, app) {
     const strategyName = 'oidc';
     const attrMapId = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId');
     const attrMapUserName = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName');
+    const attrMapName = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName');
     const attrMapMail = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail');
 
     let response;
@@ -379,7 +380,7 @@ module.exports = function(crowi, app) {
     const userInfo = {
       id: response[attrMapId],
       username: response[attrMapUserName],
-      name: response[attrMapUserName],
+      name: response[attrMapName],
       email: response[attrMapMail],
     };
     debug('mapping response to userInfo', userInfo, response, attrMapId, attrMapUserName, attrMapMail);

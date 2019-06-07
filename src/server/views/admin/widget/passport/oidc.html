@@ -25,6 +25,13 @@
   <fieldset id="passport-oidc-hide-when-disabled" {%if !isOidcEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
+      <label for="settingForm[security:passport-oidc:providerName]" class="col-xs-3 control-label">{{ t("security_setting.providerName") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:providerName]" value="{{ settingForm['security:passport-oidc:providerName'] || '' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="settingForm[security:passport-oidc:issuerHost]" class="col-xs-3 control-label">{{ t("security_setting.issuerHost") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-oidc:issuerHost]" value="{{ settingForm['security:passport-oidc:issuerHost'] || '' }}">
@@ -60,6 +67,8 @@
       </div>
     </div>
 
+    <h4>Attribute Mapping ({{ t("security_setting.optional") }})</h4>
+
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:attrMapId]" class="col-xs-3 control-label">Identifier</label>
       <div class="col-xs-6">
@@ -78,7 +87,19 @@
         <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapUserName]" value="{{ settingForm['security:passport-oidc:attrMapUserName'] || '' }}">
         <p class="help-block">
           <small>
-            {{ t("security_setting.OIDC.username_detail") }}
+            {{ t("security_setting.OAuth.OIDC.username_detail") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-oidc:attrMapName]" class="col-xs-3 control-label">Name</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapName]" value="{{ settingForm['security:passport-oidc:attrName'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.OAuth.OIDC.name_detail") }}
           </small>
         </p>
       </div>
@@ -90,7 +111,7 @@
         <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapMail]" value="{{ settingForm['security:passport-oidc:attrMapMail'] || '' }}">
         <p class="help-block">
           <small>
-            {{ t("security_setting.OIDC.mapping_detail", t("Email")) }}
+            {{ t("security_setting.OAuth.OIDC.mapping_detail", t("Email")) }}
           </small>
         </p>
       </div>
@@ -126,6 +147,23 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByEmail-oidc" name="settingForm[security:passport-oidc:isSameEmailTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-oidc:isSameEmailTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByEmail-oidc">
+            {{ t("security_setting.Treat email matching as identical", "email") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat email matching as identical_warn", "email") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
   </fieldset>
 
   <div class="form-group" id="btn-update">
@@ -149,7 +187,6 @@
     <li>{{ t("security_setting.OAuth.OIDC.register_1") }}</li>
     <li>{{ t("security_setting.OAuth.OIDC.register_2", callbackUrl) }}</li>
     <li>{{ t("security_setting.OAuth.OIDC.register_3") }}</li>
-    <li>{{ t("security_setting.OAuth.OIDC.register_4") }}</li>
   </ol>
 </div>
 
