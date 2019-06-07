@@ -25,6 +25,13 @@
   <fieldset id="passport-oidc-hide-when-disabled" {%if !isOidcEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
+      <label for="settingForm[security:passport-oidc:providerName]" class="col-xs-3 control-label">{{ t("security_setting.providerName") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:providerName]" value="{{ settingForm['security:passport-oidc:providerName'] || '' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="settingForm[security:passport-oidc:issuerHost]" class="col-xs-3 control-label">{{ t("security_setting.issuerHost") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-oidc:issuerHost]" value="{{ settingForm['security:passport-oidc:issuerHost'] || '' }}">

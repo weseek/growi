@@ -4,6 +4,7 @@ const field = form.field;
 
 module.exports = form(
   field('settingForm[security:passport-oidc:isEnabled]').trim().toBooleanStrict().required(),
+  field('settingForm[security:passport-oidc:providerName]').trim(),
   field('settingForm[security:passport-oidc:issuerHost]').trim(),
   field('settingForm[security:passport-oidc:clientId]').trim(),
   field('settingForm[security:passport-oidc:clientSecret]').trim(),
