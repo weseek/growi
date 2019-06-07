@@ -491,8 +491,6 @@
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",
     "issuerHost": "Issuer Host",
-    "authorizeURL": "Authorization URL",
-    "tokenURL": "Token URL",
     "scope": "Scope",
     "desc_of_callback_URL": "Use it in the setting of the %s provider",
     "guest_mode": {
@@ -587,8 +585,7 @@
         "mapping_detail": "Specification of mappings for %s when creating new users",
         "register_1": "Contant to OIDC IdP Administrator",
         "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
-        "register_3": "Copy and paste your ClientID and Client Secret above",
-        "register_4": "Set scope to openid"
+        "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "how_to": {
         "google": "How to configure Google OAuth?",
