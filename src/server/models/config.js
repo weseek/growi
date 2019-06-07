@@ -347,11 +347,6 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
-  configSchema.statics.isSameUsernameTreatedAsIdenticalUser = function(config, providerType) {
-    const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isUploadable = function(config) {
     const method = process.env.FILE_UPLOAD || 'aws';
 
