@@ -4,7 +4,6 @@ const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 
-
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
     const csrfKey = (req.session && req.session.id) || 'anon';
@@ -318,3 +317,6 @@ exports.awsEnabled = function() {
     return next();
   };
 };
+
+// don't add any more middlewares to this file.
+// all new middlewares should be an independent file under /server/routes/middlewares

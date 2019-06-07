@@ -1,6 +1,7 @@
 import { Container } from 'unstated';
 
 import axios from 'axios';
+import urljoin from 'url-join';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -13,6 +14,7 @@ import {
 } from '../util/interceptor/detach-code-blocks';
 
 import i18nFactory from '../util/i18n';
+import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
 /**
  * Service container related to options for Application
@@ -68,6 +70,14 @@ export default class AppContainer extends Container {
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
+
+    this.apiv3Root = '/_api/v3';
+    this.apiv3 = {
+      get: this.apiv3Get.bind(this),
+      post: this.apiv3Post.bind(this),
+      put: this.apiv3Put.bind(this),
+      delete: this.apiv3Delete.bind(this),
+    };
   }
 
   initPlugins() {
@@ -336,6 +346,45 @@ export default class AppContainer extends Container {
           reject(res);
         });
     });
+  }
+
+  async apiv3Request(method, path, params) {
+    try {
+      const res = await axios[method](urljoin(this.apiv3Root, path), params);
+      return res.data;
+    }
+    catch (err) {
+      const errors = apiv3ErrorHandler(err);
+      throw errors;
+    }
+  }
+
+  async apiv3Get(path, params) {
+    return this.apiv3Request('get', path, { params });
+  }
+
+  async apiv3Post(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiv3Request('post', path, params);
+  }
+
+  async apiv3Put(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiv3Request('put', path, params);
+  }
+
+  async apiv3Delete(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiv3Request('delete', path, { params });
   }
 
 }
