@@ -20,6 +20,13 @@ export default class TagContainer extends Container {
   }
 
   /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'TagContainer';
+  }
+
+  /**
    * retrieve tags data
    * !! This method should be invoked after PageContainer and EditorContainer has been initialized !!
    */

@@ -45,6 +45,13 @@ export default class EditorContainer extends Container {
   }
 
   /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'EditorContainer';
+  }
+
+  /**
    * initialize state for page permission
    */
   initStateGrant() {

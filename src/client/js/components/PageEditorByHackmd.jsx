@@ -33,7 +33,7 @@ class PageEditorByHackmd extends React.Component {
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance(this);
+    this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 
   /**

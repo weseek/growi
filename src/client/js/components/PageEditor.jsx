@@ -62,7 +62,7 @@ class PageEditor extends React.Component {
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance(this);
+    this.props.appContainer.registerComponentInstance('PageEditor', this);
 
     // initial rendering
     this.renderPreview(this.state.markdown);
