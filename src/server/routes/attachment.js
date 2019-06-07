@@ -361,6 +361,7 @@ module.exports = function(crowi, app) {
       await user.deleteImage();
     }
     catch (err) {
+      logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting image'));
     }
 
