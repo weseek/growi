@@ -74,12 +74,6 @@ class PageComments extends React.Component {
 
   deleteComment() {
     const comment = this.state.commentToDelete;
-    const comments = this.props.commentContainer.state.comments;
-    comments.forEach((reply) => {
-      if (reply.replyTo === comment._id) {
-        this.props.commentContainer.deleteComment(reply);
-      }
-    });
 
     this.props.commentContainer.deleteComment(comment)
       .then(() => {
