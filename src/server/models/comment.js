@@ -80,19 +80,10 @@ module.exports = function(crowi) {
 
   commentSchema.methods.removeWithReplies = async function() {
     const Comment = crowi.model('Comment');
-
-    return await new Promise(((resolve, reject) => {
-      Comment.remove({
-        $or: (
-          [{ replyTo: this._id }, { _id: this._id }]),
-      },
-      (err, done) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(done);
-      });
-    }));
+    return await Comment.remove({
+      $or: (
+        [{ replyTo: this._id }, { _id: this._id }]),
+    });
   };
 
   /**
