@@ -227,7 +227,7 @@ module.exports = function(crowi) {
     this.image = undefined;
 
     if (this.imageAttachment != null) {
-      Attachment.removeWithSubstanceId(this.imageAttachment._id);
+      Attachment.removeWithSubstanceById(this.imageAttachment._id);
     }
 
     this.imageAttachment = undefined;

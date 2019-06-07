@@ -330,7 +330,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await Attachment.removeWithSubstanceById(id);
+      req.user.deleteImage();
     }
     catch (err) {
       return res.status(500).json(ApiResponse.error('Error while deleting file'));

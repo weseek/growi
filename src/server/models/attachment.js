@@ -97,13 +97,6 @@ module.exports = function(crowi) {
     // retrieve data from DB to get a completely populated instance
     const attachment = await this.findById(id);
     await fileUploader.deleteFile(attachment);
-    // remove the image attachment from all user(s)
-    const User = await crowi.model('User');
-    await User.update({ imageAttachment: id }, {
-      $set: {
-        imageAttachment: undefined,
-      },
-    }, { multi: true });
 
     return await attachment.remove();
   };
