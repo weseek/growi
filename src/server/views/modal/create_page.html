@@ -72,7 +72,7 @@
             // modify href
             const value = $(this).val();
             const pageName = (value === 'children') ? '_template' : '__template';
-            const truePath = "{{ page.path || path | removeTrailingSlash | addTrailingSlash }}";
+            const truePath = "{{ page.path || path | addTrailingSlash }}";
             const link = truePath + pageName + '#edit-form';
             $('#link-to-template').attr('href', link);
           });
