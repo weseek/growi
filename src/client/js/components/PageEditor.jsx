@@ -153,10 +153,13 @@ class PageEditor extends React.Component {
       }
 
       const formData = new FormData();
+      const { pageId, path } = pageContainer.state;
       formData.append('_csrf', appContainer.csrfToken);
       formData.append('file', file);
-      formData.append('path', pageContainer.state.path);
-      formData.append('page_id', pageContainer.state.pageId);
+      formData.append('path', path);
+      if (pageId != null) {
+        formData.append('page_id', pageContainer.state.pageId);
+      }
 
       res = await appContainer.apiPost('/attachments.add', formData);
       const attachment = res.attachment;
