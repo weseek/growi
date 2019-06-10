@@ -228,6 +228,7 @@ export default class PageContainer extends Container {
     }
 
     const editorContainer = this.appContainer.getContainer('EditorContainer');
+    this.appContainer.setIsDocSaved(true);
     editorContainer.clearDraft(path);
     window.location.href = path;
 
