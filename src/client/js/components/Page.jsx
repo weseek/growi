@@ -5,6 +5,7 @@ import loggerFactory from '@alias/logger';
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import EditorContainer from '../services/EditorContainer';
 
 import MarkdownTable from '../models/MarkdownTable';
 
@@ -45,7 +46,7 @@ class Page extends React.Component {
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
-    const { pageContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -55,6 +56,9 @@ class Page extends React.Component {
     );
 
     try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(newMarkdown);
       logger.debug('success to save');
@@ -88,13 +92,14 @@ class Page extends React.Component {
  * Wrapper component for using unstated
  */
 const PageWrapper = (props) => {
-  return createSubscribedElement(Page, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(Page, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 
 Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 export default PageWrapper;

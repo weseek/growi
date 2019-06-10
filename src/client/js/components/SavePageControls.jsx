@@ -47,11 +47,17 @@ class SavePageControls extends React.Component {
 
   save() {
     const { pageContainer, editorContainer } = this.props;
+    // disable unsaved warning
+    editorContainer.disableUnsavedWarning();
+    // save
     pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
   }
 
   saveAndOverwriteScopesOfDescendants() {
     const { pageContainer, editorContainer } = this.props;
+    // disable unsaved warning
+    editorContainer.disableUnsavedWarning();
+    // save
     const optionsToSave = Object.assign(editorContainer.getCurrentOptionsToSave(), {
       overwriteScopesOfDescendants: true,
     });

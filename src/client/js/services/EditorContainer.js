@@ -37,6 +37,8 @@ export default class EditorContainer extends Container {
       previewOptions: {},
     };
 
+    this.isSetBeforeunloadEventHandler = false;
+
     this.initStateGrant();
     this.initDrafts();
 
@@ -144,6 +146,24 @@ export default class EditorContainer extends Container {
     }
 
     return opt;
+  }
+
+  showUnsavedWarning(e) {
+    // display browser default message
+    e.returnValue = '';
+    return '';
+  }
+
+  disableUnsavedWarning() {
+    window.removeEventListener('beforeunload', this.showUnsavedWarning);
+    this.isSetBeforeunloadEventHandler = false;
+  }
+
+  enableUnsavedWarning() {
+    if (!this.isSetBeforeunloadEventHandler) {
+      window.addEventListener('beforeunload', this.showUnsavedWarning);
+      this.isSetBeforeunloadEventHandler = true;
+    }
   }
 
   clearDraft(path) {
