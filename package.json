@@ -60,7 +60,7 @@
     "webpack": "webpack"
   },
   "dependencies": {
-    "async": "^2.3.0",
+    "async": "^3.0.1",
     "aws-sdk": "^2.88.0",
     "axios": "^0.18.0",
     "basic-auth-connect": "~1.0.0",
