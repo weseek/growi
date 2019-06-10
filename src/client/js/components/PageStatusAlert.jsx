@@ -80,7 +80,7 @@ class PageStatusAlert extends React.Component {
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a onClick={this.refreshPage}>
+        <a href="#" onClick={this.refreshPage}>
           {label2}
         </a>
       </div>
