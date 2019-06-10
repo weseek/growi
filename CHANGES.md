@@ -16,6 +16,12 @@
 * I18n: Group Management Details
 * Support: Apply unstated
 * Support: Upgrade libs
+    * async
+    * axios
+    * file-loader
+    * googleapis
+    * i18next
+    * migrate-mongo
     * mini-css-extract-plugin
     * null-loader
 
