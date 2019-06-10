@@ -117,9 +117,6 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    */
   updateStateAfterSave(page, tags) {
-    // mark that the document is not editing
-    this.appContainer.setIsDocSaved(true);
-
     const { editorMode } = this.appContainer.state;
 
     // update state of PageContainer
@@ -228,7 +225,6 @@ export default class PageContainer extends Container {
     }
 
     const editorContainer = this.appContainer.getContainer('EditorContainer');
-    this.appContainer.setIsDocSaved(true);
     editorContainer.clearDraft(path);
     window.location.href = path;
 

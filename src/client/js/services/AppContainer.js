@@ -183,14 +183,6 @@ export default class AppContainer extends Container {
     return renderer;
   }
 
-  setIsDocSaved(isSaved) {
-    this.isDocSaved = isSaved;
-  }
-
-  getIsDocSaved() {
-    return this.isDocSaved;
-  }
-
   getEmojiStrategy() {
     return emojiStrategy;
   }

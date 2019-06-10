@@ -129,6 +129,9 @@ class PageEditorByHackmd extends React.Component {
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(markdown, optionsToSave);
       logger.debug('success to save');
@@ -147,9 +150,9 @@ class PageEditorByHackmd extends React.Component {
   /**
    * onChange event of HackmdEditor handler
    */
-  hackmdEditorChangeHandler(body) {
+  async hackmdEditorChangeHandler(body) {
     const hackmdUri = this.getHackmdUri();
-    const { pageContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
 
     if (hackmdUri == null) {
       // do nothing
@@ -157,20 +160,22 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // do nothing if contents are same
-    if (pageContainer.state.markdown === body) {
+    if (this.state.markdown === body) {
       return;
     }
+
+    // enable unsaved warning
+    editorContainer.enableUnsavedWarning();
 
     const params = {
       pageId: pageContainer.state.pageId,
     };
-    this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params)
-      .then((res) => {
-        // do nothing
-      })
-      .catch((err) => {
-        // do nothing
-      });
+    try {
+      await this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params);
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
   render() {

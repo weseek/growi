@@ -42,7 +42,6 @@ class PageEditor extends React.Component {
     this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
-    this.showUnsavedWarning = this.showUnsavedWarning.bind(this);
 
     // get renderer
     this.growiRenderer = this.props.appContainer.getRenderer('editor');
@@ -58,7 +57,6 @@ class PageEditor extends React.Component {
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
     this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
-
   }
 
   componentWillMount() {
@@ -66,20 +64,6 @@ class PageEditor extends React.Component {
 
     // initial rendering
     this.renderPreview(this.state.markdown);
-
-    window.addEventListener('beforeunload', this.showUnsavedWarning);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.showUnsavedWarning);
-  }
-
-  showUnsavedWarning(e) {
-    if (!this.props.appContainer.getIsDocSaved()) {
-      // display browser default message
-      e.returnValue = '';
-      return '';
-    }
   }
 
   getMarkdown() {
@@ -110,7 +94,6 @@ class PageEditor extends React.Component {
   onMarkdownChanged(value) {
     this.renderPreviewWithDebounce(value);
     this.saveDraftWithDebounce();
-    this.props.appContainer.setIsDocSaved(false);
   }
 
   /**
@@ -121,6 +104,9 @@ class PageEditor extends React.Component {
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
       logger.debug('success to save');
@@ -290,6 +276,7 @@ class PageEditor extends React.Component {
     if (!pageContainer.state.revisionId) {
       editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
     }
+    editorContainer.enableUnsavedWarning();
   }
 
   clearDraft() {
