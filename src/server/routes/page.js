@@ -624,7 +624,7 @@ module.exports = function(crowi, app) {
     const pageBody = req.body.body || null;
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
-    const grant = req.body.grant || 1;
+    const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
@@ -635,6 +635,10 @@ module.exports = function(crowi, app) {
 
     if (pageId === null || pageBody === null) {
       return res.json(ApiResponse.error('page_id and body are required.'));
+    }
+
+    if (!grant) {
+      return res.json(ApiResponse.error('Grant is not selected'));
     }
 
     // check page existence
