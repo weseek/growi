@@ -549,7 +549,7 @@ module.exports = function(crowi, app) {
   api.create = async function(req, res) {
     const body = req.body.body || null;
     const pagePath = req.body.path || null;
-    const grant = req.body.grant || 1;
+    const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
@@ -559,6 +559,10 @@ module.exports = function(crowi, app) {
 
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
+    }
+
+    if (!grant) {
+      return res.json(ApiResponse.error('Grant is not selected'));
     }
 
     // check page existence
