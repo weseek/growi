@@ -156,17 +156,6 @@ class ConfigManager {
     }
   }
 
-  hasSlackConfig() {
-    let hasSlackToken = false;
-    let hasSlackIwhUrl = false;
-
-    if (this.configObject.notification) {
-      hasSlackToken = !!this.configObject.notification['slack:token'];
-      hasSlackIwhUrl = !!this.configObject.notification['slack:incomingWebhookUrl'];
-    }
-
-    return hasSlackToken || hasSlackIwhUrl;
-  }
 
   getIsPublicWikiOnly() {
     // CONF.RF save PUBLIC_WIKI_ONLY in mongodb?

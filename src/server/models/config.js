@@ -138,6 +138,14 @@ module.exports = function(crowi) {
     };
   }
 
+  function getDefaultNotificationConfigs() {
+    return {
+      'slack:isIncomingWebhookPrioritized': false,
+      'slack:incomingWebhookUrl': '',
+      'slack:token': '',
+    };
+  }
+
   function getValueForCrowiNS(config, key) {
     crowi.configManager.getConfig('crowi', key);
     // // return the default value if undefined
@@ -177,6 +185,13 @@ module.exports = function(crowi) {
    */
   configSchema.statics.getDefaultMarkdownConfigsObject = function() {
     return getDefaultMarkdownConfigs();
+  };
+
+  /**
+   * It is deprecated to use this for anything other than ConfigLoader#load.
+   */
+  configSchema.statics.getDefaultNotificationConfigsObject = function() {
+    return getDefaultNotificationConfigs();
   };
 
   configSchema.statics.getRestrictGuestModeLabels = function() {
@@ -238,6 +253,9 @@ module.exports = function(crowi) {
     }
     else if (ns === 'markdown') {
       defaultConfig = getDefaultMarkdownConfigs();
+    }
+    else if (ns === 'notification') {
+      defaultConfig = getDefaultNotificationConfigs();
     }
 
     if (!defaultConfig[ns]) {

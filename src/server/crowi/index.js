@@ -38,6 +38,7 @@ function Crowi(rootdir) {
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
+  this.crowiSlackNotificationService = null;
   this.restQiitaAPIService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -435,6 +436,16 @@ Crowi.prototype.setUpGlobalNotification = function() {
   const GlobalNotificationService = require('../service/global-notification');
   if (this.globalNotificationService == null) {
     this.globalNotificationService = new GlobalNotificationService(this);
+  }
+};
+
+/**
+ * setup CrowiSlackNotificationService
+ */
+Crowi.prototype.setUpCrowiSlacklNotification = function() {
+  const CrowiSlackNotificationService = require('../service/crowi-slack-notification');
+  if (this.crowiSlackNotificationService == null) {
+    this.crowiSlackNotificationService = new CrowiSlackNotificationService(this);
   }
 };
 
