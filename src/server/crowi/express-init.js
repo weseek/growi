@@ -64,12 +64,12 @@ module.exports = function(crowi, app) {
     const Config = crowi.model('Config');
     app.set('tzoffset', tzoffset);
 
-    req.config = config;
+    // req.config = config;
     req.csrfToken = null;
 
     res.locals.req = req;
     res.locals.baseUrl = configManager.getSiteUrl();
-    res.locals.config = config;
+    // res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;
     res.locals.tzoffset = tzoffset;
@@ -80,7 +80,7 @@ module.exports = function(crowi, app) {
       restrictGuestMode: Config.getRestrictGuestModeLabels(),
       registrationMode: Config.getRegistrationModeLabels(),
     };
-    res.locals.local_config = Config.getLocalconfig(config); // config for browser context
+    res.locals.local_config = Config.getLocalconfig(); // config for browser context
 
     next();
   });

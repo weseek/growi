@@ -207,16 +207,15 @@ module.exports = (crowi, app) => {
    * @param {boolean} isStrictly whethere strictly restricted (default true)
    */
   middlewares.loginRequired = function(isStrictly = true) {
+    const isGuestAllowedToRead = crowi.configManager.getIsGuestAllowedToRead();
+
     return function(req, res, next) {
       const User = crowi.model('User');
 
       // when the route is not strictly restricted
       if (!isStrictly) {
-        const config = req.config;
-        const Config = crowi.model('Config');
-
         // when allowed to read
-        if (Config.isGuestAllowedToRead(config)) {
+        if (isGuestAllowedToRead) {
           return next();
         }
       }

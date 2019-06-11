@@ -92,6 +92,112 @@ class ConfigManager {
   }
   /* eslint-enable no-else-return */
 
+  getIsUploadable() {
+    const method = process.env.FILE_UPLOAD || 'aws';
+
+    if (method === 'aws' && (
+      !this.getConfig('crowi', 'aws:accessKeyId')
+        || !this.getConfig('crowi', 'aws:secretAccessKey')
+        || !this.getConfig('crowi', 'aws:region')
+        || !this.getConfig('crowi', 'aws:bucket'))) {
+      return false;
+    }
+
+    return method !== 'none';
+  }
+
+  getTagWhiteList() {
+    const { tags } = require('@commons/service/xss/recommended-whitelist');
+    const isEnabledXssPrevention = this.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
+    const xssOpiton = this.getConfig('markdown', 'markdown:xss:option');
+
+    if (isEnabledXssPrevention) {
+      switch (xssOpiton) {
+        case 1: // ignore all: use default option
+          return [];
+
+        case 2: // recommended
+          return tags;
+
+        case 3: // custom white list
+          return this.getConfig('markdown', 'markdown:xss:tagWhiteList');
+
+        default:
+          return [];
+      }
+    }
+    else {
+      return [];
+    }
+  }
+
+  getAttrWhiteList() {
+    const { attrs } = require('@commons/service/xss/recommended-whitelist');
+    const isEnabledXssPrevention = this.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
+    const xssOpiton = this.getConfig('markdown', 'markdown:xss:option');
+
+    if (isEnabledXssPrevention) {
+      switch (xssOpiton) {
+        case 1: // ignore all: use default option
+          return [];
+
+        case 2: // recommended
+          return attrs;
+
+        case 3: // custom white list
+          return this.getConfig('markdown', 'markdown:xss:attrWhiteList');
+
+        default:
+          return [];
+      }
+    }
+    else {
+      return [];
+    }
+  }
+
+  hasSlackConfig() {
+    let hasSlackToken = false;
+    let hasSlackIwhUrl = false;
+
+    if (this.configObject.notification) {
+      hasSlackToken = !!this.configObject.notification['slack:token'];
+      hasSlackIwhUrl = !!this.configObject.notification['slack:incomingWebhookUrl'];
+    }
+
+    return hasSlackToken || hasSlackIwhUrl;
+  }
+
+  getIsPublicWikiOnly() {
+    // CONF.RF save PUBLIC_WIKI_ONLY in mongodb?
+    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
+    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
+      return true;
+    }
+    return false;
+  }
+
+  getIsGuestAllowedToRead() {
+    const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
+    const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
+    const SECURITY_REGISTRATION_MODE_OPEN = 'Open';
+    const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
+    const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
+
+    // return true if puclic wiki mode
+    if (this.getIsPublicWikiOnly()) {
+      return true;
+    }
+
+    // return false if undefined
+    const isRestrictGuestMode = this.getConfig('crowi', 'security:restrictGuestMode');
+    if (isRestrictGuestMode) {
+      return false;
+    }
+
+    return SECURITY_RESTRICT_GUEST_MODE_READONLY === isRestrictGuestMode;
+  }
+
   /**
    * update configs in the same namespace
    *
