@@ -28,14 +28,16 @@
             <p class="help-block"> {{ t('modal_delete.help.recursively', page.path) }}
             </p>
           </div>
-          {% if not page.isDeleted() and user.canDeleteCompletely(user) %}
           <div class="checkbox checkbox-danger">
-            <input name="completely" id="cbDeleteCompletely" value="1"  type="checkbox">
+          <input name="completely" id="cbDeleteCompletely" {% if not page.isDeleted() and !user.canDeleteCompletely(user) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
               <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.label.Delete completely') }}</label>
-              <p class="help-block"> {{ t('modal_delete.help.completely') }}
-              </p>
+              <!-- GC-1755 Change Sentence -->
+              {% if not page.isDeleted() and !user.canDeleteCompletely(user) %}
+                <p class="bg-danger text-white p-2 mt-2"> <i class="icon-ban" ></i> 完全削除の権限がありません </p>
+              {% else %}
+                <p class="help-block"> {{ t('modal_delete.help.completely') }}</p>
+              {% endif %}
           </div>
-          {% endif %}
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
