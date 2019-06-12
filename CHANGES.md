@@ -12,6 +12,7 @@
 * Feature: OpenID Connect authentication
 * Improvement Draft list
 * Fix: Deleting page completely
+* Fix: Search with `prefix:` param with CJK pathname
 * I18n: User Management Details
 * I18n: Group Management Details
 * Support: Apply unstated
