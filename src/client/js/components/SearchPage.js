@@ -16,7 +16,7 @@ class SearchPage extends React.Component {
     super(props);
 
     this.state = {
-      searchingKeyword: this.props.query.q || '',
+      searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
