@@ -52,7 +52,7 @@ class HeaderSearchBox extends React.Component {
     // construct search query
     let q = this.state.text;
     if (this.state.isScopeChildren) {
-      q += ` prefix:${window.location.pathname}`;
+      q += ` prefix:${decodeURI(window.location.pathname)}`;
     }
     url.searchParams.append('q', q);
 
