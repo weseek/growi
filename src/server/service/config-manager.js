@@ -92,6 +92,8 @@ class ConfigManager {
   }
   /* eslint-enable no-else-return */
 
+  // CONF.RF refactor file-uploader
+  // create parent class and each uploader inherits from it.
   getIsUploadable() {
     const method = process.env.FILE_UPLOAD || 'aws';
 
