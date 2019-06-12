@@ -108,57 +108,6 @@ class ConfigManager {
     return method !== 'none';
   }
 
-  getTagWhiteList() {
-    const { tags } = require('@commons/service/xss/recommended-whitelist');
-    const isEnabledXssPrevention = this.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
-    const xssOpiton = this.getConfig('markdown', 'markdown:xss:option');
-
-    if (isEnabledXssPrevention) {
-      switch (xssOpiton) {
-        case 1: // ignore all: use default option
-          return [];
-
-        case 2: // recommended
-          return tags;
-
-        case 3: // custom white list
-          return this.getConfig('markdown', 'markdown:xss:tagWhiteList');
-
-        default:
-          return [];
-      }
-    }
-    else {
-      return [];
-    }
-  }
-
-  getAttrWhiteList() {
-    const { attrs } = require('@commons/service/xss/recommended-whitelist');
-    const isEnabledXssPrevention = this.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
-    const xssOpiton = this.getConfig('markdown', 'markdown:xss:option');
-
-    if (isEnabledXssPrevention) {
-      switch (xssOpiton) {
-        case 1: // ignore all: use default option
-          return [];
-
-        case 2: // recommended
-          return attrs;
-
-        case 3: // custom white list
-          return this.getConfig('markdown', 'markdown:xss:attrWhiteList');
-
-        default:
-          return [];
-      }
-    }
-    else {
-      return [];
-    }
-  }
-
-
   getIsPublicWikiOnly() {
     // CONF.RF save PUBLIC_WIKI_ONLY in mongodb?
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
