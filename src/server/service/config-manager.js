@@ -108,36 +108,6 @@ class ConfigManager {
     return method !== 'none';
   }
 
-  getIsPublicWikiOnly() {
-    // CONF.RF save PUBLIC_WIKI_ONLY in mongodb?
-    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
-      return true;
-    }
-    return false;
-  }
-
-  getIsGuestAllowedToRead() {
-    const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
-    const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
-    const SECURITY_REGISTRATION_MODE_OPEN = 'Open';
-    const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
-    const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
-
-    // return true if puclic wiki mode
-    if (this.getIsPublicWikiOnly()) {
-      return true;
-    }
-
-    // return false if undefined
-    const isRestrictGuestMode = this.getConfig('crowi', 'security:restrictGuestMode');
-    if (isRestrictGuestMode) {
-      return false;
-    }
-
-    return SECURITY_RESTRICT_GUEST_MODE_READONLY === isRestrictGuestMode;
-  }
-
   /**
    * update configs in the same namespace
    *

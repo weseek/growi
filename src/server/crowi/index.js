@@ -40,6 +40,7 @@ function Crowi(rootdir) {
   this.globalNotificationService = null;
   this.crowiSlackNotificationService = null;
   this.xssService = null;
+  this.aclService = null;
   this.restQiitaAPIService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -85,6 +86,9 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
+    this.setUpCrowiSlacklNotification(),
+    this.setUpXss(),
+    this.setUpAcl(),
     this.setUpRestQiitaAPI(),
   ]);
 };
@@ -453,10 +457,20 @@ Crowi.prototype.setUpCrowiSlacklNotification = function() {
 /**
  * setup XssService
  */
-Crowi.prototype.setUpCrowiSlacklNotification = function() {
+Crowi.prototype.setUpXss = function() {
   const XssService = require('../service/xss');
   if (this.xssService == null) {
     this.xssService = new XssService(this);
+  }
+};
+
+/**
+ * setup AclService
+ */
+Crowi.prototype.setUpAcl = function() {
+  const AclService = require('../service/acl');
+  if (this.aclService == null) {
+    this.aclService = new AclService(this);
   }
 };
 
