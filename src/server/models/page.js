@@ -481,6 +481,10 @@ module.exports = function(crowi) {
     if (grant === GRANT_USER_GROUP) {
       this.grantedGroup = grantUserGroupId;
     }
+
+    if (grant === GRANT_PUBLIC && grantUserGroupId !== null) {
+      this.grantedGroup = null;
+    }
   };
 
 

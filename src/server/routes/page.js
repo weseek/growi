@@ -561,10 +561,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
 
-    if (!grant) {
-      return res.json(ApiResponse.error('Grant is not selected'));
-    }
-
     // check page existence
     const isExist = await Page.count({ path: pagePath }) > 0;
     if (isExist) {
