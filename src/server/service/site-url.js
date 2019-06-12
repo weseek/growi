@@ -21,7 +21,7 @@ class SiteUrl {
    */
   /* eslint-disable no-else-return */
   getSiteUrl() {
-    const siteUrl = this.getConfig('crowi', 'app:siteUrl');
+    const siteUrl = this.crowi.configManager.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
       return pathUtils.removeTrailingSlash(siteUrl);
     }

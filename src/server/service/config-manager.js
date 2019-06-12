@@ -28,7 +28,6 @@ class ConfigManager {
    */
   async loadConfigs() {
     this.configObject = await this.configLoader.load();
-
     debug('ConfigManager#loadConfigs', this.configObject);
   }
 
@@ -50,6 +49,56 @@ class ConfigManager {
     }
 
     return this.defaultSearch(namespace, key);
+  }
+
+  /**
+   * get a config specified by namespace and prefix
+   */
+  getConfigByPrefix(namespace, prefix) {
+    const regexp = new RegExp(`^${prefix}:`);
+    const keys = this.getAllKeys();
+    const result = {};
+
+    for (const key of keys) {
+      if (regexp.test(key)) {
+        result[key] = this.getConfig(namespace, key);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * generate an array of config keys from this.configObject
+   */
+  getAllKeys() {
+    // type: fromDB, fromEnvVars
+    const types = Object.keys(this.configObject);
+    let namespaces = [];
+    let keys = [];
+
+    for (const type of types) {
+      if (this.configObject[type] != null) {
+        // ns: crowi, markdown, notification
+        namespaces = [...namespaces, ...Object.keys(this.configObject[type])];
+      }
+    }
+
+    // remove duplicates
+    namespaces = [...new Set(namespaces)];
+
+    for (const type of types) {
+      for (const ns of namespaces) {
+        if (this.configObject[type][ns] != null) {
+          keys = [...keys, ...Object.keys(this.configObject[type][ns])];
+        }
+      }
+    }
+
+    // remove duplicates
+    keys = [...new Set(keys)];
+
+    return keys;
   }
 
   /**
@@ -143,27 +192,30 @@ class ConfigManager {
    * and then from configs loaded from the environment variables
    */
   defaultSearch(namespace, key) {
+    // does not exist neither in db nor in env vars
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       return undefined;
     }
 
+    // only exists in db
     if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       return this.configObject.fromDB[namespace][key];
     }
 
+    // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
       return this.configObject.fromEnvVars[namespace][key];
     }
 
+    // exists both in db and in env vars [db > env var]
     if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      /* eslint-disable no-else-return */
       if (this.configObject.fromDB[namespace][key] !== null) {
         return this.configObject.fromDB[namespace][key];
       }
+      /* eslint-disable-next-line no-else-return */
       else {
         return this.configObject.fromEnvVars[namespace][key];
       }
-      /* eslint-enable no-else-return */
     }
   }
 

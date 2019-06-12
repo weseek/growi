@@ -28,6 +28,10 @@ module.exports = function(crowi, app) {
   const configManager = crowi.configManager;
   const getConfig = configManager.getConfig;
 
+  // Service classes
+  const { siteUrlService } = crowi;
+
+
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
@@ -68,7 +72,7 @@ module.exports = function(crowi, app) {
     req.csrfToken = null;
 
     res.locals.req = req;
-    res.locals.baseUrl = configManager.getSiteUrl();
+    res.locals.baseUrl = siteUrlService.getSiteUrl();
     // res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;

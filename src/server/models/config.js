@@ -244,32 +244,6 @@ module.exports = function(crowi) {
   //   });
   // };
 
-  configSchema.statics.setupConfigFormData = function(ns, config) {
-    let defaultConfig = {};
-
-    // set Default Settings
-    if (ns === 'crowi') {
-      defaultConfig = getDefaultCrowiConfigs();
-    }
-    else if (ns === 'markdown') {
-      defaultConfig = getDefaultMarkdownConfigs();
-    }
-    else if (ns === 'notification') {
-      defaultConfig = getDefaultNotificationConfigs();
-    }
-
-    if (!defaultConfig[ns]) {
-      defaultConfig[ns] = {};
-    }
-    Object.keys(config[ns] || {}).forEach((key) => {
-      if (config[ns][key] !== undefined) {
-        defaultConfig[key] = config[ns][key];
-      }
-    });
-    return defaultConfig;
-  };
-
-
   configSchema.statics.updateNamespaceByArray = function(ns, configs, callback) {
     const Config = this;
     if (configs.length < 0) {
@@ -636,7 +610,7 @@ module.exports = function(crowi) {
     const localConfig = {
       crowi: {
         title: Config.appTitle(crowi),
-        url: crowi.configManager.getSiteUrl(),
+        url: crowi.siteUrlService.getSiteUrl(),
       },
       upload: {
         image: crowi.configManager.getIsUploadable(),
@@ -648,11 +622,11 @@ module.exports = function(crowi) {
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
-      tagWhiteList: crowi.configManager.getTagWhiteList(),
-      attrWhiteList: crowi.configManager.getAttrWhiteList(),
+      tagWhiteList: crowi.xssService.getTagWhiteList(),
+      attrWhiteList: crowi.xssService.getAttrWhiteList(),
       highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
-      hasSlackConfig: crowi.configManager.getConfig('crowi', 'customize:behavior'), // change
+      hasSlackConfig: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
@@ -661,7 +635,7 @@ module.exports = function(crowi) {
         NO_CDN: env.NO_CDN || null,
       },
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
-      isAclEnabled: !crowi.configManager.getIsPublicWikiOnly(),
+      isAclEnabled: !crowi.aclService.getIsPublicWikiOnly(),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };
 
