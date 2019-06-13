@@ -314,11 +314,6 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
-  configSchema.statics.isEnabledPassportTwitter = function(config) {
-    const key = 'security:passport-twitter:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isEnabledPassportOidc = function(config) {
     const key = 'security:passport-oidc:isEnabled';
     return getValueForCrowiNS(config, key);

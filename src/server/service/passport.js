@@ -418,8 +418,8 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isTwitterEnabled = Config.isEnabledPassportTwitter(config);
+    const { configManager } = this.crowi;
+    const isTwitterEnabled = configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
 
     // when disabled
     if (!isTwitterEnabled) {

@@ -1054,12 +1054,11 @@ module.exports = function(crowi, app) {
 
     debug('form content', form);
     await saveSettingAsync(form);
-    const config = await crowi.getConfig();
 
     // reset strategy
     await crowi.passportService.resetTwitterStrategy();
     // setup strategy
-    if (Config.isEnabledPassportTwitter(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
       try {
         await crowi.passportService.setupTwitterStrategy(true);
       }
