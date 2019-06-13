@@ -57,8 +57,8 @@ const pageSchema = new mongoose.Schema({
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now() },
-  updatedAt: { type: Date, default: Date.now() },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 }, {
   toJSON: { getters: true },
   toObject: { getters: true },
@@ -310,30 +310,6 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.updateTags = async function(newTags) {
-    const page = this;
-    const PageTagRelation = mongoose.model('PageTagRelation');
-    const Tag = mongoose.model('Tag');
-
-    // get tags relate this page
-    const relatedTags = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag').select('-_id relatedTag');
-
-    // unlink relations
-    const unlinkTagRelations = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
-    await PageTagRelation.deleteMany({
-      relatedPage: page._id,
-      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
-    });
-
-    // create tag and relations
-    /* eslint-disable no-await-in-loop */
-    for (const tag of newTags) {
-      const setTag = await Tag.findOrCreate(tag);
-      await PageTagRelation.createIfNotExist(page._id, setTag._id);
-    }
-  };
-
-
   pageSchema.methods.isPortal = function() {
     return isPortalPath(this.path);
   };
@@ -370,8 +346,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isLiked = function(userData) {
-    return this.liker.some((likedUser) => {
-      return likedUser === userData._id.toString();
+    return this.liker.some((likedUserId) => {
+      return likedUserId.toString() === userData._id.toString();
     });
   };
 
@@ -390,7 +366,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        this.logger.warn('liker not updated');
         return reject(self);
       }
     }));
@@ -993,7 +969,6 @@ module.exports = function(crowi) {
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
     const socketClientId = options.socketClientId || null;
-    const pageTags = options.pageTags || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -1027,10 +1002,6 @@ module.exports = function(crowi) {
       .populate('revision')
       .populate('creator');
 
-    if (pageTags != null) {
-      await page.updateTags(pageTags);
-    }
-
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
     }
@@ -1045,7 +1016,6 @@ module.exports = function(crowi) {
     const grantUserGroupId = options.grantUserGroupId || null;
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const socketClientId = options.socketClientId || null;
-    const pageTags = options.pageTags || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -1060,10 +1030,6 @@ module.exports = function(crowi) {
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
-    }
-
-    if (pageTags != null) {
-      await savedPage.updateTags(pageTags);
     }
 
     if (socketClientId != null) {
@@ -1195,7 +1161,6 @@ module.exports = function(crowi) {
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
     const Revision = crowi.model('Revision');
-    const PageGroupRelation = crowi.model('PageGroupRelation');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
 
@@ -1207,7 +1172,6 @@ module.exports = function(crowi) {
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
-    await PageGroupRelation.removeAllByPage(pageData);
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }
@@ -1309,6 +1273,52 @@ module.exports = function(crowi) {
     }));
     pageData.path = newPagePathPrefix;
     return pageData;
+  };
+
+  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, selectedGroupId) {
+    const Page = mongoose.model('Page');
+
+    const pages = await this.find({ grantedGroup: deletedGroup });
+
+    switch (action) {
+      case 'public':
+        await Promise.all(pages.map((page) => {
+          return Page.publicizePage(page);
+        }));
+        break;
+      case 'delete':
+        await Promise.all(pages.map((page) => {
+          return Page.completelyDeletePage(page);
+        }));
+        break;
+      case 'transfer':
+        await Promise.all(pages.map((page) => {
+          return Page.transferPageToGroup(page, selectedGroupId);
+        }));
+        break;
+      default:
+        throw new Error('Unknown action for private pages');
+    }
+  };
+
+  pageSchema.statics.publicizePage = async function(page) {
+    page.grantedGroup = null;
+    page.grant = GRANT_PUBLIC;
+    await page.save();
+  };
+
+  pageSchema.statics.transferPageToGroup = async function(page, selectedGroupId) {
+    const UserGroup = mongoose.model('UserGroup');
+
+    // check page existence
+    const isExist = await UserGroup.count({ _id: selectedGroupId }) > 0;
+    if (isExist) {
+      page.grantedGroup = selectedGroupId;
+      await page.save();
+    }
+    else {
+      throw new Error('Cannot find the group to which private pages belong to. _id: ', selectedGroupId);
+    }
   };
 
   /**

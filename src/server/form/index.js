@@ -26,6 +26,7 @@ module.exports = {
     securityPassportGoogle: require('./admin/securityPassportGoogle'),
     securityPassportGitHub: require('./admin/securityPassportGitHub'),
     securityPassportTwitter: require('./admin/securityPassportTwitter'),
+    securityPassportOidc: require('./admin/securityPassportOidc'),
     markdown: require('./admin/markdown'),
     markdownXss: require('./admin/markdownXss'),
     markdownPresentation: require('./admin/markdownPresentation'),

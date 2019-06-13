@@ -250,7 +250,7 @@
 {% endblock %}
 
 <script type="application/json" id="crowi-context-hydrate">
-{{ local_config|json|safe }}
+{{ local_config|json|safe|preventXss }}
 </script>
 
 {% block custom_script %}

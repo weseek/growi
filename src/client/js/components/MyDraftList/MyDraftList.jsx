@@ -1,10 +1,18 @@
 import React from 'react';
-
 import PropTypes from 'prop-types';
-import Pagination from 'react-bootstrap/lib/Pagination';
-import Draft from '../PageList/Draft';
 
-export default class MyDraftList extends React.Component {
+import { withTranslation } from 'react-i18next';
+
+import Pagination from 'react-bootstrap/lib/Pagination';
+
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
+import EditorContainer from '../../services/EditorContainer';
+
+import Draft from './Draft';
+
+class MyDraftList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -29,9 +37,9 @@ export default class MyDraftList extends React.Component {
   }
 
   async getDraftsFromLocalStorage() {
-    const draftsAsObj = JSON.parse(this.props.crowi.localStorage.getItem('draft') || '{}');
+    const draftsAsObj = this.props.editorContainer.drafts;
 
-    const res = await this.props.crowi.apiGet('/pages.exist', {
+    const res = await this.props.appContainer.apiGet('/pages.exist', {
       pages: draftsAsObj,
     });
 
@@ -49,7 +57,10 @@ export default class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
-    const limit = this.props.limit;
+    const { appContainer } = this.props;
+
+    const limit = appContainer.getConfig().recentCreatedLimit;
+
     const totalCount = this.state.drafts.length;
     const activePage = selectPageNumber;
     const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
@@ -74,8 +85,6 @@ export default class MyDraftList extends React.Component {
       return (
         <Draft
           key={draft.path}
-          crowi={this.props.crowi}
-          crowiOriginRenderer={this.props.crowiOriginRenderer}
           path={draft.path}
           markdown={draft.markdown}
           isExist={draft.isExist}
@@ -86,7 +95,7 @@ export default class MyDraftList extends React.Component {
   }
 
   clearDraft(path) {
-    this.props.crowi.clearDraft(path);
+    this.props.editorContainer.clearDraft(path);
 
     this.setState((prevState) => {
       return {
@@ -97,7 +106,7 @@ export default class MyDraftList extends React.Component {
   }
 
   clearAllDrafts() {
-    this.props.crowi.clearAllDrafts();
+    this.props.editorContainer.clearAllDrafts();
 
     this.setState({
       drafts: [],
@@ -204,9 +213,13 @@ export default class MyDraftList extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     const draftList = this.generateDraftList(this.state.currentDrafts);
 
     const paginationItems = [];
+
+    const totalCount = this.state.drafts.length;
 
     const activePage = this.state.activePage;
     const totalPage = this.state.paginationNumbers.totalPage;
@@ -222,21 +235,28 @@ export default class MyDraftList extends React.Component {
     return (
       <div className="page-list-container-create">
 
-        { draftList.length === 0
+        { totalCount === 0
           && <span>No drafts yet.</span>
         }
 
-        { draftList.length > 0
-          && (
-            <React.Fragment>
-              <button type="button" className="btn-danger mb-3" onClick={this.clearAllDrafts}>Delete All</button>
-              <div className="tab-pane m-t-30 accordion" id="draft-list">
-                {draftList}
+        { totalCount > 0 && (
+          <React.Fragment>
+            <div className="d-flex justify-content-between">
+              <h4>Total: {totalCount} drafts</h4>
+              <div className="align-self-center">
+                <button type="button" className="btn btn-sm btn-default" onClick={this.clearAllDrafts}>
+                  <i className="icon-fw icon-fire text-danger"></i>
+                  {t('Delete All')}
+                </button>
               </div>
-              <Pagination bsSize="small">{paginationItems}</Pagination>
-            </React.Fragment>
-          )
-        }
+            </div>
+
+            <div className="tab-pane m-t-30 accordion" id="draft-list">
+              {draftList}
+            </div>
+            <Pagination bsSize="small">{paginationItems}</Pagination>
+          </React.Fragment>
+        ) }
 
       </div>
     );
@@ -244,9 +264,20 @@ export default class MyDraftList extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const MyDraftListWrapper = (props) => {
+  return createSubscribedElement(MyDraftList, props, [AppContainer, PageContainer, EditorContainer]);
+};
+
 
 MyDraftList.propTypes = {
-  limit: PropTypes.number,
-  crowi: PropTypes.object.isRequired,
-  crowiOriginRenderer: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired, // react-i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
+
+export default withTranslation()(MyDraftListWrapper);

@@ -1,6 +1,8 @@
 module.exports = {
   default: 'info',
 
+  // 'express-session': 'debug',
+
   /*
    * configure level for server
    */
@@ -27,4 +29,5 @@ module.exports = {
    * configure level for client
    */
   'growi:app': 'debug',
+  'growi:services:*': 'debug',
 };

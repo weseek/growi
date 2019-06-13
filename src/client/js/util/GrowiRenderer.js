@@ -3,7 +3,6 @@ import MarkdownIt from 'markdown-it';
 import Linker from './PreProcessor/Linker';
 import CsvToTable from './PreProcessor/CsvToTable';
 import XssFilter from './PreProcessor/XssFilter';
-import CrowiTemplate from './PostProcessor/CrowiTemplate';
 
 import EmojiConfigurer from './markdown-it/emoji';
 import FooternoteConfigurer from './markdown-it/footernote';
@@ -20,38 +19,39 @@ import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
 const logger = require('@alias/logger')('growi:util:GrowiRenderer');
 
-
 export default class GrowiRenderer {
 
   /**
    *
-   * @param {Crowi} crowi
-   * @param {GrowiRenderer} originRenderer may be customized by plugins
-   * @param {object} options
+   * @param {AppContainer} appContainer
+   * @param {GrowiRenderer} originRenderer
+   * @param {string} mode
    */
-  constructor(crowi, originRenderer, options) {
-    this.crowi = crowi;
-    this.originRenderer = originRenderer || {};
-    this.options = Object.assign( //  merge options
-      { isAutoSetup: true }, //       default options
-      options || {}, //               specified options
-    );
+  constructor(appContainer, originRenderer) {
+    this.appContainer = appContainer;
 
-    // initialize processors
-    //  that will be retrieved if originRenderer exists
-    this.preProcessors = this.originRenderer.preProcessors || [
-      new Linker(crowi),
-      new CsvToTable(crowi),
-      new XssFilter(crowi),
-    ];
-    this.postProcessors = this.originRenderer.postProcessors || [
-      new CrowiTemplate(crowi),
-    ];
+    if (originRenderer != null) {
+      this.preProcessors = originRenderer.preProcessors;
+      this.postProcessors = originRenderer.postProcessors;
+    }
+    else {
+      this.preProcessors = [
+        new Linker(appContainer),
+        new CsvToTable(appContainer),
+        new XssFilter(appContainer),
+      ];
+      this.postProcessors = [
+      ];
+    }
 
     this.initMarkdownItConfigurers = this.initMarkdownItConfigurers.bind(this);
     this.setup = this.setup.bind(this);
     this.process = this.process.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
+  }
+
+  initMarkdownItConfigurers(mode) {
+    const appContainer = this.appContainer;
 
     // init markdown-it
     this.md = new MarkdownIt({
@@ -59,52 +59,44 @@ export default class GrowiRenderer {
       linkify: true,
       highlight: this.codeRenderer,
     });
-    this.initMarkdownItConfigurers(options);
-
-    // auto setup
-    if (this.options.isAutoSetup) {
-      this.setup(crowi.getConfig());
-    }
-  }
-
-  initMarkdownItConfigurers(options) {
-    const crowi = this.crowi;
 
     this.isMarkdownItConfigured = false;
 
     this.markdownItConfigurers = [
-      new TaskListsConfigurer(crowi),
-      new HeaderConfigurer(crowi),
-      new EmojiConfigurer(crowi),
-      new MathJaxConfigurer(crowi),
-      new PlantUMLConfigurer(crowi),
-      new BlockdiagConfigurer(crowi),
+      new TaskListsConfigurer(appContainer),
+      new HeaderConfigurer(appContainer),
+      new EmojiConfigurer(appContainer),
+      new MathJaxConfigurer(appContainer),
+      new PlantUMLConfigurer(appContainer),
+      new BlockdiagConfigurer(appContainer),
     ];
 
     // add configurers according to mode
-    const mode = options.mode;
     switch (mode) {
-      case 'page':
+      case 'page': {
+        const renderToc = appContainer.getCrowiForJquery().renderTocContent;
+
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(crowi),
-          new TocAndAnchorConfigurer(crowi, options.renderToc),
-          new HeaderLineNumberConfigurer(crowi),
-          new HeaderWithEditLinkConfigurer(crowi),
-          new TableWithHandsontableButtonConfigurer(crowi),
+          new FooternoteConfigurer(appContainer),
+          new TocAndAnchorConfigurer(appContainer, renderToc),
+          new HeaderLineNumberConfigurer(appContainer),
+          new HeaderWithEditLinkConfigurer(appContainer),
+          new TableWithHandsontableButtonConfigurer(appContainer),
         ]);
         break;
+      }
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new FooternoteConfigurer(crowi),
-          new HeaderLineNumberConfigurer(crowi),
-          new TableConfigurer(crowi),
+          new FooternoteConfigurer(appContainer),
+          new HeaderLineNumberConfigurer(appContainer),
+          new TableConfigurer(appContainer),
         ]);
         break;
       // case 'comment':
       //   break;
       default:
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new TableConfigurer(crowi),
+          new TableConfigurer(appContainer),
         ]);
         break;
     }
@@ -113,11 +105,11 @@ export default class GrowiRenderer {
   /**
    * setup with crowi config
    */
-  setup() {
-    const crowiConfig = this.crowi.config;
+  setup(mode) {
+    const crowiConfig = this.appContainer.config;
 
     let isEnabledLinebreaks;
-    switch (this.options.mode) {
+    switch (mode) {
       case 'comment':
         isEnabledLinebreaks = crowiConfig.isEnabledLinebreaksInComments;
         break;
@@ -166,7 +158,7 @@ export default class GrowiRenderer {
   }
 
   codeRenderer(code, langExt) {
-    const config = this.crowi.getConfig();
+    const config = this.appContainer.getConfig();
     const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
     let citeTag = '';

@@ -144,7 +144,7 @@
           </form>
         </div>
         {% endif %}
-        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() || passportSamlLoginEnabled() %}
+        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() || passportOidcLoginEnabled() || passportSamlLoginEnabled() %}
         <hr class="mb-1">
         <div class="collapse collapse-oauth collapse-anchor">
           <div class="spacer"></div>
@@ -186,6 +186,16 @@
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
               <div class="small text-right">by Twitter Account</div>
+            </form>
+            {% endif %}
+            {% if passportOidcLoginEnabled() %}
+            <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="oidc">
+                <span class="btn-label"><i class="fa fa-openid"></i></span>
+                <span class="btn-label-text">{{ t('Sign in') }}</span>
+              </button>
+              <div class="small text-right">{{ config.crowi['security:passport-oidc:providerName'] || "OpenID Connect" }}</div>
             </form>
             {% endif %}
             {% if passportSamlLoginEnabled() %}

@@ -5,11 +5,15 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const ApiResponse = require('../util/apiResponse');
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const { body } = require('express-validator/check');
+  const mongoose = require('mongoose');
+  const ObjectId = mongoose.Types.ObjectId;
 
   const actions = {};
   const api = {};
 
   actions.api = api;
+  api.validators = {};
 
   /**
    * @api {get} /comments.get Get comments of the page of the revision
@@ -50,6 +54,25 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success({ comments }));
   };
 
+  api.validators.add = function() {
+    const validator = [
+      body('commentForm.page_id').exists(),
+      body('commentForm.revision_id').exists(),
+      body('commentForm.comment').exists(),
+      body('commentForm.comment_position').isInt(),
+      body('commentForm.is_markdown').isBoolean(),
+      body('commentForm.replyTo').exists().custom((value) => {
+        if (value === '') {
+          return undefined;
+        }
+        return ObjectId(value);
+      }),
+
+      body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
+    ];
+    return validator;
+  };
+
   /**
    * @api {post} /comments.add Post comment for the page
    * @apiName PostComment
@@ -61,11 +84,13 @@ module.exports = function(crowi, app) {
    * @apiParam {Number} comment_position=-1 Line number of the comment
    */
   api.add = async function(req, res) {
-    const commentForm = req.form.commentForm;
-    const slackNotificationForm = req.form.slackNotificationForm;
+    const { commentForm, slackNotificationForm } = req.body;
+    const { validationResult } = require('express-validator/check');
 
-    if (!req.form.isValid) {
+    const errors = validationResult(req.body);
+    if (!errors.isEmpty()) {
       // return res.json(ApiResponse.error('Invalid comment.'));
+      // return res.status(422).json({ errors: errors.array() });
       return res.json(ApiResponse.error('コメントを入力してください。'));
     }
 
@@ -74,6 +99,7 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
     const isMarkdown = commentForm.is_markdown;
+    const replyTo = commentForm.replyTo;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -81,7 +107,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown)
+    const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo)
       .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
@@ -148,7 +174,7 @@ module.exports = function(crowi, app) {
         throw new Error('Current user is not accessible to this page.');
       }
 
-      await comment.remove();
+      await comment.removeWithReplies();
       await Page.updateCommentCount(comment.page);
     }
     catch (err) {

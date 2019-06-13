@@ -1,6 +1,7 @@
 <div class="row row-alerts">
   <div class="col-xs-12">
-    {% if page && page.grant != 1 %}
+    {% if page && page.grant && page.grant > 1 %}
+
       <p class="alert alert-inverse alert-grant">
       {% if page.grant == 2 %}
         <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})

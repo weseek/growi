@@ -76,13 +76,16 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/security/passport-google' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
   app.post('/_api/admin/security/passport-github' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportGitHub, admin.api.securityPassportGitHubSetting);
   app.post('/_api/admin/security/passport-twitter', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
+  app.post('/_api/admin/security/passport-oidc'   , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportOidc, admin.api.securityPassportOidcSetting);
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
+  app.get('/passport/oidc'                        , loginPassport.loginWithOidc);
   app.get('/passport/saml'                        , loginPassport.loginWithSaml);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
   app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);
+  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
 
   // markdown admin
@@ -143,6 +146,7 @@ module.exports = function(crowi, app) {
   app.post('/admin/user-group/create'      , form.admin.userGroupCreate, loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.create);
   app.post('/admin/user-group/:userGroupId/update', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.update);
   app.post('/admin/user-group.remove' , loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.removeCompletely);
+  app.get('/_api/admin/user-groups', loginRequired(crowi, app), middleware.adminRequired(), admin.api.userGroups);
 
   // user-group-relations admin
   app.post('/admin/user-group-relation/create', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroupRelation.create);
@@ -208,7 +212,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.search);
   app.post('/_api/tags.update'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
-  app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
+  app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.remove);
   app.get('/_api/bookmarks.get'      , accessTokenParser , loginRequired(crowi, app, false) , bookmark.api.get);
   app.post('/_api/bookmarks.add'      , accessTokenParser , loginRequired(crowi, app) , csrf, bookmark.api.add);
@@ -217,9 +221,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
   app.get('/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
+  app.post('/_api/attachments.removeProfileImage', accessTokenParser, loginRequired(crowi, app), csrf, attachment.api.removeProfileImage);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
-  app.get('/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
+  app.get('/_api/attachments.limit'   , accessTokenParser , loginRequired(crowi, app) , attachment.api.limit);
 
   app.get('/_api/revisions.get'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.get);
   app.get('/_api/revisions.ids'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.ids);

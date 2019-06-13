@@ -14,9 +14,10 @@ module.exports = function(crowi) {
     commentPosition: { type: Number, default: -1 },
     createdAt: { type: Date, default: Date.now },
     isMarkdown: { type: Boolean, default: false },
+    replyTo: { type: ObjectId },
   });
 
-  commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown) {
+  commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
     const Comment = this;
 
     return new Promise(((resolve, reject) => {
@@ -28,6 +29,7 @@ module.exports = function(crowi) {
       newComment.comment = comment;
       newComment.commentPosition = position;
       newComment.isMarkdown = isMarkdown || false;
+      newComment.replyTo = replyTo;
 
       newComment.save((err, data) => {
         if (err) {
@@ -74,6 +76,14 @@ module.exports = function(crowi) {
         resolve(done);
       });
     }));
+  };
+
+  commentSchema.methods.removeWithReplies = async function() {
+    const Comment = crowi.model('Comment');
+    return Comment.remove({
+      $or: (
+        [{ replyTo: this._id }, { _id: this._id }]),
+    });
   };
 
   /**

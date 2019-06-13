@@ -84,6 +84,7 @@ module.exports = function(crowi) {
       'security:passport-google:isEnabled' : false,
       'security:passport-github:isEnabled' : false,
       'security:passport-twitter:isEnabled' : false,
+      'security:passport-oidc:isEnabled' : false,
 
       'aws:bucket'          : 'growi',
       'aws:region'          : 'ap-northeast-1',
@@ -338,6 +339,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.isEnabledPassportTwitter = function(config) {
     const key = 'security:passport-twitter:isEnabled';
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.isEnabledPassportOidc = function(config) {
+    const key = 'security:passport-oidc:isEnabled';
     return getValueForCrowiNS(config, key);
   };
 

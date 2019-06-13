@@ -1,9 +1,39 @@
 # CHANGES
 
-## 3.4.7-RC
+## 3.5.0-RC
 
+### BREAKING CHANGES
+
+* GROWI no longer supports [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+
+### Updates
+
+* Feature: Comment Thread
+* Feature: OpenID Connect authentication
+* Improvement Draft list
+* Fix: Deleting page completely
+* Fix: Search with `prefix:` param with CJK pathname
+* I18n: User Management Details
+* I18n: Group Management Details
+* Support: Apply unstated
+* Support: Upgrade libs
+    * async
+    * axios
+    * file-loader
+    * googleapis
+    * i18next
+    * migrate-mongo
+    * mini-css-extract-plugin
+    * null-loader
+
+## 3.4.7
+
+* Improvement: Handle private pages on group deletion
 * Fix: Searching with `tag:xxx` syntax doesn't work
+* Fix: Check CSRF when updating user data
+* Fix: `createdAt` field initialization
 * I18n: Import data page
+* I18n: Group Management page
 
 ## 3.4.6
 
