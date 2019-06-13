@@ -200,12 +200,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  DELETE_COMPLETELY: {
-    ns:      'crowi',
-    key:     'security:isEnabledDeleteCompletely',
-    type:    TYPES.STRING,
-    default: false,
-  },
 };
 
 class ConfigLoader {
