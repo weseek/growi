@@ -2,6 +2,17 @@
 #staff-credit {
   font-family: 'Press Start 2P', $basefont1;
   color: white;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Press Start 2P', $basefont1;
+    color: white;
+  }
+
   $credit-length: -200em;
 
   .credit-curtain {
@@ -33,12 +44,12 @@
     }
   }
 
-  .title {
-    font-size: 2.5em;
+  h1 {
+    font-size: 3em;
   }
 
-  .dev-team {
-    font-size: 1.5em;
+  h2 {
+    font-size: 2.2em;
   }
 
   .dev-position {
@@ -47,5 +58,13 @@
 
   .dev-name {
     font-size: 1.8em;
+  }
+
+  .staff-credit-mt-10 {
+    margin-top: 6rem;
+  }
+
+  .staff-credit-mb-10 {
+    margin-bottom: 6rem;
   }
 }

@@ -61,32 +61,35 @@ export default class StaffCredit extends React.Component {
   renderContributors() {
     if (this.state.isShown) {
       const credit = contributors.map((contributor) => {
-        const section = <p key={contributor.sectionName} className="dev-team my-5">{contributor.sectionName}</p>;
+        // construct members elements
         const members = contributor.members.map((member) => {
-          const name = <p className="dev-name mb-5" key={member.name}>{member.name}</p>;
-          if (member.position) {
-            return (
-              <React.Fragment key={member.position}>
-                <span className="dev-position">{member.position}</span>
-                {name}
-              </React.Fragment>
-            );
-          }
-          return name;
+          return (
+            <div className={contributor.memberAdditionalClass} key={`${member.name}-container`}>
+              <span className="dev-position" key={`${member.name}-position`}>
+                {/* position or '&nbsp;' */}
+                { member.position || '\u00A0' }
+              </span>
+              <p className="dev-name" key={member.name}>{member.name}</p>
+            </div>
+          );
         });
         return (
-          <React.Fragment key={contributor.sectionName}>
-            <div className={contributor.additionalClass}>
-              {section}
+          <React.Fragment key={`${contributor.sectionName}-fragment`}>
+            <div className={`row ${contributor.sectionAdditionalClass}`} key={`${contributor.sectionName}-row`}>
+              { !contributor.hideSectionName && (
+                <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
+              ) }
               {members}
             </div>
+            <div className="clearfix"></div>
           </React.Fragment>
         );
       });
       return (
         <div className="text-center credit-curtain" onClick={this.deleteCredit}>
           <div className="credit-body">
-            <p className="title my-5">Growi Contributor</p>
+            <h1 className="staff-credit-mb-10">Growi Staff Credits</h1>
+            <div className="clearfix"></div>
             {credit}
           </div>
         </div>
