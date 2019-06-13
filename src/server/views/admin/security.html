@@ -139,16 +139,15 @@
           <!-- GC-1755 Change Sentence -->
           <div class="form-group">
             {% set configName = 'settingForm[security:isEnabledDeleteCompletely]' %}
-            {% set configValue = settingForm['security:isEnabledDeleteCompletely'] %}
-            {% set isEnabled = !configValue %}
+            {% set configValue = getConfig('crowi','security:isEnabledDeleteCompletely') %}
             <label for="{{configName}}" class="col-xs-3 control-label">ページを完全削除できるユーザーを制限する</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
-                <label class="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
-                  <input name="{{configName}}" value="false" type="radio" {% if isEnabled %}checked{% endif %}> ON
+                <label class="btn btn-default btn-rounded btn-outline {% if configValue %}active{% endif %}" data-active-class="primary">
+                  <input name="{{configName}}" value="true" type="radio" {% if configValue %}checked{% endif %}> ON
                 </label>
-                <label class="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
-                  <input name="{{configName}}" value="true" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
+                <label class="btn btn-default btn-rounded btn-outline {% if !configValue %}active{% endif %}" data-active-class="default">
+                  <input name="{{configName}}" value="false" type="radio" {% if !configValue %}checked{% endif %}> OFF
                 </label>
               </div>
 

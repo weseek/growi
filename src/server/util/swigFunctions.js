@@ -257,11 +257,6 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isEnabledTimeline(config);
   };
 
-  locals.isEnabledDeleteCompletely = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledDeleteCompletely(config);
-  };
-
   locals.isUploadable = function() {
     const config = crowi.getConfig();
     return Config.isUploadable(config);
