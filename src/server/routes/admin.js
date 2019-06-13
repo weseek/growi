@@ -1081,13 +1081,11 @@ module.exports = function(crowi, app) {
 
     debug('form content', form);
     await saveSettingAsync(form);
-    const config = await crowi.getConfig();
-
 
     // reset strategy
     await crowi.passportService.resetOidcStrategy();
     // setup strategy
-    if (Config.isEnabledPassportOidc(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-oidc:isEnabled')) {
       try {
         await crowi.passportService.setupOidcStrategy(true);
       }
