@@ -10,6 +10,7 @@
 
 * Feature: Comment Thread
 * Feature: OpenID Connect authentication
+* Feature: Staff Credits with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
 * Improvement Draft list
 * Fix: Deleting page completely
 * Fix: Search with `prefix:` param with CJK pathname
