@@ -261,10 +261,7 @@ Crowi.prototype.getRestQiitaAPIService = function() {
 };
 
 Crowi.prototype.setupPassport = function() {
-  const config = this.getConfig();
-  const Config = this.model('Config');
-
-  if (!Config.isEnabledPassport(config)) {
+  if (!this.configManager.getConfig('crowi', 'security:isEnabledPassport')) {
     // disabled
     return;
   }

@@ -148,8 +148,9 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isLdapEnabled = Config.isEnabledPassportLdap(config);
+    const { configManager } = this.crowi;
+
+    const isLdapEnabled = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
 
     // when disabled
     if (!isLdapEnabled) {
@@ -329,7 +330,7 @@ class PassportService {
         {
           clientId: config.crowi['security:passport-google:clientId'] || process.env.OAUTH_GOOGLE_CLIENT_ID,
           clientSecret: config.crowi['security:passport-google:clientSecret'] || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
-          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+          callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
             : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
@@ -380,7 +381,7 @@ class PassportService {
         {
           clientID: config.crowi['security:passport-github:clientId'] || process.env.OAUTH_GITHUB_CLIENT_ID,
           clientSecret: config.crowi['security:passport-github:clientSecret'] || process.env.OAUTH_GITHUB_CLIENT_SECRET,
-          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+          callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
             : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
@@ -431,7 +432,7 @@ class PassportService {
         {
           consumerKey: config.crowi['security:passport-twitter:consumerKey'] || process.env.OAUTH_TWITTER_CONSUMER_KEY,
           consumerSecret: config.crowi['security:passport-twitter:consumerSecret'] || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
-          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+          callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
             : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
@@ -544,7 +545,7 @@ class PassportService {
       new SamlStrategy(
         {
           entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
-          callbackUrl: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+          callbackUrl: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
             : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),

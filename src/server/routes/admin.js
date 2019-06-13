@@ -949,12 +949,10 @@ module.exports = function(crowi, app) {
     debug('form content', form);
     return saveSettingAsync(form)
       .then(() => {
-        const config = crowi.getConfig();
-
         // reset strategy
         crowi.passportService.resetLdapStrategy();
         // setup strategy
-        if (Config.isEnabledPassportLdap(config)) {
+        if (configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')) {
           crowi.passportService.setupLdapStrategy(true);
         }
         return;
