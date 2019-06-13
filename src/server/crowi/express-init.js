@@ -28,7 +28,6 @@ module.exports = function(crowi, app) {
   const configManager = crowi.configManager;
   const getConfig = configManager.getConfig;
 
-
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
