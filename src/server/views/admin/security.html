@@ -140,7 +140,7 @@
           <div class="form-group">
             {% set configName = 'settingForm[security:isEnabledDeleteCompletely]' %}
             {% set configValue = getConfig('crowi','security:isEnabledDeleteCompletely') %}
-            <label for="{{configName}}" class="col-xs-3 control-label">ページを完全削除できるユーザーを制限する</label>
+            <label for="{{configName}}" class="col-xs-3 control-label">Restrict Complete Deletion of Pages</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
                 <label class="btn btn-default btn-rounded btn-outline {% if configValue %}active{% endif %}" data-active-class="primary">
@@ -152,7 +152,7 @@
               </div>
 
               <p class="help-block small">
-                ページを完全削除できるユーザーを管理者のみに制限します。
+                Restricts users who can completely delete pages to only administrators.
               </p>
             </div>
           </div>
