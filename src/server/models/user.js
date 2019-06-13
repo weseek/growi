@@ -713,7 +713,7 @@ module.exports = function(crowi) {
                 vars: {
                   email: user.email,
                   password: user.password,
-                  url: crowi.configManager.getSiteUrl(),
+                  url: crowi.appService.getSiteUrl(),
                   appTitle: Config.appTitle(config),
                 },
               },
