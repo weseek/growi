@@ -30,4 +30,5 @@ module.exports = {
    */
   'growi:app': 'debug',
   'growi:services:*': 'debug',
+  'growi:StaffCredit': 'debug',
 };

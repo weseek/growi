@@ -17,6 +17,10 @@ const contributors = [
       { name: 'TsuyoshiSuzukief' },
       { name: 'SeiyaTashiro' },
       { name: 'Angola' },
+<<<<<<< HEAD
+=======
+      { name: 'okas' },
+>>>>>>> feat/add-stuff-credit-bug
     ],
   },
   {
