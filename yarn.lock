@@ -8960,13 +8960,6 @@ react-is@^16.8.1:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
 
-react-keydown@^1.9.8:
-  version "1.9.8"
-  resolved "https://registry.yarnpkg.com/react-keydown/-/react-keydown-1.9.8.tgz#2c11cf82b43aa57aec48539419c8f5f1d4008809"
-  integrity sha512-l/dg9ggAtY1lpBJ7+/YUuAzQJjfpwk/um3Eq+OjiS5i7MEXj0Q2dIT6FaNoPY7Fn3OYpwFwhyr5bnu1EoUHckg==
-  dependencies:
-    core-js "^2.5.0"
-
 react-overlays@^0.8.0, react-overlays@^0.8.1:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-overlays/-/react-overlays-0.8.3.tgz#fad65eea5b24301cca192a169f5dddb0b20d3ac5"
