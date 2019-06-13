@@ -64,6 +64,7 @@ module.exports = function(crowi) {
 
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
+      'security:isEnabledDeleteCompletely' : false,
 
       'security:isEnabledPassport' : false,
       'security:passport-ldap:isEnabled' : false,
