@@ -41,7 +41,7 @@ function Crowi(rootdir) {
   this.slackNotificationService = null;
   this.xssService = null;
   this.aclService = null;
-  this.siteUrlService = null;
+  this.appService = null;
   this.restQiitaAPIService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -90,7 +90,7 @@ Crowi.prototype.init = async function() {
     this.setUpSlacklNotification(),
     this.setUpXss(),
     this.setUpAcl(),
-    this.setUpSiteUrl(),
+    this.setUpApp(),
     this.setUpRestQiitaAPI(),
   ]);
 };
@@ -452,7 +452,7 @@ Crowi.prototype.setUpGlobalNotification = function() {
 Crowi.prototype.setUpSlacklNotification = function() {
   const SlackNotificationService = require('../service/slack-notification');
   if (this.slackNotificationService == null) {
-    this.slackNotificationService = new SlackNotificationService(this);
+    this.slackNotificationService = new SlackNotificationService(this.configManager);
   }
 };
 
@@ -462,7 +462,7 @@ Crowi.prototype.setUpSlacklNotification = function() {
 Crowi.prototype.setUpXss = function() {
   const XssService = require('../service/xss');
   if (this.xssService == null) {
-    this.xssService = new XssService(this);
+    this.xssService = new XssService(this.configManager);
   }
 };
 
@@ -472,17 +472,17 @@ Crowi.prototype.setUpXss = function() {
 Crowi.prototype.setUpAcl = function() {
   const AclService = require('../service/acl');
   if (this.aclService == null) {
-    this.aclService = new AclService(this);
+    this.aclService = new AclService(this.configManager);
   }
 };
 
 /**
- * setup SiteUrlService
+ * setup AppService
  */
-Crowi.prototype.setUpSiteUrl = function() {
-  const SiteUrlService = require('../service/site-url');
-  if (this.siteUrlService == null) {
-    this.siteUrlService = new SiteUrlService(this);
+Crowi.prototype.setUpApp = function() {
+  const AppService = require('../service/app');
+  if (this.appService == null) {
+    this.appService = new AppService(this.configManager);
   }
 };
 

@@ -610,7 +610,7 @@ module.exports = function(crowi) {
     const localConfig = {
       crowi: {
         title: Config.appTitle(crowi),
-        url: crowi.siteUrlService.getSiteUrl(),
+        url: crowi.appService.getSiteUrl(),
       },
       upload: {
         image: crowi.configManager.getIsUploadable(),

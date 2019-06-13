@@ -4,10 +4,10 @@ const { pathUtils } = require('growi-commons');
 /**
  * the service class of GlobalNotificationSetting
  */
-class SiteUrl {
+class AppService {
 
-  constructor(crowi) {
-    this.crowi = crowi;
+  constructor(configManager) {
+    this.configManager = configManager;
   }
 
   /**
@@ -21,7 +21,7 @@ class SiteUrl {
    */
   /* eslint-disable no-else-return */
   getSiteUrl() {
-    const siteUrl = this.crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    const siteUrl = this.configManager.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
       return pathUtils.removeTrailingSlash(siteUrl);
     }
@@ -33,4 +33,4 @@ class SiteUrl {
 
 }
 
-module.exports = SiteUrl;
+module.exports = AppService;

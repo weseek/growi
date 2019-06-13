@@ -69,7 +69,7 @@ module.exports = function(crowi, app) {
     req.csrfToken = null;
 
     res.locals.req = req;
-    res.locals.baseUrl = crowi.siteUrlService.getSiteUrl();
+    res.locals.baseUrl = crowi.appService.getSiteUrl();
     // res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;
