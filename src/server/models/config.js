@@ -64,6 +64,7 @@ module.exports = function(crowi) {
 
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
+      'security:isEnabledDeleteCompletely' : false,
 
       'security:isEnabledPassport' : false,
       'security:passport-ldap:isEnabled' : false,
@@ -377,6 +378,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.hidePagesRestrictedByGroupInList = function(config) {
     const key = 'security:list-policy:hideRestrictedByGroup';
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.isEnabledDeleteCompletely = function(config) {
+    const key = 'security:isEnabledDeleteCompletely';
     return getValueForCrowiNS(config, key);
   };
 
