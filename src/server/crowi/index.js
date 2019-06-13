@@ -38,7 +38,7 @@ function Crowi(rootdir) {
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
-  this.crowiSlackNotificationService = null;
+  this.slackNotificationService = null;
   this.xssService = null;
   this.aclService = null;
   this.siteUrlService = null;
@@ -87,7 +87,7 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
-    this.setUpCrowiSlacklNotification(),
+    this.setUpSlacklNotification(),
     this.setUpXss(),
     this.setUpAcl(),
     this.setUpSiteUrl(),
@@ -447,12 +447,12 @@ Crowi.prototype.setUpGlobalNotification = function() {
 };
 
 /**
- * setup CrowiSlackNotificationService
+ * setup SlackNotificationService
  */
-Crowi.prototype.setUpCrowiSlacklNotification = function() {
-  const CrowiSlackNotificationService = require('../service/crowi-slack-notification');
-  if (this.crowiSlackNotificationService == null) {
-    this.crowiSlackNotificationService = new CrowiSlackNotificationService(this);
+Crowi.prototype.setUpSlacklNotification = function() {
+  const SlackNotificationService = require('../service/slack-notification');
+  if (this.slackNotificationService == null) {
+    this.slackNotificationService = new SlackNotificationService(this);
   }
 };
 

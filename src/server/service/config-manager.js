@@ -19,6 +19,7 @@ class ConfigManager {
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
+    this.configKeys = [];
 
     this.getConfig = this.getConfig.bind(this);
   }
@@ -29,6 +30,9 @@ class ConfigManager {
   async loadConfigs() {
     this.configObject = await this.configLoader.load();
     debug('ConfigManager#loadConfigs', this.configObject);
+
+    // cache all config keys
+    this.configKeys = this.getAllConfigKeys();
   }
 
   /**
@@ -52,14 +56,12 @@ class ConfigManager {
   }
 
   /**
-   * get a config specified by namespace and prefix
+   * get a config specified by namespace and regular expresssion
    */
-  getConfigByPrefix(namespace, prefix) {
-    const regexp = new RegExp(`^${prefix}:`);
-    const keys = this.getAllKeys();
+  getConfigByRegExp(namespace, regexp) {
     const result = {};
 
-    for (const key of keys) {
+    for (const key of this.configKeys) {
       if (regexp.test(key)) {
         result[key] = this.getConfig(namespace, key);
       }
@@ -69,9 +71,18 @@ class ConfigManager {
   }
 
   /**
+   * get a config specified by namespace and prefix
+   */
+  getConfigByPrefix(namespace, prefix) {
+    const regexp = new RegExp(`^${prefix}:`);
+
+    return this.getConfigByRegExp(namespace, regexp);
+  }
+
+  /**
    * generate an array of config keys from this.configObject
    */
-  getAllKeys() {
+  getAllConfigKeys() {
     // type: fromDB, fromEnvVars
     const types = Object.keys(this.configObject);
     let namespaces = [];

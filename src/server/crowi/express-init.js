@@ -28,9 +28,6 @@ module.exports = function(crowi, app) {
   const configManager = crowi.configManager;
   const getConfig = configManager.getConfig;
 
-  // Service classes
-  const { siteUrlService } = crowi;
-
 
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
@@ -72,7 +69,7 @@ module.exports = function(crowi, app) {
     req.csrfToken = null;
 
     res.locals.req = req;
-    res.locals.baseUrl = siteUrlService.getSiteUrl();
+    res.locals.baseUrl = crowi.siteUrlService.getSiteUrl();
     // res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;
@@ -121,8 +118,8 @@ module.exports = function(crowi, app) {
       return next();
     }
 
-    const basicName = configManager.getConfig('crowi', 'security:basicName');
-    const basicSecret = configManager.getConfig('crowi', 'security:basicSecret');
+    const basicName = getConfig('crowi', 'security:basicName');
+    const basicSecret = getConfig('crowi', 'security:basicSecret');
     if (basicName && basicSecret) {
       return basicAuth(basicName, basicSecret)(req, res, next);
     }

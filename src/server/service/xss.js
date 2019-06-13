@@ -2,17 +2,17 @@ const logger = require('@alias/logger')('growi:service:XssSerivce'); // eslint-d
 const { tags, attrs } = require('@commons/service/xss/recommended-whitelist');
 
 /**
- * the service class of GlobalNotificationSetting
+ * the service class of XssSerivce
  */
 class XssSerivce {
 
-  constructor(crowi) {
-    this.crowi = crowi;
+  constructor(configManager) {
+    this.configManager = configManager;
   }
 
   getTagWhiteList() {
-    const isEnabledXssPrevention = this.crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
-    const xssOpiton = this.crowi.configManager.getConfig('markdown', 'markdown:xss:option');
+    const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
+    const xssOpiton = this.configManager.getConfig('markdown', 'markdown:xss:option');
 
     if (isEnabledXssPrevention) {
       switch (xssOpiton) {
@@ -23,7 +23,7 @@ class XssSerivce {
           return tags;
 
         case 3: // custom white list
-          return this.crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList');
+          return this.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList');
 
         default:
           return [];
@@ -35,8 +35,8 @@ class XssSerivce {
   }
 
   getAttrWhiteList() {
-    const isEnabledXssPrevention = this.crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
-    const xssOpiton = this.crowi.configManager.getConfig('markdown', 'markdown:xss:option');
+    const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
+    const xssOpiton = this.configManager.getConfig('markdown', 'markdown:xss:option');
 
     if (isEnabledXssPrevention) {
       switch (xssOpiton) {
@@ -47,7 +47,7 @@ class XssSerivce {
           return attrs;
 
         case 3: // custom white list
-          return this.crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList');
+          return this.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList');
 
         default:
           return [];

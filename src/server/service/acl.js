@@ -7,12 +7,12 @@ const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
 // const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
 
 /**
- * the service class of GlobalNotificationSetting
+ * the service class of AclService
  */
 class AclService {
 
-  constructor(crowi) {
-    this.crowi = crowi;
+  constructor(configManager) {
+    this.configManager = configManager;
   }
 
   getIsPublicWikiOnly() {
@@ -31,7 +31,7 @@ class AclService {
     }
 
     // return false if undefined
-    const isRestrictGuestMode = this.crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
+    const isRestrictGuestMode = this.configManager.getConfig('crowi', 'security:restrictGuestMode');
     if (isRestrictGuestMode) {
       return false;
     }
