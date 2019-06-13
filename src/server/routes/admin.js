@@ -1027,12 +1027,11 @@ module.exports = function(crowi, app) {
 
     debug('form content', form);
     await saveSettingAsync(form);
-    const config = await crowi.getConfig();
 
     // reset strategy
     await crowi.passportService.resetGitHubStrategy();
     // setup strategy
-    if (Config.isEnabledPassportGitHub(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-github:isEnabled')) {
       try {
         await crowi.passportService.setupGitHubStrategy(true);
       }

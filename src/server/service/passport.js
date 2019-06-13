@@ -367,8 +367,8 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isGitHubEnabled = Config.isEnabledPassportGitHub(config);
+    const { configManager } = this.crowi;
+    const isGitHubEnabled = configManager.getConfig('crowi', 'security:passport-github:isEnabled');
 
     // when disabled
     if (!isGitHubEnabled) {
