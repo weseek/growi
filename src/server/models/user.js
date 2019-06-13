@@ -200,7 +200,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.canDeleteCompletely = function(user) {
-    if (user.admin) {
+    const isEnable = !crowi.configManager.getConfig('crowi', 'security:isEnabledDeleteCompletely');
+    if (user.admin || isEnable) {
       return true;
     }
 
