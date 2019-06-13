@@ -98,7 +98,7 @@ export default class StaffCredit extends React.Component {
       return (
         <div className="text-center credit-curtain" onClick={this.deleteCredit}>
           <div className="credit-body">
-            <h1 className="staff-credit-mb-10">Growi Contributors</h1>
+            <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
             <div className="clearfix"></div>
             {credit}
           </div>
