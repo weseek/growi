@@ -113,6 +113,8 @@ if (pageContainer.state.pageId != null) {
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+
+    'admin-rebuild-search': <AdminRebuildSearch crowi={appContainer} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
@@ -167,13 +169,6 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem,
-  );
-}
-const adminRebuildSearchElem = document.getElementById('admin-rebuild-search');
-if (adminRebuildSearchElem != null) {
-  ReactDOM.render(
-    <AdminRebuildSearch crowi={appContainer} />,
-    adminRebuildSearchElem,
   );
 }
 const adminGrantSelectorElem = document.getElementById('admin-delete-user-group-modal');

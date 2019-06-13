@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class AdminRebuildSearch extends React.Component {
+import { createSubscribedElement } from '../UnstatedUtils';
+import WebsocketContainer from '../../services/AppContainer';
+
+class AdminRebuildSearch extends React.Component {
 
   constructor(props) {
     super(props);
@@ -15,7 +18,7 @@ export default class AdminRebuildSearch extends React.Component {
   }
 
   componentDidMount() {
-    const socket = this.props.crowi.getWebSocket();
+    const socket = this.props.webspcketContainer.getWebSocket();
 
     socket.on('admin:addPageProgress', (data) => {
       const newStates = Object.assign(data, { isCompleted: false });
@@ -65,6 +68,15 @@ export default class AdminRebuildSearch extends React.Component {
 
 }
 
-AdminRebuildSearch.propTypes = {
-  crowi: PropTypes.object.isRequired,
+/**
+ * Wrapper component for using unstated
+ */
+const AdminRebuildSearchWrapper = (props) => {
+  return createSubscribedElement(AdminRebuildSearch, props, [WebsocketContainer]);
 };
+
+AdminRebuildSearch.propTypes = {
+  webspcketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
+};
+
+export default AdminRebuildSearchWrapper;
