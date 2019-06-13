@@ -67,4 +67,9 @@
   .staff-credit-mb-10 {
     margin-bottom: 6rem;
   }
+
+  .staff-credit-my-10 {
+    @extend .staff-credit-mt-10;
+    @extend .staff-credit-mb-10;
+  }
 }

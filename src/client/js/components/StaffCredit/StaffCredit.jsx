@@ -58,28 +58,38 @@ export default class StaffCredit extends React.Component {
     }
   }
 
+  renderMembers(memberGroup, keyPrefix) {
+    // construct members elements
+    const members = memberGroup.members.map((member) => {
+      return (
+        <div className={memberGroup.additionalClass} key={`${keyPrefix}-${member.name}-container`}>
+          <span className="dev-position" key={`${keyPrefix}-${member.name}-position`}>
+            {/* position or '&nbsp;' */}
+            { member.position || '\u00A0' }
+          </span>
+          <p className="dev-name" key={`${keyPrefix}-${member.name}`}>{member.name}</p>
+        </div>
+      );
+    });
+    return (
+      <React.Fragment key={`${keyPrefix}-fragment`}>
+        {members}
+      </React.Fragment>
+    );
+  }
+
   renderContributors() {
     if (this.state.isShown) {
       const credit = contributors.map((contributor) => {
         // construct members elements
-        const members = contributor.members.map((member) => {
-          return (
-            <div className={contributor.memberAdditionalClass} key={`${member.name}-container`}>
-              <span className="dev-position" key={`${member.name}-position`}>
-                {/* position or '&nbsp;' */}
-                { member.position || '\u00A0' }
-              </span>
-              <p className="dev-name" key={member.name}>{member.name}</p>
-            </div>
-          );
+        const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
+          return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
         });
         return (
           <React.Fragment key={`${contributor.sectionName}-fragment`}>
-            <div className={`row ${contributor.sectionAdditionalClass}`} key={`${contributor.sectionName}-row`}>
-              { !contributor.hideSectionName && (
-                <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
-              ) }
-              {members}
+            <div className={`row staff-credit-my-10 ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
+              <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
+              {memberGroups}
             </div>
             <div className="clearfix"></div>
           </React.Fragment>
@@ -88,7 +98,7 @@ export default class StaffCredit extends React.Component {
       return (
         <div className="text-center credit-curtain" onClick={this.deleteCredit}>
           <div className="credit-body">
-            <h1 className="staff-credit-mb-10">Growi Staff Credits</h1>
+            <h1 className="staff-credit-mb-10">Growi Contributors</h1>
             <div className="clearfix"></div>
             {credit}
           </div>
