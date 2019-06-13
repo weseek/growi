@@ -316,8 +316,8 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isGoogleEnabled = Config.isEnabledPassportGoogle(config);
+    const { configManager } = this.crowi;
+    const isGoogleEnabled = configManager.getConfig('crowi', 'security:passport-google:isEnabled');
 
     // when disabled
     if (!isGoogleEnabled) {
@@ -469,7 +469,7 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const configManager = this.crowi.configManager;
+    const { configManager } = this.crowi;
     const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
 
     // when disabled
@@ -532,7 +532,7 @@ class PassportService {
       throw new Error('SamlStrategy has already been set up');
     }
 
-    const configManager = this.crowi.configManager;
+    const { configManager } = this.crowi;
     const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
 
     // when disabled

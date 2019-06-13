@@ -1000,12 +1000,11 @@ module.exports = function(crowi, app) {
 
     debug('form content', form);
     await saveSettingAsync(form);
-    const config = await crowi.getConfig();
 
     // reset strategy
     await crowi.passportService.resetGoogleStrategy();
     // setup strategy
-    if (Config.isEnabledPassportGoogle(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-google:isEnabled')) {
       try {
         await crowi.passportService.setupGoogleStrategy(true);
       }

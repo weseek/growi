@@ -314,11 +314,6 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
-  configSchema.statics.isEnabledPassportGoogle = function(config) {
-    const key = 'security:passport-google:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isEnabledPassportGitHub = function(config) {
     const key = 'security:passport-github:isEnabled';
     return getValueForCrowiNS(config, key);
