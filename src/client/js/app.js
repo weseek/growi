@@ -30,6 +30,7 @@ import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import StaffCredit from './components/StaffCredit/StaffCredit';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 
@@ -185,6 +186,16 @@ if (adminGrantSelectorElem != null) {
     </I18nextProvider>,
     adminGrantSelectorElem,
   );
+}
+
+// render for stuff credit
+const pageStuffCreditElem = document.getElementById('staff-credit');
+if (pageStuffCreditElem) {
+  ReactDOM.render(
+    <StaffCredit></StaffCredit>,
+    pageStuffCreditElem,
+  );
+
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

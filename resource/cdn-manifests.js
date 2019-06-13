@@ -88,6 +88,14 @@ module.exports = {
       },
     },
     {
+      name: 'Press Start 2P',
+      url: 'https://fonts.googleapis.com/css?family=Press+Start+2P',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      },
+    },
+    {
       name: 'font-awesome',
       url: 'https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css',
       groups: ['basis'],
