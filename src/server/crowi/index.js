@@ -277,6 +277,7 @@ Crowi.prototype.setupPassport = function() {
     this.passportService.setupTwitterStrategy();
     this.passportService.setupOidcStrategy();
     this.passportService.setupSamlStrategy();
+    this.passportService.setupBasicStrategy();
   }
   catch (err) {
     logger.error(err);
