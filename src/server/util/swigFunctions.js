@@ -130,14 +130,10 @@ module.exports = function(crowi, app, req, locals) {
     );
   };
 
-  locals.passportSamlLoginEnabled = function() {
-    return locals.isEnabledPassport() && locals.getConfig('crowi', 'security:passport-saml:isEnabled');
-  };
-
   locals.getSamlMissingMandatoryConfigKeys = function() {
     // return an empty array if Passport is not enabled
     // because crowi.passportService is null.
-    if (!locals.isEnabledPassport()) {
+    if (!configManager.getConfig('crowi', 'security:isEnabledPassport')) {
       return [];
     }
 
@@ -147,27 +143,14 @@ module.exports = function(crowi, app, req, locals) {
   locals.googleLoginEnabled = function() {
     // return false if Passport is enabled
     // because official crowi mechanism is not used.
-    if (locals.isEnabledPassport()) {
+    if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
       return false;
     }
 
-    const configManager = crowi.configManager;
     return (
       configManager.getConfig('crowi', 'google:clientId')
       && configManager.getConfig('crowi', 'google:clientSecret')
     );
-  };
-
-  locals.passportGoogleLoginEnabled = function() {
-    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-google:isEnabled');
-  };
-
-  locals.passportGitHubLoginEnabled = function() {
-    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-github:isEnabled');
-  };
-
-  locals.passportTwitterLoginEnabled = function() {
-    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
   };
 
   locals.searchConfigured = function() {
