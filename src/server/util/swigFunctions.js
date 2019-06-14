@@ -192,10 +192,6 @@ module.exports = function(crowi, app, req, locals) {
     return process.env.HACKMD_URI != null;
   };
 
-  locals.isEnabledPlugins = function() {
-    return configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
-  };
-
   locals.isEnabledLinebreaks = function() {
     const config = crowi.getConfig();
     return Config.isEnabledLinebreaks(config);

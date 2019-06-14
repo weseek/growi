@@ -861,7 +861,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.appSetting = function(req, res) {
+  actions.api.appSetting = async function(req, res) {
     const form = req.form.settingForm;
 
     if (req.form.isValid) {
@@ -880,7 +880,8 @@ module.exports = function(crowi, app) {
         });
       }
       else {
-        return saveSetting(req, res, form);
+        await configManager.updateConfigsInTheSameNamespace('crowi', form);
+        return res.json({ status: true });
       }
     }
     else {

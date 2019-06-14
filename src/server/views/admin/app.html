@@ -307,18 +307,18 @@
           <div class="col-xs-6">
 
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[plugin:isEnabledPlugins]"
                        value="true"
                        type="radio"
-                       {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                       {% if true === getConfig('crowi', 'plugin:isEnabledPlugins') %}checked{% endif %}>
                 ON
               </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="default">
+              <label class="btn btn-default btn-rounded btn-outline {% if !getConfig('crowi', 'plugin:isEnabledPlugins') %}active{% endif %}" data-active-class="default">
                 <input name="settingForm[plugin:isEnabledPlugins]"
                        value="false"
                        type="radio"
-                       {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                       {% if !getConfig('crowi', 'plugin:isEnabledPlugins') %}checked{% endif %}>
                 OFF
               </label>
             </div>

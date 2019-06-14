@@ -217,7 +217,7 @@ class ConfigManager {
 
     // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      debug(`${namespace}.${key} only exists in db`);
+      debug(`${namespace}.${key} only exists in env vars`);
       return this.configObject.fromEnvVars[namespace][key];
     }
 
