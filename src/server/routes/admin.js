@@ -92,7 +92,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/app'                  , admin.app.index);
   actions.app = {};
   actions.app.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'app');
+    const settingForm = configManager.getConfigByPrefix('crowi', 'app:');
 
     return res.render('admin/app', {
       settingForm,
@@ -105,7 +105,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'security');
+    const settingForm = configManager.getConfigByPrefix('crowi', 'security:');
     const isAclEnabled = crowi.aclService.getIsPublicWikiOnly();
 
     return res.render('admin/security', { settingForm, isAclEnabled });
@@ -114,7 +114,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/markdown'                  , admin.markdown.index);
   actions.markdown = {};
   actions.markdown.index = function(req, res) {
-    const markdownSetting = configManager.getConfigByPrefix('crowi', 'markdown');
+    const markdownSetting = configManager.getConfigByPrefix('crowi', 'markdown:');
 
     return res.render('admin/markdown', {
       markdownSetting,
@@ -190,7 +190,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/customize' , admin.customize.index);
   actions.customize = {};
   actions.customize.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'customize');
+    const settingForm = configManager.getConfigByPrefix('crowi', 'customize:');
 
     /* eslint-disable quote-props, no-multi-spaces */
     const highlightJsCssSelectorOptions = {
@@ -218,7 +218,7 @@ module.exports = function(crowi, app) {
   actions.notification.index = async(req, res) => {
     const config = crowi.getConfig();
     const UpdatePost = crowi.model('UpdatePost');
-    let slackSetting = configManager.getConfigByPrefix('notification', 'slack');
+    let slackSetting = configManager.getConfigByPrefix('notification', 'slack:');
     const hasSlackIwhUrl = Config.hasSlackIwhUrl(config);
     const hasSlackToken = Config.hasSlackToken(config);
 
@@ -853,7 +853,7 @@ module.exports = function(crowi, app) {
   // Importer management
   actions.importer = {};
   actions.importer.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'importer');
+    const settingForm = configManager.getConfigByPrefix('crowi', 'importer:');
 
     return res.render('admin/importer', {
       settingForm,
