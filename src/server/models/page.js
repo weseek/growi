@@ -275,8 +275,6 @@ class PageQueryBuilder {
 }
 
 module.exports = function(crowi) {
-  const { configManager } = crowi;
-
   let pageEvent;
 
   // init event
@@ -810,8 +808,8 @@ module.exports = function(crowi) {
     validateCrowi();
 
     // determine User condition
-    const hidePagesRestrictedByOwner = configManager.getCofnig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = configManager.getCofnig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
+    const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
 
     // determine UserGroup condition
     let userGroups = null;

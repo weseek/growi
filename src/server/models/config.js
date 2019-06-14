@@ -8,12 +8,6 @@ module.exports = function(crowi) {
   const debug = require('debug')('growi:models:config');
   const uglifycss = require('uglifycss');
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
-  const {
-    configManager,
-    aclService,
-    xssService,
-    appService,
-  } = crowi;
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
   const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
@@ -336,11 +330,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.isGuestAllowedToRead = function(config) {
     // return true if puclic wiki mode
-    if (aclService.getIsPublicWikiOnly()) {
+    if (crowi.aclService.getIsPublicWikiOnly()) {
       return true;
     }
 
-    const restrictGuestMode = configManager.getConfig('crowi', 'security:restrictGuestMode');
+    const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
     // return false if undefined
     if (undefined === config.crowi || undefined === restrictGuestMode) {
       return false;
@@ -577,23 +571,23 @@ module.exports = function(crowi) {
     const localConfig = {
       crowi: {
         title: Config.appTitle(crowi),
-        url: appService.getSiteUrl(),
+        url: crowi.appService.getSiteUrl(),
       },
       upload: {
-        image: configManager.getIsUploadable(),
-        file: configManager.getConfig('crowi', 'app:fileUpload'),
+        image: crowi.configManager.getIsUploadable(),
+        file: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       },
-      behaviorType: configManager.getConfig('crowi', 'customize:behavior'),
-      layoutType: configManager.getConfig('crowi', 'customize:layout'),
-      isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-      isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-      isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-      xssOption: configManager.getConfig('markdown', 'markdown:xss:option'),
-      tagWhiteList: xssService.getTagWhiteList(),
-      attrWhiteList: xssService.getAttrWhiteList(),
-      highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-      isSavedStatesOfTabChanges: configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
-      hasSlackConfig: configManager.getConfig('crowi', 'customize:behavior'),
+      behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
+      isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+      isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+      isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+      xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
+      tagWhiteList: crowi.xssService.getTagWhiteList(),
+      attrWhiteList: crowi.xssService.getAttrWhiteList(),
+      highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
+      hasSlackConfig: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
@@ -601,9 +595,9 @@ module.exports = function(crowi) {
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,
       },
-      recentCreatedLimit: configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
-      isAclEnabled: !aclService.getIsPublicWikiOnly(),
-      globalLang: configManager.getConfig('crowi', 'app:globalLang'),
+      recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      isAclEnabled: !crowi.aclService.getIsPublicWikiOnly(),
+      globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };
 
     return localConfig;
