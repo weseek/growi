@@ -941,7 +941,7 @@ module.exports = function(crowi, app) {
       if (isCompletely) {
         // get useradmin flag
         const isDeniedCompletelyDelete = crowi.configManager.getConfig('crowi', 'security:isEnabledDeleteCompletely');
-        if (isDeniedCompletelyDelete && !req.user.admin) {
+        if (!req.user.admin && isDeniedCompletelyDelete) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         if (isRecursively) {

@@ -199,13 +199,13 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.canDeleteCompletely = function(user) {
-    const isEnable = !crowi.configManager.getConfig('crowi', 'security:isEnabledDeleteCompletely');
-    if (user.admin || isEnable) {
-      return true;
+  userSchema.methods.canDeleteCompletely = function() {
+    const isDeniedCompletelyDelete = crowi.configManager.getConfig('crowi', 'security:isEnabledDeleteCompletely');
+    if ((!this.admin) && isDeniedCompletelyDelete) {
+      return false;
     }
 
-    return false;
+    return true;
   };
 
   userSchema.methods.updateApiToken = function(callback) {

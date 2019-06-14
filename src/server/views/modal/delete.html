@@ -30,10 +30,10 @@
           </div>
           {% if not page.isDeleted() %}
           <div class="checkbox checkbox-danger">
-          <input name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(user) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
+          <input name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely() %} disabled="disabled" {% endif %} value="1"  type="checkbox">
             <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.label.Delete completely') }}</label>
             <!-- GC-1755 Change Sentence -->
-            {% if !user.canDeleteCompletely(user) %}
+            {% if !user.canDeleteCompletely() %}
               <p class="bg-danger text-white p-2 mt-2"> <i class="icon-ban" ></i> 完全削除の権限がありません </p>
             {% else %}
             <p class="help-block"> {{ t('modal_delete.help.completely') }}</p>
