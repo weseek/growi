@@ -16,10 +16,36 @@ const {
 
 const validator = {};
 
+/**
+ * @swagger
+ *  tags:
+ *    name: UserGroup
+ */
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /usergroup:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Gets usergroups
+   *        produces:
+   *          - application/json
+   *        responses:
+   *          200:
+   *            description: Returns usergroups
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: object
+   *                      description: a result of `UserGroup.find`
+   */
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring
     try {
@@ -37,6 +63,36 @@ module.exports = (crowi) => {
     body('name', 'Group name is required').trim().exists(),
   ];
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /usergroup:
+   *      post:
+   *        tags: [UserGroup]
+   *        description: Adds userGroup
+   *        produces:
+   *          - application/json
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  name:
+   *                    type: string
+   *                    description: name of the userGroup trying to be added
+   *        responses:
+   *          200:
+   *            description: userGroup is added
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroup:
+   *                      type: object
+   *                      description: A result of `UserGroup.createGroupByName`
+   */
   router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, ApiV3FormValidator, async(req, res) => {
     const { name } = req.body;
 
@@ -59,6 +115,43 @@ module.exports = (crowi) => {
     query('transferToUserGroupId').trim(),
   ];
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /usergroup/{:id}:
+   *      delete:
+   *        tags: [UserGroup]
+   *        description: Deletes userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: deleteGroupId
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *          - name: actionName
+   *            in: query
+   *            description: name of action
+   *            schema:
+   *              type: string
+   *          - name: transferToUserGroupId
+   *            in: query
+   *            description: userGroup id that will be transferred to
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: userGroup is removed
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroups:
+   *                      type: object
+   *                      description: A result of `UserGroup.removeCompletelyById`
+   */
   router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, ApiV3FormValidator, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
@@ -83,6 +176,35 @@ module.exports = (crowi) => {
   // router.put('/:id/update', async(req, res) => {
   // });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /usergroup/{:id/users}:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Gets the users related to the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    users:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                        description: user objects
+   */
   router.get('/:id/users', loginRequired(crowi), adminRequired(), async(req, res) => {
     const { id } = req.params;
 
