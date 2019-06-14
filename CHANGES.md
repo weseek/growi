@@ -10,12 +10,20 @@
 
 * Feature: Comment Thread
 * Feature: OpenID Connect authentication
+* Feature: Staff Credits with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
 * Improvement Draft list
 * Fix: Deleting page completely
+* Fix: Search with `prefix:` param with CJK pathname
 * I18n: User Management Details
 * I18n: Group Management Details
 * Support: Apply unstated
 * Support: Upgrade libs
+    * async
+    * axios
+    * file-loader
+    * googleapis
+    * i18next
+    * migrate-mongo
     * mini-css-extract-plugin
     * null-loader
 

@@ -61,6 +61,13 @@ export default class PageContainer extends Container {
   }
 
   /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'PageContainer';
+  }
+
+  /**
    * initialize state for markdown data
    */
   initStateMarkdown() {
@@ -110,9 +117,6 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    */
   updateStateAfterSave(page, tags) {
-    // mark that the document is not editing
-    this.appContainer.setIsDocSaved(true);
-
     const { editorMode } = this.appContainer.state;
 
     // update state of PageContainer

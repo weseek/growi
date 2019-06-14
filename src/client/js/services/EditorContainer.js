@@ -37,11 +37,20 @@ export default class EditorContainer extends Container {
       previewOptions: {},
     };
 
+    this.isSetBeforeunloadEventHandler = false;
+
     this.initStateGrant();
     this.initDrafts();
 
     this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
     this.initEditorOptions('previewOptions', 'previewOptions', defaultPreviewOptions);
+  }
+
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'EditorContainer';
   }
 
   /**
@@ -137,6 +146,24 @@ export default class EditorContainer extends Container {
     }
 
     return opt;
+  }
+
+  showUnsavedWarning(e) {
+    // display browser default message
+    e.returnValue = '';
+    return '';
+  }
+
+  disableUnsavedWarning() {
+    window.removeEventListener('beforeunload', this.showUnsavedWarning);
+    this.isSetBeforeunloadEventHandler = false;
+  }
+
+  enableUnsavedWarning() {
+    if (!this.isSetBeforeunloadEventHandler) {
+      window.addEventListener('beforeunload', this.showUnsavedWarning);
+      this.isSetBeforeunloadEventHandler = true;
+    }
   }
 
   clearDraft(path) {

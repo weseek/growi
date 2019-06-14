@@ -77,7 +77,7 @@
             <div class="modal-body">
               <p>
                 {{ t('user_management.temporary_password') }}<br>
-                {{ t('user_management.password.never.seen') }}<span class="text-danger">{{ t('user_management.send_temporary_password') }}</span>
+                {{ t('user_management.password_never_seen') }}<span class="text-danger">{{ t('user_management.send_temporary_password') }}</span>
               </p>
 
               <pre>{% for cUser in createdUser %}{% if cUser.user %}{{ cUser.email }} {{ cUser.password }}<br>{% else %}{{ cUser.email }} 作成失敗<br>{% endif %}{% endfor %}</pre>

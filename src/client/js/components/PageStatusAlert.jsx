@@ -31,7 +31,7 @@ class PageStatusAlert extends React.Component {
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance(this);
+    this.props.appContainer.registerComponentInstance('PageStatusAlert', this);
   }
 
   refreshPage() {
@@ -80,7 +80,7 @@ class PageStatusAlert extends React.Component {
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a onClick={this.refreshPage}>
+        <a href="#" onClick={this.refreshPage}>
           {label2}
         </a>
       </div>

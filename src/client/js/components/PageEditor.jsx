@@ -42,7 +42,6 @@ class PageEditor extends React.Component {
     this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
-    this.showUnsavedWarning = this.showUnsavedWarning.bind(this);
 
     // get renderer
     this.growiRenderer = this.props.appContainer.getRenderer('editor');
@@ -58,28 +57,13 @@ class PageEditor extends React.Component {
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
     this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
-
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance(this);
+    this.props.appContainer.registerComponentInstance('PageEditor', this);
 
     // initial rendering
     this.renderPreview(this.state.markdown);
-
-    window.addEventListener('beforeunload', this.showUnsavedWarning);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.showUnsavedWarning);
-  }
-
-  showUnsavedWarning(e) {
-    if (!this.props.appContainer.getIsDocSaved()) {
-      // display browser default message
-      e.returnValue = '';
-      return '';
-    }
   }
 
   getMarkdown() {
@@ -110,7 +94,6 @@ class PageEditor extends React.Component {
   onMarkdownChanged(value) {
     this.renderPreviewWithDebounce(value);
     this.saveDraftWithDebounce();
-    this.props.appContainer.setIsDocSaved(false);
   }
 
   /**
@@ -121,6 +104,9 @@ class PageEditor extends React.Component {
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
       logger.debug('success to save');
@@ -153,10 +139,13 @@ class PageEditor extends React.Component {
       }
 
       const formData = new FormData();
+      const { pageId, path } = pageContainer.state;
       formData.append('_csrf', appContainer.csrfToken);
       formData.append('file', file);
-      formData.append('path', pageContainer.state.path);
-      formData.append('page_id', this.state.pageId || 0);
+      formData.append('path', path);
+      if (pageId != null) {
+        formData.append('page_id', pageContainer.state.pageId);
+      }
 
       res = await appContainer.apiPost('/attachments.add', formData);
       const attachment = res.attachment;
@@ -172,7 +161,7 @@ class PageEditor extends React.Component {
 
       // when if created newly
       if (res.pageCreated) {
-        // do nothing
+        logger.info('Page is created', res.pageCreated._id);
       }
     }
     catch (e) {
@@ -287,6 +276,7 @@ class PageEditor extends React.Component {
     if (!pageContainer.state.revisionId) {
       editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
     }
+    editorContainer.enableUnsavedWarning();
   }
 
   clearDraft() {

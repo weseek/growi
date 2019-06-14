@@ -9,7 +9,7 @@ module.exports = function(crowi, app) {
   const cookieParser = require('cookie-parser');
   const methodOverride = require('method-override');
   const passport = require('passport');
-  const session = require('express-session');
+  const expressSession = require('express-session');
   const sanitizer = require('express-sanitizer');
   const basicAuth = require('basic-auth-connect');
   const flash = require('connect-flash');
@@ -19,7 +19,11 @@ module.exports = function(crowi, app) {
   const i18nFsBackend = require('i18next-node-fs-backend');
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
+
+  const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
+  const middleware = require('../util/middlewares');
+
   const env = crowi.node_env;
 
   // Old type config API
@@ -101,7 +105,18 @@ module.exports = function(crowi, app) {
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(sanitizer());
   app.use(cookieParser());
-  app.use(session(crowi.sessionConfig));
+
+  // configure express-session
+  app.use((req, res, next) => {
+    // test whether the route is listed in avoidSessionTroutes
+    for (const regex of avoidSessionRoutes) {
+      if (regex.test(req.path)) {
+        return next();
+      }
+    }
+
+    expressSession(crowi.sessionConfig)(req, res, next);
+  });
 
   // Set basic auth middleware
   app.use((req, res, next) => {

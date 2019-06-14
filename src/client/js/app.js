@@ -30,6 +30,7 @@ import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import StaffCredit from './components/StaffCredit/StaffCredit';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 
@@ -112,6 +113,8 @@ if (pageContainer.state.pageId != null) {
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+
+    'admin-rebuild-search': <AdminRebuildSearch crowi={appContainer} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
@@ -168,13 +171,6 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem,
   );
 }
-const adminRebuildSearchElem = document.getElementById('admin-rebuild-search');
-if (adminRebuildSearchElem != null) {
-  ReactDOM.render(
-    <AdminRebuildSearch crowi={appContainer} />,
-    adminRebuildSearchElem,
-  );
-}
 const adminGrantSelectorElem = document.getElementById('admin-delete-user-group-modal');
 if (adminGrantSelectorElem != null) {
   ReactDOM.render(
@@ -185,6 +181,16 @@ if (adminGrantSelectorElem != null) {
     </I18nextProvider>,
     adminGrantSelectorElem,
   );
+}
+
+// render for stuff credit
+const pageStuffCreditElem = document.getElementById('staff-credit');
+if (pageStuffCreditElem) {
+  ReactDOM.render(
+    <StaffCredit></StaffCredit>,
+    pageStuffCreditElem,
+  );
+
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

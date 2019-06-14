@@ -70,6 +70,13 @@ export default class AppContainer extends Container {
     this.apiRequest = this.apiRequest.bind(this);
   }
 
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'AppContainer';
+  }
+
   initPlugins() {
     if (this.isPluginEnabled) {
       const growiPlugin = window.growiPlugin;
@@ -109,7 +116,7 @@ export default class AppContainer extends Container {
       throw new Error('The specified instance must not be null');
     }
 
-    const className = instance.constructor.name;
+    const className = instance.constructor.getClassName();
 
     if (this.containerInstances[className] != null) {
       throw new Error('The specified instance couldn\'t register because the same type object has already been registered');
@@ -131,28 +138,27 @@ export default class AppContainer extends Container {
 
   /**
    * Register React component instance
+   * @param {string} id
    * @param {object} instance React component instance
    */
-  registerComponentInstance(instance) {
+  registerComponentInstance(id, instance) {
     if (instance == null) {
       throw new Error('The specified instance must not be null');
     }
 
-    const className = instance.constructor.name;
-
-    if (this.componentInstances[className] != null) {
-      throw new Error('The specified instance couldn\'t register because the same type object has already been registered');
+    if (this.componentInstances[id] != null) {
+      throw new Error('The specified instance couldn\'t register because the same id has already been registered');
     }
 
-    this.componentInstances[className] = instance;
+    this.componentInstances[id] = instance;
   }
 
   /**
    * Get registered React component instance
-   * @param {string} className
+   * @param {string} id
    */
-  getComponentInstance(className) {
-    return this.componentInstances[className];
+  getComponentInstance(id) {
+    return this.componentInstances[id];
   }
 
   getOriginRenderer() {
@@ -175,14 +181,6 @@ export default class AppContainer extends Container {
     this.rendererInstances[mode] = renderer;
 
     return renderer;
-  }
-
-  setIsDocSaved(isSaved) {
-    this.isDocSaved = isSaved;
-  }
-
-  getIsDocSaved() {
-    return this.isDocSaved;
   }
 
   getEmojiStrategy() {
