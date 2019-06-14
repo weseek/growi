@@ -39,6 +39,7 @@ const contributors = [
       {
         additionalClass: 'col-md-4 my-4',
         members: [
+          { name: 'inductor' },
           { name: 'shield-9' },
           { name: 'yaodingyd' },
           { name: 'hitochan777' },
@@ -47,7 +48,6 @@ const contributors = [
           { name: 'nt-7' },
           { name: 'hideo54' },
           { name: 'wadahiro' },
-          { name: 'fumitti' },
         ],
       },
       {
@@ -60,6 +60,7 @@ const contributors = [
       {
         additionalClass: 'col-md-4 my-4',
         members: [
+          { name: 'fumitti' },
           { name: 'fmy' },
           { name: 'yaamai' },
           { name: 'ta2yak' },
