@@ -177,7 +177,7 @@
               <div class="small text-right">by GitHub Account</div>
             </form>
             {% endif %}
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-facebook:isEnabled')() %}
+            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-facebook:isEnabled') %}
             <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="facebook">

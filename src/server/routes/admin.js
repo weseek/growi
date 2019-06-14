@@ -931,7 +931,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
       return res.json({ status: true });
     }
     catch (err) {
