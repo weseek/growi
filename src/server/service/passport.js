@@ -325,11 +325,11 @@ class PassportService {
     passport.use(
       new GoogleStrategy(
         {
-          clientId: configManager.getConfig('crowi', 'security:passport-google:clientId') || process.env.OAUTH_GOOGLE_CLIENT_ID,
-          clientSecret: configManager.getConfig('crowi', 'security:passport-google:clientSecret') || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
+          clientId: configManager.getConfig('crowi', 'security:passport-google:clientId'),
+          clientSecret: configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
           callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-google:callbackUrl') || process.env.OAUTH_GOOGLE_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfig('crowi', 'security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -375,11 +375,11 @@ class PassportService {
     passport.use(
       new GitHubStrategy(
         {
-          clientID: configManager.getConfig('crowi', 'security:passport-github:clientId') || process.env.OAUTH_GITHUB_CLIENT_ID,
-          clientSecret: configManager.getConfig('crowi', 'security:passport-github:clientSecret') || process.env.OAUTH_GITHUB_CLIENT_SECRET,
+          clientID: configManager.getConfig('crowi', 'security:passport-github:clientId'),
+          clientSecret: configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
           callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-github:callbackUrl') || process.env.OAUTH_GITHUB_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfig('crowi', 'security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -425,11 +425,11 @@ class PassportService {
     passport.use(
       new TwitterStrategy(
         {
-          consumerKey: configManager.getConfig('crowi', 'security:passport-twitter:consumerKey') || process.env.OAUTH_TWITTER_CONSUMER_KEY,
-          consumerSecret: configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret') || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
+          consumerKey: configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+          consumerSecret: configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
           callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-twitter:callbackUrl') || process.env.OAUTH_TWITTER_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfig('crowi', 'security:passport-twitter:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -476,12 +476,12 @@ class PassportService {
     // setup client
     // extend oidc request timeouts
     OIDCIssuer.defaultHttpOptions = { timeout: 5000 };
-    const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost') || process.env.OAUTH_OIDC_ISSUER_HOST;
-    const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId') || process.env.OAUTH_OIDC_CLIENT_ID;
-    const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret') || process.env.OAUTH_OIDC_CLIENT_SECRET;
+    const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
+    const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
+    const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret');
     const redirectUri = (configManager.getConfig('crowi', 'app:siteUrl') != null)
       ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
-      : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl') || process.env.OAUTH_OIDC_CALLBACK_URI; // DEPRECATED: backward compatible with v3.2.3 and below
+      : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
     const oidcIssuer = await OIDCIssuer.discover(issuerHost);
     debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
