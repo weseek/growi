@@ -153,7 +153,7 @@ module.exports = function(crowi) {
   }
 
   function getValueForCrowiNS(config, key) {
-    configManager.getConfig('crowi', key);
+    crowi.configManager.getConfig('crowi', key);
     // // return the default value if undefined
     // if (undefined === config.crowi || undefined === config.crowi[key]) {
     //   return getDefaultCrowiConfigs()[key];
@@ -163,7 +163,7 @@ module.exports = function(crowi) {
   }
 
   function getValueForMarkdownNS(config, key) {
-    configManager.getConfig('markdown', key);
+    crowi.configManager.getConfig('markdown', key);
     // // return the default value if undefined
     // if (undefined === config.markdown || undefined === config.markdown[key]) {
     //   return getDefaultMarkdownConfigs()[key];
@@ -347,11 +347,6 @@ module.exports = function(crowi) {
     }
 
     return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
-  };
-
-  configSchema.statics.hidePagesRestrictedByOwnerInList = function(config) {
-    const key = 'security:list-policy:hideRestrictedByOwner';
-    return getValueForCrowiNS(config, key);
   };
 
   configSchema.statics.hidePagesRestrictedByGroupInList = function(config) {
