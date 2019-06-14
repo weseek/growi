@@ -11,10 +11,35 @@ const {
   adminRequired,
 } = require('../../util/middlewares');
 
+/**
+ * @swagger
+ *  tags:
+ *    name: UserGroupRelation
+ */
 
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
 
+  /**
+   * @swagger
+   *  paths:
+   *    /_api/v3/user-group-relations:
+   *      get:
+   *        tags: [UserGroupRelation]
+   *        description: Gets the user group relations
+   *        produces:
+   *          - application/json
+   *        responses:
+   *          200:
+   *            description: user group relations are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroupRelations:
+   *                      type: object
+   *                      description: contains arrays user objects related
+   */
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring? or body
     try {
