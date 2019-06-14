@@ -22,12 +22,9 @@ module.exports = function(crowi, app) {
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
-  const middleware = require('../util/middlewares');
 
   const env = crowi.node_env;
 
-  // Old type config API
-  const Config = crowi.model('Config');
   // New type config API
   const configManager = crowi.configManager;
   const getConfig = configManager.getConfig;
