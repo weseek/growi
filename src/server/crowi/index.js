@@ -382,8 +382,7 @@ Crowi.prototype.buildServer = function() {
   require('./express-init')(this, express);
 
   // import plugins
-  const Config = this.model('Config');
-  const isEnabledPlugins = Config.isEnabledPlugins(this.config);
+  const isEnabledPlugins = this.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
   if (isEnabledPlugins) {
     debug('Plugins are enabled');
     const PluginService = require('../plugins/plugin.service');

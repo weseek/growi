@@ -193,8 +193,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.isEnabledPlugins = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPlugins(config);
+    return configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
   };
 
   locals.isEnabledLinebreaks = function() {
