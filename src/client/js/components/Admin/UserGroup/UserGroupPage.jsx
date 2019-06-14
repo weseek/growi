@@ -15,8 +15,8 @@ class UserGroupPage extends React.Component {
     super(props);
 
     this.state = {
-      userGroups: props.userGroups,
-      userGroupRelations: props.userGroupRelations,
+      userGroups: [],
+      userGroupRelations: {},
       selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
       isDeleteModalShow: false,
     };
@@ -27,6 +27,10 @@ class UserGroupPage extends React.Component {
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
     this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
+  }
+
+  async componentDidMount() {
+    await this.syncUserGroupAndRelations();
   }
 
   async showDeleteModal(group) {
@@ -153,8 +157,6 @@ const UserGroupPageWrapper = (props) => {
 UserGroupPage.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-  userGroupRelations: PropTypes.object.isRequired,
   isAclEnabled: PropTypes.bool,
 };
 

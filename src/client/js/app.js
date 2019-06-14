@@ -330,8 +330,6 @@ if (adminRebuildSearchElem != null) {
 
 const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
 if (adminUserGroupPageElem != null) {
-  const userGroups = JSON.parse(adminUserGroupPageElem.getAttribute('data-user-groups'));
-  const userGroupRelations = JSON.parse(adminUserGroupPageElem.getAttribute('data-user-group-relations'));
   const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
 
   ReactDOM.render(
@@ -339,8 +337,6 @@ if (adminUserGroupPageElem != null) {
       <I18nextProvider i18n={i18n}>
         <UserGroupPage
           crowi={appContainer}
-          userGroups={userGroups}
-          userGroupRelations={userGroupRelations}
           isAclEnabled={isAclEnabled}
         />
       </I18nextProvider>
