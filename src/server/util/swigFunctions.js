@@ -166,23 +166,19 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.passportGoogleLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-google:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-google:isEnabled');
   };
 
   locals.passportGitHubLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-github:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-github:isEnabled');
   };
 
   locals.passportTwitterLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-twitter:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
   };
 
   locals.passportOidcLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-oidc:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
   };
 
   locals.searchConfigured = function() {
