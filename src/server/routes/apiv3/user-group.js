@@ -21,6 +21,7 @@ const validator = {};
  *  tags:
  *    name: UserGroup
  */
+
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
@@ -29,7 +30,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /usergroup:
+   *    /_api/v3/user-groups:
    *      get:
    *        tags: [UserGroup]
    *        description: Gets usergroups
@@ -37,7 +38,7 @@ module.exports = (crowi) => {
    *          - application/json
    *        responses:
    *          200:
-   *            description: Returns usergroups
+   *            description: usergroups are fetched
    *            content:
    *              application/json:
    *                schema:
@@ -67,7 +68,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /usergroup:
+   *    /_api/v3/user-groups:
    *      post:
    *        tags: [UserGroup]
    *        description: Adds userGroup
@@ -119,7 +120,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /usergroup/{:id}:
+   *    /_api/v3/user-groups/{:id}:
    *      delete:
    *        tags: [UserGroup]
    *        description: Deletes userGroup
@@ -180,7 +181,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /usergroup/{:id/users}:
+   *    /_api/v3/user-groups/{:id/users}:
    *      get:
    *        tags: [UserGroup]
    *        description: Gets the users related to the userGroup
