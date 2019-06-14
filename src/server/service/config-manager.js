@@ -205,26 +205,31 @@ class ConfigManager {
   defaultSearch(namespace, key) {
     // does not exist neither in db nor in env vars
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
+      debug(`${namespace}.${key} does not exist neither in db nor in env vars`);
       return undefined;
     }
 
     // only exists in db
     if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
+      debug(`${namespace}.${key} only exists in db`);
       return this.configObject.fromDB[namespace][key];
     }
 
     // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
+      debug(`${namespace}.${key} only exists in db`);
       return this.configObject.fromEnvVars[namespace][key];
     }
 
     // exists both in db and in env vars [db > env var]
     if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
       if (this.configObject.fromDB[namespace][key] !== null) {
+        debug(`${namespace}.${key} exists both in db and in env vars. loaded from db`);
         return this.configObject.fromDB[namespace][key];
       }
       /* eslint-disable-next-line no-else-return */
       else {
+        debug(`${namespace}.${key} exists both in db and in env vars. loaded from env vars`);
         return this.configObject.fromEnvVars[namespace][key];
       }
     }
