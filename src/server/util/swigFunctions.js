@@ -101,13 +101,6 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
-   * return true if enabled
-   */
-  locals.isEnabledPassport = function() {
-    return configManager.getConfig('crowi', 'security:isEnabledPassport');
-  };
-
-  /**
    * return true if local strategy has been setup successfully
    *  used whether restarting the server needed
    */
@@ -175,10 +168,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.passportTwitterLoginEnabled = function() {
     return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
-  };
-
-  locals.passportOidcLoginEnabled = function() {
-    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
   };
 
   locals.searchConfigured = function() {

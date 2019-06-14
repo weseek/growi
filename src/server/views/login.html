@@ -144,7 +144,7 @@
           </form>
         </div>
         {% endif %}
-        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() || passportOidcLoginEnabled() || passportSamlLoginEnabled() %}
+        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() || getConfig('crowi', 'security:passport-oidc:isEnabled') || passportSamlLoginEnabled() %}
         <hr class="mb-1">
         <div class="collapse collapse-oauth collapse-anchor">
           <div class="spacer"></div>
@@ -188,7 +188,7 @@
               <div class="small text-right">by Twitter Account</div>
             </form>
             {% endif %}
-            {% if passportOidcLoginEnabled() %}
+            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-oidc:isEnabled') %}
             <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="oidc">
