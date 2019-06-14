@@ -349,11 +349,6 @@ module.exports = function(crowi) {
     return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
   };
 
-  configSchema.statics.hidePagesRestrictedByGroupInList = function(config) {
-    const key = 'security:list-policy:hideRestrictedByGroup';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isEnabledPlugins = function(config) {
     const key = 'plugin:isEnabledPlugins';
     return getValueForCrowiNS(config, key);

@@ -554,11 +554,8 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
 };
 
 SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {
-  const Config = this.crowi.model('Config');
-  const config = this.crowi.getConfig();
-
   const showPagesRestrictedByOwner = !this.configManager.getCofnig('crowi', 'security:list-policy:hideRestrictedByOwner');
-  const showPagesRestrictedByGroup = !Config.hidePagesRestrictedByGroupInList(config);
+  const showPagesRestrictedByGroup = !this.configManager.getCofnig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
 
   query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 

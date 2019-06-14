@@ -809,12 +809,9 @@ module.exports = function(crowi) {
   async function addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink) {
     validateCrowi();
 
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-
     // determine User condition
     const hidePagesRestrictedByOwner = configManager.getCofnig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
+    const hidePagesRestrictedByGroup = configManager.getCofnig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
 
     // determine UserGroup condition
     let userGroups = null;
