@@ -74,7 +74,7 @@ class ConfigManager {
    * get a config specified by namespace and prefix
    */
   getConfigByPrefix(namespace, prefix) {
-    const regexp = new RegExp(`^${prefix}:`);
+    const regexp = new RegExp(`^${prefix}`);
 
     return this.getConfigByRegExp(namespace, regexp);
   }
