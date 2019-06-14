@@ -204,7 +204,7 @@ module.exports = (crowi) => {
    *                      type: array
    *                      items:
    *                        type: object
-   *                        description: user objects
+   *                      description: user objects
    */
   router.get('/:id/users', loginRequired(crowi), adminRequired(), async(req, res) => {
     const { id } = req.params;
