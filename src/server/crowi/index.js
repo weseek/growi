@@ -79,6 +79,16 @@ Crowi.prototype.init = async function() {
   await this.setupSessionConfig();
   await this.setupConfigManager();
 
+  // passport depends on appService
+  // initialize services first
+  // とりあえず新しく作ったサービスクラスのみ上に移した。
+  await Promise.all([
+    this.setUpSlacklNotification(),
+    this.setUpXss(),
+    this.setUpAcl(),
+    this.setUpApp(),
+  ]);
+
   await Promise.all([
     this.scanRuntimeVersions(),
     this.setupPassport(),
@@ -87,10 +97,6 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
-    this.setUpSlacklNotification(),
-    this.setUpXss(),
-    this.setUpAcl(),
-    this.setUpApp(),
     this.setUpRestQiitaAPI(),
   ]);
 };
