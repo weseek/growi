@@ -64,12 +64,12 @@ module.exports = function(crowi, app) {
     const Config = crowi.model('Config');
     app.set('tzoffset', tzoffset);
 
-    req.config = config;
+    // req.config = config;
     req.csrfToken = null;
 
     res.locals.req = req;
-    res.locals.baseUrl = configManager.getSiteUrl();
-    res.locals.config = config;
+    res.locals.baseUrl = crowi.appService.getSiteUrl();
+    // res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;
     res.locals.tzoffset = tzoffset;
@@ -80,7 +80,7 @@ module.exports = function(crowi, app) {
       restrictGuestMode: Config.getRestrictGuestModeLabels(),
       registrationMode: Config.getRegistrationModeLabels(),
     };
-    res.locals.local_config = Config.getLocalconfig(config); // config for browser context
+    res.locals.local_config = Config.getLocalconfig(); // config for browser context
 
     next();
   });
@@ -117,8 +117,8 @@ module.exports = function(crowi, app) {
       return next();
     }
 
-    const basicName = configManager.getConfig('crowi', 'security:basicName');
-    const basicSecret = configManager.getConfig('crowi', 'security:basicSecret');
+    const basicName = getConfig('crowi', 'security:basicName');
+    const basicSecret = getConfig('crowi', 'security:basicSecret');
     if (basicName && basicSecret) {
       return basicAuth(basicName, basicSecret)(req, res, next);
     }

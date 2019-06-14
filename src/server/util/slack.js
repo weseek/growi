@@ -48,7 +48,7 @@ module.exports = function(crowi) {
   };
 
   const convertMarkdownToMarkdown = function(body) {
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
 
     return body
       .replace(/\n\*\s(.+)/g, '\n• $1')
@@ -107,7 +107,7 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForPage = function(page, user, channel, updateType, previousRevision) {
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
     let body = page.revision.body;
 
     if (updateType === 'create') {
@@ -142,7 +142,7 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForComment = function(comment, user, channel, path) {
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
     const body = prepareAttachmentTextForComment(comment);
 
     const attachment = {
@@ -169,7 +169,7 @@ module.exports = function(crowi) {
 
   const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
     let text;
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
 
     const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     if (updateType === 'create') {
@@ -183,7 +183,7 @@ module.exports = function(crowi) {
   };
 
   const getSlackMessageTextForComment = function(path, pageId, user) {
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
     const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 

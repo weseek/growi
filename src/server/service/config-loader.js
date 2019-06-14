@@ -218,7 +218,7 @@ class ConfigLoader {
     // merge defaults
     let mergedConfigFromDB = Object.assign({ crowi: this.configModel.getDefaultCrowiConfigsObject() }, configFromDB);
     mergedConfigFromDB = Object.assign({ markdown: this.configModel.getDefaultMarkdownConfigsObject() }, mergedConfigFromDB);
-
+    mergedConfigFromDB = Object.assign({ notification: this.configModel.getDefaultNotificationConfigsObject() }, mergedConfigFromDB);
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
     // So, if a value loaded from the database is emtpy,

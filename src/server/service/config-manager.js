@@ -1,5 +1,4 @@
 const debug = require('debug')('growi:service:ConfigManager');
-const pathUtils = require('growi-commons').pathUtils;
 const ConfigLoader = require('../service/config-loader');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
@@ -20,6 +19,7 @@ class ConfigManager {
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
+    this.configKeys = [];
 
     this.getConfig = this.getConfig.bind(this);
   }
@@ -29,8 +29,10 @@ class ConfigManager {
    */
   async loadConfigs() {
     this.configObject = await this.configLoader.load();
-
     debug('ConfigManager#loadConfigs', this.configObject);
+
+    // cache all config keys
+    this.configKeys = this.getAllConfigKeys();
   }
 
   /**
@@ -54,6 +56,63 @@ class ConfigManager {
   }
 
   /**
+   * get a config specified by namespace and regular expresssion
+   */
+  getConfigByRegExp(namespace, regexp) {
+    const result = {};
+
+    for (const key of this.configKeys) {
+      if (regexp.test(key)) {
+        result[key] = this.getConfig(namespace, key);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * get a config specified by namespace and prefix
+   */
+  getConfigByPrefix(namespace, prefix) {
+    const regexp = new RegExp(`^${prefix}`);
+
+    return this.getConfigByRegExp(namespace, regexp);
+  }
+
+  /**
+   * generate an array of config keys from this.configObject
+   */
+  getAllConfigKeys() {
+    // type: fromDB, fromEnvVars
+    const types = Object.keys(this.configObject);
+    let namespaces = [];
+    let keys = [];
+
+    for (const type of types) {
+      if (this.configObject[type] != null) {
+        // ns: crowi, markdown, notification
+        namespaces = [...namespaces, ...Object.keys(this.configObject[type])];
+      }
+    }
+
+    // remove duplicates
+    namespaces = [...new Set(namespaces)];
+
+    for (const type of types) {
+      for (const ns of namespaces) {
+        if (this.configObject[type][ns] != null) {
+          keys = [...keys, ...Object.keys(this.configObject[type][ns])];
+        }
+      }
+    }
+
+    // remove duplicates
+    keys = [...new Set(keys)];
+
+    return keys;
+  }
+
+  /**
    * get a config specified by namespace & key from configs loaded from the database
    *
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
@@ -71,26 +130,21 @@ class ConfigManager {
     return this.searchOnlyFromEnvVarConfigs(namespace, key);
   }
 
-  /**
-   * get the site url
-   *
-   * If the config for the site url is not set, this returns a message "[The site URL is not set. Please set it!]".
-   *
-   * With version 3.2.3 and below, there is no config for the site URL, so the system always uses auto-generated site URL.
-   * With version 3.2.4 to 3.3.4, the system uses the auto-generated site URL only if the config is not set.
-   * With version 3.3.5 and above, the system use only a value from the config.
-   */
-  /* eslint-disable no-else-return */
-  getSiteUrl() {
-    const siteUrl = this.getConfig('crowi', 'app:siteUrl');
-    if (siteUrl != null) {
-      return pathUtils.removeTrailingSlash(siteUrl);
+  // CONF.RF refactor file-uploader
+  // create parent class and each uploader inherits from it.
+  getIsUploadable() {
+    const method = process.env.FILE_UPLOAD || 'aws';
+
+    if (method === 'aws' && (
+      !this.getConfig('crowi', 'aws:accessKeyId')
+        || !this.getConfig('crowi', 'aws:secretAccessKey')
+        || !this.getConfig('crowi', 'aws:region')
+        || !this.getConfig('crowi', 'aws:bucket'))) {
+      return false;
     }
-    else {
-      return '[The site URL is not set. Please set it!]';
-    }
+
+    return method !== 'none';
   }
-  /* eslint-enable no-else-return */
 
   /**
    * update configs in the same namespace
@@ -149,27 +203,30 @@ class ConfigManager {
    * and then from configs loaded from the environment variables
    */
   defaultSearch(namespace, key) {
+    // does not exist neither in db nor in env vars
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       return undefined;
     }
 
+    // only exists in db
     if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       return this.configObject.fromDB[namespace][key];
     }
 
+    // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
       return this.configObject.fromEnvVars[namespace][key];
     }
 
+    // exists both in db and in env vars [db > env var]
     if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      /* eslint-disable no-else-return */
       if (this.configObject.fromDB[namespace][key] !== null) {
         return this.configObject.fromDB[namespace][key];
       }
+      /* eslint-disable-next-line no-else-return */
       else {
         return this.configObject.fromEnvVars[namespace][key];
       }
-      /* eslint-enable no-else-return */
     }
   }
 

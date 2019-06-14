@@ -38,6 +38,10 @@ function Crowi(rootdir) {
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
+  this.slackNotificationService = null;
+  this.xssService = null;
+  this.aclService = null;
+  this.appService = null;
   this.restQiitaAPIService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -83,6 +87,10 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
+    this.setUpSlacklNotification(),
+    this.setUpXss(),
+    this.setUpAcl(),
+    this.setUpApp(),
     this.setUpRestQiitaAPI(),
   ]);
 };
@@ -435,6 +443,46 @@ Crowi.prototype.setUpGlobalNotification = function() {
   const GlobalNotificationService = require('../service/global-notification');
   if (this.globalNotificationService == null) {
     this.globalNotificationService = new GlobalNotificationService(this);
+  }
+};
+
+/**
+ * setup SlackNotificationService
+ */
+Crowi.prototype.setUpSlacklNotification = function() {
+  const SlackNotificationService = require('../service/slack-notification');
+  if (this.slackNotificationService == null) {
+    this.slackNotificationService = new SlackNotificationService(this.configManager);
+  }
+};
+
+/**
+ * setup XssService
+ */
+Crowi.prototype.setUpXss = function() {
+  const XssService = require('../service/xss');
+  if (this.xssService == null) {
+    this.xssService = new XssService(this.configManager);
+  }
+};
+
+/**
+ * setup AclService
+ */
+Crowi.prototype.setUpAcl = function() {
+  const AclService = require('../service/acl');
+  if (this.aclService == null) {
+    this.aclService = new AclService(this.configManager);
+  }
+};
+
+/**
+ * setup AppService
+ */
+Crowi.prototype.setUpApp = function() {
+  const AppService = require('../service/app');
+  if (this.appService == null) {
+    this.appService = new AppService(this.configManager);
   }
 };
 

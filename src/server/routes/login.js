@@ -222,7 +222,7 @@ module.exports = function(crowi, app) {
                     vars: {
                       createdUser: userData,
                       adminUser,
-                      url: crowi.configManager.getSiteUrl(),
+                      url: crowi.appService.getSiteUrl(),
                       appTitle,
                     },
                   },
