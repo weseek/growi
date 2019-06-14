@@ -26,8 +26,7 @@ module.exports = function(crowi, app) {
   const adminRequired = middlewares.adminRequired;
   const accessTokenParser = middlewares.accessTokenParser;
   const csrf = middlewares.csrfVerify;
-  const config = crowi.getConfig();
-  const Config = crowi.model('Config');
+  const { configManager } = crowi;
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
@@ -42,7 +41,7 @@ module.exports = function(crowi, app) {
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
 
   // switch POST /login route
-  if (Config.isEnabledPassport(config)) {
+  if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
     app.post('/login'                , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
     app.post('/_api/login/testLdap'  , loginRequired() , form.login , loginPassport.testLdapCredentials);
   }
@@ -164,7 +163,7 @@ module.exports = function(crowi, app) {
   app.get('/me/apiToken'              , loginRequired() , me.apiToken);
   app.post('/me'                      , loginRequired() , csrf , form.me.user , me.index);
   // external-accounts
-  if (Config.isEnabledPassport(config)) {
+  if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
     app.get('/me/external-accounts'                         , loginRequired() , me.externalAccounts.list);
     app.post('/me/external-accounts/disassociate'           , loginRequired() , me.externalAccounts.disassociate);
     app.post('/me/external-accounts/associateLdap'          , loginRequired() , form.login , me.externalAccounts.associateLdap);

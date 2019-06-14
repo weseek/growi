@@ -127,7 +127,7 @@ module.exports = function(crowi, app) {
   });
 
   // passport
-  if (Config.isEnabledPassport()) {
+  if (getConfig('crowi', 'security:isEnabledPassport')) {
     debug('initialize Passport');
     app.use(passport.initialize());
     app.use(passport.session());
@@ -143,7 +143,7 @@ module.exports = function(crowi, app) {
   app.use(middlewares.csrfKeyGenerator());
 
   // switch loginChecker
-  if (Config.isEnabledPassport()) {
+  if (getConfig('crowi', 'security:isEnabledPassport')) {
     app.use(middlewares.loginCheckerForPassport);
   }
   else {

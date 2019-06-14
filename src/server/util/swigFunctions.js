@@ -4,8 +4,7 @@ module.exports = function(crowi, app, req, locals) {
   const Page = crowi.model('Page');
   const Config = crowi.model('Config');
   const User = crowi.model('User');
-  const passportService = crowi.passportService;
-  const cdnResourcesService = crowi.cdnResourcesService;
+  const { passportService, cdnResourcesService, configManager } = crowi;
   debug('initializing swigFunctions');
 
   locals.nodeVersion = function() {
@@ -105,8 +104,7 @@ module.exports = function(crowi, app, req, locals) {
    * return true if enabled
    */
   locals.isEnabledPassport = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPassport(config);
+    return configManager.getConfig('crowi', 'security:isEnabledPassport');
   };
 
   /**
@@ -121,16 +119,22 @@ module.exports = function(crowi, app, req, locals) {
    * return true if enabled and strategy has been setup successfully
    */
   locals.isLdapSetup = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPassport(config) && Config.isEnabledPassportLdap(config) && passportService.isLdapStrategySetup;
+    return (
+      configManager.getConfig('crowi', 'security:isEnabledPassport')
+      && configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      && passportService.isLdapStrategySetup
+    );
   };
 
   /**
    * return true if enabled but strategy has some problem
    */
   locals.isLdapSetupFailed = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPassport(config) && Config.isEnabledPassportLdap(config) && !passportService.isLdapStrategySetup;
+    return (
+      configManager.getConfig('crowi', 'security:isEnabledPassport')
+      && configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      && !passportService.isLdapStrategySetup
+    );
   };
 
   locals.passportSamlLoginEnabled = function() {
@@ -154,28 +158,27 @@ module.exports = function(crowi, app, req, locals) {
       return false;
     }
 
-    const config = crowi.getConfig();
-    return config.crowi['google:clientId'] && config.crowi['google:clientSecret'];
+    const configManager = crowi.configManager;
+    return (
+      configManager.getConfig('crowi', 'google:clientId')
+      && configManager.getConfig('crowi', 'google:clientSecret')
+    );
   };
 
   locals.passportGoogleLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-google:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-google:isEnabled');
   };
 
   locals.passportGitHubLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-github:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-github:isEnabled');
   };
 
   locals.passportTwitterLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-twitter:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
   };
 
   locals.passportOidcLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-oidc:isEnabled'];
+    return locals.isEnabledPassport() && configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
   };
 
   locals.searchConfigured = function() {

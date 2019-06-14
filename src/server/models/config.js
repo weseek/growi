@@ -314,36 +314,6 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
-  configSchema.statics.isEnabledPassport = function() {
-    const key = 'security:isEnabledPassport';
-    return getValueForCrowiNS(null, key);
-  };
-
-  configSchema.statics.isEnabledPassportLdap = function(config) {
-    const key = 'security:passport-ldap:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledPassportGoogle = function(config) {
-    const key = 'security:passport-google:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledPassportGitHub = function(config) {
-    const key = 'security:passport-github:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledPassportTwitter = function(config) {
-    const key = 'security:passport-twitter:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledPassportOidc = function(config) {
-    const key = 'security:passport-oidc:isEnabled';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isUploadable = function(config) {
     const method = process.env.FILE_UPLOAD || 'aws';
 
@@ -360,26 +330,17 @@ module.exports = function(crowi) {
 
   configSchema.statics.isGuestAllowedToRead = function(config) {
     // return true if puclic wiki mode
-    if (Config.isPublicWikiOnly(config)) {
+    if (crowi.aclService.getIsPublicWikiOnly()) {
       return true;
     }
 
+    const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
     // return false if undefined
-    if (undefined === config.crowi || undefined === config.crowi['security:restrictGuestMode']) {
+    if (undefined === config.crowi || undefined === restrictGuestMode) {
       return false;
     }
 
-    return SECURITY_RESTRICT_GUEST_MODE_READONLY === config.crowi['security:restrictGuestMode'];
-  };
-
-  configSchema.statics.hidePagesRestrictedByOwnerInList = function(config) {
-    const key = 'security:list-policy:hideRestrictedByOwner';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.hidePagesRestrictedByGroupInList = function(config) {
-    const key = 'security:list-policy:hideRestrictedByGroup';
-    return getValueForCrowiNS(config, key);
+    return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
   };
 
   configSchema.statics.isEnabledPlugins = function(config) {
