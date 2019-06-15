@@ -38,7 +38,6 @@ module.exports = function(crowi) {
     // overwrite
     config['app:installed'] = true;
     config['app:fileUpload'] = true;
-    config['security:isEnabledPassport'] = true;
     config['customize:behavior'] = 'growi';
     config['customize:layout'] = 'growi';
     config['customize:isSavedStatesOfTabChanges'] = false;
