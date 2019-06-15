@@ -133,15 +133,15 @@ module.exports = function(crowi) {
       'markdown:isEnabledLinebreaks': false,
       'markdown:isEnabledLinebreaksInComments': true,
       'markdown:presentation:pageBreakSeparator': 1,
-      'markdown:presentation:pageBreakCustomSeparator': '',
+      'markdown:presentation:pageBreakCustomSeparator': undefined,
     };
   }
 
   function getDefaultNotificationConfigs() {
     return {
       'slack:isIncomingWebhookPrioritized': false,
-      'slack:incomingWebhookUrl': '',
-      'slack:token': '',
+      'slack:incomingWebhookUrl': undefined,
+      'slack:token': undefined,
     };
   }
 
