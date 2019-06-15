@@ -473,11 +473,6 @@ module.exports = function(crowi) {
     return crowi.xss.process(customTitle);
   };
 
-  configSchema.statics.layoutType = function(config) {
-    const key = 'customize:layout';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.highlightJsStyle = function(config) {
     const key = 'customize:highlightJsStyle';
     return getValueForCrowiNS(config, key);

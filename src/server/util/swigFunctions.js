@@ -234,8 +234,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.layoutType = function() {
-    const config = crowi.getConfig();
-    return Config.layoutType(config);
+    return configManager.getConfig('crowi', 'customize:layout');
   };
 
   locals.highlightJsStyle = function() {
