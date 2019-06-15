@@ -254,11 +254,6 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isUploadable(config);
   };
 
-  locals.isEnabledAttachTitleHeader = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledAttachTitleHeader(config);
-  };
-
   locals.parentPath = function(path) {
     if (path === '/') {
       return path;

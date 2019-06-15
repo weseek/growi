@@ -473,21 +473,6 @@ module.exports = function(crowi) {
     return crowi.xss.process(customTitle);
   };
 
-  configSchema.statics.isSavedStatesOfTabChanges = function(config) {
-    const key = 'customize:isSavedStatesOfTabChanges';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledAttachTitleHeader = function(config) {
-    const key = 'customize:isEnabledAttachTitleHeader';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.showRecentCreatedNumber = function(config) {
-    const key = 'customize:showRecentCreatedNumber';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.fileUploadEnabled = function(config) {
     const Config = this;
 
