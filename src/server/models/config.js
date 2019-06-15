@@ -455,11 +455,6 @@ module.exports = function(crowi) {
     return this._customScript;
   };
 
-  configSchema.statics.customHeader = function(config) {
-    const key = 'customize:header';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.customTitle = function(config, page) {
     validateCrowi();
 

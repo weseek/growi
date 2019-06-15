@@ -221,8 +221,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.customHeader = function() {
-    const config = crowi.getConfig();
-    return Config.customHeader(config);
+    return configManager.getConfig('crowi', 'customize:header') || '';
   };
 
   locals.customTitle = function(page) {
