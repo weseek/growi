@@ -3,18 +3,11 @@
 {% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
 
 {% block theme_css_block %}
-  {% if 'kibela' === layoutType() %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
-    {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
-    {% endif %}
+  {% set themeName = getConfig('crowi', 'customize:theme') %}
+  {% if env === 'development' %}
+    <script src="{{ webpack_asset('styles/theme-' + themeName + '.js') }}"></script>
   {% else %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
-    {% else %}
-    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
-    {% endif %}
+  <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + themeName + '.css') }}">
   {% endif %}
 {% endblock %}
 

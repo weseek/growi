@@ -460,11 +460,6 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
-  configSchema.statics.theme = function(config) {
-    const key = 'customize:theme';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.customTitle = function(config, page) {
     validateCrowi();
 

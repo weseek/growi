@@ -40,11 +40,12 @@
 
   <!-- styles -->
   {% include '../widget/headers/styles-for-app.html' %}
-  {% if 'kibela' === layoutType() %}
+  {% if 'kibela' === getConfig('crowi', 'customize:layout') %}
     {% include '../widget/headers/styles-theme-kibela.html' %}
   {% else %}
     {% block theme_css_block %}
-      {% include '../widget/headers/styles-theme.html' with {theme: theme()} %}
+      {% set themeName = getConfig('crowi', 'customize:theme') %}
+      {% include '../widget/headers/styles-theme.html' with {themeName: themeName} %}
     {% endblock %}
   {% endif %}
 

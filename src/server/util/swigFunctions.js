@@ -225,11 +225,6 @@ module.exports = function(crowi, app, req, locals) {
     return Config.customHeader(config);
   };
 
-  locals.theme = function() {
-    const config = crowi.getConfig();
-    return Config.theme(config);
-  };
-
   locals.customTitle = function(page) {
     const config = crowi.getConfig();
     return Config.customTitle(config, page);
