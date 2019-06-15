@@ -1,59 +1,122 @@
-{% extends 'layout/layout.html' %}
+<!DOCTYPE html>
+<html>
+{% block html_head %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>{{ customTitle(t('installer.setup')) }}</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-{% block html_base_css %}installer nologin{% endblock %}
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-{% block html_title %}{{ customTitle(t('installer.setup')) }}{% endblock %}
+  <meta name="apple-mobile-web-app-title" content="{{ appTitle() }}">
 
-{#
- # Remove default contents
- #}
-{% block html_head_loading_legacy %}
-{% endblock %}
-{% block html_head_loading_app %}
-{% endblock %}
-{% block layout_head_nav %}
-{% endblock %}
-{% block sidebar %}
-{% endblock %}
+  {% include './widget/favicon.html' %}
 
-{% block html_additional_headers %}
-  {% parent %}
+  <!-- polyfills for IE11 -->
+  <script>
+    var userAgent = window.navigator.userAgent.toLowerCase();
+    if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
+      var scriptElement = document.createElement('script');
+      scriptElement.src = '{{ webpack_asset("js/ie11-polyfill.js") }}';
+      var headElement = document.getElementsByTagName('head')[0];
+      headElement.appendChild(scriptElement);
+    }
+  </script>
+
+  {{ cdnScriptTagsByGroup('basis') }}
+
+  {% if env === 'development' %}
+    <script src="/dll/dll.js"></script>
+    <script src="{{ webpack_asset('js/dev.js') }}" async></script>
+    <!-- Browsersync -->
+    <script id="__bs_script__">//<![CDATA[
+      document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
+    //]]></script>
+  {% endif %}
+
+  <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
+
+  <!-- styles -->
+  {% block style_css_block %}
+    {% if env === 'development' %}
+      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
+      <script src="{{ webpack_asset('styles/style-app.js') }}"></script>
+    {% else %}
+      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
+      <link rel="stylesheet" href="{{ webpack_asset('styles/style-app.css') }}">
+    {% endif %}
+  {% endblock %}
+  {% block theme_css_block %}
+    {% if env === 'development' %}
+      <script src="{{ webpack_asset('styles/theme-default.js') }}"></script>
+    {% else %}
+      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-default.css') }}">
+    {% endif %}
+  {% endblock %}
+
+  {{ cdnStyleTagsByGroup('basis') }}
+
   <script src="{{ webpack_asset('js/installer.js') }}" defer></script>
+
+</head>
 {% endblock %}
 
-{% block layout_main %}
+{% block html_body %}
+<body
+  class="main-container content-wrapper installer nologin growi"
+  {% block html_base_attr %}{% endblock %}
+  data-csrftoken="{{ csrf() }}"
+ >
 
-<div class="main container-fluid">
+<div id="wrapper">
 
-  <div class="row">
+  <!-- Page Content -->
+  <div id="page-wrapper">
+    <div class="main container-fluid">
 
-    <div class="login-header col-sm-offset-4 col-sm-4">
-      <div class="logo">{% include 'widget/logo.html' %}</div>
-      <h1>GROWI</h1>
+      <div class="row">
 
-      <div class="login-form-errors">
-        {% if req.form.errors.length > 0 %}
-        <div class="alert alert-danger">
-          <ul>
-          {% for error in req.form.errors %}
-            <li>{{ error }}</li>
-          {% endfor %}
-          </ul>
+        <div class="login-header col-sm-offset-4 col-sm-4">
+          <div class="logo">{% include 'widget/logo.html' %}</div>
+          <h1>GROWI</h1>
+
+          <div class="login-form-errors">
+            {% if req.form.errors.length > 0 %}
+            <div class="alert alert-danger">
+              <ul>
+              {% for error in req.form.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+          </div>
         </div>
-        {% endif %}
-      </div>
+
+        <div id='installer-form'
+          data-user-name="{{ req.body.registerForm.username }}"
+          data-name="{{ googleName|default(req.body.registerForm.name) }}"
+          data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
+          data-csrf="{{ csrf() }}">
+        </div>
+
+      </div>{# /.row #}
+
     </div>
+  </div><!-- /#page-wrapper -->
 
-    <div id='installer-form'
-      data-user-name="{{ req.body.registerForm.username }}"
-      data-name="{{ googleName|default(req.body.registerForm.name) }}"
-      data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
-      data-csrf="{{ csrf() }}">
-    </div>
+</div><!-- /#wrapper -->
 
-  </div>{# /.row #}
-
-</div>{# /.main #}
-
+{% block body_end %}
+{% endblock %}
+</body>
 {% endblock %}
 
+<script type="application/json" id="crowi-context-hydrate">
+{{ local_config|json|safe|preventXss }}
+</script>
+
+</html>
