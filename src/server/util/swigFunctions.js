@@ -246,8 +246,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.isEnabledTimeline = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledTimeline(config);
+    return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
   };
 
   locals.isUploadable = function() {

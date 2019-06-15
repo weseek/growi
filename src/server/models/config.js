@@ -473,11 +473,6 @@ module.exports = function(crowi) {
     return crowi.xss.process(customTitle);
   };
 
-  configSchema.statics.isEnabledTimeline = function(config) {
-    const key = 'customize:isEnabledTimeline';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isSavedStatesOfTabChanges = function(config) {
     const key = 'customize:isSavedStatesOfTabChanges';
     return getValueForCrowiNS(config, key);
