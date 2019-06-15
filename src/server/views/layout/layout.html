@@ -12,88 +12,39 @@
 
   <meta name="apple-mobile-web-app-title" content="{{ appTitle() }}">
 
-  {% include '../widget/favicon.html' %}
-
-  {{ customHeader() }}
-
-  <!-- polyfills for IE11 -->
-  <script>
-    var userAgent = window.navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
-      var scriptElement = document.createElement('script');
-      scriptElement.src = '{{ webpack_asset("js/ie11-polyfill.js") }}';
-      var headElement = document.getElementsByTagName('head')[0];
-      headElement.appendChild(scriptElement);
-    }
-  </script>
+  {% include '../widget/headers/favicon.html' %}
+  {% include '../widget/headers/ie11-polyfills.html' %}
 
   {{ cdnScriptTagsByGroup('basis') }}
 
   {% if local_config.env.MATHJAX %}
-    <!-- Mathjax -->
-    <script type="text/x-mathjax-config" async>
-      MathJax.Hub.Config({
-        skipStartupTypeset: true,
-        extensions: ["tex2jax.js"],
-        jax: ["input/TeX", "output/SVG"],
-        tex2jax: {
-          processEscapes: true
-        },
-        showMathMenu: false,
-        showMathMenuMSIE: false,
-        showProcessingMessages: false,
-        messageStyle: "none"
-      });
-    </script>
-    {{ cdnScriptTag('mathjax') }}
+    {% include '../widget/headers/mathjax.html' %}
   {% endif %}
 
-  {% if env === 'development' %}
-    <script src="/dll/dll.js"></script>
-    <script src="{{ webpack_asset('js/dev.js') }}" async></script>
-    <!-- Browsersync -->
-    <script id="__bs_script__">//<![CDATA[
-      document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
-    //]]></script>
-  {% endif %}
+  {% include '../widget/headers/scripts-for-dev.html' %}
 
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
+
   {% if isEnabledPlugins() %}
-  <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
+    <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
-  <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
+    <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
   {% endblock %}
   {% block html_head_loading_app %}
-  <script src="{{ webpack_asset('js/app.js') }}" defer></script>
+    <script src="{{ webpack_asset('js/app.js') }}" defer></script>
   {% endblock %}
 
   <!-- styles -->
-  {% block style_css_block %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
-      <script src="{{ webpack_asset('styles/style-app.js') }}"></script>
-    {% else %}
-      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
-      <link rel="stylesheet" href="{{ webpack_asset('styles/style-app.css') }}">
-    {% endif %}
-  {% endblock %}
-  {% block theme_css_block %}
-    {% if 'kibela' === layoutType() %}
-      {% if env === 'development' %}
-        <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
-      {% else %}
-        <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
-      {% endif %}
-    {% else %}
-      {% if env === 'development' %}
-        <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
-      {% else %}
-        <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
-      {% endif %}
-    {% endif %}
-  {% endblock %}
+  {% include '../widget/headers/styles-for-app.html' %}
+  {% if 'kibela' === layoutType() %}
+    {% include '../widget/headers/styles-theme-kibela.html' %}
+  {% else %}
+    {% block theme_css_block %}
+      {% include '../widget/headers/styles-theme.html' with {theme: theme()} %}
+    {% endblock %}
+  {% endif %}
 
   {{ cdnStyleTagsByGroup('basis') }}
   {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}

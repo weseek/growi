@@ -12,49 +12,20 @@
 
   <meta name="apple-mobile-web-app-title" content="{{ appTitle() }}">
 
-  {% include './widget/favicon.html' %}
-
-  <!-- polyfills for IE11 -->
-  <script>
-    var userAgent = window.navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
-      var scriptElement = document.createElement('script');
-      scriptElement.src = '{{ webpack_asset("js/ie11-polyfill.js") }}';
-      var headElement = document.getElementsByTagName('head')[0];
-      headElement.appendChild(scriptElement);
-    }
-  </script>
+  {% include './widget/headers/favicon.html' %}
+  {% include './widget/headers/ie11-polyfills.html' %}
 
   {{ cdnScriptTagsByGroup('basis') }}
 
-  {% if env === 'development' %}
-    <script src="/dll/dll.js"></script>
-    <script src="{{ webpack_asset('js/dev.js') }}" async></script>
-    <!-- Browsersync -->
-    <script id="__bs_script__">//<![CDATA[
-      document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
-    //]]></script>
-  {% endif %}
+  {% include './widget/headers/scripts-for-dev.html' %}
 
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
 
   <!-- styles -->
-  {% block style_css_block %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
-      <script src="{{ webpack_asset('styles/style-app.js') }}"></script>
-    {% else %}
-      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
-      <link rel="stylesheet" href="{{ webpack_asset('styles/style-app.css') }}">
-    {% endif %}
-  {% endblock %}
+  {% include './widget/headers/styles-for-app.html' %}
   {% block theme_css_block %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/theme-default.js') }}"></script>
-    {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-default.css') }}">
-    {% endif %}
+    {% include './widget/headers/styles-theme.html' with {theme: 'default'} %}
   {% endblock %}
 
   {{ cdnStyleTagsByGroup('basis') }}
