@@ -52,7 +52,7 @@ module.exports = function(crowi) {
     /* eslint-disable key-spacing */
     return {
       'app:installed'     : false,
-      'app:confidential'  : '',
+      'app:confidential'  : undefined,
 
       'app:fileUpload'    : false,
       'app:globalLang'    : 'en-US',
@@ -88,24 +88,24 @@ module.exports = function(crowi) {
 
       'aws:bucket'          : 'growi',
       'aws:region'          : 'ap-northeast-1',
-      'aws:accessKeyId'     : '',
-      'aws:secretAccessKey' : '',
+      'aws:accessKeyId'     : undefined,
+      'aws:secretAccessKey' : undefined,
 
-      'mail:from'         : '',
-      'mail:smtpHost'     : '',
-      'mail:smtpPort'     : '',
-      'mail:smtpUser'     : '',
-      'mail:smtpPassword' : '',
+      'mail:from'         : undefined,
+      'mail:smtpHost'     : undefined,
+      'mail:smtpPort'     : undefined,
+      'mail:smtpUser'     : undefined,
+      'mail:smtpPassword' : undefined,
 
-      'google:clientId'     : '',
-      'google:clientSecret' : '',
+      'google:clientId'     : undefined,
+      'google:clientSecret' : undefined,
 
       'plugin:isEnabledPlugins' : true,
 
-      'customize:css' : '',
-      'customize:script' : '',
-      'customize:header' : '',
-      'customize:title' : '',
+      'customize:css' : undefined,
+      'customize:script' : undefined,
+      'customize:header' : undefined,
+      'customize:title' : undefined,
       'customize:highlightJsStyle' : 'github',
       'customize:highlightJsStyleBorder' : false,
       'customize:theme' : 'default',
@@ -116,10 +116,10 @@ module.exports = function(crowi) {
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
 
-      'importer:esa:team_name': '',
-      'importer:esa:access_token': '',
-      'importer:qiita:team_name': '',
-      'importer:qiita:access_token': '',
+      'importer:esa:team_name': undefined,
+      'importer:esa:access_token': undefined,
+      'importer:qiita:team_name': undefined,
+      'importer:qiita:access_token': undefined,
     };
     /* eslint-enable key-spacing */
   }
