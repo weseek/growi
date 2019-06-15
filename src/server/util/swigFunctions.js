@@ -230,8 +230,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.behaviorType = function() {
-    const config = crowi.getConfig();
-    return Config.behaviorType(config);
+    return configManager.getConfig('crowi', 'customize:behavior');
   };
 
   locals.layoutType = function() {

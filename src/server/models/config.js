@@ -473,11 +473,6 @@ module.exports = function(crowi) {
     return crowi.xss.process(customTitle);
   };
 
-  configSchema.statics.behaviorType = function(config) {
-    const key = 'customize:behavior';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.layoutType = function(config) {
     const key = 'customize:layout';
     return getValueForCrowiNS(config, key);
