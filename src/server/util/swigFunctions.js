@@ -238,13 +238,11 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.highlightJsStyle = function() {
-    const config = crowi.getConfig();
-    return Config.highlightJsStyle(config);
+    return configManager.getConfig('crowi', 'customize:highlightJsStyle');
   };
 
   locals.highlightJsStyleBorder = function() {
-    const config = crowi.getConfig();
-    return Config.highlightJsStyleBorder(config);
+    return configManager.getConfig('crowi', 'customize:highlightJsStyleBorder');
   };
 
   locals.isEnabledTimeline = function() {

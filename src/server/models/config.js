@@ -473,16 +473,6 @@ module.exports = function(crowi) {
     return crowi.xss.process(customTitle);
   };
 
-  configSchema.statics.highlightJsStyle = function(config) {
-    const key = 'customize:highlightJsStyle';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.highlightJsStyleBorder = function(config) {
-    const key = 'customize:highlightJsStyleBorder';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isEnabledTimeline = function(config) {
     const key = 'customize:isEnabledTimeline';
     return getValueForCrowiNS(config, key);
