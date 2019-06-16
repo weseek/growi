@@ -10,6 +10,10 @@ class AppService {
     this.configManager = configManager;
   }
 
+  getAppTitle() {
+    return this.configManager.getConfig('crowi', 'app:title') || 'GROWI';
+  }
+
   /**
    * get the site url
    *
