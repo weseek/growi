@@ -6,7 +6,6 @@
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
-  const uglifycss = require('uglifycss');
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
@@ -428,49 +427,6 @@ module.exports = function(crowi) {
     else {
       return [];
     }
-  };
-
-  /**
-   * initialize custom css strings
-   */
-  configSchema.statics.initCustomCss = function(config) {
-    const key = 'customize:css';
-    const rawCss = getValueForCrowiNS(config, key);
-    // uglify and store
-    this._customCss = uglifycss.processString(rawCss);
-  };
-
-  configSchema.statics.customCss = function(config) {
-    return this._customCss;
-  };
-
-  configSchema.statics.initCustomScript = function(config) {
-    const key = 'customize:script';
-    const rawScript = getValueForCrowiNS(config, key);
-    // store as is
-    this._customScript = rawScript;
-  };
-
-  configSchema.statics.customScript = function(config) {
-    return this._customScript;
-  };
-
-  configSchema.statics.customTitle = function(config, page) {
-    validateCrowi();
-
-    const key = 'customize:title';
-    let customTitle = getValueForCrowiNS(config, key);
-
-    if (customTitle == null || customTitle.trim().length === 0) {
-      customTitle = '{{page}} - {{sitename}}';
-    }
-
-    // replace
-    customTitle = customTitle
-      .replace('{{sitename}}', this.appTitle(config))
-      .replace('{{page}}', page);
-
-    return crowi.xss.process(customTitle);
   };
 
   configSchema.statics.fileUploadEnabled = function(config) {

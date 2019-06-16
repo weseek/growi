@@ -202,10 +202,6 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isEnabledLinebreaksInComments(config);
   };
 
-  locals.customCss = function() {
-    return Config.customCss();
-  };
-
   locals.pageBreakSeparator = function() {
     const config = crowi.getConfig();
     return Config.pageBreakSeparator(config);
@@ -216,8 +212,14 @@ module.exports = function(crowi, app, req, locals) {
     return Config.pageBreakCustomSeparator(config);
   };
 
+  locals.customCss = function() {
+    const customizeService = crowi.customizeService;
+    return customizeService.getCustomCss();
+  };
+
   locals.customScript = function() {
-    return Config.customScript();
+    const customizeService = crowi.customizeService;
+    return customizeService.getCustomScript();
   };
 
   locals.customHeader = function() {
@@ -225,8 +227,8 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.customTitle = function(page) {
-    const config = crowi.getConfig();
-    return Config.customTitle(config, page);
+    const customizeService = crowi.customizeService;
+    return customizeService.generateCustomTitle(page);
   };
 
   locals.behaviorType = function() {

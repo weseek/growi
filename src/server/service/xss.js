@@ -1,4 +1,6 @@
 const logger = require('@alias/logger')('growi:service:XssSerivce'); // eslint-disable-line no-unused-vars
+
+const Xss = require('@commons/service/xss');
 const { tags, attrs } = require('@commons/service/xss/recommended-whitelist');
 
 /**
@@ -8,6 +10,12 @@ class XssSerivce {
 
   constructor(configManager) {
     this.configManager = configManager;
+
+    this.xss = new Xss();
+  }
+
+  process(value) {
+    return this.xss.process(value);
   }
 
   getTagWhiteList() {

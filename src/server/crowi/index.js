@@ -78,6 +78,8 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupSessionConfig();
   await this.setupConfigManager();
+  await this.setUpApp();
+  await this.setUpXss();
 
   await Promise.all([
     this.scanRuntimeVersions(),
@@ -88,9 +90,8 @@ Crowi.prototype.init = async function() {
     this.setupCsrf(),
     this.setUpGlobalNotification(),
     this.setUpSlacklNotification(),
-    this.setUpXss(),
     this.setUpAcl(),
-    this.setUpApp(),
+    this.setUpCustomize(), // depends on AppService and XssService
     this.setUpRestQiitaAPI(),
   ]);
 };
@@ -470,6 +471,18 @@ Crowi.prototype.setUpAcl = function() {
   const AclService = require('../service/acl');
   if (this.aclService == null) {
     this.aclService = new AclService(this.configManager);
+  }
+};
+
+/**
+ * setup CustomizeService
+ */
+Crowi.prototype.setUpCustomize = function() {
+  const CustomizeService = require('../service/customize');
+  if (this.customizeService == null) {
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService, this.model('Config'));
+    this.customizeService.initCustomCss();
+    this.customizeService.initCustomTitle();
   }
 };
 
