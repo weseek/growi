@@ -480,7 +480,7 @@ Crowi.prototype.setUpAcl = function() {
 Crowi.prototype.setUpCustomize = function() {
   const CustomizeService = require('../service/customize');
   if (this.customizeService == null) {
-    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService, this.model('Config'));
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
     this.customizeService.initCustomCss();
     this.customizeService.initCustomTitle();
   }

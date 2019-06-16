@@ -5,13 +5,10 @@ const logger = require('@alias/logger')('growi:service:CustomizeService'); // es
  */
 class CustomizeService {
 
-  constructor(configManager, appService, xssService, Config) {
+  constructor(configManager, appService, xssService) {
     this.configManager = configManager;
     this.appService = appService;
     this.xssService = xssService;
-
-    // === TODO remove after GC-2004
-    this.Config = Config;
   }
 
   /**
@@ -47,9 +44,7 @@ class CustomizeService {
   generateCustomTitle(page) {
     // replace
     const customTitle = this.customTitleTemplate
-      .replace('{{sitename}}', this.Config.appTitle())
-      // === TODO fix after refactoring AppService (GC-2004)
-      // .replace('{{sitename}}', this.appService.getAppTitle())
+      .replace('{{sitename}}', this.appService.getAppTitle())
       .replace('{{page}}', page);
 
     return this.xssService.process(customTitle);
