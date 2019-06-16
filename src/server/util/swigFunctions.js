@@ -42,17 +42,17 @@ module.exports = function(crowi, app, req, locals) {
   /**
    * @see ConfigManager#getConfig
    */
-  locals.getConfig = configManager.getConfig;
+  locals.getConfig = configManager.getConfig.bind(configManager);
 
   /**
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  locals.getConfigFromDB = configManager.getConfigFromDB;
+  locals.getConfigFromDB = configManager.getConfigFromDB.bind(configManager);
 
   /**
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars;
+  locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
    * return app title
