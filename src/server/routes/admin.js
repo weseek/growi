@@ -861,7 +861,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.appSetting = function(req, res) {
+  actions.api.appSetting = async function(req, res) {
     const form = req.form.settingForm;
 
     if (req.form.isValid) {
@@ -880,7 +880,8 @@ module.exports = function(crowi, app) {
         });
       }
       else {
-        return saveSetting(req, res, form);
+        await configManager.updateConfigsInTheSameNamespace('crowi', form);
+        return res.json({ status: true });
       }
     }
     else {
@@ -898,7 +899,7 @@ module.exports = function(crowi, app) {
     debug('form content', form);
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
       return res.json({ status: true });
     }
     catch (err) {
@@ -930,7 +931,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
       return res.json({ status: true });
     }
     catch (err) {
@@ -947,7 +948,7 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    return saveSettingAsync(form)
+    return configManager.updateConfigsInTheSameNamespace('crowi', form)
       .then(() => {
         // reset strategy
         crowi.passportService.resetLdapStrategy();
@@ -972,12 +973,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetSamlStrategy();
     // setup strategy
-    if (crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled')) {
+    if (configManager.getConfig('crowi', 'security:passport-saml:isEnabled')) {
       try {
         await crowi.passportService.setupSamlStrategy(true);
       }
@@ -999,7 +1000,7 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetGoogleStrategy();
@@ -1026,7 +1027,7 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetGitHubStrategy();
@@ -1053,7 +1054,7 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetTwitterStrategy();
@@ -1080,7 +1081,7 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetOidcStrategy();
@@ -1375,25 +1376,6 @@ module.exports = function(crowi, app) {
     });
   }
 
-  /**
-   * save settings, update config cache ONLY. (this method don't response json)
-   *
-   * @param {any} form
-   * @returns
-   */
-  function saveSettingAsync(form) {
-    return new Promise((resolve, reject) => {
-      Config.updateNamespaceByArray('crowi', form, (err, config) => {
-        if (err) {
-          return reject(err);
-        }
-
-        Config.updateConfigCache('crowi', config);
-        return resolve();
-      });
-    });
-  }
-
   function validateMailSetting(req, form, callback) {
     const mailer = crowi.mailer;
     const option = {
@@ -1430,7 +1412,7 @@ module.exports = function(crowi, app) {
   function validateSamlSettingForm(form, t) {
     for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
       const formValue = form.settingForm[key];
-      if (crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
+      if (configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
         const formItemName = t(`security_setting.form_item_name.${key}`);
         form.errors.push(t('form_validation.required', formItemName));
       }

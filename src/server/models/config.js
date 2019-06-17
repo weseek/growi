@@ -341,11 +341,6 @@ module.exports = function(crowi) {
     return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
   };
 
-  configSchema.statics.isEnabledPlugins = function(config) {
-    const key = 'plugin:isEnabledPlugins';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isEnabledLinebreaks = function(config) {
     const key = 'markdown:isEnabledLinebreaks';
     return getValueForMarkdownNS(config, key);

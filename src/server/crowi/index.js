@@ -78,8 +78,13 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupSessionConfig();
   await this.setupConfigManager();
-  await this.setUpApp();
-  await this.setUpXss();
+
+  // customizeService depends on AppService and XssService
+  // passportService depends on appService
+  await Promise.all([
+    this.setUpApp(),
+    this.setUpXss(),
+  ]);
 
   await Promise.all([
     this.scanRuntimeVersions(),
@@ -91,7 +96,7 @@ Crowi.prototype.init = async function() {
     this.setUpGlobalNotification(),
     this.setUpSlacklNotification(),
     this.setUpAcl(),
-    this.setUpCustomize(), // depends on AppService and XssService
+    this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
   ]);
 };
@@ -383,8 +388,7 @@ Crowi.prototype.buildServer = function() {
   require('./express-init')(this, express);
 
   // import plugins
-  const Config = this.model('Config');
-  const isEnabledPlugins = Config.isEnabledPlugins(this.config);
+  const isEnabledPlugins = this.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
   if (isEnabledPlugins) {
     debug('Plugins are enabled');
     const PluginService = require('../plugins/plugin.service');

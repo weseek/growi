@@ -27,9 +27,8 @@
 
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
-
-  {% if isEnabledPlugins() %}
-    <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
+  {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}
+  <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
     <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
@@ -66,7 +65,7 @@
       {% if !layoutType() || 'crowi' === layoutType() %}crowi{% elseif !layoutType() || 'kibela' === layoutType() %}kibela{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"
-  data-plugin-enabled="{{ isEnabledPlugins() }}"
+  data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
   data-current-username="{% if user %}{{ user.username }}{% endif %}"

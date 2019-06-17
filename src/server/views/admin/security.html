@@ -217,7 +217,7 @@
 
         <legend>{{ t('security_setting.Authentication mechanism settings') }}</legend>
 
-        {% set isOfficialConfigurationVisible = !isEnabledPassport() %}
+        {% set isOfficialConfigurationVisible = !getConfig('crowi', 'security:isEnabledPassport') %}
         <div class="official-crowi-auth-settings" {% if !isOfficialConfigurationVisible %}style="display: none;"{% endif %}>
           {% set isRestartingServerNeeded = isPassportLocalStrategySetup() %}
           <p class="alert alert-warning"
