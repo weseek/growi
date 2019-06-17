@@ -201,7 +201,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.canDeleteCompletely = function(creatorId) {
     const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:PageCompleteDeletionAuthority');
-    if (pageCompleteDeletionAuthority === 'anyone' || this.admin) {
+    if (!pageCompleteDeletionAuthority || this.admin) {
       return true;
     }
     if (pageCompleteDeletionAuthority === 'adminAndAuthor') {

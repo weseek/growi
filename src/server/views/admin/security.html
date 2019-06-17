@@ -145,7 +145,7 @@
               <select class="form-control selectpicker" name="settingForm[security:PageCompleteDeletionAuthority]" value="{{ configValue }}">
                 <option value="adminOnly" {% if configValue =="adiminOnly" %}selected{% endif %}>AdminOnly</option>
                 <option value="adminAndAuthor" {% if configValue == "adminAndAuthor" %}selected{% endif %}>AdminAndAuthor</option>
-                <option value="anyone" {% if configValue == "anyone"  %}selected{% endif %}>Anyone</option>
+                <option value=null {% if configValue == null  %}selected{% endif %}>Anyone</option>
               </select>
 
               <p class="help-block small">
