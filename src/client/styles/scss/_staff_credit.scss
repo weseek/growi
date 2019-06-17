@@ -1,0 +1,93 @@
+// Staff Credit
+#staff-credit {
+  // see https://css-tricks.com/old-timey-terminal-styling/
+  @mixin old-timey-terminal-styling() {
+    text-shadow: 0 0 10px #c8c8c8;
+    background-color: black;
+    background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      content: '';
+      background: repeating-linear-gradient(0deg, rgba(black, 0.15), rgba(black, 0.15) 2px, transparent 2px, transparent 4px);
+    }
+  }
+
+  font-family: 'Press Start 2P', $basefont1;
+  color: white;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Press Start 2P', $basefont1;
+    color: white;
+  }
+
+  $credit-length: -200em;
+
+  // see https://css-tricks.com/old-timey-terminal-styling/
+  .credit-curtain {
+    position: fixed;
+    top: 10vh;
+    left: 20vh;
+    width: 80vw;
+    height: 80vh;
+    overflow-y: hidden;
+
+    @include old-timey-terminal-styling();
+  }
+
+  .credit-body {
+    position: relative;
+    top: $credit-length;
+    animation-name: Credit;
+    // credit duration
+    animation-duration: 20s;
+    animation-timing-function: linear;
+  }
+
+  @keyframes Credit {
+    from {
+      top: 100%;
+    }
+    to {
+      // credit length
+      top: $credit-length;
+    }
+  }
+
+  h1 {
+    font-size: 3em;
+  }
+
+  h2 {
+    font-size: 2.2em;
+  }
+
+  .dev-position {
+    font-size: 1em;
+  }
+
+  .dev-name {
+    font-size: 1.8em;
+  }
+
+  .staff-credit-mt-10 {
+    margin-top: 6rem;
+  }
+
+  .staff-credit-mb-10 {
+    margin-bottom: 6rem;
+  }
+
+  .staff-credit-my-10 {
+    @extend .staff-credit-mt-10;
+    @extend .staff-credit-mb-10;
+  }
+}

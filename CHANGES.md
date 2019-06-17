@@ -1,11 +1,29 @@
 # CHANGES
 
-## 3.4.8-RC
+## 3.5.0-RC
+
+### BREAKING CHANGES
+
+* GROWI no longer supports [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+
+### Updates
 
 * Feature: Comment Thread
+* Feature: OpenID Connect authentication
+* Feature: Staff Credits with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
 * Improvement Draft list
+* Fix: Deleting page completely
+* Fix: Search with `prefix:` param with CJK pathname
+* I18n: User Management Details
+* I18n: Group Management Details
 * Support: Apply unstated
 * Support: Upgrade libs
+    * async
+    * axios
+    * file-loader
+    * googleapis
+    * i18next
+    * migrate-mongo
     * mini-css-extract-plugin
     * null-loader
 

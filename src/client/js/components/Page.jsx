@@ -1,15 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import EditorContainer from '../services/EditorContainer';
 
 import MarkdownTable from '../models/MarkdownTable';
 
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import mtu from './PageEditor/MarkdownTableUtil';
+
+const logger = loggerFactory('growi:Page');
 
 class Page extends React.Component {
 
@@ -25,6 +29,10 @@ class Page extends React.Component {
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
   }
 
+  componentWillMount() {
+    this.props.appContainer.registerComponentInstance('Page', this);
+  }
+
   /**
    * launch HandsontableModal with data specified by arguments
    * @param beginLineNumber
@@ -37,15 +45,33 @@ class Page extends React.Component {
     this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
-  saveHandlerForHandsontableModal(markdownTable) {
+  async saveHandlerForHandsontableModal(markdownTable) {
+    const { pageContainer, editorContainer } = this.props;
+
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
       this.props.pageContainer.state.markdown,
       this.state.currentTargetTableArea.beginLineNumber,
       this.state.currentTargetTableArea.endLineNumber,
     );
-    this.props.onSaveWithShortcut(newMarkdown);
-    this.setState({ currentTargetTableArea: null });
+
+    try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(newMarkdown);
+      logger.debug('success to save');
+
+      pageContainer.showSuccessToastr();
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
+    finally {
+      this.setState({ currentTargetTableArea: null });
+    }
   }
 
   render() {
@@ -66,15 +92,14 @@ class Page extends React.Component {
  * Wrapper component for using unstated
  */
 const PageWrapper = (props) => {
-  return createSubscribedElement(Page, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(Page, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 
 Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  onSaveWithShortcut: PropTypes.func.isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 export default PageWrapper;

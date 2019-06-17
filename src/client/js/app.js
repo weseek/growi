@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
-import * as toastr from 'toastr';
 
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
@@ -31,6 +30,7 @@ import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import StaffCredit from './components/StaffCredit/StaffCredit';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 
@@ -76,157 +76,6 @@ appContainer.injectToWindow();
 const i18n = appContainer.i18n;
 
 /**
- * save success handler when reloading is not needed
- * @param {object} page Page instance
- */
-const saveWithShortcutSuccessHandler = function(result) {
-  const { page, tags } = result;
-  const { editorMode } = appContainer.state;
-
-  // show toastr
-  toastr.success(undefined, 'Saved successfully', {
-    closeButton: true,
-    progressBar: true,
-    newestOnTop: false,
-    showDuration: '100',
-    hideDuration: '100',
-    timeOut: '1200',
-    extendedTimeOut: '150',
-  });
-
-  // update state of PageContainer
-  const newState = {
-    pageId: page._id,
-    revisionId: page.revision._id,
-    revisionCreatedAt: new Date(page.revision.createdAt).getTime() / 1000,
-    remoteRevisionId: page.revision._id,
-    revisionIdHackmdSynced: page.revisionHackmdSynced,
-    hasDraftOnHackmd: page.hasDraftOnHackmd,
-    markdown: page.revision.body,
-    tags,
-  };
-  pageContainer.setState(newState);
-
-  // update state of EditorContainer
-  editorContainer.setState({ tags });
-
-  // PageEditor component
-  const pageEditor = appContainer.getComponentInstance('PageEditor');
-  if (pageEditor != null) {
-    if (editorMode !== 'builtin') {
-      pageEditor.updateEditorValue(newState.markdown);
-    }
-  }
-  // PageEditorByHackmd component
-  const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-  if (pageEditorByHackmd != null) {
-    // reset
-    if (editorMode !== 'hackmd') {
-      pageEditorByHackmd.reset();
-    }
-  }
-
-  // hidden input
-  $('input[name="revision_id"]').val(newState.revisionId);
-};
-
-const errorHandler = function(error) {
-  toastr.error(error.message, 'Error occured', {
-    closeButton: true,
-    progressBar: true,
-    newestOnTop: false,
-    showDuration: '100',
-    hideDuration: '100',
-    timeOut: '3000',
-  });
-};
-
-const saveWithShortcut = function(markdown) {
-  const { editorMode } = appContainer.state;
-
-  const { pageId, path } = pageContainer.state;
-  let { revisionId } = pageContainer.state;
-
-  // get options
-  const options = editorContainer.getCurrentOptionsToSave();
-  options.socketClientId = websocketContainer.getCocketClientId();
-  options.pageTags = editorContainer.state.tags;
-
-  if (editorMode === 'hackmd') {
-    // set option to sync
-    options.isSyncRevisionToHackmd = true;
-    revisionId = pageContainer.state.revisionIdHackmdSynced;
-  }
-
-  let promise;
-  if (pageId == null) {
-    promise = appContainer.createPage(path, markdown, options);
-  }
-  else {
-    promise = appContainer.updatePage(pageId, revisionId, markdown, options);
-  }
-
-  promise
-    .then(saveWithShortcutSuccessHandler)
-    .catch(errorHandler);
-};
-
-const saveWithSubmitButtonSuccessHandler = function() {
-  const { path } = pageContainer.state;
-  editorContainer.clearDraft(path);
-  window.location.href = path;
-};
-
-const saveWithSubmitButton = function(submitOpts) {
-  const { editorMode } = appContainer.state;
-  if (editorMode == null) {
-    // do nothing
-    return;
-  }
-
-  const { pageId, path } = pageContainer.state;
-  let { revisionId } = pageContainer.state;
-  // get options
-  const options = editorContainer.getCurrentOptionsToSave();
-  options.socketClientId = websocketContainer.getSocketClientId();
-  options.pageTags = editorContainer.state.tags;
-
-  // set 'submitOpts.overwriteScopesOfDescendants' to options
-  options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
-
-  let promise;
-  if (editorMode === 'hackmd') {
-    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-    // get markdown
-    promise = pageEditorByHackmd.getMarkdown();
-    // use revisionId of PageEditorByHackmd
-    revisionId = pageContainer.state.revisionIdHackmdSynced;
-    // set option to sync
-    options.isSyncRevisionToHackmd = true;
-  }
-  else {
-    const pageEditor = appContainer.getComponentInstance('PageEditor');
-    // get markdown
-    promise = Promise.resolve(pageEditor.getMarkdown());
-  }
-  // create or update
-  if (pageId == null) {
-    promise = promise.then((markdown) => {
-      return appContainer.createPage(path, markdown, options);
-    });
-  }
-  else {
-    promise = promise.then((markdown) => {
-      return appContainer.updatePage(pageId, revisionId, markdown, options);
-    });
-  }
-
-  promise
-    .then(saveWithSubmitButtonSuccessHandler)
-    .catch(errorHandler);
-};
-
-/**
  * define components
  *  key: id of element
  *  value: React Element
@@ -241,10 +90,10 @@ let componentMappings = {
 
   'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
 
-  'page-editor': <PageEditor onSaveWithShortcut={saveWithShortcut} />,
+  'page-editor': <PageEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
-  'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
+  'save-page-controls': <SavePageControls />,
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
@@ -253,7 +102,7 @@ let componentMappings = {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   componentMappings = Object.assign({
-    'page-editor-with-hackmd': <PageEditorByHackmd onSaveWithShortcut={saveWithShortcut} />,
+    'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
     'page-comment-write':  <CommentEditorLazyRenderer />,
@@ -264,12 +113,14 @@ if (pageContainer.state.pageId != null) {
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+
+    'admin-rebuild-search': <AdminRebuildSearch crowi={appContainer} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
-    'page': <Page onSaveWithShortcut={saveWithShortcut} />,
+    'page': <Page />,
     'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={appContainer} />,
     'tag-label':  <TagLabels />,
   }, componentMappings);
@@ -320,13 +171,6 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem,
   );
 }
-const adminRebuildSearchElem = document.getElementById('admin-rebuild-search');
-if (adminRebuildSearchElem != null) {
-  ReactDOM.render(
-    <AdminRebuildSearch crowi={appContainer} />,
-    adminRebuildSearchElem,
-  );
-}
 const adminGrantSelectorElem = document.getElementById('admin-delete-user-group-modal');
 if (adminGrantSelectorElem != null) {
   ReactDOM.render(
@@ -337,6 +181,16 @@ if (adminGrantSelectorElem != null) {
     </I18nextProvider>,
     adminGrantSelectorElem,
   );
+}
+
+// render for stuff credit
+const pageStuffCreditElem = document.getElementById('staff-credit');
+if (pageStuffCreditElem) {
+  ReactDOM.render(
+    <StaffCredit></StaffCredit>,
+    pageStuffCreditElem,
+  );
+
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

@@ -20,6 +20,13 @@ export default class TagContainer extends Container {
   }
 
   /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'TagContainer';
+  }
+
+  /**
    * retrieve tags data
    * !! This method should be invoked after PageContainer and EditorContainer has been initialized !!
    */
@@ -34,7 +41,7 @@ export default class TagContainer extends Container {
 
     const { pageId, templateTagData } = pageContainer.state;
 
-    let tags;
+    let tags = [];
     // when the page exists
     if (pageId != null) {
       const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });

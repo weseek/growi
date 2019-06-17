@@ -19,7 +19,7 @@ function generateAutoNamedProps(instances) {
 
   instances.forEach((instance) => {
     // get class name
-    const className = instance.constructor.name;
+    const className = instance.constructor.getClassName();
     // convert initial charactor to lower case
     const propName = `${className.charAt(0).toLowerCase()}${className.slice(1)}`;
 

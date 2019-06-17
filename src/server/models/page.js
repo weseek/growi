@@ -1165,7 +1165,6 @@ module.exports = function(crowi) {
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
     const Revision = crowi.model('Revision');
-    const PageGroupRelation = crowi.model('PageGroupRelation');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
 
@@ -1177,7 +1176,6 @@ module.exports = function(crowi) {
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
-    await PageGroupRelation.removeAllByPage(pageData);
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }

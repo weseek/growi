@@ -22,6 +22,13 @@ export default class WebsocketContainer extends Container {
 
   }
 
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'WebsocketContainer';
+  }
+
   getWebSocket() {
     return this.socket;
   }

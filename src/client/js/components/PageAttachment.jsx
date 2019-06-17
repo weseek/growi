@@ -49,7 +49,7 @@ class PageAttachment extends React.Component {
   }
 
   checkIfFileInUse(attachment) {
-    const { markdown } = this.pageContainer.state;
+    const { markdown } = this.props.pageContainer.state;
 
     if (markdown.match(attachment.filePathProxied)) {
       return true;

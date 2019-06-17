@@ -14,6 +14,7 @@
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
+  "administrator": "Admin",
   "Tag": "Tag",
   "Tags": "Tags",
   "New": "New",
@@ -25,10 +26,7 @@
   "Page Path": "Page Path",
   "Category": "Category",
   "User": "User",
-  "User Name": "User Name",
-  "User List": "User List",
-  "Add": "Add",
-  "Method": "Method",
+  "status":"Status",
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -51,7 +49,7 @@
 
   "Created": "Created",
   "Last updated": "Updated",
-  "Last Login": "Last Login",
+  "Last_Login": "Last Login",
 
   "Share": "Share",
   "Share Link": "Share Link",
@@ -108,7 +106,7 @@
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
   "Notification Settings": "Notification Settings",
-  "User Management": "User Management",
+  "User_Management": "User Management",
   "External Account management": "External Account management",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
@@ -492,6 +490,9 @@
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",
+    "providerName": "Provider Name",
+    "issuerHost": "Issuer Host",
+    "scope": "Scope",
     "desc_of_callback_URL": "Use it in the setting of the %s provider",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
@@ -578,10 +579,21 @@
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
+      "OIDC": {
+        "name": "OpenID Connect",
+        "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
+        "username_detail": "Specification of mappings for <code>username</code> when creating new users",
+        "name_detail": "Specification of mappings for <code>name</code> when creating new users",
+        "mapping_detail": "Specification of mappings for %s when creating new users",
+        "register_1": "Contant to OIDC IdP Administrator",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_3": "Copy and paste your ClientID and Client Secret above"
+      },
       "how_to": {
         "google": "How to configure Google OAuth?",
         "github": "How to configure GitHub OAuth?",
-        "twitter": "How to configure Twitter OAuth?"
+        "twitter": "How to configure Twitter OAuth?",
+        "oidc": "How to configure OIDC?"
       }
     },
     "form_item_name": {
@@ -678,33 +690,37 @@
   },
 
   "user_management": {
-    "User management": "User management",
-    "invite_users": "Invite new users",
+    "target_user": "Target User",
+    "invite_users": "Invite New Users",
     "emails": "Emails",
     "invite_thru_email": "Send Invitation Email",
     "invite": "Invite",
-    "give_admin_access": "Give admin access",
-    "remove_admin_access": "Remove admin access",
-    "external_account": "External account management",
+    "invited": "User was invited",
+    "give_admin_access": "Give Admin Access",
+    "remove_admin_access": "Remove Admin Access",
+    "external_account": "External Account Management",
     "external_account_list": "External Account List",
     "back_to_user_management": "Back to User Management",
     "authentication_provider": "Authentication Provider",
-    "Manage": "Manage",
-    "Edit menu": "Edit menu",
+    "manage": "Manage",
+    "edit_menu": "Edit Menu",
     "password_setting": "Password Setting",
+    "password_setting_help": "Is password set?",
     "set": "Yes",
     "unset": "No",
-    "password_setting_help": "Show whether the related user has a password set",
-    "Reissue password": "Reissue password",
+    "temporary_password": "The created user has a temporary password",
+    "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+    "send_new_password": "Please send the new password to the user.",
+    "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
+    "reset_password": "Reset Password",
     "related_username": "Related user's <code>%s</code>",
-    "Status":"Status",
     "accept": "Accept",
-    "Deactivate account":"Deactivate account",
+    "deactivate_account":"Deactivate Account",
     "your_own":"You cannot deactivate your own account",
-    "Administrator menu":"Administrator menu",
+    "administrator_menu":"Administrator Menu",
     "cannot_remove":"You cannot remove yourself from administrator",
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
-    "current users": "Current users:"
+    "current_users": "Current users:"
   },
 
   "user_group_management": {

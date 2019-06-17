@@ -25,7 +25,6 @@ module.exports = function(crowi, app) {
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
-
   function createPager(total, limit, page, pagesCount, maxPageList) {
     const pager = {
       page,
@@ -1059,7 +1058,6 @@ module.exports = function(crowi, app) {
     await saveSettingAsync(form);
     const config = await crowi.getConfig();
 
-
     // reset strategy
     await crowi.passportService.resetTwitterStrategy();
     // setup strategy
@@ -1076,6 +1074,36 @@ module.exports = function(crowi, app) {
 
     return res.json({ status: true });
   };
+
+  actions.api.securityPassportOidcSetting = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
+    }
+
+    debug('form content', form);
+    await saveSettingAsync(form);
+    const config = await crowi.getConfig();
+
+
+    // reset strategy
+    await crowi.passportService.resetOidcStrategy();
+    // setup strategy
+    if (Config.isEnabledPassportOidc(config)) {
+      try {
+        await crowi.passportService.setupOidcStrategy(true);
+      }
+      catch (err) {
+        // reset
+        await crowi.passportService.resetOidcStrategy();
+        return res.json({ status: false, message: err.message });
+      }
+    }
+
+    return res.json({ status: true });
+  };
+
   actions.api.customizeSetting = function(req, res) {
     const form = req.form.settingForm;
 

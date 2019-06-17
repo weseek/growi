@@ -350,6 +350,54 @@ module.exports = function(crowi, app) {
     });
   };
 
+  const loginWithOidc = function(req, res, next) {
+    if (!passportService.isOidcStrategySetup) {
+      debug('OidcStrategy has not been set up');
+      req.flash('warningMessage', 'OidcStrategy has not been set up');
+      return next();
+    }
+
+    passport.authenticate('oidc')(req, res);
+  };
+
+  const loginPassportOidcCallback = async(req, res, next) => {
+    const providerId = 'oidc';
+    const strategyName = 'oidc';
+    const attrMapId = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId');
+    const attrMapUserName = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName');
+    const attrMapName = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName');
+    const attrMapMail = crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail');
+
+    let response;
+    try {
+      response = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      debug(err);
+      return loginFailure(req, res, next);
+    }
+
+    const userInfo = {
+      id: response[attrMapId],
+      username: response[attrMapUserName],
+      name: response[attrMapName],
+      email: response[attrMapMail],
+    };
+    debug('mapping response to userInfo', userInfo, response, attrMapId, attrMapUserName, attrMapMail);
+
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    if (!externalAccount) {
+      return loginFailure(req, res, next);
+    }
+
+    // login
+    const user = await externalAccount.getPopulatedUser();
+    req.logIn(user, (err) => {
+      if (err) { return next(err) }
+      return loginSuccess(req, res, user);
+    });
+  };
+
   const loginWithSaml = function(req, res, next) {
     if (!passportService.isSamlStrategySetup) {
       debug('SamlStrategy has not been set up');
@@ -480,10 +528,12 @@ module.exports = function(crowi, app) {
     loginWithGoogle,
     loginWithGitHub,
     loginWithTwitter,
+    loginWithOidc,
     loginWithSaml,
     loginPassportGoogleCallback,
     loginPassportGitHubCallback,
     loginPassportTwitterCallback,
+    loginPassportOidcCallback,
     loginPassportSamlCallback,
   };
 };
