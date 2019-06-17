@@ -32,7 +32,7 @@ class ConfigManager {
     debug('ConfigManager#loadConfigs', this.configObject);
 
     // cache all config keys
-    this.configKeys = this.getAllConfigKeys();
+    this.reloadConfigKeys();
   }
 
   /**
@@ -82,7 +82,7 @@ class ConfigManager {
   /**
    * generate an array of config keys from this.configObject
    */
-  getAllConfigKeys() {
+  getConfigKeys() {
     // type: fromDB, fromEnvVars
     const types = Object.keys(this.configObject);
     let namespaces = [];
@@ -110,6 +110,10 @@ class ConfigManager {
     keys = [...new Set(keys)];
 
     return keys;
+  }
+
+  reloadConfigKeys() {
+    this.configKeys = this.getConfigKeys();
   }
 
   /**
@@ -162,6 +166,7 @@ class ConfigManager {
     await this.configModel.bulkWrite(queries);
 
     await this.loadConfigs();
+    this.reloadConfigKeys();
   }
 
   /*
@@ -187,7 +192,7 @@ class ConfigManager {
 
     // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      debug(`${namespace}.${key} only exists in db`);
+      debug(`${namespace}.${key} only exists in env vars`);
       return this.configObject.fromEnvVars[namespace][key];
     }
 
