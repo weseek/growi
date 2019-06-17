@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
 
-  const { configManager } = crowi;
+  const { configManager, aclService } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
@@ -106,7 +106,7 @@ module.exports = function(crowi, app) {
   actions.security = {};
   actions.security.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'security:');
-    const isAclEnabled = crowi.aclService.getIsPublicWikiOnly();
+    const isAclEnabled = aclService.getIsPublicWikiOnly();
 
     return res.render('admin/security', { settingForm, isAclEnabled });
   };
@@ -650,7 +650,7 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = !Config.isPublicWikiOnly(req.config);
+    const isAclEnabled = aclService.getIsPublicWikiOnly();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
@@ -914,9 +914,7 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    const config = crowi.getConfig();
-    const isPublicWikiOnly = Config.isPublicWikiOnly(config);
-    if (isPublicWikiOnly) {
+    if (aclService.getIsPublicWikiOnly()) {
       const basicName = form['security:basicName'];
       const basicSecret = form['security:basicSecret'];
       if (basicName !== '' || basicSecret !== '') {

@@ -350,13 +350,6 @@ module.exports = function(crowi) {
     const key = 'markdown:isEnabledLinebreaksInComments';
     return getValueForMarkdownNS(config, key);
   };
-  configSchema.statics.isPublicWikiOnly = function(config) {
-    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
-      return true;
-    }
-    return false;
-  };
 
   configSchema.statics.pageBreakSeparator = function(config) {
     const key = 'markdown:presentation:pageBreakSeparator';
