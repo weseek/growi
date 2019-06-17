@@ -134,22 +134,6 @@ class ConfigManager {
     return this.searchOnlyFromEnvVarConfigs(namespace, key);
   }
 
-  // CONF.RF refactor file-uploader
-  // create parent class and each uploader inherits from it.
-  getIsUploadable() {
-    const method = process.env.FILE_UPLOAD || 'aws';
-
-    if (method === 'aws' && (
-      !this.getConfig('crowi', 'aws:accessKeyId')
-        || !this.getConfig('crowi', 'aws:secretAccessKey')
-        || !this.getConfig('crowi', 'aws:region')
-        || !this.getConfig('crowi', 'aws:bucket'))) {
-      return false;
-    }
-
-    return method !== 'none';
-  }
-
   /**
    * update configs in the same namespace
    *
@@ -183,20 +167,6 @@ class ConfigManager {
 
     await this.loadConfigs();
     this.reloadConfigKeys();
-  }
-
-  /**
-   * Execute only once for installing application
-   */
-  async initDB(globalLang) {
-    const initialConfig = this.configModel.getConfigsObjectForInstalling();
-    initialConfig['app:globalLang'] = globalLang;
-    await this.updateConfigsInTheSameNamespace('crowi', initialConfig);
-  }
-
-  async isDBInitialized() {
-    const appInstalled = await this.getConfigFromDB('crowi', 'app:installed');
-    return appInstalled;
   }
 
   /*

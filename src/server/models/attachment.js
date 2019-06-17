@@ -11,8 +11,6 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 module.exports = function(crowi) {
-  const fileUploader = require('../service/file-uploader')(crowi);
-
   function generateFileHash(fileName) {
     const hash = require('crypto').createHash('md5');
     hash.update(`${fileName}_${Date.now()}`);
@@ -44,6 +42,7 @@ module.exports = function(crowi) {
 
 
   attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
+    const fileUploader = require('../service/file-uploader')(crowi);
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -94,6 +93,7 @@ module.exports = function(crowi) {
   };
 
   attachmentSchema.statics.removeWithSubstanceById = async function(id) {
+    const fileUploader = require('../service/file-uploader')(crowi);
     // retrieve data from DB to get a completely populated instance
     const attachment = await this.findById(id);
     await fileUploader.deleteFile(attachment);

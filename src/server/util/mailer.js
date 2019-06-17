@@ -7,8 +7,7 @@ module.exports = function(crowi) {
   const nodemailer = require('nodemailer');
   const swig = require('swig-templates');
 
-  const Config = crowi.model('Config');
-  const configManager = crowi.configManager;
+  const { configManager, appService } = crowi;
 
   const mailConfig = {};
   let mailer = {};
@@ -74,7 +73,7 @@ module.exports = function(crowi) {
     }
 
     mailConfig.from = configManager.getConfig('crowi', 'mail:from');
-    mailConfig.subject = `${Config.appTitle()}からのメール`;
+    mailConfig.subject = `${appService.getAppTitle()}からのメール`;
 
     debug('mailer initialized');
   }

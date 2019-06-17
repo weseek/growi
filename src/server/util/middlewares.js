@@ -5,6 +5,7 @@ const md5 = require('md5');
 const entities = require('entities');
 
 module.exports = (crowi, app) => {
+  const { appService } = crowi;
 
   const middlewares = {};
 
@@ -274,7 +275,7 @@ module.exports = (crowi, app) => {
 
   // this is for Installer
   middlewares.applicationNotInstalled = async function(req, res, next) {
-    const isInstalled = await crowi.configManager.isDBInitialized();
+    const isInstalled = await appService.isDBInitialized();
 
     if (isInstalled) {
       req.flash('errorMessage', 'Application already installed.');
@@ -285,7 +286,7 @@ module.exports = (crowi, app) => {
   };
 
   middlewares.applicationInstalled = async function(req, res, next) {
-    const isInstalled = await crowi.configManager.isDBInitialized();
+    const isInstalled = await appService.isDBInitialized();
 
     if (!isInstalled) {
       return res.redirect('/installer');

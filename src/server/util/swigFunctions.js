@@ -4,7 +4,13 @@ module.exports = function(crowi, app, req, locals) {
   const Page = crowi.model('Page');
   const Config = crowi.model('Config');
   const User = crowi.model('User');
-  const { passportService, cdnResourcesService, configManager } = crowi;
+  const {
+    configManager,
+    cdnResourcesService,
+    passportService,
+    appService,
+    fileUploadService,
+  } = crowi;
   debug('initializing swigFunctions');
 
   locals.nodeVersion = function() {
@@ -55,20 +61,10 @@ module.exports = function(crowi, app, req, locals) {
   locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
-   * return app title
+   * pass service class to swig
    */
-  locals.appTitle = function() {
-    const config = crowi.getConfig();
-    return crowi.xss.process(Config.appTitle(config));
-  };
-
-  /**
-   * return app-global language
-   */
-  locals.appGlobalLang = function() {
-    const config = crowi.getConfig();
-    return Config.globalLang(config);
-  };
+  locals.appService = appService;
+  locals.fileUploadService = fileUploadService;
 
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
@@ -216,11 +212,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.isEnabledTimeline = function() {
     return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
-  };
-
-  locals.isUploadable = function() {
-    const config = crowi.getConfig();
-    return Config.isUploadable(config);
   };
 
   locals.parentPath = function(path) {

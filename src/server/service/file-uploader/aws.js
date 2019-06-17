@@ -5,7 +5,8 @@ const urljoin = require('url-join');
 const aws = require('aws-sdk');
 
 module.exports = function(crowi) {
-  const lib = {};
+  const Uploader = require('./uploader');
+  const lib = new Uploader(crowi.configManager);
 
   function getAwsConfig() {
     const config = crowi.getConfig();
@@ -17,12 +18,10 @@ module.exports = function(crowi) {
     };
   }
 
-  function S3Factory() {
+  function S3Factory(isUploadable) {
     const awsConfig = getAwsConfig();
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
 
-    if (!Config.isUploadable(config)) {
+    if (!isUploadable) {
       throw new Error('AWS is not configured.');
     }
 
@@ -54,7 +53,7 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const s3 = S3Factory();
+    const s3 = S3Factory(this.getIsUploadable());
     const awsConfig = getAwsConfig();
 
     const params = {
@@ -68,7 +67,7 @@ module.exports = function(crowi) {
   lib.uploadFile = function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const s3 = S3Factory();
+    const s3 = S3Factory(this.getIsUploadable());
     const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);

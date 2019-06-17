@@ -172,7 +172,7 @@
             {{ t('Upload new image') }}
           </label>
           <div class="col-sm-8">
-            {% if isUploadable() %}
+            {% if fileUploadService.getIsUploadable() %}
             <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="file" name="profileImage" accept="image/*">

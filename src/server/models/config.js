@@ -144,16 +144,6 @@ module.exports = function(crowi) {
     };
   }
 
-  function getValueForCrowiNS(config, key) {
-    crowi.configManager.getConfig('crowi', key);
-    // // return the default value if undefined
-    // if (undefined === config.crowi || undefined === config.crowi[key]) {
-    //   return getDefaultCrowiConfigs()[key];
-    // }
-
-    // return config.crowi[key];
-  }
-
   function getValueForMarkdownNS(config, key) {
     crowi.configManager.getConfig('markdown', key);
     // // return the default value if undefined
@@ -165,7 +155,7 @@ module.exports = function(crowi) {
   }
 
   /**
-   * It is deprecated to use this for anything other than ConfigManager#isDBInitialized.
+   * It is deprecated to use this for anything other than AppService#isDBInitialized.
    */
   configSchema.statics.getConfigsObjectForInstalling = function() {
     return getConfigsForInstalling();
@@ -302,30 +292,6 @@ module.exports = function(crowi) {
   //     });
   // };
 
-  configSchema.statics.appTitle = function() {
-    const key = 'app:title';
-    return getValueForCrowiNS(null, key) || 'GROWI';
-  };
-
-  configSchema.statics.globalLang = function(config) {
-    const key = 'app:globalLang';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isUploadable = function(config) {
-    const method = process.env.FILE_UPLOAD || 'aws';
-
-    if (method === 'aws' && (
-      !config.crowi['aws:accessKeyId']
-        || !config.crowi['aws:secretAccessKey']
-        || !config.crowi['aws:region']
-        || !config.crowi['aws:bucket'])) {
-      return false;
-    }
-
-    return method !== 'none';
-  };
-
   configSchema.statics.isGuestAllowedToRead = function(config) {
     // return true if puclic wiki mode
     if (crowi.aclService.getIsPublicWikiOnly()) {
@@ -424,17 +390,6 @@ module.exports = function(crowi) {
     }
   };
 
-  configSchema.statics.fileUploadEnabled = function(config) {
-    const Config = this;
-
-    if (!Config.isUploadable(config)) {
-      return false;
-    }
-
-    // convert to boolean
-    return !!config.crowi['app:fileUpload'];
-  };
-
   configSchema.statics.hasSlackConfig = function(config) {
     return Config.hasSlackToken(config) || Config.hasSlackIwhUrl(config);
   };
@@ -465,17 +420,16 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
-    const Config = this;
     const env = process.env;
 
     const localConfig = {
       crowi: {
-        title: Config.appTitle(crowi),
+        title: crowi.appService.getAppTitle(),
         url: crowi.appService.getSiteUrl(),
       },
       upload: {
-        image: crowi.configManager.getIsUploadable(),
-        file: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+        image: crowi.fileUploadService.getIsUploadable(),
+        file: crowi.fileUploadService.getFileUploadEnabled(),
       },
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),

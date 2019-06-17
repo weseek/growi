@@ -4,7 +4,7 @@ module.exports = function(crowi, app) {
   const fs = require('graceful-fs');
 
   const models = crowi.models;
-  const configManager = crowi.configManager;
+  const { appService } = crowi;
 
   const User = models.User;
   const Page = models.Page;
@@ -67,7 +67,7 @@ module.exports = function(crowi, app) {
     const password = registerForm.password;
     const language = registerForm['app:globalLang'] || 'en-US';
 
-    await configManager.initDB(language);
+    await appService.initDB(language);
 
     // create first admin user
     let adminUser;
