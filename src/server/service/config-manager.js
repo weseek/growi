@@ -130,22 +130,6 @@ class ConfigManager {
     return this.searchOnlyFromEnvVarConfigs(namespace, key);
   }
 
-  // CONF.RF refactor file-uploader
-  // create parent class and each uploader inherits from it.
-  getIsUploadable() {
-    const method = process.env.FILE_UPLOAD || 'aws';
-
-    if (method === 'aws' && (
-      !this.getConfig('crowi', 'aws:accessKeyId')
-        || !this.getConfig('crowi', 'aws:secretAccessKey')
-        || !this.getConfig('crowi', 'aws:region')
-        || !this.getConfig('crowi', 'aws:bucket'))) {
-      return false;
-    }
-
-    return method !== 'none';
-  }
-
   /**
    * update configs in the same namespace
    *

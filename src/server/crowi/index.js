@@ -42,6 +42,7 @@ function Crowi(rootdir) {
   this.xssService = null;
   this.aclService = null;
   this.appService = null;
+  this.fileUploadService = null;
   this.restQiitaAPIService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -90,6 +91,7 @@ Crowi.prototype.init = async function() {
     this.setupCsrf(),
     this.setUpGlobalNotification(),
     this.setUpSlacklNotification(),
+    this.setUpFileUpload(),
     this.setUpAcl(),
     this.setUpCustomize(), // depends on AppService and XssService
     this.setUpRestQiitaAPI(),
@@ -493,6 +495,15 @@ Crowi.prototype.setUpApp = function() {
   const AppService = require('../service/app');
   if (this.appService == null) {
     this.appService = new AppService(this.configManager);
+  }
+};
+
+/**
+ * setup FileUploadService
+ */
+Crowi.prototype.setUpFileUpload = function() {
+  if (this.fileUploadService == null) {
+    this.fileUploadService = require('../service/file-uploader')(this);
   }
 };
 

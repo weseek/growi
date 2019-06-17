@@ -468,7 +468,7 @@ module.exports = function(crowi) {
         url: crowi.appService.getSiteUrl(),
       },
       upload: {
-        image: crowi.configManager.getIsUploadable(),
+        image: crowi.fileUploadService.getIsUploadable(),
         file: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       },
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),

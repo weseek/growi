@@ -2,8 +2,10 @@ const logger = require('@alias/logger')('growi:service:fileUploaderGridfs');
 const mongoose = require('mongoose');
 const util = require('util');
 
+const Uploader = require('./uploader');
+
 module.exports = function(crowi) {
-  const lib = {};
+  const lib = new Uploader(crowi.configManager);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
