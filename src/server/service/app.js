@@ -35,6 +35,20 @@ class AppService {
   }
   /* eslint-enable no-else-return */
 
+  /**
+   * Execute only once for installing application
+   */
+  async initDB(globalLang) {
+    const initialConfig = this.configModel.getConfigsObjectForInstalling();
+    initialConfig['app:globalLang'] = globalLang;
+    await this.updateConfigsInTheSameNamespace('crowi', initialConfig);
+  }
+
+  async isDBInitialized() {
+    const appInstalled = await this.getConfigFromDB('crowi', 'app:installed');
+    return appInstalled;
+  }
+
 }
 
 module.exports = AppService;

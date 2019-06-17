@@ -165,7 +165,7 @@ module.exports = function(crowi) {
   }
 
   /**
-   * It is deprecated to use this for anything other than ConfigManager#isDBInitialized.
+   * It is deprecated to use this for anything other than AppService#isDBInitialized.
    */
   configSchema.statics.getConfigsObjectForInstalling = function() {
     return getConfigsForInstalling();
