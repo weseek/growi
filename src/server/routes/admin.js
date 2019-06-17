@@ -219,10 +219,10 @@ module.exports = function(crowi, app) {
     const config = crowi.getConfig();
     const UpdatePost = crowi.model('UpdatePost');
     let slackSetting = configManager.getConfigByPrefix('notification', 'slack:');
-    const hasSlackIwhUrl = Config.hasSlackIwhUrl(config);
+    const hasSlackIwhUrl = !!configManager.getConfig('notification', 'slack:incomingWebhookUrl');
     const hasSlackToken = Config.hasSlackToken(config);
 
-    if (!Config.hasSlackIwhUrl(req.config)) {
+    if (!hasSlackIwhUrl) {
       slackSetting['slack:incomingWebhookUrl'] = '';
     }
 
@@ -298,18 +298,16 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackIwhSetting' , admin.notification.slackIwhSetting);
-  actions.notification.slackIwhSetting = function(req, res) {
+  actions.notification.slackIwhSetting = async function(req, res) {
     const slackIwhSetting = req.form.slackIwhSetting;
 
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('notification', slackIwhSetting, (err, config) => {
-        Config.updateConfigCache('notification', config);
-        req.flash('successMessage', ['Successfully Updated!']);
+      await configManager.updateConfigsInTheSameNamespace('notification', slackIwhSetting);
+      req.flash('successMessage', ['Successfully Updated!']);
 
-        // Re-setup
-        crowi.setupSlack().then(() => {
-          return res.redirect('/admin/notification#slack-incoming-webhooks');
-        });
+      // Re-setup
+      crowi.setupSlack().then(() => {
+        return res.redirect('/admin/notification#slack-incoming-webhooks');
       });
     }
     else {

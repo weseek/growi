@@ -11,7 +11,7 @@ module.exports = function(crowi) {
   const config = crowi.getConfig();
   const Config = crowi.model('Config');
   const Slack = require('slack-node');
-  const { slackNotificationService } = crowi;
+  const { configManager } = crowi;
 
   const slack = {};
 
@@ -207,7 +207,7 @@ module.exports = function(crowi) {
   const slackPost = (messageObj) => {
     // when incoming Webhooks is prioritized
     if (Config.isIncomingWebhookPrioritized(config)) {
-      if (Config.hasSlackIwhUrl(config)) {
+      if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
         debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
@@ -222,7 +222,7 @@ module.exports = function(crowi) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
-      if (Config.hasSlackIwhUrl(config)) {
+      if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
         debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }

@@ -14,8 +14,6 @@ module.exports = function(crowi) {
   const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
   const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
 
-  let Config;
-
   const configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
     key: { type: String, required: true, index: true },
@@ -390,16 +388,6 @@ module.exports = function(crowi) {
     }
   };
 
-  /**
-   * for Slack Incoming Webhooks
-   */
-  configSchema.statics.hasSlackIwhUrl = function(config) {
-    if (!config.notification) {
-      return false;
-    }
-    return (!!config.notification['slack:incomingWebhookUrl']);
-  };
-
   configSchema.statics.isIncomingWebhookPrioritized = function(config) {
     if (!config.notification) {
       return false;
@@ -479,7 +467,7 @@ module.exports = function(crowi) {
   }
   */
 
-  Config = mongoose.model('Config', configSchema);
+  const Config = mongoose.model('Config', configSchema);
   Config.SECURITY_REGISTRATION_MODE_OPEN = SECURITY_REGISTRATION_MODE_OPEN;
   Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
   Config.SECURITY_REGISTRATION_MODE_CLOSED = SECURITY_REGISTRATION_MODE_CLOSED;
