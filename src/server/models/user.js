@@ -199,13 +199,16 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.canDeleteCompletely = function() {
-    const isDeniedCompletelyDelete = crowi.configManager.getConfig('crowi', 'security:isEnabledDeleteCompletely');
-    if ((!this.admin) && isDeniedCompletelyDelete) {
-      return false;
+  userSchema.methods.canDeleteCompletely = function(creatorId) {
+    const PageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:PageCompleteDeletionAuthority');
+    if (PageCompleteDeletionAuthority === 'anyone' || this.admin) {
+      return true;
+    }
+    if (PageCompleteDeletionAuthority === 'adminAndAuthor') {
+      return (this.id === creatorId || false);
     }
 
-    return true;
+    return false;
   };
 
   userSchema.methods.updateApiToken = function(callback) {
