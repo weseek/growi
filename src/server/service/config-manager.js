@@ -32,7 +32,7 @@ class ConfigManager {
     debug('ConfigManager#loadConfigs', this.configObject);
 
     // cache all config keys
-    this.configKeys = this.getAllConfigKeys();
+    this.setConfigKeys();
   }
 
   /**
@@ -82,7 +82,7 @@ class ConfigManager {
   /**
    * generate an array of config keys from this.configObject
    */
-  getAllConfigKeys() {
+  getConfigKeys() {
     // type: fromDB, fromEnvVars
     const types = Object.keys(this.configObject);
     let namespaces = [];
@@ -110,6 +110,10 @@ class ConfigManager {
     keys = [...new Set(keys)];
 
     return keys;
+  }
+
+  setConfigKeys() {
+    this.configKeys = this.getConfigKeys();
   }
 
   /**
@@ -178,6 +182,7 @@ class ConfigManager {
     await this.configModel.bulkWrite(queries);
 
     await this.loadConfigs();
+    this.setConfigKeys();
   }
 
   /**
