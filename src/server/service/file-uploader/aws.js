@@ -4,9 +4,8 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const aws = require('aws-sdk');
 
-const Uploader = require('./uploader');
-
 module.exports = function(crowi) {
+  const Uploader = require('./uploader');
   const lib = new Uploader(crowi.configManager);
 
   function getAwsConfig() {
