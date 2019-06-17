@@ -6,7 +6,6 @@
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
-  const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
   const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
@@ -340,52 +339,6 @@ module.exports = function(crowi) {
   configSchema.statics.xssOption = function(config) {
     const key = 'markdown:xss:option';
     return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.tagWhiteList = function(config) {
-    const key = 'markdown:xss:tagWhiteList';
-
-    if (this.isEnabledXssPrevention(config)) {
-      switch (this.xssOption(config)) {
-        case 1: // ignore all: use default option
-          return [];
-
-        case 2: // recommended
-          return recommendedWhitelist.tags;
-
-        case 3: // custom white list
-          return config.markdown[key];
-
-        default:
-          return [];
-      }
-    }
-    else {
-      return [];
-    }
-  };
-
-  configSchema.statics.attrWhiteList = function(config) {
-    const key = 'markdown:xss:attrWhiteList';
-
-    if (this.isEnabledXssPrevention(config)) {
-      switch (this.xssOption(config)) {
-        case 1: // ignore all: use default option
-          return [];
-
-        case 2: // recommended
-          return recommendedWhitelist.attrs;
-
-        case 3: // custom white list
-          return config.markdown[key];
-
-        default:
-          return [];
-      }
-    }
-    else {
-      return [];
-    }
   };
 
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする

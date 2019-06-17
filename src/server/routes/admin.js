@@ -114,7 +114,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/markdown'                  , admin.markdown.index);
   actions.markdown = {};
   actions.markdown.index = function(req, res) {
-    const markdownSetting = configManager.getConfigByPrefix('crowi', 'markdown:');
+    const markdownSetting = configManager.getConfigByPrefix('markdown', 'markdown:');
 
     return res.render('admin/markdown', {
       markdownSetting,
@@ -161,7 +161,7 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/markdown/xss-setting' , admin.markdown.xssSetting);
-  actions.markdown.xssSetting = function(req, res) {
+  actions.markdown.xssSetting = async function(req, res) {
     const xssSetting = req.form.markdownSetting;
 
     xssSetting['markdown:xss:tagWhiteList'] = stringToArray(xssSetting['markdown:xss:tagWhiteList']);
@@ -169,16 +169,14 @@ module.exports = function(crowi, app) {
 
     req.session.markdownSetting = xssSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', xssSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.xssSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', xssSetting);
+      req.session.xssSetting = null;
+      req.flash('successMessage', ['Successfully updated!']);
+      res.redirect('/admin/markdown');
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
+      res.redirect('/admin/markdown');
     }
   };
 
