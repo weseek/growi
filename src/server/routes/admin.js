@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
 
-  const { configManager } = crowi;
+  const { configManager, slackNotificationService } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
@@ -270,7 +270,7 @@ module.exports = function(crowi, app) {
   actions.notification.slackAuth = function(req, res) {
     const code = req.query.code;
 
-    if (!code || !Config.hasSlackConfig(req.config)) {
+    if (!code || !slackNotificationService.hasSlackConfig()) {
       return res.redirect('/admin/notification');
     }
 
