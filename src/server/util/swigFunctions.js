@@ -42,22 +42,17 @@ module.exports = function(crowi, app, req, locals) {
   /**
    * @see ConfigManager#getConfig
    */
-  locals.getConfig = function(namespace, key) {
-    return crowi.configManager.getConfig(namespace, key);
-  };
+  locals.getConfig = configManager.getConfig.bind(configManager);
 
   /**
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  locals.getConfigFromDB = function(namespace, key) {
-    return crowi.configManager.getConfigFromDB(namespace, key);
-  };
+  locals.getConfigFromDB = configManager.getConfigFromDB.bind(configManager);
+
   /**
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  locals.getConfigFromEnvVars = function(namespace, key) {
-    return crowi.configManager.getConfigFromEnvVars(namespace, key);
-  };
+  locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
    * return app title
@@ -174,10 +169,6 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isEnabledLinebreaksInComments(config);
   };
 
-  locals.customCss = function() {
-    return Config.customCss();
-  };
-
   locals.pageBreakSeparator = function() {
     const config = crowi.getConfig();
     return Config.pageBreakSeparator(config);
@@ -188,58 +179,48 @@ module.exports = function(crowi, app, req, locals) {
     return Config.pageBreakCustomSeparator(config);
   };
 
+  locals.customCss = function() {
+    const customizeService = crowi.customizeService;
+    return customizeService.getCustomCss();
+  };
+
   locals.customScript = function() {
-    return Config.customScript();
+    const customizeService = crowi.customizeService;
+    return customizeService.getCustomScript();
   };
 
   locals.customHeader = function() {
-    const config = crowi.getConfig();
-    return Config.customHeader(config);
-  };
-
-  locals.theme = function() {
-    const config = crowi.getConfig();
-    return Config.theme(config);
+    return configManager.getConfig('crowi', 'customize:header') || '';
   };
 
   locals.customTitle = function(page) {
-    const config = crowi.getConfig();
-    return Config.customTitle(config, page);
+    const customizeService = crowi.customizeService;
+    return customizeService.generateCustomTitle(page);
   };
 
   locals.behaviorType = function() {
-    const config = crowi.getConfig();
-    return Config.behaviorType(config);
+    return configManager.getConfig('crowi', 'customize:behavior');
   };
 
   locals.layoutType = function() {
-    const config = crowi.getConfig();
-    return Config.layoutType(config);
+    return configManager.getConfig('crowi', 'customize:layout');
   };
 
   locals.highlightJsStyle = function() {
-    const config = crowi.getConfig();
-    return Config.highlightJsStyle(config);
+    return configManager.getConfig('crowi', 'customize:highlightJsStyle');
   };
 
   locals.highlightJsStyleBorder = function() {
-    const config = crowi.getConfig();
-    return Config.highlightJsStyleBorder(config);
+    return configManager.getConfig('crowi', 'customize:highlightJsStyleBorder');
   };
 
   locals.isEnabledTimeline = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledTimeline(config);
+    return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
   };
 
   locals.isUploadable = function() {
     const config = crowi.getConfig();
     return Config.isUploadable(config);
-  };
-
-  locals.isEnabledAttachTitleHeader = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledAttachTitleHeader(config);
   };
 
   locals.parentPath = function(path) {

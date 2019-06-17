@@ -6,7 +6,6 @@
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
-  const uglifycss = require('uglifycss');
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
@@ -38,7 +37,6 @@ module.exports = function(crowi) {
     // overwrite
     config['app:installed'] = true;
     config['app:fileUpload'] = true;
-    config['security:isEnabledPassport'] = true;
     config['customize:behavior'] = 'growi';
     config['customize:layout'] = 'growi';
     config['customize:isSavedStatesOfTabChanges'] = false;
@@ -53,7 +51,7 @@ module.exports = function(crowi) {
     /* eslint-disable key-spacing */
     return {
       'app:installed'     : false,
-      'app:confidential'  : '',
+      'app:confidential'  : undefined,
 
       'app:fileUpload'    : false,
       'app:globalLang'    : 'en-US',
@@ -89,24 +87,24 @@ module.exports = function(crowi) {
 
       'aws:bucket'          : 'growi',
       'aws:region'          : 'ap-northeast-1',
-      'aws:accessKeyId'     : '',
-      'aws:secretAccessKey' : '',
+      'aws:accessKeyId'     : undefined,
+      'aws:secretAccessKey' : undefined,
 
-      'mail:from'         : '',
-      'mail:smtpHost'     : '',
-      'mail:smtpPort'     : '',
-      'mail:smtpUser'     : '',
-      'mail:smtpPassword' : '',
+      'mail:from'         : undefined,
+      'mail:smtpHost'     : undefined,
+      'mail:smtpPort'     : undefined,
+      'mail:smtpUser'     : undefined,
+      'mail:smtpPassword' : undefined,
 
-      'google:clientId'     : '',
-      'google:clientSecret' : '',
+      'google:clientId'     : undefined,
+      'google:clientSecret' : undefined,
 
       'plugin:isEnabledPlugins' : true,
 
-      'customize:css' : '',
-      'customize:script' : '',
-      'customize:header' : '',
-      'customize:title' : '',
+      'customize:css' : undefined,
+      'customize:script' : undefined,
+      'customize:header' : undefined,
+      'customize:title' : undefined,
       'customize:highlightJsStyle' : 'github',
       'customize:highlightJsStyleBorder' : false,
       'customize:theme' : 'default',
@@ -117,10 +115,10 @@ module.exports = function(crowi) {
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
 
-      'importer:esa:team_name': '',
-      'importer:esa:access_token': '',
-      'importer:qiita:team_name': '',
-      'importer:qiita:access_token': '',
+      'importer:esa:team_name': undefined,
+      'importer:esa:access_token': undefined,
+      'importer:qiita:team_name': undefined,
+      'importer:qiita:access_token': undefined,
     };
     /* eslint-enable key-spacing */
   }
@@ -134,15 +132,15 @@ module.exports = function(crowi) {
       'markdown:isEnabledLinebreaks': false,
       'markdown:isEnabledLinebreaksInComments': true,
       'markdown:presentation:pageBreakSeparator': 1,
-      'markdown:presentation:pageBreakCustomSeparator': '',
+      'markdown:presentation:pageBreakCustomSeparator': undefined,
     };
   }
 
   function getDefaultNotificationConfigs() {
     return {
       'slack:isIncomingWebhookPrioritized': false,
-      'slack:incomingWebhookUrl': '',
-      'slack:token': '',
+      'slack:incomingWebhookUrl': undefined,
+      'slack:token': undefined,
     };
   }
 
@@ -424,99 +422,6 @@ module.exports = function(crowi) {
     else {
       return [];
     }
-  };
-
-  /**
-   * initialize custom css strings
-   */
-  configSchema.statics.initCustomCss = function(config) {
-    const key = 'customize:css';
-    const rawCss = getValueForCrowiNS(config, key);
-    // uglify and store
-    this._customCss = uglifycss.processString(rawCss);
-  };
-
-  configSchema.statics.customCss = function(config) {
-    return this._customCss;
-  };
-
-  configSchema.statics.initCustomScript = function(config) {
-    const key = 'customize:script';
-    const rawScript = getValueForCrowiNS(config, key);
-    // store as is
-    this._customScript = rawScript;
-  };
-
-  configSchema.statics.customScript = function(config) {
-    return this._customScript;
-  };
-
-  configSchema.statics.customHeader = function(config) {
-    const key = 'customize:header';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.theme = function(config) {
-    const key = 'customize:theme';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.customTitle = function(config, page) {
-    validateCrowi();
-
-    const key = 'customize:title';
-    let customTitle = getValueForCrowiNS(config, key);
-
-    if (customTitle == null || customTitle.trim().length === 0) {
-      customTitle = '{{page}} - {{sitename}}';
-    }
-
-    // replace
-    customTitle = customTitle
-      .replace('{{sitename}}', this.appTitle(config))
-      .replace('{{page}}', page);
-
-    return crowi.xss.process(customTitle);
-  };
-
-  configSchema.statics.behaviorType = function(config) {
-    const key = 'customize:behavior';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.layoutType = function(config) {
-    const key = 'customize:layout';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.highlightJsStyle = function(config) {
-    const key = 'customize:highlightJsStyle';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.highlightJsStyleBorder = function(config) {
-    const key = 'customize:highlightJsStyleBorder';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledTimeline = function(config) {
-    const key = 'customize:isEnabledTimeline';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isSavedStatesOfTabChanges = function(config) {
-    const key = 'customize:isSavedStatesOfTabChanges';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.isEnabledAttachTitleHeader = function(config) {
-    const key = 'customize:isEnabledAttachTitleHeader';
-    return getValueForCrowiNS(config, key);
-  };
-
-  configSchema.statics.showRecentCreatedNumber = function(config) {
-    const key = 'customize:showRecentCreatedNumber';
-    return getValueForCrowiNS(config, key);
   };
 
   configSchema.statics.fileUploadEnabled = function(config) {

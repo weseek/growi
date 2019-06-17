@@ -79,14 +79,11 @@ Crowi.prototype.init = async function() {
   await this.setupSessionConfig();
   await this.setupConfigManager();
 
-  // passport depends on appService
-  // initialize services first
-  // とりあえず新しく作ったサービスクラスのみ上に移した。
+  // customizeService depends on AppService and XssService
+  // passportService depends on appService
   await Promise.all([
-    this.setUpSlacklNotification(),
-    this.setUpXss(),
-    this.setUpAcl(),
     this.setUpApp(),
+    this.setUpXss(),
   ]);
 
   await Promise.all([
@@ -97,6 +94,9 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
+    this.setUpSlacklNotification(),
+    this.setUpAcl(),
+    this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
   ]);
 };
@@ -475,6 +475,18 @@ Crowi.prototype.setUpAcl = function() {
   const AclService = require('../service/acl');
   if (this.aclService == null) {
     this.aclService = new AclService(this.configManager);
+  }
+};
+
+/**
+ * setup CustomizeService
+ */
+Crowi.prototype.setUpCustomize = function() {
+  const CustomizeService = require('../service/customize');
+  if (this.customizeService == null) {
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
+    this.customizeService.initCustomCss();
+    this.customizeService.initCustomTitle();
   }
 };
 

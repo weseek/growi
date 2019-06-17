@@ -18,7 +18,7 @@
   {% include 'not_found_tabs.html' %}
 
   <div class="tab-content">
-    {% if isEnabledAttachTitleHeader() %}
+    {% if getConfig('crowi', 'customize:isEnabledAttachTitleHeader') %}
     {% if template %}
     <script type="text/template" id="raw-text-original"># {{ path|path2name }}&NewLine;{{ template }}</script>
     {% else %}
