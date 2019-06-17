@@ -326,21 +326,6 @@ module.exports = function(crowi) {
     return method !== 'none';
   };
 
-  configSchema.statics.isGuestAllowedToRead = function(config) {
-    // return true if puclic wiki mode
-    if (crowi.aclService.getIsPublicWikiOnly()) {
-      return true;
-    }
-
-    const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
-    // return false if undefined
-    if (undefined === config.crowi || undefined === restrictGuestMode) {
-      return false;
-    }
-
-    return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
-  };
-
   configSchema.statics.isEnabledLinebreaks = function(config) {
     const key = 'markdown:isEnabledLinebreaks';
     return getValueForMarkdownNS(config, key);
