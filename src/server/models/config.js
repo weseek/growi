@@ -395,14 +395,6 @@ module.exports = function(crowi) {
     return (!!config.notification['slack:isIncomingWebhookPrioritized']);
   };
 
-  configSchema.statics.hasSlackToken = function(config) {
-    if (!config.notification) {
-      return false;
-    }
-
-    return (!!config.notification['slack:token']);
-  };
-
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
     const env = process.env;
 

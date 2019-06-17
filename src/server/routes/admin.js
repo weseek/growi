@@ -216,11 +216,10 @@ module.exports = function(crowi, app) {
   // app.get('/admin/notification'               , admin.notification.index);
   actions.notification = {};
   actions.notification.index = async(req, res) => {
-    const config = crowi.getConfig();
     const UpdatePost = crowi.model('UpdatePost');
     let slackSetting = configManager.getConfigByPrefix('notification', 'slack:');
     const hasSlackIwhUrl = !!configManager.getConfig('notification', 'slack:incomingWebhookUrl');
-    const hasSlackToken = Config.hasSlackToken(config);
+    const hasSlackToken = !!configManager.getConfig('notification', 'slack:token');
 
     if (!hasSlackIwhUrl) {
       slackSetting['slack:incomingWebhookUrl'] = '';
