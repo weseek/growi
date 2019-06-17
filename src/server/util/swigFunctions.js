@@ -155,17 +155,6 @@ module.exports = function(crowi, app, req, locals) {
     return process.env.HACKMD_URI != null;
   };
 
-  locals.isEnabledLinebreaks = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledLinebreaks(config);
-  };
-
-  locals.isEnabledLinebreaksInComments = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledLinebreaksInComments(config);
-  };
-
-
   locals.customCss = function() {
     const customizeService = crowi.customizeService;
     return customizeService.getCustomCss();

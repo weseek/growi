@@ -141,16 +141,6 @@ module.exports = function(crowi) {
     };
   }
 
-  function getValueForMarkdownNS(config, key) {
-    crowi.configManager.getConfig('markdown', key);
-    // // return the default value if undefined
-    // if (undefined === config.markdown || undefined === config.markdown[key]) {
-    //   return getDefaultMarkdownConfigs()[key];
-    // }
-
-    // return config.markdown[key];
-  }
-
   /**
    * It is deprecated to use this for anything other than AppService#isDBInitialized.
    */
@@ -304,15 +294,6 @@ module.exports = function(crowi) {
     return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
   };
 
-  configSchema.statics.isEnabledLinebreaks = function(config) {
-    const key = 'markdown:isEnabledLinebreaks';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.isEnabledLinebreaksInComments = function(config) {
-    const key = 'markdown:isEnabledLinebreaksInComments';
-    return getValueForMarkdownNS(config, key);
-  };
   configSchema.statics.isPublicWikiOnly = function(config) {
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
     if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
