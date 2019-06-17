@@ -321,26 +321,6 @@ module.exports = function(crowi) {
     return false;
   };
 
-  configSchema.statics.pageBreakSeparator = function(config) {
-    const key = 'markdown:presentation:pageBreakSeparator';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.pageBreakCustomSeparator = function(config) {
-    const key = 'markdown:presentation:pageBreakCustomSeparator';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.isEnabledXssPrevention = function(config) {
-    const key = 'markdown:xss:isEnabledPrevention';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.xssOption = function(config) {
-    const key = 'markdown:xss:option';
-    return getValueForMarkdownNS(config, key);
-  };
-
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
     const env = process.env;
 

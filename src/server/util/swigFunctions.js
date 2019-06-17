@@ -165,15 +165,6 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isEnabledLinebreaksInComments(config);
   };
 
-  locals.pageBreakSeparator = function() {
-    const config = crowi.getConfig();
-    return Config.pageBreakSeparator(config);
-  };
-
-  locals.pageBreakCustomSeparator = function() {
-    const config = crowi.getConfig();
-    return Config.pageBreakCustomSeparator(config);
-  };
 
   locals.customCss = function() {
     const customizeService = crowi.customizeService;
