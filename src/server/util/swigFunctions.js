@@ -4,7 +4,12 @@ module.exports = function(crowi, app, req, locals) {
   const Page = crowi.model('Page');
   const Config = crowi.model('Config');
   const User = crowi.model('User');
-  const { passportService, cdnResourcesService, configManager } = crowi;
+  const {
+    configManager,
+    cdnResourcesService,
+    passportService,
+    appService,
+  } = crowi;
   debug('initializing swigFunctions');
 
   locals.nodeVersion = function() {
@@ -55,12 +60,9 @@ module.exports = function(crowi, app, req, locals) {
   locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
-   * return app title
+   * pass service class to swig
    */
-  locals.appTitle = function() {
-    const config = crowi.getConfig();
-    return crowi.xss.process(Config.appTitle(config));
-  };
+  locals.appService = appService;
 
   /**
    * return app-global language

@@ -39,13 +39,13 @@ class AppService {
    * Execute only once for installing application
    */
   async initDB(globalLang) {
-    const initialConfig = this.configModel.getConfigsObjectForInstalling();
+    const initialConfig = this.configManager.configModel.getConfigsObjectForInstalling();
     initialConfig['app:globalLang'] = globalLang;
-    await this.updateConfigsInTheSameNamespace('crowi', initialConfig);
+    await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig);
   }
 
   async isDBInitialized() {
-    const appInstalled = await this.getConfigFromDB('crowi', 'app:installed');
+    const appInstalled = await this.configManager.getConfigFromDB('crowi', 'app:installed');
     return appInstalled;
   }
 

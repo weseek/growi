@@ -302,11 +302,6 @@ module.exports = function(crowi) {
   //     });
   // };
 
-  configSchema.statics.appTitle = function() {
-    const key = 'app:title';
-    return getValueForCrowiNS(null, key) || 'GROWI';
-  };
-
   configSchema.statics.globalLang = function(config) {
     const key = 'app:globalLang';
     return getValueForCrowiNS(config, key);
@@ -470,12 +465,11 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
-    const Config = this;
     const env = process.env;
 
     const localConfig = {
       crowi: {
-        title: Config.appTitle(crowi),
+        title: crowi.appService.getAppTitle(),
         url: crowi.appService.getSiteUrl(),
       },
       upload: {
