@@ -302,11 +302,6 @@ module.exports = function(crowi) {
   //     });
   // };
 
-  configSchema.statics.globalLang = function(config) {
-    const key = 'app:globalLang';
-    return getValueForCrowiNS(config, key);
-  };
-
   configSchema.statics.isUploadable = function(config) {
     const method = process.env.FILE_UPLOAD || 'aws';
 

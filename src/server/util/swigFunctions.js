@@ -64,14 +64,6 @@ module.exports = function(crowi, app, req, locals) {
    */
   locals.appService = appService;
 
-  /**
-   * return app-global language
-   */
-  locals.appGlobalLang = function() {
-    const config = crowi.getConfig();
-    return Config.globalLang(config);
-  };
-
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
   };

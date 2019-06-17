@@ -72,7 +72,7 @@
                        id="radioLangEn"
                        name="settingForm[app:globalLang]"
                        value="{{ consts.language.LANG_EN_US }}"
-                       {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+                       {% if getConfig('crowi', 'app:globalLang') == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
                 <label for="radioLangEn">{{ t('English') }}</label>
             </div>
             <div class="radio radio-primary radio-inline">
@@ -80,7 +80,7 @@
                        id="radioLangJa"
                        name="settingForm[app:globalLang]"
                        value="{{ consts.language.LANG_JA }}"
-                       {% if appGlobalLang() == consts.language.LANG_JA %}checked="checked"{% endif %}>
+                       {% if getConfig('crowi', 'app:globalLang') == consts.language.LANG_JA %}checked="checked"{% endif %}>
                 <label for="radioLangJa">{{ t('Japanese') }}</label>
             </div>
           </div>
