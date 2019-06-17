@@ -32,7 +32,7 @@ class ConfigManager {
     debug('ConfigManager#loadConfigs', this.configObject);
 
     // cache all config keys
-    this.setConfigKeys();
+    this.reloadConfigKeys();
   }
 
   /**
@@ -112,7 +112,7 @@ class ConfigManager {
     return keys;
   }
 
-  setConfigKeys() {
+  reloadConfigKeys() {
     this.configKeys = this.getConfigKeys();
   }
 
@@ -182,7 +182,7 @@ class ConfigManager {
     await this.configModel.bulkWrite(queries);
 
     await this.loadConfigs();
-    this.setConfigKeys();
+    this.reloadConfigKeys();
   }
 
   /**
