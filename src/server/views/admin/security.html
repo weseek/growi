@@ -138,11 +138,11 @@
 
           <!-- GC-1755 Change Sentence -->
           <div class="form-group">
-            {% set configName = 'settingForm[security:AuthorityofCompletelyDeletion]' %}
-            {% set configValue = getConfig('crowi','security:AuthorityofCompletelyDeletion') %}
+            {% set configName = 'settingForm[security:PageCompleteDeletionAuthority]' %}
+            {% set configValue = getConfig('crowi','security:PageCompleteDeletionAuthority') %}
             <label for="{{configName}}" class="col-xs-3 control-label">Restrict Complete Deletion of Pages</label>
             <div class="col-xs-6">
-              <select class="form-control selectpicker" name="settingForm[security:AuthorityofCompletelyDeletion]" value="{{ configValue }}">
+              <select class="form-control selectpicker" name="settingForm[security:PageCompleteDeletionAuthority]" value="{{ configValue }}">
                 <option value="adminOnly" {% if configValue =="adiminOnly" %}selected{% endif %}>AdminOnly</option>
                 <option value="adminAndAuthor" {% if configValue == "adminAndAuthor" %}selected{% endif %}>AdminAndAuthor</option>
                 <option value="anyone" {% if configValue == "anyone"  %}selected{% endif %}>Anyone</option>
