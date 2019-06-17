@@ -388,13 +388,6 @@ module.exports = function(crowi) {
     }
   };
 
-  configSchema.statics.isIncomingWebhookPrioritized = function(config) {
-    if (!config.notification) {
-      return false;
-    }
-    return (!!config.notification['slack:isIncomingWebhookPrioritized']);
-  };
-
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
     const env = process.env;
 
