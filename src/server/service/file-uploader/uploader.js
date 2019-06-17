@@ -21,6 +21,14 @@ class Uploader {
     return method !== 'none';
   }
 
+  getFileUploadEnabled() {
+    if (!this.getIsUploadable()) {
+      return false;
+    }
+
+    return !!this.configManager.getConfig('crowi', 'app:fileUpload');
+  }
+
 }
 
 module.exports = Uploader;

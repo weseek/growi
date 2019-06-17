@@ -9,6 +9,7 @@ module.exports = function(crowi, app, req, locals) {
     cdnResourcesService,
     passportService,
     appService,
+    fileUploadService,
   } = crowi;
   debug('initializing swigFunctions');
 
@@ -63,6 +64,7 @@ module.exports = function(crowi, app, req, locals) {
    * pass service class to swig
    */
   locals.appService = appService;
+  locals.fileUploadService = fileUploadService;
 
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
@@ -243,11 +245,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.isEnabledTimeline = function() {
     return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
-  };
-
-  locals.isUploadable = function() {
-    const config = crowi.getConfig();
-    return Config.isUploadable(config);
   };
 
   locals.parentPath = function(path) {

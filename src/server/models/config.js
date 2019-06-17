@@ -302,20 +302,6 @@ module.exports = function(crowi) {
   //     });
   // };
 
-  configSchema.statics.isUploadable = function(config) {
-    const method = process.env.FILE_UPLOAD || 'aws';
-
-    if (method === 'aws' && (
-      !config.crowi['aws:accessKeyId']
-        || !config.crowi['aws:secretAccessKey']
-        || !config.crowi['aws:region']
-        || !config.crowi['aws:bucket'])) {
-      return false;
-    }
-
-    return method !== 'none';
-  };
-
   configSchema.statics.isGuestAllowedToRead = function(config) {
     // return true if puclic wiki mode
     if (crowi.aclService.getIsPublicWikiOnly()) {
@@ -419,17 +405,6 @@ module.exports = function(crowi) {
     }
   };
 
-  configSchema.statics.fileUploadEnabled = function(config) {
-    const Config = this;
-
-    if (!Config.isUploadable(config)) {
-      return false;
-    }
-
-    // convert to boolean
-    return !!config.crowi['app:fileUpload'];
-  };
-
   configSchema.statics.hasSlackConfig = function(config) {
     return Config.hasSlackToken(config) || Config.hasSlackIwhUrl(config);
   };
@@ -469,7 +444,7 @@ module.exports = function(crowi) {
       },
       upload: {
         image: crowi.fileUploadService.getIsUploadable(),
-        file: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+        file: crowi.fileUploadService.getFileUploadEnabled(),
       },
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),

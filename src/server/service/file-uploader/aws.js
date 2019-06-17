@@ -19,12 +19,10 @@ module.exports = function(crowi) {
     };
   }
 
-  function S3Factory() {
+  function S3Factory(isUploadable) {
     const awsConfig = getAwsConfig();
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
 
-    if (!Config.isUploadable(config)) {
+    if (!isUploadable) {
       throw new Error('AWS is not configured.');
     }
 
@@ -56,7 +54,7 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const s3 = S3Factory();
+    const s3 = S3Factory(this.getIsUploadable());
     const awsConfig = getAwsConfig();
 
     const params = {
@@ -70,7 +68,7 @@ module.exports = function(crowi) {
   lib.uploadFile = function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const s3 = S3Factory();
+    const s3 = S3Factory(this.getIsUploadable());
     const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);
