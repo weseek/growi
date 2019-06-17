@@ -144,16 +144,6 @@ module.exports = function(crowi) {
     };
   }
 
-  function getValueForCrowiNS(config, key) {
-    crowi.configManager.getConfig('crowi', key);
-    // // return the default value if undefined
-    // if (undefined === config.crowi || undefined === config.crowi[key]) {
-    //   return getDefaultCrowiConfigs()[key];
-    // }
-
-    // return config.crowi[key];
-  }
-
   function getValueForMarkdownNS(config, key) {
     crowi.configManager.getConfig('markdown', key);
     // // return the default value if undefined
