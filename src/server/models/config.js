@@ -64,7 +64,7 @@ module.exports = function(crowi) {
 
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
-      'security:PageCompleteDeletionAuthority' : 'adminOnly',
+      'security:pageCompleteDeletionAuthority' : 'adminOnly',
 
       'security:isEnabledPassport' : false,
       'security:passport-ldap:isEnabled' : false,

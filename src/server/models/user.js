@@ -200,11 +200,11 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.canDeleteCompletely = function(creatorId) {
-    const PageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:PageCompleteDeletionAuthority');
-    if (PageCompleteDeletionAuthority === 'anyone' || this.admin) {
+    const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:PageCompleteDeletionAuthority');
+    if (pageCompleteDeletionAuthority === 'anyone' || this.admin) {
       return true;
     }
-    if (PageCompleteDeletionAuthority === 'adminAndAuthor') {
+    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
       return (this.id === creatorId || false);
     }
 
