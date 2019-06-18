@@ -3,12 +3,11 @@ const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.
 
 const mongoose = require('mongoose');
 
+const models = require('@server/models');
+models.Config = require('@server/models/config');
+
 const helpers = require('@commons/util/helpers');
-const Crowi = require('@server/crowi');
-
-const crowi = new Crowi(helpers.root(), process.env);
-
-const models = {};
+const crowi = new (require('@server/crowi'))(helpers.root());
 
 mongoose.Promise = global.Promise;
 
@@ -18,11 +17,7 @@ beforeAll(async() => {
   }
 
   await mongoose.connect(mongoUri, { useNewUrlParser: true });
-
-  // drop database
   await mongoose.connection.dropDatabase();
-
-  await crowi.initForTest();
 });
 
 afterAll(async() => {
@@ -32,6 +27,12 @@ afterAll(async() => {
 
   return mongoose.disconnect();
 });
+
+// Setup Models
+// for (const [modelName, model] of Object.entries(models)) {
+//   models[modelName] = model(crowi);
+// }
+// crowi.models = models;
 
 module.exports = {
   models,
