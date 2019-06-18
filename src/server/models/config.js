@@ -249,9 +249,6 @@ module.exports = function(crowi) {
     );
   };
 
-  configSchema.statics.getConfig = function(callback) {
-  };
-
   // configSchema.statics.loadAllConfig = function(callback) {
   //   const Config = this;
 
@@ -278,29 +275,6 @@ module.exports = function(crowi) {
   //       return callback(null, config);
   //     });
   // };
-
-  configSchema.statics.isGuestAllowedToRead = function(config) {
-    // return true if puclic wiki mode
-    if (crowi.aclService.getIsPublicWikiOnly()) {
-      return true;
-    }
-
-    const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
-    // return false if undefined
-    if (undefined === config.crowi || undefined === restrictGuestMode) {
-      return false;
-    }
-
-    return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
-  };
-
-  configSchema.statics.isPublicWikiOnly = function(config) {
-    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
-      return true;
-    }
-    return false;
-  };
 
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
     const env = process.env;
