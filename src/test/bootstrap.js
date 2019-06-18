@@ -1,10 +1,6 @@
 process.env.NODE_ENV = 'test';
 
 const express = require('express');
-const path = require('path');
-
-const ROOT_DIR = path.join(__dirname, './../..');
-const MODEL_DIR = path.join(__dirname, './../server/models');
 
 const testDBUtil = {
   async generateFixture(conn, model, fixture) {
@@ -19,6 +15,4 @@ const testDBUtil = {
 };
 
 global.express = express;
-global.ROOT_DIR = ROOT_DIR;
-global.MODEL_DIR = MODEL_DIR;
 global.testDBUtil = testDBUtil;
