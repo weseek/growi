@@ -633,10 +633,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('page_id and body are required.'));
     }
 
-    if (!grant) {
-      return res.json(ApiResponse.error('Grant is not selected'));
-    }
-
     // check page existence
     const isExist = await Page.count({ _id: pageId }) > 0;
     if (!isExist) {
