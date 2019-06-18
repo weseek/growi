@@ -79,16 +79,16 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const Config = crowi.model('Config');
+    const configManager = crowi.configManager;
 
-
-    const config = crowi.getConfig();
-
-    if (!config.crowi) {
+    const isInstalled = configManager.getConfig('crowi', 'app:installed');
+    if (!isInstalled) {
       return STATUS_ACTIVE; // is this ok?
     }
 
     // status decided depends on registrationMode
-    switch (config.crowi['security:registrationMode']) {
+    const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+    switch (registrationMode) {
       case Config.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
       case Config.SECURITY_REGISTRATION_MODE_RESTRICTED:
@@ -620,6 +620,8 @@ module.exports = function(crowi) {
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
     validateCrowi();
 
+    const configManager = crowi.configManager;
+
     const User = this;
     const createdUserList = [];
     const mailer = crowi.getMailer();
@@ -663,7 +665,7 @@ module.exports = function(crowi) {
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
 
-          const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
+          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
           if (globalLang != null) {
             newUser.lang = globalLang;
           }
@@ -759,7 +761,8 @@ module.exports = function(crowi) {
       newUser.setPassword(password);
     }
 
-    const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
+    const configManager = crowi.configManager;
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }
