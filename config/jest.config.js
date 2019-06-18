@@ -24,8 +24,9 @@ module.exports = {
         '@root/(.+)': '<rootDir>/$1',
         '@commons/(.+)': '<rootDir>/src/lib/$1',
         '@server/(.+)': '<rootDir>/src/server/$1',
-        '@alias/logger/(.+)': '<rootDir>/src/lib/service/logger/$1',
-        debug: '<rootDir>/src/lib/service/logger/alias-for-debug',
+        '@alias/logger': '<rootDir>/src/lib/service/logger',
+        // -- doesn't work with unknown error -- 2019.06.19 Yuki Takei
+        // debug: '<rootDir>/src/lib/service/logger/alias-for-debug',
       },
     },
     // {
