@@ -1,4 +1,3 @@
-require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:abolish-page-group-relation');
 
 const mongoose = require('mongoose');

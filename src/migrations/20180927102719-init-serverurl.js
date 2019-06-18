@@ -1,6 +1,5 @@
 
 
-require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:init-serverurl');
 
 const mongoose = require('mongoose');

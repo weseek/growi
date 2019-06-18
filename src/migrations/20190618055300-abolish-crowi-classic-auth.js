@@ -1,4 +1,3 @@
-require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:make-email-unique');
 
 const mongoose = require('mongoose');
