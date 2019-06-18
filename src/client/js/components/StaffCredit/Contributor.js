@@ -73,21 +73,21 @@ const contributors = [
       },
     ],
   },
-  // {
-  //   sectionName: 'VALNERABILITY HUNTER',
-  //   additionalClass: '',
-  //   memberGroups: [
-  //     {
-  //       additionalClass: 'col-md-6 my-4',
-  //       members: [
-  //         { name: 'Yoshinori Hayashi' },
-  //         { name: 'Kanta Nishitani' },
-  //         { name: 'Takashi Yoneuchi' },
-  //         { position: 'DeCurret', name: 'Yusuke Tanomogi' },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    sectionName: 'VULNERABILITY HUNTER',
+    additionalClass: '',
+    memberGroups: [
+      {
+        additionalClass: 'col-md-6 my-4',
+        members: [
+          // { name: 'Yoshinori Hayashi' },
+          // { name: 'Kanta Nishitani' },
+          // { name: 'Takashi Yoneuchi' },
+          { position: 'DeCurret', name: 'Yusuke Tanomogi' },
+        ],
+      },
+    ],
+  },
   {
     sectionName: 'SPECIAL THANKS',
     additionalClass: '',
