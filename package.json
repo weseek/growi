@@ -223,6 +223,10 @@
     "webpack-cli": "^3.2.3",
     "webpack-merge": "^4.2.1"
   },
+  "resolutions": {
+    "//": "see https://github.com/facebook/jest/issues/8155",
+    "babel-jest": "23.6.0"
+  },
   "_moduleAliases": {
     "@root": ".",
     "@commons": "src/lib",
