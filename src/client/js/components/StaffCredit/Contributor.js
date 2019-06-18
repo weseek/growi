@@ -80,9 +80,9 @@ const contributors = [
       {
         additionalClass: 'col-md-6 my-4',
         members: [
-          // { name: 'Yoshinori Hayashi' },
-          // { name: 'Kanta Nishitani' },
-          // { name: 'Takashi Yoneuchi' },
+          { name: 'Yoshinori Hayashi' },
+          { name: 'Kanta Nishitani' },
+          { position: 'The University of Tokyo', name: 'Takashi Yoneuchi' },
           { position: 'DeCurret', name: 'Yusuke Tanomogi' },
         ],
       },
@@ -98,6 +98,12 @@ const contributors = [
           { name: 'Crowi Team' },
           { position: 'Ambassador', name: 'Tsuyoshi Suzuki' },
           { name: 'JPCERT/CC' },
+        ],
+      },
+      {
+        additionalClass: 'col-md-12 staff-credit-mt-10',
+        members: [
+          { name: 'AND YOU' },
         ],
       },
     ],
