@@ -55,7 +55,7 @@
     "server:prod": "env-cmd -f config/env.prod.js node src/server/app.js",
     "server": "npm run server:dev",
     "start": "npm run server:prod",
-    "test": "mocha --timeout 10000 --exit -r src/test/bootstrap.js src/test/**/*.js",
+    "test": "jest --config=config/jest.config.js --passWithNoTests",
     "version": "node -p \"require('./package.json').version\"",
     "webpack": "webpack"
   },
