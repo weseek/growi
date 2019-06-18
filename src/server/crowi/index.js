@@ -104,6 +104,36 @@ Crowi.prototype.init = async function() {
   ]);
 };
 
+Crowi.prototype.initForTest = async function() {
+  // await this.setupDatabase();
+  await this.setupModels();
+  // await this.setupSessionConfig();
+  await this.setupConfigManager();
+
+  // // customizeService depends on AppService and XssService
+  // // passportService depends on appService
+  // // slack depends on setUpSlacklNotification
+  // await Promise.all([
+  //   this.setUpApp(),
+  //   this.setUpXss(),
+  //   this.setUpSlacklNotification(),
+  // ]);
+
+  // await Promise.all([
+  //   this.scanRuntimeVersions(),
+  //   this.setupPassport(),
+  //   this.setupSearcher(),
+  //   this.setupMailer(),
+  //   this.setupSlack(),
+  //   this.setupCsrf(),
+  //   this.setUpGlobalNotification(),
+  //   this.setUpFileUpload(),
+  //   this.setUpAcl(),
+  //   this.setUpCustomize(),
+  //   this.setUpRestQiitaAPI(),
+  // ]);
+};
+
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
     return false;

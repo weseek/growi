@@ -34,30 +34,30 @@ describe('Test for Crowi application context', () => {
     });
   });
 
-  describe('.setupDatabase', () => {
-    before(() => {
-      mongoose.disconnect(); // avoid error of Trying to open unclosed connection
-    });
-    it('setup completed', (done) => {
-      const crowi = new Crowi(helpers.root());
-      // set
-      const p = crowi.setupDatabase();
-      expect(p).to.instanceof(Promise);
-      p
-        .then(() => {
-          expect(mongoose.connection.readyState).to.equals(1);
-          done();
-        })
-        .catch((err) => { // eslint-disable-line no-unused-vars
-          // console.log('readyState', mongoose.connection.readyState);
-          if (mongoose.connection.readyState === 2 || mongoose.connection.readyState === 1) { // alreaady connected
-            // throught
-          }
-          else {
-            expect(mongoose.connection.readyState).to.equals(0);
-          }
-          done();
-        });
-    });
-  });
+  // describe('.setupDatabase', () => {
+  //   before(() => {
+  //     mongoose.disconnect(); // avoid error of Trying to open unclosed connection
+  //   });
+  //   it('setup completed', (done) => {
+  //     const crowi = new Crowi(helpers.root());
+  //     // set
+  //     const p = crowi.setupDatabase();
+  //     expect(p).to.instanceof(Promise);
+  //     p
+  //       .then(() => {
+  //         expect(mongoose.connection.readyState).to.equals(1);
+  //         done();
+  //       })
+  //       .catch((err) => { // eslint-disable-line no-unused-vars
+  //         // console.log('readyState', mongoose.connection.readyState);
+  //         if (mongoose.connection.readyState === 2 || mongoose.connection.readyState === 1) { // alreaady connected
+  //           // throught
+  //         }
+  //         else {
+  //           expect(mongoose.connection.readyState).to.equals(0);
+  //         }
+  //         done();
+  //       });
+  //   });
+  // });
 });

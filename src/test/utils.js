@@ -1,7 +1,7 @@
 
 const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test';
 const mongoose = require('mongoose');
-const fs = require('fs');
+
 const helpers = require('@commons/util/helpers');
 const Crowi = require('@server/crowi');
 
@@ -11,57 +11,26 @@ const models = {};
 
 mongoose.Promise = global.Promise;
 
-before('Create database connection and clean up', (done) => {
+before('Create database connection and clean up', async() => {
   if (!mongoUri) {
-    return done();
+    return;
   }
 
-  mongoose.connect(mongoUri, { useNewUrlParser: true });
+  await mongoose.connect(mongoUri, { useNewUrlParser: true });
 
-  function clearDB() {
-    Object.values(mongoose.connection.collections).forEach((collection) => {
-      collection.remove(() => {});
-    });
-    return done();
-  }
+  // drop database
+  await mongoose.connection.dropDatabase();
 
-  if (mongoose.connection.readyState === 0) {
-    mongoose.connect(mongoUri, { useNewUrlParser: true }, (err) => {
-      if (err) {
-        throw err;
-      }
-      return clearDB();
-    });
-  }
-
-  return clearDB();
+  await crowi.initForTest();
 });
 
-after('Close database connection', (done) => {
+after('Close database connection', async() => {
   if (!mongoUri) {
-    return done();
+    return;
   }
 
-  mongoose.disconnect();
-  return done();
+  return mongoose.disconnect();
 });
-
-// Setup Models
-fs.readdirSync(helpers.root('src/server/models')).forEach((file) => {
-  if (file.match(/^([\w-]+)\.js$/)) {
-    const name = RegExp.$1;
-    if (name === 'index') {
-      return;
-    }
-    let modelName = '';
-    name.split('-').forEach((splitted) => {
-      modelName += (splitted.charAt(0).toUpperCase() + splitted.slice(1));
-    });
-    models[modelName] = require(`@server/models/${file}`)(crowi);
-  }
-});
-
-crowi.models = models;
 
 module.exports = {
   models,

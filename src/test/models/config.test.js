@@ -1,5 +1,8 @@
 const chai = require('chai');
 const sinonChai = require('sinon-chai');
+
+const mongoose = require('mongoose');
+
 const utils = require('../utils.js');
 
 const { expect } = chai;
@@ -8,9 +11,8 @@ chai.use(sinonChai);
 
 /* global testDBUtil */
 
-
 describe('Config model test', () => {
-  const Config = utils.models.Config;
+  const Config = mongoose.model('Config');
 
   const conn = utils.mongoose.connection;
 
