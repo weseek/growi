@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
 
-  const { configManager } = crowi;
+  const { configManager, aclService } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
@@ -914,9 +914,7 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    const config = crowi.getConfig();
-    const isPublicWikiOnly = Config.isPublicWikiOnly(config);
-    if (isPublicWikiOnly) {
+    if (aclService.getIsPublicWikiOnly()) {
       const basicName = form['security:basicName'];
       const basicSecret = form['security:basicSecret'];
       if (basicName !== '' || basicSecret !== '') {

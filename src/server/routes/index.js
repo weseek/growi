@@ -22,10 +22,12 @@ module.exports = function(crowi, app) {
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
-  const loginRequired = middlewares.loginRequired;
-  const adminRequired = middlewares.adminRequired;
-  const accessTokenParser = middlewares.accessTokenParser;
-  const csrf = middlewares.csrfVerify;
+  const {
+    loginRequired,
+    adminRequired,
+    accessTokenParser,
+    csrfVerify: csrf,
+  } = middlewares;
   const { configManager } = crowi;
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
