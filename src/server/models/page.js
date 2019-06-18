@@ -1016,7 +1016,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');
-    const grant = options.grant || null;
+    const grant = options.grant || GRANT_PUBLIC;
     const grantUserGroupId = options.grantUserGroupId || null;
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const socketClientId = options.socketClientId || null;
