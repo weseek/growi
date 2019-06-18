@@ -622,10 +622,8 @@ module.exports = function(crowi) {
 
     const User = this;
     const createdUserList = [];
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-
     const mailer = crowi.getMailer();
+
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
@@ -665,7 +663,7 @@ module.exports = function(crowi) {
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
 
-          const globalLang = Config.globalLang(config);
+          const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
           if (globalLang != null) {
             newUser.lang = globalLang;
           }
@@ -706,15 +704,17 @@ module.exports = function(crowi) {
                 return next();
               }
 
+              const appTitle = crowi.appService.getAppTitle();
+
               mailer.send({
                 to: user.email,
-                subject: `Invitation to ${Config.appTitle(config)}`,
+                subject: `Invitation to ${appTitle}`,
                 template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
                 vars: {
                   email: user.email,
                   password: user.password,
                   url: crowi.appService.getSiteUrl(),
-                  appTitle: Config.appTitle(config),
+                  appTitle,
                 },
               },
               (err, s) => {
@@ -759,9 +759,7 @@ module.exports = function(crowi) {
       newUser.setPassword(password);
     }
 
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-    const globalLang = Config.globalLang(config);
+    const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }
