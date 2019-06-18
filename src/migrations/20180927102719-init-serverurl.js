@@ -5,6 +5,8 @@ const logger = require('@alias/logger')('growi:migrate:init-serverurl');
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
+const { getModelSafely } = require('@commons/util/mongoose-utils');
+
 /**
  * check all values of the array are equal
  * @see https://stackoverflow.com/a/35568895
@@ -21,7 +23,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = mongoose.model('Config');
+    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     // find 'app:siteUrl'
     const siteUrlConfig = await Config.findOne({
@@ -74,7 +76,7 @@ module.exports = {
     logger.info('Undo migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = mongoose.model('Config');
+    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({

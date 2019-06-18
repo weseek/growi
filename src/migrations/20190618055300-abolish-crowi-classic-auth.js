@@ -3,19 +3,15 @@ const logger = require('@alias/logger')('growi:migrate:make-email-unique');
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
-function getModel(modelName) {
-  if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model(modelName);
-  }
-  return null;
-}
+const { getModelSafely } = require('@commons/util/mongoose-utils');
+
 
 module.exports = {
   async up(db, next) {
     logger.info('Start migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModel('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([
