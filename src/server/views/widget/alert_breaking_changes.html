@@ -1,11 +1,11 @@
-{# Added in v3.4.6 }
+<!-- {# Added in v3.5.0 } -->
 
-{% if getConfig('crowi', 'security:isEnabledPassport') !== true %}
 <div class="myadmin-alert alert alert-warning mb-0">
   <i class="icon-exclamation"></i>
-  {{ t("breaking_changes.v346_passport_is_not_enabled", '<a href="/admin/security">' + t('Security settings') + '<i class="icon-login"></i></a>') }}
+  {{ t("breaking_changes.v350_crowi_classic_auth_abolished", '<a href="/admin/security">' + t('Security settings') + '<i class="icon-login"></i></a>') }}
 </div>
-{% endif %}
+
+<!-- {# Added in v3.4.6 } -->
 
 {% if getConfig('crowi', 'security:basicName') || getConfig('crowi', 'security:basicSecret') %}
 <div class="myadmin-alert alert alert-warning mb-0">

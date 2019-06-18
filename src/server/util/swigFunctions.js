@@ -92,14 +92,6 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
-   * return true if local strategy has been setup successfully
-   *  used whether restarting the server needed
-   */
-  locals.isPassportLocalStrategySetup = function() {
-    return passportService != null && passportService.isLocalStrategySetup;
-  };
-
-  /**
    * return true if enabled and strategy has been setup successfully
    */
   locals.isLdapSetup = function() {
