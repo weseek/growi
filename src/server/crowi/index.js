@@ -82,9 +82,11 @@ Crowi.prototype.init = async function() {
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
+  // slack depends on setUpSlacklNotification
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
+    this.setUpSlacklNotification(),
   ]);
 
   await Promise.all([
@@ -95,7 +97,6 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
-    this.setUpSlacklNotification(),
     this.setUpFileUpload(),
     this.setUpAcl(),
     this.setUpCustomize(),
@@ -320,11 +321,9 @@ Crowi.prototype.setupMailer = function() {
 
 Crowi.prototype.setupSlack = function() {
   const self = this;
-  const config = this.getConfig();
-  const Config = this.model('Config');
 
   return new Promise(((resolve, reject) => {
-    if (Config.hasSlackConfig(config)) {
+    if (this.slackNotificationService.hasSlackConfig()) {
       self.slack = require('../util/slack')(self);
     }
 
