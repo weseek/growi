@@ -12,9 +12,6 @@ module.exports = {
   // Automatically reset mock state between every test
   resetMocks: true,
 
-  // A map from regular expressions to module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
-
   projects: [
     {
       displayName: 'server',
@@ -22,6 +19,14 @@ module.exports = {
       rootDir: '.',
       setupFilesAfterEnv: ['<rootDir>/src/test/bootstrap.js'],
       testMatch: ['<rootDir>/src/test/**/*.test.js'],
+      // A map from regular expressions to module names that allow to stub out resources with a single module
+      moduleNameMapper: {
+        '@root/(.+)': '<rootDir>/$1',
+        '@commons/(.+)': '<rootDir>/src/lib/$1',
+        '@server/(.+)': '<rootDir>/src/server/$1',
+        '@alias/logger/(.+)': '<rootDir>/src/lib/service/logger/$1',
+        debug: '<rootDir>/src/lib/service/logger/alias-for-debug',
+      },
     },
     // {
     //   displayName: 'client',

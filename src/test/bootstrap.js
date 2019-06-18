@@ -1,7 +1,5 @@
 process.env.NODE_ENV = 'test';
 
-require('module-alias/register');
-
 const express = require('express');
 const path = require('path');
 
