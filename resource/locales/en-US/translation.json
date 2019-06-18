@@ -81,9 +81,7 @@
   "Delete this image?": "Delete this image?",
   "Updated": "Updated",
   "Upload new image": "Upload new image",
-  "Google Setting": "Google Setting",
   "Connected": "Connected",
-  "Disconnect": "Disconnect",
   "Show": "Show",
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
@@ -148,15 +146,13 @@
   },
 
   "breaking_changes": {
-    "v350_crowi_classic_auth_abolished": "Crowi Classic Authentication mechanism was deprecated.",
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
 
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",
-      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki.",
-      "google_account_continue": "Enter your user ID, name and password to continue."
+      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki."
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
@@ -168,11 +164,7 @@
   "page_me": {
     "form_help": {
       "profile_image1": "Image upload settings not completed.",
-      "profile_image2": "Set up AWS or enable local uploads.",
-      "google_connect1": "With Google Connect, you can sign in with your Google Account.",
-      "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
-      "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",
-      "google_disconnect2": "After disconnecting your Google account, you can sign in normally using your email and password"
+      "profile_image2": "Set up AWS or enable local uploads."
     }
   },
   "page_me_apitoken": {

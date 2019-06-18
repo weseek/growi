@@ -60,6 +60,7 @@
     "webpack": "webpack"
   },
   "dependencies": {
+    "//": "see https://github.com/parshap/check-node-version/issues/35",
     "async": "^3.0.1",
     "aws-sdk": "^2.88.0",
     "axios": "^0.19.0",
@@ -67,7 +68,6 @@
     "body-parser": "^1.18.2",
     "bunyan": "^1.8.12",
     "bunyan-format": "^0.2.1",
-    "//": "see https://github.com/parshap/check-node-version/issues/35",
     "check-node-version": "=3.3.0",
     "connect-flash": "~0.1.1",
     "connect-mongo": "^2.0.1",
@@ -88,7 +88,6 @@
     "express-session": "^1.16.1",
     "express-validator": "^5.3.1",
     "express-webpack-assets": "^0.1.0",
-    "googleapis": "^40.0.0",
     "graceful-fs": "^4.1.11",
     "growi-commons": "^4.0.1",
     "helmet": "^3.13.0",

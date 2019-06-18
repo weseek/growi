@@ -81,9 +81,7 @@
   "Delete this image?": "削除してよろしいですか？",
   "Updated": "更新しました",
   "Upload new image": "新しい画像をアップロード",
-  "Google Setting": "Google設定",
   "Connected": "接続されています",
-  "Disconnect": "接続を解除",
   "Show": "公開",
   "Hide": "非公開",
   "Disclose E-mail": "メールアドレスの公開",
@@ -148,15 +146,13 @@
   },
 
   "breaking_changes": {
-    "v350_crowi_classic_auth_abolished": "Crowi Classic Authentication は廃止されました。",
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
   },
 
   "page_register": {
     "notice": {
        "restricted": "この Wiki への新規登録は制限されています。",
-       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。",
-       "google_account_continue": "ユーザーID、名前、パスワードを決めて登録を継続してください。"
+       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。"
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
@@ -168,11 +164,7 @@
   "page_me": {
     "form_help": {
       "profile_image1": "画像をアップロードをするための設定がされていません。",
-      "profile_image2": "アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。",
-      "google_connect1": "Googleコネクトをすると、Googleアカウントでログイン可能になります。",
-      "google_connect2": "コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。",
-      "google_disconnect1": "接続を解除すると、Googleでログインができなくなります。",
-      "google_disconnect2": "解除後はメールアドレスとパスワードでログインすることができます。"
+      "profile_image2": "アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。"
     }
   },
   "page_me_apitoken": {

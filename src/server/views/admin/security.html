@@ -274,20 +274,6 @@
         return false;
       });
     });
-
-    // switch display according to on / off of radio buttons
-    $('input[name="settingForm[security:isEnabledPassport]"]:radio').change(function() {
-      const isEnabledPassport = ($(this).val() === "true");
-
-      if (isEnabledPassport) {
-        $('.official-crowi-auth-settings').hide(400);
-        $('.passport-settings').show(400);
-      }
-      else {
-        $('.official-crowi-auth-settings').show(400);
-        $('.passport-settings').hide(400);
-      }
-    });
   </script>
 </div>
 {% endblock content_main %}
