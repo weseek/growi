@@ -6,20 +6,6 @@
  */
 
 require('module-alias/register');
-const models = require('@server/models');
-
-// generate mock crowi object
-const crowi = {
-  event: () => {
-    return { on: () => {} };
-  },
-};
-
-// initialize models
-// access each model with mongoose.models('ModelName')
-Object.keys(models).forEach((key) => {
-  models[key](crowi);
-});
 
 function getMongoUri(env) {
   return env.MONGOLAB_URI // for B.C.
