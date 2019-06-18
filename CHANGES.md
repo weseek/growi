@@ -20,11 +20,15 @@
 * Support: Upgrade libs
     * async
     * axios
+    * connect-mongo
     * file-loader
     * googleapis
     * i18next
     * migrate-mongo
     * mini-css-extract-plugin
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-unique-validator
     * null-loader
 
 ## 3.4.7
