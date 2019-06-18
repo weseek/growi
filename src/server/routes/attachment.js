@@ -234,7 +234,7 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
-      page = await Page.create(path, `# ${path}`, req.user, { grant: Page.GRANT_OWNER });
+      page = await Page.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
       pageCreated = true;
       pageId = page._id;
     }
