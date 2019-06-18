@@ -37,8 +37,8 @@ module.exports = {
       return;
     }
 
-    const Page = require('@server/models/page')();
-    const UserGroup = require('@server/models/user-group')();
+    const Page = mongoose.model('Page');
+    const UserGroup = mongoose.model('UserGroup');
 
     // retrieve all documents from 'pagegrouprelations'
     const relations = await db.collection('pagegrouprelations').find().toArray();
@@ -74,8 +74,8 @@ module.exports = {
     logger.info('Undo migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = require('@server/models/page')();
-    const UserGroup = require('@server/models/user-group')();
+    const Page = mongoose.model('Page');
+    const UserGroup = mongoose.model('UserGroup');
 
     // retrieve all Page documents which granted by UserGroup
     const relatedPages = await Page.find({ grant: Page.GRANT_USER_GROUP });

@@ -10,7 +10,7 @@ module.exports = {
     logger.info('Start migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const User = require('@server/models/user')();
+    const User = mongoose.model('User');
 
     // get all users who has 'deleted@deleted' email
     const users = await User.find({ email: 'deleted@deleted' });

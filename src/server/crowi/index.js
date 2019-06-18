@@ -212,8 +212,6 @@ Crowi.prototype.setupSessionConfig = function() {
 // };
 
 Crowi.prototype.setupConfigManager = async function() {
-  this.model('Config', require('../models/config')(this));
-
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
   return this.configManager.loadConfigs();

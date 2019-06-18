@@ -5,6 +5,22 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
+require('module-alias/register');
+const models = require('@server/models');
+
+// generate mock crowi object
+const crowi = {
+  event: () => {
+    return { on: () => {} };
+  },
+};
+
+// initialize models
+// access each model with mongoose.models('ModelName')
+Object.keys(models).forEach((key) => {
+  models[key](crowi);
+});
+
 function getMongoUri(env) {
   return env.MONGOLAB_URI // for B.C.
     || env.MONGODB_URI // MONGOLAB changes their env name
@@ -15,6 +31,7 @@ function getMongoUri(env) {
 
 const mongoUri = getMongoUri(process.env);
 const match = mongoUri.match(/^(.+)\/([^/]+)$/);
+
 module.exports = {
   mongoUri,
   mongodb: {

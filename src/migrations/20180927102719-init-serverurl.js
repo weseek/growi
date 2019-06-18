@@ -22,7 +22,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = require('@server/models/config')();
+    const Config = mongoose.model('Config');
 
     // find 'app:siteUrl'
     const siteUrlConfig = await Config.findOne({
@@ -75,7 +75,7 @@ module.exports = {
     logger.info('Undo migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = require('@server/models/config')();
+    const Config = mongoose.model('Config');
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({
