@@ -1,5 +1,6 @@
 
 const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test';
+
 const mongoose = require('mongoose');
 
 const helpers = require('@commons/util/helpers');
@@ -11,7 +12,7 @@ const models = {};
 
 mongoose.Promise = global.Promise;
 
-before('Create database connection and clean up', async() => {
+beforeAll(async() => {
   if (!mongoUri) {
     return;
   }
@@ -24,7 +25,7 @@ before('Create database connection and clean up', async() => {
   await crowi.initForTest();
 });
 
-after('Close database connection', async() => {
+afterAll(async() => {
   if (!mongoUri) {
     return;
   }

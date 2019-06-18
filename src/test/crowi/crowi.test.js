@@ -12,21 +12,21 @@ describe('Test for Crowi application context', () => {
 
   const mongoose = require('mongoose');
   describe('construction', () => {
-    it('initialize crowi context', () => {
+    test('initialize crowi context', () => {
       const crowi = new Crowi(helpers.root());
       expect(crowi).to.be.instanceof(Crowi);
       expect(crowi.version).to.equal(require('../../../package.json').version);
       expect(crowi.env).to.be.an('Object');
     });
 
-    it('config getter, setter', () => {
+    test('config getter, setter', () => {
       const crowi = new Crowi(helpers.root());
       expect(crowi.getConfig()).to.deep.equals({});
       crowi.setConfig({ test: 1 });
       expect(crowi.getConfig()).to.deep.equals({ test: 1 });
     });
 
-    it('model getter, setter', () => {
+    test('model getter, setter', () => {
       const crowi = new Crowi(helpers.root());
       // set
       crowi.model('hoge', { fuga: 1 });

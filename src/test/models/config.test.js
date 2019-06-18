@@ -16,7 +16,7 @@ describe('Config model test', () => {
 
   const conn = utils.mongoose.connection;
 
-  before((done) => {
+  beforeAll((done) => {
     const fixture = [
       { ns: 'crowi', key: 'test:test', value: JSON.stringify('crowi test value') },
       { ns: 'crowi', key: 'test:test2', value: JSON.stringify(11111) },
@@ -33,7 +33,7 @@ describe('Config model test', () => {
   });
 
   describe('.CONSTANTS', () => {
-    it('Config has constants', () => {
+    test('Config has constants', () => {
       expect(Config.SECURITY_REGISTRATION_MODE_OPEN).to.have.string('Open');
       expect(Config.SECURITY_REGISTRATION_MODE_RESTRICTED).to.have.string('Resricted');
       expect(Config.SECURITY_REGISTRATION_MODE_CLOSED).to.have.string('Closed');
@@ -41,7 +41,7 @@ describe('Config model test', () => {
   });
 
   describe('.loadAllConfig', () => {
-    it('Get config array', (done) => {
+    test('Get config array', (done) => {
       Config.loadAllConfig((err, config) => {
         expect(config.crowi).to.be.an('Object');
         expect(config.crowi).to.have.property('test:test')

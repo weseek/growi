@@ -15,7 +15,7 @@ describe('Page', () => {
   let createdPages;
   let createdUsers;
 
-  before(async() => {
+  beforeAll(async() => {
     await conn.collection('pages').remove();
 
     const userFixture = [
@@ -113,8 +113,8 @@ describe('Page', () => {
   });
 
   describe('.isPublic', () => {
-    context('with a public page', () => {
-      it('should return true', (done) => {
+    describe('with a public page', () => {
+      test('should return true', (done) => {
         Page.findOne({ path: '/grant/public' }, (err, page) => {
           expect(err).to.be.null;
           expect(page.isPublic()).to.be.equal(true);
@@ -124,8 +124,8 @@ describe('Page', () => {
     });
 
     ['restricted', 'specified', 'owner'].forEach((grant) => {
-      context(`with a ${grant} page`, () => {
-        it('should return false', (done) => {
+      describe(`with a ${grant} page`, () => {
+        test('should return false', (done) => {
           Page.findOne({ path: `/grant/${grant}` }, (err, page) => {
             expect(err).to.be.null;
             expect(page.isPublic()).to.be.equal(false);
@@ -137,13 +137,13 @@ describe('Page', () => {
   });
 
   describe('.getDeletedPageName', () => {
-    it('should return trash page name', () => {
+    test('should return trash page name', () => {
       expect(Page.getDeletedPageName('/hoge')).to.be.equal('/trash/hoge');
       expect(Page.getDeletedPageName('hoge')).to.be.equal('/trash/hoge');
     });
   });
   describe('.getRevertDeletedPageName', () => {
-    it('should return reverted trash page name', () => {
+    test('should return reverted trash page name', () => {
       expect(Page.getRevertDeletedPageName('/hoge')).to.be.equal('/hoge');
       expect(Page.getRevertDeletedPageName('/trash/hoge')).to.be.equal('/hoge');
       expect(Page.getRevertDeletedPageName('/trash/hoge/trash')).to.be.equal('/hoge/trash');
@@ -151,7 +151,7 @@ describe('Page', () => {
   });
 
   describe('.isDeletableName', () => {
-    it('should decide deletable or not', () => {
+    test('should decide deletable or not', () => {
       expect(Page.isDeletableName('/hoge')).to.be.true;
       expect(Page.isDeletableName('/user/xxx')).to.be.false;
       expect(Page.isDeletableName('/user/xxx123')).to.be.false;
@@ -161,7 +161,7 @@ describe('Page', () => {
   });
 
   describe('.isCreatableName', () => {
-    it('should decide creatable or not', () => {
+    test('should decide creatable or not', () => {
       expect(Page.isCreatableName('/hoge')).to.be.true;
 
       // edge cases
@@ -205,8 +205,8 @@ describe('Page', () => {
   });
 
   describe('.isAccessiblePageByViewer', () => {
-    context('with a granted user', () => {
-      it('should return true', async() => {
+    describe('with a granted user', () => {
+      test('should return true', async() => {
         const user = await User.findOne({ email: 'anonymous0@example.com' });
         const page = await Page.findOne({ path: '/user/anonymous0/memo' });
 
@@ -215,8 +215,8 @@ describe('Page', () => {
       });
     });
 
-    context('with a public page', () => {
-      it('should return true', async() => {
+    describe('with a public page', () => {
+      test('should return true', async() => {
         const user = await User.findOne({ email: 'anonymous1@example.com' });
         const page = await Page.findOne({ path: '/grant/public' });
 
@@ -225,8 +225,8 @@ describe('Page', () => {
       });
     });
 
-    context('with a restricted page and an user who has no grant', () => {
-      it('should return false', async() => {
+    describe('with a restricted page and an user who has no grant', () => {
+      test('should return false', async() => {
         const user = await User.findOne({ email: 'anonymous1@example.com' });
         const page = await Page.findOne({ path: '/grant/owner' });
 
@@ -237,8 +237,8 @@ describe('Page', () => {
   });
 
   describe('Extended field', () => {
-    context('Slack Channel.', () => {
-      it('should be empty', (done) => {
+    describe('Slack Channel.', () => {
+      test('should be empty', (done) => {
         Page.findOne({ path: '/page/for/extended' }, (err, page) => {
           expect(page.extended.hoge).to.be.equal(1);
           expect(page.getSlackChannel()).to.be.equal('');
@@ -246,7 +246,7 @@ describe('Page', () => {
         });
       });
 
-      it('set slack channel and should get it and should keep hoge ', async() => {
+      test('set slack channel and should get it and should keep hoge ', async() => {
         let page = await Page.findOne({ path: '/page/for/extended' });
         await page.updateSlackChannel('slack-channel1');
         page = await Page.findOne({ path: '/page/for/extended' });
@@ -257,8 +257,8 @@ describe('Page', () => {
   });
 
   describe('.findPage', () => {
-    context('findByIdAndViewer', () => {
-      it('should find page (public)', async() => {
+    describe('findByIdAndViewer', () => {
+      test('should find page (public)', async() => {
         const pageToFind = createdPages[1];
         const grantedUser = createdUsers[0];
 
@@ -267,7 +267,7 @@ describe('Page', () => {
         expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should find page (anyone knows link)', async() => {
+      test('should find page (anyone knows link)', async() => {
         const pageToFind = createdPages[2];
         const grantedUser = createdUsers[1];
 
@@ -276,7 +276,7 @@ describe('Page', () => {
         expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should find page (just me)', async() => {
+      test('should find page (just me)', async() => {
         const pageToFind = createdPages[4];
         const grantedUser = createdUsers[0];
 
@@ -285,7 +285,7 @@ describe('Page', () => {
         expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should not be found by grant (just me)', async() => {
+      test('should not be found by grant (just me)', async() => {
         const pageToFind = createdPages[4];
         const grantedUser = createdUsers[1];
 
@@ -294,8 +294,8 @@ describe('Page', () => {
       });
     });
 
-    context('findByIdAndViewer granted userGroup', () => {
-      it('should find page', async() => {
+    describe('findByIdAndViewer granted userGroup', () => {
+      test('should find page', async() => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[0];
 
@@ -304,7 +304,7 @@ describe('Page', () => {
         expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should not be found by grant', async() => {
+      test('should not be found by grant', async() => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[2];
 
@@ -314,8 +314,8 @@ describe('Page', () => {
     });
   });
 
-  context('findListWithDescendants', () => {
-    it('should return only /page/', async() => {
+  describe('findListWithDescendants', () => {
+    test('should return only /page/', async() => {
       const user = createdUsers[0];
 
       const result = await Page.findListWithDescendants('/page/', user, { isRegExpEscapedFromPath: true });
@@ -326,7 +326,7 @@ describe('Page', () => {
       const pagePaths = result.pages.map((page) => { return page.path });
       expect(pagePaths).to.include.members(['/page/for/extended']);
     });
-    it('should return only /page1/', async() => {
+    test('should return only /page1/', async() => {
       const user = createdUsers[0];
 
       const result = await Page.findListWithDescendants('/page1/', user, { isRegExpEscapedFromPath: true });
@@ -339,8 +339,8 @@ describe('Page', () => {
     });
   });
 
-  context('findListByStartWith', () => {
-    it('should return pages which starts with /page', async() => {
+  describe('findListByStartWith', () => {
+    test('should return pages which starts with /page', async() => {
       const user = createdUsers[0];
 
       const result = await Page.findListByStartWith('/page', user, {});
@@ -351,7 +351,7 @@ describe('Page', () => {
       const pagePaths = result.pages.map((page) => { return page.path });
       expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2']);
     });
-    it('should process with regexp', async() => {
+    test('should process with regexp', async() => {
       const user = createdUsers[0];
 
       const result = await Page.findListByStartWith('/page\\d{1}/', user, {});

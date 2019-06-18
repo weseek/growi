@@ -10,8 +10,8 @@ describe('UpdatePost', () => {
   const UpdatePost = utils.models.UpdatePost;
 
   describe('.createPrefixesByPathPattern', () => {
-    context('with a path', () => {
-      it('should return right patternPrfixes', (done) => {
+    describe('with a path', () => {
+      test('should return right patternPrfixes', (done) => {
         expect(UpdatePost.createPrefixesByPathPattern('/*')).to.deep.equal(['*', '*']);
         expect(UpdatePost.createPrefixesByPathPattern('/user/*/日報*')).to.deep.equal(['user', '*']);
         expect(UpdatePost.createPrefixesByPathPattern('/project/hoge/*')).to.deep.equal(['project', 'hoge']);
@@ -25,8 +25,8 @@ describe('UpdatePost', () => {
   });
 
   describe('.getRegExpByPattern', () => {
-    context('with a pattern', () => {
-      it('should return right regexp', (done) => {
+    describe('with a pattern', () => {
+      test('should return right regexp', (done) => {
         expect(UpdatePost.getRegExpByPattern('/*')).to.deep.equal(/^\/.*/);
         expect(UpdatePost.getRegExpByPattern('/user/*/日報*')).to.deep.equal(/^\/user\/.*\/日報.*/);
         expect(UpdatePost.getRegExpByPattern('/project/hoge/*')).to.deep.equal(/^\/project\/hoge\/.*/);
@@ -39,8 +39,8 @@ describe('UpdatePost', () => {
   });
 
   describe('.normalizeChannelName', () => {
-    context('with a channel name', () => {
-      it('should return true', (done) => {
+    describe('with a channel name', () => {
+      test('should return true', (done) => {
         expect(UpdatePost.normalizeChannelName('#pj-hoge')).to.be.equal('pj-hoge');
         expect(UpdatePost.normalizeChannelName('pj-hoge')).to.be.equal('pj-hoge');
 

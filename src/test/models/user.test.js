@@ -10,7 +10,7 @@ describe('User', () => {
   const conn = utils.mongoose.connection;
 
   // clear collection
-  before((done) => {
+  beforeAll((done) => {
     conn.collection('users').remove()
       .then(() => {
         done();
@@ -18,8 +18,8 @@ describe('User', () => {
   });
 
   describe('Create and Find.', () => {
-    context('The user', () => {
-      it('should created', (done) => {
+    describe('The user', () => {
+      test('should created', (done) => {
         User.createUserByEmailAndPassword('Aoi Miyazaki', 'aoi', 'aoi@example.com', 'hogefuga11', 'en', (err, userData) => {
           expect(err).to.be.null;
           expect(userData).to.instanceof(User);
@@ -27,7 +27,7 @@ describe('User', () => {
         });
       });
 
-      it('should be found by findUserByUsername', (done) => {
+      test('should be found by findUserByUsername', (done) => {
         User.findUserByUsername('aoi')
           .then((userData) => {
             expect(userData).to.instanceof(User);
@@ -35,7 +35,7 @@ describe('User', () => {
           });
       });
 
-      it('should be found by findUsersByPartOfEmail', (done) => {
+      test('should be found by findUsersByPartOfEmail', (done) => {
         User.findUsersByPartOfEmail('ao', {})
           .then((userData) => {
             expect(userData).to.instanceof(Array);
@@ -48,8 +48,8 @@ describe('User', () => {
   });
 
   describe('User Utilities', () => {
-    context('Get username from path', () => {
-      it('found', (done) => {
+    describe('Get username from path', () => {
+      test('found', (done) => {
         let username = null;
         username = User.getUsernameByPath('/user/sotarok');
         expect(username).to.equal('sotarok');
@@ -60,7 +60,7 @@ describe('User', () => {
         done();
       });
 
-      it('not found', (done) => {
+      test('not found', (done) => {
         let username = null;
         username = User.getUsernameByPath('/the/page/is/not/related/to/user/page');
         expect(username).to.be.null;
