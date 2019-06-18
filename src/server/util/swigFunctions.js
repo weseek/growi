@@ -2,7 +2,6 @@ module.exports = function(crowi, app, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
   const Page = crowi.model('Page');
-  const Config = crowi.model('Config');
   const User = crowi.model('User');
   const {
     configManager,
@@ -153,26 +152,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.isHackmdSetup = function() {
     return process.env.HACKMD_URI != null;
-  };
-
-  locals.isEnabledLinebreaks = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledLinebreaks(config);
-  };
-
-  locals.isEnabledLinebreaksInComments = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledLinebreaksInComments(config);
-  };
-
-  locals.pageBreakSeparator = function() {
-    const config = crowi.getConfig();
-    return Config.pageBreakSeparator(config);
-  };
-
-  locals.pageBreakCustomSeparator = function() {
-    const config = crowi.getConfig();
-    return Config.pageBreakCustomSeparator(config);
   };
 
   locals.customCss = function() {

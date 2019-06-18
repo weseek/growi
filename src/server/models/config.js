@@ -6,15 +6,12 @@
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
-  const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
   const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
   const SECURITY_REGISTRATION_MODE_OPEN = 'Open';
   const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
   const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
-
-  let Config;
 
   const configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
@@ -144,16 +141,6 @@ module.exports = function(crowi) {
     };
   }
 
-  function getValueForMarkdownNS(config, key) {
-    crowi.configManager.getConfig('markdown', key);
-    // // return the default value if undefined
-    // if (undefined === config.markdown || undefined === config.markdown[key]) {
-    //   return getDefaultMarkdownConfigs()[key];
-    // }
-
-    // return config.markdown[key];
-  }
-
   /**
    * It is deprecated to use this for anything other than AppService#isDBInitialized.
    */
@@ -262,9 +249,6 @@ module.exports = function(crowi) {
     );
   };
 
-  configSchema.statics.getConfig = function(callback) {
-  };
-
   // configSchema.statics.loadAllConfig = function(callback) {
   //   const Config = this;
 
@@ -292,133 +276,6 @@ module.exports = function(crowi) {
   //     });
   // };
 
-  configSchema.statics.isGuestAllowedToRead = function(config) {
-    // return true if puclic wiki mode
-    if (crowi.aclService.getIsPublicWikiOnly()) {
-      return true;
-    }
-
-    const restrictGuestMode = crowi.configManager.getConfig('crowi', 'security:restrictGuestMode');
-    // return false if undefined
-    if (undefined === config.crowi || undefined === restrictGuestMode) {
-      return false;
-    }
-
-    return SECURITY_RESTRICT_GUEST_MODE_READONLY === restrictGuestMode;
-  };
-
-  configSchema.statics.isEnabledLinebreaks = function(config) {
-    const key = 'markdown:isEnabledLinebreaks';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.isEnabledLinebreaksInComments = function(config) {
-    const key = 'markdown:isEnabledLinebreaksInComments';
-    return getValueForMarkdownNS(config, key);
-  };
-  configSchema.statics.isPublicWikiOnly = function(config) {
-    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
-      return true;
-    }
-    return false;
-  };
-
-  configSchema.statics.pageBreakSeparator = function(config) {
-    const key = 'markdown:presentation:pageBreakSeparator';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.pageBreakCustomSeparator = function(config) {
-    const key = 'markdown:presentation:pageBreakCustomSeparator';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.isEnabledXssPrevention = function(config) {
-    const key = 'markdown:xss:isEnabledPrevention';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.xssOption = function(config) {
-    const key = 'markdown:xss:option';
-    return getValueForMarkdownNS(config, key);
-  };
-
-  configSchema.statics.tagWhiteList = function(config) {
-    const key = 'markdown:xss:tagWhiteList';
-
-    if (this.isEnabledXssPrevention(config)) {
-      switch (this.xssOption(config)) {
-        case 1: // ignore all: use default option
-          return [];
-
-        case 2: // recommended
-          return recommendedWhitelist.tags;
-
-        case 3: // custom white list
-          return config.markdown[key];
-
-        default:
-          return [];
-      }
-    }
-    else {
-      return [];
-    }
-  };
-
-  configSchema.statics.attrWhiteList = function(config) {
-    const key = 'markdown:xss:attrWhiteList';
-
-    if (this.isEnabledXssPrevention(config)) {
-      switch (this.xssOption(config)) {
-        case 1: // ignore all: use default option
-          return [];
-
-        case 2: // recommended
-          return recommendedWhitelist.attrs;
-
-        case 3: // custom white list
-          return config.markdown[key];
-
-        default:
-          return [];
-      }
-    }
-    else {
-      return [];
-    }
-  };
-
-  configSchema.statics.hasSlackConfig = function(config) {
-    return Config.hasSlackToken(config) || Config.hasSlackIwhUrl(config);
-  };
-
-  /**
-   * for Slack Incoming Webhooks
-   */
-  configSchema.statics.hasSlackIwhUrl = function(config) {
-    if (!config.notification) {
-      return false;
-    }
-    return (!!config.notification['slack:incomingWebhookUrl']);
-  };
-
-  configSchema.statics.isIncomingWebhookPrioritized = function(config) {
-    if (!config.notification) {
-      return false;
-    }
-    return (!!config.notification['slack:isIncomingWebhookPrioritized']);
-  };
-
-  configSchema.statics.hasSlackToken = function(config) {
-    if (!config.notification) {
-      return false;
-    }
-
-    return (!!config.notification['slack:token']);
-  };
-
   configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
     const env = process.env;
 
@@ -441,7 +298,7 @@ module.exports = function(crowi) {
       attrWhiteList: crowi.xssService.getAttrWhiteList(),
       highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
-      hasSlackConfig: crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
@@ -483,7 +340,7 @@ module.exports = function(crowi) {
   }
   */
 
-  Config = mongoose.model('Config', configSchema);
+  const Config = mongoose.model('Config', configSchema);
   Config.SECURITY_REGISTRATION_MODE_OPEN = SECURITY_REGISTRATION_MODE_OPEN;
   Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
   Config.SECURITY_REGISTRATION_MODE_CLOSED = SECURITY_REGISTRATION_MODE_CLOSED;
