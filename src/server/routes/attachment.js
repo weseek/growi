@@ -3,7 +3,6 @@
 
 const logger = require('@alias/logger')('growi:routes:attachment');
 
-const path = require('path');
 const fs = require('fs');
 
 const ApiResponse = require('../util/apiResponse');
