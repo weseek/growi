@@ -648,9 +648,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = {
-      socketClientId, isSyncRevisionToHackmd,
-    };
+    const options = { isSyncRevisionToHackmd, socketClientId };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
