@@ -1,5 +1,3 @@
-
-
 require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:add-config-app-installed');
 
