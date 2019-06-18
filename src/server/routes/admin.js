@@ -123,64 +123,54 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
-  actions.markdown.lineBreaksSetting = function(req, res) {
+  actions.markdown.lineBreaksSetting = async function(req, res) {
     const markdownSetting = req.form.markdownSetting;
 
-    req.session.markdownSetting = markdownSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', markdownSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.markdownSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
-  actions.markdown.presentationSetting = function(req, res) {
-    const presentationSetting = req.form.markdownSetting;
+  actions.markdown.presentationSetting = async function(req, res) {
+    const markdownSetting = req.form.markdownSetting;
 
-    req.session.markdownSetting = presentationSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', presentationSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.markdownSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/xss-setting' , admin.markdown.xssSetting);
   actions.markdown.xssSetting = async function(req, res) {
     const xssSetting = req.form.markdownSetting;
 
-    xssSetting['markdown:xss:tagWhiteList'] = stringToArray(xssSetting['markdown:xss:tagWhiteList']);
-    xssSetting['markdown:xss:attrWhiteList'] = stringToArray(xssSetting['markdown:xss:attrWhiteList']);
+    xssSetting['markdown:xss:tagWhiteList'] = csvToArray(xssSetting['markdown:xss:tagWhiteList']);
+    xssSetting['markdown:xss:attrWhiteList'] = csvToArray(xssSetting['markdown:xss:attrWhiteList']);
 
-    req.session.markdownSetting = xssSetting;
     if (req.form.isValid) {
       await configManager.updateConfigsInTheSameNamespace('markdown', xssSetting);
-      req.session.xssSetting = null;
       req.flash('successMessage', ['Successfully updated!']);
-      res.redirect('/admin/markdown');
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
-  const stringToArray = (string) => {
+  const csvToArray = (string) => {
     const array = string.split(',');
     return array.map((item) => { return item.trim() });
   };
