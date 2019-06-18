@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="{{ appService.appTitle() }}">
+  <meta name="apple-mobile-web-app-title" content="{{ appService.getAppTitle() }}">
 
   {{ customHeader() }}
 
@@ -86,7 +86,7 @@
             <div class="logo-mark">{% include '../widget/logo.html' %}</div>
           </b>
           <span class="hidden-xs" style="color: black">
-            {% set appTitle = appService.appTitle() %}
+            {% set appTitle = appService.getAppTitle() %}
             {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
             <span class="logo-text">
               <svg xmlns="http://www.w3.org/2000/svg">

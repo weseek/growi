@@ -108,6 +108,7 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForPage = function(page, user, channel, updateType, previousRevision) {
+    const appTitle = crowi.appService.getAppTitle();
     const url = crowi.appService.getSiteUrl();
     let body = page.revision.body;
 
@@ -134,7 +135,7 @@ module.exports = function(crowi) {
 
     const message = {
       channel: `#${channel}`,
-      username: Config.appTitle(config),
+      username: appTitle,
       text: getSlackMessageTextForPage(page.path, page.id, user, updateType),
       attachments: [attachment],
     };
@@ -143,6 +144,7 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForComment = function(comment, user, channel, path) {
+    const appTitle = crowi.appService.getAppTitle();
     const url = crowi.appService.getSiteUrl();
     const body = prepareAttachmentTextForComment(comment);
 
@@ -160,7 +162,7 @@ module.exports = function(crowi) {
 
     const message = {
       channel: `#${channel}`,
-      username: Config.appTitle(config),
+      username: appTitle,
       text: getSlackMessageTextForComment(path, String(comment.page), user),
       attachments: [attachment],
     };

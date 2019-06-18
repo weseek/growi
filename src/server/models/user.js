@@ -620,7 +620,6 @@ module.exports = function(crowi) {
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
     validateCrowi();
 
-    const Config = crowi.model('Config');
     const configManager = crowi.configManager;
 
     const User = this;
@@ -699,6 +698,8 @@ module.exports = function(crowi) {
         }
 
         if (toSendEmail) {
+          const appTitle = crowi.appService.getAppTitle();
+
           // TODO: メール送信部分のロジックをサービス化する
           async.each(
             createdUserList,
@@ -709,13 +710,13 @@ module.exports = function(crowi) {
 
               mailer.send({
                 to: user.email,
-                subject: `Invitation to ${Config.appTitle(config)}`,
+                subject: `Invitation to ${appTitle}`,
                 template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
                 vars: {
                   email: user.email,
                   password: user.password,
                   url: crowi.appService.getSiteUrl(),
-                  appTitle: Config.appTitle(config),
+                  appTitle,
                 },
               },
               (err, s) => {
