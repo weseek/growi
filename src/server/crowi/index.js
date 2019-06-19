@@ -112,11 +112,11 @@ Crowi.prototype.initForTest = async function() {
   // // customizeService depends on AppService and XssService
   // // passportService depends on appService
   // // slack depends on setUpSlacklNotification
-  // await Promise.all([
-  //   this.setUpApp(),
-  //   this.setUpXss(),
-  //   this.setUpSlacklNotification(),
-  // ]);
+  await Promise.all([
+    this.setUpApp(),
+    // this.setUpXss(),
+    // this.setUpSlacklNotification(),
+  ]);
 
   // await Promise.all([
   //   this.scanRuntimeVersions(),

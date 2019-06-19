@@ -5,9 +5,14 @@ const Crowi = require('@server/crowi');
 let _instance = null;
 
 async function createInstance() {
-  const instance = new Crowi(helpers.root());
-  await instance.initForTest();
-  return instance;
+  const crowi = new Crowi(helpers.root());
+  await crowi.initForTest();
+
+  // init DB
+  const appService = crowi.appService;
+  await appService.initDB();
+
+  return crowi;
 }
 
 async function getInstance(isNewInstance) {
