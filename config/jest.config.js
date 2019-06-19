@@ -17,7 +17,7 @@ module.exports = {
       displayName: 'server',
       testEnvironment: 'node',
       rootDir: '.',
-      setupFilesAfterEnv: ['<rootDir>/src/test/bootstrap.js'],
+      setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
       testMatch: ['<rootDir>/src/test/**/*.test.js'],
       // A map from regular expressions to module names that allow to stub out resources with a single module
       moduleNameMapper: {

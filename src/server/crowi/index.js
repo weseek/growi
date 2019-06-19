@@ -106,9 +106,7 @@ Crowi.prototype.init = async function() {
 };
 
 Crowi.prototype.initForTest = async function() {
-  // await this.setupDatabase();
   await this.setupModels();
-  // await this.setupSessionConfig();
   await this.setupConfigManager();
 
   // // customizeService depends on AppService and XssService
@@ -250,9 +248,9 @@ Crowi.prototype.setupConfigManager = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-    Object.keys(models).forEach((key) => {
+  Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
-    });
+  });
 };
 
 Crowi.prototype.getIo = function() {
