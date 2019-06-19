@@ -288,15 +288,13 @@
   "Delete Completely": "Delete Completely",
 
   "modal_delete": {
-    "label": {
-      "Delete Page": "Delete Page",
-      "Delete recursively": "Delete recursively",
-      "Delete completely": "Delete completely"
-    },
-    "help": {
-      "recursively": "Delete children of under <code>%s</code> recursively",
-      "completely": "Delete completely instead of putting it into trash"
-    }
+    "delete_page": "Delete Page",
+    "deleting_page": "Deleting Page",
+    "delete_recursively": "Delete Recursively",
+    "delete_completely": "Delete Completely",
+    "delete_completely_restriction": "You have no admin to delete completely",
+    "recursively": "Delete children of under <code>%s</code> recursively",
+    "completely": "Delete completely instead of putting it into trash"
   },
 
   "modal_duplicate": {

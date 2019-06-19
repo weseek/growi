@@ -288,15 +288,13 @@
   "Delete Completely": "完全削除",
 
   "modal_delete": {
-    "label": {
-      "Delete Page": "ページを削除する",
-      "Delete recursively": "全ての子ページも削除",
-      "Delete completely": "完全削除"
-    },
-    "help": {
-      "recursively": "<code>%s</code> 配下のページも削除します",
-      "completely": "ゴミ箱を経由せず、完全に削除します"
-    }
+    "delete_page": "ページを削除する",
+    "deleting_page": "ページパス",
+    "delete_recursively": "全ての子ページも削除",
+    "delete_completely": "完全削除",
+    "delete_completely_restriction": "完全削除をするための権限がありません。",
+    "recursively": "<code>%s</code> 配下のページも削除します",
+    "completely": "ゴミ箱を経由せず、完全に削除します"
   },
 
   "modal_duplicate": {
