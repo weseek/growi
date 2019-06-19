@@ -101,6 +101,7 @@ Crowi.prototype.init = async function() {
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
+    this.setupUserGroup(),
   ]);
 };
 
@@ -536,6 +537,14 @@ Crowi.prototype.setUpRestQiitaAPI = function() {
   const RestQiitaAPIService = require('../service/rest-qiita-API');
   if (this.restQiitaAPIService == null) {
     this.restQiitaAPIService = new RestQiitaAPIService(this);
+  }
+};
+
+Crowi.prototype.setupUserGroup = async function() {
+  const UserGroupService = require('../service/user-group');
+  if (this.userGroupService == null) {
+    this.userGroupService = new UserGroupService(this);
+    return this.userGroupService.init();
   }
 };
 
