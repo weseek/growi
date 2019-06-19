@@ -939,8 +939,7 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-        if (!req.user.admin && pageCompleteDeletionAuthority === 'adminOnly') {
+        if (!req.user.canDeleteCompletely(page.creator)) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         if (isRecursively) {

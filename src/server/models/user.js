@@ -205,7 +205,7 @@ module.exports = function(crowi) {
       return true;
     }
     if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-      return (this.id === creatorId || false);
+      return (this._id.equals(creatorId));
     }
 
     return false;
