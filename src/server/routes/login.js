@@ -15,9 +15,6 @@ module.exports = function(crowi, app) {
 
   const actions = {};
 
-  const clearGoogleSession = function(req) {
-    req.session.googleAuthCode = req.session.googleId = req.session.googleEmail = req.session.googleName = req.session.googleImage = null;
-  };
   const loginSuccess = function(req, res, userData) {
     req.user = req.session.user = userData;
 
@@ -31,8 +28,6 @@ module.exports = function(crowi, app) {
     if (!userData.password) {
       return res.redirect('/me/password');
     }
-
-    clearGoogleSession(req);
 
     const jumpTo = req.session.jumpTo;
     if (jumpTo) {
@@ -58,16 +53,6 @@ module.exports = function(crowi, app) {
   const loginFailure = function(req, res) {
     req.flash('warningMessage', 'Sign in failure.');
     return res.redirect('/login');
-  };
-
-  actions.googleCallback = function(req, res) {
-    const nextAction = req.session.googleCallbackAction || '/login';
-    debug('googleCallback.nextAction', nextAction);
-    req.session.googleAuthCode = req.query.code || '';
-    debug('google auth code', req.query.code);
-
-
-    return res.redirect(nextAction);
   };
 
   actions.error = function(req, res) {
@@ -114,43 +99,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  actions.loginGoogle = function(req, res) {
-    const googleAuth = require('../util/googleAuth')(crowi);
-    const code = req.session.googleAuthCode || null;
-
-    if (!code) {
-      googleAuth.createAuthUrl(req, (err, redirectUrl) => {
-        if (err) {
-          // TODO
-        }
-
-        req.session.googleCallbackAction = '/login/google';
-        return res.redirect(redirectUrl);
-      });
-    }
-    else {
-      googleAuth.handleCallback(req, (err, tokenInfo) => {
-        debug('handleCallback', err, tokenInfo);
-        if (err) {
-          return loginFailure(req, res);
-        }
-
-        const googleId = tokenInfo.user_id;
-        User.findUserByGoogleId(googleId, (err, userData) => {
-          debug('findUserByGoogleId', err, userData);
-          if (!userData) {
-            clearGoogleSession(req);
-            return loginFailure(req, res);
-          }
-          return loginSuccess(req, res, userData);
-        });
-      });
-    }
-  };
-
   actions.register = function(req, res) {
-    const googleAuth = require('../util/googleAuth')(crowi);
-
     // redirect to '/' if both of these are true:
     //  1. user has logged in
     //  2. req.user is not username/email string (which is set by basic-auth-connect)
@@ -170,8 +119,6 @@ module.exports = function(crowi, app) {
       const username = registerForm.username;
       const email = registerForm.email;
       const password = registerForm.password;
-      var googleId = registerForm.googleId || null;
-      var googleImage = registerForm.googleImage || null;
 
       // email と username の unique チェックする
       User.isRegisterable(email, username, (isRegisterable, errOn) => {
@@ -238,79 +185,21 @@ module.exports = function(crowi, app) {
             });
           }
 
-          if (googleId) {
-            userData.updateGoogleId(googleId, (err, userData) => {
-              if (err) { // TODO
-              }
-              return loginSuccess(req, res, userData);
-            });
-          }
-          else {
-            // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
-            // cz. loginSuccess method doesn't work on it's own when using passport
-            //      because `req.login()` prepared by passport is not called.
-            req.flash('successMessage', `The user '${userData.username}' is successfully created.`);
 
-            return loginSuccess(req, res, userData);
-          }
+          // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
+          // cz. loginSuccess method doesn't work on it's own when using passport
+          //      because `req.login()` prepared by passport is not called.
+          req.flash('successMessage', `The user '${userData.username}' is successfully created.`);
+
+          return loginSuccess(req, res, userData);
         });
       });
     }
     else { // method GET of form is not valid
       debug('session is', req.session);
       const isRegistering = true;
-      // google callback を受ける可能性もある
-      const code = req.session.googleAuthCode || null;
-      var googleId = req.session.googleId || null;
-      let googleEmail = req.session.googleEmail || null;
-      let googleName = req.session.googleName || null;
-      var googleImage = req.session.googleImage || null;
-
-      debug('register. if code', code);
-      // callback 経由で reigster にアクセスしてきた時最初だけこの if に入る
-      // code から email などを取得したらそれを session にいれて code は消去
-      if (code) {
-        googleAuth.handleCallback(req, (err, tokenInfo) => {
-          debug('tokenInfo on register GET', tokenInfo);
-          req.session.googleAuthCode = null;
-
-          if (err) {
-            req.flash('registerWarningMessage', 'Error on connectiong Google');
-            return res.redirect('/login?register=1'); // TODO Handling
-          }
-
-          req.session.googleId = googleId = tokenInfo.user_id;
-          req.session.googleEmail = googleEmail = tokenInfo.email;
-          req.session.googleName = googleName = tokenInfo.name;
-          req.session.googleImage = googleImage = tokenInfo.picture;
-
-          if (!User.isEmailValid(googleEmail)) {
-            req.flash('registerWarningMessage', 'このメールアドレスのGoogleアカウントはコネクトできません。');
-            return res.redirect('/login?register=1');
-          }
-          return res.render('login', {
-            isRegistering, googleId, googleEmail, googleName, googleImage,
-          });
-        });
-      }
-      else {
-        return res.render('login', {
-          isRegistering, googleId, googleEmail, googleName, googleImage,
-        });
-      }
+      return res.render('login', { isRegistering });
     }
-  };
-
-  actions.registerGoogle = function(req, res) {
-    const googleAuth = require('../util/googleAuth')(crowi);
-    googleAuth.createAuthUrl(req, (err, redirectUrl) => {
-      if (err) {
-        // TODO
-      }
-
-      req.session.googleCallbackAction = '/register';
-      return res.redirect(redirectUrl);
-    });
   };
 
   actions.invited = async function(req, res) {

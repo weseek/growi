@@ -91,20 +91,11 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
-   * return true if local strategy has been setup successfully
-   *  used whether restarting the server needed
-   */
-  locals.isPassportLocalStrategySetup = function() {
-    return passportService != null && passportService.isLocalStrategySetup;
-  };
-
-  /**
    * return true if enabled and strategy has been setup successfully
    */
   locals.isLdapSetup = function() {
     return (
-      configManager.getConfig('crowi', 'security:isEnabledPassport')
-      && configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
       && passportService.isLdapStrategySetup
     );
   };
@@ -114,33 +105,13 @@ module.exports = function(crowi, app, req, locals) {
    */
   locals.isLdapSetupFailed = function() {
     return (
-      configManager.getConfig('crowi', 'security:isEnabledPassport')
-      && configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
       && !passportService.isLdapStrategySetup
     );
   };
 
   locals.getSamlMissingMandatoryConfigKeys = function() {
-    // return an empty array if Passport is not enabled
-    // because crowi.passportService is null.
-    if (!configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-      return [];
-    }
-
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
-  };
-
-  locals.googleLoginEnabled = function() {
-    // return false if Passport is enabled
-    // because official crowi mechanism is not used.
-    if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-      return false;
-    }
-
-    return (
-      configManager.getConfig('crowi', 'google:clientId')
-      && configManager.getConfig('crowi', 'google:clientSecret')
-    );
   };
 
   locals.searchConfigured = function() {

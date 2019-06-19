@@ -213,8 +213,6 @@ Crowi.prototype.setupSessionConfig = function() {
 // };
 
 Crowi.prototype.setupConfigManager = async function() {
-  this.model('Config', require('../models/config')(this));
-
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
   return this.configManager.loadConfigs();
@@ -270,11 +268,6 @@ Crowi.prototype.getRestQiitaAPIService = function() {
 };
 
 Crowi.prototype.setupPassport = function() {
-  if (!this.configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-    // disabled
-    return;
-  }
-
   debug('Passport is enabled');
 
   // initialize service

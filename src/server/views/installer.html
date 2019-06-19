@@ -69,8 +69,8 @@
 
         <div id='installer-form'
           data-user-name="{{ req.body.registerForm.username }}"
-          data-name="{{ googleName|default(req.body.registerForm.name) }}"
-          data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
+          data-name="{{ req.body.registerForm.name }}"
+          data-email="{{ req.body.registerForm.email }}"
           data-csrf="{{ csrf() }}">
         </div>
 

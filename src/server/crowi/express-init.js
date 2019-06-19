@@ -139,11 +139,9 @@ module.exports = function(crowi, app) {
   });
 
   // passport
-  if (getConfig('crowi', 'security:isEnabledPassport')) {
-    debug('initialize Passport');
-    app.use(passport.initialize());
-    app.use(passport.session());
-  }
+  debug('initialize Passport');
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use(flash());
 
@@ -154,13 +152,7 @@ module.exports = function(crowi, app) {
 
   app.use(middlewares.csrfKeyGenerator());
 
-  // switch loginChecker
-  if (getConfig('crowi', 'security:isEnabledPassport')) {
-    app.use(middlewares.loginCheckerForPassport);
-  }
-  else {
-    app.use(middlewares.loginChecker);
-  }
+  app.use(middlewares.loginCheckerForPassport);
 
   app.use(i18nMiddleware.handle(i18next));
 };
