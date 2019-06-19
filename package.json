@@ -32,6 +32,7 @@
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
+    "jest": "jest --config=config/jest.config.js",
     "lint:js:fix": "eslint **/*.{js,jsx} --fix",
     "lint:js": "eslint **/*.{js,jsx}",
     "lint:styles:fix": "prettier-stylelint --quiet --write src/client/styles/scss/**/*.scss",
@@ -55,7 +56,7 @@
     "server:prod": "env-cmd -f config/env.prod.js node src/server/app.js",
     "server": "npm run server:dev",
     "start": "npm run server:prod",
-    "test": "jest --config=config/jest.config.js --passWithNoTests",
+    "test": "npm run jest -- --passWithNoTests",
     "version": "node -p \"require('./package.json').version\"",
     "webpack": "webpack"
   },
