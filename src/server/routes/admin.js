@@ -14,7 +14,12 @@ module.exports = function(crowi, app) {
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
 
-  const { configManager, aclService, slackNotificationService } = crowi;
+  const {
+    configManager,
+    aclService,
+    slackNotificationService,
+    customizeService,
+  } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
@@ -1089,6 +1094,9 @@ module.exports = function(crowi, app) {
     if (req.form.isValid) {
       debug('form content', form);
       await configManager.updateConfigsInTheSameNamespace('crowi', form);
+      customizeService.initCustomCss();
+      customizeService.initCustomTitle();
+
       return res.json({ status: true });
     }
 
