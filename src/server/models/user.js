@@ -79,16 +79,16 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const Config = crowi.model('Config');
+    const configManager = crowi.configManager;
 
-
-    const config = crowi.getConfig();
-
-    if (!config.crowi) {
+    const isInstalled = configManager.getConfig('crowi', 'app:installed');
+    if (!isInstalled) {
       return STATUS_ACTIVE; // is this ok?
     }
 
     // status decided depends on registrationMode
-    switch (config.crowi['security:registrationMode']) {
+    const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+    switch (registrationMode) {
       case Config.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
       case Config.SECURITY_REGISTRATION_MODE_RESTRICTED:
@@ -620,12 +620,12 @@ module.exports = function(crowi) {
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
     validateCrowi();
 
+    const configManager = crowi.configManager;
+
     const User = this;
     const createdUserList = [];
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-
     const mailer = crowi.getMailer();
+
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
@@ -665,7 +665,7 @@ module.exports = function(crowi) {
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
 
-          const globalLang = Config.globalLang(config);
+          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
           if (globalLang != null) {
             newUser.lang = globalLang;
           }
@@ -698,6 +698,8 @@ module.exports = function(crowi) {
         }
 
         if (toSendEmail) {
+          const appTitle = crowi.appService.getAppTitle();
+
           // TODO: メール送信部分のロジックをサービス化する
           async.each(
             createdUserList,
@@ -706,15 +708,17 @@ module.exports = function(crowi) {
                 return next();
               }
 
+              const appTitle = crowi.appService.getAppTitle();
+
               mailer.send({
                 to: user.email,
-                subject: `Invitation to ${Config.appTitle(config)}`,
+                subject: `Invitation to ${appTitle}`,
                 template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
                 vars: {
                   email: user.email,
                   password: user.password,
                   url: crowi.appService.getSiteUrl(),
-                  appTitle: Config.appTitle(config),
+                  appTitle,
                 },
               },
               (err, s) => {
@@ -759,9 +763,8 @@ module.exports = function(crowi) {
       newUser.setPassword(password);
     }
 
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-    const globalLang = Config.globalLang(config);
+    const configManager = crowi.configManager;
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }

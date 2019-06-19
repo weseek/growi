@@ -82,9 +82,11 @@ Crowi.prototype.init = async function() {
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
+  // slack depends on setUpSlacklNotification
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
+    this.setUpSlacklNotification(),
   ]);
 
   await Promise.all([
@@ -95,7 +97,6 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
-    this.setUpSlacklNotification(),
     this.setUpFileUpload(),
     this.setUpAcl(),
     this.setUpCustomize(),
@@ -212,8 +213,6 @@ Crowi.prototype.setupSessionConfig = function() {
 // };
 
 Crowi.prototype.setupConfigManager = async function() {
-  this.model('Config', require('../models/config')(this));
-
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
   return this.configManager.loadConfigs();
@@ -269,11 +268,6 @@ Crowi.prototype.getRestQiitaAPIService = function() {
 };
 
 Crowi.prototype.setupPassport = function() {
-  if (!this.configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-    // disabled
-    return;
-  }
-
   debug('Passport is enabled');
 
   // initialize service
@@ -327,11 +321,9 @@ Crowi.prototype.setupMailer = function() {
 
 Crowi.prototype.setupSlack = function() {
   const self = this;
-  const config = this.getConfig();
-  const Config = this.model('Config');
 
   return new Promise(((resolve, reject) => {
-    if (Config.hasSlackConfig(config)) {
+    if (this.slackNotificationService.hasSlackConfig()) {
       self.slack = require('../util/slack')(self);
     }
 

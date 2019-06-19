@@ -21,26 +21,6 @@ module.exports = (crowi, app) => {
     };
   };
 
-  middlewares.loginChecker = async function(req, res, next) {
-    const User = crowi.model('User');
-    let user = null;
-
-    try {
-      // session に user object が入ってる
-      if (req.session.user && '_id' in req.session.user) {
-        user = await User.findById(req.session.user._id).populate(User.IMAGE_POPULATION);
-      }
-
-      req.user = user;
-      req.session.user = user;
-      res.locals.user = req.user;
-      next();
-    }
-    catch (err) {
-      next(err);
-    }
-  };
-
   middlewares.loginCheckerForPassport = function(req, res, next) {
     res.locals.user = req.user;
     next();
@@ -208,15 +188,13 @@ module.exports = (crowi, app) => {
    * @param {boolean} isStrictly whethere strictly restricted (default true)
    */
   middlewares.loginRequired = function(isStrictly = true) {
-    const isGuestAllowedToRead = crowi.aclService.getIsGuestAllowedToRead();
-
     return function(req, res, next) {
       const User = crowi.model('User');
 
       // when the route is not strictly restricted
       if (!isStrictly) {
         // when allowed to read
-        if (isGuestAllowedToRead) {
+        if (crowi.aclService.getIsGuestAllowedToRead()) {
           return next();
         }
       }

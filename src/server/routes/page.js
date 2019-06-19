@@ -8,7 +8,6 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Config = crowi.model('Config');
   const config = crowi.getConfig();
   const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
@@ -17,7 +16,7 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const configManager = crowi.configManager;
+  const { configManager, slackNotificationService } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
@@ -99,7 +98,7 @@ module.exports = function(crowi, app) {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
-    if (Config.hasSlackConfig(config)) {
+    if (slackNotificationService.hasSlackConfig(config)) {
       const promises = slackChannels.split(',').map((chan) => {
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });

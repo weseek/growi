@@ -27,7 +27,7 @@
   <div class="row">
     <div class="login-header col-sm-offset-4 col-sm-4">
       <div class="logo">{% include 'widget/logo.html' %}</div>
-      <h1>{{ appService.appTitle() }}</h1>
+      <h1>{{ appService.getAppTitle() }}</h1>
 
       <div class="login-form-errors">
         {% if isLdapSetupFailed() %}
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <div class="login-dialog p-b-10 col-sm-offset-4 col-sm-4 flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
+    <div class="login-dialog p-b-10 col-sm-offset-4 col-sm-4 flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
 
       <div class="front">
         <form role="form" action="/login" method="post">
@@ -130,35 +130,19 @@
           </div>
         </form>
 
-        {% if googleLoginEnabled() %}
-        <hr>
-
-        <div class="input-group m-t-15 m-b-10 mx-auto">
-          <form role="form" action="/login/google" method="get">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-oauth" id="google">
-              <span class="btn-label"><i class="icon-social-google"></i></span>
-              {{ t('Sign in') }}
-            </button>
-            <div class="small text-right">by Google Account</div>
-          </form>
-        </div>
-        {% endif %}
         {% if (
-          getConfig('crowi', 'security:isEnabledPassport') && (
-            getConfig('crowi', 'security:passport-google:isEnabled') ||
-            getConfig('crowi', 'security:passport-github:isEnabled') ||
-            getConfig('crowi', 'security:passport-facebook:isEnabled') ||
-            getConfig('crowi', 'security:passport-twitter:isEnabled')||
-            getConfig('crowi', 'security:passport-oidc:isEnabled') ||
-            getConfig('crowi', 'security:passport-saml:isEnabled')
-          )
+          getConfig('crowi', 'security:passport-google:isEnabled') ||
+          getConfig('crowi', 'security:passport-github:isEnabled') ||
+          getConfig('crowi', 'security:passport-facebook:isEnabled') ||
+          getConfig('crowi', 'security:passport-twitter:isEnabled')||
+          getConfig('crowi', 'security:passport-oidc:isEnabled') ||
+          getConfig('crowi', 'security:passport-saml:isEnabled')
         ) %}
         <hr class="mb-1">
         <div class="collapse collapse-oauth collapse-anchor">
           <div class="spacer"></div>
           <div class="d-flex flex-row justify-content-between flex-wrap">
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-google:isEnabled') %}
+            {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
             <form role="form" action="/passport/google" class="d-inline-flex flex-column">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-flex" id="google">
                 <span class="btn-label"><i class="fa fa-google"></i></span>
@@ -167,7 +151,7 @@
               <div class="small text-right">by Google Account</div>
             </form>
             {% endif %}
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-github:isEnabled') %}
+            {% if getConfig('crowi', 'security:passport-github:isEnabled') %}
             <form role="form" action="/passport/github" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="github">
@@ -177,7 +161,7 @@
               <div class="small text-right">by GitHub Account</div>
             </form>
             {% endif %}
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-facebook:isEnabled') %}
+            {% if getConfig('crowi', 'security:passport-facebook:isEnabled') %}
             <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="facebook">
@@ -187,7 +171,7 @@
               <div class="small text-right">by Facebook Account</div>
             </form>
             {% endif %}
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-twitter:isEnabled') %}
+            {% if getConfig('crowi', 'security:passport-twitter:isEnabled') %}
             <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="twitter">
@@ -197,7 +181,7 @@
               <div class="small text-right">by Twitter Account</div>
             </form>
             {% endif %}
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-oidc:isEnabled') %}
+            {% if getConfig('crowi', 'security:passport-oidc:isEnabled') %}
             <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="oidc">
@@ -207,7 +191,7 @@
               <div class="small text-right">{{ getConfig('crowi', 'security:passport-oidc:providerName') || "OpenID Connect" }}</div>
             </form>
             {% endif %}
-            {% if getConfig('crowi', 'security:isEnabledPassport') && getConfig('crowi', 'security:passport-saml:isEnabled') %}
+            {% if getConfig('crowi', 'security:passport-saml:isEnabled') %}
             <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="saml">
@@ -265,21 +249,7 @@
         </p>
         {% endif %}
 
-        {% if googleId %}
-        <div class="google-info alert alert-info">
-          {% if googleImage %}
-          <p class="text-center">
-            <img src="{{ googleImage }}" class="img-circle img-circle-lg">
-          </p>
-          {% endif %}
-          <code>{{ googleEmail }}</code> {{ t('page_register with this Google Account') }}<br>
-          {{ t('page_register.notice.google_account_continue') }}
-        </div>
-        {% endif %}
-
         <form role="form" method="post" action="/register" id="register-form">
-          <input type="hidden" class="form-control" name="registerForm[googleId]" value="{{ googleId|default(req.body.registerForm.googleId) }}">
-
           <div class="input-group" id="input-group-username">
             <span class="input-group-addon"><i class="icon-user"></i></span>
             <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
@@ -290,12 +260,12 @@
 
           <div class="input-group">
             <span class="input-group-addon"><i class="icon-tag"></i></span>
-            <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
+            <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
           </div>
 
           <div class="input-group">
             <span class="input-group-addon"><i class="icon-envelope"></i></span>
-            <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
+            <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ req.body.registerForm.email }}" required>
           </div>
           {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
           <p class="help-block">
@@ -313,9 +283,6 @@
             <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
           </div>
 
-          {% if googleImage %}
-            <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
-          {% endif  %}
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
 
           <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">

@@ -41,8 +41,8 @@
   <body>
     <div class="reveal">
       <div class="slides">
-        {% set pageBreakSeparator = pageBreakSeparator()|default(1) %}
-        {% set pageBreakCustomSeparator = pageBreakCustomSeparator()|default('') %}
+        {% set pageBreakSeparator = getConfig('markdown', 'markdown:presentation:pageBreakSeparator') | default(1) %}
+        {% set pageBreakCustomSeparator = getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator') | default('') %}
 
         {% if 3 === pageBreakSeparator %}
           {% set dataSeparator = pageBreakCustomSeparator %}

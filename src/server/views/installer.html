@@ -10,7 +10,7 @@
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="{{ appService.appTitle() }}">
+  <meta name="apple-mobile-web-app-title" content="{{ appService.getAppTitle() }}">
 
   {% include './widget/headers/favicon.html' %}
   {% include './widget/headers/ie11-polyfills.html' %}
@@ -69,8 +69,8 @@
 
         <div id='installer-form'
           data-user-name="{{ req.body.registerForm.username }}"
-          data-name="{{ googleName|default(req.body.registerForm.name) }}"
-          data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
+          data-name="{{ req.body.registerForm.name }}"
+          data-email="{{ req.body.registerForm.email }}"
           data-csrf="{{ csrf() }}">
         </div>
 

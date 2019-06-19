@@ -156,139 +156,16 @@
         </div>
        </div>
 
-      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal mt-5" id="mechanismSetting" role="form">
-        <fieldset>
-          <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
-          <p class="alert alert-info"><b>{{ t("security_setting.note") }}: </b>{{ t("security_setting.require_server_restart_change_auth") }}</p>
-          <div class="form-group">
-            <div class="col-xs-6">
-              <h4>
-                <div class="radio radio-primary">
-                  <input type="radio" id="radioPassportAuthMech" name="settingForm[security:isEnabledPassport]" value="true"
-                      {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
-                  <label for="radioPassportAuthMech">
-                    <a href="http://passportjs.org/" target="_blank">
-                      <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
-                    </a> {{ t("security_setting.auth_mechanism") }} <small class="text-success">({{ t("security_setting.recommended") }})</small>
-                  </label>
-                </div>
-              </h4>
-              <ul>
-                <li>{{ t("security_setting.username_email_password") }}</li>
-                <li>{{ t("security_setting.ldap_auth") }}</li>
-                <li>{{ t("security_setting.saml_auth") }}</li>
-                <li>{{ t("security_setting.google_auth2") }}</li>
-                <li>{{ t("security_setting.github_auth2") }}</li>
-                <li>{{ t("security_setting.twitter_auth2") }}</li>
-                <li class="text-muted">(TBD) <del>{{ t("security_setting.facebook_auth2") }}</del></li>
-              </ul>
-            </div>
-            <div class="col-xs-6">
-              <h4>
-                <div class="radio radio-primary">
-                  <input type="radio" id="radioCrowiAuthMech" name="settingForm[security:isEnabledPassport]" value="false"
-                      {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
-                  <label for="radioCrowiAuthMech">
-                    Crowi Classic {{ t("security_setting.auth_mechanism") }}
-                  </label>
-                </div>
-              </h4>
-              <ul>
-                <li>{{ t("security_setting.username_email_password") }}</li>
-                <li class="text-muted">
-                  {{ t("security_setting.google_auth2") }}
-                  <ul><li>{{ t("security_setting.google_auth2_by_crowi_desc") }}</li></ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-offset-5 col-xs-6">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-            </div>
-          </div>
-        </fieldset>
-      </form>
-
 
       <div class="auth-mechanism-configurations m-t-10">
 
         <legend>{{ t('security_setting.Authentication mechanism settings') }}</legend>
 
-        {% set isOfficialConfigurationVisible = !getConfig('crowi', 'security:isEnabledPassport') %}
-        <div class="official-crowi-auth-settings" {% if !isOfficialConfigurationVisible %}style="display: none;"{% endif %}>
-          {% set isRestartingServerNeeded = isPassportLocalStrategySetup() %}
-          <p class="alert alert-warning"
-              {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
-            <b>
-              <i class="icon-exclamation" aria-hidden="true"></i>
-              {{ t("security_setting.require_server_restart") }}
-            </b>
-            {{ t("security_setting.server_on_passport_auth") }}
-          </p>
-
-          <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form"
-              {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-
-            <fieldset>
-              <h4>{{ t("security_setting.google_setting") }}</h4>
-              <p class="well alert-anchor">
-                {{ t("security_setting.connect_api_manager") }}
-              </p>
-
-              <ol class="help-block">
-                <li>{{ t("security_setting.access_api_manager", "https://console.cloud.google.com/apis/credentials", "API Manager") }}</li>
-                <li>{{ t("security_setting.create_project") }}</li>
-                <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
-                <ol>
-                  <li>{{ t("security_setting.select_webapp") }}</li>
-                  <li>{{ t("security_setting.change_redirect_url") }}</li>
-                </ol>
-              </ol>
-
-              <div class="form-group">
-                <label for="settingForm[google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
-                <div class="col-xs-6">
-                  <input class="form-control" type="text" name="settingForm[google:clientId]" value="{{ settingForm['google:clientId'] }}">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
-                <div class="col-xs-6">
-                  <input class="form-control" type="text" name="settingForm[google:clientSecret]" value="{{ settingForm['google:clientSecret'] }}">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="col-xs-offset-3 col-xs-6">
-                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-                </div>
-              </div>
-
-            </fieldset>
-          </form>
-        </div>
-
         {#
          # passport settings nav
          #}
-        {% set isPassportConfigurationVisible = settingForm['security:isEnabledPassport'] %}
-        <div class="passport-settings" {% if !isPassportConfigurationVisible %}style="display: none;"{% endif %}>
-
-          {% set isRestartingServerNeeded = !isPassportLocalStrategySetup() %}
-          <p class="alert alert-warning"
-              {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
-            <b>
-              <i class="icon-exclamation" aria-hidden="true"></i>
-              {{ t("security_setting.require_server_restart") }}
-            </b>
-            {{ t("security_setting.server_on_crowi_auth") }}
-          </p>
-          <ul class="nav nav-tabs" role="tablist" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+        <div class="passport-settings">
+          <ul class="nav nav-tabs" role="tablist">
             <li class="active">
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
@@ -312,7 +189,7 @@
             </li>
           </ul>
 
-          <div class="tab-content p-t-10" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+          <div class="tab-content p-t-10">
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
             </div>
@@ -396,20 +273,6 @@
         });
         return false;
       });
-    });
-
-    // switch display according to on / off of radio buttons
-    $('input[name="settingForm[security:isEnabledPassport]"]:radio').change(function() {
-      const isEnabledPassport = ($(this).val() === "true");
-
-      if (isEnabledPassport) {
-        $('.official-crowi-auth-settings').hide(400);
-        $('.passport-settings').show(400);
-      }
-      else {
-        $('.official-crowi-auth-settings').show(400);
-        $('.passport-settings').hide(400);
-      }
     });
   </script>
 </div>

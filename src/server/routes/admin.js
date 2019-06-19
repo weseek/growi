@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
 
-  const { configManager } = crowi;
+  const { configManager, aclService, slackNotificationService } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
@@ -106,7 +106,7 @@ module.exports = function(crowi, app) {
   actions.security = {};
   actions.security.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'security:');
-    const isAclEnabled = crowi.aclService.getIsPublicWikiOnly();
+    const isAclEnabled = aclService.getIsPublicWikiOnly();
 
     return res.render('admin/security', { settingForm, isAclEnabled });
   };
@@ -114,7 +114,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/markdown'                  , admin.markdown.index);
   actions.markdown = {};
   actions.markdown.index = function(req, res) {
-    const markdownSetting = configManager.getConfigByPrefix('crowi', 'markdown:');
+    const markdownSetting = configManager.getConfigByPrefix('markdown', 'markdown:');
 
     return res.render('admin/markdown', {
       markdownSetting,
@@ -123,66 +123,54 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
-  actions.markdown.lineBreaksSetting = function(req, res) {
+  actions.markdown.lineBreaksSetting = async function(req, res) {
     const markdownSetting = req.form.markdownSetting;
 
-    req.session.markdownSetting = markdownSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', markdownSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.markdownSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
-  actions.markdown.presentationSetting = function(req, res) {
-    const presentationSetting = req.form.markdownSetting;
+  actions.markdown.presentationSetting = async function(req, res) {
+    const markdownSetting = req.form.markdownSetting;
 
-    req.session.markdownSetting = presentationSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', presentationSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.markdownSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/xss-setting' , admin.markdown.xssSetting);
-  actions.markdown.xssSetting = function(req, res) {
+  actions.markdown.xssSetting = async function(req, res) {
     const xssSetting = req.form.markdownSetting;
 
-    xssSetting['markdown:xss:tagWhiteList'] = stringToArray(xssSetting['markdown:xss:tagWhiteList']);
-    xssSetting['markdown:xss:attrWhiteList'] = stringToArray(xssSetting['markdown:xss:attrWhiteList']);
+    xssSetting['markdown:xss:tagWhiteList'] = csvToArray(xssSetting['markdown:xss:tagWhiteList']);
+    xssSetting['markdown:xss:attrWhiteList'] = csvToArray(xssSetting['markdown:xss:attrWhiteList']);
 
-    req.session.markdownSetting = xssSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', xssSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.xssSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', xssSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
-  const stringToArray = (string) => {
+  const csvToArray = (string) => {
     const array = string.split(',');
     return array.map((item) => { return item.trim() });
   };
@@ -216,13 +204,12 @@ module.exports = function(crowi, app) {
   // app.get('/admin/notification'               , admin.notification.index);
   actions.notification = {};
   actions.notification.index = async(req, res) => {
-    const config = crowi.getConfig();
     const UpdatePost = crowi.model('UpdatePost');
     let slackSetting = configManager.getConfigByPrefix('notification', 'slack:');
-    const hasSlackIwhUrl = Config.hasSlackIwhUrl(config);
-    const hasSlackToken = Config.hasSlackToken(config);
+    const hasSlackIwhUrl = !!configManager.getConfig('notification', 'slack:incomingWebhookUrl');
+    const hasSlackToken = !!configManager.getConfig('notification', 'slack:token');
 
-    if (!Config.hasSlackIwhUrl(req.config)) {
+    if (!hasSlackIwhUrl) {
       slackSetting['slack:incomingWebhookUrl'] = '';
     }
 
@@ -270,7 +257,7 @@ module.exports = function(crowi, app) {
   actions.notification.slackAuth = function(req, res) {
     const code = req.query.code;
 
-    if (!code || !Config.hasSlackConfig(req.config)) {
+    if (!code || !slackNotificationService.hasSlackConfig()) {
       return res.redirect('/admin/notification');
     }
 
@@ -298,18 +285,16 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackIwhSetting' , admin.notification.slackIwhSetting);
-  actions.notification.slackIwhSetting = function(req, res) {
+  actions.notification.slackIwhSetting = async function(req, res) {
     const slackIwhSetting = req.form.slackIwhSetting;
 
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('notification', slackIwhSetting, (err, config) => {
-        Config.updateConfigCache('notification', config);
-        req.flash('successMessage', ['Successfully Updated!']);
+      await configManager.updateConfigsInTheSameNamespace('notification', slackIwhSetting);
+      req.flash('successMessage', ['Successfully Updated!']);
 
-        // Re-setup
-        crowi.setupSlack().then(() => {
-          return res.redirect('/admin/notification#slack-incoming-webhooks');
-        });
+      // Re-setup
+      crowi.setupSlack().then(() => {
+        return res.redirect('/admin/notification#slack-incoming-webhooks');
       });
     }
     else {
@@ -650,7 +635,7 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = !Config.isPublicWikiOnly(req.config);
+    const isAclEnabled = aclService.getIsPublicWikiOnly();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
@@ -914,9 +899,7 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    const config = crowi.getConfig();
-    const isPublicWikiOnly = Config.isPublicWikiOnly(config);
-    if (isPublicWikiOnly) {
+    if (aclService.getIsPublicWikiOnly()) {
       const basicName = form['security:basicName'];
       const basicSecret = form['security:basicSecret'];
       if (basicName !== '' || basicSecret !== '') {
