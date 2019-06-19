@@ -48,11 +48,16 @@ class ConfigManager {
    * - undefined: a specified config does not exist.
    */
   getConfig(namespace, key) {
+    let value;
+
     if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
-      return this.searchInSAMLUseOnlyEnvMode(namespace, key);
+      value = this.searchInSAMLUseOnlyEnvMode(namespace, key);
     }
 
-    return this.defaultSearch(namespace, key);
+    value = this.defaultSearch(namespace, key);
+
+    debug(key, value);
+    return value;
   }
 
   /**
