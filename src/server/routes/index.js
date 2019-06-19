@@ -22,11 +22,12 @@ module.exports = function(crowi, app) {
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
-  const loginRequired = middlewares.loginRequired;
-  const adminRequired = middlewares.adminRequired;
-  const accessTokenParser = middlewares.accessTokenParser;
-  const csrf = middlewares.csrfVerify;
-  const { configManager } = crowi;
+  const {
+    loginRequired,
+    adminRequired,
+    accessTokenParser,
+    csrfVerify: csrf,
+  } = middlewares;
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
@@ -39,21 +40,11 @@ module.exports = function(crowi, app) {
   app.get('/login'                   , middlewares.applicationInstalled    , login.login);
   app.get('/login/invited'           , login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-
-  // switch POST /login route
-  if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-    app.post('/login'                , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
-    app.post('/_api/login/testLdap'  , loginRequired() , form.login , loginPassport.testLdapCredentials);
-  }
-  else {
-    app.post('/login'                , form.login                           , csrf, login.login);
-  }
+  app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+  app.post('/_api/login/testLdap'    , loginRequired() , form.login , loginPassport.testLdapCredentials);
 
   app.post('/register'               , form.register                        , csrf, login.register);
   app.get('/register'                , middlewares.applicationInstalled    , login.register);
-  app.post('/register/google'        , login.registerGoogle);
-  app.get('/google/callback'         , login.googleCallback);
-  app.get('/login/google'            , login.loginGoogle);
   app.get('/logout'                  , logout.logout);
 
   app.get('/admin'                          , loginRequired() , adminRequired , admin.index);
@@ -67,8 +58,6 @@ module.exports = function(crowi, app) {
   // security admin
   app.get('/admin/security'                     , loginRequired() , adminRequired , admin.security.index);
   app.post('/_api/admin/security/general'       , loginRequired() , adminRequired , form.admin.securityGeneral, admin.api.securitySetting);
-  app.post('/_api/admin/security/google'        , loginRequired() , adminRequired , csrf, form.admin.securityGoogle, admin.api.securitySetting);
-  app.post('/_api/admin/security/mechanism'     , loginRequired() , adminRequired , csrf, form.admin.securityMechanism, admin.api.securitySetting);
   app.post('/_api/admin/security/passport-ldap' , loginRequired() , adminRequired , csrf, form.admin.securityPassportLdap, admin.api.securityPassportLdapSetting);
   app.post('/_api/admin/security/passport-saml' , loginRequired() , adminRequired , csrf, form.admin.securityPassportSaml, admin.api.securityPassportSamlSetting);
 
@@ -163,16 +152,13 @@ module.exports = function(crowi, app) {
   app.get('/me/apiToken'              , loginRequired() , me.apiToken);
   app.post('/me'                      , loginRequired() , csrf , form.me.user , me.index);
   // external-accounts
-  if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-    app.get('/me/external-accounts'                         , loginRequired() , me.externalAccounts.list);
-    app.post('/me/external-accounts/disassociate'           , loginRequired() , me.externalAccounts.disassociate);
-    app.post('/me/external-accounts/associateLdap'          , loginRequired() , form.login , me.externalAccounts.associateLdap);
-  }
+  app.get('/me/external-accounts'                         , loginRequired() , me.externalAccounts.list);
+  app.post('/me/external-accounts/disassociate'           , loginRequired() , me.externalAccounts.disassociate);
+  app.post('/me/external-accounts/associateLdap'          , loginRequired() , form.login , me.externalAccounts.associateLdap);
+
   app.post('/me/password'             , form.me.password          , loginRequired() , me.password);
   app.post('/me/imagetype'            , form.me.imagetype         , loginRequired() , me.imagetype);
   app.post('/me/apiToken'             , form.me.apiToken          , loginRequired() , me.apiToken);
-  app.post('/me/auth/google'          , loginRequired() , me.authGoogle);
-  app.get('/me/auth/google/callback' , loginRequired() , me.authGoogleCallback);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired(false) , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired(false) , page.redirector); // alias

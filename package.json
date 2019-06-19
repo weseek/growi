@@ -88,7 +88,6 @@
     "express-session": "^1.16.1",
     "express-validator": "^5.3.1",
     "express-webpack-assets": "^0.1.0",
-    "googleapis": "^40.0.0",
     "graceful-fs": "^4.1.11",
     "growi-commons": "^4.0.1",
     "helmet": "^3.13.0",

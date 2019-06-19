@@ -9,6 +9,7 @@ module.exports = function(crowi, app, req, locals) {
     passportService,
     appService,
     fileUploadService,
+    customizeService,
   } = crowi;
   debug('initializing swigFunctions');
 
@@ -64,6 +65,7 @@ module.exports = function(crowi, app, req, locals) {
    */
   locals.appService = appService;
   locals.fileUploadService = fileUploadService;
+  locals.customizeService = customizeService;
 
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
@@ -91,20 +93,11 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
-   * return true if local strategy has been setup successfully
-   *  used whether restarting the server needed
-   */
-  locals.isPassportLocalStrategySetup = function() {
-    return passportService != null && passportService.isLocalStrategySetup;
-  };
-
-  /**
    * return true if enabled and strategy has been setup successfully
    */
   locals.isLdapSetup = function() {
     return (
-      configManager.getConfig('crowi', 'security:isEnabledPassport')
-      && configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
       && passportService.isLdapStrategySetup
     );
   };
@@ -114,33 +107,13 @@ module.exports = function(crowi, app, req, locals) {
    */
   locals.isLdapSetupFailed = function() {
     return (
-      configManager.getConfig('crowi', 'security:isEnabledPassport')
-      && configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
       && !passportService.isLdapStrategySetup
     );
   };
 
   locals.getSamlMissingMandatoryConfigKeys = function() {
-    // return an empty array if Passport is not enabled
-    // because crowi.passportService is null.
-    if (!configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-      return [];
-    }
-
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
-  };
-
-  locals.googleLoginEnabled = function() {
-    // return false if Passport is enabled
-    // because official crowi mechanism is not used.
-    if (configManager.getConfig('crowi', 'security:isEnabledPassport')) {
-      return false;
-    }
-
-    return (
-      configManager.getConfig('crowi', 'google:clientId')
-      && configManager.getConfig('crowi', 'google:clientSecret')
-    );
   };
 
   locals.searchConfigured = function() {
@@ -152,45 +125,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.isHackmdSetup = function() {
     return process.env.HACKMD_URI != null;
-  };
-
-  locals.customCss = function() {
-    const customizeService = crowi.customizeService;
-    return customizeService.getCustomCss();
-  };
-
-  locals.customScript = function() {
-    const customizeService = crowi.customizeService;
-    return customizeService.getCustomScript();
-  };
-
-  locals.customHeader = function() {
-    return configManager.getConfig('crowi', 'customize:header') || '';
-  };
-
-  locals.customTitle = function(page) {
-    const customizeService = crowi.customizeService;
-    return customizeService.generateCustomTitle(page);
-  };
-
-  locals.behaviorType = function() {
-    return configManager.getConfig('crowi', 'customize:behavior');
-  };
-
-  locals.layoutType = function() {
-    return configManager.getConfig('crowi', 'customize:layout');
-  };
-
-  locals.highlightJsStyle = function() {
-    return configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  };
-
-  locals.highlightJsStyleBorder = function() {
-    return configManager.getConfig('crowi', 'customize:highlightJsStyleBorder');
-  };
-
-  locals.isEnabledTimeline = function() {
-    return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
   };
 
   locals.parentPath = function(path) {

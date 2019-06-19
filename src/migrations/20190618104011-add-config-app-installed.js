@@ -1,15 +1,10 @@
-require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:add-config-app-installed');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
-function getModel(modelName) {
-  if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model(modelName);
-  }
-  return null;
-}
+const { getModelSafely } = require('@commons/util/mongoose-utils');
+
 
 /**
  * BEFORE
@@ -25,8 +20,8 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModel('Config') || require('@server/models/config')();
-    const User = getModel('User') || require('@server/models/user')();
+    const Config = getModelSafely('Config') || require('@server/models/config')();
+    const User = getModelSafely('User') || require('@server/models/user')();
 
     // find 'app:siteUrl'
     const appInstalled = await Config.findOne({
@@ -56,7 +51,7 @@ module.exports = {
     logger.info('Undo migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModel('Config') || require('@server/models/config')();
+    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({

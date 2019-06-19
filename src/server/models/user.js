@@ -624,8 +624,8 @@ module.exports = function(crowi) {
 
     const User = this;
     const createdUserList = [];
-
     const mailer = crowi.getMailer();
+
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
@@ -665,7 +665,7 @@ module.exports = function(crowi) {
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
 
-          const globalLang = configManager.getConfig('crowi', 'globalLang');
+          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
           if (globalLang != null) {
             newUser.lang = globalLang;
           }
@@ -698,8 +698,6 @@ module.exports = function(crowi) {
         }
 
         if (toSendEmail) {
-          const appTitle = crowi.appService.getAppTitle();
-
           // TODO: メール送信部分のロジックをサービス化する
           async.each(
             createdUserList,
@@ -707,6 +705,8 @@ module.exports = function(crowi) {
               if (user.password === null) {
                 return next();
               }
+
+              const appTitle = crowi.appService.getAppTitle();
 
               mailer.send({
                 to: user.email,
@@ -762,8 +762,7 @@ module.exports = function(crowi) {
     }
 
     const configManager = crowi.configManager;
-
-    const globalLang = configManager.getConfig('crowi', 'globalLang');
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }

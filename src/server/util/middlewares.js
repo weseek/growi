@@ -21,26 +21,6 @@ module.exports = (crowi, app) => {
     };
   };
 
-  middlewares.loginChecker = async function(req, res, next) {
-    const User = crowi.model('User');
-    let user = null;
-
-    try {
-      // session に user object が入ってる
-      if (req.session.user && '_id' in req.session.user) {
-        user = await User.findById(req.session.user._id).populate(User.IMAGE_POPULATION);
-      }
-
-      req.user = user;
-      req.session.user = user;
-      res.locals.user = req.user;
-      next();
-    }
-    catch (err) {
-      next(err);
-    }
-  };
-
   middlewares.loginCheckerForPassport = function(req, res, next) {
     res.locals.user = req.user;
     next();

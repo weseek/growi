@@ -1,8 +1,9 @@
-require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:abolish-page-group-relation');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
+
+const { getModelSafely } = require('@commons/util/mongoose-utils');
 
 
 async function isCollectionExists(db, collectionName) {
@@ -37,8 +38,8 @@ module.exports = {
       return;
     }
 
-    const Page = require('@server/models/page')();
-    const UserGroup = require('@server/models/user-group')();
+    const Page = getModelSafely('Page') || require('@server/models/page');
+    const UserGroup = getModelSafely('UserGroup') || require('@server/models/user-group')();
 
     // retrieve all documents from 'pagegrouprelations'
     const relations = await db.collection('pagegrouprelations').find().toArray();
@@ -74,8 +75,8 @@ module.exports = {
     logger.info('Undo migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = require('@server/models/page')();
-    const UserGroup = require('@server/models/user-group')();
+    const Page = getModelSafely('Page') || require('@server/models/page');
+    const UserGroup = getModelSafely('UserGroup') || require('@server/models/user-group')();
 
     // retrieve all Page documents which granted by UserGroup
     const relatedPages = await Page.find({ grant: Page.GRANT_USER_GROUP });

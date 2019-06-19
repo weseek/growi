@@ -1,5 +1,4 @@
-<form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form"
-    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+<form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form">
   <legend class="alert-anchor">{{ t("security_setting.OAuth.Google.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}

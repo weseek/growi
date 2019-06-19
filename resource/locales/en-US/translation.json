@@ -81,9 +81,7 @@
   "Delete this image?": "Delete this image?",
   "Updated": "Updated",
   "Upload new image": "Upload new image",
-  "Google Setting": "Google Setting",
   "Connected": "Connected",
-  "Disconnect": "Disconnect",
   "Show": "Show",
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
@@ -124,7 +122,6 @@
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-  "Selecting authentication mechanism": "Selecting authentication mechanism",
   "Add tags for this page": "Add tags for this page",
   "Edit tags for this page": "Edit tags for this page",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
@@ -149,15 +146,13 @@
   },
 
   "breaking_changes": {
-    "v346_passport_is_not_enabled": "Crowi Classic Authentication mechanism currently in use will <strong>no longer be supported</strong> in the near future. Switch to Passport from %s",
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
 
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",
-      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki.",
-      "google_account_continue": "Enter your user ID, name and password to continue."
+      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki."
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
@@ -169,11 +164,7 @@
   "page_me": {
     "form_help": {
       "profile_image1": "Image upload settings not completed.",
-      "profile_image2": "Set up AWS or enable local uploads.",
-      "google_connect1": "With Google Connect, you can sign in with your Google Account.",
-      "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
-      "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",
-      "google_disconnect2": "After disconnecting your Google account, you can sign in normally using your email and password"
+      "profile_image2": "Set up AWS or enable local uploads."
     }
   },
   "page_me_apitoken": {
@@ -445,7 +436,6 @@
 		"Guest users access": "Guest users access",
 		"Register limitation": "Register limitation",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-		"Selecting authentication mechanism": "Selecting authentication mechanism",
 		"common_authentication": "If you set the basic authentication, common authentication is applied on the whole page.",
 		"without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
 		"basic_acl_disable": "Because of Public Wiki  setting, basic authentication can not be used.",
@@ -460,33 +450,8 @@
     "page_listing_2": "Page listing/searching<br>restricted by User Group",
     "page_listing_2_desc": "Show pages that are restricted by User Group when listing/searching",
 
-		"Authentication mechanism settings": "Authentication mechanism settings",
-    "note": "Note",
-    "require_server_restart_change_auth": "Restarting the server is required if you switch the auth mechanism.",
-    "auth_mechanism": "authentication mechanism",
-    "recommended": "Recommended",
-    "username_email_password": "Username, Email and Password authentication",
+		"Authentication mechanism settings": "Authentication Mechanism Settings",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
-    "ldap_auth": "LDAP authentication",
-    "saml_auth": "SAML authentication",
-    "google_auth2": "Google OAuth authentication",
-    "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
-    "facebook_auth2": "Facebook OAuth authentication",
-    "twitter_auth2": "Twitter OAuth authentication",
-    "github_auth2": "GitHub OAuth authentication",
-    "crowi_auth": "Crowi classic authentication mechanism",
-		"require_server_restart": "Restarting the server is required.",
-		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",
-		"server_on_crowi_auth": "The server is running with official Crowi authentication mechanism.",
-		"google_setting": "Google Setting",
-    "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager on Google Cloud Platform</a>",
-		"access_api_manager": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
-		"create_project": "Create Project if no projects have been created.",
-		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
-		"select_webapp": "Select \"Web Application\"",
-    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
-    "clientID": "Client ID",
-    "client_secret": "Client Secret",
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",

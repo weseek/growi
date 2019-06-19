@@ -1,4 +1,5 @@
 module.exports = {
+  Config: require('./Config'),
   Page: require('./page'),
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
