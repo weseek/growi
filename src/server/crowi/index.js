@@ -248,14 +248,10 @@ Crowi.prototype.setupConfigManager = async function() {
   return this.configManager.loadConfigs();
 };
 
-Crowi.prototype.setupModels = function() {
-  const self = this;
-  return new Promise(((resolve, reject) => {
+Crowi.prototype.setupModels = async function() {
     Object.keys(models).forEach((key) => {
-      self.model(key, models[key](self));
+    return this.model(key, models[key](this));
     });
-    resolve();
-  }));
 };
 
 Crowi.prototype.getIo = function() {
