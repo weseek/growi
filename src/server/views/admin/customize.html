@@ -1,6 +1,6 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('Customize')) }} {% endblock %}
 
 {% block theme_css_block %}
   {% set themeName = getConfig('crowi', 'customize:theme') %}

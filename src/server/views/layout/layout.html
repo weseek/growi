@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{% block html_title %}{{ customTitle(path) }}{% endblock %}</title>
+  <title>{% block html_title %}{{ customizeService.generateCustomTitle(path) }}{% endblock %}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -54,7 +54,7 @@
   {% block html_additional_headers %}{% endblock %}
 
   <style>
-    {{ customCss() }}
+    {{ customizeService.getCustomCss() }}
   </style>
 </head>
 {% endblock %}
@@ -208,7 +208,7 @@
 
 {% block custom_script %}
 <script>
-  {{ customScript() }}
+  {{ customizeService.getCustomScript() }}
 </script>
 {% endblock %}
 

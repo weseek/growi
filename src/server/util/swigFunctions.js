@@ -9,6 +9,7 @@ module.exports = function(crowi, app, req, locals) {
     passportService,
     appService,
     fileUploadService,
+    customizeService,
   } = crowi;
   debug('initializing swigFunctions');
 
@@ -64,6 +65,7 @@ module.exports = function(crowi, app, req, locals) {
    */
   locals.appService = appService;
   locals.fileUploadService = fileUploadService;
+  locals.customizeService = customizeService;
 
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
@@ -125,23 +127,8 @@ module.exports = function(crowi, app, req, locals) {
     return process.env.HACKMD_URI != null;
   };
 
-  locals.customCss = function() {
-    const customizeService = crowi.customizeService;
-    return customizeService.getCustomCss();
-  };
-
-  locals.customScript = function() {
-    const customizeService = crowi.customizeService;
-    return customizeService.getCustomScript();
-  };
-
   locals.customHeader = function() {
     return configManager.getConfig('crowi', 'customize:header') || '';
-  };
-
-  locals.customTitle = function(page) {
-    const customizeService = crowi.customizeService;
-    return customizeService.generateCustomTitle(page);
   };
 
   locals.parentPath = function(path) {

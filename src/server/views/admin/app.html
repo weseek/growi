@@ -1,6 +1,6 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('App settings')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('App settings')) }}{% endblock %}
 
 {% block head_warn_alert_siteurl_undefined %} {# remove including block for './widget/alert_siteurl_undefined.html' #}
 {% endblock %}
