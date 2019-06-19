@@ -381,7 +381,7 @@ export  $initHighlight;</code></pre>
 
           <div class="form-group">
             <div class="col-xs-12">
-              <input class="form-control" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] }}"></input>
+              <input class="form-control" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] | default('') }}"></input>
             </div>
           </div>
 
@@ -411,7 +411,7 @@ export  $initHighlight;</code></pre>
         <div class="form-group">
           <div class="col-xs-12">
             <div id="custom-header-editor"></div>
-            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] }}">
+            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] | default('') }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -443,7 +443,7 @@ export  $initHighlight;</code></pre>
         <div class="form-group">
           <div class="col-xs-12">
             <div id="custom-css-editor"></div>
-            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] }}">
+            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] | default('') }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -501,7 +501,7 @@ window.addEventListener('load', (event) => {
         <div class="form-group">
           <div class="col-xs-12">
             <div id="custom-script-editor"></div>
-            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] }}">
+            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] | default('') }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">

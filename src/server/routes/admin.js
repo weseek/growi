@@ -1083,23 +1083,13 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
-  actions.api.customizeSetting = function(req, res) {
+  actions.api.customizeSetting = async function(req, res) {
     const form = req.form.settingForm;
 
     if (req.form.isValid) {
       debug('form content', form);
-      return saveSetting(req, res, form);
-    }
-
-    return res.json({ status: false, message: req.form.errors.join('\n') });
-  };
-
-  actions.api.customizeSetting = function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-      return saveSetting(req, res, form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
+      return res.json({ status: true });
     }
 
     return res.json({ status: false, message: req.form.errors.join('\n') });
