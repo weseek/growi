@@ -9,7 +9,6 @@ const urljoin = require('url-join');
 
 module.exports = function(crowi) {
   const config = crowi.getConfig();
-  const Config = crowi.model('Config');
   const Slack = require('slack-node');
   const { configManager } = crowi;
 
