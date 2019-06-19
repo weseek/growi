@@ -97,15 +97,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/app'                  , admin.app.index);
   actions.app = {};
   actions.app.index = function(req, res) {
-    const settingForm = {
-      ...configManager.getConfigByPrefix('crowi', 'app:'),
-      ...configManager.getConfigByPrefix('crowi', 'mail:'),
-      ...configManager.getConfigByPrefix('crowi', 'aws:'),
-    };
-
-    return res.render('admin/app', {
-      settingForm,
-    });
+    return res.render('admin/app');
   };
 
   actions.app.settingUpdate = function(req, res) {
