@@ -191,7 +191,7 @@
   "Re-enter new password": "(確認用)",
   "Password is not set": "パスワードが設定されていません",
 
-  "Security Settings": "セキュリティ設定",
+  "security_settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -456,6 +456,11 @@
     "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
     "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
     "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "complete_deletion": "完全削除制限機能",
+    "complete_deletion_explain": "完全削除できるユーザーを制限します。",
+    "admin_only": "管理者のみ可能",
+    "admin_and_author": "管理者とページ作者が可能",
+    "anyone": "誰でも可能",
 
     "Authentication mechanism settings":"認証機構設定",
     "note": "メモ",
