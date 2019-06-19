@@ -49,7 +49,7 @@
   {% endif %}
 
   {{ cdnStyleTagsByGroup('basis') }}
-  {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}
+  {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
 
   {% block html_additional_headers %}{% endblock %}
 
@@ -62,7 +62,7 @@
 {% block html_body %}
 <body
   class="main-container content-wrapper {% block html_base_css %}{% endblock %}
-      {% if !layoutType() || 'crowi' === layoutType() %}crowi{% elseif !layoutType() || 'kibela' === layoutType() %}kibela{% else %}growi{% endif %}"
+      {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"

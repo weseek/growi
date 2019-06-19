@@ -41,7 +41,7 @@
       </ul>
       {% endif %}
 
-      {% if not page and not forbidden and ('/' === path or 'crowi' === behaviorType()) and not isUserPageList(path) and !isTrashPage() %}
+      {% if not page and not forbidden and ('/' === path or 'crowi' === getConfig('crowi', 'customize:behavior')) and not isUserPageList(path) and !isTrashPage() %}
         {% if '/' === path.slice(-1) %}
           {% include '../../widget/create_portal.html' %}
         {% endif %}

@@ -194,26 +194,6 @@ module.exports = function(crowi, app, req, locals) {
     return customizeService.generateCustomTitle(page);
   };
 
-  locals.behaviorType = function() {
-    return configManager.getConfig('crowi', 'customize:behavior');
-  };
-
-  locals.layoutType = function() {
-    return configManager.getConfig('crowi', 'customize:layout');
-  };
-
-  locals.highlightJsStyle = function() {
-    return configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  };
-
-  locals.highlightJsStyleBorder = function() {
-    return configManager.getConfig('crowi', 'customize:highlightJsStyleBorder');
-  };
-
-  locals.isEnabledTimeline = function() {
-    return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
-  };
-
   locals.parentPath = function(path) {
     if (path === '/') {
       return path;

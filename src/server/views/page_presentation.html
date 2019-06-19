@@ -32,7 +32,7 @@
     <title>{{ path|path2name }} | {{ path }}</title>
 
     {{ cdnStyleTagsByGroup('basis') }}
-    {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}
+    {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
 
     <style>
       {{ customCss() }}
