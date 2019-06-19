@@ -127,10 +127,6 @@ module.exports = function(crowi, app, req, locals) {
     return process.env.HACKMD_URI != null;
   };
 
-  locals.customHeader = function() {
-    return configManager.getConfig('crowi', 'customize:header') || '';
-  };
-
   locals.parentPath = function(path) {
     if (path === '/') {
       return path;

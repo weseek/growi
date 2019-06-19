@@ -12,7 +12,7 @@
 
   <meta name="apple-mobile-web-app-title" content="{{ appService.getAppTitle() }}">
 
-  {{ customHeader() }}
+  {{ getConfig('crowi', 'customize:header') | default('') }}
 
   {% include '../widget/headers/favicon.html' %}
   {% include '../widget/headers/ie11-polyfills.html' %}
