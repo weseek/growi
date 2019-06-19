@@ -97,7 +97,11 @@ module.exports = function(crowi, app) {
   // app.get('/admin/app'                  , admin.app.index);
   actions.app = {};
   actions.app.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'app:');
+    const settingForm = {
+      ...configManager.getConfigByPrefix('crowi', 'app:'),
+      ...configManager.getConfigByPrefix('crowi', 'mail:'),
+      ...configManager.getConfigByPrefix('crowi', 'aws:'),
+    };
 
     return res.render('admin/app', {
       settingForm,
@@ -859,14 +863,15 @@ module.exports = function(crowi, app) {
 
       // mail setting ならここで validation
       if (form['mail:from']) {
-        validateMailSetting(req, form, (err, data) => {
+        validateMailSetting(req, form, async(err, data) => {
           debug('Error validate mail setting: ', err, data);
           if (err) {
             req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
             return res.json({ status: false, message: req.form.errors.join('\n') });
           }
 
-          return saveSetting(req, res, form);
+          await configManager.updateConfigsInTheSameNamespace('crowi', form);
+          return res.json({ status: true });
         });
       }
       else {
@@ -1190,8 +1195,10 @@ module.exports = function(crowi, app) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    await saveSetting(req, res, form);
-    await importer.initializeEsaClient();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    importer.initializeEsaClient(); // let it run in the back aftert res
+
+    return res.json({ status: true });
   };
 
   /**
@@ -1207,8 +1214,10 @@ module.exports = function(crowi, app) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    await saveSetting(req, res, form);
-    await importer.initializeQiitaClient();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    importer.initializeQiitaClient(); // let it run in the back aftert res
+
+    return res.json({ status: true });
   };
 
   /**
@@ -1342,20 +1351,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Error'));
     }
   };
-
-  /**
-   * save settings, update config cache, and response json
-   *
-   * @param {any} req
-   * @param {any} res
-   * @param {any} form
-   */
-  function saveSetting(req, res, form) {
-    Config.updateNamespaceByArray('crowi', form, (err, config) => {
-      Config.updateConfigCache('crowi', config);
-      return res.json({ status: true });
-    });
-  }
 
   function validateMailSetting(req, form, callback) {
     const mailer = crowi.mailer;
