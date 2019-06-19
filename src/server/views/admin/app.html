@@ -58,8 +58,8 @@
                    id="settingForm[app:confidential]"
                    type="text"
                    name="settingForm[app:confidential]"
-                   value="{{ settingForm['app:confidential'] }}"
-                   placeholder="{{ t('app_setting. ex): internal use only') }}">
+                   value="{{ settingForm['app:confidential'] | default('') }}"
+                   placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}">
             <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>
