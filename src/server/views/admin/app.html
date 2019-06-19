@@ -1,6 +1,6 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('App settings')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('App settings')) }}{% endblock %}
 
 {% block head_warn_alert_siteurl_undefined %} {# remove including block for './widget/alert_siteurl_undefined.html' #}
 {% endblock %}
@@ -58,8 +58,8 @@
                    id="settingForm[app:confidential]"
                    type="text"
                    name="settingForm[app:confidential]"
-                   value="{{ settingForm['app:confidential'] }}"
-                   placeholder="{{ t('app_setting. ex): internal use only') }}">
+                   value="{{ settingForm['app:confidential'] | default('') }}"
+                   placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}">
             <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>

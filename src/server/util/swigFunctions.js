@@ -9,6 +9,7 @@ module.exports = function(crowi, app, req, locals) {
     passportService,
     appService,
     fileUploadService,
+    customizeService,
   } = crowi;
   debug('initializing swigFunctions');
 
@@ -64,6 +65,7 @@ module.exports = function(crowi, app, req, locals) {
    */
   locals.appService = appService;
   locals.fileUploadService = fileUploadService;
+  locals.customizeService = customizeService;
 
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
@@ -123,45 +125,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.isHackmdSetup = function() {
     return process.env.HACKMD_URI != null;
-  };
-
-  locals.customCss = function() {
-    const customizeService = crowi.customizeService;
-    return customizeService.getCustomCss();
-  };
-
-  locals.customScript = function() {
-    const customizeService = crowi.customizeService;
-    return customizeService.getCustomScript();
-  };
-
-  locals.customHeader = function() {
-    return configManager.getConfig('crowi', 'customize:header') || '';
-  };
-
-  locals.customTitle = function(page) {
-    const customizeService = crowi.customizeService;
-    return customizeService.generateCustomTitle(page);
-  };
-
-  locals.behaviorType = function() {
-    return configManager.getConfig('crowi', 'customize:behavior');
-  };
-
-  locals.layoutType = function() {
-    return configManager.getConfig('crowi', 'customize:layout');
-  };
-
-  locals.highlightJsStyle = function() {
-    return configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  };
-
-  locals.highlightJsStyleBorder = function() {
-    return configManager.getConfig('crowi', 'customize:highlightJsStyleBorder');
-  };
-
-  locals.isEnabledTimeline = function() {
-    return configManager.getConfig('crowi', 'customize:isEnabledTimeline');
   };
 
   locals.parentPath = function(path) {

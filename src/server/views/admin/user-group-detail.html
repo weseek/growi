@@ -1,6 +1,6 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('UserGroup Management') + '/' + userGroup.name) | preventXss }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('UserGroup Management') + '/' + userGroup.name) | preventXss }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
