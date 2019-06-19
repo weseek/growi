@@ -67,7 +67,13 @@ module.exports = {
     }
 
     if (siteUrl != null) {
-      await Config.findOneAndUpdateByNsAndKey('crowi', 'app:siteUrl', siteUrl);
+      const ns = 'crowi';
+      const key = 'app:siteUrl';
+      await Config.findOneAndUpdate(
+        { ns, key },
+        { ns, key, value: JSON.stringify(siteUrl) },
+        { upsert: true },
+      );
       logger.info('Migration has successfully applied');
     }
   },

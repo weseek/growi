@@ -698,6 +698,8 @@ module.exports = function(crowi) {
         }
 
         if (toSendEmail) {
+          const appTitle = crowi.appService.getAppTitle();
+
           // TODO: メール送信部分のロジックをサービス化する
           async.each(
             createdUserList,

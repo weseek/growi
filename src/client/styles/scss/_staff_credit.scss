@@ -1,5 +1,21 @@
 // Staff Credit
 #staff-credit {
+  // see https://css-tricks.com/old-timey-terminal-styling/
+  @mixin old-timey-terminal-styling() {
+    text-shadow: 0 0 10px #c8c8c8;
+    background-color: black;
+    background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      content: '';
+      background: repeating-linear-gradient(0deg, rgba(black, 0.15), rgba(black, 0.15) 2px, transparent 2px, transparent 4px);
+    }
+  }
+
   font-family: 'Press Start 2P', $basefont1;
   color: white;
 
@@ -13,8 +29,9 @@
     color: white;
   }
 
-  $credit-length: -200em;
+  $credit-length: -240em;
 
+  // see https://css-tricks.com/old-timey-terminal-styling/
   .credit-curtain {
     position: fixed;
     top: 10vh;
@@ -22,7 +39,8 @@
     width: 80vw;
     height: 80vh;
     overflow-y: hidden;
-    background-color: black;
+
+    @include old-timey-terminal-styling();
   }
 
   .credit-body {

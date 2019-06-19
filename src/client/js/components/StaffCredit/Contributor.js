@@ -39,6 +39,7 @@ const contributors = [
       {
         additionalClass: 'col-md-4 my-4',
         members: [
+          { name: 'inductor' },
           { name: 'shield-9' },
           { name: 'yaodingyd' },
           { name: 'hitochan777' },
@@ -47,7 +48,6 @@ const contributors = [
           { name: 'nt-7' },
           { name: 'hideo54' },
           { name: 'wadahiro' },
-          { name: 'fumitti' },
         ],
       },
       {
@@ -60,6 +60,7 @@ const contributors = [
       {
         additionalClass: 'col-md-4 my-4',
         members: [
+          { name: 'fumitti' },
           { name: 'fmy' },
           { name: 'yaamai' },
           { name: 'ta2yak' },
@@ -72,21 +73,21 @@ const contributors = [
       },
     ],
   },
-  // {
-  //   sectionName: 'VALNERABILITY HUNTER',
-  //   additionalClass: '',
-  //   memberGroups: [
-  //     {
-  //       additionalClass: 'col-md-6 my-4',
-  //       members: [
-  //         { name: 'Yoshinori Hayashi' },
-  //         { name: 'Kanta Nishitani' },
-  //         { name: 'Takashi Yoneuchi' },
-  //         { position: 'DeCurret', name: 'Yusuke Tanomogi' },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    sectionName: 'VULNERABILITY HUNTER',
+    additionalClass: '',
+    memberGroups: [
+      {
+        additionalClass: 'col-md-6 my-4',
+        members: [
+          { name: 'Yoshinori Hayashi' },
+          { name: 'Kanta Nishitani' },
+          { position: 'The University of Tokyo', name: 'Takashi Yoneuchi' },
+          { position: 'DeCurret', name: 'Yusuke Tanomogi' },
+        ],
+      },
+    ],
+  },
   {
     sectionName: 'SPECIAL THANKS',
     additionalClass: '',
@@ -97,6 +98,12 @@ const contributors = [
           { name: 'Crowi Team' },
           { position: 'Ambassador', name: 'Tsuyoshi Suzuki' },
           { name: 'JPCERT/CC' },
+        ],
+      },
+      {
+        additionalClass: 'col-md-12 staff-credit-mt-10',
+        members: [
+          { name: 'AND YOU' },
         ],
       },
     ],
