@@ -38,7 +38,7 @@ module.exports = {
       return;
     }
 
-    const Page = getModelSafely('Page') || require('@server/models/page');
+    const Page = getModelSafely('Page') || require('@server/models/page')();
     const UserGroup = getModelSafely('UserGroup') || require('@server/models/user-group')();
 
     // retrieve all documents from 'pagegrouprelations'
@@ -75,7 +75,7 @@ module.exports = {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = getModelSafely('Page') || require('@server/models/page');
+    const Page = getModelSafely('Page') || require('@server/models/page')();
     const UserGroup = getModelSafely('UserGroup') || require('@server/models/user-group')();
 
     // retrieve all Page documents which granted by UserGroup
@@ -107,7 +107,9 @@ module.exports = {
     }
     /* eslint-enable no-await-in-loop */
 
-    await db.collection('pagegrouprelations').insertMany(insertDocs);
+    if (insertDocs.length > 0) {
+      await db.collection('pagegrouprelations').insertMany(insertDocs);
+    }
 
     logger.info('Migration has been successfully rollbacked');
   },
