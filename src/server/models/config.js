@@ -6,12 +6,6 @@
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
 
-  const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
-  const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
-  const SECURITY_REGISTRATION_MODE_OPEN = 'Open';
-  const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
-  const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
-
   const configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
     key: { type: String, required: true, index: true },
@@ -161,23 +155,6 @@ module.exports = function(crowi) {
     return getDefaultNotificationConfigs();
   };
 
-  configSchema.statics.getRestrictGuestModeLabels = function() {
-    const labels = {};
-    labels[SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_setting.guest_mode.deny';
-    labels[SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_setting.guest_mode.readonly';
-
-    return labels;
-  };
-
-  configSchema.statics.getRegistrationModeLabels = function() {
-    const labels = {};
-    labels[SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
-    labels[SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
-    labels[SECURITY_REGISTRATION_MODE_CLOSED] = 'security_setting.registration_mode.closed';
-
-    return labels;
-  };
-
   configSchema.statics.getLocalconfig = function() {
     const env = process.env;
 
@@ -216,20 +193,7 @@ module.exports = function(crowi) {
     return localConfig;
   };
 
-  configSchema.statics.userUpperLimit = function(crowi) {
-    const key = 'USER_UPPER_LIMIT';
-    const env = crowi.env[key];
-
-    if (undefined === crowi.env || undefined === crowi.env[key]) {
-      return 0;
-    }
-    return Number(env);
-  };
-
   const Config = mongoose.model('Config', configSchema);
-  Config.SECURITY_REGISTRATION_MODE_OPEN = SECURITY_REGISTRATION_MODE_OPEN;
-  Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
-  Config.SECURITY_REGISTRATION_MODE_CLOSED = SECURITY_REGISTRATION_MODE_CLOSED;
 
   return Config;
 };

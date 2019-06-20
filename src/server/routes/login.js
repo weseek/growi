@@ -10,8 +10,7 @@ module.exports = function(crowi, app) {
   const async = require('async');
   const mailer = crowi.getMailer();
   const User = crowi.model('User');
-  const Config = crowi.model('Config');
-  const { configManager, appService } = crowi;
+  const { configManager, appService, aclService } = crowi;
 
   const actions = {};
 
@@ -108,7 +107,7 @@ module.exports = function(crowi, app) {
     }
 
     // config で closed ならさよなら
-    if (configManager.getConfig('crowi', 'security:registrationMode') == Config.SECURITY_REGISTRATION_MODE_CLOSED) {
+    if (configManager.getConfig('crowi', 'security:registrationMode') == aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.redirect('/');
     }
 
@@ -156,7 +155,7 @@ module.exports = function(crowi, app) {
 
           // 作成後、承認が必要なモードなら、管理者に通知する
           const appTitle = appService.getAppTitle();
-          if (configManager.getConfig('crowi', 'security:registrationMode') === Config.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+          if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
             // TODO send mail
             User.findAdmins((err, admins) => {
               async.each(
