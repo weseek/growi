@@ -16,8 +16,8 @@ $active-nav-tabs-bgcolor: $themecolor;
 $logo-mark-fill: $themelight;
 $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: darken($subthemecolor, 5%);
-$inline-code-bg: lighten($subthemecolor, 70%);
+$inline-code-color: #c7254e;
+$inline-code-bg: #f9f2f4;
 $border: $subthemecolor;
 $border-original: $subthemecolor;
 $navbar-border: $themecolor;
@@ -225,4 +225,12 @@ body:not(.on-edit) .nav.nav-tabs {
       color: #000080;
     }
   }
+}
+
+/*
+ *  for Hightlight-js
+ */
+
+.hljs-ln {
+  background-color: inherit;
 }
