@@ -72,7 +72,7 @@ module.exports = {
   },
 
   async down(db) {
-    logger.info('Undo migration');
+    logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
     const Page = getModelSafely('Page') || require('@server/models/page');
@@ -109,7 +109,7 @@ module.exports = {
 
     await db.collection('pagegrouprelations').insertMany(insertDocs);
 
-    logger.info('Migration has successfully undoed');
+    logger.info('Migration has been successfully rollbacked');
   },
 
 };
