@@ -18,12 +18,6 @@ module.exports = function(crowi) {
     value: { type: String, required: true },
   });
 
-  function validateCrowi() {
-    if (crowi == null) {
-      throw new Error('"crowi" is null. Init Config model with "crowi" argument first.');
-    }
-  }
-
   /**
    * default values when GROWI is cleanly installed
    */
@@ -182,10 +176,6 @@ module.exports = function(crowi) {
     labels[SECURITY_REGISTRATION_MODE_CLOSED] = 'security_setting.registration_mode.closed';
 
     return labels;
-  };
-
-  configSchema.statics.updateConfigCache = function(ns, config) {
-    validateCrowi();
   };
 
   configSchema.statics.getLocalconfig = function() {

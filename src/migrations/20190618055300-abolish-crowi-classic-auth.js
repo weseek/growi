@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:migrate:make-email-unique');
+const logger = require('@alias/logger')('growi:migrate:abolish-crowi-classic-auth');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
