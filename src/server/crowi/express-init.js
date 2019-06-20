@@ -65,12 +65,10 @@ module.exports = function(crowi, app) {
     const Config = crowi.model('Config');
     app.set('tzoffset', tzoffset);
 
-    // req.config = config;
     req.csrfToken = null;
 
     res.locals.req = req;
     res.locals.baseUrl = crowi.appService.getSiteUrl();
-    // res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;
     res.locals.tzoffset = tzoffset;

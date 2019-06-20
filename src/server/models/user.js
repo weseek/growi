@@ -348,11 +348,10 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const config = crowi.getConfig();
-    const whitelist = config.crowi['security:registrationWhiteList'];
+    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
-      return config.crowi['security:registrationWhiteList'].some((allowedEmail) => {
+      return whitelist.some((allowedEmail) => {
         const re = new RegExp(`${allowedEmail}$`);
         return re.test(email);
       });

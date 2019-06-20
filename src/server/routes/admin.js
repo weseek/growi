@@ -9,7 +9,6 @@ module.exports = function(crowi, app) {
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
-  const Config = models.Config;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars

@@ -56,7 +56,7 @@ class ConfigManager {
 
     value = this.defaultSearch(namespace, key);
 
-    debug(key, value);
+    logger.debug(key, value);
     return value;
   }
 

@@ -5,7 +5,7 @@ const md5 = require('md5');
 const entities = require('entities');
 
 module.exports = (crowi, app) => {
-  const { appService } = crowi;
+  const { configManager, appService } = crowi;
 
   const middlewares = {};
 
@@ -275,11 +275,10 @@ module.exports = (crowi, app) => {
 
   middlewares.awsEnabled = function() {
     return function(req, res, next) {
-      const config = req.config;
-      if (config.crowi['aws:region'] !== ''
-          && config.crowi['aws:bucket'] !== ''
-          && config.crowi['aws:accessKeyId'] !== ''
-          && config.crowi['aws:secretAccessKey'] !== '') {
+      if (configManager.getConfig('crowi', 'aws:region') !== ''
+          && configManager.getConfig('crowi', 'aws:bucket') !== ''
+          && configManager.getConfig('crowi', 'aws:accessKeyId') !== ''
+          && configManager.getConfig('crowi', 'aws:secretAccessKey') !== '') {
         req.flash('globalError', 'AWS settings required to use this function. Please ask the administrator.');
         return res.redirect('/');
       }

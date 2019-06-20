@@ -226,27 +226,10 @@ module.exports = function(crowi) {
     return Number(env);
   };
 
-  /*
-  configSchema.statics.isInstalled = function(config)
-  {
-    if (!config.crowi) {
-      return false;
-    }
-
-    if (config.crowi['app:installed']
-       && config.crowi['app:installed'] !== '0.0.0') {
-      return true;
-    }
-
-    return false;
-  }
-  */
-
   const Config = mongoose.model('Config', configSchema);
   Config.SECURITY_REGISTRATION_MODE_OPEN = SECURITY_REGISTRATION_MODE_OPEN;
   Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
   Config.SECURITY_REGISTRATION_MODE_CLOSED = SECURITY_REGISTRATION_MODE_CLOSED;
-
 
   return Config;
 };
