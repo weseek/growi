@@ -199,9 +199,13 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.canDeleteCompletely = function(user) {
-    if (user.admin) {
+  userSchema.methods.canDeleteCompletely = function(creatorId) {
+    const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    if (pageCompleteDeletionAuthority == null || this.admin) {
       return true;
+    }
+    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
+      return (this._id.equals(creatorId));
     }
 
     return false;

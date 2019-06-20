@@ -27,7 +27,7 @@
           <button href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
         </li>
         <li>
-            <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(user) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
+            <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
         </li>
       </ul>{# /.pull-right #}
       {% endif %}

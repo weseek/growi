@@ -12,5 +12,5 @@ module.exports = form(
   field('settingForm[security:registrationWhiteList]').custom(normalizeCRLF).custom(stringToArray),
   field('settingForm[security:list-policy:hideRestrictedByOwner]').trim().toBooleanStrict(),
   field('settingForm[security:list-policy:hideRestrictedByGroup]').trim().toBooleanStrict(),
-  field('settingForm[security:isEnabledDeleteCompletely]').trim().toBooleanStrict(),
+  field('settingForm[security:pageCompleteDeletionAuthority]'),
 );
