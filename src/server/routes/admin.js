@@ -229,26 +229,22 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackSetting' , admin.notification.slackauth);
-  actions.notification.slackSetting = function(req, res) {
+  actions.notification.slackSetting = async function(req, res) {
     const slackSetting = req.form.slackSetting;
 
-    req.session.slackSetting = slackSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('notification', slackSetting, (err, config) => {
-        Config.updateConfigCache('notification', config);
-        req.flash('successMessage', ['Successfully Updated!']);
-        req.session.slackSetting = null;
+      await configManager.updateConfigsInTheSameNamespace('notification', slackSetting);
+      req.flash('successMessage', ['Successfully Updated!']);
 
-        // Re-setup
-        crowi.setupSlack().then(() => {
-          return res.redirect('/admin/notification');
-        });
+      // Re-setup
+      crowi.setupSlack().then(() => {
       });
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/notification');
     }
+
+    return res.redirect('/admin/notification');
   };
 
   // app.get('/admin/notification/slackAuth'     , admin.notification.slackauth);
@@ -261,19 +257,18 @@ module.exports = function(crowi, app) {
 
     const slack = crowi.slack;
     slack.getOauthAccessToken(code)
-      .then((data) => {
+      .then(async(data) => {
         debug('oauth response', data);
-        Config.updateNamespaceByArray('notification', { 'slack:token': data.access_token }, (err, config) => {
-          if (err) {
-            req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
-          }
-          else {
-            Config.updateConfigCache('notification', config);
-            req.flash('successMessage', ['Successfully Connected!']);
-          }
 
-          return res.redirect('/admin/notification');
-        });
+        try {
+          await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': data.access_token });
+          req.flash('successMessage', ['Successfully Connected!']);
+        }
+        catch (err) {
+          req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
+        }
+
+        return res.redirect('/admin/notification');
       })
       .catch((err) => {
         debug('oauth response ERROR', err);
@@ -302,13 +297,11 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackSetting/disconnect' , admin.notification.disconnectFromSlack);
-  actions.notification.disconnectFromSlack = function(req, res) {
-    Config.updateNamespaceByArray('notification', { 'slack:token': '' }, (err, config) => {
-      Config.updateConfigCache('notification', config);
-      req.flash('successMessage', ['Successfully Disconnected!']);
+  actions.notification.disconnectFromSlack = async function(req, res) {
+    await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': '' });
+    req.flash('successMessage', ['Successfully Disconnected!']);
 
-      return res.redirect('/admin/notification');
-    });
+    return res.redirect('/admin/notification');
   };
 
   actions.globalNotification = {};

@@ -5,7 +5,6 @@
 
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
-  const debug = require('debug')('growi:models:config');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
   const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
@@ -187,28 +186,6 @@ module.exports = function(crowi) {
 
   configSchema.statics.updateConfigCache = function(ns, config) {
     validateCrowi();
-  };
-
-  configSchema.statics.updateNamespaceByArray = function(ns, configs, callback) {
-    const Config = this;
-    if (configs.length < 0) {
-      return callback(new Error('Argument #1 is not array.'), null);
-    }
-
-    Object.keys(configs).forEach((key) => {
-      const value = configs[key];
-
-      Config.findOneAndUpdate(
-        { ns, key },
-        { ns, key, value: JSON.stringify(value) },
-        { upsert: true },
-        (err, config) => {
-          debug('Config.findAndUpdate', err, config);
-        },
-      );
-    });
-
-    return callback(null, configs);
   };
 
   configSchema.statics.findOneAndUpdateByNsAndKey = async function(ns, key, value) {
