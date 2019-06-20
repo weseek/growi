@@ -8,11 +8,10 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:login');
   const path = require('path');
   const async = require('async');
-  const config = crowi.getConfig();
   const mailer = crowi.getMailer();
   const User = crowi.model('User');
   const Config = crowi.model('Config');
-  const { configManager } = crowi;
+  const { configManager, appService } = crowi;
 
   const actions = {};
 
@@ -156,7 +155,7 @@ module.exports = function(crowi, app) {
 
 
           // 作成後、承認が必要なモードなら、管理者に通知する
-          const appTitle = Config.appTitle(config);
+          const appTitle = appService.getAppTitle();
           if (configManager.getConfig('crowi', 'security:registrationMode') === Config.SECURITY_REGISTRATION_MODE_RESTRICTED) {
             // TODO send mail
             User.findAdmins((err, admins) => {
@@ -170,7 +169,7 @@ module.exports = function(crowi, app) {
                     vars: {
                       createdUser: userData,
                       adminUser,
-                      url: crowi.appService.getSiteUrl(),
+                      url: appService.getSiteUrl(),
                       appTitle,
                     },
                   },
