@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:SiteUrl'); // eslint-disable-line no-unused-vars
+const logger = require('@alias/logger')('growi:service:AppService'); // eslint-disable-line no-unused-vars
 const { pathUtils } = require('growi-commons');
 
 /**
