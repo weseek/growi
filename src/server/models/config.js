@@ -187,36 +187,7 @@ module.exports = function(crowi) {
 
   configSchema.statics.updateConfigCache = function(ns, config) {
     validateCrowi();
-
-    // const originalConfig = crowi.getConfig();
-    // const newNSConfig = originalConfig[ns] || {};
-    // Object.keys(config).forEach((key) => {
-    //   if (config[key] || config[key] === '' || config[key] === false) {
-    //     newNSConfig[key] = config[key];
-    //   }
-    // });
-
-    // originalConfig[ns] = newNSConfig;
-    // crowi.setConfig(originalConfig);
-
-    // // initialize custom css/script
-    // Config.initCustomCss(originalConfig);
-    // Config.initCustomScript(originalConfig);
   };
-
-  // Execute only once for installing application
-  // configSchema.statics.applicationInstall = function(callback) {
-  //   const Config = this;
-  //   Config.count({ ns: 'crowi' }, (err, count) => {
-  //     if (count > 0) {
-  //       return callback(new Error('Application already installed'), null);
-  //     }
-  //     Config.updateNamespaceByArray('crowi', getArrayForInstalling(), (err, configs) => {
-  //       Config.updateConfigCache('crowi', configs);
-  //       return callback(err, configs);
-  //     });
-  //   });
-  // };
 
   configSchema.statics.updateNamespaceByArray = function(ns, configs, callback) {
     const Config = this;
@@ -248,34 +219,7 @@ module.exports = function(crowi) {
     );
   };
 
-  // configSchema.statics.loadAllConfig = function(callback) {
-  //   const Config = this;
-
-
-  //   const config = {};
-  //   config.crowi = {}; // crowi namespace
-
-  //   Config.find()
-  //     .sort({ ns: 1, key: 1 })
-  //     .exec((err, doc) => {
-  //       doc.forEach((el) => {
-  //         if (!config[el.ns]) {
-  //           config[el.ns] = {};
-  //         }
-  //         config[el.ns][el.key] = JSON.parse(el.value);
-  //       });
-
-  //       debug('Config loaded', config);
-
-  //       // initialize custom css/script
-  //       Config.initCustomCss(config);
-  //       Config.initCustomScript(config);
-
-  //       return callback(null, config);
-  //     });
-  // };
-
-  configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
+  configSchema.statics.getLocalconfig = function() {
     const env = process.env;
 
     const localConfig = {

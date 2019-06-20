@@ -16,7 +16,6 @@ class AclService {
   }
 
   getIsPublicWikiOnly() {
-    // CONF.RF save PUBLIC_WIKI_ONLY in mongodb?
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
     if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
       return true;

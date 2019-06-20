@@ -89,26 +89,6 @@ module.exports = function(crowi, app) {
       req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
       return res.redirect('/admin/app');
     });
-
-    // Config.applicationInstall((err, configs) => {
-    //   if (err) {
-    //     logger.error(err);
-    //     return;
-    //   }
-
-    //   // save the globalLang config, and update the config cache
-    //   Config.updateNamespaceByArray('crowi', { 'app:globalLang': language }, (err, config) => {
-    //     Config.updateConfigCache('crowi', config);
-    //   });
-
-    //   // login with passport
-    //   req.logIn(adminUser, (err) => {
-    //     if (err) { return next() }
-
-    //     req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
-    //     return res.redirect('/admin/app');
-    //   });
-    // });
   };
 
   return actions;
