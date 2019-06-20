@@ -15,7 +15,11 @@ module.exports = {
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([
-      Config.findOneAndUpdateByNsAndKey('crowi', 'security:isEnabledPassport', true),
+      Config.findOneAndUpdate(
+        { ns: 'crowi', key: 'security:isEnabledPassport' },
+        { ns: 'crowi', key: 'security:isEnabledPassport', value: JSON.stringify(true) },
+        { upsert: true },
+      ),
       Config.deleteOne({ ns: 'crowi', key: 'google:clientId' }),
       Config.deleteOne({ ns: 'crowi', key: 'google:clientSecret' }),
     ]);

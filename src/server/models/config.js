@@ -188,14 +188,6 @@ module.exports = function(crowi) {
     validateCrowi();
   };
 
-  configSchema.statics.findOneAndUpdateByNsAndKey = async function(ns, key, value) {
-    return this.findOneAndUpdate(
-      { ns, key },
-      { ns, key, value: JSON.stringify(value) },
-      { upsert: true },
-    );
-  };
-
   configSchema.statics.getLocalconfig = function() {
     const env = process.env;
 
