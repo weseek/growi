@@ -101,7 +101,36 @@ Crowi.prototype.init = async function() {
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
+    this.setupUserGroup(),
   ]);
+};
+
+Crowi.prototype.initForTest = async function() {
+  await this.setupModels();
+  await this.setupConfigManager();
+
+  // // customizeService depends on AppService and XssService
+  // // passportService depends on appService
+  // // slack depends on setUpSlacklNotification
+  await Promise.all([
+    this.setUpApp(),
+    // this.setUpXss(),
+    // this.setUpSlacklNotification(),
+  ]);
+
+  // await Promise.all([
+  //   this.scanRuntimeVersions(),
+  //   this.setupPassport(),
+  //   this.setupSearcher(),
+  //   this.setupMailer(),
+  //   this.setupSlack(),
+  //   this.setupCsrf(),
+  //   this.setUpGlobalNotification(),
+  //   this.setUpFileUpload(),
+  //   this.setUpAcl(),
+  //   this.setUpCustomize(),
+  //   this.setUpRestQiitaAPI(),
+  // ]);
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -202,14 +231,10 @@ Crowi.prototype.setupConfigManager = async function() {
   return this.configManager.loadConfigs();
 };
 
-Crowi.prototype.setupModels = function() {
-  const self = this;
-  return new Promise(((resolve, reject) => {
-    Object.keys(models).forEach((key) => {
-      self.model(key, models[key](self));
-    });
-    resolve();
-  }));
+Crowi.prototype.setupModels = async function() {
+  Object.keys(models).forEach((key) => {
+    return this.model(key, models[key](this));
+  });
 };
 
 Crowi.prototype.getIo = function() {
@@ -494,6 +519,14 @@ Crowi.prototype.setUpRestQiitaAPI = function() {
   const RestQiitaAPIService = require('../service/rest-qiita-API');
   if (this.restQiitaAPIService == null) {
     this.restQiitaAPIService = new RestQiitaAPIService(this);
+  }
+};
+
+Crowi.prototype.setupUserGroup = async function() {
+  const UserGroupService = require('../service/user-group');
+  if (this.userGroupService == null) {
+    this.userGroupService = new UserGroupService(this);
+    return this.userGroupService.init();
   }
 };
 

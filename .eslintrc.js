@@ -2,10 +2,11 @@ module.exports = {
   extends: [
     'weseek',
     'weseek/react',
+    "plugin:jest/recommended",
   ],
   env: {
-    mocha: true,
     jquery: true,
+    "jest/globals": true,
   },
   globals: {
     $: true,
@@ -15,7 +16,7 @@ module.exports = {
     window: true,
   },
   plugins: [
-    'chai-friendly',
+    "jest",
   ],
   rules: {
     'indent': [
@@ -35,8 +36,5 @@ module.exports = {
     ],
     // eslint-plugin-import rules
     'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
-    // eslint-plugin-chai-friendly rules
-    'no-unused-expressions': 0,
-    'chai-friendly/no-unused-expressions': 2,
   },
 };

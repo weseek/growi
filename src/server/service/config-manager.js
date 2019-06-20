@@ -1,4 +1,4 @@
-const debug = require('debug')('growi:service:ConfigManager');
+const logger = require('@alias/logger')('growi:service:ConfigManager');
 const ConfigLoader = require('../service/config-loader');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
@@ -29,7 +29,7 @@ class ConfigManager {
    */
   async loadConfigs() {
     this.configObject = await this.configLoader.load();
-    debug('ConfigManager#loadConfigs', this.configObject);
+    logger.debug('ConfigManager#loadConfigs', this.configObject);
 
     // cache all config keys
     this.reloadConfigKeys();
@@ -185,31 +185,31 @@ class ConfigManager {
   defaultSearch(namespace, key) {
     // does not exist neither in db nor in env vars
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
-      debug(`${namespace}.${key} does not exist neither in db nor in env vars`);
+      logger.debug(`${namespace}.${key} does not exist neither in db nor in env vars`);
       return undefined;
     }
 
     // only exists in db
     if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
-      debug(`${namespace}.${key} only exists in db`);
+      logger.debug(`${namespace}.${key} only exists in db`);
       return this.configObject.fromDB[namespace][key];
     }
 
     // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      debug(`${namespace}.${key} only exists in env vars`);
+      logger.debug(`${namespace}.${key} only exists in env vars`);
       return this.configObject.fromEnvVars[namespace][key];
     }
 
     // exists both in db and in env vars [db > env var]
     if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
       if (this.configObject.fromDB[namespace][key] !== null) {
-        debug(`${namespace}.${key} exists both in db and in env vars. loaded from db`);
+        logger.debug(`${namespace}.${key} exists both in db and in env vars. loaded from db`);
         return this.configObject.fromDB[namespace][key];
       }
       /* eslint-disable-next-line no-else-return */
       else {
-        debug(`${namespace}.${key} exists both in db and in env vars. loaded from env vars`);
+        logger.debug(`${namespace}.${key} exists both in db and in env vars. loaded from env vars`);
         return this.configObject.fromEnvVars[namespace][key];
       }
     }
