@@ -29,17 +29,7 @@ module.exports = {
   },
 
   async down(db, next) {
-    logger.info('Rollback migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
-
-    await Config.findOneAndUpdate(
-      { ns: 'crowi', key: 'security:isEnabledPassport' },
-      { ns: 'crowi', key: 'security:isEnabledPassport', value: JSON.stringify(false) },
-      { upsert: true },
-    );
-
-    logger.info('Migration has been successfully rollbacked');
+    // do not rollback
+    next();
   },
 };
