@@ -118,7 +118,7 @@ Crowi.prototype.initForTest = async function() {
     // this.setUpSlacklNotification(),
   ]);
 
-  // await Promise.all([
+  await Promise.all([
   //   this.scanRuntimeVersions(),
   //   this.setupPassport(),
   //   this.setupSearcher(),
@@ -127,10 +127,10 @@ Crowi.prototype.initForTest = async function() {
   //   this.setupCsrf(),
   //   this.setUpGlobalNotification(),
   //   this.setUpFileUpload(),
-  //   this.setUpAcl(),
+    this.setUpAcl(),
   //   this.setUpCustomize(),
   //   this.setUpRestQiitaAPI(),
-  // ]);
+  ]);
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -474,7 +474,7 @@ Crowi.prototype.setUpXss = function() {
 /**
  * setup AclService
  */
-Crowi.prototype.setUpAcl = function() {
+Crowi.prototype.setUpAcl = async function() {
   const AclService = require('../service/acl');
   if (this.aclService == null) {
     this.aclService = new AclService(this.configManager);
@@ -496,7 +496,7 @@ Crowi.prototype.setUpCustomize = function() {
 /**
  * setup AppService
  */
-Crowi.prototype.setUpApp = function() {
+Crowi.prototype.setUpApp = async function() {
   const AppService = require('../service/app');
   if (this.appService == null) {
     this.appService = new AppService(this.configManager);
