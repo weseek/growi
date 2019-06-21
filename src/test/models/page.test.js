@@ -314,55 +314,55 @@ describe('Page', () => {
         expect(page).toBeNull();
       });
     });
-
-    // describe('findListWithDescendants', () => {
-    //   test('should return only /page/', async() => {
-    //     const user = createdUsers[0];
-
-    //     const result = await Page.findListWithDescendants('/page/', user, { isRegExpEscapedFromPath: true });
-
-    //     // assert totalCount
-    //     expect(result.totalCount).to.equal(1);
-    //     // assert paths
-    //     const pagePaths = result.pages.map((page) => { return page.path });
-    //     expect(pagePaths).to.include.members(['/page/for/extended']);
-    //   });
-    //   test('should return only /page1/', async() => {
-    //     const user = createdUsers[0];
-
-    //     const result = await Page.findListWithDescendants('/page1/', user, { isRegExpEscapedFromPath: true });
-
-    //     // assert totalCount
-    //     expect(result.totalCount).to.equal(2);
-    //     // assert paths
-    //     const pagePaths = result.pages.map((page) => { return page.path });
-    //     expect(pagePaths).to.include.members(['/page1', '/page1/child1']);
-    //   });
-    // });
-
-    // describe('findListByStartWith', () => {
-    //   test('should return pages which starts with /page', async() => {
-    //     const user = createdUsers[0];
-
-    //     const result = await Page.findListByStartWith('/page', user, {});
-
-    //     // assert totalCount
-    //     expect(result.totalCount).to.equal(4);
-    //     // assert paths
-    //     const pagePaths = result.pages.map((page) => { return page.path });
-    //     expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2']);
-    //   });
-    //   test('should process with regexp', async() => {
-    //     const user = createdUsers[0];
-
-    //     const result = await Page.findListByStartWith('/page\\d{1}/', user, {});
-
-  //     // assert totalCount
-  //     expect(result.totalCount).to.equal(3);
-  //     // assert paths
-  //     const pagePaths = result.pages.map((page) => { return page.path });
-  //     expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2']);
-  //   });
   });
 
+  describe('findListWithDescendants', () => {
+    test('should return only /page/', async() => {
+      const result = await Page.findListWithDescendants('/page/', testUser0, { isRegExpEscapedFromPath: true });
+
+      // assert totalCount
+      expect(result.totalCount).toEqual(1);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page/for/extended');
+    });
+
+    test('should return only /page1/', async() => {
+      const result = await Page.findListWithDescendants('/page1/', testUser0, { isRegExpEscapedFromPath: true });
+
+      // assert totalCount
+      expect(result.totalCount).toEqual(2);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page1');
+      expect(pagePaths).toContainEqual('/page1/child1');
+    });
+  });
+
+  describe('findListByStartWith', () => {
+    test('should return pages which starts with /page', async() => {
+      const result = await Page.findListByStartWith('/page', testUser0, {});
+
+      // assert totalCount
+      expect(result.totalCount).toEqual(4);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page/for/extended');
+      expect(pagePaths).toContainEqual('/page1');
+      expect(pagePaths).toContainEqual('/page1/child1');
+      expect(pagePaths).toContainEqual('/page2');
+    });
+
+    test('should process with regexp', async() => {
+      const result = await Page.findListByStartWith('/page\\d{1}/', testUser0, {});
+
+      // assert totalCount
+      expect(result.totalCount).toEqual(3);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page1');
+      expect(pagePaths).toContainEqual('/page1/child1');
+      expect(pagePaths).toContainEqual('/page2');
+    });
+  });
 });
