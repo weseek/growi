@@ -17,10 +17,7 @@ describe('Page', () => {
 
   beforeAll(async(done) => {
     crowi = await getInstance();
-    done();
-  });
 
-  beforeEach(async(done) => {
     User = mongoose.model('User');
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');
