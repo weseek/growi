@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const { getInstance } = require('../setup-crowi');
 
+let testUser0;
+let testUser1;
+let testUser2;
+let testGroup0;
+
 describe('Page', () => {
   // eslint-disable-next-line no-unused-vars
   let crowi;
@@ -12,10 +17,7 @@ describe('Page', () => {
 
   beforeAll(async(done) => {
     crowi = await getInstance();
-    done();
-  });
 
-  beforeEach(async(done) => {
     User = mongoose.model('User');
     UserGroup = mongoose.model('UserGroup');
     UserGroupRelation = mongoose.model('UserGroupRelation');
@@ -40,10 +42,11 @@ describe('Page', () => {
       { name: 'TestGroup1' },
     ]);
 
-    const testUser0 = await User.findOne({ username: 'anonymous0' });
-    const testUser1 = await User.findOne({ username: 'anonymous1' });
+    testUser0 = await User.findOne({ username: 'anonymous0' });
+    testUser1 = await User.findOne({ username: 'anonymous1' });
+    testUser2 = await User.findOne({ username: 'anonymous2' });
 
-    const testGroup0 = await UserGroup.findOne({ name: 'TestGroup0' });
+    testGroup0 = await UserGroup.findOne({ name: 'TestGroup0' });
 
     await UserGroupRelation.insertMany([
       {
@@ -264,112 +267,99 @@ describe('Page', () => {
     });
   });
 
-  // describe('.findPage', () => {
-  //   describe('findByIdAndViewer', () => {
-  //     test('should find page (public)', async() => {
-  //       const pageToFind = createdPages[1];
-  //       const grantedUser = createdUsers[0];
+  describe('.findPage', () => {
+    describe('findByIdAndViewer', () => {
+      test('should find page (public)', async() => {
+        const expectedPage = await Page.findOne({ path: '/grant/public' });
+        const page = await Page.findByIdAndViewer(expectedPage.id, testUser0);
+        expect(page).not.toBeNull();
+        expect(page.path).toEqual(expectedPage.path);
+      });
 
-  //       const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
-  //       expect(page).to.be.not.null;
-  //       expect(page.path).to.equal(pageToFind.path);
-  //     });
+      test('should find page (anyone knows link)', async() => {
+        const expectedPage = await Page.findOne({ path: '/grant/restricted' });
+        const page = await Page.findByIdAndViewer(expectedPage.id, testUser1);
+        expect(page).not.toBeNull();
+        expect(page.path).toEqual(expectedPage.path);
+      });
 
-  //     test('should find page (anyone knows link)', async() => {
-  //       const pageToFind = createdPages[2];
-  //       const grantedUser = createdUsers[1];
+      test('should find page (just me)', async() => {
+        const expectedPage = await Page.findOne({ path: '/grant/owner' });
+        const page = await Page.findByIdAndViewer(expectedPage.id, testUser0);
+        expect(page).not.toBeNull();
+        expect(page.path).toEqual(expectedPage.path);
+      });
 
-  //       const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
-  //       expect(page).to.be.not.null;
-  //       expect(page.path).to.equal(pageToFind.path);
-  //     });
+      test('should not be found by grant (just me)', async() => {
+        const expectedPage = await Page.findOne({ path: '/grant/owner' });
+        const page = await Page.findByIdAndViewer(expectedPage.id, testUser1);
+        expect(page).toBeNull();
+      });
+    });
 
-  //     test('should find page (just me)', async() => {
-  //       const pageToFind = createdPages[4];
-  //       const grantedUser = createdUsers[0];
+    describe('findByIdAndViewer granted userGroup', () => {
+      test('should find page', async() => {
+        const expectedPage = await Page.findOne({ path: '/grant/groupacl' });
+        const page = await Page.findByIdAndViewer(expectedPage.id, testUser0);
+        expect(page).not.toBeNull();
+        expect(page.path).toEqual(expectedPage.path);
+      });
 
-  //       const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
-  //       expect(page).to.be.not.null;
-  //       expect(page.path).to.equal(pageToFind.path);
-  //     });
+      test('should not be found by grant', async() => {
+        const expectedPage = await Page.findOne({ path: '/grant/groupacl' });
+        const page = await Page.findByIdAndViewer(expectedPage.id, testUser2);
+        expect(page).toBeNull();
+      });
+    });
+  });
 
-  //     test('should not be found by grant (just me)', async() => {
-  //       const pageToFind = createdPages[4];
-  //       const grantedUser = createdUsers[1];
+  describe('findListWithDescendants', () => {
+    test('should return only /page/', async() => {
+      const result = await Page.findListWithDescendants('/page/', testUser0, { isRegExpEscapedFromPath: true });
 
-  //       const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
-  //       expect(page).toBeNull();
-  //     });
-  //   });
+      // assert totalCount
+      expect(result.totalCount).toEqual(1);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page/for/extended');
+    });
 
-  //   describe('findByIdAndViewer granted userGroup', () => {
-  //     test('should find page', async() => {
-  //       const pageToFind = createdPages[6];
-  //       const grantedUser = createdUsers[0];
+    test('should return only /page1/', async() => {
+      const result = await Page.findListWithDescendants('/page1/', testUser0, { isRegExpEscapedFromPath: true });
 
-  //       const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
-  //       expect(page).to.be.not.null;
-  //       expect(page.path).to.equal(pageToFind.path);
-  //     });
+      // assert totalCount
+      expect(result.totalCount).toEqual(2);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page1');
+      expect(pagePaths).toContainEqual('/page1/child1');
+    });
+  });
 
-  //     test('should not be found by grant', async() => {
-  //       const pageToFind = createdPages[6];
-  //       const grantedUser = createdUsers[2];
+  describe('findListByStartWith', () => {
+    test('should return pages which starts with /page', async() => {
+      const result = await Page.findListByStartWith('/page', testUser0, {});
 
-  //       const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
-  //       expect(page).toBeNull();
-  //     });
-  //   });
-  // });
+      // assert totalCount
+      expect(result.totalCount).toEqual(4);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page/for/extended');
+      expect(pagePaths).toContainEqual('/page1');
+      expect(pagePaths).toContainEqual('/page1/child1');
+      expect(pagePaths).toContainEqual('/page2');
+    });
 
-  // describe('findListWithDescendants', () => {
-  //   test('should return only /page/', async() => {
-  //     const user = createdUsers[0];
+    test('should process with regexp', async() => {
+      const result = await Page.findListByStartWith('/page\\d{1}/', testUser0, {});
 
-  //     const result = await Page.findListWithDescendants('/page/', user, { isRegExpEscapedFromPath: true });
-
-  //     // assert totalCount
-  //     expect(result.totalCount).to.equal(1);
-  //     // assert paths
-  //     const pagePaths = result.pages.map((page) => { return page.path });
-  //     expect(pagePaths).to.include.members(['/page/for/extended']);
-  //   });
-  //   test('should return only /page1/', async() => {
-  //     const user = createdUsers[0];
-
-  //     const result = await Page.findListWithDescendants('/page1/', user, { isRegExpEscapedFromPath: true });
-
-  //     // assert totalCount
-  //     expect(result.totalCount).to.equal(2);
-  //     // assert paths
-  //     const pagePaths = result.pages.map((page) => { return page.path });
-  //     expect(pagePaths).to.include.members(['/page1', '/page1/child1']);
-  //   });
-  // });
-
-  // describe('findListByStartWith', () => {
-  //   test('should return pages which starts with /page', async() => {
-  //     const user = createdUsers[0];
-
-  //     const result = await Page.findListByStartWith('/page', user, {});
-
-  //     // assert totalCount
-  //     expect(result.totalCount).to.equal(4);
-  //     // assert paths
-  //     const pagePaths = result.pages.map((page) => { return page.path });
-  //     expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2']);
-  //   });
-  //   test('should process with regexp', async() => {
-  //     const user = createdUsers[0];
-
-  //     const result = await Page.findListByStartWith('/page\\d{1}/', user, {});
-
-  //     // assert totalCount
-  //     expect(result.totalCount).to.equal(3);
-  //     // assert paths
-  //     const pagePaths = result.pages.map((page) => { return page.path });
-  //     expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2']);
-  //   });
-  // });
-
+      // assert totalCount
+      expect(result.totalCount).toEqual(3);
+      // assert paths
+      const pagePaths = result.pages.map((page) => { return page.path });
+      expect(pagePaths).toContainEqual('/page1');
+      expect(pagePaths).toContainEqual('/page1/child1');
+      expect(pagePaths).toContainEqual('/page2');
+    });
+  });
 });
