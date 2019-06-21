@@ -5,25 +5,12 @@
 
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
-  const debug = require('debug')('growi:models:config');
-
-  const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
-  const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
-  const SECURITY_REGISTRATION_MODE_OPEN = 'Open';
-  const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
-  const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
 
   const configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
     key: { type: String, required: true, index: true },
     value: { type: String, required: true },
   });
-
-  function validateCrowi() {
-    if (crowi == null) {
-      throw new Error('"crowi" is null. Init Config model with "crowi" argument first.');
-    }
-  }
 
   /**
    * default values when GROWI is cleanly installed
@@ -168,114 +155,7 @@ module.exports = function(crowi) {
     return getDefaultNotificationConfigs();
   };
 
-  configSchema.statics.getRestrictGuestModeLabels = function() {
-    const labels = {};
-    labels[SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_setting.guest_mode.deny';
-    labels[SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_setting.guest_mode.readonly';
-
-    return labels;
-  };
-
-  configSchema.statics.getRegistrationModeLabels = function() {
-    const labels = {};
-    labels[SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
-    labels[SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
-    labels[SECURITY_REGISTRATION_MODE_CLOSED] = 'security_setting.registration_mode.closed';
-
-    return labels;
-  };
-
-  configSchema.statics.updateConfigCache = function(ns, config) {
-    validateCrowi();
-
-    // const originalConfig = crowi.getConfig();
-    // const newNSConfig = originalConfig[ns] || {};
-    // Object.keys(config).forEach((key) => {
-    //   if (config[key] || config[key] === '' || config[key] === false) {
-    //     newNSConfig[key] = config[key];
-    //   }
-    // });
-
-    // originalConfig[ns] = newNSConfig;
-    // crowi.setConfig(originalConfig);
-
-    // // initialize custom css/script
-    // Config.initCustomCss(originalConfig);
-    // Config.initCustomScript(originalConfig);
-  };
-
-  // Execute only once for installing application
-  // configSchema.statics.applicationInstall = function(callback) {
-  //   const Config = this;
-  //   Config.count({ ns: 'crowi' }, (err, count) => {
-  //     if (count > 0) {
-  //       return callback(new Error('Application already installed'), null);
-  //     }
-  //     Config.updateNamespaceByArray('crowi', getArrayForInstalling(), (err, configs) => {
-  //       Config.updateConfigCache('crowi', configs);
-  //       return callback(err, configs);
-  //     });
-  //   });
-  // };
-
-  configSchema.statics.updateNamespaceByArray = function(ns, configs, callback) {
-    const Config = this;
-    if (configs.length < 0) {
-      return callback(new Error('Argument #1 is not array.'), null);
-    }
-
-    Object.keys(configs).forEach((key) => {
-      const value = configs[key];
-
-      Config.findOneAndUpdate(
-        { ns, key },
-        { ns, key, value: JSON.stringify(value) },
-        { upsert: true },
-        (err, config) => {
-          debug('Config.findAndUpdate', err, config);
-        },
-      );
-    });
-
-    return callback(null, configs);
-  };
-
-  configSchema.statics.findOneAndUpdateByNsAndKey = async function(ns, key, value) {
-    return this.findOneAndUpdate(
-      { ns, key },
-      { ns, key, value: JSON.stringify(value) },
-      { upsert: true },
-    );
-  };
-
-  // configSchema.statics.loadAllConfig = function(callback) {
-  //   const Config = this;
-
-
-  //   const config = {};
-  //   config.crowi = {}; // crowi namespace
-
-  //   Config.find()
-  //     .sort({ ns: 1, key: 1 })
-  //     .exec((err, doc) => {
-  //       doc.forEach((el) => {
-  //         if (!config[el.ns]) {
-  //           config[el.ns] = {};
-  //         }
-  //         config[el.ns][el.key] = JSON.parse(el.value);
-  //       });
-
-  //       debug('Config loaded', config);
-
-  //       // initialize custom css/script
-  //       Config.initCustomCss(config);
-  //       Config.initCustomScript(config);
-
-  //       return callback(null, config);
-  //     });
-  // };
-
-  configSchema.statics.getLocalconfig = function() { // CONF.RF: これも別のメソッドにする
+  configSchema.statics.getLocalconfig = function() {
     const env = process.env;
 
     const localConfig = {
@@ -313,37 +193,7 @@ module.exports = function(crowi) {
     return localConfig;
   };
 
-  configSchema.statics.userUpperLimit = function(crowi) {
-    const key = 'USER_UPPER_LIMIT';
-    const env = crowi.env[key];
-
-    if (undefined === crowi.env || undefined === crowi.env[key]) {
-      return 0;
-    }
-    return Number(env);
-  };
-
-  /*
-  configSchema.statics.isInstalled = function(config)
-  {
-    if (!config.crowi) {
-      return false;
-    }
-
-    if (config.crowi['app:installed']
-       && config.crowi['app:installed'] !== '0.0.0') {
-      return true;
-    }
-
-    return false;
-  }
-  */
-
   const Config = mongoose.model('Config', configSchema);
-  Config.SECURITY_REGISTRATION_MODE_OPEN = SECURITY_REGISTRATION_MODE_OPEN;
-  Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
-  Config.SECURITY_REGISTRATION_MODE_CLOSED = SECURITY_REGISTRATION_MODE_CLOSED;
-
 
   return Config;
 };

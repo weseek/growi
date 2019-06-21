@@ -63,11 +63,11 @@
           <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}">
         </div>
         <div class="col-sm-offset-2 col-sm-10">
-          {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
+          {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
           <p class="help-block">
             {{ t('page_register.form_help.email') }}
           <ul>
-            {% for em in config.crowi['security:registrationWhiteList'] %}
+            {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
             <li><code>{{ em }}</code></li>
             {% endfor %}
           </ul>

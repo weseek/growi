@@ -9,7 +9,6 @@ module.exports = function(crowi, app) {
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
-  const Config = models.Config;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
@@ -97,11 +96,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/app'                  , admin.app.index);
   actions.app = {};
   actions.app.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'app:');
-
-    return res.render('admin/app', {
-      settingForm,
-    });
+    return res.render('admin/app');
   };
 
   actions.app.settingUpdate = function(req, res) {
@@ -110,10 +105,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const settingForm = configManager.getConfigByPrefix('crowi', 'security:');
-    const isAclEnabled = aclService.getIsPublicWikiOnly();
-
-    return res.render('admin/security', { settingForm, isAclEnabled });
+    return res.render('admin/security');
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
@@ -236,26 +228,22 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackSetting' , admin.notification.slackauth);
-  actions.notification.slackSetting = function(req, res) {
+  actions.notification.slackSetting = async function(req, res) {
     const slackSetting = req.form.slackSetting;
 
-    req.session.slackSetting = slackSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('notification', slackSetting, (err, config) => {
-        Config.updateConfigCache('notification', config);
-        req.flash('successMessage', ['Successfully Updated!']);
-        req.session.slackSetting = null;
+      await configManager.updateConfigsInTheSameNamespace('notification', slackSetting);
+      req.flash('successMessage', ['Successfully Updated!']);
 
-        // Re-setup
-        crowi.setupSlack().then(() => {
-          return res.redirect('/admin/notification');
-        });
+      // Re-setup
+      crowi.setupSlack().then(() => {
       });
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/notification');
     }
+
+    return res.redirect('/admin/notification');
   };
 
   // app.get('/admin/notification/slackAuth'     , admin.notification.slackauth);
@@ -268,19 +256,18 @@ module.exports = function(crowi, app) {
 
     const slack = crowi.slack;
     slack.getOauthAccessToken(code)
-      .then((data) => {
+      .then(async(data) => {
         debug('oauth response', data);
-        Config.updateNamespaceByArray('notification', { 'slack:token': data.access_token }, (err, config) => {
-          if (err) {
-            req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
-          }
-          else {
-            Config.updateConfigCache('notification', config);
-            req.flash('successMessage', ['Successfully Connected!']);
-          }
 
-          return res.redirect('/admin/notification');
-        });
+        try {
+          await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': data.access_token });
+          req.flash('successMessage', ['Successfully Connected!']);
+        }
+        catch (err) {
+          req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
+        }
+
+        return res.redirect('/admin/notification');
       })
       .catch((err) => {
         debug('oauth response ERROR', err);
@@ -309,13 +296,11 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackSetting/disconnect' , admin.notification.disconnectFromSlack);
-  actions.notification.disconnectFromSlack = function(req, res) {
-    Config.updateNamespaceByArray('notification', { 'slack:token': '' }, (err, config) => {
-      Config.updateConfigCache('notification', config);
-      req.flash('successMessage', ['Successfully Disconnected!']);
+  actions.notification.disconnectFromSlack = async function(req, res) {
+    await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': '' });
+    req.flash('successMessage', ['Successfully Disconnected!']);
 
-      return res.redirect('/admin/notification');
-    });
+    return res.redirect('/admin/notification');
   };
 
   actions.globalNotification = {};
@@ -422,8 +407,7 @@ module.exports = function(crowi, app) {
   actions.user = {};
   actions.user.index = async function(req, res) {
     const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
-    const Config = crowi.model('Config');
-    const userUpperLimit = Config.userUpperLimit(crowi);
+    const userUpperLimit = aclService.userUpperLimit();
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
 
     const page = parseInt(req.query.page) || 1;
@@ -859,14 +843,15 @@ module.exports = function(crowi, app) {
 
       // mail setting ならここで validation
       if (form['mail:from']) {
-        validateMailSetting(req, form, (err, data) => {
+        validateMailSetting(req, form, async(err, data) => {
           debug('Error validate mail setting: ', err, data);
           if (err) {
             req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
             return res.json({ status: false, message: req.form.errors.join('\n') });
           }
 
-          return saveSetting(req, res, form);
+          await configManager.updateConfigsInTheSameNamespace('crowi', form);
+          return res.json({ status: true });
         });
       }
       else {
@@ -1190,8 +1175,10 @@ module.exports = function(crowi, app) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    await saveSetting(req, res, form);
-    await importer.initializeEsaClient();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    importer.initializeEsaClient(); // let it run in the back aftert res
+
+    return res.json({ status: true });
   };
 
   /**
@@ -1207,8 +1194,10 @@ module.exports = function(crowi, app) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    await saveSetting(req, res, form);
-    await importer.initializeQiitaClient();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    importer.initializeQiitaClient(); // let it run in the back aftert res
+
+    return res.json({ status: true });
   };
 
   /**
@@ -1342,20 +1331,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Error'));
     }
   };
-
-  /**
-   * save settings, update config cache, and response json
-   *
-   * @param {any} req
-   * @param {any} res
-   * @param {any} form
-   */
-  function saveSetting(req, res, form) {
-    Config.updateNamespaceByArray('crowi', form, (err, config) => {
-      Config.updateConfigCache('crowi', config);
-      return res.json({ status: true });
-    });
-  }
 
   function validateMailSetting(req, form, callback) {
     const mailer = crowi.mailer;

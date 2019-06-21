@@ -79,7 +79,7 @@ module.exports = {
   },
 
   async down(db) {
-    logger.info('Undo migration');
+    logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
     const Config = getModelSafely('Config') || require('@server/models/config')();
@@ -90,7 +90,7 @@ module.exports = {
       key: 'app:siteUrl',
     });
 
-    logger.info('Migration has successfully undoed');
+    logger.info('Migration has been successfully rollbacked');
   },
 
 };

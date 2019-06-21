@@ -6,15 +6,15 @@ const aws = require('aws-sdk');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
-  const lib = new Uploader(crowi.configManager);
+  const { configManager } = crowi;
+  const lib = new Uploader(configManager);
 
   function getAwsConfig() {
-    const config = crowi.getConfig();
     return {
-      accessKeyId: config.crowi['aws:accessKeyId'],
-      secretAccessKey: config.crowi['aws:secretAccessKey'],
-      region: config.crowi['aws:region'],
-      bucket: config.crowi['aws:bucket'],
+      accessKeyId: configManager.getConfig('crowi', 'aws:accessKeyId'),
+      secretAccessKey: configManager.getConfig('crowi', 'aws:secretAccessKey'),
+      region: configManager.getConfig('crowi', 'aws:region'),
+      bucket: configManager.getConfig('crowi', 'aws:bucket'),
     };
   }
 

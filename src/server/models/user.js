@@ -78,8 +78,7 @@ module.exports = function(crowi) {
   function decideUserStatusOnRegistration() {
     validateCrowi();
 
-    const Config = crowi.model('Config');
-    const configManager = crowi.configManager;
+    const { configManager, aclService } = crowi;
 
     const isInstalled = configManager.getConfig('crowi', 'app:installed');
     if (!isInstalled) {
@@ -89,10 +88,10 @@ module.exports = function(crowi) {
     // status decided depends on registrationMode
     const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
     switch (registrationMode) {
-      case Config.SECURITY_REGISTRATION_MODE_OPEN:
+      case aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
-      case Config.SECURITY_REGISTRATION_MODE_RESTRICTED:
-      case Config.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
+      case aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
+      case aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
         return STATUS_REGISTERED;
       default:
         return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
@@ -348,11 +347,10 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const config = crowi.getConfig();
-    const whitelist = config.crowi['security:registrationWhiteList'];
+    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
-      return config.crowi['security:registrationWhiteList'].some((allowedEmail) => {
+      return whitelist.some((allowedEmail) => {
         const re = new RegExp(`${allowedEmail}$`);
         return re.test(email);
       });
@@ -511,8 +509,9 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const Config = crowi.model('Config');
-    const userUpperLimit = Config.userUpperLimit(crowi);
+    const { aclService } = crowi;
+
+    const userUpperLimit = aclService.userUpperLimit();
     if (userUpperLimit === 0) {
       return false;
     }

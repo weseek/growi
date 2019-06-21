@@ -228,7 +228,7 @@
 
         <div class="row">
           <div class="col-xs-12 text-right">
-            {% if config.crowi['security:registrationMode'] != 'Closed' %}
+            {% if getConfig('crowi', 'security:registrationMode') != 'Closed' %}
             <a href="#register" id="register" class="link-switch">
               <i class="ti-check-box"></i> {{ t('Sign up is here') }}
             </a>
@@ -240,9 +240,9 @@
       </div>
 
 
-      {% if config.crowi['security:registrationMode'] != 'Closed' %}
+      {% if getConfig('crowi', 'security:registrationMode') != 'Closed' %}
       <div class="back">
-        {% if config.crowi['security:registrationMode'] == 'Restricted' %}
+        {% if getConfig('crowi', 'security:registrationMode') == 'Restricted' %}
         <p class="alert alert-warning">
           {{ t('page_register.notice.restricted') }}<br>
           {{ t('page_register.notice.restricted_defail') }}
@@ -267,12 +267,12 @@
             <span class="input-group-addon"><i class="icon-envelope"></i></span>
             <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ req.body.registerForm.email }}" required>
           </div>
-          {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
+          {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
           <p class="help-block">
             {{ t('page_register.form_help.email') }}
           </p>
           <ul>
-            {% for em in config.crowi['security:registrationWhiteList'] %}
+            {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
             <li><code>{{ em }}</code></li>
             {% endfor %}
           </ul>

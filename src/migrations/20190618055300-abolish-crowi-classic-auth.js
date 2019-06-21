@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:migrate:make-email-unique');
+const logger = require('@alias/logger')('growi:migrate:abolish-crowi-classic-auth');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
@@ -15,7 +15,11 @@ module.exports = {
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([
-      Config.findOneAndUpdateByNsAndKey('crowi', 'security:isEnabledPassport', true),
+      Config.findOneAndUpdate(
+        { ns: 'crowi', key: 'security:isEnabledPassport' },
+        { ns: 'crowi', key: 'security:isEnabledPassport', value: JSON.stringify(true) },
+        { upsert: true },
+      ),
       Config.deleteOne({ ns: 'crowi', key: 'google:clientId' }),
       Config.deleteOne({ ns: 'crowi', key: 'google:clientSecret' }),
     ]);
@@ -24,7 +28,7 @@ module.exports = {
     next();
   },
 
-  down(db, next) {
+  async down(db, next) {
     // do not rollback
     next();
   },

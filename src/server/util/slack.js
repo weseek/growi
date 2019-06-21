@@ -8,7 +8,6 @@ const urljoin = require('url-join');
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi) {
-  const config = crowi.getConfig();
   const Slack = require('slack-node');
   const { configManager } = crowi;
 
@@ -17,7 +16,7 @@ module.exports = function(crowi) {
   const postWithIwh = function(messageObj) {
     return new Promise((resolve, reject) => {
       const client = new Slack();
-      client.setWebhook(config.notification['slack:incomingWebhookUrl']);
+      client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
       client.webhook(messageObj, (err, res) => {
         if (err) {
           debug('Post error', err, res);
@@ -31,7 +30,7 @@ module.exports = function(crowi) {
 
   const postWithWebApi = function(messageObj) {
     return new Promise((resolve, reject) => {
-      const client = new Slack(config.notification['slack:token']);
+      const client = new Slack(configManager.getConfig('notification', 'slack:token'));
       // stringify attachments
       if (messageObj.attachments != null) {
         messageObj.attachments = JSON.stringify(messageObj.attachments);

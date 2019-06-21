@@ -154,8 +154,8 @@
         {% else %}
         <li id="login-user"><a href="/login">Login</a></li>
         {% endif %}
-        {% if config.crowi['app:confidential'] && config.crowi['app:confidential'] != '' %}
-        <li class="confidential"><a href="#">{{ config.crowi['app:confidential'] }}</a></li>
+        {% if getConfig('crowi', 'app:confidential') %}
+        <li class="confidential"><a href="#">{{ getConfig('crowi', 'app:confidential') }}</a></li>
         {% endif %}
       </ul>
     </div><!-- /.navbar-header -->
