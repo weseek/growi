@@ -20,8 +20,16 @@ module.exports = {
         { ns: 'crowi', key: 'security:isEnabledPassport', value: JSON.stringify(true) },
         { upsert: true },
       ),
-      Config.deleteOne({ ns: 'crowi', key: 'google:clientId' }),
-      Config.deleteOne({ ns: 'crowi', key: 'google:clientSecret' }),
+      Config.findOneAndUpdate(
+        { ns: 'crowi', key: 'google:clientId' },
+        { ns: 'crowi', key: 'google:clientId', value: JSON.stringify(null) },
+        { upsert: true },
+      ),
+      Config.findOneAndUpdate(
+        { ns: 'crowi', key: 'google:clientSecret' },
+        { ns: 'crowi', key: 'google:clientSecret', value: JSON.stringify(null) },
+        { upsert: true },
+      ),
     ]);
 
     logger.info('Migration has successfully terminated');
