@@ -436,7 +436,6 @@
 
   "security_setting": {
     "Basic authentication": "Basic認証",
-    "Security settings": "セキュリティ設定",
     "Guest users access": "ゲストユーザーのアクセス",
     "Register limitation": "登録の制限",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",

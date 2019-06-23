@@ -290,11 +290,11 @@
   "modal_delete": {
     "delete_page": "Delete Page",
     "deleting_page": "Deleting Page",
-    "delete_recursively": "Delete Recursively",
+    "delete_recursively": "Delete child pages under %s recursively.",
     "delete_completely": "Delete Completely",
-    "delete_completely_restriction": "You have no admin to delete completely",
-    "recursively": "Delete children of under <code>%s</code> recursively",
-    "completely": "Delete completely instead of putting it into trash"
+    "delete_completely_restriction": "You have no admin to delete completely.",
+    "recursively": "Delete children of under <code>%s</code> recursively.",
+    "completely": "Delete completely instead of putting it into trash."
   },
 
   "modal_duplicate": {
@@ -436,7 +436,6 @@
 
   "security_setting": {
 		"Basic authentication": "Basic authentication",
-		"Security settings": "Security settings",
 		"Guest users access": "Guest users access",
 		"Register limitation": "Register limitation",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -455,7 +454,7 @@
     "page_listing_2": "Page listing/searching<br>restricted by User Group",
     "page_listing_2_desc": "Show pages that are restricted by User Group when listing/searching",
     "complete_deletion": "Restrict Complete Deletion of Pages",
-    "complete_deletion_explain": "Restricts users who can completely delete pages to only administrators.",
+    "complete_deletion_explain": "Restricts users who can completely delete pages.",
     "admin_only": "Admin Only",
     "admin_and_author": "Admin and Author",
     "anyone": "Anyone",
