@@ -65,13 +65,16 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/security/passport-google' , loginRequired() , adminRequired , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
   app.post('/_api/admin/security/passport-github' , loginRequired() , adminRequired , csrf, form.admin.securityPassportGitHub, admin.api.securityPassportGitHubSetting);
   app.post('/_api/admin/security/passport-twitter', loginRequired() , adminRequired , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
+  app.post('/_api/admin/security/passport-oidc',    loginRequired() , adminRequired , csrf, form.admin.securityPassportOidc, admin.api.securityPassportOidcSetting);
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
+  app.get('/passport/oidc'                        , loginPassport.loginWithOidc);
   app.get('/passport/saml'                        , loginPassport.loginWithSaml);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
   app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);
+  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
 
   // markdown admin
