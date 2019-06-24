@@ -468,11 +468,11 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
-    this.grant = grant;
-
     // reset
     this.grantedUsers = [];
     this.grantedGroup = null;
+
+    this.grant = grant || GRANT_PUBLIC;
 
     if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
       this.grantedUsers.push(user._id);
@@ -931,7 +931,7 @@ module.exports = function(crowi) {
       .cursor();
   };
 
-  async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
+  async function pushRevision(pageData, newRevision, user) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
 
@@ -970,7 +970,7 @@ module.exports = function(crowi) {
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
 
-    let grant = options.grant || GRANT_PUBLIC;
+    let grant = options.grant;
     // force public
     if (isPortalPath(path)) {
       grant = GRANT_PUBLIC;
@@ -994,7 +994,7 @@ module.exports = function(crowi) {
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    const revision = await pushRevision(savedPage, newRevision, user);
     savedPage = await this.findByPath(revision.path)
       .populate('revision')
       .populate('creator');
@@ -1009,8 +1009,8 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');
-    const grant = options.grant || null;
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const grant = options.grant || pageData.grant; //                                  use the previous data if absence
+    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const socketClientId = options.socketClientId || null;
 
@@ -1020,7 +1020,7 @@ module.exports = function(crowi) {
     // update existing page
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
-    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    const revision = await pushRevision(savedPage, newRevision, user);
     savedPage = await this.findByPath(revision.path)
       .populate('revision')
       .populate('creator');

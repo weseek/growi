@@ -570,9 +570,12 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {
-      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId, pageTags,
-    };
+    const options = { socketClientId };
+    if (grant != null) {
+      options.grant = grant;
+      options.grantUserGroupId = grantUserGroupId;
+    }
+
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
     let savedTags;
@@ -651,8 +654,6 @@ module.exports = function(crowi, app) {
     const options = { isSyncRevisionToHackmd, socketClientId };
     if (grant != null) {
       options.grant = grant;
-    }
-    if (grantUserGroupId != null) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
@@ -1119,6 +1120,8 @@ module.exports = function(crowi, app) {
     req.body.path = newPagePath;
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
+    req.body.grantedUsers = page.grantedUsers;
+    req.body.grantedGroup = page.grantedGroup;
     req.body.pageTags = originTags;
 
     return api.create(req, res);
