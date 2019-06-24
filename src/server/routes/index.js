@@ -210,7 +210,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequired() ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove'               , accessTokenParser , loginRequired() , csrf, attachment.api.remove);
   app.post('/_api/attachments.removeProfileImage'   , accessTokenParser , loginRequired() , csrf, attachment.api.removeProfileImage);
-  app.get('/_api/attachments.limit'   , accessTokenParser , loginRequired() , csrf, attachment.api.limit);
+  app.get('/_api/attachments.limit'   , accessTokenParser , loginRequired(), attachment.api.limit);
 
   app.get('/_api/revisions.get'       , accessTokenParser , loginRequired(false) , revision.api.get);
   app.get('/_api/revisions.ids'       , accessTokenParser , loginRequired(false) , revision.api.ids);
