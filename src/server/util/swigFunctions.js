@@ -8,6 +8,7 @@ module.exports = function(crowi, app, req, locals) {
     cdnResourcesService,
     passportService,
     appService,
+    aclService,
     fileUploadService,
     customizeService,
   } = crowi;
@@ -64,6 +65,7 @@ module.exports = function(crowi, app, req, locals) {
    * pass service class to swig
    */
   locals.appService = appService;
+  locals.aclService = aclService;
   locals.fileUploadService = fileUploadService;
   locals.customizeService = customizeService;
 
