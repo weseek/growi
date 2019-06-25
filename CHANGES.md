@@ -4,7 +4,10 @@
 
 ### BREAKING CHANGES
 
+* GROWI no longer supports Crowi Classic Authentication
 * GROWI no longer supports [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+
+Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
 ### Updates
 
