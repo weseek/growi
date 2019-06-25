@@ -181,7 +181,7 @@
                    type="text"
                    name="settingForm[mail:from]"
                    placeholder="{{ t('eg') }} mail@growi.org"
-                   value="{{ getConfig('crowi', 'mail:from') }}">
+                   value="{{ getConfig('crowi', 'mail:from') | default('') }}">
           </div>
         </div>
 
