@@ -18,10 +18,7 @@ class AclService {
 
   getIsPublicWikiOnly() {
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
-      return true;
-    }
-    return false;
+    return !!publicWikiOnly;
   }
 
   getIsGuestAllowedToRead() {
