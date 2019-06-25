@@ -456,6 +456,8 @@
     "xss_prevent_setting_link":"マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
     "desc_of_callback_URL": "%s プロバイダ側の設定で利用してください。",
+    "clientID": "クライアントID",
+    "client_secret": "クライアントシークレット",
     "guest_mode": {
       "deny": "アカウントを持たないユーザーはアクセス不可",
       "readonly": "閲覧のみ許可"
