@@ -101,10 +101,10 @@
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
                 <label class="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
-                  <input name="{{configName}}" value="true" type="radio" {% if isEnabled %}checked{% endif %}> ON
+                  <input name="{{configName}}" value="false" type="radio" {% if isEnabled %}checked{% endif %}> ON
                 </label>
                 <label class="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
-                  <input name="{{configName}}" value="false" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
+                  <input name="{{configName}}" value="true" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
                 </label>
               </div>
 
