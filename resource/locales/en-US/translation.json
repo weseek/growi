@@ -467,7 +467,7 @@
     },
     "registration_mode": {
       "open": "Anyone",
-      "restricted": "Reuqire Admin permission",
+      "restricted": "Require Admin permission",
       "closed": "Invitation Only"
     },
     "configuration": " Configuration",

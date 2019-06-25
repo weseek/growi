@@ -11,7 +11,6 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const expressSession = require('express-session');
   const sanitizer = require('express-sanitizer');
-  const basicAuth = require('basic-auth-connect');
   const flash = require('connect-flash');
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
@@ -125,12 +124,6 @@ module.exports = function(crowi, app) {
     //   need refactoring (ex. setting basic authentication for each routes)
     if (req.path === '/_api/v3/healthcheck') {
       return next();
-    }
-
-    const basicName = getConfig('crowi', 'security:basicName');
-    const basicSecret = getConfig('crowi', 'security:basicSecret');
-    if (basicName && basicSecret) {
-      return basicAuth(basicName, basicSecret)(req, res, next);
     }
 
     next();

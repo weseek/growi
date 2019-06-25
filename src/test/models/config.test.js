@@ -12,7 +12,7 @@ describe('Config model test', () => {
   describe('.CONSTANTS', () => {
     test('AclService has constants', async() => {
       expect(crowi.aclService.labels.SECURITY_REGISTRATION_MODE_OPEN).toBe('Open');
-      expect(crowi.aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED).toBe('Resricted');
+      expect(crowi.aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED).toBe('Restricted');
       expect(crowi.aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED).toBe('Closed');
     });
   });
