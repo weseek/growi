@@ -11,17 +11,14 @@ class AclService {
       SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
       SECURITY_RESTRICT_GUEST_MODE_READONLY: 'Readonly',
       SECURITY_REGISTRATION_MODE_OPEN: 'Open',
-      SECURITY_REGISTRATION_MODE_RESTRICTED: 'Resricted',
+      SECURITY_REGISTRATION_MODE_RESTRICTED: 'Restricted',
       SECURITY_REGISTRATION_MODE_CLOSED: 'Closed',
     };
   }
 
   getIsPublicWikiOnly() {
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
-      return true;
-    }
-    return false;
+    return !!publicWikiOnly;
   }
 
   getIsGuestAllowedToRead() {
@@ -49,8 +46,8 @@ class AclService {
 
   getRegistrationModeLabels() {
     const labels = {};
-    labels[this.labelsSECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
-    labels[this.labelsSECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
+    labels[this.labels.SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
+    labels[this.labels.SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
     labels[this.labels.SECURITY_REGISTRATION_MODE_CLOSED] = 'security_setting.registration_mode.closed';
 
     return labels;

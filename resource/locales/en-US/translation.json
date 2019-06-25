@@ -459,13 +459,15 @@
     "issuerHost": "Issuer Host",
     "scope": "Scope",
     "desc_of_callback_URL": "Use it in the setting of the %s provider",
+    "clientID": "Client ID",
+    "client_secret": "Client Secret",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
     },
     "registration_mode": {
       "open": "Anyone",
-      "restricted": "Reuqire Admin permission",
+      "restricted": "Require Admin permission",
       "closed": "Invitation Only"
     },
     "configuration": " Configuration",

@@ -2,7 +2,7 @@
   <legend class="alert-anchor">{{ t("security_setting.OAuth.OIDC.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsOIDCEnabled = "settingForm[security:passport-oidc:isEnabled]" %}
-  {% set isOidcEnabled = settingForm['security:passport-oidc:isEnabled'] %}
+  {% set isOidcEnabled = getConfig('crowi', 'security:passport-oidc:isEnabled') %}
   {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
   {% set callbackUrl = siteUrl + '/passport/oidc/callback' %}
 
@@ -26,14 +26,14 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:providerName]" class="col-xs-3 control-label">{{ t("security_setting.providerName") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:providerName]" value="{{ settingForm['security:passport-oidc:providerName'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:providerName]" value="{{ getConfig('crowi', 'security:passport-oidc:providerName') | default('') }}">
       </div>
     </div>
 
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:issuerHost]" class="col-xs-3 control-label">{{ t("security_setting.issuerHost") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:issuerHost]" value="{{ settingForm['security:passport-oidc:issuerHost'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:issuerHost]" value="{{ getConfig('crowi', 'security:passport-oidc:issuerHost') | default('') }}">
         <p class="help-block">
           <small>
                 {{ t("security_setting.Use env var if empty", "OAUTH_OIDC_ISSUER_HOST") }}
@@ -45,7 +45,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:clientId]" value="{{ settingForm['security:passport-oidc:clientId'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:clientId]" value="{{ getConfig('crowi', 'security:passport-oidc:clientId') | default('') }}">
         <p class="help-block">
           <small>
              {{ t("security_setting.Use env var if empty", "OAUTH_OIDC_CLIENT_ID") }}
@@ -57,7 +57,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:clientSecret]" value="{{ settingForm['security:passport-oidc:clientSecret'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:clientSecret]" value="{{ getConfig('crowi', 'security:passport-oidc:clientSecret') | default('') }}">
         <p class="help-block">
           <small>
              {{ t("security_setting.Use env var if empty", "OAUTH_OIDC_CLIENT_SECRET") }}
@@ -71,7 +71,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:attrMapId]" class="col-xs-3 control-label">Identifier</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapId]" value="{{ settingForm['security:passport-oidc:attrMapId'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapId]" value="{{ getConfig('crowi', 'security:passport-oidc:attrMapId') | default('') }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.OAuth.OIDC.id_detail") }}
@@ -83,7 +83,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:attrMapUserName]" class="col-xs-3 control-label">Username</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapUserName]" value="{{ settingForm['security:passport-oidc:attrMapUserName'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapUserName]" value="{{ getConfig('crowi', 'security:passport-oidc:attrMapUserName') | default('') }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.OAuth.OIDC.username_detail") }}
@@ -95,7 +95,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:attrMapName]" class="col-xs-3 control-label">Name</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapName]" value="{{ settingForm['security:passport-oidc:attrMapName'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapName]" value="{{ getConfig('crowi', 'security:passport-oidc:attrMapName') | default('') }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.OAuth.OIDC.name_detail") }}
@@ -107,7 +107,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-oidc:attrMapMail]" class="col-xs-3 control-label">Mail</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapMail]" value="{{ settingForm['security:passport-oidc:attrMapMail'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-oidc:attrMapMail]" value="{{ getConfig('crowi', 'security:passport-oidc:attrMapMail') | default('') }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.OAuth.OIDC.mapping_detail", t("Email")) }}
@@ -133,7 +133,7 @@
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
           <input type="checkbox" id="bindByUserName-oidc" name="settingForm[security:passport-oidc:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+              {% if getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByUserName-oidc">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>
@@ -150,7 +150,7 @@
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
           <input type="checkbox" id="bindByEmail-oidc" name="settingForm[security:passport-oidc:isSameEmailTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-oidc:isSameEmailTreatedAsIdenticalUser'] %}checked{% endif %} />
+              {% if getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByEmail-oidc">
             {{ t("security_setting.Treat email matching as identical", "email") }}
           </label>
