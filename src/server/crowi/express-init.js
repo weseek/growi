@@ -112,23 +112,6 @@ module.exports = function(crowi, app) {
     expressSession(crowi.sessionConfig)(req, res, next);
   });
 
-  // Set basic auth middleware
-  app.use((req, res, next) => {
-    if (req.query.access_token || req.body.access_token) {
-      return next();
-    }
-
-    // FIXME:
-    //   healthcheck endpoint exclude from basic authentication.
-    //   however, hard coding is not desirable.
-    //   need refactoring (ex. setting basic authentication for each routes)
-    if (req.path === '/_api/v3/healthcheck') {
-      return next();
-    }
-
-    next();
-  });
-
   // passport
   debug('initialize Passport');
   app.use(passport.initialize());
