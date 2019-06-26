@@ -959,6 +959,33 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
+  actions.api.securityPassportBasicSetting = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
+    }
+
+    debug('form content', form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+
+    // reset strategy
+    await crowi.passportService.resetBasicStrategy();
+    // setup strategy
+    if (configManager.getConfig('crowi', 'security:passport-basic:isEnabled')) {
+      try {
+        await crowi.passportService.setupBasicStrategy(true);
+      }
+      catch (err) {
+        // reset
+        await crowi.passportService.resetBasicStrategy();
+        return res.json({ status: false, message: err.message });
+      }
+    }
+
+    return res.json({ status: true });
+  };
+
   actions.api.securityPassportGoogleSetting = async(req, res) => {
     const form = req.form.settingForm;
 

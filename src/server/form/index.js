@@ -21,6 +21,7 @@ module.exports = {
     securityGeneral: require('./admin/securityGeneral'),
     securityPassportLdap: require('./admin/securityPassportLdap'),
     securityPassportSaml: require('./admin/securityPassportSaml'),
+    securityPassportBasic: require('./admin/securityPassportBasic'),
     securityPassportGoogle: require('./admin/securityPassportGoogle'),
     securityPassportGitHub: require('./admin/securityPassportGitHub'),
     securityPassportTwitter: require('./admin/securityPassportTwitter'),

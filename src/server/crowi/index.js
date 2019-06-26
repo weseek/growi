@@ -294,6 +294,7 @@ Crowi.prototype.setupPassport = async function() {
     this.passportService.setupTwitterStrategy();
     this.passportService.setupOidcStrategy();
     this.passportService.setupSamlStrategy();
+    this.passportService.setupBasicStrategy();
   }
   catch (err) {
     logger.error(err);

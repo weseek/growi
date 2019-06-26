@@ -47,6 +47,7 @@ module.exports = function(crowi) {
 
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
+      'security:pageCompleteDeletionAuthority' : undefined,
 
       'security:passport-ldap:isEnabled' : false,
       'security:passport-ldap:serverUrl' : undefined,
@@ -67,6 +68,7 @@ module.exports = function(crowi) {
       'security:passport-github:isEnabled' : false,
       'security:passport-twitter:isEnabled' : false,
       'security:passport-oidc:isEnabled' : false,
+      'security:passport-basic:isEnabled' : false,
 
       'aws:bucket'          : 'growi',
       'aws:region'          : 'ap-northeast-1',
