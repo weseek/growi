@@ -60,6 +60,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/security/general'       , loginRequired() , adminRequired , form.admin.securityGeneral, admin.api.securitySetting);
   app.post('/_api/admin/security/passport-ldap' , loginRequired() , adminRequired , csrf, form.admin.securityPassportLdap, admin.api.securityPassportLdapSetting);
   app.post('/_api/admin/security/passport-saml' , loginRequired() , adminRequired , csrf, form.admin.securityPassportSaml, admin.api.securityPassportSamlSetting);
+  app.post('/_api/admin/security/passport-basic' , loginRequired() , adminRequired , csrf, form.admin.securityPassportBasic, admin.api.securityPassportBasicSetting);
 
   // OAuth
   app.post('/_api/admin/security/passport-google' , loginRequired() , adminRequired , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
@@ -71,6 +72,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
   app.get('/passport/oidc'                        , loginPassport.loginWithOidc);
   app.get('/passport/saml'                        , loginPassport.loginWithSaml);
+  app.get('/passport/basic'                       , loginPassport.loginWithBasic);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
   app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);

@@ -3,6 +3,5 @@
 {% if getConfig('crowi', 'security:basicName') || getConfig('crowi', 'security:basicSecret') %}
 <div class="myadmin-alert alert alert-warning mb-0">
   <i class="icon-exclamation"></i>
-  {{ t("breaking_changes.v346_using_basic_auth", '<a href="/admin/security">' + t('Security settings') + '<i class="icon-login"></i></a>') }}
 </div>
 {% endif %}
