@@ -479,14 +479,14 @@ export  $initHighlight;</code></pre>
           <dl class="dl-horizontal">
             <dt><code>$</code></dt>
             <dd>jQuery instance</dd>
-            <dt><code>crowi</code></dt>
-            <dd>Crowi context instance</dd>
+            <dt><code>appContainer</code></dt>
+            <dd>GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
+            <dt><code>growiRenderer</code></dt>
+            <dd>GROWI Renderer origin instance</dd>
+            <dt><code>growiPlugin</code></dt>
+            <dd>GROWI Plugin Manager instance</dd>
             <dt><code>Crowi</code></dt>
             <dd>Crowi legacy instance (jQuery based)</dd>
-            <dt><code>crowiRenderer</code></dt>
-            <dd>Crowi Renderer instance</dd>
-            <dt><code>crowiPlugin</code></dt>
-            <dd>GROWI plugin manager instance</dd>
           </dl>
         </p>
         <p class="help-block">
@@ -494,7 +494,7 @@ export  $initHighlight;</code></pre>
 <pre class="hljs"><code>console.log($('.main-container'));
 
 window.addEventListener('load', (event) => {
-  console.log('config: ', crowi.config);
+  console.log('config: ', appContainer.config);
 });</code></pre>
         </p>
 
