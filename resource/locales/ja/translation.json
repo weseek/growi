@@ -195,7 +195,7 @@
   "Re-enter new password": "(確認用)",
   "Password is not set": "パスワードが設定されていません",
 
-  "Security Settings": "セキュリティ設定",
+  "security_settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -270,7 +270,8 @@
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "新しいページが既に存在しています。",
-    "outdated": "ページが他のユーザーによって更新されました。"
+    "outdated": "ページが他のユーザーによって更新されました。",
+    "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
 
   "modal_rename": {
@@ -291,15 +292,13 @@
   "Delete Completely": "完全削除",
 
   "modal_delete": {
-    "label": {
-      "Delete Page": "ページを削除する",
-      "Delete recursively": "全ての子ページも削除",
-      "Delete completely": "完全削除"
-    },
-    "help": {
-      "recursively": "<code>%s</code> 配下のページも削除します",
-      "completely": "ゴミ箱を経由せず、完全に削除します"
-    }
+    "delete_page": "ページを削除する",
+    "deleting_page": "ページパス",
+    "delete_recursively": "全ての子ページも削除",
+    "delete_completely": "完全削除",
+    "delete_completely_restriction": "完全削除をするための権限がありません。",
+    "recursively": "<code>%s</code> 配下のページも削除します",
+    "completely": "ゴミ箱を経由せず、完全に削除します"
   },
 
   "modal_duplicate": {
@@ -441,7 +440,6 @@
 
   "security_setting": {
     "Basic authentication": "Basic認証",
-    "Security settings": "セキュリティ設定",
     "Guest users access": "ゲストユーザーのアクセス",
     "Register limitation": "登録の制限",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -459,6 +457,11 @@
     "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
     "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
     "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "complete_deletion": "完全削除制限機能",
+    "complete_deletion_explain": "完全削除できるユーザーを制限します。",
+    "admin_only": "管理者のみ可能",
+    "admin_and_author": "管理者とページ作者が可能",
+    "anyone": "誰でも可能",
 
     "Authentication mechanism settings":"認証機構設定",
     "note": "メモ",
