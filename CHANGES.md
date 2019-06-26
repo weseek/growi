@@ -4,7 +4,12 @@
 
 ### BREAKING CHANGES
 
-* GROWI no longer supports [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+* GROWI no longer supports
+    * Basic Authentication
+    * Crowi Classic Authentication Mechanism
+    * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+
+Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
 ### Updates
 
@@ -17,6 +22,7 @@
 * I18n: User Management Details
 * I18n: Group Management Details
 * Support: Apply unstated
+* Support: Apply Jest for Tests
 * Support: Upgrade libs
     * async
     * axios

@@ -1,8 +1,9 @@
-require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:make-email-unique');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
+
+const { getModelSafely } = require('@commons/util/mongoose-utils');
 
 module.exports = {
 
@@ -10,7 +11,7 @@ module.exports = {
     logger.info('Start migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const User = require('@server/models/user')();
+    const User = getModelSafely('User') || require('@server/models/user')();
 
     // get all users who has 'deleted@deleted' email
     const users = await User.find({ email: 'deleted@deleted' });

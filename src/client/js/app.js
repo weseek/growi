@@ -121,7 +121,7 @@ if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={appContainer} />,
+    'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label':  <TagLabels />,
   }, componentMappings);
 }

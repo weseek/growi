@@ -19,8 +19,6 @@ module.exports = {
     importerQiita: require('./admin/importerQiita'),
     plugin: require('./admin/plugin'),
     securityGeneral: require('./admin/securityGeneral'),
-    securityGoogle: require('./admin/securityGoogle'),
-    securityMechanism: require('./admin/securityMechanism'),
     securityPassportLdap: require('./admin/securityPassportLdap'),
     securityPassportSaml: require('./admin/securityPassportSaml'),
     securityPassportBasic: require('./admin/securityPassportBasic'),

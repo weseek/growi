@@ -2,18 +2,21 @@
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = require('@alias/logger')('growi:routes:page');
+  const swig = require('swig-templates');
+
   const pathUtils = require('growi-commons').pathUtils;
+
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Config = crowi.model('Config');
-  const config = crowi.getConfig();
   const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
+
   const ApiResponse = require('../util/apiResponse');
-  const interceptorManager = crowi.getInterceptorManager();
-  const swig = require('swig-templates');
   const getToday = require('../util/getToday');
+
+  const { configManager, slackNotificationService } = crowi;
+  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
   const actions = {};
@@ -94,7 +97,7 @@ module.exports = function(crowi, app) {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
-    if (Config.hasSlackConfig(config)) {
+    if (slackNotificationService.hasSlackConfig()) {
       const promises = slackChannels.split(',').map((chan) => {
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
@@ -303,9 +306,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.showPageWithEndOfSlash = function(req, res, next) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       return showPageListForCrowiBehavior(req, res, next);
     }
     else {
@@ -327,10 +330,10 @@ module.exports = function(crowi, app) {
       return showPageForPresentation(req, res, next);
     }
 
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
     // check whether this page has portal page
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       const portalPagePath = pathUtils.addTrailingSlash(getPathFromRequest(req));
       const hasPortalPage = await Page.count({ path: portalPagePath }) > 0;
 
@@ -349,9 +352,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.trashPageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       // Crowi behavior for '/trash/*'
       return actions.deletedPageListShow(req, res);
     }
@@ -367,9 +370,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.trashPageShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       // redirect to '/trash/'
       return res.redirect('/trash/');
     }
@@ -385,9 +388,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.deletedPageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       // Crowi behavior for '/trash/*'
       return actions.deletedPageListShow(req, res);
     }

@@ -7,12 +7,10 @@ class GlobalNotificationService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.config = crowi.getConfig();
     this.mailer = crowi.getMailer();
     this.GlobalNotification = crowi.model('GlobalNotificationSetting');
     this.User = crowi.model('User');
-    this.Config = crowi.model('Config');
-    this.appTitle = this.Config.appTitle(this.config);
+    this.appTitle = crowi.appService.getAppTitle();
   }
 
   notifyByMail(notification, mailOption) {

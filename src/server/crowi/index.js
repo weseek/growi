@@ -38,6 +38,11 @@ function Crowi(rootdir) {
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
+  this.slackNotificationService = null;
+  this.xssService = null;
+  this.aclService = null;
+  this.appService = null;
+  this.fileUploadService = null;
   this.restQiitaAPIService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
@@ -73,8 +78,16 @@ Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupModels();
   await this.setupSessionConfig();
-  await this.setupAppConfig();
   await this.setupConfigManager();
+
+  // customizeService depends on AppService and XssService
+  // passportService depends on appService
+  // slack depends on setUpSlacklNotification
+  await Promise.all([
+    this.setUpApp(),
+    this.setUpXss(),
+    this.setUpSlacklNotification(),
+  ]);
 
   await Promise.all([
     this.scanRuntimeVersions(),
@@ -84,7 +97,39 @@ Crowi.prototype.init = async function() {
     this.setupSlack(),
     this.setupCsrf(),
     this.setUpGlobalNotification(),
+    this.setUpFileUpload(),
+    this.setUpAcl(),
+    this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
+    this.setupUserGroup(),
+  ]);
+};
+
+Crowi.prototype.initForTest = async function() {
+  await this.setupModels();
+  await this.setupConfigManager();
+
+  // // customizeService depends on AppService and XssService
+  // // passportService depends on appService
+  // // slack depends on setUpSlacklNotification
+  await Promise.all([
+    this.setUpApp(),
+    // this.setUpXss(),
+    // this.setUpSlacklNotification(),
+  ]);
+
+  await Promise.all([
+  //   this.scanRuntimeVersions(),
+  //   this.setupPassport(),
+  //   this.setupSearcher(),
+  //   this.setupMailer(),
+  //   this.setupSlack(),
+  //   this.setupCsrf(),
+  //   this.setUpGlobalNotification(),
+  //   this.setUpFileUpload(),
+    this.setUpAcl(),
+  //   this.setUpCustomize(),
+  //   this.setUpRestQiitaAPI(),
   ]);
 };
 
@@ -180,43 +225,23 @@ Crowi.prototype.setupSessionConfig = function() {
   }));
 };
 
-Crowi.prototype.setupAppConfig = function() {
-  return new Promise((resolve, reject) => {
-    this.model('Config', require('../models/config')(this));
-    const Config = this.model('Config');
-    Config.loadAllConfig((err, doc) => {
-      if (err) {
-        return reject();
-      }
-
-      this.setConfig(doc);
-
-      return resolve();
-    });
-  });
-};
-
 Crowi.prototype.setupConfigManager = async function() {
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
   return this.configManager.loadConfigs();
 };
 
-Crowi.prototype.setupModels = function() {
-  const self = this;
-  return new Promise(((resolve, reject) => {
-    Object.keys(models).forEach((key) => {
-      self.model(key, models[key](self));
-    });
-    resolve();
-  }));
+Crowi.prototype.setupModels = async function() {
+  Object.keys(models).forEach((key) => {
+    return this.model(key, models[key](this));
+  });
 };
 
 Crowi.prototype.getIo = function() {
   return this.io;
 };
 
-Crowi.prototype.scanRuntimeVersions = function() {
+Crowi.prototype.scanRuntimeVersions = async function() {
   const self = this;
 
   const check = require('check-node-version');
@@ -251,15 +276,7 @@ Crowi.prototype.getRestQiitaAPIService = function() {
   return this.restQiitaAPIService;
 };
 
-Crowi.prototype.setupPassport = function() {
-  const config = this.getConfig();
-  const Config = this.model('Config');
-
-  if (!Config.isEnabledPassport(config)) {
-    // disabled
-    return;
-  }
-
+Crowi.prototype.setupPassport = async function() {
   debug('Passport is enabled');
 
   // initialize service
@@ -285,7 +302,7 @@ Crowi.prototype.setupPassport = function() {
   return Promise.resolve();
 };
 
-Crowi.prototype.setupSearcher = function() {
+Crowi.prototype.setupSearcher = async function() {
   const self = this;
   const searcherUri = this.env.ELASTICSEARCH_URI
     || this.env.BONSAI_URL
@@ -304,7 +321,7 @@ Crowi.prototype.setupSearcher = function() {
   }));
 };
 
-Crowi.prototype.setupMailer = function() {
+Crowi.prototype.setupMailer = async function() {
   const self = this;
   return new Promise(((resolve, reject) => {
     self.mailer = require('../util/mailer')(self);
@@ -312,13 +329,11 @@ Crowi.prototype.setupMailer = function() {
   }));
 };
 
-Crowi.prototype.setupSlack = function() {
+Crowi.prototype.setupSlack = async function() {
   const self = this;
-  const config = this.getConfig();
-  const Config = this.model('Config');
 
   return new Promise(((resolve, reject) => {
-    if (Config.hasSlackConfig(config)) {
+    if (this.slackNotificationService.hasSlackConfig()) {
       self.slack = require('../util/slack')(self);
     }
 
@@ -326,7 +341,7 @@ Crowi.prototype.setupSlack = function() {
   }));
 };
 
-Crowi.prototype.setupCsrf = function() {
+Crowi.prototype.setupCsrf = async function() {
   const Tokens = require('csrf');
   this.tokens = new Tokens();
 
@@ -377,8 +392,7 @@ Crowi.prototype.buildServer = function() {
   require('./express-init')(this, express);
 
   // import plugins
-  const Config = this.model('Config');
-  const isEnabledPlugins = Config.isEnabledPlugins(this.config);
+  const isEnabledPlugins = this.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
   if (isEnabledPlugins) {
     debug('Plugins are enabled');
     const PluginService = require('../plugins/plugin.service');
@@ -431,7 +445,7 @@ Crowi.prototype.require = function(modulePath) {
 /**
  * setup GlobalNotificationService
  */
-Crowi.prototype.setUpGlobalNotification = function() {
+Crowi.prototype.setUpGlobalNotification = async function() {
   const GlobalNotificationService = require('../service/global-notification');
   if (this.globalNotificationService == null) {
     this.globalNotificationService = new GlobalNotificationService(this);
@@ -439,12 +453,81 @@ Crowi.prototype.setUpGlobalNotification = function() {
 };
 
 /**
+ * setup SlackNotificationService
+ */
+Crowi.prototype.setUpSlacklNotification = async function() {
+  const SlackNotificationService = require('../service/slack-notification');
+  if (this.slackNotificationService == null) {
+    this.slackNotificationService = new SlackNotificationService(this.configManager);
+  }
+};
+
+/**
+ * setup XssService
+ */
+Crowi.prototype.setUpXss = async function() {
+  const XssService = require('../service/xss');
+  if (this.xssService == null) {
+    this.xssService = new XssService(this.configManager);
+  }
+};
+
+/**
+ * setup AclService
+ */
+Crowi.prototype.setUpAcl = async function() {
+  const AclService = require('../service/acl');
+  if (this.aclService == null) {
+    this.aclService = new AclService(this.configManager);
+  }
+};
+
+/**
+ * setup CustomizeService
+ */
+Crowi.prototype.setUpCustomize = async function() {
+  const CustomizeService = require('../service/customize');
+  if (this.customizeService == null) {
+    this.customizeService = new CustomizeService(this.configManager, this.appService, this.xssService);
+    this.customizeService.initCustomCss();
+    this.customizeService.initCustomTitle();
+  }
+};
+
+/**
+ * setup AppService
+ */
+Crowi.prototype.setUpApp = async function() {
+  const AppService = require('../service/app');
+  if (this.appService == null) {
+    this.appService = new AppService(this.configManager);
+  }
+};
+
+/**
+ * setup FileUploadService
+ */
+Crowi.prototype.setUpFileUpload = async function() {
+  if (this.fileUploadService == null) {
+    this.fileUploadService = require('../service/file-uploader')(this);
+  }
+};
+
+/**
  * setup RestQiitaAPIService
  */
-Crowi.prototype.setUpRestQiitaAPI = function() {
+Crowi.prototype.setUpRestQiitaAPI = async function() {
   const RestQiitaAPIService = require('../service/rest-qiita-API');
   if (this.restQiitaAPIService == null) {
     this.restQiitaAPIService = new RestQiitaAPIService(this);
+  }
+};
+
+Crowi.prototype.setupUserGroup = async function() {
+  const UserGroupService = require('../service/user-group');
+  if (this.userGroupService == null) {
+    this.userGroupService = new UserGroupService(this);
+    return this.userGroupService.init();
   }
 };
 
