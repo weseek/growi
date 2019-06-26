@@ -324,6 +324,9 @@
             <li>
               <a href="#passport-oidc" data-toggle="tab" role="tab"><i class="fa fa-openid"></i> OIDC</a>
             </li>
+            <li>
+              <a href="#passport-basic" data-toggle="tab" role="tab"><i class="fa fa-sign-in"></i> Basic</a>
+            </li>
             <li class="tbd">
               <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
             </li>
@@ -356,6 +359,10 @@
 
             <div id="passport-github" class="tab-pane" role="tabpanel">
               {% include './widget/passport/github.html' %}
+            </div>
+
+            <div id="passport-basic" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/basic.html' %}
             </div>
 
           </div><!-- /.tab-content -->

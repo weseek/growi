@@ -9,6 +9,7 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 const OidcStrategy = require('openid-client').Strategy;
 const SamlStrategy = require('passport-saml').Strategy;
 const OIDCIssuer = require('openid-client').Issuer;
+const BasicStrategy = require('passport-http').BasicStrategy;
 
 /**
  * the service class of Passport
@@ -57,6 +58,11 @@ class PassportService {
      * the flag whether SamlStrategy is set up successfully
      */
     this.isSamlStrategySetup = false;
+
+    /**
+     * the flag whether BasicStrategy is set up successfully
+     */
+    this.isBasicStrategySetup = false;
 
     /**
      * the flag whether serializer/deserializer are set up successfully
@@ -586,6 +592,54 @@ class PassportService {
       }
     }
     return missingRequireds;
+  }
+
+  /**
+   * reset BasicStrategy
+   *
+   * @memberof PassportService
+   */
+  resetBasicStrategy() {
+    debug('BasicStrategy: reset');
+    passport.unuse('basic');
+    this.isBasicStrategySetup = false;
+  }
+
+  /**
+   * setup BasicStrategy
+   *
+   * @memberof PassportService
+   */
+  setupBasicStrategy() {
+    // check whether the strategy has already been set up
+    if (this.isBasicStrategySetup) {
+      throw new Error('BasicStrategy has already been set up');
+    }
+
+    const configManager = this.crowi.configManager;
+    const isBasicEnabled = configManager.getConfig('crowi', 'security:passport-basic:isEnabled');
+
+    // when disabled
+    if (!isBasicEnabled) {
+      return;
+    }
+
+    debug('BasicStrategy: setting up..');
+
+    const configId = configManager.getConfig('crowi', 'security:passport-basic:id');
+    const configPassword = configManager.getConfig('crowi', 'security:passport-basic:password');
+
+    passport.use(new BasicStrategy(
+      (userId, password, done) => {
+        if (userId !== configId || password !== configPassword) {
+          return done(null, false, { message: 'Incorrect credentials.' });
+        }
+        return done(null, userId);
+      },
+    ));
+
+    this.isBasicStrategySetup = true;
+    debug('BasicStrategy: setup is done');
   }
 
   /**

@@ -144,7 +144,7 @@
           </form>
         </div>
         {% endif %}
-        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() || passportOidcLoginEnabled() || passportSamlLoginEnabled() %}
+        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() || passportOidcLoginEnabled() || passportSamlLoginEnabled() || passportBasicLoginEnabled() %}
         <hr class="mb-1">
         <div class="collapse collapse-oauth collapse-anchor">
           <div class="spacer"></div>
@@ -206,6 +206,16 @@
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
               <div class="small text-right">with SAML</div>
+            </form>
+            {% endif %}
+            {% if passportBasicLoginEnabled() %}
+            <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="basic">
+                <span class="btn-label"><i class="fa fa-key"></i></span>
+                <span class="btn-label-text">{{ t('Sign in') }}</span>
+              </button>
+              <div class="small text-right">with HTTP Basic</div>
             </form>
             {% endif %}
           </div>{# ./d-flex flex-row flex-wrap #}

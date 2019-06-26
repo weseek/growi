@@ -439,7 +439,8 @@
   },
 
   "security_setting": {
-		"Basic authentication": "Basic authentication",
+		"Basic authentication": "Basic Authentication",
+		"Security settings": "Security settings",
 		"Guest users access": "Guest users access",
 		"Register limitation": "Register limitation",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
