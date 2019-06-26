@@ -315,7 +315,10 @@
       "title": "グローバルショートカット",
       "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
       "Edit Page": "ページ編集",
-      "Create Page": "ページ作成"
+      "Create Page": "ページ作成",
+      "Show Contributors": "コントリビューターを表示",
+      "Konami Code": "コナミコマンド",
+      "konami_code_url": "https://ja.wikipedia.org/wiki/コナミコマンド"
     },
     "editor": {
       "titile": "エディターショートカット",

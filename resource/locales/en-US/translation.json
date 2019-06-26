@@ -315,7 +315,10 @@
       "title": "Global shortcuts",
       "Open/Close shortcut help": "Open/Close shortcut help",
       "Edit Page": "Edit Page",
-      "Create Page": "Create Page"
+      "Create Page": "Create Page",
+      "Show Contributors": "Show Contributors",
+      "Konami Code": "Konami Code",
+      "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
     "editor": {
       "title": "Editor shortcuts",
