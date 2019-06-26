@@ -967,13 +967,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
-    const config = await crowi.getConfig();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetBasicStrategy();
     // setup strategy
-    if (Config.isEnabledPassportBasic(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-basic:isEnabled')) {
       try {
         await crowi.passportService.setupBasicStrategy(true);
       }
