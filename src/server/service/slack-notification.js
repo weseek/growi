@@ -9,13 +9,8 @@ class SlackNotificationService {
   }
 
   hasSlackConfig() {
-    let hasSlackToken = false;
-    let hasSlackIwhUrl = false;
-
-    if (this.configManager.configObject.notification) {
-      hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
-      hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
-    }
+    const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
+    const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
 
     return hasSlackToken || hasSlackIwhUrl;
   }

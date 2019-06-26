@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const UserGroupRelation = mongoose.model('UserGroupRelation');
 
 /**
- * the service class of GlobalNotificationSetting
+ * the service class of UserGroupService
  */
 class UserGroupService {
 

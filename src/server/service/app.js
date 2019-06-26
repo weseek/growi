@@ -2,7 +2,7 @@ const logger = require('@alias/logger')('growi:service:AppService'); // eslint-d
 const { pathUtils } = require('growi-commons');
 
 /**
- * the service class of GlobalNotificationSetting
+ * the service class of AppService
  */
 class AppService {
 
