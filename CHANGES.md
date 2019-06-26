@@ -5,7 +5,7 @@
 ### BREAKING CHANGES
 
 * GROWI no longer supports
-    * Basic Authentication
+    * Protection system with Basic Authentication
     * Crowi Classic Authentication Mechanism
     * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
 
@@ -15,6 +15,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
 * Feature: Comment Thread
 * Feature: OpenID Connect authentication
+* Feature: HTTP Basic authentication
 * Feature: Staff Credits with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
 * Improvement Draft list
 * Fix: Deleting page completely
@@ -22,6 +23,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 * I18n: User Management Details
 * I18n: Group Management Details
 * Support: Apply unstated
+* Support: Abolish Old Config API
 * Support: Apply Jest for Tests
 * Support: Upgrade libs
     * async
