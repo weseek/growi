@@ -120,7 +120,7 @@
             <label for="{{configName}}" class="col-xs-3 control-label">{{ t('security_setting.complete_deletion') }}</label>
             <div class="col-xs-6">
               <select class="form-control selectpicker" name="settingForm[security:pageCompleteDeletionAuthority]" value="{{ configValue }}">
-                <option value=null {% if configValue == null  %}selected{% endif %}>{{ t('security_setting.anyone') }}</option>
+                <option value="anyOne" {% if configValue == "anyOne" %}selected{% endif %}>{{ t('security_setting.anyone') }}</option>
                 <option value="adminOnly" {% if configValue =="adiminOnly" %}selected{% endif %}>{{ t('security_setting.admin_only') }}</option>
                 <option value="adminAndAuthor" {% if configValue == "adminAndAuthor" %}selected{% endif %}>{{ t('security_setting.admin_and_author') }}</option>
               </select>
