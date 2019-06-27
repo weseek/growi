@@ -97,6 +97,8 @@ let componentMappings = {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
+
+  'staff-credit': <StaffCredit />,
 };
 
 // additional definitions if data exists
@@ -181,16 +183,6 @@ if (adminGrantSelectorElem != null) {
     </I18nextProvider>,
     adminGrantSelectorElem,
   );
-}
-
-// render for stuff credit
-const pageStuffCreditElem = document.getElementById('staff-credit');
-if (pageStuffCreditElem) {
-  ReactDOM.render(
-    <StaffCredit></StaffCredit>,
-    pageStuffCreditElem,
-  );
-
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
