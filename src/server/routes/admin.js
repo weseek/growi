@@ -9,10 +9,16 @@ module.exports = function(crowi, app) {
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
-  const Config = models.Config;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
+
+  const {
+    configManager,
+    aclService,
+    slackNotificationService,
+    customizeService,
+  } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
@@ -24,7 +30,6 @@ module.exports = function(crowi, app) {
 
   const MAX_PAGE_LIST = 50;
   const actions = {};
-
 
   function createPager(total, limit, page, pagesCount, maxPageList) {
     const pager = {
@@ -91,11 +96,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/app'                  , admin.app.index);
   actions.app = {};
   actions.app.index = function(req, res) {
-    const settingForm = Config.setupConfigFormData('crowi', req.config);
-
-    return res.render('admin/app', {
-      settingForm,
-    });
+    return res.render('admin/app');
   };
 
   actions.app.settingUpdate = function(req, res) {
@@ -104,16 +105,13 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const settingForm = Config.setupConfigFormData('crowi', req.config);
-    const isAclEnabled = !Config.isPublicWikiOnly(req.config);
-    return res.render('admin/security', { settingForm, isAclEnabled });
+    return res.render('admin/security');
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
   actions.markdown = {};
   actions.markdown.index = function(req, res) {
-    const config = crowi.getConfig();
-    const markdownSetting = Config.setupConfigFormData('markdown', config);
+    const markdownSetting = configManager.getConfigByPrefix('markdown', 'markdown:');
 
     return res.render('admin/markdown', {
       markdownSetting,
@@ -122,66 +120,54 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
-  actions.markdown.lineBreaksSetting = function(req, res) {
+  actions.markdown.lineBreaksSetting = async function(req, res) {
     const markdownSetting = req.form.markdownSetting;
 
-    req.session.markdownSetting = markdownSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', markdownSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.markdownSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
-  actions.markdown.presentationSetting = function(req, res) {
-    const presentationSetting = req.form.markdownSetting;
+  actions.markdown.presentationSetting = async function(req, res) {
+    const markdownSetting = req.form.markdownSetting;
 
-    req.session.markdownSetting = presentationSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', presentationSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.markdownSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/xss-setting' , admin.markdown.xssSetting);
-  actions.markdown.xssSetting = function(req, res) {
+  actions.markdown.xssSetting = async function(req, res) {
     const xssSetting = req.form.markdownSetting;
 
-    xssSetting['markdown:xss:tagWhiteList'] = stringToArray(xssSetting['markdown:xss:tagWhiteList']);
-    xssSetting['markdown:xss:attrWhiteList'] = stringToArray(xssSetting['markdown:xss:attrWhiteList']);
+    xssSetting['markdown:xss:tagWhiteList'] = csvToArray(xssSetting['markdown:xss:tagWhiteList']);
+    xssSetting['markdown:xss:attrWhiteList'] = csvToArray(xssSetting['markdown:xss:attrWhiteList']);
 
-    req.session.markdownSetting = xssSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('markdown', xssSetting, (err, config) => {
-        Config.updateConfigCache('markdown', config);
-        req.session.xssSetting = null;
-        req.flash('successMessage', ['Successfully updated!']);
-        return res.redirect('/admin/markdown');
-      });
+      await configManager.updateConfigsInTheSameNamespace('markdown', xssSetting);
+      req.flash('successMessage', ['Successfully updated!']);
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/markdown');
     }
+
+    return res.redirect('/admin/markdown');
   };
 
-  const stringToArray = (string) => {
+  const csvToArray = (string) => {
     const array = string.split(',');
     return array.map((item) => { return item.trim() });
   };
@@ -189,7 +175,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/customize' , admin.customize.index);
   actions.customize = {};
   actions.customize.index = function(req, res) {
-    const settingForm = Config.setupConfigFormData('crowi', req.config);
+    const settingForm = configManager.getConfigByPrefix('crowi', 'customize:');
 
     /* eslint-disable quote-props, no-multi-spaces */
     const highlightJsCssSelectorOptions = {
@@ -215,13 +201,12 @@ module.exports = function(crowi, app) {
   // app.get('/admin/notification'               , admin.notification.index);
   actions.notification = {};
   actions.notification.index = async(req, res) => {
-    const config = crowi.getConfig();
     const UpdatePost = crowi.model('UpdatePost');
-    let slackSetting = Config.setupConfigFormData('notification', config);
-    const hasSlackIwhUrl = Config.hasSlackIwhUrl(config);
-    const hasSlackToken = Config.hasSlackToken(config);
+    let slackSetting = configManager.getConfigByPrefix('notification', 'slack:');
+    const hasSlackIwhUrl = !!configManager.getConfig('notification', 'slack:incomingWebhookUrl');
+    const hasSlackToken = !!configManager.getConfig('notification', 'slack:token');
 
-    if (!Config.hasSlackIwhUrl(req.config)) {
+    if (!hasSlackIwhUrl) {
       slackSetting['slack:incomingWebhookUrl'] = '';
     }
 
@@ -243,51 +228,46 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackSetting' , admin.notification.slackauth);
-  actions.notification.slackSetting = function(req, res) {
+  actions.notification.slackSetting = async function(req, res) {
     const slackSetting = req.form.slackSetting;
 
-    req.session.slackSetting = slackSetting;
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('notification', slackSetting, (err, config) => {
-        Config.updateConfigCache('notification', config);
-        req.flash('successMessage', ['Successfully Updated!']);
-        req.session.slackSetting = null;
+      await configManager.updateConfigsInTheSameNamespace('notification', slackSetting);
+      req.flash('successMessage', ['Successfully Updated!']);
 
-        // Re-setup
-        crowi.setupSlack().then(() => {
-          return res.redirect('/admin/notification');
-        });
+      // Re-setup
+      crowi.setupSlack().then(() => {
       });
     }
     else {
       req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/notification');
     }
+
+    return res.redirect('/admin/notification');
   };
 
   // app.get('/admin/notification/slackAuth'     , admin.notification.slackauth);
   actions.notification.slackAuth = function(req, res) {
     const code = req.query.code;
 
-    if (!code || !Config.hasSlackConfig(req.config)) {
+    if (!code || !slackNotificationService.hasSlackConfig()) {
       return res.redirect('/admin/notification');
     }
 
     const slack = crowi.slack;
     slack.getOauthAccessToken(code)
-      .then((data) => {
+      .then(async(data) => {
         debug('oauth response', data);
-        Config.updateNamespaceByArray('notification', { 'slack:token': data.access_token }, (err, config) => {
-          if (err) {
-            req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
-          }
-          else {
-            Config.updateConfigCache('notification', config);
-            req.flash('successMessage', ['Successfully Connected!']);
-          }
 
-          return res.redirect('/admin/notification');
-        });
+        try {
+          await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': data.access_token });
+          req.flash('successMessage', ['Successfully Connected!']);
+        }
+        catch (err) {
+          req.flash('errorMessage', ['Failed to save access_token. Please try again.']);
+        }
+
+        return res.redirect('/admin/notification');
       })
       .catch((err) => {
         debug('oauth response ERROR', err);
@@ -297,18 +277,16 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackIwhSetting' , admin.notification.slackIwhSetting);
-  actions.notification.slackIwhSetting = function(req, res) {
+  actions.notification.slackIwhSetting = async function(req, res) {
     const slackIwhSetting = req.form.slackIwhSetting;
 
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('notification', slackIwhSetting, (err, config) => {
-        Config.updateConfigCache('notification', config);
-        req.flash('successMessage', ['Successfully Updated!']);
+      await configManager.updateConfigsInTheSameNamespace('notification', slackIwhSetting);
+      req.flash('successMessage', ['Successfully Updated!']);
 
-        // Re-setup
-        crowi.setupSlack().then(() => {
-          return res.redirect('/admin/notification#slack-incoming-webhooks');
-        });
+      // Re-setup
+      crowi.setupSlack().then(() => {
+        return res.redirect('/admin/notification#slack-incoming-webhooks');
       });
     }
     else {
@@ -318,13 +296,11 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/admin/notification/slackSetting/disconnect' , admin.notification.disconnectFromSlack);
-  actions.notification.disconnectFromSlack = function(req, res) {
-    Config.updateNamespaceByArray('notification', { 'slack:token': '' }, (err, config) => {
-      Config.updateConfigCache('notification', config);
-      req.flash('successMessage', ['Successfully Disconnected!']);
+  actions.notification.disconnectFromSlack = async function(req, res) {
+    await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': '' });
+    req.flash('successMessage', ['Successfully Disconnected!']);
 
-      return res.redirect('/admin/notification');
-    });
+    return res.redirect('/admin/notification');
   };
 
   actions.globalNotification = {};
@@ -431,8 +407,7 @@ module.exports = function(crowi, app) {
   actions.user = {};
   actions.user.index = async function(req, res) {
     const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
-    const Config = crowi.model('Config');
-    const userUpperLimit = Config.userUpperLimit(crowi);
+    const userUpperLimit = aclService.userUpperLimit();
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
 
     const page = parseInt(req.query.page) || 1;
@@ -649,7 +624,7 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = !Config.isPublicWikiOnly(req.config);
+    const isAclEnabled = aclService.getIsPublicWikiOnly();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
@@ -852,7 +827,7 @@ module.exports = function(crowi, app) {
   // Importer management
   actions.importer = {};
   actions.importer.index = function(req, res) {
-    const settingForm = Config.setupConfigFormData('crowi', req.config);
+    const settingForm = configManager.getConfigByPrefix('crowi', 'importer:');
 
     return res.render('admin/importer', {
       settingForm,
@@ -860,7 +835,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.appSetting = function(req, res) {
+  actions.api.appSetting = async function(req, res) {
     const form = req.form.settingForm;
 
     if (req.form.isValid) {
@@ -868,18 +843,20 @@ module.exports = function(crowi, app) {
 
       // mail setting ならここで validation
       if (form['mail:from']) {
-        validateMailSetting(req, form, (err, data) => {
+        validateMailSetting(req, form, async(err, data) => {
           debug('Error validate mail setting: ', err, data);
           if (err) {
             req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
             return res.json({ status: false, message: req.form.errors.join('\n') });
           }
 
-          return saveSetting(req, res, form);
+          await configManager.updateConfigsInTheSameNamespace('crowi', form);
+          return res.json({ status: true });
         });
       }
       else {
-        return saveSetting(req, res, form);
+        await configManager.updateConfigsInTheSameNamespace('crowi', form);
+        return res.json({ status: true });
       }
     }
     else {
@@ -897,7 +874,7 @@ module.exports = function(crowi, app) {
     debug('form content', form);
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
       return res.json({ status: true });
     }
     catch (err) {
@@ -912,15 +889,7 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    const config = crowi.getConfig();
-    const isPublicWikiOnly = Config.isPublicWikiOnly(config);
-    if (isPublicWikiOnly) {
-      const basicName = form['security:basicName'];
-      const basicSecret = form['security:basicSecret'];
-      if (basicName !== '' || basicSecret !== '') {
-        req.form.errors.push('Public Wikiのため、Basic認証は利用できません。');
-        return res.json({ status: false, message: req.form.errors.join('\n') });
-      }
+    if (aclService.getIsPublicWikiOnly()) {
       const guestMode = form['security:restrictGuestMode'];
       if (guestMode === 'Deny') {
         req.form.errors.push('Private Wikiへの設定変更はできません。');
@@ -929,7 +898,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
       return res.json({ status: true });
     }
     catch (err) {
@@ -946,14 +915,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    return saveSettingAsync(form)
+    return configManager.updateConfigsInTheSameNamespace('crowi', form)
       .then(() => {
-        const config = crowi.getConfig();
-
         // reset strategy
         crowi.passportService.resetLdapStrategy();
         // setup strategy
-        if (Config.isEnabledPassportLdap(config)) {
+        if (configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')) {
           crowi.passportService.setupLdapStrategy(true);
         }
         return;
@@ -973,18 +940,45 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetSamlStrategy();
     // setup strategy
-    if (crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled')) {
+    if (configManager.getConfig('crowi', 'security:passport-saml:isEnabled')) {
       try {
         await crowi.passportService.setupSamlStrategy(true);
       }
       catch (err) {
         // reset
         await crowi.passportService.resetSamlStrategy();
+        return res.json({ status: false, message: err.message });
+      }
+    }
+
+    return res.json({ status: true });
+  };
+
+  actions.api.securityPassportBasicSetting = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
+    }
+
+    debug('form content', form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+
+    // reset strategy
+    await crowi.passportService.resetBasicStrategy();
+    // setup strategy
+    if (configManager.getConfig('crowi', 'security:passport-basic:isEnabled')) {
+      try {
+        await crowi.passportService.setupBasicStrategy(true);
+      }
+      catch (err) {
+        // reset
+        await crowi.passportService.resetBasicStrategy();
         return res.json({ status: false, message: err.message });
       }
     }
@@ -1000,13 +994,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
-    const config = await crowi.getConfig();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetGoogleStrategy();
     // setup strategy
-    if (Config.isEnabledPassportGoogle(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-google:isEnabled')) {
       try {
         await crowi.passportService.setupGoogleStrategy(true);
       }
@@ -1028,13 +1021,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
-    const config = await crowi.getConfig();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetGitHubStrategy();
     // setup strategy
-    if (Config.isEnabledPassportGitHub(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-github:isEnabled')) {
       try {
         await crowi.passportService.setupGitHubStrategy(true);
       }
@@ -1056,14 +1048,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
-    const config = await crowi.getConfig();
-
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetTwitterStrategy();
     // setup strategy
-    if (Config.isEnabledPassportTwitter(config)) {
+    if (configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
       try {
         await crowi.passportService.setupTwitterStrategy(true);
       }
@@ -1076,23 +1066,44 @@ module.exports = function(crowi, app) {
 
     return res.json({ status: true });
   };
-  actions.api.customizeSetting = function(req, res) {
+
+  actions.api.securityPassportOidcSetting = async(req, res) => {
     const form = req.form.settingForm;
 
-    if (req.form.isValid) {
-      debug('form content', form);
-      return saveSetting(req, res, form);
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    return res.json({ status: false, message: req.form.errors.join('\n') });
+    debug('form content', form);
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+
+    // reset strategy
+    await crowi.passportService.resetOidcStrategy();
+    // setup strategy
+    if (configManager.getConfig('crowi', 'security:passport-oidc:isEnabled')) {
+      try {
+        await crowi.passportService.setupOidcStrategy(true);
+      }
+      catch (err) {
+        // reset
+        await crowi.passportService.resetOidcStrategy();
+        return res.json({ status: false, message: err.message });
+      }
+    }
+
+    return res.json({ status: true });
   };
 
-  actions.api.customizeSetting = function(req, res) {
+  actions.api.customizeSetting = async function(req, res) {
     const form = req.form.settingForm;
 
     if (req.form.isValid) {
       debug('form content', form);
-      return saveSetting(req, res, form);
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
+      customizeService.initCustomCss();
+      customizeService.initCustomTitle();
+
+      return res.json({ status: true });
     }
 
     return res.json({ status: false, message: req.form.errors.join('\n') });
@@ -1185,8 +1196,10 @@ module.exports = function(crowi, app) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    await saveSetting(req, res, form);
-    await importer.initializeEsaClient();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    importer.initializeEsaClient(); // let it run in the back aftert res
+
+    return res.json({ status: true });
   };
 
   /**
@@ -1202,8 +1215,10 @@ module.exports = function(crowi, app) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
     }
 
-    await saveSetting(req, res, form);
-    await importer.initializeQiitaClient();
+    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    importer.initializeQiitaClient(); // let it run in the back aftert res
+
+    return res.json({ status: true });
   };
 
   /**
@@ -1338,39 +1353,6 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * save settings, update config cache, and response json
-   *
-   * @param {any} req
-   * @param {any} res
-   * @param {any} form
-   */
-  function saveSetting(req, res, form) {
-    Config.updateNamespaceByArray('crowi', form, (err, config) => {
-      Config.updateConfigCache('crowi', config);
-      return res.json({ status: true });
-    });
-  }
-
-  /**
-   * save settings, update config cache ONLY. (this method don't response json)
-   *
-   * @param {any} form
-   * @returns
-   */
-  function saveSettingAsync(form) {
-    return new Promise((resolve, reject) => {
-      Config.updateNamespaceByArray('crowi', form, (err, config) => {
-        if (err) {
-          return reject(err);
-        }
-
-        Config.updateConfigCache('crowi', config);
-        return resolve();
-      });
-    });
-  }
-
   function validateMailSetting(req, form, callback) {
     const mailer = crowi.mailer;
     const option = {
@@ -1407,7 +1389,7 @@ module.exports = function(crowi, app) {
   function validateSamlSettingForm(form, t) {
     for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
       const formValue = form.settingForm[key];
-      if (crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
+      if (configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
         const formItemName = t(`security_setting.form_item_name.${key}`);
         form.errors.push(t('form_validation.required', formItemName));
       }

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
@@ -7,6 +8,10 @@ import FormControl from 'react-bootstrap/es/FormControl';
 import ListGroup from 'react-bootstrap/es/ListGroup';
 import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
 import Modal from 'react-bootstrap/es/Modal';
+
+import AppContainer from '../../services/AppContainer';
+
+import { createSubscribedElement } from '../UnstatedUtils';
 
 const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
 
@@ -42,11 +47,12 @@ class GrantSelector extends React.Component {
     ];
 
     this.state = {
-      grant: this.props.grant || 1, // default: 1
       userRelatedGroups: [],
       isSelectGroupModalShown: false,
+      grant: this.props.grant,
+      grantGroup: null,
     };
-    if (this.props.grantGroupId !== '') {
+    if (this.props.grantGroupId != null) {
       this.state.grantGroup = {
         _id: this.props.grantGroupId,
         name: this.props.grantGroupName,
@@ -56,7 +62,6 @@ class GrantSelector extends React.Component {
     // retrieve xss library from window
     this.xss = window.xss;
 
-    this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
 
@@ -85,16 +90,6 @@ class GrantSelector extends React.Component {
 
   }
 
-  getCurrentOptionsToSave() {
-    const options = {
-      grant: this.state.grant,
-    };
-    if (this.state.grantGroup != null) {
-      options.grantUserGroupId = this.state.grantGroup._id;
-    }
-    return options;
-  }
-
   showSelectGroupModal() {
     this.retrieveUserGroupRelations();
     this.setState({ isSelectGroupModalShown: true });
@@ -113,7 +108,7 @@ class GrantSelector extends React.Component {
    * Retrieve user-group-relations data from backend
    */
   retrieveUserGroupRelations() {
-    this.props.crowi.apiGet('/me/user-group-relations')
+    this.props.appContainer.apiGet('/me/user-group-relations')
       .then((res) => {
         return res.userGroupRelations;
       })
@@ -142,10 +137,18 @@ class GrantSelector extends React.Component {
     }
 
     this.setState({ grant, grantGroup: null });
+
+    if (this.props.onUpdateGrant != null) {
+      this.props.onUpdateGrant({ grant, grantGroupId: null, grantGroupName: null });
+    }
   }
 
   groupListItemClickHandler(grantGroup) {
     this.setState({ grant: 5, grantGroup });
+
+    if (this.props.onUpdateGrant != null) {
+      this.props.onUpdateGrant({ grant: 5, grantGroupId: grantGroup._id, grantGroupName: grantGroup.name });
+    }
 
     // hide modal
     this.hideSelectGroupModal();
@@ -239,7 +242,7 @@ class GrantSelector extends React.Component {
       ? (
         <div>
           <h4>There is no group to which you belong.</h4>
-          { this.props.crowi.isAdmin
+          { this.props.appContainer.isAdmin
             && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
           }
         </div>
@@ -280,12 +283,22 @@ class GrantSelector extends React.Component {
 
 }
 
-GrantSelector.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
-  grant: PropTypes.number,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
+/**
+ * Wrapper component for using unstated
+ */
+const GrantSelectorWrapper = (props) => {
+  return createSubscribedElement(GrantSelector, props, [AppContainer]);
 };
 
-export default withTranslation(null, { withRef: true })(GrantSelector);
+GrantSelector.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+
+  onUpdateGrant: PropTypes.func,
+};
+
+export default withTranslation()(GrantSelectorWrapper);

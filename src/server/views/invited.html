@@ -2,7 +2,7 @@
 
 {% block html_base_css %}invited nologin{% endblock %}
 
-{% block html_title %}{{ customTitle('Registration') }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle('Registration') }}{% endblock %}
 
 
 
@@ -73,7 +73,7 @@
 
         <div class="input-group">
           <span class="input-group-addon"><i class="icon-tag"></i></span>
-          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="invitedForm[name]" value="{{ googleName|default(req.body.invitedForm.name) }}" required>
+          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="invitedForm[name]" value="{{ req.body.invitedForm.name }}" required>
         </div>
 
 

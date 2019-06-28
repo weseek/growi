@@ -310,30 +310,6 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.updateTags = async function(newTags) {
-    const page = this;
-    const PageTagRelation = mongoose.model('PageTagRelation');
-    const Tag = mongoose.model('Tag');
-
-    // get tags relate this page
-    const relatedTags = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag').select('-_id relatedTag');
-
-    // unlink relations
-    const unlinkTagRelations = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
-    await PageTagRelation.deleteMany({
-      relatedPage: page._id,
-      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
-    });
-
-    // create tag and relations
-    /* eslint-disable no-await-in-loop */
-    for (const tag of newTags) {
-      const setTag = await Tag.findOrCreate(tag);
-      await PageTagRelation.createIfNotExist(page._id, setTag._id);
-    }
-  };
-
-
   pageSchema.methods.isPortal = function() {
     return isPortalPath(this.path);
   };
@@ -370,8 +346,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isLiked = function(userData) {
-    return this.liker.some((likedUser) => {
-      return likedUser === userData._id.toString();
+    return this.liker.some((likedUserId) => {
+      return likedUserId.toString() === userData._id.toString();
     });
   };
 
@@ -390,7 +366,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        this.logger.warn('liker not updated');
         return reject(self);
       }
     }));
@@ -492,11 +468,11 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
-    this.grant = grant;
-
     // reset
     this.grantedUsers = [];
     this.grantedGroup = null;
+
+    this.grant = grant || GRANT_PUBLIC;
 
     if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
       this.grantedUsers.push(user._id);
@@ -831,12 +807,9 @@ module.exports = function(crowi) {
   async function addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink) {
     validateCrowi();
 
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-
     // determine User condition
-    const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
-    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
+    const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
 
     // determine UserGroup condition
     let userGroups = null;
@@ -958,7 +931,7 @@ module.exports = function(crowi) {
       .cursor();
   };
 
-  async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
+  async function pushRevision(pageData, newRevision, user) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
 
@@ -993,12 +966,11 @@ module.exports = function(crowi) {
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
     const socketClientId = options.socketClientId || null;
-    const pageTags = options.pageTags || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
 
-    let grant = options.grant || GRANT_PUBLIC;
+    let grant = options.grant;
     // force public
     if (isPortalPath(path)) {
       grant = GRANT_PUBLIC;
@@ -1022,14 +994,10 @@ module.exports = function(crowi) {
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
-    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    const revision = await pushRevision(savedPage, newRevision, user);
     savedPage = await this.findByPath(revision.path)
       .populate('revision')
       .populate('creator');
-
-    if (pageTags != null) {
-      await page.updateTags(pageTags);
-    }
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1041,11 +1009,10 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');
-    const grant = options.grant || null;
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const grant = options.grant || pageData.grant; //                                  use the previous data if absence
+    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const socketClientId = options.socketClientId || null;
-    const pageTags = options.pageTags || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -1053,17 +1020,13 @@ module.exports = function(crowi) {
     // update existing page
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
-    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    const revision = await pushRevision(savedPage, newRevision, user);
     savedPage = await this.findByPath(revision.path)
       .populate('revision')
       .populate('creator');
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
-    }
-
-    if (pageTags != null) {
-      await savedPage.updateTags(pageTags);
     }
 
     if (socketClientId != null) {
@@ -1195,7 +1158,6 @@ module.exports = function(crowi) {
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
     const Revision = crowi.model('Revision');
-    const PageGroupRelation = crowi.model('PageGroupRelation');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
 
@@ -1207,7 +1169,6 @@ module.exports = function(crowi) {
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
-    await PageGroupRelation.removeAllByPage(pageData);
     if (socketClientId != null) {
       pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
     }

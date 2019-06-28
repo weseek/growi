@@ -2,18 +2,21 @@
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = require('@alias/logger')('growi:routes:page');
+  const swig = require('swig-templates');
+
   const pathUtils = require('growi-commons').pathUtils;
+
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Config = crowi.model('Config');
-  const config = crowi.getConfig();
   const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
+
   const ApiResponse = require('../util/apiResponse');
-  const interceptorManager = crowi.getInterceptorManager();
-  const swig = require('swig-templates');
   const getToday = require('../util/getToday');
+
+  const { configManager, slackNotificationService } = crowi;
+  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
 
   const actions = {};
@@ -94,7 +97,7 @@ module.exports = function(crowi, app) {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
-    if (Config.hasSlackConfig(config)) {
+    if (slackNotificationService.hasSlackConfig()) {
       const promises = slackChannels.split(',').map((chan) => {
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
@@ -303,9 +306,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.showPageWithEndOfSlash = function(req, res, next) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       return showPageListForCrowiBehavior(req, res, next);
     }
     else {
@@ -327,10 +330,10 @@ module.exports = function(crowi, app) {
       return showPageForPresentation(req, res, next);
     }
 
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
     // check whether this page has portal page
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       const portalPagePath = pathUtils.addTrailingSlash(getPathFromRequest(req));
       const hasPortalPage = await Page.count({ path: portalPagePath }) > 0;
 
@@ -349,9 +352,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.trashPageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       // Crowi behavior for '/trash/*'
       return actions.deletedPageListShow(req, res);
     }
@@ -367,9 +370,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.trashPageShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       // redirect to '/trash/'
       return res.redirect('/trash/');
     }
@@ -385,9 +388,9 @@ module.exports = function(crowi, app) {
    */
   /* eslint-disable no-else-return */
   actions.deletedPageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
+    const behaviorType = configManager.getConfig('crowi', 'customize:behavior');
 
-    if (!behaviorType || behaviorType === 'crowi') {
+    if (behaviorType === 'crowi') {
       // Crowi behavior for '/trash/*'
       return actions.deletedPageListShow(req, res);
     }
@@ -567,12 +570,21 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {
-      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId, pageTags,
-    };
+    const options = { socketClientId };
+    if (grant != null) {
+      options.grant = grant;
+      options.grantUserGroupId = grantUserGroupId;
+    }
+
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
-    const result = { page: serializeToObj(createdPage) };
+    let savedTags;
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    const result = { page: serializeToObj(createdPage), tags: savedTags };
     result.page.lastUpdateUser = User.filterToPublicFields(createdPage.lastUpdateUser);
     result.page.creator = User.filterToPublicFields(createdPage.creator);
     res.json(ApiResponse.success(result));
@@ -639,11 +651,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = { isSyncRevisionToHackmd, socketClientId, pageTags };
+    const options = { isSyncRevisionToHackmd, socketClientId };
     if (grant != null) {
       options.grant = grant;
-    }
-    if (grantUserGroupId != null) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
@@ -657,7 +667,13 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const result = { page: serializeToObj(page) };
+    let savedTags;
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(pageId, pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(pageId);
+    }
+
+    const result = { page: serializeToObj(page), tags: savedTags };
     result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
 
@@ -758,8 +774,7 @@ module.exports = function(crowi, app) {
   api.getPageTag = async function(req, res) {
     const result = {};
     try {
-      const tags = await PageTagRelation.find({ relatedPage: req.query.pageId }).populate('relatedTag').select('-_id relatedTag');
-      result.tags = tags.map((tag) => { return tag.relatedTag.name });
+      result.tags = await PageTagRelation.listTagNamesByPage(req.query.pageId);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
@@ -939,6 +954,9 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
+        if (!req.user.canDeleteCompletely(page.creator)) {
+          return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
+        }
         if (isRecursively) {
           page = await Page.completelyDeletePageRecursively(page, req.user, options);
         }
@@ -1105,6 +1123,8 @@ module.exports = function(crowi, app) {
     req.body.path = newPagePath;
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
+    req.body.grantedUsers = page.grantedUsers;
+    req.body.grantedGroup = page.grantedGroup;
     req.body.pageTags = originTags;
 
     return api.create(req, res);

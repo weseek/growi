@@ -53,6 +53,36 @@ class PageTagRelation {
     return { list, totalCount };
   }
 
+  static async listTagsByPage(pageId) {
+    return this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
+  }
+
+  static async listTagNamesByPage(pageId) {
+    const tags = await this.listTagsByPage(pageId);
+    return tags.map((tag) => { return tag.relatedTag.name });
+  }
+
+  static async updatePageTags(pageId, tags) {
+    const Tag = mongoose.model('Tag');
+
+    // get tags relate this page
+    const relatedTags = await this.listTagsByPage(pageId);
+
+    // unlink relations
+    const unlinkTagRelations = relatedTags.filter((tag) => { return !tags.includes(tag.relatedTag.name) });
+    await this.deleteMany({
+      relatedPage: pageId,
+      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
+    });
+
+    // create tag and relations
+    /* eslint-disable no-await-in-loop */
+    for (const tag of tags) {
+      const setTag = await Tag.findOrCreate(tag);
+      await this.createIfNotExist(pageId, setTag._id);
+    }
+  }
+
 }
 
 module.exports = function() {

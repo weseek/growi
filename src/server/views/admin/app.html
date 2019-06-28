@@ -1,6 +1,6 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('App settings')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('App settings')) }}{% endblock %}
 
 {% block head_warn_alert_siteurl_undefined %} {# remove including block for './widget/alert_siteurl_undefined.html' #}
 {% endblock %}
@@ -45,7 +45,7 @@
                    id="settingForm[app:title]"
                    type="text"
                    name="settingForm[app:title]"
-                   value="{{ settingForm['app:title'] | default('') }}"
+                   value="{{ getConfig('crowi', 'app:title') | default('') }}"
                    placeholder="GROWI">
             <p class="help-block">{{ t("app_setting.sitename_change") }}</p>
           </div>
@@ -58,8 +58,8 @@
                    id="settingForm[app:confidential]"
                    type="text"
                    name="settingForm[app:confidential]"
-                   value="{{ settingForm['app:confidential'] }}"
-                   placeholder="{{ t('app_setting. ex): internal use only') }}">
+                   value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
+                   placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}">
             <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>
@@ -72,7 +72,7 @@
                        id="radioLangEn"
                        name="settingForm[app:globalLang]"
                        value="{{ consts.language.LANG_EN_US }}"
-                       {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+                       {% if getConfig('crowi', 'app:globalLang') == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
                 <label for="radioLangEn">{{ t('English') }}</label>
             </div>
             <div class="radio radio-primary radio-inline">
@@ -80,7 +80,7 @@
                        id="radioLangJa"
                        name="settingForm[app:globalLang]"
                        value="{{ consts.language.LANG_JA }}"
-                       {% if appGlobalLang() == consts.language.LANG_JA %}checked="checked"{% endif %}>
+                       {% if getConfig('crowi', 'app:globalLang') == consts.language.LANG_JA %}checked="checked"{% endif %}>
                 <label for="radioLangJa">{{ t('Japanese') }}</label>
             </div>
           </div>
@@ -94,8 +94,8 @@
                      id="cbFileUpload"
                      name="settingForm[app:fileUpload]"
                      value="1"
-                     {% if settingForm['app:fileUpload'] %}checked{% endif %}
-                     {% if not isUploadable() %}disabled="disabled"{% endif %}>
+                     {% if getConfig('crowi', 'app:fileUpload') %}checked{% endif %}
+                     {% if not fileUploadService.getIsUploadable() %}disabled="disabled"{% endif %}>
               <label for="cbFileUpload">
                 {{ t("app_setting.enable_files_except_image") }}
               </label>
@@ -181,7 +181,7 @@
                    type="text"
                    name="settingForm[mail:from]"
                    placeholder="{{ t('eg') }} mail@growi.org"
-                   value="{{ settingForm['mail:from'] }}">
+                   value="{{ getConfig('crowi', 'mail:from') | default('') }}">
           </div>
         </div>
 
@@ -192,14 +192,14 @@
             <input class="form-control"
                    type="text"
                    name="settingForm[mail:smtpHost]"
-                   value="{{ settingForm['mail:smtpHost']|default('') }}">
+                   value="{{ getConfig('crowi', 'mail:smtpHost') | default('') }}">
           </div>
           <div class="col-xs-2">
             <label>{{ t('app_setting.Port') }}</label>
             <input class="form-control"
                    type="text"
                    name="settingForm[mail:smtpPort]"
-                   value="{{ settingForm['mail:smtpPort']|default('') }}">
+                   value="{{ getConfig('crowi', 'mail:smtpPort') | default('') }}">
           </div>
         </div>
 
@@ -209,14 +209,14 @@
             <input class="form-control"
                    type="text"
                    name="settingForm[mail:smtpUser]"
-                   value="{{ settingForm['mail:smtpUser']|default('') }}">
+                   value="{{ getConfig('crowi', 'mail:smtpUser') | default('') }}">
           </div>
           <div class="col-xs-3">
             <label>{{ t('Password') }}</label>
             <input class="form-control"
                    type="password"
                    name="settingForm[mail:smtpPassword]"
-                   value="{{ settingForm['mail:smtpPassword']|default('') }}">
+                   value="{{ getConfig('crowi', 'mail:smtpPassword') | default('') }}">
           </div>
         </div>
 
@@ -248,7 +248,7 @@
                    type="text"
                    name="settingForm[aws:region]"
                    placeholder="例: ap-northeast-1"
-                   value="{{ settingForm['aws:region'] }}">
+                   value="{{ getConfig('crowi', 'aws:region') | default('') }}">
           </div>
         </div>
 
@@ -260,7 +260,7 @@
                    type="text"
                    name="settingForm[aws:bucket]"
                    placeholder="例: crowi"
-                   value="{{ settingForm['aws:bucket'] }}">
+                   value="{{ getConfig('crowi', 'aws:bucket') | default('') }}">
           </div>
         </div>
 
@@ -271,7 +271,7 @@
                    id="settingForm[aws:accessKeyId]"
                    type="text"
                    name="settingForm[aws:accessKeyId]"
-                   value="{{ settingForm['aws:accessKeyId'] }}">
+                   value="{{ getConfig('crowi', 'aws:accessKeyId') | default('') }}">
           </div>
 
         </div>
@@ -283,7 +283,7 @@
                    id="settingForm[aws:secretAccessKey]"
                    type="text"
                    name="settingForm[aws:secretAccessKey]"
-                   value="{{ settingForm['aws:secretAccessKey'] }}">
+                   value="{{ getConfig('crowi', 'aws:secretAccessKey') | default('') }}">
           </div>
         </div>
 
@@ -307,18 +307,18 @@
           <div class="col-xs-6">
 
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[plugin:isEnabledPlugins]"
                        value="true"
                        type="radio"
-                       {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                       {% if true === getConfig('crowi', 'plugin:isEnabledPlugins') %}checked{% endif %}>
                 ON
               </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="default">
+              <label class="btn btn-default btn-rounded btn-outline {% if !getConfig('crowi', 'plugin:isEnabledPlugins') %}active{% endif %}" data-active-class="default">
                 <input name="settingForm[plugin:isEnabledPlugins]"
                        value="false"
                        type="radio"
-                       {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                       {% if !getConfig('crowi', 'plugin:isEnabledPlugins') %}checked{% endif %}>
                 OFF
               </label>
             </div>

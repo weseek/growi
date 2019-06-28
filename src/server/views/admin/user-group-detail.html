@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('UserGroup management') + '/' + userGroup.name) | preventXss }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('UserGroup Management') + '/' + userGroup.name) | preventXss }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('UserGroup management') + '/' + userGroup.name | preventXss }}</h1>
+    <h1 id="admin-title" class="title">{{ t('UserGroup Management') + '/' + userGroup.name | preventXss }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -34,7 +34,7 @@
     <div class="col-md-9">
       <a href="/admin/user-groups" class="btn btn-default">
         <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
-        グループ一覧に戻る
+        {{ t('user_group_management.back_to_list') }}
       </a>
 
       <div class="modal fade" id="admin-add-user-group-relation-modal">
@@ -43,27 +43,27 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h4 class="modal-title">
-                グループへのユーザー追加
+                {{ t('user_group_management.add_user') }}
               </h4>
             </div>
 
             <div class="modal-body">
               <p>
-                <strong>方法1.</strong> ユーザ名を入力して追加
+                <strong>{{ t('Method') }}1.</strong> {{ t('user_group_management.how_to_add1') }}
               </p>
               <form class="form-inline" role="form" action="/admin/user-group-relation/create" method="post">
                 <div class="form-group">
-                  <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="username">
+                  <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="{{ t('User Name')}}">
                 </div>
                 <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-sm btn-success">追加</button>
+                <button type="submit" class="btn btn-sm btn-success">{{ t('Add') }}</button>
               </form>
 
               {% if 0 < notRelatedusers.length %}
               <hr>
               <p>
-                <strong>方法2.</strong> ユーザーを下のリストから選択
+                <strong>{{ t('Method') }}2.</strong> {{ t('user_group_management.how_to_add2') }}
               </p>
 
               <ul class="list-inline">
@@ -91,7 +91,7 @@
       <div class="m-t-20 form-box">
         <form action="/admin/user-group/{{userGroup.id}}/update" method="post" class="form-horizontal" role="form">
           <fieldset>
-            <legend>基本情報</legend>
+            <legend>{{ t('Basic Settings') }}</legend>
             <div class="form-group">
               <label for="name" class="col-sm-2 control-label">{{ t('Name') }}</label>
               <div class="col-sm-4">
@@ -114,18 +114,18 @@
         </form>
       </div>
 
-      <legend class="m-t-20">ユーザー一覧</legend>
+      <legend class="m-t-20">{{ t('User List') }}</legend>
 
       <table class="table table-bordered table-user-list">
         <thead>
           <tr>
             <th width="100px">#</th>
             <th>
-              <code>username</code>
+              {{ t('User') }}
             </th>
-            <th>名前</th>
-            <th width="100px">作成日</th>
-            <th width="150px">最終ログイン</th>
+            <th>{{ t('Name') }}</th>
+            <th width="100px">{{ t('Created') }}</th>
+            <th width="150px">{{ t('Last Login')}}</th>
             <th width="70px"></th>
           </tr>
         </thead>
@@ -155,7 +155,7 @@
                   </form>
                   <li>
                     <a href="javascript:form_removeFromGroup_{{ loop.index }}.submit()">
-                      <i class="icon-fw icon-user-unfollow"></i> グループから外す
+                      <i class="icon-fw icon-user-unfollow"></i> {{ t('user_group_management.remove_from_group')}}
                     </a>
                   </li>
                 </ul>
@@ -183,10 +183,10 @@
 
       <!-- {% include '../widget/pager.html' with {path: "/admin/user-group-detail", pager: pager} %} -->
 
-      <legend class="m-t-20">ページ一覧</legend>
+      <legend class="m-t-20">{{ t('Page') }}</legend>
 
       <div class="page-list">
-        {% if relatedPages.length == 0 %}<p>グループが閲覧権限を保有するページはありません</p>{% endif %}
+        {% if relatedPages.length == 0 %}<p>{{ t('user_group_management.no_pages') }}</p>{% endif %}
         {% include '../widget/page_list.html' with { pages: relatedPages } %}
       </div>
 

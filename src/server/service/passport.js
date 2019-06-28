@@ -6,7 +6,10 @@ const LdapStrategy = require('passport-ldapauth');
 const GoogleStrategy = require('passport-google-auth').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
+const OidcStrategy = require('openid-client').Strategy;
 const SamlStrategy = require('passport-saml').Strategy;
+const OIDCIssuer = require('openid-client').Issuer;
+const BasicStrategy = require('passport-http').BasicStrategy;
 
 /**
  * the service class of Passport
@@ -32,7 +35,7 @@ class PassportService {
     this.isLdapStrategySetup = false;
 
     /**
-     * the flag whether LdapStrategy is set up successfully
+     * the flag whether GoogleStrategy is set up successfully
      */
     this.isGoogleStrategySetup = false;
 
@@ -47,9 +50,19 @@ class PassportService {
     this.isTwitterStrategySetup = false;
 
     /**
+     * the flag whether OidcStrategy is set up successfully
+     */
+    this.isOidcStrategySetup = false;
+
+    /**
      * the flag whether SamlStrategy is set up successfully
      */
     this.isSamlStrategySetup = false;
+
+    /**
+     * the flag whether BasicStrategy is set up successfully
+     */
+    this.isBasicStrategySetup = false;
 
     /**
      * the flag whether serializer/deserializer are set up successfully
@@ -141,8 +154,9 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isLdapEnabled = Config.isEnabledPassportLdap(config);
+    const { configManager } = this.crowi;
+
+    const isLdapEnabled = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
 
     // when disabled
     if (!isLdapEnabled) {
@@ -172,8 +186,7 @@ class PassportService {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToUsername() {
-    const config = this.crowi.config;
-    return config.crowi['security:passport-ldap:attrMapUsername'] || 'uid';
+    return this.crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername') || 'uid';
   }
 
   /**
@@ -183,8 +196,7 @@ class PassportService {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToName() {
-    const config = this.crowi.config;
-    return config.crowi['security:passport-ldap:attrMapName'] || '';
+    return this.crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName') || '';
   }
 
   /**
@@ -194,8 +206,7 @@ class PassportService {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToMail() {
-    const config = this.crowi.config;
-    return config.crowi['security:passport-ldap:attrMapMail'] || 'mail';
+    return this.crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail') || 'mail';
   }
 
   /**
@@ -220,16 +231,17 @@ class PassportService {
    */
   getLdapConfigurationFunc(config, opts) {
     /* eslint-disable no-multi-spaces */
+    const { configManager } = this.crowi;
 
     // get configurations
-    const isUserBind          = config.crowi['security:passport-ldap:isUserBind'];
-    const serverUrl           = config.crowi['security:passport-ldap:serverUrl'];
-    const bindDN              = config.crowi['security:passport-ldap:bindDN'];
-    const bindCredentials     = config.crowi['security:passport-ldap:bindDNPassword'];
-    const searchFilter        = config.crowi['security:passport-ldap:searchFilter'] || '(uid={{username}})';
-    const groupSearchBase     = config.crowi['security:passport-ldap:groupSearchBase'];
-    const groupSearchFilter   = config.crowi['security:passport-ldap:groupSearchFilter'];
-    const groupDnProperty     = config.crowi['security:passport-ldap:groupDnProperty'] || 'uid';
+    const isUserBind          = configManager.getConfig('crowi', 'security:passport-ldap:isUserBind');
+    const serverUrl           = configManager.getConfig('crowi', 'security:passport-ldap:serverUrl');
+    const bindDN              = configManager.getConfig('crowi', 'security:passport-ldap:bindDN');
+    const bindCredentials     = configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
+    const searchFilter        = configManager.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
+    const groupSearchBase     = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
+    const groupSearchFilter   = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter');
+    const groupDnProperty     = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
     /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
@@ -307,9 +319,8 @@ class PassportService {
       throw new Error('GoogleStrategy has already been set up');
     }
 
-    const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isGoogleEnabled = Config.isEnabledPassportGoogle(config);
+    const { configManager } = this.crowi;
+    const isGoogleEnabled = configManager.getConfig('crowi', 'security:passport-google:isEnabled');
 
     // when disabled
     if (!isGoogleEnabled) {
@@ -320,11 +331,11 @@ class PassportService {
     passport.use(
       new GoogleStrategy(
         {
-          clientId: config.crowi['security:passport-google:clientId'] || process.env.OAUTH_GOOGLE_CLIENT_ID,
-          clientSecret: config.crowi['security:passport-google:clientSecret'] || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
-          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-            : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+          clientId: configManager.getConfig('crowi', 'security:passport-google:clientId'),
+          clientSecret: configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
+          callbackURL: (this.crowi.appService.getSiteUrl() != null)
+            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
+            : configManager.getConfig('crowi', 'security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -358,9 +369,8 @@ class PassportService {
       throw new Error('GitHubStrategy has already been set up');
     }
 
-    const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isGitHubEnabled = Config.isEnabledPassportGitHub(config);
+    const { configManager } = this.crowi;
+    const isGitHubEnabled = configManager.getConfig('crowi', 'security:passport-github:isEnabled');
 
     // when disabled
     if (!isGitHubEnabled) {
@@ -371,11 +381,11 @@ class PassportService {
     passport.use(
       new GitHubStrategy(
         {
-          clientID: config.crowi['security:passport-github:clientId'] || process.env.OAUTH_GITHUB_CLIENT_ID,
-          clientSecret: config.crowi['security:passport-github:clientSecret'] || process.env.OAUTH_GITHUB_CLIENT_SECRET,
-          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-            : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+          clientID: configManager.getConfig('crowi', 'security:passport-github:clientId'),
+          clientSecret: configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+          callbackURL: (this.crowi.appService.getSiteUrl() != null)
+            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
+            : configManager.getConfig('crowi', 'security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -409,9 +419,8 @@ class PassportService {
       throw new Error('TwitterStrategy has already been set up');
     }
 
-    const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isTwitterEnabled = Config.isEnabledPassportTwitter(config);
+    const { configManager } = this.crowi;
+    const isTwitterEnabled = configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
 
     // when disabled
     if (!isTwitterEnabled) {
@@ -422,11 +431,11 @@ class PassportService {
     passport.use(
       new TwitterStrategy(
         {
-          consumerKey: config.crowi['security:passport-twitter:consumerKey'] || process.env.OAUTH_TWITTER_CONSUMER_KEY,
-          consumerSecret: config.crowi['security:passport-twitter:consumerSecret'] || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
-          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
-            : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+          consumerKey: configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+          consumerSecret: configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
+          callbackURL: (this.crowi.appService.getSiteUrl() != null)
+            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
+            : configManager.getConfig('crowi', 'security:passport-twitter:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -454,13 +463,76 @@ class PassportService {
     this.isTwitterStrategySetup = false;
   }
 
+  async setupOidcStrategy() {
+    // check whether the strategy has already been set up
+    if (this.isOidcStrategySetup) {
+      throw new Error('OidcStrategy has already been set up');
+    }
+
+    const { configManager } = this.crowi;
+    const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
+
+    // when disabled
+    if (!isOidcEnabled) {
+      return;
+    }
+
+    debug('OidcStrategy: setting up..');
+
+    // setup client
+    // extend oidc request timeouts
+    OIDCIssuer.defaultHttpOptions = { timeout: 5000 };
+    const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
+    const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
+    const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret');
+    const redirectUri = (configManager.getConfig('crowi', 'app:siteUrl') != null)
+      ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
+      : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
+    const oidcIssuer = await OIDCIssuer.discover(issuerHost);
+    debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
+
+    const client = new oidcIssuer.Client({
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uris: [redirectUri],
+      response_types: ['code'],
+    });
+
+    passport.use('oidc', new OidcStrategy({
+      client,
+      params: { scope: 'openid email profile' },
+    },
+    ((tokenset, userinfo, done) => {
+      if (userinfo) {
+        return done(null, userinfo);
+      }
+
+      return done(null, false);
+
+    })));
+
+    this.isOidcStrategySetup = true;
+    debug('OidcStrategy: setup is done');
+  }
+
+  /**
+   * reset OidcStrategy
+   *
+   * @memberof PassportService
+   */
+  resetOidcStrategy() {
+    debug('OidcStrategy: reset');
+    passport.unuse('oidc');
+    this.isOidcStrategySetup = false;
+  }
+
   setupSamlStrategy() {
     // check whether the strategy has already been set up
     if (this.isSamlStrategySetup) {
       throw new Error('SamlStrategy has already been set up');
     }
 
-    const configManager = this.crowi.configManager;
+    const { configManager } = this.crowi;
     const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
 
     // when disabled
@@ -473,8 +545,8 @@ class PassportService {
       new SamlStrategy(
         {
           entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
-          callbackUrl: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
+          callbackUrl: (this.crowi.appService.getSiteUrl() != null)
+            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
             : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
           cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
@@ -515,6 +587,54 @@ class PassportService {
       }
     }
     return missingRequireds;
+  }
+
+  /**
+   * reset BasicStrategy
+   *
+   * @memberof PassportService
+   */
+  resetBasicStrategy() {
+    debug('BasicStrategy: reset');
+    passport.unuse('basic');
+    this.isBasicStrategySetup = false;
+  }
+
+  /**
+   * setup BasicStrategy
+   *
+   * @memberof PassportService
+   */
+  setupBasicStrategy() {
+    // check whether the strategy has already been set up
+    if (this.isBasicStrategySetup) {
+      throw new Error('BasicStrategy has already been set up');
+    }
+
+    const configManager = this.crowi.configManager;
+    const isBasicEnabled = configManager.getConfig('crowi', 'security:passport-basic:isEnabled');
+
+    // when disabled
+    if (!isBasicEnabled) {
+      return;
+    }
+
+    debug('BasicStrategy: setting up..');
+
+    const configId = configManager.getConfig('crowi', 'security:passport-basic:id');
+    const configPassword = configManager.getConfig('crowi', 'security:passport-basic:password');
+
+    passport.use(new BasicStrategy(
+      (userId, password, done) => {
+        if (userId !== configId || password !== configPassword) {
+          return done(null, false, { message: 'Incorrect credentials.' });
+        }
+        return done(null, userId);
+      },
+    ));
+
+    this.isBasicStrategySetup = true;
+    debug('BasicStrategy: setup is done');
   }
 
   /**

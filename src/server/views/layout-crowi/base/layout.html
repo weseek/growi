@@ -1,6 +1,6 @@
 {% extends '../../layout/layout.html' %}
 
-{% block html_title %}{{ customTitle(path) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(path) }}{% endblock %}
 
 {% block html_additional_headers %}
   {% parent %}
