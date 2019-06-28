@@ -506,8 +506,9 @@
       "group_search_base_DN_detail": "グループ検索を実行するベース DN。利用する場合は <code>グループ検索フィルター</code> も入力する必要があります。",
       "group_search_filter": "グループ検索フィルター",
       "group_search_filter_detail1": "グループフィルターに用いるクエリ",
-      "group_search_filter_detail2": "ログイン対象ユーザーオブジェクトのプロパティーで置換する場合は <code>&#123;&#123;dn&#125;&#125;</code> を用いてください。",
-      "group_search_filter_detail3": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
+      "group_search_filter_detail2": "このクエリにヒットするグループがあったときのみ、LDAPでのログインが成功します。",
+      "group_search_filter_detail3": "ログイン対象ユーザーオブジェクトのプロパティーで置換する場合は <code>&#123;&#123;dn&#125;&#125;</code> を用いてください。",
+      "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
       "group_search_user_DN_property": "ユーザーの DN プロパティー",
       "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
       "test_config": "ログインテスト"
