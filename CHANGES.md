@@ -21,6 +21,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 * Feature: OpenID Connect authentication
 * Feature: HTTP Basic authentication
 * Feature: Staff Credits with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
+* Feature: Restricte Complete Deletion of Pages
 * Improvement Draft list
 * Fix: Deleting page completely
 * Fix: Search with `prefix:` param with CJK pathname
