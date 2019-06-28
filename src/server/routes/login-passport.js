@@ -177,7 +177,7 @@ module.exports = function(crowi, app) {
         if (!isValidLdapUserByGroupFilter(user)) {
           return res.json({
             status: 'warning',
-            message: 'The user is found, but that has no groups.',
+            message: 'This user does not belong to any groups designated by the group search filter.',
             ldapConfiguration: req.ldapConfiguration,
             ldapAccountInfo: req.ldapAccountInfo,
           });
