@@ -4,12 +4,14 @@
 
 ### BREAKING CHANGES
 
+* GROWI no longer supports plugins with schema version 2
 * The restriction mode of the root page (`/`) will be set 'Public'
 * The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
 ### Updates
 
-* 
+* Support: Use Babel 7
+* Support: Support plugins with schema version 3
 
 
 ## 3.5.0
