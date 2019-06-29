@@ -2,7 +2,15 @@
 
 ## 3.5.1-RC
 
+### BREAKING CHANGES
+
+* The restriction mode of the root page (`/`) will be set 'Public'
+* The restriction mode of the root page (`/`) can not be changed after v 3.5.1
+
+### Updates
+
 * 
+
 
 ## 3.5.0
 
