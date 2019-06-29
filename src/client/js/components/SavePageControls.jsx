@@ -65,8 +65,9 @@ class SavePageControls extends React.Component {
   }
 
   render() {
-    const { t, editorContainer } = this.props;
-    const labelSubmitButton = this.props.pageContainer.state.pageId == null ? t('Create') : t('Update');
+    const { t, pageContainer, editorContainer } = this.props;
+    const isRootPage = pageContainer.state.path === '/';
+    const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
@@ -88,6 +89,7 @@ class SavePageControls extends React.Component {
           && (
           <div className="mr-2">
             <GrantSelector
+              disabled={isRootPage}
               grant={editorContainer.state.grant}
               grantGroupId={editorContainer.state.grantGroupId}
               grantGroupName={editorContainer.state.grantGroupName}
