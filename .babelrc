@@ -1,16 +1,17 @@
 {
   "plugins": [
     "lodash",
-    ["transform-runtime", {
-      "regenerator": true
-    }]
   ],
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["last 2 versions"]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current",
+        },
+        "useBuiltIns": "usage",
       }
-    }],
-    "react"
+    ],
+    "@babel/preset-react"
   ]
 }

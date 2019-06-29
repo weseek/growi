@@ -11,7 +11,6 @@ module.exports = {
     dlls: [
       // Libraries
       'axios',
-      'babel-polyfill',
       'browser-bunyan', 'bunyan-format',
       'codemirror', 'react-codemirror2',
       'date-fns',
