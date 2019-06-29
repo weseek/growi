@@ -154,6 +154,7 @@
     "colors": "^1.2.5",
     "commander": "^2.11.0",
     "connect-browser-sync": "^2.1.0",
+    "core-js": "^2.6.9",
     "css-loader": "^1.0.0",
     "csv-to-markdown-table": "^0.5.0",
     "date-fns": "^1.29.0",
