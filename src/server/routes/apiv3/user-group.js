@@ -8,12 +8,6 @@ const router = express.Router();
 
 const { body, param, query } = require('express-validator/check');
 
-const {
-  csrfVerify,
-  loginRequired,
-  adminRequired,
-} = require('../../util/middlewares');
-
 const validator = {};
 
 /**
@@ -25,6 +19,12 @@ const validator = {};
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const {
+    loginRequired,
+    adminRequired,
+    csrfVerify: csrf,
+  } = require('../../util/middlewares')(crowi);
 
   /**
    * @swagger
@@ -47,7 +47,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
+  router.get('/', loginRequired(), adminRequired, async(req, res) => {
     // TODO: filter with querystring
     try {
       const userGroups = await UserGroup.find();
@@ -94,7 +94,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, ApiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired(), adminRequired, csrf, validator.create, ApiV3FormValidator, async(req, res) => {
     const { name } = req.body;
 
     try {
@@ -153,7 +153,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.removeCompletelyById`
    */
-  router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, ApiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequired(), adminRequired, csrf, validator.delete, ApiV3FormValidator, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
@@ -206,7 +206,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: user objects
    */
-  router.get('/:id/users', loginRequired(crowi), adminRequired(), async(req, res) => {
+  router.get('/:id/users', loginRequired(), adminRequired, async(req, res) => {
     const { id } = req.params;
 
     try {

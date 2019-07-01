@@ -4,7 +4,7 @@ const autoReap = require('multer-autoreap');
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
-  const middlewares = require('../util/middlewares')(crowi, app);
+  const middlewares = require('../util/middlewares')(crowi);
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');
   const page = require('./page')(crowi, app);

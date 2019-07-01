@@ -6,11 +6,6 @@ const express = require('express');
 
 const router = express.Router();
 
-const {
-  loginRequired,
-  adminRequired,
-} = require('../../util/middlewares');
-
 /**
  * @swagger
  *  tags:
@@ -19,6 +14,11 @@ const {
 
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
+
+  const {
+    loginRequired,
+    adminRequired,
+  } = require('../../util/middlewares')(crowi);
 
   /**
    * @swagger
@@ -40,7 +40,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: contains arrays user objects related
    */
-  router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
+  router.get('/', loginRequired(), adminRequired, async(req, res) => {
     // TODO: filter with querystring? or body
     try {
       const page = parseInt(req.query.page) || 1;
