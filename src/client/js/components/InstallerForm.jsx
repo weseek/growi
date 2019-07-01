@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
+
+import FormGroup from 'react-bootstrap/es/FormGroup';
+import Radio from 'react-bootstrap/es/Radio';
 
 class InstallerForm extends React.Component {
 
@@ -10,6 +14,7 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
+      checkedBtn: 'en-US',
     };
     this.checkUserName = this.checkUserName.bind(this);
   }
@@ -32,6 +37,7 @@ class InstallerForm extends React.Component {
 
   changeLanguage(locale) {
     i18next.changeLanguage(locale);
+    this.setState({ checkedBtn: locale });
   }
 
   render() {
@@ -39,6 +45,8 @@ class InstallerForm extends React.Component {
     const unavailableUserId = this.state.isValidUserName
       ? ''
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
+
+    const checkedBtn = this.state.checkedBtn;
 
     return (
       <div className={`login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4${hasErrorClass}`}>
@@ -48,30 +56,26 @@ class InstallerForm extends React.Component {
         </p>
 
         <form role="form" action="/installer" method="post" id="register-form">
-          <div className="input-group m-t-20 m-b-20 mx-auto">
-            <div className="radio radio-primary radio-inline">
-              <input
-                type="radio"
-                id="radioLangEn"
-                name="registerForm[app:globalLang]"
-                value="en-US"
-                defaultChecked
-                onClick={() => { return this.changeLanguage('en-US') }}
-              />
-              <label htmlFor="radioLangEn">English</label>
-            </div>
-            <div className="radio radio-primary radio-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                name="registerForm[app:globalLang]"
-                value="ja"
-                defaultChecked={false}
-                onClick={() => { return this.changeLanguage('ja') }}
-              />
-              <label htmlFor="radioLangJa">日本語</label>
-            </div>
-          </div>
+          <FormGroup className="text-center">
+            <Radio
+              name="registerForm[app:globalLang]"
+              value="en-US"
+              checked={checkedBtn === 'en-US'}
+              inline
+              onClick={() => { return this.changeLanguage('en-US') }}
+            >
+              English
+            </Radio>
+            <Radio
+              name="registerForm[app:globalLang]"
+              value="ja"
+              checked={checkedBtn === 'ja'}
+              inline
+              onClick={() => { return this.changeLanguage('ja') }}
+            >
+              日本語
+            </Radio>
+          </FormGroup>
 
           <div className={`input-group${hasErrorClass}`}>
             <span className="input-group-addon"><i className="icon-user" /></span>
