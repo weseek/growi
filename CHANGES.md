@@ -17,7 +17,13 @@
 * Support: Use Babel 7
 * Support: Support plugins with schema version 3
 * Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
-
+* Upgrade libs
+    * css-loader
+    * eslint
+    * eslint-config-weseek
+    * eslint-plugin-import
+    * eslint-plugin-jest
+    * eslint-plugin-react
 
 ## 3.5.0
 

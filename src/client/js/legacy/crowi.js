@@ -1,4 +1,3 @@
-/* global location */
 /* eslint no-restricted-globals: ['error', 'locaion'] */
 
 import React from 'react';
