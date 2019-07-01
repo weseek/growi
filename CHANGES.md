@@ -12,6 +12,7 @@
 
 * Support: Use Babel 7
 * Support: Support plugins with schema version 3
+* Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
 
 
 ## 3.5.0
