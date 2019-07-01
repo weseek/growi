@@ -1,5 +1,4 @@
-const debug = require('debug')('growi:service:ConfigManager');
-const pathUtils = require('growi-commons').pathUtils;
+const logger = require('@alias/logger')('growi:service:ConfigManager');
 const ConfigLoader = require('../service/config-loader');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
@@ -20,6 +19,9 @@ class ConfigManager {
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
+    this.configKeys = [];
+
+    this.getConfig = this.getConfig.bind(this);
   }
 
   /**
@@ -27,8 +29,10 @@ class ConfigManager {
    */
   async loadConfigs() {
     this.configObject = await this.configLoader.load();
+    logger.debug('ConfigManager#loadConfigs', this.configObject);
 
-    debug('ConfigManager#loadConfigs', this.configObject);
+    // cache all config keys
+    this.reloadConfigKeys();
   }
 
   /**
@@ -44,11 +48,77 @@ class ConfigManager {
    * - undefined: a specified config does not exist.
    */
   getConfig(namespace, key) {
+    let value;
+
     if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
-      return this.searchInSAMLUseOnlyEnvMode(namespace, key);
+      value = this.searchInSAMLUseOnlyEnvMode(namespace, key);
     }
 
-    return this.defaultSearch(namespace, key);
+    value = this.defaultSearch(namespace, key);
+
+    logger.debug(key, value);
+    return value;
+  }
+
+  /**
+   * get a config specified by namespace and regular expresssion
+   */
+  getConfigByRegExp(namespace, regexp) {
+    const result = {};
+
+    for (const key of this.configKeys) {
+      if (regexp.test(key)) {
+        result[key] = this.getConfig(namespace, key);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * get a config specified by namespace and prefix
+   */
+  getConfigByPrefix(namespace, prefix) {
+    const regexp = new RegExp(`^${prefix}`);
+
+    return this.getConfigByRegExp(namespace, regexp);
+  }
+
+  /**
+   * generate an array of config keys from this.configObject
+   */
+  getConfigKeys() {
+    // type: fromDB, fromEnvVars
+    const types = Object.keys(this.configObject);
+    let namespaces = [];
+    let keys = [];
+
+    for (const type of types) {
+      if (this.configObject[type] != null) {
+        // ns: crowi, markdown, notification
+        namespaces = [...namespaces, ...Object.keys(this.configObject[type])];
+      }
+    }
+
+    // remove duplicates
+    namespaces = [...new Set(namespaces)];
+
+    for (const type of types) {
+      for (const ns of namespaces) {
+        if (this.configObject[type][ns] != null) {
+          keys = [...keys, ...Object.keys(this.configObject[type][ns])];
+        }
+      }
+    }
+
+    // remove duplicates
+    keys = [...new Set(keys)];
+
+    return keys;
+  }
+
+  reloadConfigKeys() {
+    this.configKeys = this.getConfigKeys();
   }
 
   /**
@@ -68,27 +138,6 @@ class ConfigManager {
   getConfigFromEnvVars(namespace, key) {
     return this.searchOnlyFromEnvVarConfigs(namespace, key);
   }
-
-  /**
-   * get the site url
-   *
-   * If the config for the site url is not set, this returns a message "[The site URL is not set. Please set it!]".
-   *
-   * With version 3.2.3 and below, there is no config for the site URL, so the system always uses auto-generated site URL.
-   * With version 3.2.4 to 3.3.4, the system uses the auto-generated site URL only if the config is not set.
-   * With version 3.3.5 and above, the system use only a value from the config.
-   */
-  /* eslint-disable no-else-return */
-  getSiteUrl() {
-    const siteUrl = this.getConfig('crowi', 'app:siteUrl');
-    if (siteUrl != null) {
-      return pathUtils.removeTrailingSlash(siteUrl);
-    }
-    else {
-      return '[The site URL is not set. Please set it!]';
-    }
-  }
-  /* eslint-enable no-else-return */
 
   /**
    * update configs in the same namespace
@@ -122,6 +171,7 @@ class ConfigManager {
     await this.configModel.bulkWrite(queries);
 
     await this.loadConfigs();
+    this.reloadConfigKeys();
   }
 
   /*
@@ -133,27 +183,35 @@ class ConfigManager {
    * and then from configs loaded from the environment variables
    */
   defaultSearch(namespace, key) {
+    // does not exist neither in db nor in env vars
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
+      logger.debug(`${namespace}.${key} does not exist neither in db nor in env vars`);
       return undefined;
     }
 
+    // only exists in db
     if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
+      logger.debug(`${namespace}.${key} only exists in db`);
       return this.configObject.fromDB[namespace][key];
     }
 
+    // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
+      logger.debug(`${namespace}.${key} only exists in env vars`);
       return this.configObject.fromEnvVars[namespace][key];
     }
 
+    // exists both in db and in env vars [db > env var]
     if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      /* eslint-disable no-else-return */
       if (this.configObject.fromDB[namespace][key] !== null) {
+        logger.debug(`${namespace}.${key} exists both in db and in env vars. loaded from db`);
         return this.configObject.fromDB[namespace][key];
       }
+      /* eslint-disable-next-line no-else-return */
       else {
+        logger.debug(`${namespace}.${key} exists both in db and in env vars. loaded from env vars`);
         return this.configObject.fromEnvVars[namespace][key];
       }
-      /* eslint-enable no-else-return */
     }
   }
 

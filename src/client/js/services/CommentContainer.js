@@ -36,6 +36,13 @@ export default class CommentContainer extends Container {
     this.retrieveComments = this.retrieveComments.bind(this);
   }
 
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'CommentContainer';
+  }
+
   getPageContainer() {
     return this.appContainer.getContainer('PageContainer');
   }

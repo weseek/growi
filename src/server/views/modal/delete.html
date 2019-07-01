@@ -8,32 +8,37 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title">
             {% if page.isDeleted() %}
-            <i class="icon-fw icon-fire"></i> {{ t('modal_delete.label.Delete completely') }}
+            <i class="icon-fw icon-fire"></i> {{ t('modal_delete.delete_completely') }}
             {% else %}
-            <i class="icon-fw icon-trash"></i> {{ t('modal_delete.label.Delete Page') }}
+            <i class="icon-fw icon-trash"></i> {{ t('modal_delete.delete_page') }}
             {% endif %}
           </div>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="">Deleting page:</label><br>
+            <label for="">{{ t('modal_delete.deleting_page') }}:</label><br>
             <code>{{ page.path }}</code>
           </div>
 
           <hr>
 
+          {% if page.grant != 2 %}
           <div class="checkbox checkbox-warning">
             <input name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
-            <label for="cbDeleteRecursively">{{ t('modal_delete.label.Delete recursively') }}</label>
-            <p class="help-block"> {{ t('modal_delete.help.recursively', page.path) }}
+            <label for="cbDeleteRecursively">{{ t('modal_delete.delete_recursively') }}</label>
+            <p class="help-block"> {{ t('modal_delete.recursively', page.path) }}
             </p>
           </div>
+          {% endif %}
           {% if not page.isDeleted() %}
           <div class="checkbox checkbox-danger">
-            <input name="completely" id="cbDeleteCompletely" value="1"  type="checkbox">
-              <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.label.Delete completely') }}</label>
-              <p class="help-block"> {{ t('modal_delete.help.completely') }}
-              </p>
+          <input name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
+            <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.delete_completely') }}</label>
+            {% if !user.canDeleteCompletely(page.creator._id) %}
+              <p class="bg-danger text-white p-2 mt-2"> <i class="icon-ban" ></i>{{ t('modal_delete.delete_completely_restriction') }}</p>
+            {% else %}
+            <p class="help-block"> {{ t('modal_delete.completely') }}</p>
+            {% endif %}
           </div>
           {% endif %}
         </div>
@@ -49,7 +54,7 @@
                 <input type="hidden" name="completely" value="true">
                 <button type="submit" class="m-l-10 btn btn-sm btn-danger delete-button">
                   <i class="icon-fire" aria-hidden="true"></i>
-                  {{ t('Delete Completely') }}
+                  {{ t('delete_completely') }}
                 </button>
               {% else %}
                 <button type="submit" class="m-l-10 btn btn-sm btn-default delete-button">

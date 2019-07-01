@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
-import * as toastr from 'toastr';
-
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import EditorContainer from '../services/EditorContainer';
 
 import { createSubscribedElement } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
+
+const logger = loggerFactory('growi:PageEditorByHackmd');
 
 class PageEditorByHackmd extends React.Component {
 
@@ -26,13 +28,12 @@ class PageEditorByHackmd extends React.Component {
     this.getHackmdUri = this.getHackmdUri.bind(this);
     this.startToEdit = this.startToEdit.bind(this);
     this.resumeToEdit = this.resumeToEdit.bind(this);
+    this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
-
-    this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance(this);
+    this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 
   /**
@@ -97,7 +98,9 @@ class PageEditorByHackmd extends React.Component {
           revisionIdHackmdSynced: res.revisionIdHackmdSynced,
         });
       })
-      .catch(this.apiErrorHandler)
+      .catch((err) => {
+        pageContainer.showErrorToastr(err);
+      })
       .then(() => {
         this.setState({ isInitializing: false });
       });
@@ -118,11 +121,38 @@ class PageEditorByHackmd extends React.Component {
   }
 
   /**
+   * save and update state of containers
+   * @param {string} markdown
+   */
+  async onSaveWithShortcut(markdown) {
+    const { pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+
+    try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(markdown, optionsToSave);
+      logger.debug('success to save');
+
+      pageContainer.showSuccessToastr();
+
+      // update state of EditorContainer
+      editorContainer.setState({ tags });
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
+  }
+
+  /**
    * onChange event of HackmdEditor handler
    */
-  hackmdEditorChangeHandler(body) {
+  async hackmdEditorChangeHandler(body) {
     const hackmdUri = this.getHackmdUri();
-    const { pageContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
 
     if (hackmdUri == null) {
       // do nothing
@@ -130,31 +160,22 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // do nothing if contents are same
-    if (pageContainer.state.markdown === body) {
+    if (this.state.markdown === body) {
       return;
     }
+
+    // enable unsaved warning
+    editorContainer.enableUnsavedWarning();
 
     const params = {
       pageId: pageContainer.state.pageId,
     };
-    this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params)
-      .then((res) => {
-        // do nothing
-      })
-      .catch((err) => {
-        // do nothing
-      });
-  }
-
-  apiErrorHandler(error) {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+    try {
+      await this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params);
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
   render() {
@@ -176,7 +197,7 @@ class PageEditorByHackmd extends React.Component {
           initializationMarkdown={isResume ? null : this.state.markdown}
           onChange={this.hackmdEditorChangeHandler}
           onSaveWithShortcut={(document) => {
-            this.props.onSaveWithShortcut(document);
+            this.onSaveWithShortcut(document);
           }}
         >
         </HackmdEditor>
@@ -292,14 +313,13 @@ class PageEditorByHackmd extends React.Component {
  * Wrapper component for using unstated
  */
 const PageEditorByHackmdWrapper = (props) => {
-  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 PageEditorByHackmd.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  onSaveWithShortcut: PropTypes.func.isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 export default PageEditorByHackmdWrapper;

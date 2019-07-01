@@ -78,21 +78,20 @@ module.exports = function(crowi) {
   function decideUserStatusOnRegistration() {
     validateCrowi();
 
-    const Config = crowi.model('Config');
+    const { configManager, aclService } = crowi;
 
-
-    const config = crowi.getConfig();
-
-    if (!config.crowi) {
+    const isInstalled = configManager.getConfig('crowi', 'app:installed');
+    if (!isInstalled) {
       return STATUS_ACTIVE; // is this ok?
     }
 
     // status decided depends on registrationMode
-    switch (config.crowi['security:registrationMode']) {
-      case Config.SECURITY_REGISTRATION_MODE_OPEN:
+    const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+    switch (registrationMode) {
+      case aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
-      case Config.SECURITY_REGISTRATION_MODE_RESTRICTED:
-      case Config.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
+      case aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
+      case aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
         return STATUS_REGISTERED;
       default:
         return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
@@ -199,6 +198,21 @@ module.exports = function(crowi) {
     });
   };
 
+  userSchema.methods.canDeleteCompletely = function(creatorId) {
+    const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    if (this.admin) {
+      return true;
+    }
+    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
+      return true;
+    }
+    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
+      return (this._id.equals(creatorId));
+    }
+
+    return false;
+  };
+
   userSchema.methods.updateApiToken = function(callback) {
     const self = this;
 
@@ -227,7 +241,7 @@ module.exports = function(crowi) {
     this.image = undefined;
 
     if (this.imageAttachment != null) {
-      Attachment.removeWithSubstance(this.imageAttachment._id);
+      Attachment.removeWithSubstanceById(this.imageAttachment._id);
     }
 
     this.imageAttachment = undefined;
@@ -336,11 +350,11 @@ module.exports = function(crowi) {
   userSchema.statics.getLanguageLabels = getLanguageLabels;
   userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
-    userStatus[STATUS_REGISTERED] = '承認待ち';
+    userStatus[STATUS_REGISTERED] = 'Approval Pending';
     userStatus[STATUS_ACTIVE] = 'Active';
     userStatus[STATUS_SUSPENDED] = 'Suspended';
     userStatus[STATUS_DELETED] = 'Deleted';
-    userStatus[STATUS_INVITED] = '招待済み';
+    userStatus[STATUS_INVITED] = 'Invited';
 
     return userStatus;
   };
@@ -348,11 +362,10 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const config = crowi.getConfig();
-    const whitelist = config.crowi['security:registrationWhiteList'];
+    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
-      return config.crowi['security:registrationWhiteList'].some((allowedEmail) => {
+      return whitelist.some((allowedEmail) => {
         const re = new RegExp(`${allowedEmail}$`);
         return re.test(email);
       });
@@ -511,8 +524,9 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const Config = crowi.model('Config');
-    const userUpperLimit = Config.userUpperLimit(crowi);
+    const { aclService } = crowi;
+
+    const userUpperLimit = aclService.userUpperLimit();
     if (userUpperLimit === 0) {
       return false;
     }
@@ -620,12 +634,12 @@ module.exports = function(crowi) {
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
     validateCrowi();
 
+    const configManager = crowi.configManager;
+
     const User = this;
     const createdUserList = [];
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-
     const mailer = crowi.getMailer();
+
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
@@ -665,7 +679,7 @@ module.exports = function(crowi) {
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
 
-          const globalLang = Config.globalLang(config);
+          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
           if (globalLang != null) {
             newUser.lang = globalLang;
           }
@@ -706,15 +720,17 @@ module.exports = function(crowi) {
                 return next();
               }
 
+              const appTitle = crowi.appService.getAppTitle();
+
               mailer.send({
                 to: user.email,
-                subject: `Invitation to ${Config.appTitle(config)}`,
+                subject: `Invitation to ${appTitle}`,
                 template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
                 vars: {
                   email: user.email,
                   password: user.password,
-                  url: crowi.configManager.getSiteUrl(),
-                  appTitle: Config.appTitle(config),
+                  url: crowi.appService.getSiteUrl(),
+                  appTitle,
                 },
               },
               (err, s) => {
@@ -759,9 +775,8 @@ module.exports = function(crowi) {
       newUser.setPassword(password);
     }
 
-    const Config = crowi.model('Config');
-    const config = crowi.getConfig();
-    const globalLang = Config.globalLang(config);
+    const configManager = crowi.configManager;
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }

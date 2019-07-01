@@ -26,6 +26,17 @@
                 <th>{{ t('modal_shortcuts.global.Edit Page') }}:</th>
                 <td><span class="key">E</span></td>
               </tr>
+              <tr>
+                <th>{{ t('modal_shortcuts.global.Show Contributors') }}:</th>
+                <td>
+                  <a href="{{ t('modal_shortcuts.global.konami_code_url') }}" target="_blank">{{ t('modal_shortcuts.global.Konami Code') }}</a><br>
+                  <span class="key key-small">↑</span>&nbsp;<span class="key key-small">↑</span>
+                  <span class="key key-small">↓</span>&nbsp;<span class="key key-small">↓</span>
+                  <span class="key key-small">←</span>&nbsp;<span class="key key-small">→</span>
+                  <span class="key key-small">←</span>&nbsp;<span class="key key-small">→</span>
+                  <span class="key key-small">B</span>&nbsp;<span class="key key-small">A</span>
+                </td>
+              </tr>
             </table>
           </div><!-- /.col-sm-6 -->
 
@@ -82,20 +93,4 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 
-  <script>
-    /*
-     * add classes to cmd-key by OS
-     */
-    var platform = navigator.platform.toLowerCase();
-    var isMac = (platform.indexOf('mac') > -1);
-
-    document.querySelectorAll('#shortcuts-modal .cmd-key').forEach(function(element) {
-      if (isMac) {
-        element.classList.add('mac');
-      }
-      else {
-        element.classList.add('win', 'key-longer');
-      }
-    });
-  </script>
 </div><!-- /.modal -->

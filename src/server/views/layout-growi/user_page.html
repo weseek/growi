@@ -58,7 +58,7 @@
 
   </div>
 
-  {% if 'growi' === behaviorType() || 'crowi-plus' === behaviorType() %}
+  {% if 'growi' === getConfig('crowi', 'customize:behavior') || 'crowi-plus' === getConfig('crowi', 'customize:behavior') %}
   <div class="row page-list hidden-print m-t-30">
     <div class="col-md-10">
       {% include '../widget/page_list_and_timeline.html' %}

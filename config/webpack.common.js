@@ -125,6 +125,7 @@ module.exports = (options) => {
 
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
       new LodashModuleReplacementPlugin({
         flattening: true,
@@ -155,7 +156,7 @@ module.exports = (options) => {
             enforce: true,
           },
           commons: {
-            test: /src[\\/].*\.jsx?$/,
+            test: /(src|resource)[\\/].*\.(js|jsx|json)$/,
             chunks: 'initial',
             name: 'js/commons',
             minChunks: 2,
@@ -163,7 +164,7 @@ module.exports = (options) => {
             priority: 20,
           },
           vendors: {
-            test: /node_modules[\\/].*\.jsx?$/,
+            test: /node_modules[\\/].*\.(js|jsx|json)$/,
             chunks: (chunk) => {
               // ignore patterns
               return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|hackmd-/);

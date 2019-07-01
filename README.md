@@ -201,6 +201,7 @@ Documentation
 ==============
 
 - [GROWI Docs](https://docs.growi.org/)
+- [GROWI Developers Wiki (ja)](https://dev.growi.org/)
 
 
 Contribution

@@ -1,12 +1,57 @@
 # CHANGES
 
-## 3.4.8-RC
+## 3.5.1-RC
+
+### BREAKING CHANGES
+
+* GROWI no longer supports plugins with schema version 2
+* The restriction mode of the root page (`/`) will be set 'Public'
+* The restriction mode of the root page (`/`) can not be changed after v 3.5.1
+
+### Updates
+
+* Support: Use Babel 7
+* Support: Support plugins with schema version 3
+
+
+## 3.5.0
+
+### BREAKING CHANGES
+
+* GROWI no longer supports
+    * Protection system with Basic Authentication
+    * Crowi Classic Authentication Mechanism
+    * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+
+Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
+
+### Updates
 
 * Feature: Comment Thread
+* Feature: OpenID Connect authentication
+* Feature: HTTP Basic authentication
+* Feature: Staff Credits with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
+* Feature: Restricte Complete Deletion of Pages
 * Improvement Draft list
+* Fix: Deleting page completely
+* Fix: Search with `prefix:` param with CJK pathname
+* I18n: User Management Details
+* I18n: Group Management Details
 * Support: Apply unstated
+* Support: Abolish Old Config API
+* Support: Apply Jest for Tests
 * Support: Upgrade libs
+    * async
+    * axios
+    * connect-mongo
+    * file-loader
+    * googleapis
+    * i18next
+    * migrate-mongo
     * mini-css-extract-plugin
+    * mongoose
+    * mongoose-gridfs
+    * mongoose-unique-validator
     * null-loader
 
 ## 3.4.7

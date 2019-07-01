@@ -4,7 +4,7 @@
     <legend>LDAP {{ t("security_setting.configuration") }}</legend>
 
     {% set nameForIsLdapEnabled = "settingForm[security:passport-ldap:isEnabled]" %}
-    {% set isLdapEnabled = settingForm['security:passport-ldap:isEnabled'] %}
+    {% set isLdapEnabled = getConfig('crowi', 'security:passport-ldap:isEnabled') %}
     <div class="form-group">
       <label for="{{nameForIsLdapEnabled}}" class="col-xs-3 control-label">Use LDAP</label>
       <div class="col-xs-6">
@@ -27,7 +27,7 @@
         <label for="settingForm[security:passport-ldap:serverUrl]" class="col-xs-3 control-label">Server URL</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
-              name="settingForm[security:passport-ldap:serverUrl]" value="{{ settingForm['security:passport-ldap:serverUrl'] || '' }}">
+              name="settingForm[security:passport-ldap:serverUrl]" value="{{ getConfig('crowi', 'security:passport-ldap:serverUrl') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.server_url_detail") }}<br>
@@ -38,7 +38,7 @@
       </div>
 
       {% set nameForIsUserBind = "settingForm[security:passport-ldap:isUserBind]" %}
-      {% set isUserBind = settingForm['security:passport-ldap:isUserBind'] %}
+      {% set isUserBind = getConfig('crowi', 'security:passport-ldap:isUserBind') %}
       <div class="form-group">
         <label for="{{nameForIsUserBind}}" class="col-xs-3 control-label">{{ t("security_setting.ldap.bind_mode") }}</label>
         <div class="col-xs-6">
@@ -59,7 +59,7 @@
         <label for="settingForm[security:passport-ldap:bindDN]" class="col-xs-3 control-label">Bind DN</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
-              name="settingForm[security:passport-ldap:bindDN]" value="{{ settingForm['security:passport-ldap:bindDN'] || '' }}">
+              name="settingForm[security:passport-ldap:bindDN]" value="{{ getConfig('crowi', 'security:passport-ldap:bindDN') | default('') }}">
           <p class="help-block passport-ldap-managerbind" {% if isUserBind %}style="display: none;"{% endif %}>
             <small>
               {{ t("security_setting.ldap.bind_DN_manager_detail") }}<br>
@@ -82,7 +82,7 @@
         <label for="settingForm[security:passport-ldap:bindDNPassword]" class="col-xs-3 control-label">{{ t("security_setting.ldap.bind_DN_password") }}</label>
         <div class="col-xs-6">
           <input class="form-control passport-ldap-managerbind" type="text" {% if isUserBind %}style="display: none;"{% endif %}
-              name="settingForm[security:passport-ldap:bindDNPassword]" value="{{ settingForm['security:passport-ldap:bindDNPassword'] || '' }}">
+              name="settingForm[security:passport-ldap:bindDNPassword]" value="{{ getConfig('crowi', 'security:passport-ldap:bindDNPassword') | default('') }}">
           <p class="help-block passport-ldap-managerbind">
             <small>
               {{ t("security_setting.ldap.bind_DN_password_manager_detail") }}
@@ -100,7 +100,7 @@
         <label for="settingForm[security:passport-ldap:searchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.search_filter") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="Default: (uid={% raw %}{{username}}{% endraw %})"
-              name="settingForm[security:passport-ldap:searchFilter]" value="{{ settingForm['security:passport-ldap:searchFilter'] || '' }}">
+              name="settingForm[security:passport-ldap:searchFilter]" value="{{ getConfig('crowi', 'security:passport-ldap:searchFilter') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.search_filter_detail1") }}<br>
@@ -123,7 +123,7 @@
         <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="Default: uid"
-              name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
+              name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ getConfig('crowi', 'security:passport-ldap:attrMapUsername') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.username_detail") }}
@@ -136,7 +136,7 @@
         <div class="col-xs-6 col-xs-offset-3">
           <div class="checkbox checkbox-info">
             <input type="checkbox" id="cbSameUsernameTreatedAsIdenticalUser" name="settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]" value="1"
-                {% if settingForm['security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+                {% if getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
             <label for="cbSameUsernameTreatedAsIdenticalUser">
               {{ t("security_setting.Treat username matching as identical", "username") }}
             </label>
@@ -153,7 +153,7 @@
         <label for="settingForm[security:passport-ldap:attrMapMail]" class="col-xs-3 control-label">Mail</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="Default: mail"
-              name="settingForm[security:passport-ldap:attrMapMail]" value="{{ settingForm['security:passport-ldap:attrMapMail'] || '' }}">
+              name="settingForm[security:passport-ldap:attrMapMail]" value="{{ getConfig('crowi', 'security:passport-ldap:attrMapMail') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.mail_detail") }}
@@ -166,7 +166,7 @@
         <label for="settingForm[security:passport-ldap:attrMapName]" class="col-xs-3 control-label">Name</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
-              name="settingForm[security:passport-ldap:attrMapName]" value="{{ settingForm['security:passport-ldap:attrMapName'] || '' }}">
+              name="settingForm[security:passport-ldap:attrMapName]" value="{{ getConfig('crowi', 'security:passport-ldap:attrMapName') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.name_detail") }}
@@ -181,7 +181,7 @@
         <label for="settingForm[security:passport-ldap:groupSearchBase]" class="col-xs-3 control-label">{{ t("security_setting.ldap.group_search_base_DN") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
-              name="settingForm[security:passport-ldap:groupSearchBase]" value="{{ settingForm['security:passport-ldap:groupSearchBase'] || '' }}">
+              name="settingForm[security:passport-ldap:groupSearchBase]" value="{{ getConfig('crowi', 'security:passport-ldap:groupSearchBase') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.group_search_base_DN_detail") }}<br>
@@ -195,16 +195,17 @@
         <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.group_search_filter") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
-              name="settingForm[security:passport-ldap:groupSearchFilter]" value="{{ settingForm['security:passport-ldap:groupSearchFilter'] || '' }}">
+              name="settingForm[security:passport-ldap:groupSearchFilter]" value="{{ getConfig('crowi', 'security:passport-ldap:groupSearchFilter') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.group_search_filter_detail1") }}<br>
-              {{ t("security_setting.ldap.group_search_filter_detail2") }}
+              {{ t("security_setting.ldap.group_search_filter_detail2") }}<br>
+              {{ t("security_setting.ldap.group_search_filter_detail3") }}
             </small>
           </p>
           <p class="help-block">
             <small>
-              {{ t("security_setting.example") }}: {{ t("security_setting.ldap.group_search_filter_detail3") }}
+              {{ t("security_setting.example") }}: {{ t("security_setting.ldap.group_search_filter_detail4") }}
             </small>
           </p>
         </div>
@@ -214,7 +215,7 @@
         <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.group_search_user_DN_property") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="Default: uid"
-              name="settingForm[security:passport-ldap:groupDnProperty]" value="{{ settingForm['security:passport-ldap:groupDnProperty'] || '' }}">
+              name="settingForm[security:passport-ldap:groupDnProperty]" value="{{ getConfig('crowi', 'security:passport-ldap:groupDnProperty') | default('') }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.ldap.group_search_user_DN_property_detail") }}

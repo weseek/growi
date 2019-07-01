@@ -14,6 +14,7 @@
   "Cancel": "キャンセル",
   "Create": "作成",
   "Admin": "管理",
+  "administrator": "管理者",
   "Tag": "タグ",
   "Tags": "タグ",
   "New": "作成",
@@ -25,10 +26,7 @@
   "Page Path": "ページパス",
   "Category": "カテゴリー",
   "User": "ユーザー",
-  "User Name": "ユーザーネーム",
-  "User List": "ユーザーリスト",
-  "Add": "追加",
-  "Method": "方法",
+  "status": "ステータス",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -51,7 +49,7 @@
 
   "Created": "作成日",
   "Last updated": "最終更新",
-  "Last Login": "最終ログイン",
+  "Last_Login": "最終ログイン",
 
   "Share": "共有",
   "Share Link": "共有用リンク",
@@ -83,9 +81,7 @@
   "Delete this image?": "削除してよろしいですか？",
   "Updated": "更新しました",
   "Upload new image": "新しい画像をアップロード",
-  "Google Setting": "Google設定",
   "Connected": "接続されています",
-  "Disconnect": "接続を解除",
   "Show": "公開",
   "Hide": "非公開",
   "Disclose E-mail": "メールアドレスの公開",
@@ -108,7 +104,7 @@
   "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
   "Notification Settings": "通知設定",
-  "User Management": "ユーザー管理",
+  "User_Management": "ユーザー管理",
   "External Account management": "外部アカウント管理",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
@@ -126,7 +122,6 @@
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-  "Selecting authentication mechanism": "認証機構選択",
   "Add tags for this page": "タグを付ける",
   "Edit tags for this page": "タグを編集する",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
@@ -151,15 +146,13 @@
   },
 
   "breaking_changes": {
-    "v346_passport_is_not_enabled": "現在利用中の Crowi Classic Authentication mechanism は、近い将来<strong>サポートされなくなります</strong>。%s から Passport に切り替えてください。",
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
   },
 
   "page_register": {
     "notice": {
        "restricted": "この Wiki への新規登録は制限されています。",
-       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。",
-       "google_account_continue": "ユーザーID、名前、パスワードを決めて登録を継続してください。"
+       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。"
     },
     "form_help": {
       "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
@@ -171,11 +164,7 @@
   "page_me": {
     "form_help": {
       "profile_image1": "画像をアップロードをするための設定がされていません。",
-      "profile_image2": "アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。",
-      "google_connect1": "Googleコネクトをすると、Googleアカウントでログイン可能になります。",
-      "google_connect2": "コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。",
-      "google_disconnect1": "接続を解除すると、Googleでログインができなくなります。",
-      "google_disconnect2": "解除後はメールアドレスとパスワードでログインすることができます。"
+      "profile_image2": "アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。"
     }
   },
   "page_me_apitoken": {
@@ -197,7 +186,7 @@
   "Re-enter new password": "(確認用)",
   "Password is not set": "パスワードが設定されていません",
 
-  "Security Settings": "セキュリティ設定",
+  "security_settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -272,7 +261,8 @@
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "新しいページが既に存在しています。",
-    "outdated": "ページが他のユーザーによって更新されました。"
+    "outdated": "ページが他のユーザーによって更新されました。",
+    "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
 
   "modal_rename": {
@@ -293,15 +283,13 @@
   "Delete Completely": "完全削除",
 
   "modal_delete": {
-    "label": {
-      "Delete Page": "ページを削除する",
-      "Delete recursively": "全ての子ページも削除",
-      "Delete completely": "完全削除"
-    },
-    "help": {
-      "recursively": "<code>%s</code> 配下のページも削除します",
-      "completely": "ゴミ箱を経由せず、完全に削除します"
-    }
+    "delete_page": "ページを削除する",
+    "deleting_page": "ページパス",
+    "delete_recursively": "全ての子ページも削除",
+    "delete_completely": "完全削除",
+    "delete_completely_restriction": "完全削除をするための権限がありません。",
+    "recursively": "<code>%s</code> 配下のページも削除します",
+    "completely": "ゴミ箱を経由せず、完全に削除します"
   },
 
   "modal_duplicate": {
@@ -327,7 +315,10 @@
       "title": "グローバルショートカット",
       "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
       "Edit Page": "ページ編集",
-      "Create Page": "ページ作成"
+      "Create Page": "ページ作成",
+      "Show Contributors": "コントリビューターを表示",
+      "Konami Code": "コナミコマンド",
+      "konami_code_url": "https://ja.wikipedia.org/wiki/コナミコマンド"
     },
     "editor": {
       "titile": "エディターショートカット",
@@ -443,11 +434,9 @@
 
   "security_setting": {
     "Basic authentication": "Basic認証",
-    "Security settings": "セキュリティ設定",
     "Guest users access": "ゲストユーザーのアクセス",
     "Register limitation": "登録の制限",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "Selecting authentication mechanism": "認証機構選択",
     "common_authentication": "Basic認証を設定すると、ページ全体に共通の認証がかかります。",
     "without_encryption": "IDとパスワードは暗号化されずに送信されるのでご注意下さい。",
     "basic_acl_disable": "Public Wiki の設定のため、Basic認証は利用できません。",
@@ -461,38 +450,20 @@
     "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
     "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
     "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "complete_deletion": "ページの完全削除",
+    "complete_deletion_explain": "ページを完全に削除できるユーザーを制限します。",
+    "admin_only": "管理者のみ可能",
+    "admin_and_author": "管理者とページ作者が可能",
+    "anyone": "誰でも可能",
 
     "Authentication mechanism settings":"認証機構設定",
-    "note": "メモ",
-    "require_server_restart_change_auth": "認証機構の変更後はサーバーを再起動してください。",
-    "auth_mechanism": "認証機構",
-    "recommended": "推奨",
-    "username_email_password": "ユーザー名、Eメール、パスワードでの認証",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。%s から設定してください。",
-    "ldap_auth": "LDAP 認証",
-    "saml_auth": "SAML 認証",
-    "google_auth2": "Google OAuth 認証",
-    "google_auth2_by_crowi_desc": "ただし、この機能では新たなユーザーは作成されず、関連付け設定を行った既存ユーザーをログインできるようにするだけです。",
-    "facebook_auth2": "Facebook OAuth 認証",
-    "twitter_auth2": "Twitter OAuth 認証",
-    "github_auth2": "GitHub OAuth 認証",
-    "crowi_auth": "Crowi Classic OAuth 認証",
-    "require_server_restart": "サーバーを再起動してください。",
-    "server_on_passport_auth": "Passport 認証機構でサーバーが稼働しています。",
-    "server_on_crowi_auth": "Crowi Classic 認証機構でサーバーが稼働しています。",
-    "google_setting": "Google 設定",
-    "connect_api_manager": "Google Cloud Platform の <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager</a>から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。",
-    "access_api_manager": "<a href=\"%s\" target=\"_blank\">%s</a> へアクセス",
-    "create_project": "プロジェクトを作成していない場合は作成してください",
-    "create_auth_to_oauth": "「認証情報を作成」-> OAuthクライアントID",
-    "select_webapp": "「ウェブアプリケーション」を選択",
-    "change_redirect_url": "承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>(<code>${crowi.host}</code>は環境に合わせて変更してください)",
-    "clientID": "クライアントID",
-    "client_secret": "クライアントシークレット",
     "xss_prevent_setting":"XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link":"マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
     "desc_of_callback_URL": "%s プロバイダ側の設定で利用してください。",
+    "clientID": "クライアントID",
+    "client_secret": "クライアントシークレット",
     "guest_mode": {
       "deny": "アカウントを持たないユーザーはアクセス不可",
       "readonly": "閲覧のみ許可"
@@ -535,8 +506,9 @@
       "group_search_base_DN_detail": "グループ検索を実行するベース DN。利用する場合は <code>グループ検索フィルター</code> も入力する必要があります。",
       "group_search_filter": "グループ検索フィルター",
       "group_search_filter_detail1": "グループフィルターに用いるクエリ",
-      "group_search_filter_detail2": "ログイン対象ユーザーオブジェクトのプロパティーで置換する場合は <code>&#123;&#123;dn&#125;&#125;</code> を用いてください。",
-      "group_search_filter_detail3": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
+      "group_search_filter_detail2": "このクエリにヒットするグループがあったときのみ、LDAPでのログインが成功します。",
+      "group_search_filter_detail3": "ログイン対象ユーザーオブジェクトのプロパティーで置換する場合は <code>&#123;&#123;dn&#125;&#125;</code> を用いてください。",
+      "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
       "group_search_user_DN_property": "ユーザーの DN プロパティー",
       "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
       "test_config": "ログインテスト"
@@ -678,34 +650,37 @@
   },
 
   "user_management": {
-    "User Management": "ユーザー管理",
+    "target_user": "対象ユーザー",
     "invite_users": "新規ユーザーの招待",
     "emails": "メールアドレス (複数行入力で複数人招待可能)",
     "invite_thru_email": "招待をメールで送信",
     "invite": "招待する",
+    "invited": "ユーザーを招待しました",
     "give_admin_access": "管理者にする",
     "remove_admin_access": "管理者から外す",
     "external_account": "外部アカウントの管理",
-    "user_list": "ユーザー一覧",
     "external_account_list": "外部アカウント一覧",
     "back_to_user_management": "ユーザー管理に戻る",
     "authentication_provider": "認証情報プロバイダ",
-    "Manage": "操作",
-    "Edit menu": "編集メニュー",
+    "manage": "操作",
+    "edit_menu": "編集メニュー",
     "password_setting": "パスワード設定",
     "password_setting_help": "関連付けられているユーザーがパスワードを設定しているかどうかを表示します",
     "set": "設定済み",
     "unset": "未設定",
-    "Reissue password": "パスワードの再発行",
+    "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
+    "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
+    "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
+    "password_never_seen": "表示されたパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。",
+    "reset_password": "パスワードの再発行",
     "related_username": "関連付けられているユーザーの <code>%s</code>",
-    "Status": "ステータス",
     "accept": "承認する",
-    "Deactivate account": "アカウント停止",
+    "deactivate_account": "アカウント停止",
     "your_own": "自分自身のアカウントを停止することはできません",
-    "Administrator menu": "管理者メニュー",
+    "administrator_menu": "管理者メニュー",
     "cannot_remove": "自分自身を管理者から外すことはできません",
     "cannot_invite_maximum_users": "ユーザーが上限に達したため招待できません。",
-    "current users": "現在のユーザー数："
+    "current_users": "現在のユーザー数："
   },
 
   "user_group_management": {

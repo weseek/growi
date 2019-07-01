@@ -8,16 +8,15 @@ const urljoin = require('url-join');
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi) {
-  const config = crowi.getConfig();
-  const Config = crowi.model('Config');
   const Slack = require('slack-node');
+  const { configManager } = crowi;
 
   const slack = {};
 
   const postWithIwh = function(messageObj) {
     return new Promise((resolve, reject) => {
       const client = new Slack();
-      client.setWebhook(config.notification['slack:incomingWebhookUrl']);
+      client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
       client.webhook(messageObj, (err, res) => {
         if (err) {
           debug('Post error', err, res);
@@ -31,7 +30,7 @@ module.exports = function(crowi) {
 
   const postWithWebApi = function(messageObj) {
     return new Promise((resolve, reject) => {
-      const client = new Slack(config.notification['slack:token']);
+      const client = new Slack(configManager.getConfig('notification', 'slack:token'));
       // stringify attachments
       if (messageObj.attachments != null) {
         messageObj.attachments = JSON.stringify(messageObj.attachments);
@@ -48,7 +47,7 @@ module.exports = function(crowi) {
   };
 
   const convertMarkdownToMarkdown = function(body) {
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
 
     return body
       .replace(/\n\*\s(.+)/g, '\n• $1')
@@ -107,7 +106,8 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForPage = function(page, user, channel, updateType, previousRevision) {
-    const url = crowi.configManager.getSiteUrl();
+    const appTitle = crowi.appService.getAppTitle();
+    const url = crowi.appService.getSiteUrl();
     let body = page.revision.body;
 
     if (updateType === 'create') {
@@ -133,7 +133,7 @@ module.exports = function(crowi) {
 
     const message = {
       channel: `#${channel}`,
-      username: Config.appTitle(config),
+      username: appTitle,
       text: getSlackMessageTextForPage(page.path, page.id, user, updateType),
       attachments: [attachment],
     };
@@ -142,7 +142,8 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForComment = function(comment, user, channel, path) {
-    const url = crowi.configManager.getSiteUrl();
+    const appTitle = crowi.appService.getAppTitle();
+    const url = crowi.appService.getSiteUrl();
     const body = prepareAttachmentTextForComment(comment);
 
     const attachment = {
@@ -159,7 +160,7 @@ module.exports = function(crowi) {
 
     const message = {
       channel: `#${channel}`,
-      username: Config.appTitle(config),
+      username: appTitle,
       text: getSlackMessageTextForComment(path, String(comment.page), user),
       attachments: [attachment],
     };
@@ -169,7 +170,7 @@ module.exports = function(crowi) {
 
   const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
     let text;
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
 
     const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     if (updateType === 'create') {
@@ -183,7 +184,7 @@ module.exports = function(crowi) {
   };
 
   const getSlackMessageTextForComment = function(path, pageId, user) {
-    const url = crowi.configManager.getSiteUrl();
+    const url = crowi.appService.getSiteUrl();
     const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 
@@ -205,23 +206,23 @@ module.exports = function(crowi) {
 
   const slackPost = (messageObj) => {
     // when incoming Webhooks is prioritized
-    if (Config.isIncomingWebhookPrioritized(config)) {
-      if (Config.hasSlackIwhUrl(config)) {
+    if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
+      if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
         debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
-      if (Config.hasSlackToken(config)) {
+      if (configManager.getConfig('notification', 'slack:token')) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
     }
     // else
     else {
-      if (Config.hasSlackToken(config)) {
+      if (configManager.getConfig('notification', 'slack:token')) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
-      if (Config.hasSlackIwhUrl(config)) {
+      if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
         debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }

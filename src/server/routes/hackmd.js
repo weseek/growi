@@ -40,7 +40,7 @@ module.exports = function(crowi, app) {
       agentScriptContentTpl = swig.compileFile(agentScriptPath);
     }
 
-    const origin = crowi.configManager.getSiteUrl();
+    const origin = crowi.appService.getSiteUrl();
 
     // generate definitions to replace
     const definitions = {

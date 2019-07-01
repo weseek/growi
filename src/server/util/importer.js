@@ -7,9 +7,11 @@
 module.exports = (crowi) => {
   const logger = require('@alias/logger')('growi:util:importer');
   const esa = require('esa-nodejs');
-  const config = crowi.getConfig();
   const createGrowiPages = require('./createGrowiPagesFromImports')(crowi);
   const restQiitaAPIService = crowi.getRestQiitaAPIService();
+
+  const configManager = crowi.configManager;
+  const getConfig = configManager.getConfig;
 
   const importer = {};
   let esaClient = {};
@@ -19,8 +21,8 @@ module.exports = (crowi) => {
    */
   importer.initializeEsaClient = () => {
     esaClient = esa({
-      team:        config.crowi['importer:esa:team_name'],
-      accessToken: config.crowi['importer:esa:access_token'],
+      team:        getConfig('crowi', 'importer:esa:team_name'),
+      accessToken: getConfig('crowi', 'importer:esa:access_token'),
     });
     logger.debug('initialize esa importer');
   };

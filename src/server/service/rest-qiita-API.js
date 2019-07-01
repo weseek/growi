@@ -19,9 +19,9 @@ class RestQiitaAPIService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.config = crowi.getConfig();
-    this.team = this.config.crowi['importer:qiita:team_name'];
-    this.token = this.config.crowi['importer:qiita:access_token'];
+    this.configManager = crowi.configManager;
+    this.team = this.configManager.getConfig('crowi', 'importer:qiita:team_name');
+    this.token = this.configManager.getConfig('crowi', 'importer:qiita:access_token');
     this.axios = getAxios(this.team, this.token);
   }
 
@@ -31,8 +31,8 @@ class RestQiitaAPIService {
    * @param {string} token
    */
   async reset() {
-    this.team = this.config.crowi['importer:qiita:team_name'];
-    this.token = this.config.crowi['importer:qiita:access_token'];
+    this.team = this.configManager.getConfig('crowi', 'importer:qiita:team_name');
+    this.token = this.configManager.getConfig('crowi', 'importer:qiita:access_token');
     this.axios = getAxios(this.team, this.token);
   }
 

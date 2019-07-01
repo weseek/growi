@@ -1,6 +1,6 @@
 {% extends '../layout-growi/base/layout.html' %}
 
-{% block html_title %}{{ customTitle(t('User Settings')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('User Settings')) }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
@@ -15,9 +15,7 @@
 
   <ul class="nav nav-tabs">
     <li class="active"><a href="/me"><i class="icon-user"></i> {{ t('User Information') }}</a></li>
-    {% if isEnabledPassport() %}
     <li><a href="/me/external-accounts"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a></li>
-    {% endif %}
     <li><a href="/me/password"><i class="icon-lock"></i> {{ t('Password Settings') }}</a></li>
     <li><a href="/me/apiToken"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a></li>
   </ul>
@@ -65,11 +63,11 @@
           <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}">
         </div>
         <div class="col-sm-offset-2 col-sm-10">
-          {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
+          {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
           <p class="help-block">
             {{ t('page_register.form_help.email') }}
           <ul>
-            {% for em in config.crowi['security:registrationWhiteList'] %}
+            {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
             <li><code>{{ em }}</code></li>
             {% endfor %}
           </ul>
@@ -158,10 +156,9 @@
             <img src="{{ user|uploadedpicture }}" class="picture picture-lg img-circle" id="settingUserPicture"><br>
             </p>
             <p>
-            <form id="remove-attachment" action="/_api/attachments.remove" method="post" class="form-horizontal"
+            <form id="remove-attachment" action="/_api/attachments.removeProfileImage" method="post" class="form-horizontal"
                 style="{% if not user.imageAttachment %}display: none{% endif %}">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <input type="hidden" name="attachment_id" value="{{ user.imageAttachment.id }}">
               <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
             </form>
             </p>
@@ -173,7 +170,7 @@
             {{ t('Upload new image') }}
           </label>
           <div class="col-sm-8">
-            {% if isUploadable() %}
+            {% if fileUploadService.getIsUploadable() %}
             <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="file" name="profileImage" accept="image/*">
@@ -263,55 +260,6 @@
       })
     });
   </script>
-
-  {% if googleLoginEnabled() %}
-  <div class="form-box">
-    <legend>{{ t('Google Setting') }}</legend>
-    <form action="/me/auth/google" method="post" class="form-horizontal col-sm-12" role="form">
-      <fieldset>
-        {% set wmessage = req.flash('warningMessage.auth.google') %}
-        {% if wmessage.length %}
-        <div class="alert alert-danger">
-          {{ wmessage }}
-        </div>
-        {% endif %}
-
-        <div class="form-group">
-        {% if user.googleId %}
-        <div>
-          <p>
-            <input type="submit" name="disconnectGoogle" class="btn btn-default" value="{{ t('Disconnect') }}">
-          </p>
-          <p class="help-block">
-            {{ t('page_me.form_help.google_disconnect1') }}<br>
-            {{ t('page_me.form_help.google_disconnect2') }}
-          </p>
-        </div>
-        {% else %}
-        <div>
-          <div class="text-center">
-            <input type="submit" name="connectGoogle" class="btn btn-google" value="Googleコネクト">
-          </div>
-          <p class="help-block">
-            {{ t('page_me.form_help.google_connect1') }}<br>
-          </p>
-          {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
-          <p class="help-block">
-            {{ t('page_register.form_help.email') }}<br>
-            {{ t('page_me.form_help.google_connect2') }}
-          </p>
-          <ul>
-            {% for em in config.crowi['security:registrationWhiteList'] %}
-            <li><code>{{ em }}</code></li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </div>
-        {% endif %}
-      </fieldset>
-    </form>
-  </div>
-  {% endif %}
 
   </div> {# end of .tab-contents #}
 

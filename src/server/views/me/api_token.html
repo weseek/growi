@@ -1,7 +1,7 @@
 {% extends '../layout-growi/base/layout.html' %}
 
 
-{% block html_title %}{{ customTitle(t('API Settings')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('API Settings')) }}{% endblock %}
 
 
 {% block content_header %}
@@ -17,9 +17,7 @@
 
   <ul class="nav nav-tabs">
     <li><a href="/me"><i class="icon-user"></i> {{ t('User Information') }}</a></li>
-    {% if isEnabledPassport() %}
     <li><a href="/me/external-accounts"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a></li>
-    {% endif %}
     <li><a href="/me/password"><i class="icon-lock"></i> {{ t('Password Settings') }}</a></li>
     <li class="active"><a href="/me/apiToken"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a></li>
   </ul>

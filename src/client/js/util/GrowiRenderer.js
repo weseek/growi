@@ -3,7 +3,6 @@ import MarkdownIt from 'markdown-it';
 import Linker from './PreProcessor/Linker';
 import CsvToTable from './PreProcessor/CsvToTable';
 import XssFilter from './PreProcessor/XssFilter';
-import CrowiTemplate from './PostProcessor/CrowiTemplate';
 
 import EmojiConfigurer from './markdown-it/emoji';
 import FooternoteConfigurer from './markdown-it/footernote';
@@ -42,7 +41,6 @@ export default class GrowiRenderer {
         new XssFilter(appContainer),
       ];
       this.postProcessors = [
-        new CrowiTemplate(appContainer),
       ];
     }
 
