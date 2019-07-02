@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
+import PaginationWrapper from '../../PaginationWrapper';
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
@@ -19,10 +20,13 @@ class UserGroupPage extends React.Component {
       userGroupRelations: {},
       selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
       isDeleteModalShow: false,
+      activePage: 1,
+      totalUserGroups: 0,
     };
 
     this.xss = window.xss;
 
+    this.handlePage = this.handlePage.bind(this);
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
@@ -96,23 +100,32 @@ class UserGroupPage extends React.Component {
     }
   }
 
+  async handlePage(selectedPage) {
+    await this.setState({ activePage: selectedPage });
+    await this.syncUserGroupAndRelations();
+  }
+
   async syncUserGroupAndRelations() {
     let userGroups = [];
     let userGroupRelations = {};
+    let totalUserGroups = 0;
 
     try {
+      const params = { page: this.state.activePage };
       const responses = await Promise.all([
-        this.props.appContainer.apiv3.get('/user-groups'),
-        this.props.appContainer.apiv3.get('/user-group-relations'),
+        this.props.appContainer.apiv3.get('/user-groups', params),
+        this.props.appContainer.apiv3.get('/user-group-relations', params),
       ]);
 
       const [userGroupsRes, userGroupRelationsRes] = responses;
       userGroups = userGroupsRes.data.userGroups;
+      totalUserGroups = userGroupsRes.data.totalUserGroups;
       userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
 
       this.setState({
         userGroups,
         userGroupRelations,
+        totalUserGroups,
       });
     }
     catch (err) {
@@ -127,12 +140,18 @@ class UserGroupPage extends React.Component {
           isAclEnabled={this.props.isAclEnabled}
           onCreate={this.addUserGroup}
         />
-        <UserGroupTable
-          userGroups={this.state.userGroups}
-          userGroupRelations={this.state.userGroupRelations}
-          isAclEnabled={this.props.isAclEnabled}
-          onDelete={this.showDeleteModal}
-        />
+        <PaginationWrapper
+          activePage={this.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={this.state.totalUserGroups}
+        >
+          <UserGroupTable
+            userGroups={this.state.userGroups}
+            isAclEnabled={this.props.isAclEnabled}
+            onDelete={this.showDeleteModal}
+            userGroupRelations={this.state.userGroupRelations}
+          />
+        </PaginationWrapper>
         <UserGroupDeleteModal
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}
