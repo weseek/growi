@@ -133,12 +133,7 @@ class PaginationWrapper extends React.Component {
 
   render() {
     const { children } = this.props;
-    const childElement = React.cloneElement(
-      children, {
-        currentItems: this.state.currentItems,
-        currentPage: this.state.activePage,
-      },
-    );
+    const childElement = React.cloneElement(children);
 
     const paginationItems = [];
 
