@@ -26,8 +26,8 @@ class RevisionPath extends React.Component {
     this.setState({ isListPage });
 
     // whether set link to '/'
-    const behaviorType = this.props.crowi.getConfig().behaviorType;
-    const isLinkToListPage = (!behaviorType || behaviorType === 'crowi');
+    const { behaviorType } = this.props;
+    const isLinkToListPage = (behaviorType === 'crowi');
     this.setState({ isLinkToListPage });
 
     // generate pages obj
@@ -127,7 +127,7 @@ class RevisionPath extends React.Component {
 
 RevisionPath.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+  behaviorType: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
 };

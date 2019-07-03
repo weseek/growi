@@ -2,10 +2,16 @@ module.exports = function(crowi, app, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
   const Page = crowi.model('Page');
-  const Config = crowi.model('Config');
   const User = crowi.model('User');
-  const passportService = crowi.passportService;
-  const cdnResourcesService = crowi.cdnResourcesService;
+  const {
+    configManager,
+    cdnResourcesService,
+    passportService,
+    appService,
+    aclService,
+    fileUploadService,
+    customizeService,
+  } = crowi;
   debug('initializing swigFunctions');
 
   locals.nodeVersion = function() {
@@ -43,38 +49,25 @@ module.exports = function(crowi, app, req, locals) {
   /**
    * @see ConfigManager#getConfig
    */
-  locals.getConfig = function(namespace, key) {
-    return crowi.configManager.getConfig(namespace, key);
-  };
+  locals.getConfig = configManager.getConfig.bind(configManager);
 
   /**
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  locals.getConfigFromDB = function(namespace, key) {
-    return crowi.configManager.getConfigFromDB(namespace, key);
-  };
+  locals.getConfigFromDB = configManager.getConfigFromDB.bind(configManager);
+
   /**
    * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  locals.getConfigFromEnvVars = function(namespace, key) {
-    return crowi.configManager.getConfigFromEnvVars(namespace, key);
-  };
+  locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
-   * return app title
+   * pass service class to swig
    */
-  locals.appTitle = function() {
-    const config = crowi.getConfig();
-    return crowi.xss.process(Config.appTitle(config));
-  };
-
-  /**
-   * return app-global language
-   */
-  locals.appGlobalLang = function() {
-    const config = crowi.getConfig();
-    return Config.globalLang(config);
-  };
+  locals.appService = appService;
+  locals.aclService = aclService;
+  locals.fileUploadService = fileUploadService;
+  locals.customizeService = customizeService;
 
   locals.noCdn = function() {
     return !!process.env.NO_CDN;
@@ -102,80 +95,27 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
-   * return true if enabled
-   */
-  locals.isEnabledPassport = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPassport(config);
-  };
-
-  /**
-   * return true if local strategy has been setup successfully
-   *  used whether restarting the server needed
-   */
-  locals.isPassportLocalStrategySetup = function() {
-    return passportService != null && passportService.isLocalStrategySetup;
-  };
-
-  /**
    * return true if enabled and strategy has been setup successfully
    */
   locals.isLdapSetup = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPassport(config) && Config.isEnabledPassportLdap(config) && passportService.isLdapStrategySetup;
+    return (
+      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      && passportService.isLdapStrategySetup
+    );
   };
 
   /**
    * return true if enabled but strategy has some problem
    */
   locals.isLdapSetupFailed = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPassport(config) && Config.isEnabledPassportLdap(config) && !passportService.isLdapStrategySetup;
-  };
-
-  locals.passportSamlLoginEnabled = function() {
-    return locals.isEnabledPassport() && locals.getConfig('crowi', 'security:passport-saml:isEnabled');
+    return (
+      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
+      && !passportService.isLdapStrategySetup
+    );
   };
 
   locals.getSamlMissingMandatoryConfigKeys = function() {
-    // return an empty array if Passport is not enabled
-    // because crowi.passportService is null.
-    if (!locals.isEnabledPassport()) {
-      return [];
-    }
-
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
-  };
-
-  locals.googleLoginEnabled = function() {
-    // return false if Passport is enabled
-    // because official crowi mechanism is not used.
-    if (locals.isEnabledPassport()) {
-      return false;
-    }
-
-    const config = crowi.getConfig();
-    return config.crowi['google:clientId'] && config.crowi['google:clientSecret'];
-  };
-
-  locals.passportGoogleLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-google:isEnabled'];
-  };
-
-  locals.passportGitHubLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-github:isEnabled'];
-  };
-
-  locals.passportTwitterLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-twitter:isEnabled'];
-  };
-
-  locals.passportOidcLoginEnabled = function() {
-    const config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-oidc:isEnabled'];
   };
 
   locals.searchConfigured = function() {
@@ -187,89 +127,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.isHackmdSetup = function() {
     return process.env.HACKMD_URI != null;
-  };
-
-  locals.isEnabledPlugins = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledPlugins(config);
-  };
-
-  locals.isEnabledLinebreaks = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledLinebreaks(config);
-  };
-
-  locals.isEnabledLinebreaksInComments = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledLinebreaksInComments(config);
-  };
-
-  locals.customCss = function() {
-    return Config.customCss();
-  };
-
-  locals.pageBreakSeparator = function() {
-    const config = crowi.getConfig();
-    return Config.pageBreakSeparator(config);
-  };
-
-  locals.pageBreakCustomSeparator = function() {
-    const config = crowi.getConfig();
-    return Config.pageBreakCustomSeparator(config);
-  };
-
-  locals.customScript = function() {
-    return Config.customScript();
-  };
-
-  locals.customHeader = function() {
-    const config = crowi.getConfig();
-    return Config.customHeader(config);
-  };
-
-  locals.theme = function() {
-    const config = crowi.getConfig();
-    return Config.theme(config);
-  };
-
-  locals.customTitle = function(page) {
-    const config = crowi.getConfig();
-    return Config.customTitle(config, page);
-  };
-
-  locals.behaviorType = function() {
-    const config = crowi.getConfig();
-    return Config.behaviorType(config);
-  };
-
-  locals.layoutType = function() {
-    const config = crowi.getConfig();
-    return Config.layoutType(config);
-  };
-
-  locals.highlightJsStyle = function() {
-    const config = crowi.getConfig();
-    return Config.highlightJsStyle(config);
-  };
-
-  locals.highlightJsStyleBorder = function() {
-    const config = crowi.getConfig();
-    return Config.highlightJsStyleBorder(config);
-  };
-
-  locals.isEnabledTimeline = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledTimeline(config);
-  };
-
-  locals.isUploadable = function() {
-    const config = crowi.getConfig();
-    return Config.isUploadable(config);
-  };
-
-  locals.isEnabledAttachTitleHeader = function() {
-    const config = crowi.getConfig();
-    return Config.isEnabledAttachTitleHeader(config);
   };
 
   locals.parentPath = function(path) {

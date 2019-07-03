@@ -97,6 +97,8 @@ let componentMappings = {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
+
+  'staff-credit': <StaffCredit />,
 };
 
 // additional definitions if data exists
@@ -121,7 +123,7 @@ if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
     'page': <Page />,
-    'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={appContainer} />,
+    'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label':  <TagLabels />,
   }, componentMappings);
 }
@@ -181,16 +183,6 @@ if (adminGrantSelectorElem != null) {
     </I18nextProvider>,
     adminGrantSelectorElem,
   );
-}
-
-// render for stuff credit
-const pageStuffCreditElem = document.getElementById('staff-credit');
-if (pageStuffCreditElem) {
-  ReactDOM.render(
-    <StaffCredit></StaffCredit>,
-    pageStuffCreditElem,
-  );
-
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

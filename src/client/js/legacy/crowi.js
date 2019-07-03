@@ -1,4 +1,3 @@
-/* global location */
 /* eslint no-restricted-globals: ['error', 'locaion'] */
 
 import React from 'react';
@@ -209,6 +208,30 @@ Crowi.initSlimScrollForRevisionToc = () => {
     // calculate sum of height (.navbar-header + .bg-title) + margin-top of .main
     const sum = 138;
     resetScrollbar(sum);
+  });
+};
+
+Crowi.initClassesByOS = function() {
+  // add classes to cmd-key by OS
+  const platform = navigator.platform.toLowerCase();
+  const isMac = (platform.indexOf('mac') > -1);
+
+  document.querySelectorAll('.system-version .cmd-key').forEach((element) => {
+    if (isMac) {
+      element.classList.add('mac');
+    }
+    else {
+      element.classList.add('win');
+    }
+  });
+
+  document.querySelectorAll('#shortcuts-modal .cmd-key').forEach((element) => {
+    if (isMac) {
+      element.classList.add('mac');
+    }
+    else {
+      element.classList.add('win', 'key-longer');
+    }
   });
 };
 
@@ -748,6 +771,7 @@ window.addEventListener('load', (e) => {
   Crowi.modifyScrollTop();
   Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
+  Crowi.initClassesByOS();
 });
 
 window.addEventListener('hashchange', (e) => {

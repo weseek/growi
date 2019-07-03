@@ -1,20 +1,13 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('Customize')) }} {% endblock %}
 
 {% block theme_css_block %}
-  {% if 'kibela' === layoutType() %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
-    {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
-    {% endif %}
+  {% set themeName = getConfig('crowi', 'customize:theme') %}
+  {% if env === 'development' %}
+    <script src="{{ webpack_asset('styles/theme-' + themeName + '.js') }}"></script>
   {% else %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
-    {% else %}
-    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
-    {% endif %}
+  <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + themeName + '.css') }}">
   {% endif %}
 {% endblock %}
 
@@ -314,7 +307,7 @@
             <div class="col-xs-9">
               <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)" {% if noCdn() %}disabled{% endif %}>
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
-                  <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
+                  <option value={{key}} {% if key == getConfig('crowi', 'customize:highlightJsStyle') %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
                 {% endfor %}
               </select>
               <p class="help-block text-warning">{{ t('customize_page.nocdn_desc') }}</p>
@@ -338,7 +331,7 @@
           </div>
 
           <div id="highlightJsCssContainer">
-            {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}
+            {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
           </div>
 
           <p class="help-block">
@@ -388,7 +381,7 @@ export  $initHighlight;</code></pre>
 
           <div class="form-group">
             <div class="col-xs-12">
-              <input class="form-control" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] }}"></input>
+              <input class="form-control" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] | default('') }}"></input>
             </div>
           </div>
 
@@ -418,7 +411,7 @@ export  $initHighlight;</code></pre>
         <div class="form-group">
           <div class="col-xs-12">
             <div id="custom-header-editor"></div>
-            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] }}">
+            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] | default('') }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -450,7 +443,7 @@ export  $initHighlight;</code></pre>
         <div class="form-group">
           <div class="col-xs-12">
             <div id="custom-css-editor"></div>
-            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] }}">
+            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] | default('') }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -486,14 +479,14 @@ export  $initHighlight;</code></pre>
           <dl class="dl-horizontal">
             <dt><code>$</code></dt>
             <dd>jQuery instance</dd>
-            <dt><code>crowi</code></dt>
-            <dd>Crowi context instance</dd>
+            <dt><code>appContainer</code></dt>
+            <dd>GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
+            <dt><code>growiRenderer</code></dt>
+            <dd>GROWI Renderer origin instance</dd>
+            <dt><code>growiPlugin</code></dt>
+            <dd>GROWI Plugin Manager instance</dd>
             <dt><code>Crowi</code></dt>
             <dd>Crowi legacy instance (jQuery based)</dd>
-            <dt><code>crowiRenderer</code></dt>
-            <dd>Crowi Renderer instance</dd>
-            <dt><code>crowiPlugin</code></dt>
-            <dd>GROWI plugin manager instance</dd>
           </dl>
         </p>
         <p class="help-block">
@@ -501,14 +494,14 @@ export  $initHighlight;</code></pre>
 <pre class="hljs"><code>console.log($('.main-container'));
 
 window.addEventListener('load', (event) => {
-  console.log('config: ', crowi.config);
+  console.log('config: ', appContainer.config);
 });</code></pre>
         </p>
 
         <div class="form-group">
           <div class="col-xs-12">
             <div id="custom-script-editor"></div>
-            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] }}">
+            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] | default('') }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">

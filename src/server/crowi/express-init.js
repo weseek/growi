@@ -11,7 +11,6 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const expressSession = require('express-session');
   const sanitizer = require('express-sanitizer');
-  const basicAuth = require('basic-auth-connect');
   const flash = require('connect-flash');
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
@@ -22,15 +21,12 @@ module.exports = function(crowi, app) {
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
-  const middleware = require('../util/middlewares');
 
   const env = crowi.node_env;
 
-  // Old type config API
-  const config = crowi.getConfig();
-  const Config = crowi.model('Config');
   // New type config API
   const configManager = crowi.configManager;
+  const getConfig = configManager.getConfig;
 
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
@@ -60,7 +56,7 @@ module.exports = function(crowi, app) {
 
   app.use((req, res, next) => {
     const now = new Date();
-    const tzoffset = -(config.crowi['app:timezone'] || 9) * 60;
+    const tzoffset = -(getConfig('crowi', 'app:timezone') || 9) * 60;
     // for datez
 
     const Page = crowi.model('Page');
@@ -68,12 +64,10 @@ module.exports = function(crowi, app) {
     const Config = crowi.model('Config');
     app.set('tzoffset', tzoffset);
 
-    req.config = config;
     req.csrfToken = null;
 
     res.locals.req = req;
-    res.locals.baseUrl = configManager.getSiteUrl();
-    res.locals.config = config;
+    res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
     res.locals.tzoffset = tzoffset;
@@ -81,10 +75,10 @@ module.exports = function(crowi, app) {
       pageGrants: Page.getGrantLabels(),
       userStatus: User.getUserStatusLabels(),
       language:   User.getLanguageLabels(),
-      restrictGuestMode: Config.getRestrictGuestModeLabels(),
-      registrationMode: Config.getRegistrationModeLabels(),
+      restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
+      registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
-    res.locals.local_config = Config.getLocalconfig(config); // config for browser context
+    res.locals.local_config = Config.getLocalconfig(); // config for browser context
 
     next();
   });
@@ -118,50 +112,21 @@ module.exports = function(crowi, app) {
     expressSession(crowi.sessionConfig)(req, res, next);
   });
 
-  // Set basic auth middleware
-  app.use((req, res, next) => {
-    if (req.query.access_token || req.body.access_token) {
-      return next();
-    }
-
-    // FIXME:
-    //   healthcheck endpoint exclude from basic authentication.
-    //   however, hard coding is not desirable.
-    //   need refactoring (ex. setting basic authentication for each routes)
-    if (req.path === '/_api/v3/healthcheck') {
-      return next();
-    }
-
-    const basicName = configManager.getConfig('crowi', 'security:basicName');
-    const basicSecret = configManager.getConfig('crowi', 'security:basicSecret');
-    if (basicName && basicSecret) {
-      return basicAuth(basicName, basicSecret)(req, res, next);
-    }
-
-    next();
-  });
-
   // passport
-  if (Config.isEnabledPassport(config)) {
-    debug('initialize Passport');
-    app.use(passport.initialize());
-    app.use(passport.session());
-  }
+  debug('initialize Passport');
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use(flash());
 
-  app.use(middleware.swigFilters(crowi, app, swig));
-  app.use(middleware.swigFunctions(crowi, app));
+  const middlewares = require('../util/middlewares')(crowi, app);
 
-  app.use(middleware.csrfKeyGenerator(crowi, app));
+  app.use(middlewares.swigFilters(swig));
+  app.use(middlewares.swigFunctions());
 
-  // switch loginChecker
-  if (Config.isEnabledPassport(config)) {
-    app.use(middleware.loginCheckerForPassport(crowi, app));
-  }
-  else {
-    app.use(middleware.loginChecker(crowi, app));
-  }
+  app.use(middlewares.csrfKeyGenerator());
+
+  app.use(middlewares.loginCheckerForPassport);
 
   app.use(i18nMiddleware.handle(i18next));
 };

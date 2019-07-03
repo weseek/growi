@@ -1,0 +1,62 @@
+<form action="/_api/admin/security/passport-basic" method="post" class="form-horizontal passportStrategy" id="basicSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend class="alert-anchor">{{ t("security_setting.Basic authentication") }} {{ t("security_setting.configuration") }}</legend>
+
+  {% set nameForIsbasicEnabled = "settingForm[security:passport-basic:isEnabled]" %}
+  {% set isbasicEnabled = settingForm['security:passport-basic:isEnabled'] %}
+
+  <div class="form-group">
+    <label for="{{nameForIsbasicEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.Basic authentication") }}</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isbasicEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsbasicEnabled}}" value="true" type="radio"
+              {% if true === isbasicEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isbasicEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsbasicEnabled}}" value="false" type="radio"
+              {% if !isbasicEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+    </div>
+  </div>
+  <fieldset id="passport-basic-hide-when-disabled" {%if !isbasicEnabled %}style="display: none;"{% endif %}>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-basic:id]" class="col-xs-3 control-label">ID</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-basic:id]" value="{{ settingForm['security:passport-basic:id'] || '' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-basic:password]" class="col-xs-3 control-label">{{ t("Password") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-basic:password]" value="{{ settingForm['security:passport-basic:password'] || '' }}">
+      </div>
+    </div>
+
+  </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+    </div>
+  </div>
+
+</form>
+
+<script>
+  $('input[name="settingForm[security:passport-basic:isEnabled]"]').change(function() {
+    const isEnabled = ($(this).val() === "true");
+
+    if (isEnabled) {
+      $('#passport-basic-hide-when-disabled').show(400);
+    }
+    else {
+      $('#passport-basic-hide-when-disabled').hide(400);
+    }
+  });
+</script>
+

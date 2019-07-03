@@ -69,6 +69,7 @@ const contributors = [
           { name: 'nekoruri' },
           { name: 'kmyk' },
           { name: 'aximov' },
+          { name: 'tats-u' },
         ],
       },
     ],

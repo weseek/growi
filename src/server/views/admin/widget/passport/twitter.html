@@ -1,9 +1,8 @@
-<form action="/_api/admin/security/passport-twitter" method="post" class="form-horizontal passportStrategy" id="twitterSetting" role="form"
-    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+<form action="/_api/admin/security/passport-twitter" method="post" class="form-horizontal passportStrategy" id="twitterSetting" role="form">
   <legend class="alert-anchor">{{ t("security_setting.OAuth.Twitter.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsTwitterEnabled = "settingForm[security:passport-twitter:isEnabled]" %}
-  {% set isTwitterEnabled = settingForm['security:passport-twitter:isEnabled'] %}
+  {% set isTwitterEnabled = getConfig('crowi', 'security:passport-twitter:isEnabled') %}
   {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
   {% set callbackUrl = siteUrl + '/passport/twitter/callback' %}
 
@@ -29,7 +28,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-twitter:consumerKey]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-twitter:consumerKey]" value="{{ settingForm['security:passport-twitter:consumerKey'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-twitter:consumerKey]" value="{{ getConfig('crowi', 'security:passport-twitter:consumerKey') | default('') }}">
         <p class="help-block">
           <small>
                 {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CONSUMER_KEY") }}
@@ -41,7 +40,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-twitter:consumerSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-twitter:consumerSecret]" value="{{ settingForm['security:passport-twitter:consumerSecret'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-twitter:consumerSecret]" value="{{ getConfig('crowi', 'security:passport-twitter:consumerSecret') | default('') }}">
         <p class="help-block">
           <small>
              {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CONSUMER_SECRET") }}
@@ -68,7 +67,7 @@
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
           <input type="checkbox" id="bindByUserName-Twitter" name="settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+              {% if getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByUserName-Twitter">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>

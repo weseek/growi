@@ -41,10 +41,6 @@ class UserGroupRelation {
     return this._crowi;
   }
 
-  static init() {
-    this.removeAllInvalidRelations();
-  }
-
   /**
    * remove all invalid relations that has reference to unlinked document
    */
@@ -288,6 +284,5 @@ module.exports = function(crowi) {
   UserGroupRelation.crowi = crowi;
   schema.loadClass(UserGroupRelation);
   const model = mongoose.model('UserGroupRelation', schema);
-  model.init();
   return model;
 };

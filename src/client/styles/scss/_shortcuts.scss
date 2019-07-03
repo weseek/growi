@@ -51,6 +51,13 @@
     &.key-long {
       width: 72px;
     }
+    &.key-small {
+      width: 24px;
+      height: 24px;
+      margin: 4px 2px;
+      font-size: 18px;
+      line-height: 22px;
+    }
   }
 
   .dl-horizontal {

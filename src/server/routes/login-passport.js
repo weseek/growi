@@ -177,7 +177,7 @@ module.exports = function(crowi, app) {
         if (!isValidLdapUserByGroupFilter(user)) {
           return res.json({
             status: 'warning',
-            message: 'The user is found, but that has no groups.',
+            message: 'This user does not belong to any groups designated by the group search filter.',
             ldapConfiguration: req.ldapConfiguration,
             ldapAccountInfo: req.ldapAccountInfo,
           });
@@ -455,6 +455,51 @@ module.exports = function(crowi, app) {
     });
   };
 
+  /**
+   * middleware that login with BasicStrategy
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   */
+  const loginWithBasic = async(req, res, next) => {
+    if (!passportService.isBasicStrategySetup) {
+      debug('BasicStrategy has not been set up');
+      req.flash('warningMessage', 'Basic has not been set up');
+      return next();
+    }
+
+    const providerId = 'basic';
+    const strategyName = 'basic';
+    let userId;
+
+    try {
+      userId = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      // display prompt in browser
+      res.setHeader('WWW-Authenticate', 'Basic realm="Users"');
+      res.sendStatus(401).end();
+      return;
+    }
+
+    const userInfo = {
+      id: userId,
+      username: userId,
+      name: userId,
+    };
+
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    if (!externalAccount) {
+      return loginFailure(req, res, next);
+    }
+
+    const user = await externalAccount.getPopulatedUser();
+    await req.logIn(user, (err) => {
+      if (err) { return next() }
+      return loginSuccess(req, res, user);
+    });
+  };
+
   const promisifiedPassportAuthentication = (strategyName, req, res) => {
     return new Promise((resolve, reject) => {
       passport.authenticate(strategyName, (err, response, info) => {
@@ -530,6 +575,7 @@ module.exports = function(crowi, app) {
     loginWithTwitter,
     loginWithOidc,
     loginWithSaml,
+    loginWithBasic,
     loginPassportGoogleCallback,
     loginPassportGitHubCallback,
     loginPassportTwitterCallback,

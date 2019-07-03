@@ -4,104 +4,57 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{% block html_title %}{{ customTitle(path) }}{% endblock %}</title>
+  <title>{% block html_title %}{{ customizeService.generateCustomTitle(path) }}{% endblock %}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="{{ appTitle() }}">
+  <meta name="apple-mobile-web-app-title" content="{{ appService.getAppTitle() }}">
 
-  {% include '../widget/favicon.html' %}
+  {{ getConfig('crowi', 'customize:header') | default('') }}
 
-  {{ customHeader() }}
-
-  <!-- polyfills for IE11 -->
-  <script>
-    var userAgent = window.navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
-      var scriptElement = document.createElement('script');
-      scriptElement.src = '{{ webpack_asset("js/ie11-polyfill.js") }}';
-      var headElement = document.getElementsByTagName('head')[0];
-      headElement.appendChild(scriptElement);
-    }
-  </script>
+  {% include '../widget/headers/favicon.html' %}
+  {% include '../widget/headers/ie11-polyfills.html' %}
 
   {{ cdnScriptTagsByGroup('basis') }}
 
   {% if local_config.env.MATHJAX %}
-    <!-- Mathjax -->
-    <script type="text/x-mathjax-config" async>
-      MathJax.Hub.Config({
-        skipStartupTypeset: true,
-        extensions: ["tex2jax.js"],
-        jax: ["input/TeX", "output/SVG"],
-        tex2jax: {
-          processEscapes: true
-        },
-        showMathMenu: false,
-        showMathMenuMSIE: false,
-        showProcessingMessages: false,
-        messageStyle: "none"
-      });
-    </script>
-    {{ cdnScriptTag('mathjax') }}
+    {% include '../widget/headers/mathjax.html' %}
   {% endif %}
 
-  {% if env === 'development' %}
-    <script src="/dll/dll.js"></script>
-    <script src="{{ webpack_asset('js/dev.js') }}" async></script>
-    <!-- Browsersync -->
-    <script id="__bs_script__">//<![CDATA[
-      document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
-    //]]></script>
-  {% endif %}
+  {% include '../widget/headers/scripts-for-dev.html' %}
 
   <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
   <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
-  {% if isEnabledPlugins() %}
+  {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}
   <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
-  <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
+    <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
   {% endblock %}
   {% block html_head_loading_app %}
-  <script src="{{ webpack_asset('js/app.js') }}" defer></script>
+    <script src="{{ webpack_asset('js/app.js') }}" defer></script>
   {% endblock %}
 
   <!-- styles -->
-  {% block style_css_block %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
-      <script src="{{ webpack_asset('styles/style-app.js') }}"></script>
-    {% else %}
-      <script src="{{ webpack_asset('styles/style-commons.js') }}"></script>
-      <link rel="stylesheet" href="{{ webpack_asset('styles/style-app.css') }}">
-    {% endif %}
-  {% endblock %}
-  {% block theme_css_block %}
-    {% if 'kibela' === layoutType() %}
-      {% if env === 'development' %}
-        <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
-      {% else %}
-        <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
-      {% endif %}
-    {% else %}
-      {% if env === 'development' %}
-        <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
-      {% else %}
-        <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
-      {% endif %}
-    {% endif %}
-  {% endblock %}
+  {% include '../widget/headers/styles-for-app.html' %}
+  {% if 'kibela' === getConfig('crowi', 'customize:layout') %}
+    {% include '../widget/headers/styles-theme-kibela.html' %}
+  {% else %}
+    {% block theme_css_block %}
+      {% set themeName = getConfig('crowi', 'customize:theme') %}
+      {% include '../widget/headers/styles-theme.html' with {themeName: themeName} %}
+    {% endblock %}
+  {% endif %}
 
   {{ cdnStyleTagsByGroup('basis') }}
-  {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}
+  {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
 
   {% block html_additional_headers %}{% endblock %}
 
   <style>
-    {{ customCss() }}
+    {{ customizeService.getCustomCss() }}
   </style>
 </head>
 {% endblock %}
@@ -109,10 +62,10 @@
 {% block html_body %}
 <body
   class="main-container content-wrapper {% block html_base_css %}{% endblock %}
-      {% if !layoutType() || 'crowi' === layoutType() %}crowi{% elseif !layoutType() || 'kibela' === layoutType() %}kibela{% else %}growi{% endif %}"
+      {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"
-  data-plugin-enabled="{{ isEnabledPlugins() }}"
+  data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
   data-current-username="{% if user %}{{ user.username }}{% endif %}"
@@ -133,7 +86,7 @@
             <div class="logo-mark">{% include '../widget/logo.html' %}</div>
           </b>
           <span class="hidden-xs" style="color: black">
-            {% set appTitle = appTitle() %}
+            {% set appTitle = appService.getAppTitle() %}
             {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
             <span class="logo-text">
               <svg xmlns="http://www.w3.org/2000/svg">
@@ -201,8 +154,8 @@
         {% else %}
         <li id="login-user"><a href="/login">Login</a></li>
         {% endif %}
-        {% if config.crowi['app:confidential'] && config.crowi['app:confidential'] != '' %}
-        <li class="confidential"><a href="#">{{ config.crowi['app:confidential'] }}</a></li>
+        {% if getConfig('crowi', 'app:confidential') %}
+        <li class="confidential"><a href="#">{{ getConfig('crowi', 'app:confidential') }}</a></li>
         {% endif %}
       </ul>
     </div><!-- /.navbar-header -->
@@ -255,7 +208,7 @@
 
 {% block custom_script %}
 <script>
-  {{ customScript() }}
+  {{ customizeService.getCustomScript() }}
 </script>
 {% endblock %}
 
