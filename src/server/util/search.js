@@ -19,6 +19,7 @@ function SearchClient(crowi, esUri) {
   this.esUri = esUri;
   this.crowi = crowi;
   this.searchEvent = crowi.event('search');
+  this.configManager = this.crowi.configManager;
 
   // In Elasticsearch RegExp, we don't need to used ^ and $.
   // Ref: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#_standard_operators
@@ -553,11 +554,8 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
 };
 
 SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {
-  const Config = this.crowi.model('Config');
-  const config = this.crowi.getConfig();
-
-  const showPagesRestrictedByOwner = !Config.hidePagesRestrictedByOwnerInList(config);
-  const showPagesRestrictedByGroup = !Config.hidePagesRestrictedByGroupInList(config);
+  const showPagesRestrictedByOwner = !this.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+  const showPagesRestrictedByGroup = !this.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
 
   query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 

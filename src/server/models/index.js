@@ -1,6 +1,6 @@
 module.exports = {
+  Config: require('./config'),
   Page: require('./page'),
-  PageGroupRelation: require('./page-group-relation'),
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
   ExternalAccount: require('./external-account'),
@@ -15,4 +15,7 @@ module.exports = {
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),
+
+  // non-persistent models
+  ErrorV3: require('./ErrorV3'),
 };

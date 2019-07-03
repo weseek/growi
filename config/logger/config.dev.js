@@ -1,6 +1,8 @@
 module.exports = {
   default: 'info',
 
+  // 'express-session': 'debug',
+
   /*
    * configure level for server
    */
@@ -13,6 +15,7 @@ module.exports = {
   // 'growi:routes:login': 'debug',
   'growi:routes:login-passport': 'debug',
   'growi:service:PassportService': 'debug',
+  // 'growi:service:ConfigManager': 'debug',
   'growi:lib:search': 'debug',
   // 'growi:service:GlobalNotification': 'debug',
   // 'growi:lib:importer': 'debug',
@@ -27,4 +30,6 @@ module.exports = {
    * configure level for client
    */
   'growi:app': 'debug',
+  'growi:services:*': 'debug',
+  // 'growi:StaffCredit': 'debug',
 };

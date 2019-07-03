@@ -1,9 +1,8 @@
-<form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form"
-    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+<form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form">
   <legend class="alert-anchor">{{ t("security_setting.OAuth.Google.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
-  {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
+  {% set isGoogleEnabled = getConfig('crowi', 'security:passport-google:isEnabled') | default('') %}
   {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
   {% set callbackUrl = siteUrl + '/passport/google/callback' %}
 
@@ -27,7 +26,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ settingForm['security:passport-google:clientId'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ getConfig('crowi', 'security:passport-google:clientId') | default('') }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_ID") }}
@@ -39,7 +38,7 @@
     <div class="form-group">
       <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ getConfig('crowi', 'security:passport-google:clientSecret') | default('') }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_SECRET") }}
@@ -65,7 +64,7 @@
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
           <input type="checkbox" id="bindByUserName-Google" name="settingForm[security:passport-google:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-google:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+              {% if getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByUserName-Google">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>

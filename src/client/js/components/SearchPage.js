@@ -4,6 +4,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+
 import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
 
@@ -13,7 +16,7 @@ class SearchPage extends React.Component {
     super(props);
 
     this.state = {
-      searchingKeyword: this.props.query.q || '',
+      searchingKeyword: decodeURI(this.props.query.q) || '',
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
@@ -69,7 +72,7 @@ class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
 
-    this.props.crowi.apiGet('/search', { q: keyword })
+    this.props.appContainer.apiGet('/search', { q: keyword })
       .then((res) => {
         this.changeURL(keyword);
 
@@ -92,14 +95,11 @@ class SearchPage extends React.Component {
         <div className="search-page-input">
           <SearchPageForm
             t={this.props.t}
-            crowi={this.props.crowi}
             onSearchFormChanged={this.search}
             keyword={this.state.searchingKeyword}
           />
         </div>
         <SearchResult
-          crowi={this.props.crowi}
-          crowiRenderer={this.props.crowiRenderer}
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
@@ -110,10 +110,17 @@ class SearchPage extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const SearchPageWrapper = (props) => {
+  return createSubscribedElement(SearchPage, props, [AppContainer]);
+};
+
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   query: PropTypes.object,
 };
 SearchPage.defaultProps = {
@@ -121,4 +128,4 @@ SearchPage.defaultProps = {
   query: SearchPage.getQueryByLocation(window.location || {}),
 };
 
-export default withTranslation()(SearchPage);
+export default withTranslation()(SearchPageWrapper);

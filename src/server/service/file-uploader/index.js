@@ -22,6 +22,7 @@ class FileUploaderFactory {
 }
 
 const factory = new FileUploaderFactory();
+
 module.exports = (crowi) => {
   return factory.getUploader(crowi);
 };

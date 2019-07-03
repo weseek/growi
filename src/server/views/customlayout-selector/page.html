@@ -1,6 +1,6 @@
-{% if !layoutType() || 'crowi' === layoutType() %}
+{% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}
   {% include '../layout-crowi/page.html' %}
-{% elseif !layoutType() || 'kibela' === layoutType()%}
+{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout')%}
   {% include '../layout-kibela/page.html' %}
 {% else %}
   {% include '../layout-growi/page.html' %}

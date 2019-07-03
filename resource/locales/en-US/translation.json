@@ -2,6 +2,7 @@
   "Help": "Help",
   "Edit": "Edit",
   "Delete": "Delete",
+  "Delete All": "Delete All",
   "Duplicate": "Duplicate",
   "Copy": "Copy",
   "Click to copy": "Click to copy",
@@ -13,6 +14,7 @@
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
+  "administrator": "Admin",
   "Tag": "Tag",
   "Tags": "Tags",
   "New": "New",
@@ -24,6 +26,7 @@
   "Page Path": "Page Path",
   "Category": "Category",
   "User": "User",
+  "status":"Status",
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -46,6 +49,7 @@
 
   "Created": "Created",
   "Last updated": "Updated",
+  "Last_Login": "Last Login",
 
   "Share": "Share",
   "Share Link": "Share Link",
@@ -77,9 +81,7 @@
   "Delete this image?": "Delete this image?",
   "Updated": "Updated",
   "Upload new image": "Upload new image",
-  "Google Setting": "Google Setting",
   "Connected": "Connected",
-  "Disconnect": "Disconnect",
   "Show": "Show",
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
@@ -102,12 +104,12 @@
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
   "Notification Settings": "Notification Settings",
-  "User Management": "User Management",
+  "User_Management": "User Management",
   "External Account management": "External Account management",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
-  "Basic settings": "Basic settings",
+  "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
   "Guest users access": "Guest users access",
   "Register limitation": "Register limitation",
@@ -120,7 +122,6 @@
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-  "Selecting authentication mechanism": "Selecting authentication mechanism",
   "Add tags for this page": "Add tags for this page",
   "Edit tags for this page": "Edit tags for this page",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
@@ -145,15 +146,13 @@
   },
 
   "breaking_changes": {
-    "v346_passport_is_not_enabled": "Crowi Classic Authentication mechanism currently in use will <strong>no longer be supported</strong> in the near future. Switch to Passport from %s",
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
 
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",
-      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki.",
-      "google_account_continue": "Enter your user ID, name and password to continue."
+      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki."
     },
     "form_help": {
       "email": "You must have email address which listed below to sign up to this wiki.",
@@ -165,11 +164,7 @@
   "page_me": {
     "form_help": {
       "profile_image1": "Image upload settings not completed.",
-      "profile_image2": "Set up AWS or enable local uploads.",
-      "google_connect1": "With Google Connect, you can sign in with your Google Account.",
-      "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
-      "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",
-      "google_disconnect2": "After disconnecting your Google account, you can sign in normally using your email and password"
+      "profile_image2": "Set up AWS or enable local uploads."
     }
   },
   "page_me_apitoken": {
@@ -191,7 +186,7 @@
   "Re-enter new password": "Re-enter new password",
   "Password is not set": "Password is not set",
 
-  "Security Settings": "Security Settings",
+  "security_settings": "Security Settings",
 
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",
@@ -266,7 +261,8 @@
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "New page is already exists.",
-    "outdated": "Page is updated someone and now outdated. "
+    "outdated": "Page is updated someone and now outdated.",
+    "user_not_admin": "Only admin user can delete completely"
   },
 
   "modal_rename": {
@@ -287,15 +283,13 @@
   "Delete Completely": "Delete Completely",
 
   "modal_delete": {
-    "label": {
-      "Delete Page": "Delete Page",
-      "Delete recursively": "Delete recursively",
-      "Delete completely": "Delete completely"
-    },
-    "help": {
-      "recursively": "Delete children of under <code>%s</code> recursively",
-      "completely": "Delete completely instead of putting it into trash"
-    }
+    "delete_page": "Delete Page",
+    "deleting_page": "Deleting Page",
+    "delete_recursively": "Delete child pages under %s recursively.",
+    "delete_completely": "Delete Completely",
+    "delete_completely_restriction": "You have no admin to delete completely.",
+    "recursively": "Delete children of under <code>%s</code> recursively.",
+    "completely": "Delete completely instead of putting it into trash."
   },
 
   "modal_duplicate": {
@@ -321,7 +315,10 @@
       "title": "Global shortcuts",
       "Open/Close shortcut help": "Open/Close shortcut help",
       "Edit Page": "Edit Page",
-      "Create Page": "Create Page"
+      "Create Page": "Create Page",
+      "Show Contributors": "Show Contributors",
+      "Konami Code": "Konami Code",
+      "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
     "editor": {
       "title": "Editor shortcuts",
@@ -436,12 +433,11 @@
   },
 
   "security_setting": {
-		"Basic authentication": "Basic authentication",
+		"Basic authentication": "Basic Authentication",
 		"Security settings": "Security settings",
 		"Guest users access": "Guest users access",
 		"Register limitation": "Register limitation",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-		"Selecting authentication mechanism": "Selecting authentication mechanism",
 		"common_authentication": "If you set the basic authentication, common authentication is applied on the whole page.",
 		"without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
 		"basic_acl_disable": "Because of Public Wiki  setting, basic authentication can not be used.",
@@ -455,45 +451,30 @@
     "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing/searching",
     "page_listing_2": "Page listing/searching<br>restricted by User Group",
     "page_listing_2_desc": "Show pages that are restricted by User Group when listing/searching",
+    "complete_deletion": "Restrict Complete Deletion of Pages",
+    "complete_deletion_explain": "Restricts users who can completely delete pages.",
+    "admin_only": "Admin Only",
+    "admin_and_author": "Admin and Author",
+    "anyone": "Anyone",
 
-		"Authentication mechanism settings": "Authentication mechanism settings",
-    "note": "Note",
-    "require_server_restart_change_auth": "Restarting the server is required if you switch the auth mechanism.",
-    "auth_mechanism": "authentication mechanism",
-    "recommended": "Recommended",
-    "username_email_password": "Username, Email and Password authentication",
+		"Authentication mechanism settings": "Authentication Mechanism Settings",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
-    "ldap_auth": "LDAP authentication",
-    "saml_auth": "SAML authentication",
-    "google_auth2": "Google OAuth authentication",
-    "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
-    "facebook_auth2": "Facebook OAuth authentication",
-    "twitter_auth2": "Twitter OAuth authentication",
-    "github_auth2": "GitHub OAuth authentication",
-    "crowi_auth": "Crowi classic authentication mechanism",
-		"require_server_restart": "Restarting the server is required.",
-		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",
-		"server_on_crowi_auth": "The server is running with official Crowi authentication mechanism.",
-		"google_setting": "Google Setting",
-    "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager on Google Cloud Platform</a>",
-		"access_api_manager": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
-		"create_project": "Create Project if no projects have been created.",
-		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
-		"select_webapp": "Select \"Web Application\"",
-    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
-    "clientID": "Client ID",
-    "client_secret": "Client Secret",
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",
+    "providerName": "Provider Name",
+    "issuerHost": "Issuer Host",
+    "scope": "Scope",
     "desc_of_callback_URL": "Use it in the setting of the %s provider",
+    "clientID": "Client ID",
+    "client_secret": "Client Secret",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
     },
     "registration_mode": {
       "open": "Anyone",
-      "restricted": "Reuqire Admin permission",
+      "restricted": "Require Admin permission",
       "closed": "Invitation Only"
     },
     "configuration": " Configuration",
@@ -529,8 +510,9 @@
       "group_search_base_DN_detail": "The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.",
       "group_search_filter": "Group Search Filter",
       "group_search_filter_detail1": "The query used to filter for groups.",
-      "group_search_filter_detail2": "Use <code>&#123;&#123;dn&#125;&#125;</code> to have it replaced of the found user object.",
-      "group_search_filter_detail3": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
+      "group_search_filter_detail2": "Login via LDAP is accepted only when this query hits one or more groups.",
+      "group_search_filter_detail3": "Use <code>&#123;&#123;dn&#125;&#125;</code> to have it replaced of the found user object.",
+      "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
       "group_search_user_DN_property": "User DN Property",
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
       "test_config": "Test Saved Configuration"
@@ -572,10 +554,21 @@
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
+      "OIDC": {
+        "name": "OpenID Connect",
+        "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
+        "username_detail": "Specification of mappings for <code>username</code> when creating new users",
+        "name_detail": "Specification of mappings for <code>name</code> when creating new users",
+        "mapping_detail": "Specification of mappings for %s when creating new users",
+        "register_1": "Contant to OIDC IdP Administrator",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_3": "Copy and paste your ClientID and Client Secret above"
+      },
       "how_to": {
         "google": "How to configure Google OAuth?",
         "github": "How to configure GitHub OAuth?",
-        "twitter": "How to configure Twitter OAuth?"
+        "twitter": "How to configure Twitter OAuth?",
+        "oidc": "How to configure OIDC?"
       }
     },
     "form_item_name": {
@@ -672,46 +665,47 @@
   },
 
   "user_management": {
-    "User management": "User management",
-    "invite_users": "Invite new users",
+    "target_user": "Target User",
+    "invite_users": "Invite New Users",
     "emails": "Emails",
     "invite_thru_email": "Send Invitation Email",
     "invite": "Invite",
-    "give_admin_access": "Give admin access",
-    "remove_admin_access": "Remove admin access",
-    "external_account": "External account management",
-    "user_list": "List of users",
+    "invited": "User was invited",
+    "give_admin_access": "Give Admin Access",
+    "remove_admin_access": "Remove Admin Access",
+    "external_account": "External Account Management",
     "external_account_list": "External Account List",
     "back_to_user_management": "Back to User Management",
     "authentication_provider": "Authentication Provider",
-    "Date created": "Date created",
-    "Last login": "Last login",
-    "Manage": "Manage",
-    "Edit menu": "Edit menu",
+    "manage": "Manage",
+    "edit_menu": "Edit Menu",
     "password_setting": "Password Setting",
+    "password_setting_help": "Is password set?",
     "set": "Yes",
     "unset": "No",
-    "password_setting_help": "Show whether the related user has a password set",
-    "Reissue password": "Reissue password",
+    "temporary_password": "The created user has a temporary password",
+    "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+    "send_new_password": "Please send the new password to the user.",
+    "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
+    "reset_password": "Reset Password",
     "related_username": "Related user's <code>%s</code>",
-    "Status":"Status",
     "accept": "Accept",
-    "Deactivate account":"Deactivate account",
+    "deactivate_account":"Deactivate Account",
     "your_own":"You cannot deactivate your own account",
-    "Administrator menu":"Administrator menu",
+    "administrator_menu":"Administrator Menu",
     "cannot_remove":"You cannot remove yourself from administrator",
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
-    "current users": "Current users:"
+    "current_users": "Current users:"
   },
 
   "user_group_management": {
-    "group_list": "List of Group",
+    "group_list": "Group List",
+    "back_to_list": "Go Back to Group List",
     "create_group": "Create New Group",
     "group_example": "e.g. : Group1",
     "created_group": "Group was created",
-    "add_user": "Add a user to the created group",
+    "add_user": "Add a User to the Created Group",
     "deny_create_group": "You can't create a new group with the current settings",
-    "is_loading_data": "Loading data...",
     "choose_action": "Choose an action for private pages",
     "delete_group": "Delete Group",
     "group_name": "Group Name",
@@ -720,7 +714,11 @@
     "delete_pages": "Delete All",
     "transfer_pages": "Transfer to another group",
     "select_group": "Select a group",
-    "no_groups": "No groups to select"
+    "no_groups": "No groups to select",
+    "no_pages": "There are no pages the group has view permission",
+    "how_to_add1": "Enter a username to add",
+    "how_to_add2": "Select a user from user list",
+    "remove_from_group": "Remove this group"
   },
 
   "importer_management": {

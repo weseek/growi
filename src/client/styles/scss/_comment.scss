@@ -28,7 +28,6 @@
       display: block;
       margin: 8px;
       font-size: 0.9em;
-      color: #999;
       text-align: center;
     }
 
@@ -44,4 +43,14 @@
       }
     }
   }
+}
+
+.btn-xxs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 10px;
+  font-size: 11px;
+  border-radius: 1px;
 }

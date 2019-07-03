@@ -1,38 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
-import * as toastr from 'toastr';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
+import EditorContainer from '../services/EditorContainer';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
-export default class PageEditorByHackmd extends React.PureComponent {
+const logger = loggerFactory('growi:PageEditorByHackmd');
+
+class PageEditorByHackmd extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      markdown: this.props.markdown,
+      markdown: this.props.pageContainer.state.markdown,
       isInitialized: false,
       isInitializing: false,
-      initialRevisionId: this.props.revisionId,
-      revisionId: this.props.revisionId,
-      revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
-      pageIdOnHackmd: this.props.pageIdOnHackmd,
-      hasDraftOnHackmd: this.props.hasDraftOnHackmd,
     };
 
     this.getHackmdUri = this.getHackmdUri.bind(this);
     this.startToEdit = this.startToEdit.bind(this);
     this.resumeToEdit = this.resumeToEdit.bind(this);
+    this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
-
-    this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
   componentWillMount() {
+    this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 
   /**
@@ -51,13 +52,6 @@ export default class PageEditorByHackmd extends React.PureComponent {
       });
   }
 
-  setMarkdown(markdown, updateEditorValue = true) {
-    this.setState({ markdown });
-    if (this.state.isInitialized && updateEditorValue) {
-      this.hackmdEditor.setValue(markdown);
-    }
-  }
-
   /**
    * reset initialized status
    */
@@ -65,40 +59,8 @@ export default class PageEditorByHackmd extends React.PureComponent {
     this.setState({ isInitialized: false });
   }
 
-  /**
-   * clear revision status (invoked when page is updated by myself)
-   */
-  clearRevisionStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
-    this.setState({
-      initialRevisionId: updatedRevisionId,
-      revisionId: updatedRevisionId,
-      revisionIdHackmdSynced: updatedRevisionIdHackmdSynced,
-    });
-  }
-
-  /**
-   * update revisionId of state
-   * @param {string} revisionId
-   * @param {string} revisionIdHackmdSynced
-   */
-  setRevisionId(revisionId, revisionIdHackmdSynced) {
-    this.setState({ revisionId, revisionIdHackmdSynced });
-  }
-
-  getRevisionIdHackmdSynced() {
-    return this.state.revisionIdHackmdSynced;
-  }
-
-  /**
-   * update hasDraftOnHackmd of state
-   * @param {bool} hasDraftOnHackmd
-   */
-  setHasDraftOnHackmd(hasDraftOnHackmd) {
-    this.setState({ hasDraftOnHackmd });
-  }
-
   getHackmdUri() {
-    const envVars = this.props.crowi.config.env;
+    const envVars = this.props.appContainer.getConfig().env;
     return envVars.HACKMD_URI;
   }
 
@@ -106,6 +68,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
    * Start integration with HackMD
    */
   startToEdit() {
+    const { pageContainer } = this.props;
     const hackmdUri = this.getHackmdUri();
 
     if (hackmdUri == null) {
@@ -119,9 +82,9 @@ export default class PageEditorByHackmd extends React.PureComponent {
     });
 
     const params = {
-      pageId: this.props.pageId,
+      pageId: pageContainer.state.pageId,
     };
-    this.props.crowi.apiPost('/hackmd.integrate', params)
+    this.props.appContainer.apiPost('/hackmd.integrate', params)
       .then((res) => {
         if (!res.ok) {
           throw new Error(res.error);
@@ -129,11 +92,15 @@ export default class PageEditorByHackmd extends React.PureComponent {
 
         this.setState({
           isInitialized: true,
+        });
+        pageContainer.setState({
           pageIdOnHackmd: res.pageIdOnHackmd,
           revisionIdHackmdSynced: res.revisionIdHackmdSynced,
         });
       })
-      .catch(this.apiErrorHandler)
+      .catch((err) => {
+        pageContainer.showErrorToastr(err);
+      })
       .then(() => {
         this.setState({ isInitializing: false });
       });
@@ -150,14 +117,42 @@ export default class PageEditorByHackmd extends React.PureComponent {
    * Reset draft
    */
   discardChanges() {
-    this.setState({ hasDraftOnHackmd: false });
+    this.props.pageContainer.setState({ hasDraftOnHackmd: false });
+  }
+
+  /**
+   * save and update state of containers
+   * @param {string} markdown
+   */
+  async onSaveWithShortcut(markdown) {
+    const { pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+
+    try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(markdown, optionsToSave);
+      logger.debug('success to save');
+
+      pageContainer.showSuccessToastr();
+
+      // update state of EditorContainer
+      editorContainer.setState({ tags });
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
   }
 
   /**
    * onChange event of HackmdEditor handler
    */
-  hackmdEditorChangeHandler(body) {
+  async hackmdEditorChangeHandler(body) {
     const hackmdUri = this.getHackmdUri();
+    const { pageContainer, editorContainer } = this.props;
 
     if (hackmdUri == null) {
       // do nothing
@@ -165,57 +160,52 @@ export default class PageEditorByHackmd extends React.PureComponent {
     }
 
     // do nothing if contents are same
-    if (this.props.markdown === body) {
+    if (this.state.markdown === body) {
       return;
     }
 
-    const params = {
-      pageId: this.props.pageId,
-    };
-    this.props.crowi.apiPost('/hackmd.saveOnHackmd', params)
-      .then((res) => {
-        // do nothing
-      })
-      .catch((err) => {
-        // do nothing
-      });
-  }
+    // enable unsaved warning
+    editorContainer.enableUnsavedWarning();
 
-  apiErrorHandler(error) {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+    const params = {
+      pageId: pageContainer.state.pageId,
+    };
+    try {
+      await this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params);
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
   render() {
     const hackmdUri = this.getHackmdUri();
+    const { pageContainer } = this.props;
+    const {
+      pageIdOnHackmd, revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd,
+    } = pageContainer.state;
 
-    const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
-    const isResume = isPageExistsOnHackmd && this.state.hasDraftOnHackmd;
+    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
+    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
     if (this.state.isInitialized) {
       return (
         <HackmdEditor
           ref={(c) => { this.hackmdEditor = c }}
           hackmdUri={hackmdUri}
-          pageIdOnHackmd={this.state.pageIdOnHackmd}
+          pageIdOnHackmd={pageIdOnHackmd}
           initializationMarkdown={isResume ? null : this.state.markdown}
           onChange={this.hackmdEditorChangeHandler}
           onSaveWithShortcut={(document) => {
-            this.props.onSaveWithShortcut(document);
+            this.onSaveWithShortcut(document);
           }}
         >
         </HackmdEditor>
       );
     }
 
-    const isRevisionOutdated = this.state.initialRevisionId !== this.state.revisionId;
-    const isHackmdDocumentOutdated = this.state.revisionId !== this.state.revisionIdHackmdSynced;
+    const isRevisionOutdated = revisionId !== remoteRevisionId;
+    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
     let content;
     /*
@@ -232,7 +222,6 @@ export default class PageEditorByHackmd extends React.PureComponent {
      * Resume to edit or discard changes
      */
     else if (isResume) {
-      const revisionIdHackmdSynced = this.state.revisionIdHackmdSynced;
       const title = (
         <React.Fragment>
           <span className="btn-label"><i className="icon-control-end"></i></span>
@@ -320,13 +309,17 @@ export default class PageEditorByHackmd extends React.PureComponent {
 
 }
 
-PageEditorByHackmd.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  markdown: PropTypes.string.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
-  pageId: PropTypes.string,
-  revisionId: PropTypes.string,
-  pageIdOnHackmd: PropTypes.string,
-  revisionIdHackmdSynced: PropTypes.string,
-  hasDraftOnHackmd: PropTypes.bool,
+/**
+ * Wrapper component for using unstated
+ */
+const PageEditorByHackmdWrapper = (props) => {
+  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer, PageContainer, EditorContainer]);
 };
+
+PageEditorByHackmd.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+};
+
+export default PageEditorByHackmdWrapper;

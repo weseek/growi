@@ -1,0 +1,16 @@
+<!-- Mathjax -->
+<script type="text/x-mathjax-config" async>
+  MathJax.Hub.Config({
+    skipStartupTypeset: true,
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/SVG"],
+    tex2jax: {
+      processEscapes: true
+    },
+    showMathMenu: false,
+    showMathMenuMSIE: false,
+    showProcessingMessages: false,
+    messageStyle: "none"
+  });
+</script>
+{{ cdnScriptTag('mathjax') }}

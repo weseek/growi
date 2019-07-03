@@ -16,20 +16,23 @@ $active-nav-tabs-bgcolor: $themecolor;
 $logo-mark-fill: $themelight;
 $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: darken($subthemecolor, 5%);
-$inline-code-bg: lighten($subthemecolor, 70%);
+$inline-code-color: #c7254e;
+$inline-code-bg: #f9f2f4;
 $border: $subthemecolor;
 $border-original: $subthemecolor;
 $navbar-border: $themecolor;
-$background-color: rgba($color: $themelight, $alpha: 0.8);
-$info:$subthemecolor;
+$background-color: rgba(
+  $color: $themelight,
+  $alpha: 0.8,
+);
+$info: $subthemecolor;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
 
 // change color of highlighted header in wiki (default: orange)
 .code-line,
-ul>.text-muted {
+ul > .text-muted {
   color: $subthemecolor;
 }
 
@@ -50,7 +53,7 @@ ul>.text-muted {
 }
 
 // add background-image
-.main-container>#wrapper>#page-wrapper,
+.main-container > #wrapper > #page-wrapper,
 .page-editor-preview-container {
   background-image: url('/images/themes/antarctic/bg.svg');
   background-attachment: fixed;
@@ -99,7 +102,7 @@ header.affix {
   }
 }
 
-#wrapper>.navbar>.navbar-header {
+#wrapper > .navbar > .navbar-header {
   border-bottom: 4px solid $accentcolor;
 }
 
@@ -111,7 +114,7 @@ header.affix {
   .page-comment-main {
     box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
 
-    .page-comment-creator>a {
+    .page-comment-creator > a {
       border-bottom: 1px double $subthemecolor;
     }
   }
@@ -131,7 +134,7 @@ header.affix {
     }
 
     .nav.nav-tabs {
-      >li.active>a {
+      > li.active > a {
         background: $themecolor;
         border-bottom: solid 1px $themecolor;
         border-bottom-color: $themecolor;
@@ -144,21 +147,23 @@ header.affix {
  * Tabs
  */
 
-.nav.nav-tabs>li.active>a {
+.nav.nav-tabs > li.active > a {
   color: $themelight;
 }
 
 .text-info,
 body:not(.on-edit) .nav.nav-tabs {
-  >li>a {
+  > li > a {
     color: $subthemecolor;
   }
 
-  >li.active>a {
+  > li.active > a {
     color: $themelight;
-    background: linear-gradient(rgba($active-nav-tabs-bgcolor, 0) 50%,
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 50%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%); // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
     background-color: $themecolor;
   }
 }
@@ -199,7 +204,6 @@ body:not(.on-edit) .nav.nav-tabs {
       ul {
         padding-left: 5px;
       }
-
     }
   }
 }
@@ -208,7 +212,7 @@ body:not(.on-edit) .nav.nav-tabs {
  *  Login page
  */
 
-.login-page>#wrapper>#page-wrapper {
+.login-page > #wrapper > #page-wrapper {
   background-image: url('/images/themes/antarctic/topimage.svg');
   background-attachment: fixed;
   background-position: center center;
@@ -221,4 +225,12 @@ body:not(.on-edit) .nav.nav-tabs {
       color: #000080;
     }
   }
+}
+
+/*
+ *  for Hightlight-js
+ */
+
+.hljs-ln {
+  background-color: transparent;
 }

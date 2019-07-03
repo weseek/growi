@@ -1,6 +1,7 @@
 <div class="row row-alerts">
   <div class="col-xs-12">
-    {% if page && page.grant != 1 %}
+    {% if page && page.grant && page.grant > 1 %}
+
       <p class="alert alert-inverse alert-grant">
       {% if page.grant == 2 %}
         <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
@@ -24,10 +25,10 @@
       {% if page.isDeleted() and user %}
       <ul class="list-inline">
         <li>
-          <a href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</a>
+          <button href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
         </li>
         <li>
-          <a href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</a>
+            <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
         </li>
       </ul>{# /.pull-right #}
       {% endif %}

@@ -4,6 +4,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { Provider } from 'unstated';
+
 import { debounce } from 'throttle-debounce';
 
 import { pathUtils } from 'growi-commons';
@@ -55,14 +57,15 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
-  const crowi = window.crowi;
+  const { appContainer } = window;
+  const editorContainer = appContainer.getContainer('EditorContainer');
   const line = pageEditorDom.getAttribute('data-caret-line') || 0;
-  crowi.setCaretLine(+line);
+  editorContainer.setCaretLine(+line);
   // reset data-caret-line attribute
   pageEditorDom.removeAttribute('data-caret-line');
 
   // focus
-  crowi.focusToEditor();
+  editorContainer.focusToEditor();
 };
 
 // original: middleware.swigFilter
@@ -209,6 +212,30 @@ Crowi.initSlimScrollForRevisionToc = () => {
   });
 };
 
+Crowi.initClassesByOS = function() {
+  // add classes to cmd-key by OS
+  const platform = navigator.platform.toLowerCase();
+  const isMac = (platform.indexOf('mac') > -1);
+
+  document.querySelectorAll('.system-version .cmd-key').forEach((element) => {
+    if (isMac) {
+      element.classList.add('mac');
+    }
+    else {
+      element.classList.add('win');
+    }
+  });
+
+  document.querySelectorAll('#shortcuts-modal .cmd-key').forEach((element) => {
+    if (isMac) {
+      element.classList.add('mac');
+    }
+    else {
+      element.classList.add('win', 'key-longer');
+    }
+  });
+};
+
 Crowi.findHashFromUrl = function(url) {
   let match;
   /* eslint-disable no-cond-assign */
@@ -251,26 +278,10 @@ Crowi.highlightSelectedSection = function(hash) {
   }
 };
 
-/**
- * Return editor mode string
- * @return 'builtin' or 'hackmd' or null (not editing)
- */
-Crowi.getCurrentEditorMode = function() {
-  const isEditing = $('body').hasClass('on-edit');
-  if (!isEditing) {
-    return null;
-  }
-
-  if ($('body').hasClass('builtin-editor')) {
-    return 'builtin';
-  }
-
-  return 'hackmd';
-};
-
 $(() => {
-  const crowi = window.crowi;
-  const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+  const appContainer = window.appContainer;
+  const websocketContainer = appContainer.getContainer('WebsocketContainer');
+  const config = appContainer.getConfig();
 
   const pageId = $('#content-main').data('page-id');
   // const revisionId = $('#content-main').data('page-revision-id');
@@ -357,7 +368,7 @@ $(() => {
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is renamed page path
     });
-    nameValueMap.socketClientId = crowi.getSocketClientId();
+    nameValueMap.socketClientId = websocketContainer.getSocketClientId();
 
     $.ajax({
       type: 'POST',
@@ -395,7 +406,7 @@ $(() => {
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
-    nameValueMap.socketClientId = crowi.getSocketClientId();
+    nameValueMap.socketClientId = websocketContainer.getSocketClientId();
 
     $.ajax({
       type: 'POST',
@@ -431,7 +442,7 @@ $(() => {
     $('#delete-page-form').serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value;
     });
-    nameValueMap.socketClientId = crowi.getSocketClientId();
+    nameValueMap.socketClientId = websocketContainer.getSocketClientId();
 
     $.ajax({
       type: 'POST',
@@ -547,9 +558,7 @@ $(() => {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
-      const crowi = window.crowi;
-      const crowiRenderer = window.crowiRenderer;
-      growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, { mode: 'timeline' });
+      growiRendererForTimeline = GrowiRenderer.generate('timeline');
     }
 
     if (isShown === 0) {
@@ -564,14 +573,15 @@ $(() => {
         const revisionId = timelineElm.getAttribute('data-revision');
 
         ReactDOM.render(
-          <RevisionLoader
-            lazy
-            crowi={crowi}
-            crowiRenderer={growiRendererForTimeline}
-            pageId={pageId}
-            pagePath={pagePath}
-            revisionId={revisionId}
-          />,
+          <Provider inject={[appContainer]}>
+            <RevisionLoader
+              lazy
+              growiRenderer={growiRendererForTimeline}
+              pageId={pageId}
+              pagePath={pagePath}
+              revisionId={revisionId}
+            />
+          </Provider>,
           revisionBodyElem,
         );
       });
@@ -587,7 +597,8 @@ $(() => {
       const templateId = $(this).data('template');
       const template = $(`#${templateId}`).html();
 
-      crowi.saveDraft(path, template);
+      const editorContainer = appContainer.getContainer('EditorContainer');
+      editorContainer.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
 
@@ -625,7 +636,11 @@ $(() => {
   } // end if pageId
 
   // tab changing handling
+  $('a[href="#revision-body"]').on('show.bs.tab', () => {
+    appContainer.setState({ editorMode: null });
+  });
   $('a[href="#edit"]').on('show.bs.tab', () => {
+    appContainer.setState({ editorMode: 'builtin' });
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
   });
@@ -634,6 +649,7 @@ $(() => {
     $('body').removeClass('builtin-editor');
   });
   $('a[href="#hackmd"]').on('show.bs.tab', () => {
+    appContainer.setState({ editorMode: 'hackmd' });
     $('body').addClass('on-edit');
     $('body').addClass('hackmd');
   });
@@ -689,9 +705,13 @@ $(() => {
 });
 
 window.addEventListener('load', (e) => {
+  const { appContainer } = window;
+
   // hash on page
   if (location.hash) {
     if ((location.hash === '#edit' || location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
+      appContainer.setState({ editorMode: 'builtin' });
+
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
@@ -700,6 +720,8 @@ window.addEventListener('load', (e) => {
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
+      appContainer.setState({ editorMode: 'hackmd' });
+
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
@@ -750,6 +772,7 @@ window.addEventListener('load', (e) => {
   Crowi.modifyScrollTop();
   Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
+  Crowi.initClassesByOS();
 });
 
 window.addEventListener('hashchange', (e) => {
