@@ -1,14 +1,33 @@
+require('module-alias/register');
+const logger = require('@alias/logger')('growi:migrate:adjust-page-grant');
+
+const mongoose = require('mongoose');
+const config = require('@root/config/migrate');
+
 module.exports = {
-  up(db) {
-    // TODO write your migration here. Return a Promise (and/or use async & await).
-    // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
-    // Example:
-    // return db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
+
+  async up(db) {
+    logger.info('Apply migration');
+    mongoose.connect(config.mongoUri, config.mongodb.options);
+
+    const Page = require('@server/models/page')();
+
+    await Page.bulkWrite([
+      {
+        updateMany:
+         {
+           filter: { grant: null },
+           update: { $set: { grant: Page.GRANT_PUBLIC } },
+           upsert: true,
+         },
+      },
+    ]);
+
+    logger.info('Migration has successfully applied');
+
   },
 
   down(db) {
-    // TODO write the statements to rollback your migration (if possible)
-    // Example:
-    // return db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+    // do not rollback
   },
 };
