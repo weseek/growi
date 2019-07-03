@@ -5,7 +5,7 @@
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('User_management') }}/{{ t('External Account management') }}</h1>
+    <h1 id="admin-title" class="title">{{ t('User_Management') }}/{{ t('External Account management') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -52,8 +52,8 @@
         <thead>
           <tr>
             <th width="120px">{{ t('user_management.authentication_provider') }}</th>
-            <th><code>accountId</code></th>
-            <th>{{ t('user_management.related_username', 'username') }}</th>
+            <th><code>{{ t('account_id') }}</code></th>
+            <th>{{ t('user_management.related_username') }}</th>
 
             <th>
               {{ t('user_management.password_setting') }}
