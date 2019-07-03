@@ -624,7 +624,7 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = aclService.getIsPublicWikiOnly();
+    const isAclEnabled = !aclService.getIsPublicWikiOnly();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),

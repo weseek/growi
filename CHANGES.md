@@ -5,6 +5,10 @@
 ### BREAKING CHANGES
 
 * GROWI no longer supports plugins with schema version 2
+    * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
+    * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
+](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
+) to v3.0.0 or above
 * The restriction mode of the root page (`/`) will be set 'Public'
 * The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
@@ -12,7 +16,14 @@
 
 * Support: Use Babel 7
 * Support: Support plugins with schema version 3
-
+* Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
+* Upgrade libs
+    * css-loader
+    * eslint
+    * eslint-config-weseek
+    * eslint-plugin-import
+    * eslint-plugin-jest
+    * eslint-plugin-react
 
 ## 3.5.0
 
