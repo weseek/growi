@@ -196,6 +196,7 @@ if (adminUserGroupPageElem != null) {
 const adminImporterElem = document.getElementById('admin-importer');
 if (adminImporterElem != null) {
   ReactDOM.render(
+    <Importer />,
   );
 }
 
