@@ -39,6 +39,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
+import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
 
 import AppContainer from './services/AppContainer';
@@ -191,6 +192,14 @@ if (adminUserGroupPageElem != null) {
     adminUserGroupPageElem,
   );
 }
+
+const adminImporterElem = document.getElementById('admin-importer');
+if (adminImporterElem != null) {
+  ReactDOM.render(
+    <Importer />,
+  );
+}
+
 
 const adminFullTextSearchManagementElem = document.getElementById('admin-full-text-search-management');
 if (adminFullTextSearchManagementElem != null) {
