@@ -4,35 +4,17 @@
 
 ### BREAKING CHANGES
 
-* GROWI no longer supports plugins with schema version 2
-    * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
-    * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
-](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
-) to v3.0.0 or above
-* The restriction mode of the root page (`/`) will be set 'Public'
-* The restriction mode of the root page (`/`) can not be changed after v 3.5.1
-
-### Updates
-
-* Support: Use Babel 7
-* Support: Support plugins with schema version 3
-* Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
-* Upgrade libs
-    * css-loader
-    * eslint
-    * eslint-config-weseek
-    * eslint-plugin-import
-    * eslint-plugin-jest
-    * eslint-plugin-react
-
-## 3.5.0
-
-### BREAKING CHANGES
-
 * GROWI no longer supports
     * Protection system with Basic Authentication
     * Crowi Classic Authentication Mechanism
     * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+    * GROWI Plugins with schema version 2
+        * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
+        * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
+](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
+) to v3.0.0 or above
+* The restriction mode of the root page (`/`) will be set 'Public'
+* The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
 Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
@@ -46,15 +28,24 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 * Improvement Draft list
 * Fix: Deleting page completely
 * Fix: Search with `prefix:` param with CJK pathname
+* Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
 * I18n: User Management Details
 * I18n: Group Management Details
 * Support: Apply unstated
+* Support: Use Babel 7
+* Support: Support plugins with schema version 3
 * Support: Abolish Old Config API
 * Support: Apply Jest for Tests
 * Support: Upgrade libs
     * async
     * axios
     * connect-mongo
+    * css-loader
+    * eslint
+    * eslint-config-weseek
+    * eslint-plugin-import
+    * eslint-plugin-jest
+    * eslint-plugin-react
     * file-loader
     * googleapis
     * i18next
@@ -64,6 +55,8 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
     * mongoose-gridfs
     * mongoose-unique-validator
     * null-loader
+
+## 3.5.0 (Missing number)
 
 ## 3.4.7
 
