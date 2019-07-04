@@ -50,8 +50,10 @@ module.exports = (crowi) => {
   router.get('/', loginRequired(), adminRequired, async(req, res) => {
     // TODO: filter with querystring
     try {
-      const userGroups = await UserGroup.find();
-      return res.apiv3({ userGroups });
+      const page = parseInt(req.query.page) || 1;
+      const result = await UserGroup.findUserGroupsWithPagination({ page });
+      const { docs: userGroups, total: totalUserGroups, limit: pagingLimit } = result;
+      return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group list';
