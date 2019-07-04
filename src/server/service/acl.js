@@ -27,13 +27,11 @@ class AclService {
       return true;
     }
 
-    // return false if undefined
-    const isRestrictGuestMode = this.configManager.getConfig('crowi', 'security:restrictGuestMode');
-    if (isRestrictGuestMode) {
-      return false;
-    }
+    const guestMode = this.configManager.getConfig('crowi', 'security:restrictGuestMode');
 
-    return this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY === isRestrictGuestMode;
+    // 'Readonly' => returns true (allow access to guests)
+    // 'Deny', null, undefined, '', ... everything else => returns false (requires login)
+    return guestMode === this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
   }
 
   getRestrictGuestModeLabels() {

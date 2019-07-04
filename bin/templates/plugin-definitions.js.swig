@@ -8,7 +8,7 @@ module.exports = [
     meta: require('{{ definition.name }}'),
     entries: [
       {% for entryPath in definition.entries %}
-      require('{{ entryPath }}'),
+      require('{{ entryPath }}').default,
       {% endfor %}
     ]
   },
