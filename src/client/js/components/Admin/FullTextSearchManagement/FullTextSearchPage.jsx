@@ -9,6 +9,7 @@ class FullTextSearchManagement extends React.Component {
   render() {
     return (
       <Fragment>
+        <button type="submit" className="btn btn-inverse">Build Now</button>
       </Fragment>
     );
   }
