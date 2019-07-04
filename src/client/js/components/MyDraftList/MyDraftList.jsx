@@ -59,7 +59,7 @@ class MyDraftList extends React.Component {
       };
     });
 
-    this.setState({ drafts });
+    this.setState({ drafts, totalDrafts: drafts.length });
   }
 
   getCurrentDrafts(selectPageNumber) {
