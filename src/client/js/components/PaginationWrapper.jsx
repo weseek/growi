@@ -133,9 +133,6 @@ class PaginationWrapper extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
-    const childElement = React.cloneElement(children);
-
     const paginationItems = [];
 
     const activePage = this.state.activePage;
@@ -152,7 +149,6 @@ class PaginationWrapper extends React.Component {
     return (
       <React.Fragment>
         <div>
-          { childElement }
           <Pagination bsSize="small">{paginationItems}</Pagination>
         </div>
       </React.Fragment>
@@ -167,7 +163,6 @@ const PaginationWrappered = (props) => {
 };
 
 PaginationWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   activePage: PropTypes.number.isRequired,
