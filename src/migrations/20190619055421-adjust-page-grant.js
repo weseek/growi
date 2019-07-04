@@ -18,7 +18,6 @@ module.exports = {
          {
            filter: { grant: null },
            update: { $set: { grant: Page.GRANT_PUBLIC } },
-           upsert: true,
          },
       },
     ]);
