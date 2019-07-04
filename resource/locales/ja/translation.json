@@ -18,6 +18,7 @@
   "Tag": "タグ",
   "Tags": "タグ",
   "New": "作成",
+  "Build": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
   "Undo": "元に戻す",
@@ -722,5 +723,9 @@
     "import": "インポート",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
+  },
+  "full_text_search_management":{
+    "index_build": "索引作成",
+    "explain":"索引を作成します。<br>「作成」 ボタンを押すと全てのページが再構築されます。<br>この処理には時間がかかります。"
   }
 }

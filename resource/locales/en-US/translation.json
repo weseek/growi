@@ -18,6 +18,7 @@
   "Tag": "Tag",
   "Tags": "Tags",
   "New": "New",
+  "Build": "Build",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
   "Undo": "Undo",
@@ -737,5 +738,9 @@
     "import": "Import",
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
     "Directory_hierarchy_tag": "Directory Hierarchy Tag"
+  },
+  "full_text_search_management":{
+    "index_build": "Index Build",
+    "explain":"Force rebuild index.<br>Click 'Build' to delete and create mapping file and add all pages.<br>This may take a while."
   }
 }
