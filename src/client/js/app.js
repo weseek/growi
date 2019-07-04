@@ -39,6 +39,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
+import Importer from './components/Admin/Importer';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -188,6 +189,13 @@ if (adminUserGroupPageElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupPageElem,
+  );
+}
+
+
+const adminImporterElem = document.getElementById('admin-importer');
+if (adminImporterElem != null) {
+  ReactDOM.render(
   );
 }
 
