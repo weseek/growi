@@ -51,10 +51,9 @@ module.exports = (crowi) => {
     // TODO: filter with querystring
     try {
       const page = parseInt(req.query.page) || 1;
-      const totalUserGroups = await UserGroup.countUserGroups();
       const result = await UserGroup.findUserGroupsWithPagination({ page });
-      const userGroups = result.docs;
-      return res.apiv3({ userGroups, totalUserGroups });
+      const { docs: userGroups, total: totalUserGroups, limit: pagingLimit } = result;
+      return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group list';

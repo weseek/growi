@@ -22,6 +22,7 @@ class UserGroupPage extends React.Component {
       isDeleteModalShow: false,
       activePage: 1,
       totalUserGroups: 0,
+      pagingLimit: Infinity,
     };
 
     this.xss = window.xss;
@@ -109,6 +110,7 @@ class UserGroupPage extends React.Component {
     let userGroups = [];
     let userGroupRelations = {};
     let totalUserGroups = 0;
+    let pagingLimit = Infinity;
 
     try {
       const params = { page: this.state.activePage };
@@ -120,12 +122,14 @@ class UserGroupPage extends React.Component {
       const [userGroupsRes, userGroupRelationsRes] = responses;
       userGroups = userGroupsRes.data.userGroups;
       totalUserGroups = userGroupsRes.data.totalUserGroups;
+      pagingLimit = userGroupsRes.data.pagingLimit;
       userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
 
       this.setState({
         userGroups,
         userGroupRelations,
         totalUserGroups,
+        pagingLimit,
       });
     }
     catch (err) {
@@ -144,6 +148,7 @@ class UserGroupPage extends React.Component {
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalUserGroups}
+          pagingLimit={this.state.pagingLimit}
         >
           <UserGroupTable
             userGroups={this.state.userGroups}
