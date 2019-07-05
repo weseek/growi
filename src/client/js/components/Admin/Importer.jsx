@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 class Importer extends React.Component {
 
   constructor(props) {
-    super(props);
+    super();
   }
 
   render() {
@@ -12,7 +12,6 @@ class Importer extends React.Component {
         <h1>連打</h1>
       </Fragment>
     );
-
   }
 
 }
