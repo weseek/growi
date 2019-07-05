@@ -21,7 +21,17 @@ class AclService {
     return !!publicWikiOnly;
   }
 
+  getIsPrivateWikiOnly() {
+    const privateWikiOnly = process.env.PRIVATE_WIKI_ONLY;
+    return !!privateWikiOnly;
+  }
+
   getIsGuestAllowedToRead() {
+    // return false if private wiki mode
+    if (this.getIsPrivateWikiOnly()) {
+      return false;
+    }
+
     // return true if puclic wiki mode
     if (this.getIsPublicWikiOnly()) {
       return true;
