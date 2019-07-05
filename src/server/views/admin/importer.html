@@ -12,8 +12,19 @@
 {% endblock %}
 
 {% block content_main %}
+<div class="content-main admin-importer">
+    <div class="row">
+      <div class="col-md-3">
+          {% include './widget/menu.html' with {current: 'importer'} %}
+      </div>
+    </div>
+
+</div>
+
 <div id ="admin-importer"></div>
+
 {% endblock content_main %}
+
 
 {% block content_footer %}
 {% endblock content_footer %}
