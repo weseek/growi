@@ -197,9 +197,9 @@ const adminImporterElem = document.getElementById('admin-importer');
 if (adminImporterElem != null) {
   ReactDOM.render(
     <Importer />,
+    adminImporterElem,
   );
 }
-
 
 const adminFullTextSearchManagementElem = document.getElementById('admin-full-text-search-management');
 if (adminFullTextSearchManagementElem != null) {

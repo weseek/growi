@@ -9,6 +9,7 @@ class Importer extends React.Component {
   render() {
     return (
       <Fragment>
+        <h1>連打</h1>
       </Fragment>
     );
   }
