@@ -6,7 +6,7 @@
   "Duplicate": "複製",
   "Copy": "コピー",
   "Click to copy": "クリックでコピー",
-  "Move": "移動",
+  "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
@@ -267,15 +267,15 @@
 
   "modal_rename": {
     "label": {
-      "Rename page": "ページを移動する",
+      "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
       "Current page name": "現在のページ名",
-      "Move recursively": "再帰的に移動",
+      "Recursively": "再帰的に移動/名前変更",
       "Redirect": "リダイレクトする"
     },
     "help": {
       "redirect": "<code>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
-      "recursive": "<code>%s</code> 配下のページも移動します"
+      "recursive": "<code>%s</code> 配下のページも移動/名前変更します"
     }
   },
 

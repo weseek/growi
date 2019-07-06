@@ -6,7 +6,7 @@
   "Duplicate": "Duplicate",
   "Copy": "Copy",
   "Click to copy": "Click to copy",
-  "Move": "Move",
+  "Move/Rename": "Move/Rename",
   "Moved": "Moved",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
@@ -267,15 +267,15 @@
 
   "modal_rename": {
     "label": {
-      "Rename page": "Rename page",
+      "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
       "Current page name": "Current page name",
-      "Move recursively": "Move recursively",
+      "Recursively": "Recursively",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses <code>%s</code>",
-      "recursive": "Rename children of under <code>%s</code> recursively"
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
 
