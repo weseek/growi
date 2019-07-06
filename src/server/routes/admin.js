@@ -636,7 +636,7 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = !aclService.getIsPublicWikiOnly();
+    const isAclEnabled = aclService.isAclEnabled();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
@@ -901,7 +901,7 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    if (aclService.getIsPublicWikiOnly()) {
+    if (!aclService.isAclEnabled()) {
       const guestMode = form['security:restrictGuestMode'];
       if (guestMode === 'Deny') {
         req.form.errors.push('Private Wikiへの設定変更はできません。');
