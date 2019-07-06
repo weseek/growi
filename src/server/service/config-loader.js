@@ -1,9 +1,11 @@
 const debug = require('debug')('growi:service:ConfigLoader');
 
+const { envUtils } = require('growi-commons');
+
 const TYPES = {
   NUMBER:  { parse: (v) => { return parseInt(v, 10) } },
   STRING:  { parse: (v) => { return v } },
-  BOOLEAN: { parse: (v) => { return /^(true|1)$/i.test(v) } },
+  BOOLEAN: { parse: (v) => { return envUtils.toBoolean(v) } },
 };
 
 /**

@@ -3,6 +3,8 @@ const urljoin = require('url-join');
 
 const helpers = require('@commons/util/helpers');
 
+const { envUtils } = require('growi-commons');
+
 const cdnLocalScriptRoot = 'public/js/cdn';
 const cdnLocalScriptWebRoot = '/js/cdn';
 const cdnLocalStyleRoot = 'public/styles/cdn';
@@ -23,7 +25,7 @@ class CdnResourcesService {
   }
 
   noCdn() {
-    return /^(true|1)$/i.test(process.env.NO_CDN);
+    return envUtils.toBoolean(process.env.NO_CDN);
   }
 
   getScriptManifestByName(name) {
