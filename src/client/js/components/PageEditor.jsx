@@ -321,7 +321,7 @@ class PageEditor extends React.Component {
 
   render() {
     const config = this.props.appContainer.getConfig();
-    const noCdn = !!config.env.NO_CDN;
+    const noCdn = /^(true|1)$/i.test(config.env.NO_CDN);
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (

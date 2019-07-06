@@ -8,7 +8,7 @@ require('module-alias/register');
 const logger = require('@alias/logger')('growi:bin:download-cdn-resources');
 
 // check env var
-const noCdn = !!process.env.NO_CDN;
+const noCdn = /^(true|1)$/i.test(process.env.NO_CDN);
 if (!noCdn) {
   logger.info('Using CDN. No resources are downloaded.');
   // exit
