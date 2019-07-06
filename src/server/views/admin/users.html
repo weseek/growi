@@ -155,7 +155,7 @@
             <th>{{ t('Name') }}</th>
             <th>{{ t('Email') }}</th>
             <th width="100px">{{ t('Created') }}</th>
-            <th width="150px">{{ t('Last_Login') }}</th>
+            <th width="160px">{{ t('Last_Login') }}</th>
             <th width="70px"></th>
           </tr>
         </thead>
@@ -181,10 +181,10 @@
             </td>
             <td>{{ sUser.name }}</td>
             <td>{{ sUser.email }}</td>
-            <td>{{ sUser.createdAt|date('Y-m-d', sUser.createdAt.getTimezoneOffset()) }}</td>
+            <td>{{ sUser.createdAt|datetz('Y-m-d') }}</td>
             <td>
               {% if sUser.lastLoginAt %}
-                {{ sUser.lastLoginAt|date('Y-m-d H:i', sUser.createdAt.getTimezoneOffset()) }}
+                {{ sUser.lastLoginAt|datetz('Y-m-d H:i:s') }}
               {% endif %}
             </td>
             <td>
