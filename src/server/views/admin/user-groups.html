@@ -83,7 +83,7 @@
           <tr>
             <th>{{ t('Name') }}</th>
             <th>{{ t('User') }}</th>
-            <th width="100px">{{ t('Created') }}</th>
+            <th width="160px">{{ t('Created') }}</th>
             <th width="70px"></th>
           </tr>
         </thead>
@@ -101,7 +101,7 @@
               <li class="list-inline-item badge badge-primary">{{relation.relatedUser.username}}</li>
               {% endfor %}
             </ul></td>
-            <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
+            <td>{{ sGroup.createdAt|datetz('Y-m-d H:i:s') }}</td>
             {% if isAclEnabled %}
             <td>
               <div class="btn-group admin-group-menu">
