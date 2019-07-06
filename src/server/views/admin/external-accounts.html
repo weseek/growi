@@ -92,7 +92,7 @@
               </span>
               {% endif %}
             </td>
-            <td>{{ account.createdAt|date('Y-m-d', account.createdAt.getTimezoneOffset()) }}</td>
+            <td>{{ account.createdAt|datetz('Y-m-d') }}</td>
             <td>
               <div class="btn-group admin-user-menu">
 
