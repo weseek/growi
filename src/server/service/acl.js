@@ -16,14 +16,18 @@ class AclService {
     };
   }
 
-  getIsPublicWikiOnly() {
-    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    return !!publicWikiOnly;
+  isAclEnabled() {
+    const isPublicWikiOnly = this.configManager.getConfig('crowi', 'security:isPublicWikiOnly');
+    // const isPrivateWikiOnly = this.configManager.getConfig('crowi', 'security:isPrivateWikiOnly');
+
+    return !(isPublicWikiOnly);
   }
 
   getIsGuestAllowedToRead() {
+    const isPublicWikiOnly = this.configManager.getConfig('crowi', 'security:isPublicWikiOnly');
+
     // return true if puclic wiki mode
-    if (this.getIsPublicWikiOnly()) {
+    if (isPublicWikiOnly) {
       return true;
     }
 
