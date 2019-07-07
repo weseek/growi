@@ -13,9 +13,9 @@
     * Protection system with Basic Authentication
     * Crowi Classic Authentication Mechanism
     * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
-    * GROWI Plugins with schema version 2
-        * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
-        * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
+* GROWI no lonnger supports plugins with schema version 2
+    * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
+    * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
 ](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
 ) to v3.0.0 or above
 * The restriction mode of the root page (`/`) will be set 'Public'
