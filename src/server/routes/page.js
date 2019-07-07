@@ -1047,11 +1047,11 @@ module.exports = function(crowi, app) {
     const previousRevision = req.body.revision_id || null;
     const newPagePath = pathUtils.normalizePath(req.body.new_path);
     const options = {
-      createRedirectPage: req.body.create_redirect || 0,
-      moveUnderTrees: req.body.move_trees || 0,
+      createRedirectPage: (req.body.create_redirect != null),
+      updateMetadata: (req.body.remain_metadata == null),
       socketClientId: +req.body.socketClientId || undefined,
     };
-    const isRecursively = req.body.recursively || 0;
+    const isRecursively = (req.body.recursively != null);
 
     if (!Page.isCreatableName(newPagePath)) {
       return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
