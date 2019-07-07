@@ -29,16 +29,26 @@
 
           <div class="checkbox checkbox-warning">
             <input name="recursively" id="cbRenameRecursively" value="1" type="checkbox" checked>
-            <label for="cbRenameRecursively">{{ t('modal_rename.label.Recursively') }}</label>
-            <p class="help-block mt-0 ml-2"> {{ t('modal_rename.help.recursive', page.path) }}
-            </p>
+            <label for="cbRenameRecursively">
+              {{ t('modal_rename.label.Recursively') }}
+              <p class="help-block mt-0">{{ t('modal_rename.help.recursive', page.path) }}</p>
+            </label>
           </div>
 
-          <div class="checkbox checkbox-info mt-2">
+          <div class="checkbox checkbox-success">
             <input name="create_redirect" id="cbRenameRedirect" value="1"  type="checkbox">
-              <label for="cbRenameRedirect">{{ t('modal_rename.label.Redirect') }}</label>
-              <p class="help-block mt-0 ml-2"> {{ t('modal_rename.help.redirect', page.path) }}
-              </p>
+            <label for="cbRenameRedirect">
+              {{ t('modal_rename.label.Redirect') }}
+              <p class="help-block mt-0">{{ t('modal_rename.help.redirect', page.path) }}</p>
+            </label>
+          </div>
+
+          <div class="checkbox checkbox-inverse">
+            <input name="metadata" id="cbRenameMetadata" value="1" type="checkbox">
+            <label for="cbRenameMetadata">
+              {{ t('modal_rename.label.Do not update metadata') }}
+              <p class="help-block mt-0">{{ t('modal_rename.help.metadata') }}</p>
+            </label>
           </div>
 
         </div>

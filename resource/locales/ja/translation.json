@@ -271,10 +271,12 @@
       "New page name": "移動先のページ名",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に移動/名前変更",
+      "Do not update metadata": "メタデータを更新しない",
       "Redirect": "リダイレクトする"
     },
     "help": {
       "redirect": "<code>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
+      "metadata": "最終更新ユーザー、最終更新日を更新せず維持します",
       "recursive": "<code>%s</code> 配下のページも移動/名前変更します"
     }
   },

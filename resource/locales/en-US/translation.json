@@ -271,10 +271,12 @@
       "New page name": "New page name",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
+      "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "metadata": "Remains last update user and updated date as is",
       "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
