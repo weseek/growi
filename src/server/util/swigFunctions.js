@@ -70,7 +70,7 @@ module.exports = function(crowi, app, req, locals) {
   locals.customizeService = customizeService;
 
   locals.noCdn = function() {
-    return !!process.env.NO_CDN;
+    return cdnResourcesService.noCdn();
   };
 
   locals.cdnScriptTag = function(name) {
