@@ -1228,7 +1228,8 @@ module.exports = function(crowi) {
     const Page = this;
     const Revision = crowi.model('Revision');
     const path = pageData.path;
-    const createRedirectPage = options.createRedirectPage || 0;
+    const createRedirectPage = options.createRedirectPage || false;
+    const updateMetadata = options.updateMetadata || false;
     const socketClientId = options.socketClientId || null;
 
     // sanitize path
@@ -1236,8 +1237,10 @@ module.exports = function(crowi) {
 
     // update Page
     pageData.path = newPagePath;
-    pageData.lastUpdateUser = user;
-    pageData.updatedAt = Date.now();
+    if (updateMetadata) {
+      pageData.lastUpdateUser = user;
+      pageData.updatedAt = Date.now();
+    }
     const updatedPageData = await pageData.save();
 
     // update Rivisions
