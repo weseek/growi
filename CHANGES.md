@@ -2,7 +2,8 @@
 
 ## 3.5.2-RC
 
-* 
+* Feature: Remain metadata option when Move/Rename page
+* Fix: Consider timezone on admin page
 
 ## 3.5.1
 
