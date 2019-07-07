@@ -4,7 +4,7 @@
 
       <form role="form" id="delete-page-form" onsubmit="return false;">
 
-        <div class="modal-header {% if page.isDeleted() %}bg-danger{% endif %}">
+        <div class="modal-header {% if page.isDeleted() %}bg-danger{% else %}bg-primary{% endif %}">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title">
             {% if page.isDeleted() %}
@@ -54,12 +54,12 @@
               <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
               {% if page.isDeleted() %}
                 <input type="hidden" name="completely" value="true">
-                <button type="submit" class="m-l-10 btn btn-sm btn-danger delete-button">
+                <button type="submit" class="m-l-10 btn btn-danger delete-button">
                   <i class="icon-fire" aria-hidden="true"></i>
                   {{ t('delete_completely') }}
                 </button>
               {% else %}
-                <button type="submit" class="m-l-10 btn btn-sm btn-default delete-button">
+                <button type="submit" class="m-l-10 btn btn-primary delete-button">
                   <i class="icon-trash" aria-hidden="true"></i>
                   {{ t('Delete') }}
                 </button>
