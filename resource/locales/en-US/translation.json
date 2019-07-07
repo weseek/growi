@@ -287,7 +287,7 @@
   "modal_delete": {
     "delete_page": "Delete Page",
     "deleting_page": "Deleting Page",
-    "delete_recursively": "Delete child pages under %s recursively.",
+    "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete Completely",
     "delete_completely_restriction": "You have no admin to delete completely.",
     "recursively": "Delete children of under <code>%s</code> recursively.",

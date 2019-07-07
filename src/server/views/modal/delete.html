@@ -25,20 +25,23 @@
           {% if page.grant != 2 %}
           <div class="checkbox checkbox-warning">
             <input name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
-            <label for="cbDeleteRecursively">{{ t('modal_delete.delete_recursively') }}</label>
-            <p class="help-block"> {{ t('modal_delete.recursively', page.path) }}
-            </p>
+            <label for="cbDeleteRecursively">
+              {{ t('modal_delete.delete_recursively') }}
+              <p class="help-block mt-0"> {{ t('modal_delete.recursively', page.path) }}</p>
+            </label>
           </div>
           {% endif %}
           {% if not page.isDeleted() %}
           <div class="checkbox checkbox-danger">
-          <input name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
-            <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.delete_completely') }}</label>
-            {% if !user.canDeleteCompletely(page.creator._id) %}
-              <p class="bg-danger text-white p-2 mt-2"> <i class="icon-ban" ></i>{{ t('modal_delete.delete_completely_restriction') }}</p>
+            <input name="completely" id="cbDeleteCompletely" {% if user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
+            <label for="cbDeleteCompletely" class="text-danger">
+              {{ t('modal_delete.delete_completely') }}
+              <p class="help-block mt-0"> {{ t('modal_delete.completely') }}</p>
+              {% endif %}
+            </label>
+            {% if user.canDeleteCompletely(page.creator._id) %}
+              <p class="alert alert-warning p-2"> <i class="icon-ban icon-fw" ></i>{{ t('modal_delete.delete_completely_restriction') }}</p>
             {% else %}
-            <p class="help-block"> {{ t('modal_delete.completely') }}</p>
-            {% endif %}
           </div>
           {% endif %}
         </div>
