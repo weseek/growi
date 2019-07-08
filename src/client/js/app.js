@@ -196,9 +196,7 @@ const adminFullTextSearchManagementElem = document.getElementById('admin-full-te
 if (adminFullTextSearchManagementElem != null) {
 
   ReactDOM.render(
-    <Provider inject={[]}>
-      <FullTextSearchManagement />
-    </Provider>,
+    <FullTextSearchManagement />,
     adminFullTextSearchManagementElem,
   );
 }
