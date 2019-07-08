@@ -206,6 +206,7 @@ if (adminFullTextSearchManagementElem != null) {
 
   ReactDOM.render(
     <FullTextSearchManagement />,
+    adminFullTextSearchManagementElem,
   );
 }
 
