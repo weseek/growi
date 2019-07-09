@@ -12,12 +12,12 @@ class FullTextSearchManagement extends React.Component {
     this.Buildindex = this.Buildindex.bind(this);
   }
 
-  Buildindex(event) {
+  Buildindex() {
 
     const { appContainer } = this.props;
-    const pageId = this.props.pageId;
+    const pageId = this.pageId;
 
-    appContainer.apiPost('/admin/search/build', { page_id: pageId })
+    appContainer.apiPost('/admin/search/build', { page_id: pageId });
   }
 
   render() {
