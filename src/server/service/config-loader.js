@@ -134,17 +134,11 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
-  PUBLIC_WIKI_ONLY: {
+  WIKI_MODE: {
     ns:      'crowi',
-    key:     'security:isPublicWikiOnly',
-    type:    TYPES.BOOLEAN,
-    default: false,
-  },
-  PRIVATE_WIKI_ONLY: {
-    ns:      'crowi',
-    key:     'security:isPrivateWikiOnly',
-    type:    TYPES.BOOLEAN,
-    default: false,
+    key:     'security:wikiMode',
+    type:    TYPES.STRING,
+    default: undefined,
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',

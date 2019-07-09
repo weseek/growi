@@ -172,8 +172,7 @@ Environment Variables
     * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
     * SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: If `true`, the system uses only the value of the environment variable as the value of the SAML option that can be set via the environment variable.
     * PUBLISH_OPEN_API: Publish GROWI OpenAPI resources with [ReDoc](https://github.com/Rebilly/ReDoc). Visit `/api-docs`.
-    * PUBLIC_WIKI_ONLY: Enable to make wiki public only.
-    * PRIVATE_WIKI_ONLY: Enable to make wiki private only.
+    * WIKI_MODE: Determines wiki mode (`public`, `private` or undefined). default: undefined
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html).**

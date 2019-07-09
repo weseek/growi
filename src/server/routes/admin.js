@@ -104,19 +104,7 @@ module.exports = function(crowi, app) {
 
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
-  actions.security.index = async function(req, res) {
-    const privateWikiOnly = !!process.env.PRIVATE_WIKI_ONLY;
-    const publicWikiOnly = !!process.env.PUBLIC_WIKI_ONLY;
-    // enable GuestModeOption only when privateWikiOnly AND publicWikiOnly are false/undefined
-    const enableGuestModeOption = !(privateWikiOnly || publicWikiOnly);
-
-    const disableGuestModeOption = configManager.getConfig('crowi', 'security:disableGuestModeOption');
-
-    // if equal, disableGuestModeOption needs to be updated
-    if (enableGuestModeOption === disableGuestModeOption) {
-      await configManager.updateConfigsInTheSameNamespace('crowi', { 'security:disableGuestModeOption': !enableGuestModeOption });
-    }
-
+  actions.security.index = function(req, res) {
     return res.render('admin/security');
   };
 

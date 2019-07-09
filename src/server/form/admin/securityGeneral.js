@@ -5,7 +5,7 @@ const stringToArray = require('../../util/formUtil').stringToArrayFilter;
 const normalizeCRLF = require('../../util/formUtil').normalizeCRLFFilter;
 
 module.exports = form(
-  field('settingForm[security:restrictGuestMode]').required(),
+  field('settingForm[security:restrictGuestMode]'),
   field('settingForm[security:registrationMode]').required(),
   field('settingForm[security:registrationWhiteList]').custom(normalizeCRLF).custom(stringToArray),
   field('settingForm[security:list-policy:hideRestrictedByOwner]').trim().toBooleanStrict(),

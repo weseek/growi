@@ -40,7 +40,6 @@ module.exports = function(crowi) {
       'app:fileUpload'    : false,
       'app:globalLang'    : 'en-US',
 
-      'security:disableGuestModeOption' : false,
       'security:restrictGuestMode'      : 'Deny',
 
       'security:registrationMode'      : 'Open',
