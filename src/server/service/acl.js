@@ -23,7 +23,13 @@ class AclService {
     return !isPrivateOrPublic;
   }
 
-  getIsGuestAllowedToRead() {
+  getGuestModeValue() {
+    return this.isGuestAllowedToRead()
+      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
+      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
+  }
+
+  isGuestAllowedToRead() {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
 
     // return false if private wiki mode

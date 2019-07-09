@@ -438,8 +438,10 @@
 
   "security_setting": {
 		"Security settings": "Security settings",
-		"Guest users access": "Guest users access",
-		"Register limitation": "Register limitation",
+    "Guest users access": "Guest users access",
+    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
+    "Register limitation": "Register limitation",
+    "Register limitation desc": "Restricts ways to register new user.",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
 		"users_without_account": "Users without account is not accessible",
     "example": "Example",
@@ -469,13 +471,13 @@
     "clientID": "Client ID",
     "client_secret": "Client Secret",
     "guest_mode": {
-      "deny": "Deny Unregistered Users",
-      "readonly": "View Only"
+      "deny": "Deny (Registered Users Only)",
+      "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
-      "open": "Anyone",
-      "restricted": "Require Admin permission",
-      "closed": "Invitation Only"
+      "open": "Open (Anyone can registre)",
+      "restricted": "Restricted (Requires approval by administrators)",
+      "closed": "Closed (Invitation Only)"
     },
     "configuration": " Configuration",
     "optional": "Optional",

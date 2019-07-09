@@ -43,11 +43,19 @@
           <div class="form-group">
             <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('Guest users access') }}</label>
             <div class="col-xs-6">
-              <select class="form-control selectpicker" name="settingForm[security:restrictGuestMode]" value="{{ getConfig('crowi', 'security:restrictGuestMode') }}">
+              {% set selectedValue = guestModeValue %}
+              <select class="form-control selectpicker" {% if !isAclEnabled %}disabled{% endif %}
+                  name="settingForm[security:restrictGuestMode]" value="{{ getConfig('crowi', 'security:restrictGuestMode') }}">
                 {% for modeValue, modeLabel in consts.restrictGuestMode %}
-                <option value="{{ t(modeValue) }}" {% if modeValue == getConfig('crowi', 'security:restrictGuestMode') %}selected{% endif %} {% if !isAclEnabled %}disabled{% endif %}>{{ t(modeLabel) }}</option>
+                  <option value="{{ t(modeValue) }}" {% if modeValue == selectedValue %}selected{% endif %}>{{ t(modeLabel) }}</option>
                 {% endfor %}
               </select>
+              {% if !isAclEnabled %}
+              <p class="alert alert-warning mt-2">
+                <i class="icon-exclamation icon-fw"></i><b>FIXED</b><br>
+                {{ t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE', getConfig('crowi', 'security:wikiMode')) }}
+              </p>
+              {% endif %}
             </div>
           </div>
 
@@ -59,7 +67,7 @@
                 <option value="{{ t(modeValue) }}" {% if modeValue == getConfig('crowi', 'security:registrationMode') %}selected{% endif %} >{{ t(modeLabel) }}</option>
                 {% endfor %}
               </select>
-              <p class="help-block small">{{ t('The contents entered here will be shown in the header etc') }}</p>
+              <p class="help-block small">{{ t('security_setting.Register limitation desc') }}</p>
             </div>
           </div>
 

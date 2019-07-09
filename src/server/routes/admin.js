@@ -106,9 +106,11 @@ module.exports = function(crowi, app) {
   actions.security = {};
   actions.security.index = function(req, res) {
     const isAclEnabled = aclService.isAclEnabled();
+    const guestModeValue = aclService.getGuestModeValue();
 
     return res.render('admin/security', {
       isAclEnabled,
+      guestModeValue,
     });
   };
 

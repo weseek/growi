@@ -194,7 +194,7 @@ module.exports = (crowi, app) => {
       // when the route is not strictly restricted
       if (!isStrictly) {
         // when allowed to read
-        if (crowi.aclService.getIsGuestAllowedToRead()) {
+        if (crowi.aclService.isGuestAllowedToRead()) {
           return next();
         }
       }

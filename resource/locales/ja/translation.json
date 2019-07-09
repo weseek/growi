@@ -437,7 +437,9 @@
 
   "security_setting": {
     "Guest users access": "ゲストユーザーのアクセス",
+    "Fixed by env var": "環境変数 <code>%s=%s</code> により固定されています。",
     "Register limitation": "登録の制限",
+    "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
@@ -464,8 +466,8 @@
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
     "guest_mode": {
-      "deny": "アカウントを持たないユーザーはアクセス不可",
-      "readonly": "閲覧のみ許可"
+      "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
+      "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",
