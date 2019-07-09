@@ -436,13 +436,9 @@
    },
 
   "security_setting": {
-    "Basic authentication": "Basic認証",
     "Guest users access": "ゲストユーザーのアクセス",
     "Register limitation": "登録の制限",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "common_authentication": "Basic認証を設定すると、ページ全体に共通の認証がかかります。",
-    "without_encryption": "IDとパスワードは暗号化されずに送信されるのでご注意下さい。",
-    "basic_acl_disable": "Public Wiki の設定のため、Basic認証は利用できません。",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
     "restrict_emails": "登録可能なメールアドレスを制限することができます。",
