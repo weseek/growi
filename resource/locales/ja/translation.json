@@ -691,7 +691,7 @@
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
     "add_user": "グループへのユーザー追加",
-    "deny_create_group": "現在の設定では新規グループの作成はできません。",
+    "deny_create_group": "新規グループの作成はできません。",
     "is_loading_data": "データを取得中です...",
     "choose_action": "削除するグループの限定公開ページの処理を選択してください",
     "delete_group": "グループの削除",

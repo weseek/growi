@@ -36,7 +36,10 @@
         {% if isAclEnabled %}
           <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">{{ t('user_group_management.create_group') }}</button>
         {% else %}
-          {{ t('user_group_management.deny_create_group')}}
+          <p class="alert alert-warning">
+            <i class="icon-exclamation icon-fw"></i><b>{{ t('user_group_management.deny_create_group')}}</b><br>
+            {{ t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE', getConfig('crowi', 'security:wikiMode')) }}
+          </p>
         {% endif %}
       </p>
       <form role="form" action="/admin/user-group/create" method="post">
