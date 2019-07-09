@@ -105,11 +105,11 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const isAclEnabled = aclService.isAclEnabled();
+    const isWikiModeForced = aclService.isWikiModeForced();
     const guestModeValue = aclService.getGuestModeValue();
 
     return res.render('admin/security', {
-      isAclEnabled,
+      isWikiModeForced,
       guestModeValue,
     });
   };
@@ -895,12 +895,9 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    if (!aclService.isAclEnabled()) {
-      const guestMode = form['security:restrictGuestMode'];
-      if (guestMode === 'Deny') {
-        req.form.errors.push('Private Wikiへの設定変更はできません。');
-        return res.json({ status: false, message: req.form.errors.join('\n') });
-      }
+    if (aclService.isWikiModeForced()) {
+      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
+      delete form['security:restrictGuestMode'];
     }
 
     try {
