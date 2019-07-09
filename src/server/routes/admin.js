@@ -105,7 +105,11 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    return res.render('admin/security');
+    const isAclEnabled = aclService.isAclEnabled();
+
+    return res.render('admin/security', {
+      isAclEnabled,
+    });
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
