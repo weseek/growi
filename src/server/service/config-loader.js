@@ -134,7 +134,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
-  WIKI_MODE: {
+  FORCE_WIKI_MODE: {
     ns:      'crowi',
     key:     'security:wikiMode',
     type:    TYPES.STRING,

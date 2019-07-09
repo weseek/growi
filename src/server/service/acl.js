@@ -18,8 +18,9 @@ class AclService {
 
   isAclEnabled() {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
 
-    return wikiMode === undefined;
+    return !isPrivateOrPublic;
   }
 
   getIsGuestAllowedToRead() {
