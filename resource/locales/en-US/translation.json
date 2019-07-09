@@ -113,7 +113,6 @@
   "Import Data": "Import Data",
   "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
-  "Guest users access": "Guest users access",
   "Register limitation": "Register limitation",
   "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
   "Public": "Public",
@@ -438,7 +437,7 @@
 
   "security_setting": {
 		"Security settings": "Security settings",
-    "Guest users access": "Guest users access",
+    "Guest Users Access": "Guest Users Access",
     "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
     "Register limitation": "Register limitation",
     "Register limitation desc": "Restricts ways to register new user.",

@@ -41,7 +41,7 @@
         <legend class="alert-anchor">{{ t('security_settings') }}</legend>
 
           <div class="form-group">
-            <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('Guest users access') }}</label>
+            <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('security_setting.Guest Users Access') }}</label>
             <div class="col-xs-6">
               {% set selectedValue = guestModeValue %}
               <select class="form-control selectpicker" {% if !isAclEnabled %}disabled{% endif %}

@@ -111,8 +111,6 @@
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
   "Basic Settings": "基本設定",
-  "Basic authentication": "Basic認証",
-  "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
   "Public": "公開",
@@ -436,7 +434,7 @@
    },
 
   "security_setting": {
-    "Guest users access": "ゲストユーザーのアクセス",
+    "Guest Users Access": "ゲストユーザーのアクセス",
     "Fixed by env var": "環境変数 <code>%s=%s</code> により固定されています。",
     "Register limitation": "登録の制限",
     "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
