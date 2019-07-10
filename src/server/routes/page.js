@@ -47,6 +47,14 @@ module.exports = function(crowi, app) {
     if (page.revisionHackmdSynced != null && page.revisionHackmdSynced._id != null) {
       returnObj.revisionHackmdSynced = page.revisionHackmdSynced._id;
     }
+
+    if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+      returnObj.lastUpdateUser = page.lastUpdateUser.toObject();
+    }
+    if (page.creator != null && page.creator instanceof User) {
+      returnObj.creator = page.creator.toObject();
+    }
+
     return returnObj;
   }
 
@@ -585,8 +593,6 @@ module.exports = function(crowi, app) {
     }
 
     const result = { page: serializeToObj(createdPage), tags: savedTags };
-    result.page.lastUpdateUser = User.filterToPublicFields(createdPage.lastUpdateUser);
-    result.page.creator = User.filterToPublicFields(createdPage.creator);
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -674,7 +680,6 @@ module.exports = function(crowi, app) {
     }
 
     const result = { page: serializeToObj(page), tags: savedTags };
-    result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants

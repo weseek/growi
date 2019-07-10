@@ -995,9 +995,8 @@ module.exports = function(crowi) {
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1021,9 +1020,8 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
