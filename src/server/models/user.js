@@ -601,28 +601,18 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.resetPasswordByRandomString = function(id) {
-    const User = this;
+  userSchema.statics.resetPasswordByRandomString = async function(id) {
+    const user = await this.findById(id);
 
-    return new Promise(((resolve, reject) => {
-      User.findById(id, (err, userData) => {
-        if (!userData) {
-          return reject(new Error('User not found'));
-        }
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-        // is updatable check
-        // if (userData.isUp
-        const newPassword = generateRandomTempPassword();
-        userData.setPassword(newPassword);
-        userData.save((err, userData) => {
-          if (err) {
-            return reject(err);
-          }
+    const newPassword = generateRandomTempPassword();
+    user.setPassword(newPassword);
+    await user.save();
 
-          resolve({ user: userData, newPassword });
-        });
-      });
-    }));
+    return newPassword;
   };
 
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
