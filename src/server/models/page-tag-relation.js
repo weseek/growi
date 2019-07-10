@@ -44,9 +44,7 @@ class PageTagRelation {
     const offset = opt.offset || 0;
     const limit = opt.limit || 50;
 
-    const existTags = await Tag.find();
-    const existTagIds = existTags.map((tag) => { return tag._id });
-
+    const existTagIds = await Tag.find().distinct('_id');
     const tags = await this.aggregate()
       .match({ relatedTag: { $in: existTagIds } })
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
