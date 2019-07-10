@@ -1124,7 +1124,7 @@ module.exports = function(crowi, app) {
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
     req.body.grantedUsers = page.grantedUsers;
-    req.body.grantedGroup = page.grantedGroup;
+    req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
     return api.create(req, res);

@@ -4,6 +4,7 @@
 
 * Feature: Remain metadata option when Move/Rename page
 * Improvement: Support code highlight for Swift and Kotlin
+* Fix: Couldn't duplicate a page when it restricted by a user group permission
 * Fix: Consider timezone on admin page
 * Fix: Editor doesn't work on Microsoft Edge
 * Support: Upgrade libs
