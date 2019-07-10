@@ -45,6 +45,7 @@ class PageComments extends React.Component {
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
+    this.reEditComment = this.reEditComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
@@ -70,6 +71,10 @@ class PageComments extends React.Component {
   confirmToDeleteComment(comment) {
     this.setState({ commentToDelete: comment });
     this.showDeleteConfirmModal();
+  }
+
+  reEditComment() {
+    console.log('success give props!');
   }
 
   deleteComment() {
@@ -142,6 +147,7 @@ class PageComments extends React.Component {
           <Comment
             comment={comment}
             deleteBtnClicked={this.confirmToDeleteComment}
+            editBtnClicked={this.reEditComment}
             growiRenderer={this.growiRenderer}
             replyList={replyList}
           />
