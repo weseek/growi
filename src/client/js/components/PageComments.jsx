@@ -39,6 +39,7 @@ class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
 
       showEditorIds: new Set(),
+      showReEditor: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
@@ -74,7 +75,7 @@ class PageComments extends React.Component {
   }
 
   reEditComment() {
-    console.log('success give props!');
+    this.setState({ showReEditor: true });
   }
 
   deleteComment() {
@@ -113,6 +114,7 @@ class PageComments extends React.Component {
         showEditorIds: prevState.showEditorIds,
       };
     });
+    this.setState({ showReEditor: false });
   }
 
   // adds replies to specific comment object
@@ -138,19 +140,32 @@ class PageComments extends React.Component {
 
       const commentId = comment._id;
       const showEditor = this.state.showEditorIds.has(commentId);
+      const showReEditor = this.state.showReEditor;
       const username = this.props.appContainer.me;
 
       const replyList = this.addRepliesToComments(comment, replies);
 
       return (
         <div key={commentId}>
-          <Comment
-            comment={comment}
-            deleteBtnClicked={this.confirmToDeleteComment}
-            editBtnClicked={this.reEditComment}
-            growiRenderer={this.growiRenderer}
-            replyList={replyList}
-          />
+          { !showReEditor && (
+            <Comment
+              comment={comment}
+              deleteBtnClicked={this.confirmToDeleteComment}
+              editBtnClicked={this.reEditComment}
+              growiRenderer={this.growiRenderer}
+              replyList={replyList}
+            />
+          )}
+          {
+            showReEditor && (
+              <CommentEditor
+                // growiRenderer={this.growiRenderer}
+                // replyTo={commentId}
+                commentButtonClickedHandler={this.commentButtonClickedHandler}
+              />
+            )
+          }
+
           <div className="container-fluid">
             <div className="row">
               <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
