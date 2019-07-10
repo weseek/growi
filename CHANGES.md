@@ -1,6 +1,16 @@
 # CHANGES
 
-## 3.5.1-RC
+## 3.5.2-RC
+
+* Feature: Remain metadata option when Move/Rename page
+* Improvement: Support code highlight for Swift and Kotlin
+* Fix: Couldn't duplicate a page when it restricted by a user group permission
+* Fix: Consider timezone on admin page
+* Fix: Editor doesn't work on Microsoft Edge
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.5.1
 
 ### BREAKING CHANGES
 
@@ -8,9 +18,9 @@
     * Protection system with Basic Authentication
     * Crowi Classic Authentication Mechanism
     * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
-    * GROWI Plugins with schema version 2
-        * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
-        * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
+* GROWI no lonnger supports plugins with schema version 2
+    * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
+    * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
 ](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
 ) to v3.0.0 or above
 * The restriction mode of the root page (`/`) will be set 'Public'

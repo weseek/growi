@@ -16,14 +16,33 @@ class AclService {
     };
   }
 
-  getIsPublicWikiOnly() {
-    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    return !!publicWikiOnly;
+  isAclEnabled() {
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    return wikiMode !== 'public';
   }
 
-  getIsGuestAllowedToRead() {
-    // return true if puclic wiki mode
-    if (this.getIsPublicWikiOnly()) {
+  isWikiModeForced() {
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
+
+    return isPrivateOrPublic;
+  }
+
+  getGuestModeValue() {
+    return this.isGuestAllowedToRead()
+      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
+      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
+  }
+
+  isGuestAllowedToRead() {
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+
+    // return false if private wiki mode
+    if (wikiMode === 'private') {
+      return false;
+    }
+    // return true if public wiki mode
+    if (wikiMode === 'public') {
       return true;
     }
 

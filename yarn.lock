@@ -5137,10 +5137,10 @@ graceful-fs@^4.1.15:
   version "4.1.15"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
 
-growi-commons@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.1.tgz#e0e71c9c286f493e11c0703c809385bcdc6a97a9"
-  integrity sha512-haH4Av1WuQIHic4Jv2RRwDprbKecRKF/3C0wVk9ssBzWtB3V6Oghj5gksajDpYOd7tOKdvkVEqqkFfIV4JQUyQ==
+growi-commons@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.3.tgz#aa8cec9a45854ff5a66d28bdf3b232adc64e0270"
+  integrity sha512-ktf6wdAOykVkrGCMWBArP+jHjZTg8iDFrnPGNNVoCxm1fnWfRVXBNu7a8mFIvB2wQScSvnoHs2RFBKN/GcJJoA==
 
 growly@^1.3.0:
   version "1.3.0"

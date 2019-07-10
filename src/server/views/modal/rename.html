@@ -6,7 +6,7 @@
 
         <div class="modal-header bg-primary">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <div class="modal-title">{{ t('modal_rename.label.Rename page') }}</div>
+          <div class="modal-title">{{ t('modal_rename.label.Move/Rename page') }}</div>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -29,16 +29,28 @@
 
           <div class="checkbox checkbox-warning">
             <input name="recursively" id="cbRenameRecursively" value="1" type="checkbox" checked>
-            <label for="cbRenameRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
-            <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
-            </p>
+            <label for="cbRenameRecursively">
+              {{ t('modal_rename.label.Recursively') }}
+              <p class="help-block mt-0">{{ t('modal_rename.help.recursive', page.path) }}</p>
+            </label>
           </div>
-          <div class="checkbox checkbox-info">
-            <input name="create_redirect" id="cbRenameRedirect" value="1"  type="checkbox">
-              <label for="cbRenameRedirect">{{ t('modal_rename.label.Redirect') }}</label>
-              <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
-              </p>
+
+          <div class="checkbox checkbox-success">
+            <input name="create_redirect" id="cbRenameRedirect" value="1" type="checkbox">
+            <label for="cbRenameRedirect">
+              {{ t('modal_rename.label.Redirect') }}
+              <p class="help-block mt-0">{{ t('modal_rename.help.redirect', page.path) }}</p>
+            </label>
           </div>
+
+          <div class="checkbox checkbox-inverse">
+            <input name="remain_metadata" id="cbRenameMetadata" value="1" type="checkbox">
+            <label for="cbRenameMetadata">
+              {{ t('modal_rename.label.Do not update metadata') }}
+              <p class="help-block mt-0">{{ t('modal_rename.help.metadata') }}</p>
+            </label>
+          </div>
+
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">

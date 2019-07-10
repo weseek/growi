@@ -188,7 +188,7 @@ module.exports = function(crowi) {
         NO_CDN: env.NO_CDN || null,
       },
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
-      isAclEnabled: !crowi.aclService.getIsPublicWikiOnly(),
+      isAclEnabled: crowi.aclService.isAclEnabled(),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };
 
