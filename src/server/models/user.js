@@ -65,6 +65,18 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
+  }, {
+    toObject: {
+      transform: (doc, ret, opt) => {
+        // omit password
+        delete ret.password;
+        // omit email
+        if (!doc.isEmailPublished) {
+          delete ret.email;
+        }
+        return ret;
+      },
+    },
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
@@ -372,24 +384,6 @@ module.exports = function(crowi) {
     }
 
     return true;
-  };
-
-  userSchema.statics.filterToPublicFields = function(user) {
-    debug('User is', typeof user, user);
-    if (typeof user !== 'object' || !user._id) {
-      return user;
-    }
-
-    const filteredUser = {};
-    const fields = USER_PUBLIC_FIELDS.split(' ');
-    for (let i = 0; i < fields.length; i++) {
-      const key = fields[i];
-      if (user[key]) {
-        filteredUser[key] = user[key];
-      }
-    }
-
-    return filteredUser;
   };
 
   userSchema.statics.findUsers = function(options, callback) {
