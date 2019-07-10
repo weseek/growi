@@ -17,22 +17,32 @@ class AclService {
   }
 
   isAclEnabled() {
-    const isPublicWikiOnly = this.configManager.getConfig('crowi', 'security:isPublicWikiOnly');
-    const isPrivateWikiOnly = this.configManager.getConfig('crowi', 'security:isPrivateWikiOnly');
-
-    return !(isPublicWikiOnly || isPrivateWikiOnly);
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    return wikiMode !== 'public';
   }
 
-  getIsGuestAllowedToRead() {
-    const isPublicWikiOnly = this.configManager.getConfig('crowi', 'security:isPublicWikiOnly');
-    const isPrivateWikiOnly = this.configManager.getConfig('crowi', 'security:isPrivateWikiOnly');
+  isWikiModeForced() {
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
+
+    return isPrivateOrPublic;
+  }
+
+  getGuestModeValue() {
+    return this.isGuestAllowedToRead()
+      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
+      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
+  }
+
+  isGuestAllowedToRead() {
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
 
     // return false if private wiki mode
-    if (isPrivateWikiOnly) {
+    if (wikiMode === 'private') {
       return false;
     }
-    // return true if puclic wiki mode
-    if (isPublicWikiOnly) {
+    // return true if public wiki mode
+    if (wikiMode === 'public') {
       return true;
     }
 

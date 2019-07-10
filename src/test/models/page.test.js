@@ -23,14 +23,6 @@ describe('Page', () => {
     UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
 
-    // remove all
-    await Promise.all([
-      Page.remove({}),
-      User.remove({}),
-      UserGroup.remove({}),
-      UserGroupRelation.remove({}),
-    ]);
-
     await User.insertMany([
       { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
       { name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com' },

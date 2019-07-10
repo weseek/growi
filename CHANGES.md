@@ -3,7 +3,11 @@
 ## 3.5.2-RC
 
 * Feature: Remain metadata option when Move/Rename page
+* Improvement: Support code highlight for Swift and Kotlin
 * Fix: Consider timezone on admin page
+* Fix: Editor doesn't work on Microsoft Edge
+* Support: Upgrade libs
+    * growi-commons
 
 ## 3.5.1
 

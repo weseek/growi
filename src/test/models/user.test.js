@@ -12,11 +12,6 @@ describe('User', () => {
     crowi = await getInstance();
     User = mongoose.model('User');
 
-    // remove all
-    await Promise.all([
-      User.remove({}),
-    ]);
-
     await User.create({
       name: 'Example for User Test',
       username: 'usertest',
