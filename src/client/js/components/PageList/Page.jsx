@@ -43,7 +43,7 @@ Page.propTypes = {
   page: PropTypes.object.isRequired,
   linkTo: PropTypes.string,
   excludePathString: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.array,
 };
 
 Page.defaultProps = {
