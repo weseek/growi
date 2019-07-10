@@ -39,18 +39,18 @@ class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
 
       showEditorIds: new Set(),
-      showReEditor: false,
+      showReEditorIds: new Set(),
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
-    this.reEditComment = this.reEditComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
+    this.reEditButtonClickedHandler = this.reEditButtonClickedHandler.bind(this);
     this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
@@ -72,10 +72,6 @@ class PageComments extends React.Component {
   confirmToDeleteComment(comment) {
     this.setState({ commentToDelete: comment });
     this.showDeleteConfirmModal();
-  }
-
-  reEditComment() {
-    this.setState({ showReEditor: true });
   }
 
   deleteComment() {
@@ -107,14 +103,19 @@ class PageComments extends React.Component {
     this.setState({ showEditorIds: ids });
   }
 
+  reEditButtonClickedHandler(commentId) {
+    const ids = this.state.showReEditorIds.add(commentId);
+    this.setState({ showReEditorIds: ids });
+  }
+
   commentButtonClickedHandler(commentId) {
     this.setState((prevState) => {
       prevState.showEditorIds.delete(commentId);
+      prevState.showReEditorIds.delete(commentId);
       return {
         showEditorIds: prevState.showEditorIds,
       };
     });
-    this.setState({ showReEditor: false });
   }
 
   // adds replies to specific comment object
@@ -141,7 +142,7 @@ class PageComments extends React.Component {
       const commentId = comment._id;
       const commentBody = comment.comment;
       const showEditor = this.state.showEditorIds.has(commentId);
-      const showReEditor = this.state.showReEditor;
+      const showReEditor = this.state.showReEditorIds.has(commentId);
       const username = this.props.appContainer.me;
 
       const replyList = this.addRepliesToComments(comment, replies);
@@ -152,7 +153,7 @@ class PageComments extends React.Component {
             <Comment
               comment={comment}
               deleteBtnClicked={this.confirmToDeleteComment}
-              editBtnClicked={this.reEditComment}
+              editBtnClicked={this.reEditButtonClickedHandler}
               growiRenderer={this.growiRenderer}
               replyList={replyList}
             />
@@ -162,6 +163,7 @@ class PageComments extends React.Component {
               <CommentEditor
                 commentBody={commentBody}
                 growiRenderer={this.growiRenderer}
+                replyTo={commentId}
                 commentButtonClickedHandler={this.commentButtonClickedHandler}
               />
             )

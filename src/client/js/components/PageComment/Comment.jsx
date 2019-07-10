@@ -81,7 +81,7 @@ class Comment extends React.Component {
   }
 
   editBtnClickedHandler() {
-    this.props.editBtnClicked();
+    this.props.editBtnClicked(this.props.comment._id);
   }
 
   renderText(comment) {
