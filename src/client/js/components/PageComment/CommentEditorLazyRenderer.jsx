@@ -75,6 +75,7 @@ class CommentEditorLazyRenderer extends React.Component {
           <CommentEditor
             growiRenderer={this.growiRenderer}
             replyTo={undefined}
+            commentBody=""
             commentButtonClickedHandler={this.showCommentFormBtnClickHandler}
           >
           </CommentEditor>

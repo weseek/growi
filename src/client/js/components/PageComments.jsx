@@ -139,6 +139,7 @@ class PageComments extends React.Component {
     return comments.map((comment) => {
 
       const commentId = comment._id;
+      const commentBody = comment.comment;
       const showEditor = this.state.showEditorIds.has(commentId);
       const showReEditor = this.state.showReEditor;
       const username = this.props.appContainer.me;
@@ -159,8 +160,8 @@ class PageComments extends React.Component {
           {
             showReEditor && (
               <CommentEditor
-                // growiRenderer={this.growiRenderer}
-                // replyTo={commentId}
+                commentBody={commentBody}
+                growiRenderer={this.growiRenderer}
                 commentButtonClickedHandler={this.commentButtonClickedHandler}
               />
             )
@@ -188,6 +189,7 @@ class PageComments extends React.Component {
                 )}
                 { showEditor && (
                   <CommentEditor
+                    commentBody=""
                     growiRenderer={this.growiRenderer}
                     replyTo={commentId}
                     commentButtonClickedHandler={this.commentButtonClickedHandler}

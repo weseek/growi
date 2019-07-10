@@ -37,7 +37,7 @@ class CommentEditor extends React.Component {
 
     this.state = {
       isLayoutTypeGrowi: false,
-      comment: '',
+      comment: this.props.commentBody,
       isMarkdown: true,
       html: '',
       key: 1,
