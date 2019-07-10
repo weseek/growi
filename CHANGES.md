@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.5.2-RC
+## 3.5.3-RC
+
+* 
+
+## 3.5.2
 
 * Feature: Remain metadata option when Move/Rename page
 * Improvement: Support code highlight for Swift and Kotlin
