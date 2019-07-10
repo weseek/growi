@@ -79,6 +79,10 @@ class Comment extends React.Component {
     this.props.deleteBtnClicked(this.props.comment);
   }
 
+  editBtnClickedHandler() {
+    console.log('Hello Edit');
+  }
+
   renderText(comment) {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   }
@@ -238,6 +242,9 @@ class Comment extends React.Component {
                 <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
               </div>
               <div className="page-comment-control">
+                <button type="button" className="btn btn-link" onClick={this.editBtnClickedHandler}>
+                  <i className="ti-pencil"></i>
+                </button>
                 <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
                   <i className="ti-close"></i>
                 </button>
