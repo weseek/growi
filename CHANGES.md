@@ -2,6 +2,7 @@
 
 ## 3.5.3-RC
 
+* Fix: Search Result Page doesn't work
 * Fix: Create/Update page API returns data includes author's password hash
 
 ## 3.5.2
