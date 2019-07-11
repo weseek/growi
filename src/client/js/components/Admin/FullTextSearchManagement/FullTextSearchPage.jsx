@@ -1,19 +1,43 @@
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 
 class FullTextSearchManagement extends React.Component {
 
   constructor(props) {
-    super();
+    super(props);
+
+    this.Buildindex = this.Buildindex.bind(this);
+  }
+
+  Buildindex() {
+
+    const { appContainer } = this.props;
+    const pageId = this.pageId;
+
+    appContainer.apiPost('/admin/search/build', { page_id: pageId });
   }
 
   render() {
     return (
       <Fragment>
-        <button type="submit" className="btn btn-inverse">Build Now</button>
+        <div>
+          <button type="submit" className="btn btn-inverse" onClick={this.Buildindex}>Build Now</button>
+        </div>
       </Fragment>
     );
   }
 
 }
 
-export default FullTextSearchManagement;
+const FullTextSearchManagementWrapper = (props) => {
+  return createSubscribedElement(FullTextSearchManagement, props, [AppContainer]);
+};
+
+FullTextSearchManagement.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default FullTextSearchManagementWrapper;
