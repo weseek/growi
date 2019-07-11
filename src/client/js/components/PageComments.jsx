@@ -38,8 +38,8 @@ class PageComments extends React.Component {
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
 
-      showEditorIds: new Set(),
-      showReEditorIds: new Set(),
+      showEditorIdsForReply: new Set(),
+      showEditorIdsForReEdit: new Set(),
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
@@ -99,21 +99,21 @@ class PageComments extends React.Component {
   }
 
   replyButtonClickedHandler(commentId) {
-    const ids = this.state.showEditorIds.add(commentId);
-    this.setState({ showEditorIds: ids });
+    const ids = this.state.showEditorIdsForReply.add(commentId);
+    this.setState({ showEditorIdsForReply: ids });
   }
 
   reEditButtonClickedHandler(commentId) {
-    const ids = this.state.showReEditorIds.add(commentId);
-    this.setState({ showReEditorIds: ids });
+    const ids = this.state.showEditorIdsForReEdit.add(commentId);
+    this.setState({ showEditorIdsForReEdit: ids });
   }
 
   commentButtonClickedHandler(commentId) {
     this.setState((prevState) => {
-      prevState.showEditorIds.delete(commentId);
-      prevState.showReEditorIds.delete(commentId);
+      prevState.showEditorIdsForReply.delete(commentId);
+      prevState.showEditorIdsForReEdit.delete(commentId);
       return {
-        showEditorIds: prevState.showEditorIds,
+        showEditorIdsForReply: prevState.showEditorIdsForReply,
       };
     });
   }
@@ -141,15 +141,15 @@ class PageComments extends React.Component {
 
       const commentId = comment._id;
       const commentBody = comment.comment;
-      const showEditor = this.state.showEditorIds.has(commentId);
-      const showReEditor = this.state.showReEditorIds.has(commentId);
+      const showEditorForReply = this.state.showEditorIdsForReply.has(commentId);
+      const showEditorForReEdit = this.state.showEditorIdsForReEdit.has(commentId);
       const username = this.props.appContainer.me;
 
       const replyList = this.addRepliesToComments(comment, replies);
 
       return (
         <div key={commentId}>
-          { !showReEditor && (
+          { !showEditorForReEdit && (
             <Comment
               comment={comment}
               deleteBtnClicked={this.confirmToDeleteComment}
@@ -159,7 +159,7 @@ class PageComments extends React.Component {
             />
           )}
           {
-            showReEditor && (
+            showEditorForReEdit && (
               <CommentEditor
                 commentBody={commentBody}
                 growiRenderer={this.growiRenderer}
@@ -172,7 +172,7 @@ class PageComments extends React.Component {
           <div className="container-fluid">
             <div className="row">
               <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-                { !showEditor && (
+                { !showEditorForReply && (
                   <div>
                     { username
                     && (
@@ -189,7 +189,7 @@ class PageComments extends React.Component {
                   }
                   </div>
                 )}
-                { showEditor && (
+                { showEditorForReply && (
                   <CommentEditor
                     commentBody=""
                     growiRenderer={this.growiRenderer}
