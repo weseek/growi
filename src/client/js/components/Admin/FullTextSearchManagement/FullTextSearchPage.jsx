@@ -1,8 +1,11 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 
 class FullTextSearchManagement extends React.Component {
 
@@ -17,7 +20,12 @@ class FullTextSearchManagement extends React.Component {
     const { appContainer } = this.props;
     const pageId = this.pageId;
 
-    appContainer.apiPost('/admin/search/build', { page_id: pageId });
+    appContainer.apiPost('/admin/search/build', { page_id: pageId }).then((res) => {
+      toastSuccess('Building request is successfully posted.');
+    })
+      .catch((e) => {
+        toastError('err', e);
+      });
   }
 
   render() {
