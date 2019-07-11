@@ -57,7 +57,8 @@ class PageTagRelation {
   }
 
   static async listTagsByPage(pageId) {
-    return this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
+    const tags = await this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
+    return tags.filter((tag) => { return tag.relatedTag !== null });
   }
 
   static async listTagNamesByPage(pageId) {
