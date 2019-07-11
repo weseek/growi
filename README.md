@@ -176,6 +176,7 @@ Environment Variables
       * `public`  : Forces all pages to become public
       * `private` : Forces all pages to become private
       * undefined : Publicity will be configured by the admin security page settings
+    * FORMAT_NODE_LOG: If `false`, Output server log as JSON. defautl: `true` (Enabled only when `NODE_ENV=production`)
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html).**

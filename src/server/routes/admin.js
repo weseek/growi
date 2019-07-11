@@ -577,19 +577,22 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/_api/admin/users.resetPassword' , admin.api.usersResetPassword);
-  actions.user.resetPassword = function(req, res) {
+  actions.user.resetPassword = async function(req, res) {
     const id = req.body.user_id;
     const User = crowi.model('User');
 
-    User.resetPasswordByRandomString(id)
-      .then((data) => {
-        data.user = User.filterToPublicFields(data.user);
-        return res.json(ApiResponse.success(data));
-      })
-      .catch((err) => {
-        debug('Error on reseting password', err);
-        return res.json(ApiResponse.error('Error'));
-      });
+    try {
+      const newPassword = await User.resetPasswordByRandomString(id);
+
+      const user = await User.findById(id);
+
+      const result = { user: user.toObject(), newPassword };
+      return res.json(ApiResponse.success(result));
+    }
+    catch (err) {
+      debug('Error on reseting password', err);
+      return res.json(ApiResponse.error(err));
+    }
   };
 
   actions.externalAccount = {};

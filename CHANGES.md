@@ -1,9 +1,15 @@
 # CHANGES
 
-## 3.5.2-RC
+## 3.5.3-RC
+
+* Fix: Search Result Page doesn't work
+* Fix: Create/Update page API returns data includes author's password hash
+
+## 3.5.2
 
 * Feature: Remain metadata option when Move/Rename page
 * Improvement: Support code highlight for Swift and Kotlin
+* Fix: Couldn't duplicate a page when it restricted by a user group permission
 * Fix: Consider timezone on admin page
 * Fix: Editor doesn't work on Microsoft Edge
 * Support: Upgrade libs
