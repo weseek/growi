@@ -3,9 +3,10 @@
 ## 3.5.3-RC
 
 * Improvement: Calculate string width when save with Spreadsheet like GUI (Handsontable)
-* Fix: Dropdown to copy page path/URL/MarkdownLink shows under CodeMirror vscrollbar
 * Fix: Search Result Page doesn't work
 * Fix: Create/Update page API returns data includes author's password hash
+* Fix: Dropdown to copy page path/URL/MarkdownLink shows under CodeMirror vscrollbar
+* Fix: Link to /trash in Dropdown menu
 
 ## 3.5.2
 
