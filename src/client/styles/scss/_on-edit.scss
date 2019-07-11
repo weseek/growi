@@ -90,7 +90,7 @@ body.on-edit {
 
     position: absolute;
     left: $left-margin;
-    z-index: 1;
+    z-index: 7; // forward than .CodeMirror-vscrollbar
     width: calc(100% - #{$left-margin} - #{$right-margin});
     padding-top: 3px;
     pointer-events: none; // disable pointer-events because it becomes an obstacle
