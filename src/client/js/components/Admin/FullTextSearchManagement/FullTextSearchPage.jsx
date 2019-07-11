@@ -24,7 +24,7 @@ class FullTextSearchManagement extends React.Component {
       toastSuccess('Building request is successfully posted.');
     })
       .catch((e) => {
-        toastError('err', e);
+        toastError(new Error('エラーが発生しました'));
       });
   }
 
