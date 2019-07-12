@@ -23,14 +23,14 @@ class FullTextSearchManagement extends React.Component {
     try {
       const res = await appContainer.apiPost('/admin/search/build', { page_id: pageId });
       if (!res.ok) {
-        throw new Error();
+        throw new Error(res.message);
       }
       else {
         toastSuccess('Building request is successfully posted.');
       }
     }
     catch (e) {
-      toastError(new Error('エラーが発生しました'));
+      toastError(e, (new Error('エラーが発生しました')));
     }
   }
 
