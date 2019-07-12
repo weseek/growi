@@ -291,7 +291,6 @@ export default class Editor extends AbstractEditor {
                 {/* for mobile */}
                 { isMobile && (
                   <TextAreaEditor
-                    value={this.props.value}
                     ref={(c) => { this.taEditor = c }}
                     onPasteFiles={this.pasteFilesHandler}
                     onDragEnter={this.dragEnterHandler}
