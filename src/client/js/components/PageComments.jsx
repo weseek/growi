@@ -191,7 +191,6 @@ class PageComments extends React.Component {
                 )}
                 { showEditorForReply && (
                   <CommentEditor
-                    commentBody=""
                     growiRenderer={this.growiRenderer}
                     replyTo={commentId}
                     commentButtonClickedHandler={this.commentButtonClickedHandler}
