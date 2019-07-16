@@ -49,9 +49,9 @@ class AdminRebuildSearch extends React.Component {
       <div>
         <h5>
           {progressBarLabel}
-          <span className="pull-right mr-3">{progressBarWidth}</span>
+          <span className="pull-right">{progressBarWidth}</span>
         </h5>
-        <div className="progress progress-sm mr-3">
+        <div className="progress progress-sm">
           <div
             className={progressBarClassNames}
             role="progressbar"

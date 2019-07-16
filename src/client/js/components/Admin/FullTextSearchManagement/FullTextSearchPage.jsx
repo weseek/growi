@@ -41,7 +41,7 @@ class FullTextSearchManagement extends React.Component {
 
     return (
       <Fragment>
-        <fieldset className="pr-3">
+        <fieldset>
           <legend> { t('full_text_search_management.elasticsearch_management') } </legend>
           <div className="form-group form-horizontal">
             <div className="col-xs-3 control-label"></div>
