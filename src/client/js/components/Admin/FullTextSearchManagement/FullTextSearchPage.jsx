@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import AdminRebuildSearch from '../AdminRebuildSearch';
 import AppContainer from '../../../services/AppContainer';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -40,7 +41,7 @@ class FullTextSearchManagement extends React.Component {
 
     return (
       <Fragment>
-        <fieldset className="pr-3">
+        <fieldset>
           <legend> { t('full_text_search_management.elasticsearch_management') } </legend>
           <div className="form-group form-horizontal">
             <div className="col-xs-3 control-label"></div>
@@ -54,6 +55,8 @@ class FullTextSearchManagement extends React.Component {
             </div>
           </div>
         </fieldset>
+
+        <AdminRebuildSearch />
       </Fragment>
     );
   }
