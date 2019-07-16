@@ -26,7 +26,7 @@ class Importer extends React.Component {
   handleSubmit() {
     axios({
       method: 'POST',
-      url: '/_api/admin/settings/importerEsa',
+      url: '_api/admin/import/testEsaAPI',
       data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
     })
       .then((response) => {
@@ -42,11 +42,23 @@ class Importer extends React.Component {
     const { esaTeamName, esaAccessToken } = this.state;
     return (
       <Fragment>
-        <label>偉人 : </label>
-        <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
-        <label>名言 : </label>
-        <input type="text" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
+
+        <div className="form-group">
+          <input type="password" name="dummypass" onStalled="display:none; top: -100px; left: -100px;" />
+        </div>
+
+        <div className="form-group">
+          <label>偉人 : </label>
+          <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
+        </div>
+
+        <div className="form-group">
+          <label>名言 : </label>
+          <input type="text" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
+        </div>
+
         <input type="button" onClick={this.handleSubmit} value="Submit" />
+
       </Fragment>
 
     );
