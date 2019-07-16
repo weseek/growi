@@ -2,13 +2,19 @@ import React, { Fragment } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
 
+const axiosClient = axios.create({
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+});
+
 class Importer extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      esaTeamName: '',
-      esaAccessToken: '',
+      team_name: '',
+      accessToken: '',
       qiitaTeamName: '',
       qiitaAccessToken: '',
     };
@@ -23,15 +29,15 @@ class Importer extends React.Component {
     });
   }
 
+
   handleSubmit() {
     axios({
       method: 'POST',
-      url: '_api/admin/import/testEsaAPI',
-      data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
+      url: '/_api/admin/import/esa',
+      data: { team_name: this.state.team_name, accessToken: this.state.accessToken },
     })
       .then((response) => {
         console.log(this.props);
-        this.props.history.push('/');
       })
       .catch((error) => {
         console.error(error);
@@ -39,25 +45,34 @@ class Importer extends React.Component {
   }
 
   render() {
-    const { esaTeamName, esaAccessToken } = this.state;
+    const { team_name, accessToken } = this.state;
     return (
       <Fragment>
+        <form
+          action="/_api/admin/settings/importerEsa"
+          className="form-horizontal"
+          id="importerSettingFormEsa"
+          role="form"
+          data-success-messaage="{{ ('Updated') }}"
+        >
 
-        <div className="form-group">
-          <input type="password" name="dummypass" onStalled="display:none; top: -100px; left: -100px;" />
-        </div>
+          <div className="form-group">
+            <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
+          </div>
 
-        <div className="form-group">
-          <label>偉人 : </label>
-          <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
-        </div>
+          <div className="form-group">
+            <label>esaTeamName : </label>
+            <input type="text" name="team_name" value={team_name} onChange={this.handleInputValue} />
+          </div>
 
-        <div className="form-group">
-          <label>名言 : </label>
-          <input type="text" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
-        </div>
+          <div className="form-group">
+            <label>esaAccessToken : </label>
+            <input type="password" name="accessToken" value={accessToken} onChange={this.handleInputValue} />
+          </div>
 
-        <input type="button" onClick={this.handleSubmit} value="Submit" />
+          <input type="button" onClick={this.handleSubmit} value="Submit" />
+
+        </form>
 
       </Fragment>
 
