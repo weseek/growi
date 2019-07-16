@@ -43,13 +43,13 @@ class FullTextSearchManagement extends React.Component {
         <fieldset className="pr-3">
           <legend> { t('full_text_search_management.index_build') } </legend>
           <div className="form-group form-horizontal">
-            <label className="col-xs-3 control-label"> { t('full_text_search_management.index_build') } </label>
-            <div className="col-xs-6">
-              <button type="submit" className="btn btn-inverse" onClick={this.buildIndex}>Build Now</button>
+            <div className="col-xs-3 control-label"></div>
+            <div className="col-xs-7">
+              <button type="submit" className="btn btn-inverse" onClick={this.buildIndex}>{ t('full_text_search_management.build_button') }</button>
               <p className="help-block">
-                <p className="mb-0">{ t('full_text_search_management.rebuild_description_1') }</p>
-                <p className="mb-0">{ t('full_text_search_management.rebuild_description_2') }</p>
-                <p className="mb-0">{ t('full_text_search_management.rebuild_description_3') }</p>
+                { t('full_text_search_management.rebuild_description_1') }<br />
+                { t('full_text_search_management.rebuild_description_2') }<br />
+                { t('full_text_search_management.rebuild_description_3') }<br />
               </p>
             </div>
           </div>
