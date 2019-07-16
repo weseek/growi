@@ -721,5 +721,12 @@
     "import": "インポート",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
+  },
+
+  "full_text_search_management":{
+    "index_build":"索引を作成する",
+    "rebuild_description_1":"Build Now ボタンを押すと全てのページを追加してmappingファイルを再度作り直します。",
+    "rebuild_description_2":"この作業には数秒かかります。",
+    "rebuild_description_3":""
   }
 }

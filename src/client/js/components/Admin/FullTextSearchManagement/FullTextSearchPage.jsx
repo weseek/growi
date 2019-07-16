@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../../../services/AppContainer';
 
@@ -35,11 +36,24 @@ class FullTextSearchManagement extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <Fragment>
-        <div>
-          <button type="submit" className="btn btn-inverse" onClick={this.buildIndex}>Build Now</button>
-        </div>
+        <fieldset className="pr-3">
+          <legend> { t('full_text_search_management.index_build') } </legend>
+          <div className="form-group form-horizontal">
+            <label className="col-xs-3 control-label"> { t('full_text_search_management.index_build') } </label>
+            <div className="col-xs-6">
+              <button type="submit" className="btn btn-inverse" onClick={this.buildIndex}>Build Now</button>
+              <p className="help-block">
+                <p className="mb-0">{ t('full_text_search_management.rebuild_description_1') }</p>
+                <p className="mb-0">{ t('full_text_search_management.rebuild_description_2') }</p>
+                <p className="mb-0">{ t('full_text_search_management.rebuild_description_3') }</p>
+              </p>
+            </div>
+          </div>
+        </fieldset>
       </Fragment>
     );
   }
@@ -51,7 +65,8 @@ const FullTextSearchManagementWrapper = (props) => {
 };
 
 FullTextSearchManagement.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default FullTextSearchManagementWrapper;
+export default withTranslation()(FullTextSearchManagementWrapper);
