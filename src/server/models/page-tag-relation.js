@@ -89,8 +89,7 @@ class PageTagRelation {
 
 }
 
-module.exports = function(crowi) {
-  PageTagRelation.crowi = crowi;
+module.exports = function() {
   schema.loadClass(PageTagRelation);
   const model = mongoose.model('PageTagRelation', schema);
   return model;
