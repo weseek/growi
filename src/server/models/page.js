@@ -1165,7 +1165,7 @@ module.exports = function(crowi) {
     await Bookmark.removeBookmarksByPageId(pageId);
     await Attachment.removeAttachmentsByPageId(pageId);
     await Comment.removeCommentsByPageId(pageId);
-    await PageTagRelation.remove({ relatedPage: { $in: pageId } });
+    await PageTagRelation.remove({ relatedPage: pageId });
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
