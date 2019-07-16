@@ -38,12 +38,15 @@ class PageTagRelation {
   }
 
   static async createTagListWithCount(option) {
+    const Tag = mongoose.model('Tag');
     const opt = option || {};
     const sortOpt = opt.sortOpt || {};
     const offset = opt.offset || 0;
     const limit = opt.limit || 50;
 
+    const existTagIds = await Tag.find().distinct('_id');
     const tags = await this.aggregate()
+      .match({ relatedTag: { $in: existTagIds } })
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
       .sort(sortOpt);
 
@@ -54,7 +57,8 @@ class PageTagRelation {
   }
 
   static async listTagsByPage(pageId) {
-    return this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
+    const tags = await this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
+    return tags.filter((tag) => { return tag.relatedTag !== null });
   }
 
   static async listTagNamesByPage(pageId) {
