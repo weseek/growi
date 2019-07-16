@@ -739,7 +739,7 @@
   },
 
   "full_text_search_management":{
-    "index_build":"Elasticsearch Management",
+    "elasticsearch_management":"Elasticsearch Management",
     "build_button":"Rebuild Index",
     "rebuild_description_1":"Force rebuild index.",
     "rebuild_description_2":"Click 'Build Now' to delete and create mapping file and add all pages.",

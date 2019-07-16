@@ -724,7 +724,7 @@
   },
 
   "full_text_search_management":{
-    "index_build":"Elasticsearch 管理",
+    "elasticsearch_management":"Elasticsearch 管理",
     "build_button":"インデックスのリビルド",
     "rebuild_description_1":"Build Now ボタンを押すと全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2":"この作業には数秒かかります。",
