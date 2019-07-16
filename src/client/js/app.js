@@ -206,7 +206,9 @@ if (adminFullTextSearchManagementElem != null) {
 
   ReactDOM.render(
     <Provider inject={[appContainer]}>
-      <FullTextSearchManagement />
+      <I18nextProvider i18n={i18n}>
+        <FullTextSearchManagement />
+      </I18nextProvider>
     </Provider>,
     adminFullTextSearchManagementElem,
   );
