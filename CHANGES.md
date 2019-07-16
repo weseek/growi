@@ -1,9 +1,18 @@
 # CHANGES
 
-## 3.5.2-RC
+## 3.5.3-RC
+
+* Improvement: Calculate string width when save with Spreadsheet like GUI (Handsontable)
+* Fix: Search Result Page doesn't work
+* Fix: Create/Update page API returns data includes author's password hash
+* Fix: Dropdown to copy page path/URL/MarkdownLink shows under CodeMirror vscrollbar
+* Fix: Link to /trash in Dropdown menu
+
+## 3.5.2
 
 * Feature: Remain metadata option when Move/Rename page
 * Improvement: Support code highlight for Swift and Kotlin
+* Fix: Couldn't restrict page with user group permission
 * Fix: Couldn't duplicate a page when it restricted by a user group permission
 * Fix: Consider timezone on admin page
 * Fix: Editor doesn't work on Microsoft Edge

@@ -995,9 +995,8 @@ module.exports = function(crowi) {
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1021,9 +1020,8 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
@@ -1157,6 +1155,7 @@ module.exports = function(crowi) {
     const Bookmark = crowi.model('Bookmark');
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
+    const PageTagRelation = crowi.model('PageTagRelation');
     const Revision = crowi.model('Revision');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
@@ -1166,6 +1165,7 @@ module.exports = function(crowi) {
     await Bookmark.removeBookmarksByPageId(pageId);
     await Attachment.removeAttachmentsByPageId(pageId);
     await Comment.removeCommentsByPageId(pageId);
+    await PageTagRelation.remove({ relatedPage: pageId });
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
