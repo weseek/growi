@@ -38,6 +38,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import UserPage from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
@@ -173,6 +174,19 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem,
+  );
+}
+
+const adminUserPageElem = document.getElementById('admin-user-page');
+if (adminUserPageElem != null) {
+
+  ReactDOM.render(
+    <Provider>
+      <I18nextProvider i18n={i18n}>
+        <UserPage />
+      </I18nextProvider>
+    </Provider>,
+    adminUserPageElem,
   );
 }
 
