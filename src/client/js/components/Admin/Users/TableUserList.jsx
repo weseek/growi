@@ -7,10 +7,6 @@ import AppContainer from '../../../services/AppContainer';
 
 class TableUserList extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
 
   render() {
     const { t } = this.props;
