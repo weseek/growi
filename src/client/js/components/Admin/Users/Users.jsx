@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import PaginationWrapper from '../../PaginationWrapper';
+import NewUsers from './NewUsers';
 import TableUserList from './TableUserList';
 
 import AppContainer from '../../../services/AppContainer';
@@ -18,14 +18,8 @@ class UserPage extends React.Component {
 
     return (
       <Fragment>
+        <NewUsers />
         <TableUserList />
-        <PaginationWrapper
-          activePage={this.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={this.state.totalUserGroups}
-          pagingLimit={this.state.pagingLimit}
-        >
-        </PaginationWrapper>
       </Fragment>
     );
   }
