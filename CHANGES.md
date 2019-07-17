@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.5.3-RC
+## 3.5.4-RC
+
+* Bug: List private pages wrongly
+
+## 3.5.3
 
 * Improvement: Calculate string width when save with Spreadsheet like GUI (Handsontable)
 * Fix: Search Result Page doesn't work
