@@ -809,7 +809,7 @@ module.exports = function(crowi) {
 
     // determine User condition
     const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
     let userGroups = null;
