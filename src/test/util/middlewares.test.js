@@ -18,16 +18,17 @@ describe('middlewares.loginRequired', () => {
   // });
 
   describe('not strict mode', () => {
-    let loginRequired;
-
+    // setup req/res/next
     const req = {
       originalUrl: 'original url 1',
       session: {},
     };
     const res = {
-      redirect: jest.fn().mockReturnValue('res'),
+      redirect: jest.fn().mockReturnValue('redirect'),
     };
     const next = jest.fn().mockReturnValue('next');
+
+    let loginRequired;
 
     beforeEach(async(done) => {
       loginRequired = middlewares.loginRequired(false);
@@ -52,13 +53,51 @@ describe('middlewares.loginRequired', () => {
       const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
         .mockImplementation(() => false);
 
-      // eslint-disable-next-line no-unused-vars
       const result = loginRequired(req, res, next);
 
       expect(isGuestAllowedToReadSpy).toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
+      expect(result).toBe('redirect');
+    });
+
+  });
+
+
+  describe('strict mode', () => {
+    // setup req/res/next
+    const req = {
+      originalUrl: 'original url 1',
+      session: {},
+    };
+    const res = {
+      redirect: jest.fn().mockReturnValue('redirect'),
+      sendStatus: jest.fn().mockReturnValue('sendStatus'),
+    };
+    const next = jest.fn().mockReturnValue('next');
+
+    let loginRequired;
+    let isGuestAllowedToReadSpy;
+
+    beforeEach(async(done) => {
+      loginRequired = middlewares.loginRequired();
+      // spy for AclService.isGuestAllowedToRead
+      isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead');
+      done();
+    });
+
+    test('send status 403 when \'req.path\' starts with \'_api\'', () => {
+      req.path = '/_api/someapi';
+
+      const result = loginRequired(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(res.sendStatus).toHaveBeenCalledTimes(1);
+      expect(res.sendStatus).toHaveBeenCalledWith(403);
+      expect(result).toBe('sendStatus');
     });
 
   });
