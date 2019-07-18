@@ -101,6 +101,9 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
+  'admin-user-page': <UserPage />,
+  'admin-full-text-search-management': <FullTextSearchManagement />,
+
   'staff-credit': <StaffCredit />,
 };
 
@@ -177,19 +180,6 @@ if (customHeaderEditorElem != null) {
   );
 }
 
-const adminUserPageElem = document.getElementById('admin-user-page');
-if (adminUserPageElem != null) {
-
-  ReactDOM.render(
-    <Provider>
-      <I18nextProvider i18n={i18n}>
-        <UserPage />
-      </I18nextProvider>
-    </Provider>,
-    adminUserPageElem,
-  );
-}
-
 const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
 if (adminUserGroupPageElem != null) {
   const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
@@ -215,18 +205,6 @@ if (adminImporterElem != null) {
   );
 }
 
-const adminFullTextSearchManagementElem = document.getElementById('admin-full-text-search-management');
-if (adminFullTextSearchManagementElem != null) {
-
-  ReactDOM.render(
-    <Provider inject={[websocketContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <FullTextSearchManagement />
-      </I18nextProvider>
-    </Provider>,
-    adminFullTextSearchManagementElem,
-  );
-}
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

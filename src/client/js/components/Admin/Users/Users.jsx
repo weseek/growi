@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
-import NewUsers from './NewUsers';
-import TableUserList from './TableUserList';
+import InviteUserControl from './InviteUserControl';
+import UserTable from './UserTable';
 
 import AppContainer from '../../../services/AppContainer';
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -15,11 +16,18 @@ class UserPage extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
 
     return (
       <Fragment>
-        <NewUsers />
-        <TableUserList />
+        <p>
+          <InviteUserControl />
+          <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
+            <i className="icon-user-follow" aria-hidden="true"></i>
+            { t('user_management.external_account') }
+          </a>
+        </p>
+        <UserTable />
       </Fragment>
     );
   }
@@ -31,7 +39,8 @@ const UserPageWrapper = (props) => {
 };
 
 UserPage.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default UserPageWrapper;
+export default withTranslation()(UserPageWrapper);

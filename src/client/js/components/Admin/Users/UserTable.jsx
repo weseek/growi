@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class TableUserList extends React.Component {
+class UserTable extends React.Component {
 
 
   render() {
@@ -35,13 +35,13 @@ class TableUserList extends React.Component {
 
 }
 
-const TableUserListWrapper = (props) => {
-  return createSubscribedElement(TableUserList, props, [AppContainer]);
+const UserTableWrapper = (props) => {
+  return createSubscribedElement(UserTable, props, [AppContainer]);
 };
 
-TableUserList.propTypes = {
+UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(TableUserListWrapper);
+export default withTranslation()(UserTableWrapper);
