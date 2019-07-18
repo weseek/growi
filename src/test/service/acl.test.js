@@ -1,3 +1,5 @@
+import each from 'jest-each';
+
 const { getInstance } = require('../setup-crowi');
 
 describe('AclService test', () => {
@@ -12,6 +14,7 @@ describe('AclService test', () => {
     done();
   });
 
+
   describe('isAclEnabled()', () => {
 
     test('to be false when FORCE_WIKI_MODE is undefined', async() => {
@@ -20,8 +23,10 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
+      const result = crowi.aclService.isAclEnabled();
+
       expect(process.env.FORCE_WIKI_MODE).not.toBeDefined();
-      expect(crowi.aclService.isAclEnabled()).toBe(true);
+      expect(result).toBe(true);
     });
 
     test('to be false when FORCE_WIKI_MODE is dummy string', async() => {
@@ -30,10 +35,11 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isAclEnabled();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('dummy string');
-      expect(crowi.aclService.isAclEnabled()).toBe(true);
+      expect(result).toBe(true);
     });
 
     test('to be true when FORCE_WIKI_MODE=private', async() => {
@@ -42,10 +48,11 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isAclEnabled();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('private');
-      expect(crowi.aclService.isAclEnabled()).toBe(true);
+      expect(result).toBe(true);
     });
 
     test('to be false when FORCE_WIKI_MODE=public', async() => {
@@ -54,13 +61,15 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isAclEnabled();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('public');
-      expect(crowi.aclService.isAclEnabled()).toBe(false);
+      expect(result).toBe(false);
     });
 
   });
+
 
   describe('isWikiModeForced()', () => {
 
@@ -70,8 +79,10 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
+      const result = crowi.aclService.isWikiModeForced();
+
       expect(process.env.FORCE_WIKI_MODE).not.toBeDefined();
-      expect(crowi.aclService.isWikiModeForced()).toBe(false);
+      expect(result).toBe(false);
     });
 
     test('to be false when FORCE_WIKI_MODE is dummy string', async() => {
@@ -80,10 +91,11 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isWikiModeForced();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('dummy string');
-      expect(crowi.aclService.isWikiModeForced()).toBe(false);
+      expect(result).toBe(false);
     });
 
     test('to be true when FORCE_WIKI_MODE=private', async() => {
@@ -92,10 +104,11 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isWikiModeForced();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('private');
-      expect(crowi.aclService.isWikiModeForced()).toBe(true);
+      expect(result).toBe(true);
     });
 
     test('to be false when FORCE_WIKI_MODE=public', async() => {
@@ -104,20 +117,25 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isWikiModeForced();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('public');
-      expect(crowi.aclService.isWikiModeForced()).toBe(true);
+      expect(result).toBe(true);
     });
 
   });
 
+
   describe('isGuestAllowedToRead()', () => {
+    let orgGetConfig;
     let getConfigSpy;
 
     beforeEach(async(done) => {
       // prepare spy for ConfigManager.getConfig
+      orgGetConfig = crowi.configManager.getConfig;
       getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
+      getConfigSpy.mockClear();
       done();
     });
 
@@ -127,11 +145,12 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isGuestAllowedToRead();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('private');
       expect(getConfigSpy).not.toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
-      expect(crowi.aclService.isGuestAllowedToRead()).toBe(false);
+      expect(result).toBe(false);
     });
 
     test('to be true when FORCE_WIKI_MODE=public', async() => {
@@ -140,13 +159,52 @@ describe('AclService test', () => {
       // reload
       await crowi.configManager.loadConfigs();
 
-      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      const result = crowi.aclService.isGuestAllowedToRead();
 
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
       expect(wikiMode).toBe('public');
       expect(getConfigSpy).not.toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
-      expect(crowi.aclService.isGuestAllowedToRead()).toBe(true);
+      expect(result).toBe(true);
     });
 
+    each`
+    restrictGuestMode   | expected
+      ${undefined}      | ${false}
+      ${'Deny'}         | ${false}
+      ${'Readonly'}     | ${true}
+      ${'Open'}         | ${false}
+      ${'Restricted'}   | ${false}
+      ${'closed'}       | ${false}
+    `
+      .test('to be $expected when FORCE_WIKI_MODE is undefined'
+          + ' and `security:restrictGuestMode` is \'$restrictGuestMode\'', async({ restrictGuestMode, expected }) => {
+
+        delete process.env.FORCE_WIKI_MODE;
+
+        // reload
+        await crowi.configManager.loadConfigs();
+
+        // setup mock implementation
+        getConfigSpy.mockImplementation((ns, key) => {
+          if (ns === 'crowi' && key === 'security:restrictGuestMode') {
+            return restrictGuestMode;
+          }
+          if (ns === 'crowi' && key === 'security:wikiMode') {
+            return null;
+          }
+          throw new Error('Unexpected behavior.');
+        });
+
+        const result = crowi.aclService.isGuestAllowedToRead();
+
+        expect(process.env.FORCE_WIKI_MODE).not.toBeDefined();
+        expect(getConfigSpy).toHaveBeenCalledTimes(2);
+        expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:wikiMode');
+        expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
+        expect(result).toBe(expected);
+      });
+
   });
+
 
 });
