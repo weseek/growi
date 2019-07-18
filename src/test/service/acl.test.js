@@ -25,7 +25,8 @@ describe('AclService test', () => {
 
       const result = crowi.aclService.isAclEnabled();
 
-      expect(process.env.FORCE_WIKI_MODE).not.toBeDefined();
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      expect(wikiMode).toBe(undefined);
       expect(result).toBe(true);
     });
 
@@ -81,7 +82,8 @@ describe('AclService test', () => {
 
       const result = crowi.aclService.isWikiModeForced();
 
-      expect(process.env.FORCE_WIKI_MODE).not.toBeDefined();
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      expect(wikiMode).toBe(undefined);
       expect(result).toBe(false);
     });
 
@@ -128,12 +130,10 @@ describe('AclService test', () => {
 
 
   describe('isGuestAllowedToRead()', () => {
-    let orgGetConfig;
     let getConfigSpy;
 
     beforeEach(async(done) => {
       // prepare spy for ConfigManager.getConfig
-      orgGetConfig = crowi.configManager.getConfig;
       getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
       getConfigSpy.mockClear();
       done();
@@ -179,8 +179,6 @@ describe('AclService test', () => {
       .test('to be $expected when FORCE_WIKI_MODE is undefined'
           + ' and `security:restrictGuestMode` is \'$restrictGuestMode\'', async({ restrictGuestMode, expected }) => {
 
-        delete process.env.FORCE_WIKI_MODE;
-
         // reload
         await crowi.configManager.loadConfigs();
 
@@ -190,14 +188,13 @@ describe('AclService test', () => {
             return restrictGuestMode;
           }
           if (ns === 'crowi' && key === 'security:wikiMode') {
-            return null;
+            return undefined;
           }
           throw new Error('Unexpected behavior.');
         });
 
         const result = crowi.aclService.isGuestAllowedToRead();
 
-        expect(process.env.FORCE_WIKI_MODE).not.toBeDefined();
         expect(getConfigSpy).toHaveBeenCalledTimes(2);
         expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:wikiMode');
         expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
