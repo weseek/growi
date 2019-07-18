@@ -189,15 +189,17 @@ module.exports = (crowi, app) => {
    */
   middlewares.loginRequired = function(isStrictly = true) {
     return function(req, res, next) {
-      const User = crowi.model('User');
 
       // when the route is not strictly restricted
       if (!isStrictly) {
         // when allowed to read
         if (crowi.aclService.isGuestAllowedToRead()) {
+          logger.debug('Allowed to read: ', req.path);
           return next();
         }
       }
+
+      const User = crowi.model('User');
 
       // check the user logged in
       //  make sure that req.user isn't username/email string to login which is set by basic-auth-connect
