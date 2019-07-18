@@ -1,5 +1,7 @@
 /* eslint-disable arrow-body-style */
 
+import each from 'jest-each';
+
 const { getInstance } = require('../setup-crowi');
 
 describe('middlewares.loginRequired', () => {
@@ -35,7 +37,7 @@ describe('middlewares.loginRequired', () => {
       done();
     });
 
-    test('passes guest user when aclService.isGuestAllowedToRead() returns true', () => {
+    test('pass guest user when aclService.isGuestAllowedToRead() returns true', () => {
       // prepare spy for AclService.isGuestAllowedToRead
       const isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead')
         .mockImplementation(() => true);
@@ -69,7 +71,7 @@ describe('middlewares.loginRequired', () => {
     // setup req/res/next
     const req = {
       originalUrl: 'original url 1',
-      session: {},
+      session: null,
     };
     const res = {
       redirect: jest.fn().mockReturnValue('redirect'),
@@ -82,6 +84,8 @@ describe('middlewares.loginRequired', () => {
 
     beforeEach(async(done) => {
       loginRequired = middlewares.loginRequired();
+      // reset session object
+      req.session = {};
       // spy for AclService.isGuestAllowedToRead
       isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead');
       done();
@@ -98,6 +102,83 @@ describe('middlewares.loginRequired', () => {
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus).toHaveBeenCalledWith(403);
       expect(result).toBe('sendStatus');
+    });
+
+    test('redirect to \'/login\' when the user does not loggedin', () => {
+      req.path = '/path/that/requires/loggedin';
+
+      const result = loginRequired(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith('/login');
+      expect(result).toBe('redirect');
+      expect(req.session.jumpTo).toBe('original url 1');
+    });
+
+    test('pass user who logged in', () => {
+      const User = crowi.model('User');
+
+      req.user = {
+        _id: 'user id',
+        status: User.STATUS_ACTIVE,
+      };
+
+      const result = loginRequired(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(result).toBe('next');
+      expect(req.session.jumpTo).toBe(undefined);
+    });
+
+    each`
+      userStatus  | expectedPath
+      ${1}        | ${'/login/error/registered'}
+      ${3}        | ${'/login/error/suspended'}
+      ${5}        | ${'/login/invited'}
+    `
+      .test('redirect to \'$expectedPath\''
+        + ' when user.status is \'$userStatus\' ', ({ userStatus, expectedPath }) => {
+
+        req.user = {
+          _id: 'user id',
+          status: userStatus,
+        };
+
+        const result = loginRequired(req, res, next);
+
+        expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+        expect(next).not.toHaveBeenCalled();
+        expect(res.sendStatus).not.toHaveBeenCalled();
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith(expectedPath);
+        expect(result).toBe('redirect');
+        expect(req.session.jumpTo).toBe(undefined);
+      });
+
+    test('redirect to \'/login\' when user.status is \'STATUS_DELETED\'', () => {
+      const User = crowi.model('User');
+
+      req.path = '/path/that/requires/loggedin';
+      req.user = {
+        _id: 'user id',
+        status: User.STATUS_DELETED,
+      };
+
+      const result = loginRequired(req, res, next);
+
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith('/login');
+      expect(result).toBe('redirect');
+      expect(req.session.jumpTo).toBe('original url 1');
     });
 
   });
