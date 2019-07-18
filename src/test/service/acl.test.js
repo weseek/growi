@@ -50,4 +50,41 @@ describe('AclService test', () => {
 
   });
 
+  describe('isGuestAllowedToRead()', () => {
+    let getConfigSpy;
+
+    beforeEach(async(done) => {
+      // prepare spy for ConfigManager.getConfig
+      getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
+      done();
+    });
+
+    test('to be false when FORCE_WIKI_MODE=private', async() => {
+      process.env.FORCE_WIKI_MODE = 'private';
+
+      // reload
+      await crowi.configManager.loadConfigs();
+
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+
+      expect(wikiMode).toBe('private');
+      expect(getConfigSpy).not.toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
+      expect(crowi.aclService.isGuestAllowedToRead()).toBe(false);
+    });
+
+    test('to be true when FORCE_WIKI_MODE=public', async() => {
+      process.env.FORCE_WIKI_MODE = 'public';
+
+      // reload
+      await crowi.configManager.loadConfigs();
+
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+
+      expect(wikiMode).toBe('public');
+      expect(getConfigSpy).not.toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
+      expect(crowi.aclService.isGuestAllowedToRead()).toBe(true);
+    });
+
+  });
+
 });
