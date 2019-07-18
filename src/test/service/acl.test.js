@@ -3,7 +3,6 @@ import each from 'jest-each';
 const { getInstance } = require('../setup-crowi');
 
 describe('AclService test', () => {
-  // eslint-disable-next-line no-unused-vars
   let crowi;
 
   const initialEnv = process.env;
@@ -135,7 +134,6 @@ describe('AclService test', () => {
     beforeEach(async(done) => {
       // prepare spy for ConfigManager.getConfig
       getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
-      getConfigSpy.mockClear();
       done();
     });
 
