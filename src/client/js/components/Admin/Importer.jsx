@@ -37,18 +37,10 @@ class Importer extends React.Component {
   }
 
   esaHandleSubmitTest() {
-    axios({
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      method: 'POST',
-      url: '/_api/admin/import/testEsaAPI',
-      data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
-    })
-      .then((response) => {
-        console.log(this.props);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const params = {
+      esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+    };
+    this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
   }
 
   render() {
@@ -101,7 +93,6 @@ class Importer extends React.Component {
   }
 
 }
-
 
 /**
  * Wrapper component for using unstated
