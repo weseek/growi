@@ -18,7 +18,8 @@ class Importer extends React.Component {
       qiitaTeamName: '',
       qiitaAccessToken: '',
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.esaHandleSubmit = this.esaHandleSubmit.bind(this);
+    this.esaHandleSubmitTest = this.esaHandleSubmitTest.bind(this);
     this.handleInputValue = this.handleInputValue.bind(this);
   }
 
@@ -30,7 +31,7 @@ class Importer extends React.Component {
   }
 
 
-  handleSubmit() {
+  esaHandleSubmit() {
     axios({
       method: 'POST',
       url: '/_api/admin/import/esa',
@@ -44,8 +45,22 @@ class Importer extends React.Component {
       });
   }
 
+  esaHandleSubmitTest() {
+    axios({
+      method: 'POST',
+      url: '/_api/admin/import/testEsaAPI',
+      data: { team_name: this.state.esa_team_name, accessToken: this.state.esa_accessToken },
+    })
+      .then((response) => {
+        console.log(this.props);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   render() {
-    const { team_name, accessToken } = this.state;
+    const { esa_team_name, esa_accessToken } = this.state;
     return (
       <Fragment>
         <form
@@ -70,7 +85,9 @@ class Importer extends React.Component {
             <input type="password" name="esa_accessToken" value={esa_accessToken} onChange={this.handleInputValue} />
           </div>
 
-          <input type="button" onClick={this.handleSubmit} value="Submit" />
+          <input type="button" onClick={this.esaHandleSubmit} value="Submit" />
+          <input type="button" onClick={this.esaHandleSubmitTest} value="Submit" />
+
 
         </form>
 
