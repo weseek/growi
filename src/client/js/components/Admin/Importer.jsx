@@ -2,12 +2,6 @@ import React, { Fragment } from 'react';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
 
-const axiosClient = axios.create({
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-});
-
 class Importer extends React.Component {
 
   constructor(props) {
@@ -33,6 +27,7 @@ class Importer extends React.Component {
 
   esaHandleSubmit() {
     axios({
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
       method: 'POST',
       url: '/_api/admin/import/esa',
       data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
@@ -47,6 +42,7 @@ class Importer extends React.Component {
 
   esaHandleSubmitTest() {
     axios({
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
       method: 'POST',
       url: '/_api/admin/import/testEsaAPI',
       data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
