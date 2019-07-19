@@ -101,6 +101,7 @@ let componentMappings = {
   'user-draft-list': <MyDraftList />,
 
   'staff-credit': <StaffCredit />,
+  'admin-importer': <Importer />,
 };
 
 // additional definitions if data exists
@@ -193,13 +194,18 @@ if (adminUserGroupPageElem != null) {
   );
 }
 
-const adminImporterElem = document.getElementById('admin-importer');
-if (adminImporterElem != null) {
-  ReactDOM.render(
-    <Importer />,
-    adminImporterElem,
-  );
-}
+
+Object.keys(componentMappings).forEach((key) => {
+  const elm = document.getElementById(key);
+  if (elm) {
+    ReactDOM.render(
+      <Provider inject={injectableContainers}>
+        {componentMappings[key]}
+      </Provider>,
+      elm,
+    );
+  }
+});
 
 const adminFullTextSearchManagementElem = document.getElementById('admin-full-text-search-management');
 if (adminFullTextSearchManagementElem != null) {

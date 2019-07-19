@@ -1,6 +1,12 @@
 import React, { Fragment } from 'react';
-import axios from 'axios';
-import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
+import EditorContainer from '../../services/EditorContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
+import HackmdEditor from '../PageEditorByHackmd/HackmdEditor';
+
 
 class Importer extends React.Component {
 
@@ -17,27 +23,17 @@ class Importer extends React.Component {
     this.handleInputValue = this.handleInputValue.bind(this);
   }
 
-
   handleInputValue(event) {
     this.setState({
       [event.target.name]: event.target.value,
     });
   }
 
-
   esaHandleSubmit() {
-    axios({
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      method: 'POST',
-      url: '/_api/admin/import/esa',
-      data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
-    })
-      .then((response) => {
-        console.log(this.props);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    const params = {
+      esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+    };
+    this.props.appContainer.apiPost('/admin/import/esa', params);
   }
 
   esaHandleSubmitTest() {
@@ -81,10 +77,21 @@ class Importer extends React.Component {
             <input type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
           </div>
 
-          <input type="button" onClick={this.esaHandleSubmit} value="インポート" />
+          <div className="form-group">
+            <input type="hidden" name="_csrf" value={this.props.csrf} />
+            <div className="col-xs-offset-3 col-xs-6">
 
-          <input type="button" onClick={this.esaHandleSubmitTest} value="接続テスト" />
 
+              <input name="Esa" type="button" id="testConnectionToEsa" className="btn btn-primary btn-esa" onClick={this.esaHandleSubmit} value="インポート" />
+              <button type="submit" className="btn btn-secondary">{ // the first element is the default button to submit
+              }
+                {'Update'}
+              </button>
+              <span className="col-xs-offset-1">
+                <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" />
+              </span>
+            </div>
+          </div>
 
         </form>
 
@@ -95,4 +102,18 @@ class Importer extends React.Component {
 
 }
 
-export default Importer;
+
+/**
+ * Wrapper component for using unstated
+ */
+const ImporterWrapper = (props) => {
+  return createSubscribedElement(Importer, props, [AppContainer, PageContainer, EditorContainer]);
+};
+
+Importer.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+};
+
+export default ImporterWrapper;
