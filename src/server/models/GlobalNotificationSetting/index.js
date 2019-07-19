@@ -10,7 +10,9 @@ const globalNotificationSettingSchema = new mongoose.Schema({
   triggerEvents: { type: [String] },
 });
 
-
+/*
+* e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
+*/
 const generatePathsOnTree = (path, pathList) => {
   pathList.push(path);
 
@@ -23,10 +25,18 @@ const generatePathsOnTree = (path, pathList) => {
   return generatePathsOnTree(newPath, pathList);
 };
 
+/*
+* e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
+*/
 const generatePathsToMatch = (originalPath) => {
   const pathList = generatePathsOnTree(originalPath, []);
   return pathList.map((path) => {
+    // except for the original trigger path ("/a/b/c"), append "*" to find all matches
+    // ["/a/b/c", "/a/b", "/a", "/"] => ["/a/b/c", "/a/b/*", "/a/*", "/*"]
     if (path !== originalPath) {
+      if (path.substr(-1) === '/') {
+        return `${path}*`;
+      }
       return `${path}/*`;
     }
 
