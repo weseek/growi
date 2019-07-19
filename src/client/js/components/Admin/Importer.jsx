@@ -13,8 +13,8 @@ class Importer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      esa_team_name: '',
-      esa_accessToken: '',
+      esaTeamName: '',
+      esaAccessToken: '',
       qiitaTeamName: '',
       qiitaAccessToken: '',
     };
@@ -35,7 +35,7 @@ class Importer extends React.Component {
     axios({
       method: 'POST',
       url: '/_api/admin/import/esa',
-      data: { team_name: this.state.esa_team_name, accessToken: this.state.esa_accessToken },
+      data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
     })
       .then((response) => {
         console.log(this.props);
@@ -49,7 +49,7 @@ class Importer extends React.Component {
     axios({
       method: 'POST',
       url: '/_api/admin/import/testEsaAPI',
-      data: { team_name: this.state.esa_team_name, accessToken: this.state.esa_accessToken },
+      data: { esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken },
     })
       .then((response) => {
         console.log(this.props);
@@ -60,7 +60,7 @@ class Importer extends React.Component {
   }
 
   render() {
-    const { esa_team_name, esa_accessToken } = this.state;
+    const { esaTeamName, esaAccessToken } = this.state;
     return (
       <Fragment>
         <form
@@ -77,16 +77,17 @@ class Importer extends React.Component {
 
           <div className="form-group">
             <label>esaTeamName : </label>
-            <input type="text" name="esa_team_name" value={esa_team_name} onChange={this.handleInputValue} />
+            <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
           </div>
 
           <div className="form-group">
             <label>esaAccessToken : </label>
-            <input type="password" name="esa_accessToken" value={esa_accessToken} onChange={this.handleInputValue} />
+            <input type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
           </div>
 
-          <input type="button" onClick={this.esaHandleSubmit} value="Submit" />
-          <input type="button" onClick={this.esaHandleSubmitTest} value="Submit" />
+          <input type="button" onClick={this.esaHandleSubmit} value="インポート" />
+
+          <input type="button" onClick={this.esaHandleSubmitTest} value="接続テスト" />
 
 
         </form>
