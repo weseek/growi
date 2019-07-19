@@ -8,7 +8,6 @@ import UserTable from './UserTable';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserPage extends React.Component {
 
@@ -18,42 +17,11 @@ class UserPage extends React.Component {
     this.state = {
       users: [],
       activePage: 1,
-      totalUsers: 0,
       pagingLimit: Infinity,
     };
 
   }
 
-  async syncUsersAndRelations() {
-    let users = [];
-    let userRelations = {};
-    let totalUsers = 0;
-    let pagingLimit = Infinity;
-
-    try {
-      const params = { page: this.state.activePage };
-      const responses = await Promise.all([
-        this.props.appContainer.apiv3.get('/user-groups', params),
-        this.props.appContainer.apiv3.get('/user-group-relations', params),
-      ]);
-
-      const [usersRes, userRelationsRes] = responses;
-      users = usersRes.data.users;
-      totalUsers = usersRes.data.totalUsers;
-      pagingLimit = usersRes.data.pagingLimit;
-      userRelations = userRelationsRes.data.userRelations;
-
-      this.setState({
-        users,
-        userRelations,
-        totalUsers,
-        pagingLimit,
-      });
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
 
   render() {
     const { t } = this.props;
@@ -69,8 +37,6 @@ class UserPage extends React.Component {
         </p>
         <UserTable
           users={this.state.users}
-          onDelete={this.showDeleteModal}
-          userRelations={this.state.userRelations}
         />
         <PaginationWrapper
           activePage={this.state.activePage}
@@ -92,6 +58,7 @@ const UserPageWrapper = (props) => {
 UserPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
 };
 
 export default withTranslation()(UserPageWrapper);

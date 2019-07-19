@@ -11,28 +11,18 @@ class UserTable extends React.Component {
     super(props);
 
     this.state = {
-      users: this.props.users,
+      users: [],
     };
-
-    this.onDelete = this.onDelete.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidMount() {
+    const jsonData = document.getElementById('admin-user-page');
+    const users = JSON.parse(jsonData.getAttribute('users'));
+
     this.setState({
-      users: nextProps.users,
+      users,
     });
   }
-
-  onDelete(e) {
-    const { target } = e;
-    const userId = target.getAttribute('data-user-id');
-    const user = this.state.users.find((user) => {
-      return user._id === userId;
-    });
-
-    this.props.onDelete(user);
-  }
-
 
   render() {
     const { t } = this.props;
@@ -83,8 +73,6 @@ UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onDelete: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserTableWrapper);
