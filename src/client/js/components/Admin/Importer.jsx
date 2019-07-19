@@ -13,8 +13,8 @@ class Importer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      team_name: '',
-      accessToken: '',
+      esa_team_name: '',
+      esa_accessToken: '',
       qiitaTeamName: '',
       qiitaAccessToken: '',
     };
@@ -34,7 +34,7 @@ class Importer extends React.Component {
     axios({
       method: 'POST',
       url: '/_api/admin/import/esa',
-      data: { team_name: this.state.team_name, accessToken: this.state.accessToken },
+      data: { team_name: this.state.esa_team_name, accessToken: this.state.esa_accessToken },
     })
       .then((response) => {
         console.log(this.props);
@@ -62,12 +62,12 @@ class Importer extends React.Component {
 
           <div className="form-group">
             <label>esaTeamName : </label>
-            <input type="text" name="team_name" value={team_name} onChange={this.handleInputValue} />
+            <input type="text" name="esa_team_name" value={esa_team_name} onChange={this.handleInputValue} />
           </div>
 
           <div className="form-group">
             <label>esaAccessToken : </label>
-            <input type="password" name="accessToken" value={accessToken} onChange={this.handleInputValue} />
+            <input type="password" name="esa_accessToken" value={esa_accessToken} onChange={this.handleInputValue} />
           </div>
 
           <input type="button" onClick={this.handleSubmit} value="Submit" />
