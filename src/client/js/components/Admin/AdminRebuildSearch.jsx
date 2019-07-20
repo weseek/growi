@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { createSubscribedElement } from '../UnstatedUtils';
-import WebsocketContainer from '../../services/AppContainer';
+import WebsocketContainer from '../../services/WebsocketContainer';
 
 class AdminRebuildSearch extends React.Component {
 
@@ -18,7 +18,7 @@ class AdminRebuildSearch extends React.Component {
   }
 
   componentDidMount() {
-    const socket = this.props.webspcketContainer.getWebSocket();
+    const socket = this.props.websocketContainer.getWebSocket();
 
     socket.on('admin:addPageProgress', (data) => {
       const newStates = Object.assign(data, { isCompleted: false });
@@ -76,7 +76,7 @@ const AdminRebuildSearchWrapper = (props) => {
 };
 
 AdminRebuildSearch.propTypes = {
-  webspcketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
+  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
 export default AdminRebuildSearchWrapper;

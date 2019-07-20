@@ -108,6 +108,10 @@ class UserGroup {
     return deletedGroup;
   }
 
+  static countUserGroups() {
+    return this.estimatedDocumentCount();
+  }
+
   // グループ生成（名前が要る）
   static createGroupByName(name) {
     return this.create({ name });

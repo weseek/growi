@@ -13,13 +13,25 @@ class UserGroupTable extends React.Component {
 
     this.xss = window.xss;
 
+    this.state = {
+      userGroups: this.props.userGroups,
+      userGroupRelations: this.props.userGroupRelations,
+    };
+
     this.onDelete = this.onDelete.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      userGroups: nextProps.userGroups,
+      userGroupRelations: nextProps.userGroupRelations,
+    });
   }
 
   onDelete(e) {
     const { target } = e;
     const groupId = target.getAttribute('data-user-group-id');
-    const group = this.props.userGroups.find((group) => {
+    const group = this.state.userGroups.find((group) => {
       return group._id === groupId;
     });
 
@@ -43,7 +55,7 @@ class UserGroupTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.userGroups.map((group) => {
+            {this.state.userGroups.map((group) => {
               return (
                 <tr key={group._id}>
                   {this.props.isAclEnabled
@@ -56,7 +68,7 @@ class UserGroupTable extends React.Component {
                   }
                   <td>
                     <ul className="list-inline">
-                      {this.props.userGroupRelations[group._id].map((user) => {
+                      {this.state.userGroupRelations[group._id].map((user) => {
                         return <li key={user._id} className="list-inline-item badge badge-primary">{this.xss.process(user.username)}</li>;
                       })}
                     </ul>
