@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const nodePath = require('path');
+const { pathUtils } = require('growi-commons');
 
 /**
  * parent schema for GlobalNotificationSetting model
@@ -32,12 +33,9 @@ const generatePathsToMatch = (originalPath) => {
   const pathList = generatePathsOnTree(originalPath, []);
   return pathList.map((path) => {
     // except for the original trigger path ("/a/b/c"), append "*" to find all matches
-    // ["/a/b/c", "/a/b", "/a", "/"] => ["/a/b/c", "/a/b/*", "/a/*", "/*"]
+    // e.g. ["/a/b/c", "/a/b", "/a", "/"] => ["/a/b/c", "/a/b/*", "/a/*", "/*"]
     if (path !== originalPath) {
-      if (path.substr(-1) === '/') {
-        return `${path}*`;
-      }
-      return `${path}/*`;
+      return `${pathUtils.addTrailingSlash(path)}*`;
     }
 
     return path;
