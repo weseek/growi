@@ -16,11 +16,17 @@ class AclService {
     };
   }
 
+  /**
+   * @returns Whether Access Control is enabled or not
+   */
   isAclEnabled() {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
     return wikiMode !== 'public';
   }
 
+  /**
+   * @returns Whether wiki mode is set
+   */
   isWikiModeForced() {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
     const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
@@ -28,12 +34,9 @@ class AclService {
     return isPrivateOrPublic;
   }
 
-  getGuestModeValue() {
-    return this.isGuestAllowedToRead()
-      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
-      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
-  }
-
+  /**
+   * @returns Whether guest users are allowed to read public pages
+   */
   isGuestAllowedToRead() {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
 
@@ -51,6 +54,12 @@ class AclService {
     // 'Readonly' => returns true (allow access to guests)
     // 'Deny', null, undefined, '', ... everything else => returns false (requires login)
     return guestMode === this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
+  }
+
+  getGuestModeValue() {
+    return this.isGuestAllowedToRead()
+      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
+      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
   }
 
   getRestrictGuestModeLabels() {

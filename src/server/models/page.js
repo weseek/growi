@@ -809,7 +809,7 @@ module.exports = function(crowi) {
 
     // determine User condition
     const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
     let userGroups = null;
@@ -1061,11 +1061,12 @@ module.exports = function(crowi) {
     const newPath = this.getDeletedPageName(pageData.path);
     const isTrashed = checkIfTrashed(pageData.path);
 
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
+    }
+
     const socketClientId = options.socketClientId || null;
     if (this.isDeletableName(pageData.path)) {
-      if (isTrashed) {
-        return this.completelyDeletePage(pageData, user, options);
-      }
 
       pageData.status = STATUS_DELETED;
       const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
@@ -1084,7 +1085,7 @@ module.exports = function(crowi) {
     const isTrashed = checkIfTrashed(targetPage.path);
 
     if (isTrashed) {
-      return this.completelyDeletePageRecursively(targetPage, user, options);
+      throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
     const findOpts = { includeRedirect: true };
