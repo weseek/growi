@@ -2,7 +2,8 @@
 
 ## 3.5.4-RC
 
-* Bug: List private pages wrongly
+* Fix: List private pages wrongly
+* Fix: Consecutive page deletion requests cause unexpected complete page deletion
 
 ## 3.5.3
 
