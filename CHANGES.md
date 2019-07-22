@@ -1,8 +1,13 @@
 # CHANGES
 
-## 3.5.4-RC
+## 3.5.5-RC
+
+* 
+
+## 3.5.4
 
 * Fix: List private pages wrongly
+* Fix: Global Notification Trigger Path does not parse glob correctly
 * Fix: Consecutive page deletion requests cause unexpected complete page deletion
 
 ## 3.5.3
