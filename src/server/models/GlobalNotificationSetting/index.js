@@ -12,7 +12,7 @@ const globalNotificationSettingSchema = new mongoose.Schema({
 });
 
 /*
-* e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
+* e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"] //
 */
 const generatePathsOnTree = (path, pathList) => {
   pathList.push(path);
