@@ -22,6 +22,16 @@ class UserPage extends React.Component {
 
   }
 
+  // TODO unstatedContainerを作ってそこにリファクタすべき
+  componentDidMount() {
+    const jsonData = document.getElementById('admin-user-page');
+    const users = JSON.parse(jsonData.getAttribute('users'));
+
+    this.setState({
+      users,
+    });
+  }
+
 
   render() {
     const { t } = this.props;
