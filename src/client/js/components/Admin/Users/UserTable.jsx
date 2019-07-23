@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
+import UserPicture from '../../User/UserPicture';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -42,13 +43,9 @@ class UserTable extends React.Component {
               return (
                 <tr key={user._id}>
                   <td>
-                    <img src={this.props.user} className="picture img-circle" />
+                    <UserPicture user={user} className="picture img-circle" />
                   </td>
-                  <td>
-                    <span className="label">
-                      {user.status}
-                    </span>
-                  </td>
+                  <td>{user.admin && <span className="label label-inverse label-admin">{ t('administrator') }</span>}</td>
                   <td>
                     <strong>{user.username}</strong>
                   </td>
@@ -56,7 +53,7 @@ class UserTable extends React.Component {
                   <td>{user.email}</td>
                   <td>{dateFnsFormat(new Date(user.createdAt), 'YYYY-MM-DD')}</td>
                   <td>
-                    { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:MM')}</span> }
+                    { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
                     <div className="btn-group admin-user-menu">
@@ -84,8 +81,7 @@ UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  users: PropTypes.array,
-  user: PropTypes.object.isRequired,
+  users: PropTypes.array.isRequired,
 
 };
 
