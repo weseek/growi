@@ -3,6 +3,12 @@
 ## 3.5.5-RC
 
 * Fix: Profile images are broken in User Management
+* Support: Upgrade libs
+    * csv-to-markdown-table
+    * express-validator
+    * markdown-it
+    * mini-css-extract-plugin
+    * react-hotkeys
 
 ## 3.5.4
 
