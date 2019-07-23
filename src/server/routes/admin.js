@@ -418,7 +418,12 @@ module.exports = function(crowi, app) {
 
     const page = parseInt(req.query.page) || 1;
 
-    const result = await User.findUsersWithPagination({ page });
+    const result = await User.findUsersWithPagination({
+      page,
+      select: User.USER_PUBLIC_FIELDS,
+      populate: User.IMAGE_POPULATION,
+    });
+
     const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
 
     return res.render('admin/users', {

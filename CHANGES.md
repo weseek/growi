@@ -2,7 +2,7 @@
 
 ## 3.5.5-RC
 
-* 
+* Fix: Profile images are broken in User Management
 
 ## 3.5.4
 
