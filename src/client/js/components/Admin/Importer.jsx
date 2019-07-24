@@ -84,7 +84,6 @@ class Importer extends React.Component {
           className="form-horizontal"
           id="importerSettingFormEsa"
           role="form"
-          data-success-messaage="{{ ('Updated') }}"
         >
           <fieldset>
             <legend>{ t('importer_management.import_from_esa') }</legend>
@@ -149,12 +148,12 @@ class Importer extends React.Component {
               <input type="hidden" name="_csrf" value={this.props.csrf} />
               <div className="col-xs-offset-3 col-xs-6">
 
-                <input id="testConnectionToEsa" type="button" className="btn btn-primary btn-esa" name="Esa" onClick={this.esaHandleSubmit} value="インポート" />
+                <input id="testConnectionToEsa" type="button" className="btn btn-primary btn-esa" name="Esa" onClick={this.esaHandleSubmit} value={t('importer_management.import')} />
 
-                <input name="Esa" type="submit" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value="Update" />
+                <input name="Esa" type="submit" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
 
                 <span className="col-xs-offset-1">
-                  <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" name="Esa" />
+                  <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value={t('importer_management.esa_settings.test_connection')} name="Esa" />
                 </span>
 
               </div>
