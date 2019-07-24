@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import UserPicture from '../../User/UserPicture';
+import UserMenu from './UserMenu';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -56,11 +57,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
-                    <div className="btn-group admin-user-menu">
-                      <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                        <i className="icon-settings"></i> <span className="caret"></span>
-                      </button>
-                    </div>
+                    <UserMenu user={user} />
                   </td>
                 </tr>
               );
