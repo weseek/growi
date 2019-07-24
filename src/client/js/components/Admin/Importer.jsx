@@ -130,7 +130,7 @@ class Importer extends React.Component {
                 { t('importer_management.esa_settings.team_name') }
               </label>
               <div className="col-xs-6">
-                <input className="form-control" type="text" name="settingForm[importer:esa:team_name]" value={esaTeamName} onChange={this.handleInputValue} />
+                <input className="form-control" type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
               </div>
 
             </div>
@@ -140,7 +140,7 @@ class Importer extends React.Component {
                 { t('importer_management.esa_settings.access_token') }
               </label>
               <div className="col-xs-6">
-                <input className="form-control" type="password" name="settingForm[importer:esa:access_token]" value={esaAccessToken} onChange={this.handleInputValue} />
+                <input className="form-control" type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
@@ -150,7 +150,7 @@ class Importer extends React.Component {
 
                 <input id="testConnectionToEsa" type="button" className="btn btn-primary btn-esa" name="Esa" onClick={this.esaHandleSubmit} value={t('importer_management.import')} />
 
-                <input name="Esa" type="submit" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
+                <input name="Esa" type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
 
                 <span className="col-xs-offset-1">
                   <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value={t('importer_management.esa_settings.test_connection')} name="Esa" />
