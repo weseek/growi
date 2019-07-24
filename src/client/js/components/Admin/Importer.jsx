@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import HackmdEditor from '../PageEditorByHackmd/HackmdEditor';
 
-import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '../../util/apiNotification'
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
 
 class Importer extends React.Component {
@@ -37,25 +37,26 @@ class Importer extends React.Component {
   esaHandleSubmit() {
     try {
       const params = {
-      esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
-    };
-    this.props.appContainer.apiPost('/admin/import/esa', params);
-      toastSuccess(`Import posts from esa success.`)
-    } 
+        esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+      };
+      this.props.appContainer.apiPost('/admin/import/esa', params);
+      toastSuccess('Import posts from esa success.');
+    }
     catch (error) {
-      toastError(`Error occurred in importing pages from esa.io`);
+      toastError('Error occurred in importing pages from esa.io');
     }
   }
 
   esaHandleSubmitTest() {
     try {
       const params = {
-      esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
-      
-    };
-    this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
-    toastSuccess(`Test connection to esa success.`)
-    } catch (error) {
+        esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+
+      };
+      this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
+      toastSuccess('Test connection to esa success.');
+    }
+    catch (error) {
       toastError('Test connection to esa failed.');
     }
   }
@@ -63,11 +64,12 @@ class Importer extends React.Component {
   esaHandleSubmitUpdate() {
     try {
       const params = {
-      esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
-    };
-    this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
-      toastSuccess(`Update`)
-    } catch (error) {
+        esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+      };
+      this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
+      toastSuccess('Update');
+    }
+    catch (error) {
       toastError(err);
     }
   }
@@ -84,90 +86,81 @@ class Importer extends React.Component {
           role="form"
           data-success-messaage="{{ ('Updated') }}"
         >
-        <fieldset>
-        <legend>{ t('importer_management.import_from_esa') }</legend>
-        <table className="table table-bordered table-mapping">
-            <thead>
-              <tr>
-                <th width="45%">esa.io</th>
-                <th width="10%"></th>
-                <th>GROWI</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>{ t('Article') }</th>
-                <th><i className="icon-arrow-right-circle text-success"></i></th>
-                <th>{ t('Page') }</th>
-              </tr>
-              <tr>
-                <th>{ t('Category') }</th>
-                <th><i className="icon-arrow-right-circle text-success"></i></th>
-                <th>{ t('Page Path') }</th>
-              </tr>
-              <tr>
-                <th>{ t('User') }</th>
-                <th></th>
-                <th>(TBD)</th>
-              </tr>
-            </tbody>
-          </table>
+          <fieldset>
+            <legend>{ t('importer_management.import_from_esa') }</legend>
+            <table className="table table-bordered table-mapping">
+              <thead>
+                <tr>
+                  <th width="45%">esa.io</th>
+                  <th width="10%"></th>
+                  <th>GROWI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>{ t('Article') }</th>
+                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th>{ t('Page') }</th>
+                </tr>
+                <tr>
+                  <th>{ t('Category') }</th>
+                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th>{ t('Page Path') }</th>
+                </tr>
+                <tr>
+                  <th>{ t('User') }</th>
+                  <th></th>
+                  <th>(TBD)</th>
+                </tr>
+              </tbody>
+            </table>
 
-          <div className="well well-sm mb-0 small">
-            <ul>
-              <li>{ t("importer_management.page_skip") }</li>
-            </ul>
-          </div>
-
-          <div className="form-group">
-            <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
-          </div>
-
-
-          <div className="form-group">
-            <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">{ t('importer_management.esa_settings.team_name') }</label>
-            <div className="col-xs-6">
-             <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
+            <div className="well well-sm mb-0 small">
+              <ul>
+                <li>{ t('importer_management.page_skip') }</li>
+              </ul>
             </div>
-            
-          </div>
 
-        </fieldset>
-
-
-
-
-
-
-
-          <div className="form-group">
-            <label>esaTeamName : </label>
-            <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
-          </div>
-
-          <div className="form-group">
-            <label>esaAccessToken : </label>
-            <input type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
-          </div>
-
-          <div className="form-group">
-            <input type="hidden" name="_csrf" value={this.props.csrf} />
-            <div className="col-xs-offset-3 col-xs-6">
-
-
-              <input name="Esa" type="button" id="testConnectionToEsa" className="btn btn-primary btn-esa" onClick={this.esaHandleSubmit} value="インポート" />
-
-              <input name="Esa" type="button" id="testConnectionToEsa" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value="Update" />
-
-              <span className="col-xs-offset-1">
-                <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" name="Esa"
-                    data-success-message="Test connection to esa success." data-error-message="Test connection to esa failed." />
-              </span>
+            <div className="form-group">
+              <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
-          </div>
 
+
+            <div className="form-group">
+              <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">
+                { t('importer_management.esa_settings.team_name') }
+              </label>
+              <div className="col-xs-6">
+                <input className="form-control" type="text" name="settingForm[importer:esa:team_name]" value={esaTeamName} onChange={this.handleInputValue} />
+              </div>
+
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="settingForm[importer:esa:access_token]" className="col-xs-3 control-label">
+                { t('importer_management.esa_settings.access_token') }
+              </label>
+              <div className="col-xs-6">
+                <input className="form-control" type="password" name="settingForm[importer:esa:access_token]" value={esaAccessToken} onChange={this.handleInputValue} />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <input type="hidden" name="_csrf" value={this.props.csrf} />
+              <div className="col-xs-offset-3 col-xs-6">
+
+                <input id="testConnectionToEsa" type="button" className="btn btn-primary btn-esa" name="Esa" onClick={this.esaHandleSubmit} value="インポート" />
+
+                <input name="Esa" type="submit" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value="Update" />
+
+                <span className="col-xs-offset-1">
+                  <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" name="Esa" />
+                </span>
+
+              </div>
+            </div>
+          </fieldset>
         </form>
-        
       </Fragment>
 
     );
