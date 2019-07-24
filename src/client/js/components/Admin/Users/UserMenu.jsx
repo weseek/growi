@@ -12,48 +12,48 @@ class UserMenu extends React.Component {
     const { t } = this.props;
     const user = this.props;
 
-    let contentOfStatus;
-    if (user.status === 1) {}
+    // let contentOfStatus;
+    // if (user.status === 1) {}
 
-    if (user.status === 2) {
-    }
+    // if (user.status === 2) {
+    // }
 
-    if (user.status === 3) {}
+    // if (user.status === 3) {}
 
-    if (user.status === 1 || user.status === 5) {
-      contentOfStatus = (
-        <li className="dropdown-button">
-          <a href="javascript:form_removeCompletely_{{ sUserId }}.submit()">
-            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-          </a>
-        </li>
-      );
-    }
+    // if (user.status === 1 || user.status === 5) {
+    //   contentOfStatus = (
+    //     <li className="dropdown-button">
+    //       <a href="javascript:form_removeCompletely_{{ sUserId }}.submit()">
+    //         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+    //       </a>
+    //     </li>
+    //   );
+    // }
 
-    let adminMenu;
-    if (user.admin === true) {
-      adminMenu = (
-        <li>
-          { username !== user.username
-            ? (
-              <li>
-                <a href="javascript:form_removeFromAdmin_{{ sUserId }}.submit()">
-                  <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                </a>
-              </li>
-            )
-            : (
-              <li>
-                <a disabled>
-                  <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                </a>
-                <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
-              </li>
-            )
-          }
-        </li>
-      );
-    }
+    // let adminMenu;
+    // if (user.admin === true) {
+    //   adminMenu = (
+    //     <li>
+    //       { username !== user.username
+    //         ? (
+    //           <li>
+    //             <a href="javascript:form_removeFromAdmin_{{ sUserId }}.submit()">
+    //               <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+    //             </a>
+    //           </li>
+    //         )
+    //         : (
+    //           <li>
+    //             <a disabled>
+    //               <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+    //             </a>
+    //             <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
+    //           </li>
+    //         )
+    //       }
+    //     </li>
+    //   );
+    // }
 
 
     return (
