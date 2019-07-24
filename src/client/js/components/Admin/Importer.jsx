@@ -7,6 +7,8 @@ import EditorContainer from '../../services/EditorContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import HackmdEditor from '../PageEditorByHackmd/HackmdEditor';
 
+import { withTranslation } from 'react-i18next';
+
 
 class Importer extends React.Component {
 
@@ -48,11 +50,12 @@ class Importer extends React.Component {
     const params = {
       esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
     };
-    this.props.appContainer.apiPost('/_api/admin/settings/importerEsa', params);
+    this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
   }
 
   render() {
     const { esaTeamName, esaAccessToken } = this.state;
+    const { t } = this.props;
     return (
       <Fragment>
         <form
@@ -93,7 +96,8 @@ class Importer extends React.Component {
           </div>
 
         </form>
-
+        
+        <legend>{ t('importer_management.import_from_esa') }</legend>
       </Fragment>
 
     );
@@ -112,6 +116,7 @@ Importer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  t: PropTypes.func.isRequired, // i18next
 };
 
-export default ImporterWrapper;
+export default withTranslation()(ImporterWrapper);

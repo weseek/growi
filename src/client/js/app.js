@@ -196,13 +196,15 @@ if (adminUserGroupPageElem != null) {
 
 
 Object.keys(componentMappings).forEach((key) => {
-  const elm = document.getElementById(key);
-  if (elm) {
+  const elem = document.getElementById(key);
+  if (elem) {
     ReactDOM.render(
       <Provider inject={injectableContainers}>
-        {componentMappings[key]}
+        <I18nextProvider i18n={i18n}>
+          {componentMappings[key]}
+        </I18nextProvider>
       </Provider>,
-      elm,
+      elem,
     );
   }
 });
