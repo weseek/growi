@@ -20,6 +20,7 @@ class Importer extends React.Component {
     };
     this.esaHandleSubmit = this.esaHandleSubmit.bind(this);
     this.esaHandleSubmitTest = this.esaHandleSubmitTest.bind(this);
+    this.esaHandleSubmitUpdate = this.esaHandleSubmitUpdate.bind(this);
     this.handleInputValue = this.handleInputValue.bind(this);
   }
 
@@ -41,6 +42,13 @@ class Importer extends React.Component {
       esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
     };
     this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
+  }
+
+  esaHandleSubmitUpdate() {
+    const params = {
+      esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+    };
+    this.props.appContainer.apiPost('/_api/admin/settings/importerEsa', params);
   }
 
   render() {
@@ -75,10 +83,9 @@ class Importer extends React.Component {
 
 
               <input name="Esa" type="button" id="testConnectionToEsa" className="btn btn-primary btn-esa" onClick={this.esaHandleSubmit} value="インポート" />
-              <button type="submit" className="btn btn-secondary">{ // the first element is the default button to submit
-              }
-                {'Update'}
-              </button>
+
+              <input name="Esa" type="button" id="testConnectionToEsa" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value="Update" />
+
               <span className="col-xs-offset-1">
                 <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" />
               </span>
