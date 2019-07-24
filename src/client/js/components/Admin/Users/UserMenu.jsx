@@ -10,7 +10,6 @@ class UserMenu extends React.Component {
 
   render() {
     const { t } = this.props;
-    const user = this.props;
 
     // let contentOfStatus;
     // if (user.status === 1) {}
@@ -122,8 +121,8 @@ class UserMenu extends React.Component {
             </li>
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
-            <li>{contentOfStatus}</li>
-            <li>{user.status === 2 && adminMenu}</li>
+            {/* <li>{contentOfStatus}</li>
+            <li>{user.status === 2 && adminMenu}</li> */}
           </ul>
         </div>
       </Fragment>
