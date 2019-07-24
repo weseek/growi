@@ -84,10 +84,61 @@ class Importer extends React.Component {
           role="form"
           data-success-messaage="{{ ('Updated') }}"
         >
+        <fieldset>
+        <legend>{ t('importer_management.import_from_esa') }</legend>
+        <table className="table table-bordered table-mapping">
+            <thead>
+              <tr>
+                <th width="45%">esa.io</th>
+                <th width="10%"></th>
+                <th>GROWI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>{ t('Article') }</th>
+                <th><i className="icon-arrow-right-circle text-success"></i></th>
+                <th>{ t('Page') }</th>
+              </tr>
+              <tr>
+                <th>{ t('Category') }</th>
+                <th><i className="icon-arrow-right-circle text-success"></i></th>
+                <th>{ t('Page Path') }</th>
+              </tr>
+              <tr>
+                <th>{ t('User') }</th>
+                <th></th>
+                <th>(TBD)</th>
+              </tr>
+            </tbody>
+          </table>
+
+          <div className="well well-sm mb-0 small">
+            <ul>
+              <li>{ t("importer_management.page_skip") }</li>
+            </ul>
+          </div>
 
           <div className="form-group">
             <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
           </div>
+
+
+          <div className="form-group">
+            <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">{ t('importer_management.esa_settings.team_name') }</label>
+            <div className="col-xs-6">
+             <input type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
+            </div>
+            
+          </div>
+
+        </fieldset>
+
+
+
+
+
+
 
           <div className="form-group">
             <label>esaTeamName : </label>
