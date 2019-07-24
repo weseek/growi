@@ -9,6 +9,8 @@ import HackmdEditor from '../PageEditorByHackmd/HackmdEditor';
 
 import { withTranslation } from 'react-i18next';
 
+import { toastSuccess, toastError } from '../../util/apiNotification'
+
 
 class Importer extends React.Component {
 
@@ -33,24 +35,41 @@ class Importer extends React.Component {
   }
 
   esaHandleSubmit() {
-    const params = {
+    try {
+      const params = {
       esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
     };
     this.props.appContainer.apiPost('/admin/import/esa', params);
+      toastSuccess(`Import posts from esa success.`)
+    } 
+    catch (error) {
+      toastError(`Error occurred in importing pages from esa.io`);
+    }
   }
 
   esaHandleSubmitTest() {
-    const params = {
+    try {
+      const params = {
       esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+      
     };
     this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
+    toastSuccess(`Test connection to esa success.`)
+    } catch (error) {
+      toastError('Test connection to esa failed.');
+    }
   }
 
   esaHandleSubmitUpdate() {
-    const params = {
+    try {
+      const params = {
       esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
     };
     this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
+      toastSuccess(`Update`)
+    } catch (error) {
+      toastError(err);
+    }
   }
 
   render() {
@@ -90,14 +109,14 @@ class Importer extends React.Component {
               <input name="Esa" type="button" id="testConnectionToEsa" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value="Update" />
 
               <span className="col-xs-offset-1">
-                <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" />
+                <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value="接続テスト" name="Esa"
+                    data-success-message="Test connection to esa success." data-error-message="Test connection to esa failed." />
               </span>
             </div>
           </div>
 
         </form>
         
-        <legend>{ t('importer_management.import_from_esa') }</legend>
       </Fragment>
 
     );
