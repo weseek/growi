@@ -61,7 +61,7 @@ class UserMenu extends React.Component {
           <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
             <i className="icon-settings"></i> <span className="caret"></span>
           </button>
-          <div className="modal fade" id="admin-password-reset-modal">
+          {/* <div className="modal fade" id="admin-password-reset-modal">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
@@ -104,7 +104,7 @@ class UserMenu extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <ul className="dropdown-menu" role="menu">
             <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
             <li>
