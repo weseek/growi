@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 import UserPicture from '../../User/UserPicture';
+import UserMenu from './UserMenu';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -44,8 +45,11 @@ class UserTable extends React.Component {
                 <tr key={user._id}>
                   <td>
                     <UserPicture user={user} className="picture img-circle" />
+                    {user.admin && <span className="label label-inverse label-admin ml-2">{ t('administrator') }</span>}
                   </td>
-                  <td>{user.admin && <span className="label label-inverse label-admin">{ t('administrator') }</span>}</td>
+                  <td>
+                    {/* TODO ステータスを表示できるようにする */}
+                  </td>
                   <td>
                     <strong>{user.username}</strong>
                   </td>
@@ -56,11 +60,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
-                    <div className="btn-group admin-user-menu">
-                      <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                        <i className="icon-settings"></i> <span className="caret"></span>
-                      </button>
-                    </div>
+                    <UserMenu users={this.props.users} />
                   </td>
                 </tr>
               );

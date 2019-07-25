@@ -7,11 +7,6 @@ module.exports = {
 
   rootDir: '../',
 
-  // Automatically clear mock calls and instances between every test
-  clearMocks: true,
-  // Automatically reset mock state between every test
-  resetMocks: true,
-
   projects: [
     {
       displayName: 'server',
@@ -19,6 +14,8 @@ module.exports = {
       rootDir: '.',
       setupFilesAfterEnv: ['<rootDir>/src/test/setup.js'],
       testMatch: ['<rootDir>/src/test/**/*.test.js'],
+      // Automatically clear mock calls and instances between every test
+      clearMocks: true,
       // A map from regular expressions to module names that allow to stub out resources with a single module
       moduleNameMapper: {
         '@root/(.+)': '<rootDir>/$1',

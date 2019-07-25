@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitle(t('External Account management')) }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('external_account_management')) }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('User_management') }}/{{ t('External Account management') }}</h1>
+    <h1 id="admin-title" class="title">{{ t('User_Management') }} / {{ t('external_account_management') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -92,7 +92,7 @@
               </span>
               {% endif %}
             </td>
-            <td>{{ account.createdAt|date('Y-m-d', account.createdAt.getTimezoneOffset()) }}</td>
+            <td>{{ account.createdAt|datetz('Y-m-d') }}</td>
             <td>
               <div class="btn-group admin-user-menu">
 

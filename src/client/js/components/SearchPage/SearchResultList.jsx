@@ -16,8 +16,8 @@ class SearchResultList extends React.Component {
   render() {
     const resultList = this.props.pages.map((page) => {
       return (
-        <div id={page._id} key={page._id} className="search-result-page">
-          <h2 className="inline"><a href={page.path}>{page.path}</a></h2>
+        <div id={page._id} key={page._id} className="search-result-page mb-5">
+          <h2><a href={page.path}>{page.path}</a></h2>
           { page.tags.length > 0 && (
             <span><i className="tag-icon icon-tag"></i> {page.tags.join(', ')}</span>
           )}

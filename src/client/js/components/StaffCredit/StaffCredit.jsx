@@ -1,5 +1,5 @@
 import React from 'react';
-import { HotKeys } from 'react-hotkeys';
+import { GlobalHotKeys } from 'react-hotkeys';
 
 import loggerFactory from '@alias/logger';
 
@@ -112,9 +112,9 @@ export default class StaffCredit extends React.Component {
     const keyMap = { check: ['up', 'down', 'right', 'left', 'b', 'a'] };
     const handlers = { check: (event) => { return this.check(event) } };
     return (
-      <HotKeys focused attach={window} keyMap={keyMap} handlers={handlers}>
+      <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
         {this.renderContributors()}
-      </HotKeys>
+      </GlobalHotKeys>
     );
   }
 
