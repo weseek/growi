@@ -20,92 +20,92 @@ class UserMenu extends React.Component {
 
   render() {
     const { t } = this.props;
-    const users = this.props.users;
+    // const users = this.props.users;
     let contentOfStatus;
-    let adminMenu;
+    // let adminMenu;
 
-    {this.props.users.forEach((user) => {
-      if (user.status === 1) {
-        contentOfStatus = (
-          <a onClick={this.activateUser}>
-            <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-          </a>
-        );
+    // {this.props.users.forEach((user) => {
+    //   if (user.status === 1) {
+    //     contentOfStatus = (
+    //       <a onClick={this.activateUser}>
+    //         <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+    //       </a>
+    //     );
 
-      if (user.status === 2) {
-        contentOfStatus = (
-          <li>
-            { username !== user.username
-              ? (
-                <li>
-                  <a onClick={this.susupendUser}>
-                    <i className="icon-fw icon-user-unfollow"></i> { t('user_management.deactivate_account') }
-                  </a>
-                </li>
-              )
-              : (
-                <li>
-                  <a disabled>
-                    <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
-                  </a>
-                  <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.your_own') }</p>
-                </li>
-              )
-            }
-          </li>
-        );
+    //   if (user.status === 2) {
+    //     contentOfStatus = (
+    //       <li>
+    //         { username !== user.username
+    //           ? (
+    //             <li>
+    //               <a onClick={this.susupendUser}>
+    //                 <i className="icon-fw icon-user-unfollow"></i> { t('user_management.deactivate_account') }
+    //               </a>
+    //             </li>
+    //           )
+    //           : (
+    //             <li>
+    //               <a disabled>
+    //                 <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
+    //               </a>
+    //               <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.your_own') }</p>
+    //             </li>
+    //           )
+    //         }
+    //       </li>
+    //     );
 
-      if (user.status === 3) {
-        contentOfStatus = (
-          <a onClick={this.activateUser}>
-            <i className="icon-fw icon-action-redo"></i> { t('Undo') }
-          </a>
-        );
+    //   if (user.status === 3) {
+    //     contentOfStatus = (
+    //       <a onClick={this.activateUser}>
+    //         <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+    //       </a>
+    //     );
 
-      if (user.status === 1 || user.status === 5) {
-        contentOfStatus = (
-          <li className="dropdown-button">
-            <a onClick={this.removeUser}>
-              <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-            </a>
-          </li>
-        );
-      }
+    //   if (user.status === 1 || user.status === 5) {
+    //     contentOfStatus = (
+    //       <li className="dropdown-button">
+    //         <a onClick={this.removeUser}>
+    //           <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+    //         </a>
+    //       </li>
+    //     );
+    //   }
 
-      if (user.admin === true) {
-        adminMenu = (
-          <li>
-            { username !== user.username
-              ? (
-                <li>
-                  <a onClick={this.removeFromAdmin}>
-                    <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                  </a>
-                </li>
-              )
-              : (
-                <li>
-                  <a disabled>
-                    <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                  </a>
-                  <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
-                </li>
-              )
-            }
-          </li>
-        );
-      }
+    //   if (user.admin === true) {
+    //     adminMenu = (
+    //       <li>
+    //         { username !== user.username
+    //           ? (
+    //             <li>
+    //               <a onClick={this.removeFromAdmin}>
+    //                 <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+    //               </a>
+    //             </li>
+    //           )
+    //           : (
+    //             <li>
+    //               <a disabled>
+    //                 <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+    //               </a>
+    //               <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
+    //             </li>
+    //           )
+    //         }
+    //       </li>
+    //     );
+    //   }
 
-      else {
-        adminMenu = (
-          <li>
-            <a onClick={this.giveAdminAccess}>
-              <i className="icon-fw icon-magic-wand"></i> { t('user_management.give_admin_access') }
-            </a>
-          </li>
-        );
-      }
-    }}
+    //   else {
+    //     adminMenu = (
+    //       <li>
+    //         <a onClick={this.giveAdminAccess}>
+    //           <i className="icon-fw icon-magic-wand"></i> { t('user_management.give_admin_access') }
+    //         </a>
+    //       </li>
+    //     );
+    //   }
+    // }}
 
     return (
       <Fragment>
@@ -130,7 +130,7 @@ class UserMenu extends React.Component {
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
             <li>{contentOfStatus}</li>
-            <li>{user.status === 2 && adminMenu}</li>
+            {/* <li>{user.status === 2 && adminMenu}</li> */}
           </ul>
         </div>
         {/* password reset modal */}
@@ -190,10 +190,8 @@ const UserMenuWrapper = (props) => {
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   users: PropTypes.array,
-
 };
 
 export default withTranslation()(UserMenuWrapper);
