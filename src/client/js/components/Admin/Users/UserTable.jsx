@@ -57,7 +57,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu user={user} />
+                    <UserMenu users={this.props.users} />
                   </td>
                 </tr>
               );
