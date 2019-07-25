@@ -1,16 +1,12 @@
 import React, { Fragment } from 'react';
+import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
-import HackmdEditor from '../PageEditorByHackmd/HackmdEditor';
-
-
 import { toastSuccess, toastError } from '../../util/apiNotification';
-
 
 class Importer extends React.Component {
 
@@ -19,8 +15,6 @@ class Importer extends React.Component {
     this.state = {
       esaTeamName: '',
       esaAccessToken: '',
-      qiitaTeamName: '',
-      qiitaAccessToken: '',
     };
     this.esaHandleSubmit = this.esaHandleSubmit.bind(this);
     this.esaHandleSubmitTest = this.esaHandleSubmitTest.bind(this);
@@ -37,7 +31,8 @@ class Importer extends React.Component {
   esaHandleSubmit() {
     try {
       const params = {
-        esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+        esaTeamName: this.state.esaTeamName,
+        esaAccessToken: this.state.esaAccessToken,
       };
       this.props.appContainer.apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
@@ -50,7 +45,8 @@ class Importer extends React.Component {
   esaHandleSubmitTest() {
     try {
       const params = {
-        esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+        esaTeamName: this.state.esaTeamName,
+        esaAccessToken: this.state.esaAccessToken,
 
       };
       this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
@@ -64,13 +60,14 @@ class Importer extends React.Component {
   esaHandleSubmitUpdate() {
     try {
       const params = {
-        esaTeamName: this.state.esaTeamName, esaAccessToken: this.state.esaAccessToken,
+        esaTeamName: this.state.esaTeamName,
+        esaAccessToken: this.state.esaAccessToken,
       };
       this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Update');
     }
     catch (error) {
-      toastError(err);
+      toastError(error);
     }
   }
 
@@ -124,7 +121,6 @@ class Importer extends React.Component {
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
 
-
             <div className="form-group">
               <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">
                 { t('importer_management.esa_settings.team_name') }
@@ -147,13 +143,24 @@ class Importer extends React.Component {
             <div className="form-group">
               <input type="hidden" name="_csrf" value={this.props.csrf} />
               <div className="col-xs-offset-3 col-xs-6">
-
-                <input id="testConnectionToEsa" type="button" className="btn btn-primary btn-esa" name="Esa" onClick={this.esaHandleSubmit} value={t('importer_management.import')} />
-
-                <input name="Esa" type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
-
+                <input
+                  id="testConnectionToEsa"
+                  type="button"
+                  className="btn btn-primary btn-esa"
+                  name="Esa"
+                  onClick={this.esaHandleSubmit}
+                  value={t('importer_management.import')}
+                />
+                <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
                 <span className="col-xs-offset-1">
-                  <input name="Esa" type="button" id="importFromEsa" className="btn btn-default btn-esa" onClick={this.esaHandleSubmitTest} value={t('importer_management.esa_settings.test_connection')} name="Esa" />
+                  <input
+                    name="Esa"
+                    type="button"
+                    id="importFromEsa"
+                    className="btn btn-default btn-esa"
+                    onClick={this.esaHandleSubmitTest}
+                    value={t('importer_management.esa_settings.test_connection')}
+                  />
                 </span>
 
               </div>
@@ -179,6 +186,7 @@ Importer.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   t: PropTypes.func.isRequired, // i18next
+  csrf: PropTypes.string,
 };
 
 export default withTranslation()(ImporterWrapper);
