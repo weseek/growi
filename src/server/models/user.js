@@ -17,7 +17,7 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
-  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin';
+  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt lastLoginAt admin';
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
