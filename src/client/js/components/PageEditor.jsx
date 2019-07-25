@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { throttle, debounce } from 'throttle-debounce';
+import { envUtils } from 'growi-commons';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -161,7 +162,7 @@ class PageEditor extends React.Component {
 
       // when if created newly
       if (res.pageCreated) {
-        logger.info('Page is created', res.pageCreated._id);
+        logger.info('Page is created', res.page._id);
         pageContainer.updateStateAfterSave(res.page);
       }
     }
@@ -321,7 +322,7 @@ class PageEditor extends React.Component {
 
   render() {
     const config = this.props.appContainer.getConfig();
-    const noCdn = !!config.env.NO_CDN;
+    const noCdn = envUtils.toBoolean(config.env.NO_CDN);
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
