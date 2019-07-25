@@ -7,7 +7,7 @@
   <div class="panel-heading">Tips</div>
   <div class="panel-body"><ul>
     <li>Ctrl(⌘)-/ to show quick help</li>
-    <li>You can <a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a> to write HTML tags.</li>
+    <li>You can write HTML with <a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a>.</li>
   </ul></div>
 </div>
 

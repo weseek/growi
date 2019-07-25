@@ -1,3 +1,5 @@
+const { envUtils } = require('growi-commons');
+
 const isBrowser = typeof window !== 'undefined';
 
 let stream;
@@ -9,7 +11,7 @@ if (isBrowser) {
 }
 // node settings
 else {
-  const isFormat = !(process.env.FORMAT_NODE_LOG === 'false');
+  const isFormat = (process.env.FORMAT_NODE_LOG == null) || envUtils.toBoolean(process.env.FORMAT_NODE_LOG);
 
   if (isFormat) {
     const bunyanFormat = require('bunyan-format');

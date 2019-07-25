@@ -1,5 +1,7 @@
 // import bootstrap
-$bootstrap-sass-asset-helper: true;
+// see https://github.com/webpack-contrib/css-loader/issues/909#issuecomment-472828905
+$bootstrap-sass-asset-helper: false;
+$icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
 
 // import bootstrap4 utility classes

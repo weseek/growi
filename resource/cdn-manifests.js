@@ -28,6 +28,8 @@ module.exports = {
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/scss.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/typescript.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js,'
+        + 'gh/highlightjs/cdn-release@9.13.0/build/languages/swift.min.js,'
+        + 'gh/highlightjs/cdn-release@9.13.0/build/languages/kotlin.min.js,'
         + 'npm/highlightjs-line-numbers.js@2.6.0/dist/highlightjs-line-numbers.min.js',
       args: {
         async: true,

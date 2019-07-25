@@ -13,5 +13,5 @@ module.exports = {
   // PUBLISH_OPEN_API: true,
   // USER_UPPER_LIMIT: 0,
   // DEV_HTTPS: true,
-  // PUBLIC_WIKI_ONLY: true,
+  // FORCE_WIKI_MODE: 'private', // 'public', 'private', undefined
 };
