@@ -21,6 +21,46 @@ class UserTable extends React.Component {
 
   render() {
     const { t } = this.props;
+    let userStatusLabel;
+
+    this.props.users.forEach((user) => {
+      if (user.status === 1) {
+        userStatusLabel = (
+          <span className="label label-info">
+            Approval Pending
+          </span>
+        );
+      }
+      if (user.status === 2) {
+        userStatusLabel = (
+          <span className="label label-success">
+            Active
+          </span>
+        );
+      }
+      if (user.status === 3) {
+        userStatusLabel = (
+          <span className="label label-warning">
+            Suspended
+          </span>
+        );
+      }
+      if (user.status === 4) {
+        userStatusLabel = (
+          <span className="label label-danger">
+            Deleted
+          </span>
+        );
+      }
+      if (user.status === 5) {
+        userStatusLabel = (
+          <span className="label label-info">
+            Invited
+          </span>
+        );
+      }
+    });
+
 
     return (
       <Fragment>
@@ -47,9 +87,7 @@ class UserTable extends React.Component {
                     <UserPicture user={user} className="picture img-circle" />
                     {user.admin && <span className="label label-inverse label-admin ml-2">{ t('administrator') }</span>}
                   </td>
-                  <td>
-                    {/* TODO ステータスを表示できるようにする */}
-                  </td>
+                  <td>{userStatusLabel}</td>
                   <td>
                     <strong>{user.username}</strong>
                   </td>
