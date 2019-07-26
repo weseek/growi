@@ -14,8 +14,17 @@ class UserTable extends React.Component {
     super(props);
 
     this.state = {
-
+      me: [],
     };
+  }
+
+  componentDidMount() {
+    const jsonData = document.getElementById('admin-user-page');
+    const me = JSON.parse(jsonData.getAttribute('user'));
+
+    this.setState({
+      me,
+    });
   }
 
 
@@ -98,7 +107,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu users={this.props.users} />
+                    <UserMenu user={user} me={this.state.me} />
                   </td>
                 </tr>
               );

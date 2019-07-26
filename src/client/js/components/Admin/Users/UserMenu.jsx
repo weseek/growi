@@ -7,105 +7,134 @@ import AppContainer from '../../../services/AppContainer';
 
 class UserMenu extends React.Component {
 
-  activateUser() {}
 
-  susupendUser() {}
+  activateUser() {
+    const { appContainer } = this.props;
 
-  removeUser() {}
+    appContainer.apiPost('/admin/user/{userId}/activate');
+  }
 
-  removeFromAdmin() {}
+  susupendUser() {
+    const { appContainer } = this.props;
 
-  giveAdminAccess() {}
+    appContainer.apiPost('/admin/user/{userId}/suspend');
+  }
+
+  removeUser() {
+    const { appContainer } = this.props;
+
+    appContainer.apiPost('/admin/user/{user._id}/removeCompletely');
+  }
+
+  removeFromAdmin() {
+    const { appContainer } = this.props;
+
+    appContainer.apiPost('/admin/user/{user._id}/removeFromAdmin');
+  }
+
+  giveAdminAccess() {
+    const { appContainer } = this.props;
+
+    appContainer.apiPost('/admin/user/{user._id}/makeAdmin');
+  }
 
 
   render() {
-    const { t } = this.props;
+    const { t, user, me } = this.props;
 
     let contentOfStatus;
-    this.props.users.forEach((user) => {
-      if (user.status === 1) {
-        contentOfStatus = (
+    if (user.status === 1) {
+      contentOfStatus = (
+        <li>
           <a onClick={this.activateUser}>
             <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
           </a>
-        );
-      }
-      if (user.status === 2) {
-        contentOfStatus = (
+        </li>
+      );
+    }
+    if (user.status === 2) {
+      contentOfStatus = (
+        <li>
+          { user.username !== me.username
+            ? (
+              <li>
+                <a onClick={this.susupendUser}>
+                  <i className="icon-fw icon-ban "></i> { t('user_management.deactivate_account') }
+                </a>
+              </li>
+            )
+            : (
+              <li>
+                <a disabled>
+                  <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
+                </a>
+                <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.your_own') }</p>
+              </li>
+            )
+          }
+        </li>
+      );
+    }
+    if (user.status === 3) {
+      contentOfStatus = (
+        <ul>
           <li>
-            { user.name !== user.username
-              ? (
-                <li>
-                  <a onClick={this.susupendUser}>
-                    <i className="icon-fw icon-user-unfollow"></i> { t('user_management.deactivate_account') }
-                  </a>
-                </li>
-              )
-              : (
-                <li>
-                  <a disabled>
-                    <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
-                  </a>
-                  <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.your_own') }</p>
-                </li>
-              )
-            }
+            <a onClick={this.activateUser}>
+              <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+            </a>
           </li>
-        );
-      }
-      if (user.status === 3) {
-        contentOfStatus = (
-          <a onClick={this.activateUser}>
-            <i className="icon-fw icon-action-redo"></i> { t('Undo') }
-          </a>
-        );
-      }
-      if (user.status === 1 || user.status === 5) {
-        contentOfStatus = (
-          <li className="dropdown-button">
+          <li>
+            {/* label は同じだけど、こっちは論理削除 */}
             <a onClick={this.removeUser}>
               <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
             </a>
           </li>
-        );
-      }
-    });
+        </ul>
+      );
+    }
+    if (user.status === 1 || user.status === 5) {
+      contentOfStatus = (
+        <li className="dropdown-button">
+          <a onClick={this.removeUser}>
+            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+          </a>
+        </li>
+      );
+    }
 
     let adminMenu;
-    this.props.users.forEach((user) => {
-      if (user.admin === true || user.status === 2) {
-        adminMenu = (
-          <li>
-            { user.name !== user.username
-              ? (
-                <li>
-                  <a onClick={this.removeFromAdmin}>
-                    <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                  </a>
-                </li>
-              )
-              : (
-                <li>
-                  <a disabled>
-                    <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                  </a>
-                  <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
-                </li>
-              )
-            }
-          </li>
-        );
-      }
-      if (user.admin === false || user.status === 2) {
-        adminMenu = (
-          <li>
-            <a onClick={this.giveAdminAccess}>
-              <i className="icon-fw icon-magic-wand"></i> { t('user_management.give_admin_access') }
-            </a>
-          </li>
-        );
-      }
-    });
+    if (user.admin === true || user.status === 2) {
+      adminMenu = (
+        <li>
+          { user.username !== me.username
+            ? (
+              <li>
+                <a onClick={this.removeFromAdmin}>
+                  <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+                </a>
+              </li>
+            )
+            : (
+              <li>
+                <a>
+                  <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+                </a>
+                <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
+              </li>
+            )
+          }
+        </li>
+      );
+    }
+    if (user.admin === false || user.status === 2) {
+      adminMenu = (
+        <li>
+          <a onClick={this.giveAdminAccess}>
+            <i className="icon-fw icon-magic-wand"></i>　{ t('user_management.give_admin_access') }
+          </a>
+        </li>
+      );
+    }
 
     return (
       <Fragment>
@@ -130,7 +159,13 @@ class UserMenu extends React.Component {
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
             <li>{contentOfStatus}</li>
-            <li>{adminMenu}</li>
+            <li className="divider pl-0"></li>
+            <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
+            <li>
+              <a>
+                {adminMenu}
+              </a>
+            </li>
           </ul>
         </div>
         {/* password reset modal */}
@@ -190,8 +225,10 @@ const UserMenuWrapper = (props) => {
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  users: PropTypes.array,
+  user: PropTypes.array,
+  me: PropTypes.array,
 };
 
 export default withTranslation()(UserMenuWrapper);
