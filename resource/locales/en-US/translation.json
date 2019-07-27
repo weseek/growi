@@ -528,7 +528,9 @@
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
     "Basic": {
-      "name": "Basic Authentication"
+      "name": "Basic Authentication",
+      "desc_1": "Login with <code>username</code> in Authorization header.",
+      "desc_2": "User will be automatically generated if not exist."
     },
     "OAuth": {
       "register": "Register for %s",
