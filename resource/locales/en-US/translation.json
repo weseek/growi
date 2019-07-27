@@ -538,7 +538,7 @@
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Create Project if no projects exist",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "Facebook": {
@@ -549,13 +549,13 @@
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Sign in Twitter",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "GitHub": {
         "name": "GitHub OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
-        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "OIDC": {
@@ -565,7 +565,7 @@
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
         "mapping_detail": "Specification of mappings for %s when creating new users",
         "register_1": "Contant to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "how_to": {
