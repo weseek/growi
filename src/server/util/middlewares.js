@@ -170,8 +170,6 @@ module.exports = (crowi, app) => {
   };
 
   middlewares.adminRequired = function(req, res, next) {
-    // check the user logged in
-    //  make sure that req.user isn't username/email string to login which is set by basic-auth-connect
     if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
       if (req.user.admin) {
         next();
@@ -202,7 +200,6 @@ module.exports = (crowi, app) => {
       const User = crowi.model('User');
 
       // check the user logged in
-      //  make sure that req.user isn't username/email string to login which is set by basic-auth-connect
       if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
         if (req.user.status === User.STATUS_ACTIVE) {
           // Active の人だけ先に進める
