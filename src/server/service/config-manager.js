@@ -1,6 +1,10 @@
 const logger = require('@alias/logger')('growi:service:ConfigManager');
 const ConfigLoader = require('../service/config-loader');
 
+const KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION = [
+  'security:passport-local:isEnabled',
+];
+
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:isEnabled',
   'security:passport-saml:entryPoint',
@@ -50,11 +54,11 @@ class ConfigManager {
   getConfig(namespace, key) {
     let value;
 
-    if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
-      value = this.searchInSAMLUseOnlyEnvMode(namespace, key);
+    if (this.shouldSearchedFromEnvVarsOnly(namespace, key)) {
+      value = this.searchOnlyFromEnvVarConfigs(namespace, key);
     }
     else {
-    value = this.defaultSearch(namespace, key);
+      value = this.defaultSearch(namespace, key);
     }
 
     logger.debug(key, value);
@@ -175,6 +179,24 @@ class ConfigManager {
     this.reloadConfigKeys();
   }
 
+  /**
+   * return whether the specified namespace/key should be retrieved only from env vars
+   */
+  shouldSearchedFromEnvVarsOnly(namespace, key) {
+    return (namespace === 'crowi' && (
+      // local strategy
+      (
+        KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION.includes(key)
+        && this.defaultSearch('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions')
+      )
+      // saml strategy
+      || (
+        KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)
+        && this.defaultSearch('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')
+      )
+    ));
+  }
+
   /*
    * All of the methods below are private APIs.
    */
@@ -215,22 +237,6 @@ class ConfigManager {
       }
     }
   }
-
-  /**
-   * For the configs specified by KEYS_FOR_SAML_USE_ONLY_ENV_OPTION,
-   * this searches only from configs loaded from the environment variables.
-   * For the other configs, this searches as the same way to defaultSearch.
-   */
-  /* eslint-disable no-else-return */
-  searchInSAMLUseOnlyEnvMode(namespace, key) {
-    if (namespace === 'crowi' && KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)) {
-      return this.searchOnlyFromEnvVarConfigs(namespace, key);
-    }
-    else {
-      return this.defaultSearch(namespace, key);
-    }
-  }
-  /* eslint-enable no-else-return */
 
   /**
    * search a specified config from configs loaded from the database

@@ -4,18 +4,31 @@
 
   {% set nameForIsLocalEnabled = "settingForm[security:passport-local:isEnabled]" %}
   {% set isLocalEnabled = getConfig('crowi', 'security:passport-local:isEnabled') %}
+  {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions') %}
+
+  {% if useOnlyEnvVars %}
+    <p class="alert alert-info">
+      {{ t("security_setting.Local.note for the only env option", "LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS") }}
+    </p>
+  {% endif %}
 
   <div class="form-group">
     <label for="{{nameForIsLocalEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.Local.name") }}</label>
     <div class="col-xs-6">
-      <div class="btn-group btn-toggle" data-toggle="buttons">
+      <div class="btn-group btn-toggle {% if useOnlyEnvVars %}btn-group-disabled{% endif %}" data-toggle="buttons">
         <label class="btn btn-default btn-rounded btn-outline {% if isLocalEnabled %}active{% endif %}" data-active-class="primary">
-          <input name="{{nameForIsLocalEnabled}}" value="true" type="radio"
-              {% if true === isLocalEnabled %}checked{% endif %}> ON
+          <input name="{{nameForIsLocalEnabled}}"
+                 value="true"
+                 type="radio"
+                 {% if true === isLocalEnabled %}checked{% endif %}
+                 {% if useOnlyEnvVars %}readonly{% endif %}> ON
         </label>
         <label class="btn btn-default btn-rounded btn-outline {% if !isLocalEnabled %}active{% endif %}" data-active-class="default">
-          <input name="{{nameForIsLocalEnabled}}" value="false" type="radio"
-              {% if !isLocalEnabled %}checked{% endif %}> OFF
+          <input name="{{nameForIsLocalEnabled}}"
+                 value="false"
+                 type="radio"
+                 {% if !isLocalEnabled %}checked{% endif %}
+                 {% if useOnlyEnvVars %}readonly{% endif %}> OFF
         </label>
       </div>
       <p class="help-block">
