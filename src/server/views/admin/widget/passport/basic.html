@@ -3,7 +3,7 @@
   <legend class="alert-anchor">{{ t("security_setting.Basic.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsbasicEnabled = "settingForm[security:passport-basic:isEnabled]" %}
-  {% set isbasicEnabled = settingForm['security:passport-basic:isEnabled'] %}
+  {% set isbasicEnabled = getConfig('crowi', 'security:passport-basic:isEnabled') %}
 
   <div class="form-group">
     <label for="{{nameForIsbasicEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.Basic.name") }}</label>
