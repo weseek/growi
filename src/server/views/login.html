@@ -100,14 +100,21 @@
       </div>
     </div>
 
+
+    {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %}
+    {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %}
+    {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
+
     <div class="login-dialog p-b-10 col-sm-offset-4 col-sm-4 flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
 
       <div class="front">
+
+        {% if isLocalOrLdapStrategiesEnabled %}
         <form role="form" action="/login" method="post">
           <div class="input-group">
             <span class="input-group-addon"><i class="icon-user"></i></span>
             <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
-            {% if isLdapSetup() %}
+            {% if passportService.isLdapStrategySetup %}
             <span class="input-group-addon">
               <small class="text-success">
                 <i class="icon-fw icon-check"></i> LDAP
@@ -129,6 +136,7 @@
             </button>
           </div>
         </form>
+        {% endif %}
 
         {% if (
           getConfig('crowi', 'security:passport-google:isEnabled') ||
@@ -140,7 +148,7 @@
           getConfig('crowi', 'security:passport-basic:isEnabled')
         ) %}
         <hr class="mb-1">
-        <div id="external-auth" class="collapse collapse-external-auth collapse-anchor">
+        <div id="external-auth" class="external-auth {% if isExternalAuthCollapsible %}collapse collapse-external-auth collapse-anchor{% endif %}">
           <div class="spacer"></div>
           <div class="d-flex flex-row justify-content-between flex-wrap">
             {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
@@ -218,7 +226,7 @@
         <hr class="mt-2 mb-0">
         <div class="text-center">
           <button class="collapse-anchor btn btn-xs btn-collapse-external-auth mb-3"
-              data-toggle="collapse" data-target="#external-auth" aria-expanded="false" aria-controls="external-auth">
+              data-toggle="{% if isExternalAuthCollapsible %}collapse{% endif %}" data-target="#external-auth" aria-expanded="false" aria-controls="external-auth">
             External Auth
           </button>
         </div>
@@ -226,6 +234,7 @@
         <hr>
         {% endif %}
 
+        {% if isExternalAuthCollapsible %}
         <script>
           const isMobile = /iphone|ipad|android/.test(window.navigator.userAgent.toLowerCase());
 
@@ -240,10 +249,11 @@
             );
           }
         </script>
+        {% endif %}
 
         <div class="row">
           <div class="col-xs-12 text-right">
-            {% if getConfig('crowi', 'security:registrationMode') != 'Closed' %}
+            {% if isRegistrationEnabled %}
             <a href="#register" id="register" class="link-switch">
               <i class="ti-check-box"></i> {{ t('Sign up is here') }}
             </a>
@@ -252,10 +262,11 @@
             {% endif %}
           </div>
         </div>
+
       </div>
 
 
-      {% if getConfig('crowi', 'security:registrationMode') != 'Closed' %}
+      {% if isRegistrationEnabled %}
       <div class="back">
         {% if getConfig('crowi', 'security:registrationMode') == 'Restricted' %}
         <p class="alert alert-warning">
@@ -317,8 +328,9 @@
             </a>
           </div>
         </div>
+
       </div>
-      {% endif %} {# if registrationMode == Closed #}
+      {% endif %} {# if isRegistrationEnabled id false #}
 
       <a href="https://growi.org" class="link-growi-org">
         <span class="growi">GROWI</span>.<span class="org">ORG

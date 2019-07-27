@@ -69,6 +69,7 @@ module.exports = function(crowi, app, req, locals) {
   locals.aclService = aclService;
   locals.fileUploadService = fileUploadService;
   locals.customizeService = customizeService;
+  locals.passportService = passportService;
   locals.pathUtils = pathUtils;
 
   locals.noCdn = function() {
@@ -94,16 +95,6 @@ module.exports = function(crowi, app, req, locals) {
 
   locals.cdnHighlightJsStyleTag = function(styleName) {
     return cdnResourcesService.getHighlightJsStyleTag(styleName);
-  };
-
-  /**
-   * return true if enabled and strategy has been setup successfully
-   */
-  locals.isLdapSetup = function() {
-    return (
-      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
-      && passportService.isLdapStrategySetup
-    );
   };
 
   /**
