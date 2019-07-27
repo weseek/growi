@@ -1,0 +1,77 @@
+<form action="/_api/admin/security/passport-local" method="post" class="form-horizontal passportStrategy" id="localSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend class="alert-anchor">{{ t("security_setting.Local.name") }} {{ t("security_setting.configuration") }}</legend>
+
+  {% set nameForIsLocalEnabled = "settingForm[security:passport-local:isEnabled]" %}
+  {% set isLocalEnabled = getConfig('crowi', 'security:passport-local:isEnabled') %}
+
+  <div class="form-group">
+    <label for="{{nameForIsLocalEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.Local.name") }}</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isLocalEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsLocalEnabled}}" value="true" type="radio"
+              {% if true === isLocalEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isLocalEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsLocalEnabled}}" value="false" type="radio"
+              {% if !isLocalEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+      <p class="help-block">
+        <small>
+          {{ t("security_setting.Local.desc_1") }}<br>
+          {{ t("security_setting.Local.desc_2") }}
+        </small>
+      </p>
+    </div>
+  </div>
+
+
+  <fieldset id="passport-local-hide-when-disabled" {%if !isLocalEnabled %}style="display: none;"{% endif %}>
+
+    <div class="form-group">
+      <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
+      <div class="col-xs-6">
+        <select class="form-control selectpicker" name="settingForm[security:registrationMode]" value="{{ getConfig('crowi', 'security:registrationMode') }}">
+          {% for modeValue, modeLabel in consts.registrationMode %}
+          <option value="{{ t(modeValue) }}" {% if modeValue == getConfig('crowi', 'security:registrationMode') %}selected{% endif %} >{{ t(modeLabel) }}</option>
+          {% endfor %}
+        </select>
+        <p class="help-block small">{{ t('security_setting.Register limitation desc') }}</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
+      <div class="col-xs-8">
+        <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @growi.org">{{ getConfig('crowi', 'security:registrationWhiteList') | join('&#13') | raw }}</textarea>
+        <p class="help-block small">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
+        {{ t("security_setting.insert_single") }}</p>
+      </div>
+    </div>
+
+  </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+    </div>
+  </div>
+
+</form>
+
+<script>
+  $('input[name="settingForm[security:passport-local:isEnabled]"]').change(function() {
+    const isEnabled = ($(this).val() === "true");
+
+    if (isEnabled) {
+      $('#passport-local-hide-when-disabled').show(400);
+    }
+    else {
+      $('#passport-local-hide-when-disabled').hide(400);
+    }
+  });
+</script>
+
