@@ -105,6 +105,15 @@ class PassportService {
       throw new Error('LocalStrategy has already been set up');
     }
 
+    const { configManager } = this.crowi;
+
+    const isEnabled = configManager.getConfig('crowi', 'security:passport-local:isEnabled');
+
+    // when disabled
+    if (!isEnabled) {
+      return;
+    }
+
     debug('LocalStrategy: setting up..');
 
     const User = this.crowi.model('User');
