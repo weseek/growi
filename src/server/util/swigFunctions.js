@@ -1,6 +1,7 @@
 module.exports = function(crowi, app, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
+  const { pathUtils } = require('growi-commons');
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const {
@@ -62,12 +63,13 @@ module.exports = function(crowi, app, req, locals) {
   locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
-   * pass service class to swig
+   * pass service/utils instances to swig
    */
   locals.appService = appService;
   locals.aclService = aclService;
   locals.fileUploadService = fileUploadService;
   locals.customizeService = customizeService;
+  locals.pathUtils = pathUtils;
 
   locals.noCdn = function() {
     return cdnResourcesService.noCdn();
