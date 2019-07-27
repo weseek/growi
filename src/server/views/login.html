@@ -140,7 +140,7 @@
           getConfig('crowi', 'security:passport-basic:isEnabled')
         ) %}
         <hr class="mb-1">
-        <div class="collapse collapse-oauth collapse-anchor">
+        <div id="external-auth" class="collapse collapse-external-auth collapse-anchor">
           <div class="spacer"></div>
           <div class="d-flex flex-row justify-content-between flex-wrap">
             {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
@@ -206,7 +206,7 @@
             <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="basic">
-                <span class="btn-label"><i class="fa fa-key"></i></span>
+                <span class="btn-label"><i class="fa fa-lock"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
               <div class="small text-right">with HTTP Basic</div>
@@ -217,7 +217,8 @@
         </div>
         <hr class="mt-2 mb-0">
         <div class="text-center">
-          <button class="collapse-anchor btn btn-xs btn-collapse-oauth mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapse-oauth" aria-expanded="true" aria-controls="collapseOne">
+          <button class="collapse-anchor btn btn-xs btn-collapse-external-auth mb-3"
+              data-toggle="collapse" data-target="#external-auth" aria-expanded="false" aria-controls="external-auth">
             External Auth
           </button>
         </div>
@@ -225,16 +226,19 @@
         <hr>
         {% endif %}
 
-
         <script>
-          $(".collapse-anchor").hover(
-            function() {
-              $('.collapse-oauth').collapse('show');
-            },
-            function() {
-              $('.collapse-oauth').collapse('hide');
-            }
-          );
+          const isMobile = /iphone|ipad|android/.test(window.navigator.userAgent.toLowerCase());
+
+          if (!isMobile) {
+            $(".collapse-anchor").hover(
+              function() {
+                $('.collapse-external-auth').collapse('show');
+              },
+              function() {
+                $('.collapse-external-auth').collapse('hide');
+              }
+            );
+          }
         </script>
 
         <div class="row">

@@ -94,7 +94,7 @@
     }
   }
 
-  .collapse-oauth {
+  .collapse-external-auth {
     overflow: hidden;
     &:not(.in) {
       height: 0;
@@ -116,7 +116,7 @@
   .btn-login.fcbtn,
   .btn-register.fcbtn,
   .btn-login-oauth.fcbtn,
-  .btn-collapse-oauth {
+  .btn-collapse-external-auth {
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
     border: none;
