@@ -170,10 +170,16 @@
         <div class="passport-settings">
           <ul class="nav nav-tabs" role="tablist">
             <li class="active">
+              <a href="#passport-saml" data-toggle="tab" role="tab"><i class="fa fa-key"></i> SAML</a>
+            </li>
+            <li>
+              <a href="#passport-oidc" data-toggle="tab" role="tab"><i class="fa fa-openid"></i> OIDC</a>
+            </li>
+            <li>
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
             <li>
-              <a href="#passport-saml" data-toggle="tab" role="tab"><i class="fa fa-key"></i> SAML</a>
+              <a href="#passport-basic" data-toggle="tab" role="tab"><i class="fa fa-lock"></i> Basic</a>
             </li>
             <li>
               <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google</a>
@@ -184,24 +190,26 @@
             <li>
               <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
             </li>
-            <li>
-              <a href="#passport-oidc" data-toggle="tab" role="tab"><i class="fa fa-openid"></i> OIDC</a>
-            </li>
-            <li>
-              <a href="#passport-basic" data-toggle="tab" role="tab"><i class="fa fa-lock"></i> Basic</a>
-            </li>
             <li class="tbd">
               <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
             </li>
           </ul>
 
           <div class="tab-content p-t-10">
-            <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
+            <div id="passport-saml" class="tab-pane active" role="tabpanel" >
+              {% include './widget/passport/saml.html' %}
+            </div>
+
+            <div id="passport-oidc" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/oidc.html' %}
+            </div>
+
+            <div id="passport-ldap" class="tab-pane" role="tabpanel" >
               {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
             </div>
 
-            <div id="passport-saml" class="tab-pane" role="tabpanel" >
-              {% include './widget/passport/saml.html' %}
+            <div id="passport-basic" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/basic.html' %}
             </div>
 
             <div id="passport-google-oauth" class="tab-pane" role="tabpanel">
@@ -216,16 +224,8 @@
               {% include './widget/passport/twitter.html' %}
             </div>
 
-            <div id="passport-oidc" class="tab-pane" role="tabpanel">
-              {% include './widget/passport/oidc.html' %}
-            </div>
-
             <div id="passport-github" class="tab-pane" role="tabpanel">
               {% include './widget/passport/github.html' %}
-            </div>
-
-            <div id="passport-basic" class="tab-pane" role="tabpanel">
-              {% include './widget/passport/basic.html' %}
             </div>
 
           </div><!-- /.tab-content -->
