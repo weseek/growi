@@ -31,12 +31,6 @@
                  {% if useOnlyEnvVars %}readonly{% endif %}> OFF
         </label>
       </div>
-      <p class="help-block">
-        <small>
-          {{ t("security_setting.Local.desc_1") }}<br>
-          {{ t("security_setting.Local.desc_2") }}
-        </small>
-      </p>
     </div>
   </div>
 
@@ -45,7 +39,7 @@
 
     <div class="form-group">
       <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
-      <div class="col-xs-6">
+      <div class="col-xs-9 col-lg-6">
         <select class="form-control selectpicker" name="settingForm[security:registrationMode]" value="{{ getConfig('crowi', 'security:registrationMode') }}">
           {% for modeValue, modeLabel in consts.registrationMode %}
           <option value="{{ t(modeValue) }}" {% if modeValue == getConfig('crowi', 'security:registrationMode') %}selected{% endif %} >{{ t(modeLabel) }}</option>
@@ -57,7 +51,7 @@
 
     <div class="form-group">
       <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
-      <div class="col-xs-8">
+      <div class="col-xs-9 col-lg-6">
         <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @growi.org">{{ getConfig('crowi', 'security:registrationWhiteList') | join('&#13') | raw }}</textarea>
         <p class="help-block small">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
         {{ t("security_setting.insert_single") }}</p>
