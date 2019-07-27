@@ -476,10 +476,7 @@ module.exports = function(crowi, app) {
       userId = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      // display prompt in browser
-      res.setHeader('WWW-Authenticate', 'Basic realm="Users"');
-      res.sendStatus(401).end();
-      return;
+      return loginFailure(req, res);
     }
 
     const userInfo = {

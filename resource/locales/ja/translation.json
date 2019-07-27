@@ -522,7 +522,9 @@
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
     },
     "Basic": {
-      "name": "Basic 認証"
+      "name": "Basic 認証",
+      "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
+      "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
     },
     "OAuth": {
       "register": "%sに登録",

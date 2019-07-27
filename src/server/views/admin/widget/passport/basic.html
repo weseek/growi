@@ -3,7 +3,7 @@
   <legend class="alert-anchor">{{ t("security_setting.Basic.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsbasicEnabled = "settingForm[security:passport-basic:isEnabled]" %}
-  {% set isbasicEnabled = settingForm['security:passport-basic:isEnabled'] %}
+  {% set isbasicEnabled = getConfig('crowi', 'security:passport-basic:isEnabled') %}
 
   <div class="form-group">
     <label for="{{nameForIsbasicEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.Basic.name") }}</label>
@@ -18,21 +18,32 @@
               {% if !isbasicEnabled %}checked{% endif %}> OFF
         </label>
       </div>
+      <p class="help-block">
+        <small>
+          {{ t("security_setting.Basic.desc_1") }}<br>
+          {{ t("security_setting.Basic.desc_2") }}
+        </small>
+      </p>
     </div>
   </div>
+
+
   <fieldset id="passport-basic-hide-when-disabled" {%if !isbasicEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-basic:id]" class="col-xs-3 control-label">ID</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-basic:id]" value="{{ settingForm['security:passport-basic:id'] || '' }}">
-      </div>
+    <div class="col-xs-6 col-xs-offset-3">
+      <div class="checkbox checkbox-info">
+        <input type="checkbox" id="bindByUserName-basic" name="settingForm[security:passport-basic:isSameUsernameTreatedAsIdenticalUser]" value="1"
+            {% if getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
+        <label for="bindByUserName-basic">
+          {{ t("security_setting.Treat username matching as identical", "username") }}
+        </label>
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+          </small>
+        </p>
     </div>
-
-    <div class="form-group">
-      <label for="settingForm[security:passport-basic:password]" class="col-xs-3 control-label">{{ t("Password") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-basic:password]" value="{{ settingForm['security:passport-basic:password'] || '' }}">
       </div>
     </div>
 

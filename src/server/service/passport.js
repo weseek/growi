@@ -621,15 +621,12 @@ class PassportService {
 
     debug('BasicStrategy: setting up..');
 
-    const configId = configManager.getConfig('crowi', 'security:passport-basic:id');
-    const configPassword = configManager.getConfig('crowi', 'security:passport-basic:password');
-
     passport.use(new BasicStrategy(
       (userId, password, done) => {
-        if (userId !== configId || password !== configPassword) {
-          return done(null, false, { message: 'Incorrect credentials.' });
+        if (userId != null) {
+          return done(null, userId);
         }
-        return done(null, userId);
+        return done(null, false, { message: 'Incorrect credentials.' });
       },
     ));
 
