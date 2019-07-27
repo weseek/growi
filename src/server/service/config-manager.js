@@ -53,8 +53,9 @@ class ConfigManager {
     if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
       value = this.searchInSAMLUseOnlyEnvMode(namespace, key);
     }
-
+    else {
     value = this.defaultSearch(namespace, key);
+    }
 
     logger.debug(key, value);
     return value;
