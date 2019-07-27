@@ -527,6 +527,9 @@
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
+    "Basic": {
+      "name": "Basic Authentication"
+    },
     "OAuth": {
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",

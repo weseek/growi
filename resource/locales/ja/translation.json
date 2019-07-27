@@ -521,6 +521,9 @@
       "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
     },
+    "Basic": {
+      "name": "Basic 認証"
+    },
     "OAuth": {
       "register": "%sに登録",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
