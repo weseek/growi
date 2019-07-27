@@ -474,7 +474,7 @@
       "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
-      "open": "Open (Anyone can registre)",
+      "open": "Open (Anyone can register)",
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
