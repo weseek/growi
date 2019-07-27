@@ -474,7 +474,7 @@
       "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
-      "open": "Open (Anyone can registre)",
+      "open": "Open (Anyone can register)",
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
@@ -487,6 +487,9 @@
     "Use env var if empty": "Use env var <code>%s</code> if empty",
     "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
+    "Local": {
+      "name": "ID/Password"
+    },
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",

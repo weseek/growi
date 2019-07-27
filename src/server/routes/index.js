@@ -58,6 +58,7 @@ module.exports = function(crowi, app) {
   // security admin
   app.get('/admin/security'                     , loginRequired() , adminRequired , admin.security.index);
   app.post('/_api/admin/security/general'       , loginRequired() , adminRequired , form.admin.securityGeneral, admin.api.securitySetting);
+  app.post('/_api/admin/security/passport-local', loginRequired() , adminRequired , csrf, form.admin.securityPassportLocal, admin.api.securityPassportLocalSetting);
   app.post('/_api/admin/security/passport-ldap' , loginRequired() , adminRequired , csrf, form.admin.securityPassportLdap, admin.api.securityPassportLdapSetting);
   app.post('/_api/admin/security/passport-saml' , loginRequired() , adminRequired , csrf, form.admin.securityPassportSaml, admin.api.securityPassportSamlSetting);
   app.post('/_api/admin/security/passport-basic' , loginRequired() , adminRequired , csrf, form.admin.securityPassportBasic, admin.api.securityPassportBasicSetting);

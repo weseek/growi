@@ -481,6 +481,9 @@
     "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
     "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
+    "Local": {
+      "name": "ID/Password"
+    },
     "ldap": {
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",

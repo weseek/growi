@@ -918,6 +918,32 @@ module.exports = function(crowi, app) {
     }
   };
 
+  actions.api.securityPassportLocalSetting = async function(req, res) {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
+    }
+
+    debug('form content', form);
+
+    try {
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
+      // reset strategy
+      crowi.passportService.resetLocalStrategy();
+      // setup strategy
+      if (configManager.getConfig('crowi', 'security:passport-local:isEnabled')) {
+        crowi.passportService.setupLocalStrategy(true);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json({ status: false, message: err.message });
+    }
+
+    return res.json({ status: true });
+  };
+
   actions.api.securityPassportLdapSetting = async function(req, res) {
     const form = req.form.settingForm;
 
