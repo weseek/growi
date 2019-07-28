@@ -425,6 +425,8 @@
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket name": "バケット名",
+    "custom endpoint": "カスタムエンドポイント",
+    "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
     "Plugin settings": "プラグイン設定",
     "Enable plugin loading": "プラグインの読み込みを有効にします。",
     "Load plugins": "プラグインを読み込む",

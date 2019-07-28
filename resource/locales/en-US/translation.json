@@ -427,6 +427,8 @@
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
     "bucket name": "Bucket name",
+    "custom endpoint": "Custom endpoint",
+    "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
     "Plugin settings": "Plugin settings",
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
