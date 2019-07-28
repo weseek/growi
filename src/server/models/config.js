@@ -74,6 +74,7 @@ module.exports = function(crowi) {
       'aws:region'          : 'ap-northeast-1',
       'aws:accessKeyId'     : undefined,
       'aws:secretAccessKey' : undefined,
+      'aws:customEndpoint'  : undefined,
 
       'mail:from'         : undefined,
       'mail:smtpHost'     : undefined,

@@ -15,6 +15,7 @@ module.exports = function(crowi) {
       secretAccessKey: configManager.getConfig('crowi', 'aws:secretAccessKey'),
       region: configManager.getConfig('crowi', 'aws:region'),
       bucket: configManager.getConfig('crowi', 'aws:bucket'),
+      customEndpoint: configManager.getConfig('crowi', 'aws:customEndpoint'),
     };
   }
 
@@ -29,9 +30,11 @@ module.exports = function(crowi) {
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey,
       region: awsConfig.region,
+      s3ForcePathStyle: awsConfig.customEndpoint ? true : undefined,
     });
 
-    return new aws.S3();
+    // undefined & null & '' => default endpoint (genuine S3)
+    return new aws.S3({ endpoint: awsConfig.customEndpoint || undefined });
   }
 
   function getFilePathOnStorage(attachment) {
@@ -91,7 +94,7 @@ module.exports = function(crowi) {
   lib.findDeliveryFile = async function(attachment) {
     // construct url
     const awsConfig = getAwsConfig();
-    const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
+    const baseUrl = awsConfig.customEndpoint || `https://${awsConfig.bucket}.s3.amazonaws.com`;
     const url = urljoin(baseUrl, getFilePathOnStorage(attachment));
 
     let response;
