@@ -7,13 +7,13 @@ import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
 import CommentContainer from '../services/CommentContainer';
+import PageContainer from '../services/PageContainer';
 
 import { createSubscribedElement } from './UnstatedUtils';
-import CommentEditor from './PageComment/CommentEditor';
 
+import CommentEditor from './PageComment/CommentEditor';
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import PageContainer from '../services/PageContainer';
 
 
 /**
