@@ -92,14 +92,17 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    // construct url
+    const s3 = S3Factory(this.getIsUploadable());
     const awsConfig = getAwsConfig();
-    const baseUrl = awsConfig.customEndpoint || `https://${awsConfig.bucket}.s3.amazonaws.com`;
-    const url = urljoin(baseUrl, getFilePathOnStorage(attachment));
+    const filePath = getFilePathOnStorage(attachment);
 
-    let response;
+    let stream;
     try {
-      response = await axios.get(url, { responseType: 'stream' });
+      const params = {
+        Bucket: awsConfig.bucket,
+        Key: filePath,
+      };
+      stream = s3.getObject(params).createReadStream();
     }
     catch (err) {
       logger.error(err);
@@ -107,7 +110,7 @@ module.exports = function(crowi) {
     }
 
     // return stream.Readable
-    return response.data;
+    return stream;
   };
 
   /**
