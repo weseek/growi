@@ -277,7 +277,7 @@ module.exports = (crowi, app) => {
 
   middlewares.awsEnabled = function() {
     return function(req, res, next) {
-      if (configManager.getConfig('crowi', 'aws:region') !== ''
+      if ((configManager.getConfig('crowi', 'aws:region') !== '' || this.configManager.getConfig('crowi', 'aws:customEndpoint') !== '')
           && configManager.getConfig('crowi', 'aws:bucket') !== ''
           && configManager.getConfig('crowi', 'aws:accessKeyId') !== ''
           && configManager.getConfig('crowi', 'aws:secretAccessKey') !== '') {
