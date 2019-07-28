@@ -74,11 +74,11 @@ export default class GrowiRenderer {
     // add configurers according to mode
     switch (mode) {
       case 'page': {
-        const renderToc = appContainer.getCrowiForJquery().renderTocContent;
+        const pageContainer = appContainer.getContainer('PageContainer');
 
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
           new FooternoteConfigurer(appContainer),
-          new TocAndAnchorConfigurer(appContainer, renderToc),
+          new TocAndAnchorConfigurer(appContainer, pageContainer.setTocHtml),
           new HeaderLineNumberConfigurer(appContainer),
           new HeaderWithEditLinkConfigurer(appContainer),
           new TableWithHandsontableButtonConfigurer(appContainer),

@@ -27,14 +27,6 @@ if (!window) {
 window.Crowi = Crowi;
 
 /**
- * render Table Of Contents
- * @param {string} tocHtml
- */
-Crowi.renderTocContent = (tocHtml) => {
-  $('#revision-toc-content').html(tocHtml);
-};
-
-/**
  * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
  * @param {number} line
  */

@@ -36,6 +36,7 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path: mainContent.getAttribute('data-path'),
+      tocHtml: '',
       isLiked: false,
       seenUserIds: [],
       likerUserIds: [],
@@ -55,6 +56,7 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.initStateOthers();
 
+    this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
@@ -110,6 +112,11 @@ export default class PageContainer extends Container {
     });
   }
 
+  setTocHtml(tocHtml) {
+    if (this.state.tocHtml !== tocHtml) {
+      this.setState({ tocHtml });
+    }
+  }
 
   /**
    * save success handler
