@@ -2,6 +2,7 @@
 
 ## 3.5.5-RC
 
+* Feature: Support S3-compatible object storage (e.g. MinIO)
 * Feature: Enable/Disable ID/Password Authentication
 * Improvement: Login Mechanism with HTTP Basic Authentication header
 * Fix: Profile images are broken in User Management
