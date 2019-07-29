@@ -5,12 +5,15 @@
 
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
+const urljoin = require('url-join');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-const escapeStringRegexp = require('escape-string-regexp');
+const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
+const escapeStringRegexp = require('escape-string-regexp');
+
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*
  * define schema
@@ -842,17 +845,19 @@ module.exports = function(crowi) {
   /**
    * find all templates applicable to the new page
    */
-  pageSchema.statics.findTemplate = function(path) {
+  pageSchema.statics.findTemplate = async function(path) {
     const templatePath = nodePath.posix.dirname(path);
     const pathList = generatePathsOnTree(path, []);
-    const regexpList = pathList.map((path) => { return new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`) });
+    const regexpList = pathList.map((path) => {
+      const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+      return new RegExp(`^${escapeStringRegexp(pathWithTrailingSlash)}_{1,2}template$`);
+    });
 
-    return this
-      .find({ path: { $in: regexpList } })
+    const templatePages = await this.find({ path: { $in: regexpList } })
       .populate({ path: 'revision', model: 'Revision' })
-      .then((templates) => {
-        return fetchTemplate(templates, templatePath);
-      });
+      .exec();
+
+    return fetchTemplate(templatePages, templatePath);
   };
 
   const generatePathsOnTree = (path, pathList) => {
@@ -868,11 +873,11 @@ module.exports = function(crowi) {
   };
 
   const assignTemplateByType = (templates, path, type) => {
-    for (let i = 0; i < templates.length; i++) {
-      if (templates[i].path === `${path}/${type}template`) {
-        return templates[i];
-      }
-    }
+    const targetTemplatePath = urljoin(path, `${type}template`);
+
+    return templates.find((template) => {
+      return (template.path === targetTemplatePath);
+    });
   };
 
   const assignDecendantsTemplate = (decendantsTemplates, path) => {

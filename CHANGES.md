@@ -6,6 +6,7 @@
 * Feature: Enable/Disable ID/Password Authentication
 * Improvement: Login Mechanism with HTTP Basic Authentication header
 * Fix: Profile images are broken in User Management
+* Fix: Template page under root page doesn't work
 * Support: Upgrade libs
     * csv-to-markdown-table
     * express-validator
