@@ -7,105 +7,114 @@ import AppContainer from '../../../services/AppContainer';
 
 class UserMenu extends React.Component {
 
-  activateUser() {}
 
-  susupendUser() {}
+  activateUser() {
+    const { appContainer } = this.props;
 
-  removeUser() {}
+    appContainer.apiPost('/admin/user/{userId}/activate');
+  }
 
-  removeFromAdmin() {}
+  susupendUser() {
+    const { appContainer } = this.props;
 
-  giveAdminAccess() {}
+    appContainer.apiPost('/admin/user/{userId}/suspend');
+  }
+
+  removeUser() {
+    const { appContainer } = this.props;
+
+    appContainer.apiPost('/admin/user/{user._id}/removeCompletely');
+  }
+
+  removeFromAdmin() {
+    const { appContainer } = this.props;
+
+    appContainer.apiPost('/admin/user/{user._id}/removeFromAdmin');
+  }
+
+  giveAdminAccess() {
+    const { appContainer } = this.props;
+
+    appContainer.apiPost('/admin/user/{user._id}/makeAdmin');
+  }
 
 
   render() {
-    const { t } = this.props;
-    // const users = this.props.users;
+    const { t, user } = this.props;
+    const me = this.props.appContainer.me;
+
     let contentOfStatus;
-    // let adminMenu;
+    let adminMenu;
 
-    // {this.props.users.forEach((user) => {
-    //   if (user.status === 1) {
-    //     contentOfStatus = (
-    //       <a onClick={this.activateUser}>
-    //         <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-    //       </a>
-    //     );
+    if (user.status === 1) {
+      contentOfStatus = (
+        <a className="mx-4" onClick={this.activateUser}>
+          <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+        </a>
+      );
+    }
+    if (user.status === 2) {
+      contentOfStatus = (
+        user.username !== me
+          ? (
+            <a onClick={this.susupendUser}>
+              <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
+            </a>
+          )
+          : (
+            <div className="mx-4">
+              <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
+              <p className="alert alert-danger">{ t('user_management.your_own') }</p>
+            </div>
+          )
+      );
+    }
+    if (user.status === 3) {
+      contentOfStatus = (
+        <div>
+          <a className="mx-4" onClick={this.activateUser}>
+            <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+          </a>
+          {/* label は同じだけど、こっちは論理削除 */}
+          <a className="mx-4" onClick={this.removeUser}>
+            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+          </a>
+        </div>
+      );
+    }
+    if (user.status === 1 || user.status === 5) {
+      contentOfStatus = (
+        <li className="dropdown-button">
+          <a className="mx-4" onClick={this.removeUser}>
+            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+          </a>
+        </li>
+      );
+    }
 
-    //   if (user.status === 2) {
-    //     contentOfStatus = (
-    //       <li>
-    //         { username !== user.username
-    //           ? (
-    //             <li>
-    //               <a onClick={this.susupendUser}>
-    //                 <i className="icon-fw icon-user-unfollow"></i> { t('user_management.deactivate_account') }
-    //               </a>
-    //             </li>
-    //           )
-    //           : (
-    //             <li>
-    //               <a disabled>
-    //                 <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
-    //               </a>
-    //               <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.your_own') }</p>
-    //             </li>
-    //           )
-    //         }
-    //       </li>
-    //     );
-
-    //   if (user.status === 3) {
-    //     contentOfStatus = (
-    //       <a onClick={this.activateUser}>
-    //         <i className="icon-fw icon-action-redo"></i> { t('Undo') }
-    //       </a>
-    //     );
-
-    //   if (user.status === 1 || user.status === 5) {
-    //     contentOfStatus = (
-    //       <li className="dropdown-button">
-    //         <a onClick={this.removeUser}>
-    //           <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-    //         </a>
-    //       </li>
-    //     );
-    //   }
-
-    //   if (user.admin === true) {
-    //     adminMenu = (
-    //       <li>
-    //         { username !== user.username
-    //           ? (
-    //             <li>
-    //               <a onClick={this.removeFromAdmin}>
-    //                 <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-    //               </a>
-    //             </li>
-    //           )
-    //           : (
-    //             <li>
-    //               <a disabled>
-    //                 <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-    //               </a>
-    //               <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
-    //             </li>
-    //           )
-    //         }
-    //       </li>
-    //     );
-    //   }
-
-    //   else {
-    //     adminMenu = (
-    //       <li>
-    //         <a onClick={this.giveAdminAccess}>
-    //           <i className="icon-fw icon-magic-wand"></i> { t('user_management.give_admin_access') }
-    //         </a>
-    //       </li>
-    //     );
-    //   }
-    // }}
+    if (user.admin === true && user.status === 2) {
+      adminMenu = (
+        user.username !== me
+          ? (
+            <a onClick={this.removeFromAdmin}>
+              <i className="icon-fw icon-user-unfollow mb-2"></i> { t('user_management.remove_admin_access') }
+            </a>
+          )
+          : (
+            <div className="mx-4">
+              <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
+              <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
+            </div>
+          )
+      );
+    }
+    if (user.admin === false && user.status === 2) {
+      adminMenu = (
+        <a onClick={this.giveAdminAccess}>
+          <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
+        </a>
+      );
+    }
 
     return (
       <Fragment>
@@ -119,7 +128,6 @@ class UserMenu extends React.Component {
               <a
                 href="#"
                 data-user-id="{{ userId }}"
-                data-user-email="{{ user.email }}"
                 data-target="#admin-password-reset-modal"
                 data-toggle="modal"
               >
@@ -129,8 +137,12 @@ class UserMenu extends React.Component {
             </li>
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
-            <li>{contentOfStatus}</li>
-            {/* <li>{user.status === 2 && adminMenu}</li> */}
+            <li>
+              {contentOfStatus}
+            </li>
+            <li className="divider pl-0"></li>
+            <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
+            <li>{adminMenu}</li>
           </ul>
         </div>
         {/* password reset modal */}
@@ -148,8 +160,11 @@ class UserMenu extends React.Component {
                   <span className="text-danger">{ t('user_management.send_new_password') }</span>
                 </p>
                 <p>
-                  { t('user_management.target_user') }: <code id="admin-password-reset-user"></code>
+                  { t('user_management.target_user') }: <code>{ user.email }</code>
                 </p>
+                <button type="submit" value="" className="btn btn-primary">
+                  { t('user_management.reset_password')}
+                </button>
               </div>
             </div>
           </div>
@@ -190,8 +205,9 @@ const UserMenuWrapper = (props) => {
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  users: PropTypes.array,
+  user: PropTypes.array,
 };
 
 export default withTranslation()(UserMenuWrapper);
