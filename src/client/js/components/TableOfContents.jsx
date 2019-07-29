@@ -71,17 +71,20 @@ class TableOfContents extends React.Component {
     const tocContentElem = document.querySelector('.revision-toc .markdownIt-TOC');
 
     // window height - revisionTocTop - .system-version height
-    let h = window.innerHeight - revisionTocTop - 20;
+    const viewHeight = window.innerHeight - revisionTocTop - 20;
 
     const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
 
-    h = Math.min(h, tocContentHeight);
-
-    $('#revision-toc-content').slimScroll({
-      railVisible: true,
-      position: 'right',
-      height: h,
-    });
+    if (viewHeight < tocContentHeight) {
+      $('#revision-toc-content').slimScroll({
+        railVisible: true,
+        position: 'right',
+        height: viewHeight,
+      });
+    }
+    else {
+      $('#revision-toc-content').slimScroll({ destroy: true });
+    }
   }
 
   render() {
