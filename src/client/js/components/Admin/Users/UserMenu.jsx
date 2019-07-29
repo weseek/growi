@@ -43,96 +43,74 @@ class UserMenu extends React.Component {
     const { t, user, me } = this.props;
 
     let contentOfStatus;
+    let adminMenu;
     if (user.status === 1) {
       contentOfStatus = (
-        <li>
-          <a onClick={this.activateUser}>
-            <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-          </a>
-        </li>
+        <a className="mx-4" onClick={this.activateUser}>
+          <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+        </a>
       );
     }
     if (user.status === 2) {
       contentOfStatus = (
-        <li>
-          { user.username !== me.username
-            ? (
-              <li>
-                <a onClick={this.susupendUser}>
-                  <i className="icon-fw icon-ban "></i> { t('user_management.deactivate_account') }
-                </a>
-              </li>
-            )
-            : (
-              <li>
-                <a disabled>
-                  <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
-                </a>
-                <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.your_own') }</p>
-              </li>
-            )
-          }
-        </li>
+        user.username !== me.username
+          ? (
+            <a onClick={this.susupendUser}>
+              <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
+            </a>
+          )
+          : (
+            <div className="mx-4">
+              <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
+              <p className="alert alert-danger">{ t('user_management.your_own') }</p>
+            </div>
+          )
       );
     }
     if (user.status === 3) {
       contentOfStatus = (
-        <ul>
-          <li>
-            <a onClick={this.activateUser}>
-              <i className="icon-fw icon-action-redo"></i> { t('Undo') }
-            </a>
-          </li>
-          <li>
-            {/* label は同じだけど、こっちは論理削除 */}
-            <a onClick={this.removeUser}>
-              <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-            </a>
-          </li>
-        </ul>
+        <div>
+          <a className="mx-4" onClick={this.activateUser}>
+            <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+          </a>
+          {/* label は同じだけど、こっちは論理削除 */}
+          <a className="mx-4" onClick={this.removeUser}>
+            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+          </a>
+        </div>
       );
     }
     if (user.status === 1 || user.status === 5) {
       contentOfStatus = (
         <li className="dropdown-button">
-          <a onClick={this.removeUser}>
+          <a className="mx-4" onClick={this.removeUser}>
             <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
           </a>
         </li>
       );
     }
 
-    let adminMenu;
-    if (user.admin === true || user.status === 2) {
+    if (user.admin === true) {
       adminMenu = (
-        <li>
-          { user.username !== me.username
-            ? (
-              <li>
-                <a onClick={this.removeFromAdmin}>
-                  <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                </a>
-              </li>
-            )
-            : (
-              <li>
-                <a>
-                  <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
-                </a>
-                <p className="alert alert-danger m-l-10 m-r-10 p-10">{ t('user_management.cannot_remove') }</p>
-              </li>
-            )
-          }
-        </li>
+        user.username !== me.username
+          ? (
+            <a onClick={this.removeFromAdmin}>
+              <i className="icon-fw icon-user-unfollow mb-2"></i> { t('user_management.remove_admin_access') }
+            </a>
+          )
+          : (
+            <div className="mx-4">
+              <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
+              <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
+            </div>
+          )
       );
     }
-    if (user.admin === false || user.status === 2) {
+    if (user.admin === false) {
       adminMenu = (
-        <li>
-          <a onClick={this.giveAdminAccess}>
-            <i className="icon-fw icon-magic-wand"></i>　{ t('user_management.give_admin_access') }
-          </a>
-        </li>
+        <a onClick={this.giveAdminAccess}>
+          <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
+        </a>
       );
     }
 
@@ -158,14 +136,12 @@ class UserMenu extends React.Component {
             </li>
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
-            <li>{contentOfStatus}</li>
+            <li>
+              {contentOfStatus}
+            </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
-            <li>
-              <a>
-                {adminMenu}
-              </a>
-            </li>
+            { user.status === 2 && <li>{adminMenu}</li> }
           </ul>
         </div>
         {/* password reset modal */}
