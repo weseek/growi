@@ -42,8 +42,11 @@ class UserMenu extends React.Component {
   render() {
     const { t, user, me } = this.props;
 
+    const userEmail = user.email;
+
     let contentOfStatus;
     let adminMenu;
+
     if (user.status === 1) {
       contentOfStatus = (
         <a className="mx-4" onClick={this.activateUser}>
@@ -90,7 +93,7 @@ class UserMenu extends React.Component {
       );
     }
 
-    if (user.admin === true) {
+    if (user.admin === true && user.status === 2) {
       adminMenu = (
         user.username !== me.username
           ? (
@@ -106,7 +109,7 @@ class UserMenu extends React.Component {
           )
       );
     }
-    if (user.admin === false) {
+    if (user.admin === false && user.status === 2) {
       adminMenu = (
         <a onClick={this.giveAdminAccess}>
           <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
@@ -126,7 +129,6 @@ class UserMenu extends React.Component {
               <a
                 href="#"
                 data-user-id="{{ userId }}"
-                data-user-email="{{ user.email }}"
                 data-target="#admin-password-reset-modal"
                 data-toggle="modal"
               >
@@ -141,7 +143,7 @@ class UserMenu extends React.Component {
             </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
-            { user.status === 2 && <li>{adminMenu}</li> }
+            <li>{adminMenu}</li>
           </ul>
         </div>
         {/* password reset modal */}
@@ -159,8 +161,11 @@ class UserMenu extends React.Component {
                   <span className="text-danger">{ t('user_management.send_new_password') }</span>
                 </p>
                 <p>
-                  { t('user_management.target_user') }: <code id="admin-password-reset-user"></code>
+                  { t('user_management.target_user') }: <code>{ userEmail }</code>
                 </p>
+                <button type="submit" value="" className="btn btn-primary">
+                  { t('user_management.reset_password')}
+                </button>
               </div>
             </div>
           </div>
