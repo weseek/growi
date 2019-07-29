@@ -40,9 +40,8 @@ class UserMenu extends React.Component {
 
 
   render() {
-    const { t, user, me } = this.props;
-
-    const userEmail = user.email;
+    const { t, user } = this.props;
+    const me = this.props.appContainer.me;
 
     let contentOfStatus;
     let adminMenu;
@@ -56,7 +55,7 @@ class UserMenu extends React.Component {
     }
     if (user.status === 2) {
       contentOfStatus = (
-        user.username !== me.username
+        user.username !== me
           ? (
             <a onClick={this.susupendUser}>
               <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
@@ -95,7 +94,7 @@ class UserMenu extends React.Component {
 
     if (user.admin === true && user.status === 2) {
       adminMenu = (
-        user.username !== me.username
+        user.username !== me
           ? (
             <a onClick={this.removeFromAdmin}>
               <i className="icon-fw icon-user-unfollow mb-2"></i> { t('user_management.remove_admin_access') }
@@ -161,7 +160,7 @@ class UserMenu extends React.Component {
                   <span className="text-danger">{ t('user_management.send_new_password') }</span>
                 </p>
                 <p>
-                  { t('user_management.target_user') }: <code>{ userEmail }</code>
+                  { t('user_management.target_user') }: <code>{ user.email }</code>
                 </p>
                 <button type="submit" value="" className="btn btn-primary">
                   { t('user_management.reset_password')}
@@ -209,7 +208,6 @@ UserMenu.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.array,
-  me: PropTypes.array,
 };
 
 export default withTranslation()(UserMenuWrapper);

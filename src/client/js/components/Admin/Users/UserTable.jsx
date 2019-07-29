@@ -14,59 +14,45 @@ class UserTable extends React.Component {
     super(props);
 
     this.state = {
-      me: [],
+
     };
-  }
-
-  componentDidMount() {
-    const jsonData = document.getElementById('admin-user-page');
-    const me = JSON.parse(jsonData.getAttribute('user'));
-
-    this.setState({
-      me,
-    });
   }
 
 
   render() {
     const { t } = this.props;
     let userStatusLabel;
+    let additionalClassName;
+    let text;
 
     this.props.users.forEach((user) => {
-      if (user.status === 1) {
-        userStatusLabel = (
-          <span className="label label-info">
-            Approval Pending
-          </span>
-        );
-      }
-      if (user.status === 2) {
-        userStatusLabel = (
-          <span className="label label-success">
-            Active
-          </span>
-        );
-      }
-      if (user.status === 3) {
-        userStatusLabel = (
-          <span className="label label-warning">
-            Suspended
-          </span>
-        );
-      }
-      if (user.status === 4) {
-        userStatusLabel = (
-          <span className="label label-danger">
-            Deleted
-          </span>
-        );
-      }
-      if (user.status === 5) {
-        userStatusLabel = (
-          <span className="label label-info">
-            Invited
-          </span>
-        );
+      userStatusLabel = (
+        <span className={`label ${additionalClassName}`}>
+          {text}
+        </span>
+      );
+
+      switch (user.status) {
+        case 1:
+          additionalClassName = 'label-info';
+          text = 'Approval Pending';
+          break;
+        case 2:
+          additionalClassName = 'label-success';
+          text = 'Active';
+          break;
+        case 3:
+          additionalClassName = 'label-warning';
+          text = 'Suspended';
+          break;
+        case 4:
+          additionalClassName = 'label-danger';
+          text = 'Deleted';
+          break;
+        case 5:
+          additionalClassName = 'label-info';
+          text = 'Invited';
+          break;
       }
     });
 
@@ -107,7 +93,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu user={user} me={this.state.me} />
+                    <UserMenu user={user} />
                   </td>
                 </tr>
               );
