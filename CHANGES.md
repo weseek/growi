@@ -1,8 +1,24 @@
 # CHANGES
 
-## 3.5.4-RC
+## 3.5.5-RC
+
+* Feature: Support S3-compatible object storage (e.g. MinIO)
+* Feature: Enable/Disable ID/Password Authentication
+* Improvement: Login Mechanism with HTTP Basic Authentication header
+* Improvement: Reactify Table Of Contents
+* Fix: Profile images are broken in User Management
+* Fix: Template page under root page doesn't work
+* Support: Upgrade libs
+    * csv-to-markdown-table
+    * express-validator
+    * markdown-it
+    * mini-css-extract-plugin
+    * react-hotkeys
+
+## 3.5.4
 
 * Fix: List private pages wrongly
+* Fix: Global Notification Trigger Path does not parse glob correctly
 * Fix: Consecutive page deletion requests cause unexpected complete page deletion
 
 ## 3.5.3

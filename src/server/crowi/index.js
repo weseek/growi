@@ -286,8 +286,8 @@ Crowi.prototype.setupPassport = async function() {
   }
   this.passportService.setupSerializer();
   // setup strategies
-  this.passportService.setupLocalStrategy();
   try {
+    this.passportService.setupLocalStrategy();
     this.passportService.setupLdapStrategy();
     this.passportService.setupGoogleStrategy();
     this.passportService.setupGitHubStrategy();

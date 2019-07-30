@@ -94,13 +94,7 @@
     }
   }
 
-  .collapse-oauth {
-    overflow: hidden;
-    &:not(.in) {
-      height: 0;
-      padding: 0 !important;
-    }
-
+  .external-auth {
     form {
       flex: 1;
       @media (min-width: 350px) {
@@ -112,11 +106,19 @@
     }
   }
 
+  .collapse-external-auth {
+    overflow: hidden;
+    &:not(.in) {
+      height: 0;
+      padding: 0 !important;
+    }
+  }
+
   // button style
   .btn-login.fcbtn,
   .btn-register.fcbtn,
   .btn-login-oauth.fcbtn,
-  .btn-collapse-oauth {
+  .btn-collapse-external-auth {
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
     border: none;

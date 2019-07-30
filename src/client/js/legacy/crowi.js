@@ -5,8 +5,6 @@ import ReactDOM from 'react-dom';
 
 import { Provider } from 'unstated';
 
-import { debounce } from 'throttle-debounce';
-
 import { pathUtils } from 'growi-commons';
 
 import GrowiRenderer from '../util/GrowiRenderer';
@@ -25,14 +23,6 @@ if (!window) {
   window = {};
 }
 window.Crowi = Crowi;
-
-/**
- * render Table Of Contents
- * @param {string} tocHtml
- */
-Crowi.renderTocContent = (tocHtml) => {
-  $('#revision-toc-content').html(tocHtml);
-};
 
 /**
  * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
@@ -155,60 +145,6 @@ Crowi.initAffix = () => {
     });
     $affixContentContainer.css({ 'min-height': containerHeight });
   }
-};
-
-Crowi.initSlimScrollForRevisionToc = () => {
-  const revisionTocElem = document.querySelector('.growi .revision-toc');
-  const tocContentElem = document.querySelector('.growi .revision-toc .markdownIt-TOC');
-
-  // growi layout only
-  if (revisionTocElem == null || tocContentElem == null) {
-    return;
-  }
-
-  function getCurrentRevisionTocTop() {
-    // calculate absolute top of '#revision-toc' element
-    return revisionTocElem.getBoundingClientRect().top;
-  }
-
-  function resetScrollbar(revisionTocTop) {
-    // window height - revisionTocTop - .system-version height
-    let h = window.innerHeight - revisionTocTop - 20;
-
-    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
-
-    h = Math.min(h, tocContentHeight);
-
-    $('#revision-toc-content').slimScroll({
-      railVisible: true,
-      position: 'right',
-      height: h,
-    });
-  }
-
-  const resetScrollbarDebounced = debounce(100, resetScrollbar);
-
-  // initialize
-  const revisionTocTop = getCurrentRevisionTocTop();
-  resetScrollbar(revisionTocTop);
-
-  /*
-   * set event listener
-   */
-  // resize
-  window.addEventListener('resize', (event) => {
-    resetScrollbarDebounced(getCurrentRevisionTocTop());
-  });
-  // affix on
-  $('#revision-toc').on('affixed.bs.affix', () => {
-    resetScrollbar(getCurrentRevisionTocTop());
-  });
-  // affix off
-  $('#revision-toc').on('affixed-top.bs.affix', () => {
-    // calculate sum of height (.navbar-header + .bg-title) + margin-top of .main
-    const sum = 138;
-    resetScrollbar(sum);
-  });
 };
 
 Crowi.initClassesByOS = function() {
@@ -769,7 +705,6 @@ window.addEventListener('load', (e) => {
 
   Crowi.highlightSelectedSection(window.location.hash);
   Crowi.modifyScrollTop();
-  Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
   Crowi.initClassesByOS();
 });

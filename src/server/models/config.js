@@ -49,6 +49,7 @@ module.exports = function(crowi) {
       'security:list-policy:hideRestrictedByGroup' : false,
       'security:pageCompleteDeletionAuthority' : undefined,
 
+      'security:passport-local:isEnabled' : true,
       'security:passport-ldap:isEnabled' : false,
       'security:passport-ldap:serverUrl' : undefined,
       'security:passport-ldap:isUserBind' : undefined,
@@ -74,6 +75,7 @@ module.exports = function(crowi) {
       'aws:region'          : 'ap-northeast-1',
       'aws:accessKeyId'     : undefined,
       'aws:secretAccessKey' : undefined,
+      'aws:customEndpoint'  : undefined,
 
       'mail:from'         : undefined,
       'mail:smtpHost'     : undefined,

@@ -418,7 +418,12 @@ module.exports = function(crowi, app) {
 
     const page = parseInt(req.query.page) || 1;
 
-    const result = await User.findUsersWithPagination({ page });
+    const result = await User.findUsersWithPagination({
+      page,
+      select: User.USER_PUBLIC_FIELDS,
+      populate: User.IMAGE_POPULATION,
+    });
+
     const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
 
     return res.render('admin/users', {
@@ -913,7 +918,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  actions.api.securityPassportLdapSetting = function(req, res) {
+  actions.api.securityPassportLocalSetting = async function(req, res) {
     const form = req.form.settingForm;
 
     if (!req.form.isValid) {
@@ -921,19 +926,48 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    return configManager.updateConfigsInTheSameNamespace('crowi', form)
-      .then(() => {
-        // reset strategy
-        crowi.passportService.resetLdapStrategy();
-        // setup strategy
-        if (configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')) {
-          crowi.passportService.setupLdapStrategy(true);
-        }
-        return;
-      })
-      .then(() => {
-        res.json({ status: true });
-      });
+
+    try {
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
+      // reset strategy
+      crowi.passportService.resetLocalStrategy();
+      // setup strategy
+      if (configManager.getConfig('crowi', 'security:passport-local:isEnabled')) {
+        crowi.passportService.setupLocalStrategy(true);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json({ status: false, message: err.message });
+    }
+
+    return res.json({ status: true });
+  };
+
+  actions.api.securityPassportLdapSetting = async function(req, res) {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
+    }
+
+    debug('form content', form);
+
+    try {
+      await configManager.updateConfigsInTheSameNamespace('crowi', form);
+      // reset strategy
+      crowi.passportService.resetLdapStrategy();
+      // setup strategy
+      if (configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')) {
+        crowi.passportService.setupLdapStrategy(true);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json({ status: false, message: err.message });
+    }
+
+    return res.json({ status: true });
   };
 
   actions.api.securityPassportSamlSetting = async(req, res) => {

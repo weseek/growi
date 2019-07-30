@@ -438,17 +438,14 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.findUsersWithPagination = async function(options) {
-    const sort = options.sort || { status: 1, username: 1, createdAt: 1 };
+    const defaultOptions = {
+      sort: { status: 1, username: 1, createdAt: 1 },
+      page: 1,
+      limit: PAGE_ITEMS,
+    };
+    const mergedOptions = Object.assign(defaultOptions, options);
 
-    // eslint-disable-next-line no-return-await
-    return await this.paginate({ status: { $ne: STATUS_DELETED } }, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, (err, result) => {
-      if (err) {
-        debug('Error on pagination:', err);
-        throw new Error(err);
-      }
-
-      return result;
-    }, { sortBy: sort });
+    return this.paginate({ status: { $ne: STATUS_DELETED } }, mergedOptions);
   };
 
   userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
