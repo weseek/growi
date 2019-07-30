@@ -55,7 +55,7 @@ class PasswordResetModal extends React.Component {
               </p>
               <PasswordResetDoneModal
                 user={user}
-                onHide={this.onHide}
+                onHideModal={this.onHide}
               />
             </div>
           </Modal.Body>

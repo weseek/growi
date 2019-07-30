@@ -585,6 +585,7 @@ module.exports = function(crowi, app) {
   actions.user.resetPassword = async function(req, res) {
     const id = req.body.user_id;
     const User = crowi.model('User');
+    debug(User);
 
     try {
       const newPassword = await User.resetPasswordByRandomString(id);
