@@ -3,8 +3,6 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
-import EditorContainer from '../../services/EditorContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
@@ -77,7 +75,6 @@ class Importer extends React.Component {
     return (
       <Fragment>
         <form
-          action="/_api/admin/settings/importerEsa"
           className="form-horizontal"
           id="importerSettingFormEsa"
           role="form"
@@ -178,13 +175,11 @@ class Importer extends React.Component {
  * Wrapper component for using unstated
  */
 const ImporterWrapper = (props) => {
-  return createSubscribedElement(Importer, props, [AppContainer, PageContainer, EditorContainer]);
+  return createSubscribedElement(Importer, props, [AppContainer]);
 };
 
 Importer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   t: PropTypes.func.isRequired, // i18next
   csrf: PropTypes.string,
 };
