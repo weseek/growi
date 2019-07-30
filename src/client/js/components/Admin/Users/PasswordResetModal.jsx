@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import Modal from 'react-bootstrap/es/Modal';
+import PasswordResetDoneModal from './PasswordResetDoneModal';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -52,9 +53,10 @@ class PasswordResetModal extends React.Component {
               <p>
                 { t('user_management.target_user') }: <code>{ user.email }</code>
               </p>
-              <button type="submit" value="" className="btn btn-primary">
-                { t('user_management.reset_password')}
-              </button>
+              <PasswordResetDoneModal
+                user={user}
+                onHide={this.onHide}
+              />
             </div>
           </Modal.Body>
         </Modal>
@@ -77,10 +79,6 @@ PasswordResetModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
-};
-
-PasswordResetModal.defaultProps = {
-
 };
 
 export default withTranslation()(PasswordResetModalWrapper);

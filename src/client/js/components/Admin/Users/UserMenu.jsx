@@ -141,31 +141,6 @@ class UserMenu extends React.Component {
             <li>{adminMenu}</li>
           </ul>
         </div>
-
-        <div className="modal fade" id="admin-password-reset-modal-done">
-          <div className="modal-dialog">
-            <div className="modal-content">
-
-              <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <div className="modal-title">{ t('user_management.reset_password') }</div>
-              </div>
-
-              <div className="modal-body">
-                <p className="alert alert-danger">Let the user know the new password below and strongly recommend to change another one immediately. </p>
-                <p>
-                Reset user: <code id="admin-password-reset-done-user"></code>
-                </p>
-                <p>
-                New password: <code id="admin-password-reset-done-password"></code>
-                </p>
-              </div>
-              <div className="modal-footer">
-                <button type="submit" className="btn btn-primary" data-dismiss="modal">OK</button>
-              </div>
-            </div>
-          </div>
-        </div>
       </Fragment>
     );
   }
