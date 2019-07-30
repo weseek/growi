@@ -36,7 +36,7 @@ class Importer extends React.Component {
       toastSuccess('Import posts from esa success.');
     }
     catch (error) {
-      toastError('Error occurred in importing pages from esa.io');
+      toastError(error, 'Error occurred in importing pages from esa.io');
     }
   }
 
@@ -51,7 +51,7 @@ class Importer extends React.Component {
       toastSuccess('Test connection to esa success.');
     }
     catch (error) {
-      toastError('Test connection to esa failed.');
+      toastError(error, 'Test connection to esa failed.');
     }
   }
 
