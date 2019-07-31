@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class StatusActivateForm extends React.Component {
 
@@ -18,10 +17,29 @@ class StatusActivateForm extends React.Component {
   }
 
   render() {
-    const { t, user }= this.props;
-    const me = this.props.appContainer.me;
+    const { t, user } = this.props;
 
-    return ();
+    return (
+      <div className="px-4">
+        {user.status === 1
+          ? (
+            <form action="/admin/user/{{ sUserId }}/activate" method="post">
+              <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+            </form>
+          )
+          : (
+            <div>
+              <form action="/admin/user/{{ sUserId }}/activate" method="post">
+                <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+              </form>
+              <form action="/admin/user/{{ sUserId }}/remove" method="post">
+                <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+              </form>
+            </div>
+          )
+        }
+      </div>
+    );
   }
 
 }

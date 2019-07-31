@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserRemoveForm extends React.Component {
 
@@ -18,10 +17,13 @@ class UserRemoveForm extends React.Component {
   }
 
   render() {
-    const { t, user }= this.props;
-    const me = this.props.appContainer.me;
+    const { t } = this.props;
 
-    return ();
+    return (
+      <form className="px-4" id="form_remove_{{ sUserId }}" action="/admin/user/{{ sUserId }}/remove" method="post">
+        <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+      </form>
+    );
   }
 
 }

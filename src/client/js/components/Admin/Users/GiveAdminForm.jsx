@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class AdminMenuForm extends React.Component {
 
@@ -18,25 +17,11 @@ class AdminMenuForm extends React.Component {
   }
 
   render() {
-    const { t, user } = this.props;
-    const me = this.props.appContainer.me;
+    const { t } = this.props;
 
     return (
-      <form onSubmit={this.handleSubmit}>
-        <div id="giveAdminForm" className="collapse">
-          <div className="form-group">
-            <label htmlFor="name">{ t('user_group_management.group_name') }</label>
-            <textarea
-              id="name"
-              name="name"
-              className="form-control"
-              placeholder={t('user_group_management.group_example')}
-              value={this.state.name}
-              onChange={this.handleChange}
-            >
-            </textarea>
-          </div>
-        </div>
+      <form className="px-4" action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
+        <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
       </form>
     );
   }

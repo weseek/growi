@@ -34,10 +34,6 @@ class PasswordResetModal extends React.Component {
 
     return (
       <div>
-        <div onClick={this.isShow}>
-          <i className="icon-fw icon-key"></i>
-          { t('user_management.reset_password') }
-        </div>
         <Modal show={this.state.isOpenModal} onHide={this.onHide}>
           <Modal.Header className="modal-header" closeButton>
             <Modal.Title>

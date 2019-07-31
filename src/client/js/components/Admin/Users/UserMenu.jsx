@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import PasswordResetModal from './PasswordResetModal';
 import StatusActivateForm from './StatusActivateForm';
 import StatusSuspendedForm from './StatusSuspendedForm';
-import RemoveUserForm from './RemoveUserForm';
+import RemoveUserForm from './UserRemoveForm';
 import RemoveAdminForm from './RemoveAdminForm';
 import GiveAdminForm from './GiveAdminForm';
 
@@ -18,55 +18,6 @@ class UserMenu extends React.Component {
   render() {
     const { t, user } = this.props;
 
-    // let contentOfStatus;
-    // let adminMenu;
-
-    // if (user.status === 1) {
-    //   contentOfStatus = (
-    //     <a className="mx-4" onClick={this.activateUser}>
-    //       <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-    //     </a>
-    //   );
-    // }
-    // if (user.status === 2) {
-    //   contentOfStatus = (
-    //     user.username !== me
-    //       ? (
-    //         <a onClick={this.susupendUser}>
-    //           <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
-    //         </a>
-    //       )
-    //       : (
-    //         <div className="mx-4">
-    //           <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
-    //           <p className="alert alert-danger">{ t('user_management.your_own') }</p>
-    //         </div>
-    //       )
-    //   );
-    // }
-    // if (user.status === 3) {
-    //   contentOfStatus = (
-    //     <div>
-    //       <a className="mx-4" onClick={this.activateUser}>
-    //         <i className="icon-fw icon-action-redo"></i> { t('Undo') }
-    //       </a>
-    //       {/* label は同じだけど、こっちは論理削除 */}
-    //       <a className="mx-4" onClick={this.removeUser}>
-    //         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-    //       </a>
-    //     </div>
-    //   );
-    // }
-    // if (user.status === 1 || user.status === 5) {
-    //   contentOfStatus = (
-    //     <li className="dropdown-button">
-    //       <a className="mx-4" onClick={this.removeUser}>
-    //         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-    //       </a>
-    //     </li>
-    //   );
-    // }
-
     return (
       <Fragment>
         <div className="btn-group admin-user-menu">
@@ -76,7 +27,8 @@ class UserMenu extends React.Component {
           <ul className="dropdown-menu" role="menu">
             <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
             <li>
-              <a>
+              <a onClick={this.isShow}>
+                <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
                 <PasswordResetModal user={user} />
               </a>
             </li>
