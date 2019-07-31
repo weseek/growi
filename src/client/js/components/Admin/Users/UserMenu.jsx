@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import PasswordResetModal from './PasswordResetModal';
+import StatusActivateForm from './StatusActivateForm';
+import StatusSuspendedForm from './StatusSuspendedForm';
+import RemoveUserForm from './RemoveUserForm';
+import RemoveAdminForm from './RemoveAdminForm';
+import GiveAdminForm from './GiveAdminForm';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -10,113 +15,57 @@ import AppContainer from '../../../services/AppContainer';
 class UserMenu extends React.Component {
 
 
-  activateUser() {
-    const { appContainer } = this.props;
-
-    appContainer.apiPost('/admin/user/{userId}/activate');
-  }
-
-  susupendUser() {
-    const { appContainer } = this.props;
-
-    appContainer.apiPost('/admin/user/{userId}/suspend');
-  }
-
-  removeUser() {
-    const { appContainer } = this.props;
-
-    appContainer.apiPost('/admin/user/{user._id}/removeCompletely');
-  }
-
-  removeFromAdmin() {
-    const { appContainer } = this.props;
-
-    appContainer.apiPost('/admin/user/{user._id}/removeFromAdmin');
-  }
-
-  giveAdminAccess() {
-    const { appContainer } = this.props;
-
-    appContainer.apiPost('/admin/user/{user._id}/makeAdmin');
-  }
-
-
   render() {
     const { t, user } = this.props;
-    const me = this.props.appContainer.me;
 
-    let contentOfStatus;
-    let adminMenu;
+    // let contentOfStatus;
+    // let adminMenu;
 
-    if (user.status === 1) {
-      contentOfStatus = (
-        <a className="mx-4" onClick={this.activateUser}>
-          <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-        </a>
-      );
-    }
-    if (user.status === 2) {
-      contentOfStatus = (
-        user.username !== me
-          ? (
-            <a onClick={this.susupendUser}>
-              <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
-            </a>
-          )
-          : (
-            <div className="mx-4">
-              <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
-              <p className="alert alert-danger">{ t('user_management.your_own') }</p>
-            </div>
-          )
-      );
-    }
-    if (user.status === 3) {
-      contentOfStatus = (
-        <div>
-          <a className="mx-4" onClick={this.activateUser}>
-            <i className="icon-fw icon-action-redo"></i> { t('Undo') }
-          </a>
-          {/* label は同じだけど、こっちは論理削除 */}
-          <a className="mx-4" onClick={this.removeUser}>
-            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-          </a>
-        </div>
-      );
-    }
-    if (user.status === 1 || user.status === 5) {
-      contentOfStatus = (
-        <li className="dropdown-button">
-          <a className="mx-4" onClick={this.removeUser}>
-            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-          </a>
-        </li>
-      );
-    }
-
-    if (user.admin === true && user.status === 2) {
-      adminMenu = (
-        user.username !== me
-          ? (
-            <a onClick={this.removeFromAdmin}>
-              <i className="icon-fw icon-user-unfollow mb-2"></i> { t('user_management.remove_admin_access') }
-            </a>
-          )
-          : (
-            <div className="mx-4">
-              <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
-              <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
-            </div>
-          )
-      );
-    }
-    if (user.admin === false && user.status === 2) {
-      adminMenu = (
-        <a onClick={this.giveAdminAccess}>
-          <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
-        </a>
-      );
-    }
+    // if (user.status === 1) {
+    //   contentOfStatus = (
+    //     <a className="mx-4" onClick={this.activateUser}>
+    //       <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+    //     </a>
+    //   );
+    // }
+    // if (user.status === 2) {
+    //   contentOfStatus = (
+    //     user.username !== me
+    //       ? (
+    //         <a onClick={this.susupendUser}>
+    //           <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
+    //         </a>
+    //       )
+    //       : (
+    //         <div className="mx-4">
+    //           <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
+    //           <p className="alert alert-danger">{ t('user_management.your_own') }</p>
+    //         </div>
+    //       )
+    //   );
+    // }
+    // if (user.status === 3) {
+    //   contentOfStatus = (
+    //     <div>
+    //       <a className="mx-4" onClick={this.activateUser}>
+    //         <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+    //       </a>
+    //       {/* label は同じだけど、こっちは論理削除 */}
+    //       <a className="mx-4" onClick={this.removeUser}>
+    //         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+    //       </a>
+    //     </div>
+    //   );
+    // }
+    // if (user.status === 1 || user.status === 5) {
+    //   contentOfStatus = (
+    //     <li className="dropdown-button">
+    //       <a className="mx-4" onClick={this.removeUser}>
+    //         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+    //       </a>
+    //     </li>
+    //   );
+    // }
 
     return (
       <Fragment>
@@ -134,11 +83,16 @@ class UserMenu extends React.Component {
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
             <li>
-              {contentOfStatus}
+              {(user.status === 1 || user.status === 3) && <StatusActivateForm user={user} />}
+              {user.status === 2 && <StatusSuspendedForm user={user} />}
+              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserForm user={user} />}
             </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
-            <li>{adminMenu}</li>
+            <li>
+              {user.status === 2 && user.admin === true && <RemoveAdminForm user={user} />}
+              {user.status === 2 && user.admin === false && <GiveAdminForm user={user} />}
+            </li>
           </ul>
         </div>
       </Fragment>
