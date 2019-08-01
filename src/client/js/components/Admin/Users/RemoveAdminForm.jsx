@@ -25,6 +25,7 @@ class AdminMenuForm extends React.Component {
         {user.username !== me
           ? (
             <form action="/admin/user/+ {user._id} +/removeFromAdmin" method="post">
+              <input type="hidden" />
               <i className="icon-fw icon-user-unfollow mb-2"></i> { t('user_management.remove_admin_access') }
             </form>
 

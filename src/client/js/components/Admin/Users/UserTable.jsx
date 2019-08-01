@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
+
 import UserPicture from '../../User/UserPicture';
 import UserMenu from './UserMenu';
 
@@ -9,14 +10,6 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class UserTable extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-
-    };
-  }
 
 
   render() {

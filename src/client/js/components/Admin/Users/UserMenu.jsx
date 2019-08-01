@@ -9,11 +9,56 @@ import RemoveUserForm from './UserRemoveForm';
 import RemoveAdminForm from './RemoveAdminForm';
 import GiveAdminForm from './GiveAdminForm';
 
+import toastError from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class UserMenu extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isOpenPasswordResetModal: false,
+      isOpenPasswordResetDoneModal: false,
+      temporaryPassword: [],
+    };
+
+    this.isShow = this.isShow.bind(this);
+    this.onHideModal = this.onHideModal.bind(this);
+    this.isShowDoneModal = this.isShowDoneModal.bind(this);
+    this.onHideDoneModal = this.onHideDoneModal.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+  }
+
+  isShow() {
+    this.setState({ isOpenPasswordResetModal: true });
+  }
+
+  onHideModal() {
+    this.setState({ isOpenPasswordResetModal: false });
+  }
+
+  isShowDoneModal() {
+    this.setState({ isOpenPasswordResetDoneModal: true });
+  }
+
+  onHideDoneModal() {
+    this.setState({ isOpenPasswordResetDoneModal: false });
+  }
+
+  async resetPassword() {
+    const { appContainer, user } = this.props;
+
+    const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
+    if (res.ok) {
+      this.setState({ temporaryPassword: res.newPassword });
+      this.setState({ isOpenPasswordResetDoneModal: true });
+    }
+    else {
+      toastError('Failed to reset password');
+    }
+  }
 
   render() {
     const { t, user } = this.props;
@@ -29,7 +74,17 @@ class UserMenu extends React.Component {
             <li>
               <a onClick={this.isShow}>
                 <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
-                <PasswordResetModal user={user} />
+                <PasswordResetModal
+                  user={this.props.user}
+                  isOpenPasswordResetModal={this.state.isOpenPasswordResetModal}
+                  isOpenPasswordResetDoneModal={this.state.isOpenPasswordResetDoneModal}
+                  temporaryPassword={this.state.temporaryPassword}
+                  isShow={this.isShow}
+                  onHideModal={this.onHideModal}
+                  isShowDoneModal={this.isShowDoneModal}
+                  onHideDoneModal={this.onHideDoneModal}
+                  resetPassword={this.resetPassword}
+                />
               </a>
             </li>
             <li className="divider"></li>
@@ -62,6 +117,7 @@ UserMenu.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
+  isShow: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserMenuWrapper);
