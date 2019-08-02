@@ -20,13 +20,12 @@ class UserMenu extends React.Component {
 
     this.state = {
       isOpenPasswordResetModal: false,
-      isOpenPasswordResetDoneModal: false,
       temporaryPassword: [],
+      isResetDone: false,
     };
 
     this.isShow = this.isShow.bind(this);
     this.onHideModal = this.onHideModal.bind(this);
-    this.isShowDoneModal = this.isShowDoneModal.bind(this);
     this.onHideDoneModal = this.onHideDoneModal.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
   }
@@ -39,10 +38,6 @@ class UserMenu extends React.Component {
     this.setState({ isOpenPasswordResetModal: false });
   }
 
-  isShowDoneModal() {
-    this.setState({ isOpenPasswordResetDoneModal: true });
-  }
-
   onHideDoneModal() {
     this.setState({ isOpenPasswordResetDoneModal: false });
   }
@@ -52,8 +47,7 @@ class UserMenu extends React.Component {
 
     const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
     if (res.ok) {
-      this.setState({ temporaryPassword: res.newPassword });
-      this.setState({ isOpenPasswordResetDoneModal: true });
+      this.setState({ temporaryPassword: res.newPassword, isOpenPasswordResetDoneModal: true, isResetDone: true });
     }
     else {
       toastError('Failed to reset password');
@@ -65,26 +59,25 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
+        <PasswordResetModal
+          user={this.props.user}
+          isOpenPasswordResetModal={this.state.isOpenPasswordResetModal}
+          isOpenPasswordResetDoneModal={this.state.isOpenPasswordResetDoneModal}
+          temporaryPassword={this.state.temporaryPassword}
+          onHideModal={this.onHideModal}
+          onHideDoneModal={this.onHideDoneModal}
+          resetPassword={this.resetPassword}
+          isResetDone={this.state.isResetDone}
+        />
         <div className="btn-group admin-user-menu">
           <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
             <i className="icon-settings"></i> <span className="caret"></span>
           </button>
           <ul className="dropdown-menu" role="menu">
             <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
-            <li>
-              <a onClick={this.isShow}>
+            <li onClick={this.isShow}>
+              <a>
                 <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
-                <PasswordResetModal
-                  user={this.props.user}
-                  isOpenPasswordResetModal={this.state.isOpenPasswordResetModal}
-                  isOpenPasswordResetDoneModal={this.state.isOpenPasswordResetDoneModal}
-                  temporaryPassword={this.state.temporaryPassword}
-                  isShow={this.isShow}
-                  onHideModal={this.onHideModal}
-                  isShowDoneModal={this.isShowDoneModal}
-                  onHideDoneModal={this.onHideDoneModal}
-                  resetPassword={this.resetPassword}
-                />
               </a>
             </li>
             <li className="divider"></li>

@@ -14,52 +14,56 @@ class PasswordResetModal extends React.Component {
 
     return (
       <div>
-        <Modal show={this.props.isOpenPasswordResetModal} onHide={this.props.onHideModal}>
-          <Modal.Header className="modal-header" closeButton>
-            <Modal.Title>
-              {t('user_management.reset_password')}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div>
-              <p>
-                { t('user_management.password_never_seen') }<br />
-                <span className="text-danger">{ t('user_management.send_new_password') }</span>
-              </p>
-              <p>
-                { t('user_management.target_user') }: <code>{ user.email }</code>
-              </p>
-              <div>
-                <button type="submit" className="btn btn-primary" onClick={this.props.isShowDoneModal && this.props.resetPassword}>
-                  { t('user_management.reset_password')}
-                </button>
-                <Modal show={this.props.isOpenPasswordResetDoneModal} onHide={this.props.onHideDoneModal && this.props.onHideModal}>
-                  <Modal.Header className="modal-header" closeButton>
-                    <Modal.Title>
-                      { t('user_management.reset_password') }
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <div>
-                      <p className="alert alert-danger">{ t('user_management.password_reset_message') }</p>
-                      <p>
-                        { t('user_management.target_user') }: <code>{ user.email }</code>
-                      </p>
-                      <p>
-                        { t('user_management.new_password') }: <code>{ this.props.temporaryPassword }</code>
-                      </p>
-                    </div>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <div>
-                      <button type="submit" className="btn btn-primary" onClick={this.props.onHideDoneModal && this.props.onHideModal}>OK</button>
-                    </div>
-                  </Modal.Footer>
-                </Modal>
-              </div>
-            </div>
-          </Modal.Body>
-        </Modal>
+        {this.props.isResetDone
+          ? (
+            <Modal show={this.props.isOpenPasswordResetDoneModal} onHide={this.props.onHideDoneModal}>
+              <Modal.Header className="modal-header" closeButton>
+                <Modal.Title>
+                  { t('user_management.reset_password') }
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div>
+                  <p className="alert alert-danger">{ t('user_management.password_reset_message') }</p>
+                  <p>
+                    { t('user_management.target_user') }: <code>{ user.email }</code>
+                  </p>
+                  <p>
+                    { t('user_management.new_password') }: <code>{ this.props.temporaryPassword }</code>
+                  </p>
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <div>
+                  <button type="submit" className="btn btn-primary" onClick={this.props.onHideDoneModal}>OK</button>
+                </div>
+              </Modal.Footer>
+            </Modal>
+          )
+          : (
+            <Modal show={this.props.isOpenPasswordResetModal} onHide={this.props.onHideModal}>
+              <Modal.Header className="modal-header" closeButton>
+                <Modal.Title>
+                  {t('user_management.reset_password')}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div>
+                  <p>
+                    { t('user_management.password_never_seen') }<br />
+                    <span className="text-danger">{ t('user_management.send_new_password') }</span>
+                  </p>
+                  <p>
+                    { t('user_management.target_user') }: <code>{ user.email }</code>
+                  </p>
+                  <button type="submit" className="btn btn-primary" onClick={this.props.resetPassword}>
+                    { t('user_management.reset_password')}
+                  </button>
+                </div>
+              </Modal.Body>
+            </Modal>
+        )
+      }
       </div>
 
     );
@@ -79,14 +83,14 @@ PasswordResetModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
-  isOpenPasswordResetModal: PropTypes.bool,
-  isOpenPasswordResetDoneModal: PropTypes.bool,
-  temporaryPassword: PropTypes.array,
-  isShow: PropTypes.func,
+  isOpenPasswordResetModal: PropTypes.bool.isRequired,
+  temporaryPassword: PropTypes.array.isRequired,
   onHideModal: PropTypes.func.isRequired,
   isShowDoneModal: PropTypes.func.isRequired,
+  isOpenPasswordResetDoneModal: PropTypes.bool.isRequired,
   onHideDoneModal: PropTypes.func.isRequired,
   resetPassword: PropTypes.func.isRequired,
+  isResetDone: PropTypes.bool,
 };
 
 export default withTranslation()(PasswordResetModalWrapper);
