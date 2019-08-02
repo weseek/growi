@@ -37,6 +37,11 @@ class UserPage extends React.Component {
     });
   }
 
+  /**
+   * passwordリセットモーダルが開き、userが渡される
+   * @param {object} user
+   *
+   */
   showPasswordResetModal(user) {
     this.setState({
       isPasswordResetModalShown: true,
@@ -93,7 +98,6 @@ UserPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  userForPasswordResetModal: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(UserPageWrapper);

@@ -21,6 +21,11 @@ class UserTable extends React.Component {
     this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
   }
 
+  /**
+   * user.statusをみてステータスのラベルを返す
+   * @param {object} userStatus
+   * @return ステータスラベル
+   */
   getUserStatusLabel(userStatus) {
     let additionalClassName;
     let text;
