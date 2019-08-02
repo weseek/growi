@@ -21,7 +21,6 @@ class UserMenu extends React.Component {
     this.state = {
       isOpenPasswordResetModal: false,
       temporaryPassword: [],
-      isResetDone: false,
     };
 
     this.isShow = this.isShow.bind(this);
@@ -47,7 +46,7 @@ class UserMenu extends React.Component {
 
     const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
     if (res.ok) {
-      this.setState({ temporaryPassword: res.newPassword, isOpenPasswordResetDoneModal: true, isResetDone: true });
+      this.setState({ temporaryPassword: res.newPassword, isOpenPasswordResetDoneModal: true });
     }
     else {
       toastError('Failed to reset password');
@@ -67,7 +66,6 @@ class UserMenu extends React.Component {
           onHideModal={this.onHideModal}
           onHideDoneModal={this.onHideDoneModal}
           resetPassword={this.resetPassword}
-          isResetDone={this.state.isResetDone}
         />
         <div className="btn-group admin-user-menu">
           <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">

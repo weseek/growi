@@ -5,15 +5,20 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class AdminMenuForm extends React.Component {
+class RemoveAdminForm extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
+  handleSubmit(event) {
+    $(event.currentTarget).parent().submit();
   }
 
   render() {
@@ -21,14 +26,17 @@ class AdminMenuForm extends React.Component {
     const me = this.props.appContainer.me;
 
     return (
-      <div className="px-4">
+      <span className="px-4">
         {user.username !== me
           ? (
-            <form name="removeadmin" action="/admin/user/+ {user._id} +/removeFromAdmin" method="post">
-              <input type="hidden" />
-              <i type="submit" className="icon-fw icon-user-unfollow mb-2"></i> { t('user_management.remove_admin_access') }
-            </form>
-
+            <a>
+              <form action={`/admin/user/${user._id}/removeFromAdmin`} method="post">
+                <input type="hidden" name="csrf" value={this.props.appContainer.csrfToken} />
+                <span onClick={this.handleSubmit}>
+                  <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
+                </span>
+              </form>
+            </a>
           )
           : (
             <div>
@@ -37,7 +45,7 @@ class AdminMenuForm extends React.Component {
             </div>
           )
         }
-      </div>
+      </span>
     );
   }
 
@@ -46,15 +54,15 @@ class AdminMenuForm extends React.Component {
 /**
 * Wrapper component for using unstated
 */
-const AdminMenuFormWrapper = (props) => {
-  return createSubscribedElement(AdminMenuForm, props, [AppContainer]);
+const RemoveAdminFormWrapper = (props) => {
+  return createSubscribedElement(RemoveAdminForm, props, [AppContainer]);
 };
 
-AdminMenuForm.propTypes = {
+RemoveAdminForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(AdminMenuFormWrapper);
+export default withTranslation()(RemoveAdminFormWrapper);

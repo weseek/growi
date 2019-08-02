@@ -14,7 +14,7 @@ class PasswordResetModal extends React.Component {
 
     return (
       <div>
-        {this.props.isResetDone
+        {this.props.isOpenPasswordResetDoneModal
           ? (
             <Modal show={this.props.isOpenPasswordResetDoneModal} onHide={this.props.onHideDoneModal}>
               <Modal.Header className="modal-header" closeButton>
@@ -86,11 +86,9 @@ PasswordResetModal.propTypes = {
   isOpenPasswordResetModal: PropTypes.bool.isRequired,
   temporaryPassword: PropTypes.array.isRequired,
   onHideModal: PropTypes.func.isRequired,
-  isShowDoneModal: PropTypes.func.isRequired,
   isOpenPasswordResetDoneModal: PropTypes.bool.isRequired,
   onHideDoneModal: PropTypes.func.isRequired,
   resetPassword: PropTypes.func.isRequired,
-  isResetDone: PropTypes.bool,
 };
 
 export default withTranslation()(PasswordResetModalWrapper);

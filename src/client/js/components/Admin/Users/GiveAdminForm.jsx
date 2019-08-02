@@ -14,15 +14,26 @@ class AdminMenuForm extends React.Component {
 
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
+  handleSubmit(event) {
+    $(event.currentTarget).parent().submit();
   }
 
   render() {
-    const { t } = this.props;
+    const { t, appContainer, user } = this.props;
 
     return (
-      <form className="px-4" action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
-        <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
-      </form>
+      <a className="px-4">
+        <form action={`/admin/user/${user._id}/makeAdmin`} method="post">
+          <input type="hidden" name="csrf" value={appContainer.csrfToken} />
+          <span onClick={this.handleSubmit}>
+            <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
+          </span>
+        </form>
+      </a>
     );
   }
 
