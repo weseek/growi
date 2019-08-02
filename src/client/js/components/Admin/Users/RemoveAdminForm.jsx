@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -26,12 +26,12 @@ class RemoveAdminForm extends React.Component {
     const me = this.props.appContainer.me;
 
     return (
-      <span className="px-4">
+      <Fragment>
         {user.username !== me
           ? (
             <a>
               <form action={`/admin/user/${user._id}/removeFromAdmin`} method="post">
-                <input type="hidden" name="csrf" value={this.props.appContainer.csrfToken} />
+                <input type="hidden" />
                 <span onClick={this.handleSubmit}>
                   <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
                 </span>
@@ -39,13 +39,13 @@ class RemoveAdminForm extends React.Component {
             </a>
           )
           : (
-            <div>
+            <div className="px-4">
               <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
               <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
             </div>
           )
         }
-      </span>
+      </Fragment>
     );
   }
 

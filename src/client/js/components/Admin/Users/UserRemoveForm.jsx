@@ -14,15 +14,26 @@ class UserRemoveForm extends React.Component {
 
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
+  handleSubmit(event) {
+    $(event.currentTarget).parent().submit();
   }
 
   render() {
-    const { t } = this.props;
+    const { t, appContainer, user } = this.props;
 
     return (
-      <form className="px-4" id="form_remove_{{ sUserId }}" action="/admin/user/{{ sUserId }}/remove" method="post">
-        <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-      </form>
+      <a className="px-4">
+        <form action={`/admin/user/${user._id}/remove`} method="post">
+          <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
+          <span onClick={this.handleSubmit}>
+            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+          </span>
+        </form>
+      </a>
     );
   }
 

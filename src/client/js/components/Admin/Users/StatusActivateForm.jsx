@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -14,31 +14,42 @@ class StatusActivateForm extends React.Component {
 
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
+  handleSubmit(event) {
+    $(event.currentTarget).parent().submit();
   }
 
   render() {
-    const { t, user } = this.props;
+    const { t, user, appContainer } = this.props;
 
     return (
-      <div className="px-4">
+      <Fragment>
         {user.status === 1
           ? (
-            <form action="/admin/user/{{ sUserId }}/activate" method="post">
-              <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-            </form>
+            <a>
+              <form action={`/admin/user/${user._id}/activate`} method="post">
+                <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
+                <span onClick={this.handleSubmit}>
+                  <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+                </span>
+              </form>
+            </a>
           )
           : (
-            <div>
-              <form action="/admin/user/{{ sUserId }}/activate" method="post">
-                <i className="icon-fw icon-action-redo"></i> { t('Undo') }
+            <a className="px-4">
+              <form action={`/admin/user/${user._id}/activate`} method="post">
+                <input type="hidden" />
+                <span onClick={this.handleSubmit}>
+                  <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+                </span>
               </form>
-              <form action="/admin/user/{{ sUserId }}/remove" method="post">
-                <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-              </form>
-            </div>
+            </a>
           )
         }
-      </div>
+      </Fragment>
     );
   }
 

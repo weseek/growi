@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -14,6 +14,12 @@ class StatusSuspendedForm extends React.Component {
 
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
+  handleSubmit(event) {
+    $(event.currentTarget).parent().submit();
   }
 
   render() {
@@ -21,21 +27,26 @@ class StatusSuspendedForm extends React.Component {
     const me = this.props.appContainer.me;
 
     return (
-      <div className="px-4">
+      <Fragment>
         {user.username !== me
           ? (
-            <form id="form_suspend_user" action="/admin/user/{{ sUserId }}/suspend" method="post">
-              <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
-            </form>
+            <a>
+              <form action={`/admin/user/${user._id}/suspend`} method="post">
+                <input type="hidden" name="_csrf" value={this.props.appContainer.csrfToken} />
+                <span onClick={this.handleSubmit}>
+                  <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
+                </span>
+              </form>
+            </a>
           )
           : (
-            <div>
+            <div className="px-4">
               <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
               <p className="alert alert-danger">{ t('user_management.your_own') }</p>
             </div>
           )
         }
-      </div>
+      </Fragment>
     );
   }
 

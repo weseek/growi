@@ -19,26 +19,22 @@ class UserMenu extends React.Component {
     super(props);
 
     this.state = {
-      isOpenPasswordResetModal: false,
+      isPasswordReset: false,
+      isPasswordResetDone: false,
       temporaryPassword: [],
     };
 
     this.isShow = this.isShow.bind(this);
     this.onHideModal = this.onHideModal.bind(this);
-    this.onHideDoneModal = this.onHideDoneModal.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
   }
 
   isShow() {
-    this.setState({ isOpenPasswordResetModal: true });
+    this.setState({ isPasswordReset: true });
   }
 
   onHideModal() {
-    this.setState({ isOpenPasswordResetModal: false });
-  }
-
-  onHideDoneModal() {
-    this.setState({ isOpenPasswordResetDoneModal: false });
+    this.setState({ isPasswordReset: false, isPasswordResetDone: false });
   }
 
   async resetPassword() {
@@ -46,7 +42,7 @@ class UserMenu extends React.Component {
 
     const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
     if (res.ok) {
-      this.setState({ temporaryPassword: res.newPassword, isOpenPasswordResetDoneModal: true });
+      this.setState({ temporaryPassword: res.newPassword, isPasswordResetDone: true });
     }
     else {
       toastError('Failed to reset password');
@@ -60,11 +56,10 @@ class UserMenu extends React.Component {
       <Fragment>
         <PasswordResetModal
           user={this.props.user}
-          isOpenPasswordResetModal={this.state.isOpenPasswordResetModal}
-          isOpenPasswordResetDoneModal={this.state.isOpenPasswordResetDoneModal}
+          isPasswordReset={this.state.isPasswordReset}
+          isPasswordResetDone={this.state.isPasswordResetDone}
           temporaryPassword={this.state.temporaryPassword}
           onHideModal={this.onHideModal}
-          onHideDoneModal={this.onHideDoneModal}
           resetPassword={this.resetPassword}
         />
         <div className="btn-group admin-user-menu">

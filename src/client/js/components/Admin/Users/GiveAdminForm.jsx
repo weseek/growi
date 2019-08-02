@@ -28,7 +28,7 @@ class AdminMenuForm extends React.Component {
     return (
       <a className="px-4">
         <form action={`/admin/user/${user._id}/makeAdmin`} method="post">
-          <input type="hidden" name="csrf" value={appContainer.csrfToken} />
+          <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
           <span onClick={this.handleSubmit}>
             <i className="icon-fw icon-magic-wand"></i>{ t('user_management.give_admin_access') }
           </span>
