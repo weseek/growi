@@ -11,44 +11,52 @@ import AppContainer from '../../../services/AppContainer';
 
 class UserTable extends React.Component {
 
+  constructor(props) {
+    super(props);
 
-  render() {
-    const { t } = this.props;
-    let userStatusLabel;
+    this.state = {
+
+    };
+
+    this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
+  }
+
+  getUserStatusLabel(userStatus) {
     let additionalClassName;
     let text;
 
-    this.props.users.forEach((user) => {
-      userStatusLabel = (
-        <span className={`label ${additionalClassName}`}>
-          {text}
-        </span>
-      );
+    switch (userStatus) {
+      case 1:
+        additionalClassName = 'label-info';
+        text = 'Approval Pending';
+        break;
+      case 2:
+        additionalClassName = 'label-success';
+        text = 'Active';
+        break;
+      case 3:
+        additionalClassName = 'label-warning';
+        text = 'Suspended';
+        break;
+      case 4:
+        additionalClassName = 'label-danger';
+        text = 'Deleted';
+        break;
+      case 5:
+        additionalClassName = 'label-info';
+        text = 'Invited';
+        break;
+    }
 
-      switch (user.status) {
-        case 1:
-          additionalClassName = 'label-info';
-          text = 'Approval Pending';
-          break;
-        case 2:
-          additionalClassName = 'label-success';
-          text = 'Active';
-          break;
-        case 3:
-          additionalClassName = 'label-warning';
-          text = 'Suspended';
-          break;
-        case 4:
-          additionalClassName = 'label-danger';
-          text = 'Deleted';
-          break;
-        case 5:
-          additionalClassName = 'label-info';
-          text = 'Invited';
-          break;
-      }
-    });
+    return (
+      <span className={`label ${additionalClassName}`}>
+        {text}
+      </span>
+    );
+  }
 
+  render() {
+    const { t } = this.props;
 
     return (
       <Fragment>
@@ -75,7 +83,7 @@ class UserTable extends React.Component {
                     <UserPicture user={user} className="picture img-circle" />
                     {user.admin && <span className="label label-inverse label-admin ml-2">{ t('administrator') }</span>}
                   </td>
-                  <td>{userStatusLabel}</td>
+                  <td>{this.getUserStatusLabel(user.status)}</td>
                   <td>
                     <strong>{user.username}</strong>
                   </td>
@@ -86,7 +94,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu user={user} />
+                    <UserMenu user={user} onPasswordResetClicked={this.props.onPasswordResetClicked} />
                   </td>
                 </tr>
               );
@@ -108,7 +116,7 @@ UserTable.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   users: PropTypes.array.isRequired,
-
+  onPasswordResetClicked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserTableWrapper);

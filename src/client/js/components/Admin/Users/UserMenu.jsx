@@ -2,14 +2,12 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PasswordResetModal from './PasswordResetModal';
 import StatusActivateForm from './StatusActivateForm';
 import StatusSuspendedForm from './StatusSuspendedForm';
 import RemoveUserForm from './UserRemoveForm';
 import RemoveAdminForm from './RemoveAdminForm';
 import GiveAdminForm from './GiveAdminForm';
 
-import toastError from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
@@ -19,34 +17,14 @@ class UserMenu extends React.Component {
     super(props);
 
     this.state = {
-      isPasswordReset: false,
-      isPasswordResetDone: false,
-      temporaryPassword: [],
+
     };
 
-    this.isShow = this.isShow.bind(this);
-    this.onHideModal = this.onHideModal.bind(this);
-    this.resetPassword = this.resetPassword.bind(this);
+    this.onPasswordResetClicked = this.onPasswordResetClicked.bind(this);
   }
 
-  isShow() {
-    this.setState({ isPasswordReset: true });
-  }
-
-  onHideModal() {
-    this.setState({ isPasswordReset: false, isPasswordResetDone: false });
-  }
-
-  async resetPassword() {
-    const { appContainer, user } = this.props;
-
-    const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
-    if (res.ok) {
-      this.setState({ temporaryPassword: res.newPassword, isPasswordResetDone: true });
-    }
-    else {
-      toastError('Failed to reset password');
-    }
+  onPasswordResetClicked() {
+    this.props.onPasswordResetClicked(this.props.user);
   }
 
   render() {
@@ -54,21 +32,13 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <PasswordResetModal
-          user={this.props.user}
-          isPasswordReset={this.state.isPasswordReset}
-          isPasswordResetDone={this.state.isPasswordResetDone}
-          temporaryPassword={this.state.temporaryPassword}
-          onHideModal={this.onHideModal}
-          resetPassword={this.resetPassword}
-        />
         <div className="btn-group admin-user-menu">
           <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
             <i className="icon-settings"></i> <span className="caret"></span>
           </button>
           <ul className="dropdown-menu" role="menu">
             <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
-            <li onClick={this.isShow}>
+            <li onClick={this.onPasswordResetClicked}>
               <a>
                 <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
               </a>
@@ -103,7 +73,7 @@ UserMenu.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
-  isShow: PropTypes.func.isRequired,
+  onPasswordResetClicked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserMenuWrapper);
