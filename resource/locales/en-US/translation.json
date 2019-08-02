@@ -667,6 +667,7 @@
 
   "user_management": {
     "target_user": "Target User",
+    "new_password": "New Password",
     "invite_users": "Invite New Users",
     "emails": "Emails",
     "invite_thru_email": "Send Invitation Email",
@@ -686,6 +687,7 @@
     "unset": "No",
     "temporary_password": "The created user has a temporary password",
     "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+    "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
     "send_new_password": "Please send the new password to the user.",
     "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
     "reset_password": "Reset Password",

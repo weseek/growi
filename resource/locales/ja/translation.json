@@ -650,6 +650,7 @@
 
   "user_management": {
     "target_user": "対象ユーザー",
+    "new_password": "新しいパスワード",
     "invite_users": "新規ユーザーの招待",
     "emails": "メールアドレス (複数行入力で複数人招待可能)",
     "invite_thru_email": "招待をメールで送信",
@@ -669,6 +670,7 @@
     "unset": "未設定",
     "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
     "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
+    "password_reset_message": "対象ユーザーに下記のパスワードを伝え、すぐに新しく別のパスワードを設定するよう伝えてください。",
     "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
     "password_never_seen": "表示されたパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。",
     "reset_password": "パスワードの再発行",
