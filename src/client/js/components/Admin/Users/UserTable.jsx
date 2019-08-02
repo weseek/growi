@@ -23,7 +23,7 @@ class UserTable extends React.Component {
 
   /**
    * user.statusをみてステータスのラベルを返す
-   * @param {object} userStatus
+   * @param {string} userStatus
    * @return ステータスラベル
    */
   getUserStatusLabel(userStatus) {
