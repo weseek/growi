@@ -25,7 +25,7 @@
   <!-- styles -->
   {% include './widget/headers/styles-for-app.html' %}
   {% block theme_css_block %}
-    {% include './widget/headers/styles-theme.html' with {theme: 'default'} %}
+    {% include './widget/headers/styles-theme.html' with {themeName: 'default'} %}
   {% endblock %}
 
   {{ cdnStyleTagsByGroup('basis') }}

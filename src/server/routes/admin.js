@@ -105,7 +105,13 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    return res.render('admin/security');
+    const isWikiModeForced = aclService.isWikiModeForced();
+    const guestModeValue = aclService.getGuestModeValue();
+
+    return res.render('admin/security', {
+      isWikiModeForced,
+      guestModeValue,
+    });
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
@@ -412,7 +418,12 @@ module.exports = function(crowi, app) {
 
     const page = parseInt(req.query.page) || 1;
 
-    const result = await User.findUsersWithPagination({ page });
+    const result = await User.findUsersWithPagination({
+      page,
+      select: User.USER_PUBLIC_FIELDS,
+      populate: User.IMAGE_POPULATION,
+    });
+
     const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
 
     return res.render('admin/users', {
@@ -571,19 +582,22 @@ module.exports = function(crowi, app) {
   };
 
   // app.post('/_api/admin/users.resetPassword' , admin.api.usersResetPassword);
-  actions.user.resetPassword = function(req, res) {
+  actions.user.resetPassword = async function(req, res) {
     const id = req.body.user_id;
     const User = crowi.model('User');
 
-    User.resetPasswordByRandomString(id)
-      .then((data) => {
-        data.user = User.filterToPublicFields(data.user);
-        return res.json(ApiResponse.success(data));
-      })
-      .catch((err) => {
-        debug('Error on reseting password', err);
-        return res.json(ApiResponse.error('Error'));
-      });
+    try {
+      const newPassword = await User.resetPasswordByRandomString(id);
+
+      const user = await User.findById(id);
+
+      const result = { user: user.toObject(), newPassword };
+      return res.json(ApiResponse.success(result));
+    }
+    catch (err) {
+      debug('Error on reseting password', err);
+      return res.json(ApiResponse.error(err));
+    }
   };
 
   actions.externalAccount = {};
@@ -624,7 +638,7 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     const page = parseInt(req.query.page) || 1;
-    const isAclEnabled = aclService.getIsPublicWikiOnly();
+    const isAclEnabled = aclService.isAclEnabled();
     const renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
@@ -856,12 +870,9 @@ module.exports = function(crowi, app) {
     }
 
     const form = req.form.settingForm;
-    if (aclService.getIsPublicWikiOnly()) {
-      const guestMode = form['security:restrictGuestMode'];
-      if (guestMode === 'Deny') {
-        req.form.errors.push('Private Wikiへの設定変更はできません。');
-        return res.json({ status: false, message: req.form.errors.join('\n') });
-      }
+    if (aclService.isWikiModeForced()) {
+      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
+      delete form['security:restrictGuestMode'];
     }
 
     try {

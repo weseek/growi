@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import PasswordResetModal from './PasswordResetModal';
 import PaginationWrapper from '../../PaginationWrapper';
 import InviteUserControl from './InviteUserControl';
 import UserTable from './UserTable';
@@ -15,21 +16,41 @@ class UserPage extends React.Component {
     super();
 
     this.state = {
+      userForPasswordResetModal: null,
       users: [],
       activePage: 1,
       pagingLimit: Infinity,
+      isPasswordResetModalShown: false,
     };
 
+    this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
+    this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
   }
 
   // TODO unstatedContainerを作ってそこにリファクタすべき
   componentDidMount() {
-    const jsonData = document.getElementById('admin-user-page');
-    const users = JSON.parse(jsonData.getAttribute('users'));
+    const data = document.getElementById('admin-user-page');
+    const users = JSON.parse(data.getAttribute('users'));
 
     this.setState({
       users,
     });
+  }
+
+  /**
+   * passwordリセットモーダルが開き、userが渡される
+   * @param {object} user
+   *
+   */
+  showPasswordResetModal(user) {
+    this.setState({
+      isPasswordResetModalShown: true,
+      userForPasswordResetModal: user,
+    });
+  }
+
+  hidePasswordResetModal() {
+    this.setState({ isPasswordResetModalShown: false });
   }
 
 
@@ -38,6 +59,13 @@ class UserPage extends React.Component {
 
     return (
       <Fragment>
+        { this.state.userForPasswordResetModal && (
+          <PasswordResetModal
+            user={this.state.userForPasswordResetModal}
+            show={this.state.isPasswordResetModalShown}
+            onHideModal={this.hidePasswordResetModal}
+          />
+        ) }
         <p>
           <InviteUserControl />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
@@ -47,6 +75,7 @@ class UserPage extends React.Component {
         </p>
         <UserTable
           users={this.state.users}
+          onPasswordResetClicked={this.showPasswordResetModal}
         />
         <PaginationWrapper
           activePage={this.state.activePage}
