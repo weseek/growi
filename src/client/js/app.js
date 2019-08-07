@@ -38,6 +38,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import UserPage from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
@@ -99,6 +100,9 @@ let componentMappings = {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
+
+  'admin-user-page': <UserPage />,
+  'admin-full-text-search-management': <FullTextSearchManagement />,
 
   'staff-credit': <StaffCredit />,
   'admin-importer': <Importer />,
@@ -209,13 +213,6 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
-const adminFullTextSearchManagementElem = document.getElementById('admin-full-text-search-management');
-if (adminFullTextSearchManagementElem != null) {
-
-  ReactDOM.render(
-    <FullTextSearchManagement />,
-  );
-}
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

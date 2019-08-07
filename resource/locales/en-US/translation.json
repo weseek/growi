@@ -737,5 +737,13 @@
     "import": "Import",
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
     "Directory_hierarchy_tag": "Directory Hierarchy Tag"
+  },
+
+  "full_text_search_management":{
+    "elasticsearch_management":"Elasticsearch Management",
+    "build_button":"Rebuild Index",
+    "rebuild_description_1":"Force rebuild index.",
+    "rebuild_description_2":"Click 'Build Now' to delete and create mapping file and add all pages.",
+    "rebuild_description_3":"This may take a while."
   }
 }
