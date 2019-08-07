@@ -138,7 +138,6 @@ class Importer extends React.Component {
             </div>
 
             <div className="form-group">
-              <input type="hidden" name="_csrf" value={this.props.csrf} />
               <div className="col-xs-offset-3 col-xs-6">
                 <input
                   id="testConnectionToEsa"
