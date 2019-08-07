@@ -29,8 +29,8 @@ class Importer extends React.Component {
   esaHandleSubmit() {
     try {
       const params = {
-        esaTeamName: this.state.esaTeamName,
-        esaAccessToken: this.state.esaAccessToken,
+        'importer:esa:team_name': this.state.esaTeamName,
+        'importer:esa:access_token': this.state.esaAccessToken,
       };
       this.props.appContainer.apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
@@ -43,10 +43,11 @@ class Importer extends React.Component {
   esaHandleSubmitTest() {
     try {
       const params = {
-        esaTeamName: this.state.esaTeamName,
-        esaAccessToken: this.state.esaAccessToken,
+        'importer:esa:team_name': this.state.esaTeamName,
+        'importer:esa:access_token': this.state.esaAccessToken,
 
       };
+
       this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
       toastSuccess('Test connection to esa success.');
     }
@@ -58,8 +59,8 @@ class Importer extends React.Component {
   esaHandleSubmitUpdate() {
     try {
       const params = {
-        esaTeamName: this.state.esaTeamName,
-        esaAccessToken: this.state.esaAccessToken,
+        'importer:esa:team_name': this.state.esaTeamName,
+        'importer:esa:access_token': this.state.esaAccessToken,
       };
       this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Update');
