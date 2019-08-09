@@ -90,7 +90,7 @@ body.on-edit {
 
     position: absolute;
     left: $left-margin;
-    z-index: 1;
+    z-index: 7; // forward than .CodeMirror-vscrollbar
     width: calc(100% - #{$left-margin} - #{$right-margin});
     padding-top: 3px;
     pointer-events: none; // disable pointer-events because it becomes an obstacle
@@ -184,13 +184,16 @@ body.on-edit {
       .autoformat-markdown-table-activated .CodeMirror-cursor {
         &:after {
           position: relative;
-          top: -16px;
-          left: 5px;
+          top: -1.1em;
+          left: 0.3em;
           display: block;
-          width: 14px;
-          height: 14px;
+          width: 1em;
+          height: 1em;
           content: ' ';
+
           background-image: url(/images/icons/editor/table.svg);
+          background-repeat: no-repeat;
+          background-size: 1em;
         }
       }
 

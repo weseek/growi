@@ -11,6 +11,8 @@ const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // 
 // set up DOMParser
 const domParser = new (window.DOMParser)();
 
+const defaultOptions = { stringLength: stringWidth };
+
 /**
  * markdown table class for markdown-table module
  *   ref. https://github.com/wooorm/markdown-table
@@ -19,7 +21,7 @@ export default class MarkdownTable {
 
   constructor(table, options) {
     this.table = table || [];
-    this.options = options || {};
+    this.options = Object.assign(options || {}, defaultOptions);
 
     this.toString = this.toString.bind(this);
   }
@@ -139,7 +141,7 @@ export default class MarkdownTable {
         contents.push(row);
       }
     }
-    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
+    return (new MarkdownTable(contents, { align: aligns }));
   }
 
 }

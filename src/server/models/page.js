@@ -809,7 +809,7 @@ module.exports = function(crowi) {
 
     // determine User condition
     const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
     let userGroups = null;
@@ -995,9 +995,8 @@ module.exports = function(crowi) {
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1021,9 +1020,8 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
@@ -1063,11 +1061,12 @@ module.exports = function(crowi) {
     const newPath = this.getDeletedPageName(pageData.path);
     const isTrashed = checkIfTrashed(pageData.path);
 
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
+    }
+
     const socketClientId = options.socketClientId || null;
     if (this.isDeletableName(pageData.path)) {
-      if (isTrashed) {
-        return this.completelyDeletePage(pageData, user, options);
-      }
 
       pageData.status = STATUS_DELETED;
       const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
@@ -1086,7 +1085,7 @@ module.exports = function(crowi) {
     const isTrashed = checkIfTrashed(targetPage.path);
 
     if (isTrashed) {
-      return this.completelyDeletePageRecursively(targetPage, user, options);
+      throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
     const findOpts = { includeRedirect: true };
@@ -1157,6 +1156,7 @@ module.exports = function(crowi) {
     const Bookmark = crowi.model('Bookmark');
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
+    const PageTagRelation = crowi.model('PageTagRelation');
     const Revision = crowi.model('Revision');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
@@ -1166,6 +1166,7 @@ module.exports = function(crowi) {
     await Bookmark.removeBookmarksByPageId(pageId);
     await Attachment.removeAttachmentsByPageId(pageId);
     await Comment.removeCommentsByPageId(pageId);
+    await PageTagRelation.remove({ relatedPage: pageId });
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
@@ -1228,7 +1229,8 @@ module.exports = function(crowi) {
     const Page = this;
     const Revision = crowi.model('Revision');
     const path = pageData.path;
-    const createRedirectPage = options.createRedirectPage || 0;
+    const createRedirectPage = options.createRedirectPage || false;
+    const updateMetadata = options.updateMetadata || false;
     const socketClientId = options.socketClientId || null;
 
     // sanitize path
@@ -1236,8 +1238,10 @@ module.exports = function(crowi) {
 
     // update Page
     pageData.path = newPagePath;
-    pageData.lastUpdateUser = user;
-    pageData.updatedAt = Date.now();
+    if (updateMetadata) {
+      pageData.lastUpdateUser = user;
+      pageData.updatedAt = Date.now();
+    }
     const updatedPageData = await pageData.save();
 
     // update Rivisions

@@ -187,6 +187,10 @@
     .btn-label {
       background-color: rgba($brand-success, 0.4);
     }
+    .btn-label-text {
+      display: inline-block;
+      min-width: 45px;
+    }
     &:after {
       background-color: #3f7263;
     }

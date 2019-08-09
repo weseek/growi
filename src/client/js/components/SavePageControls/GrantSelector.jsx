@@ -277,7 +277,7 @@ class GrantSelector extends React.Component {
     return (
       <React.Fragment>
         { this.renderGrantSelector() }
-        { this.props.disabled && this.renderSelectGroupModal() }
+        { !this.props.disabled && this.renderSelectGroupModal() }
       </React.Fragment>
     );
   }
