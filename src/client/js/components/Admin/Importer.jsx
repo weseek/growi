@@ -181,7 +181,6 @@ const ImporterWrapper = (props) => {
 Importer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   t: PropTypes.func.isRequired, // i18next
-  csrf: PropTypes.string,
 };
 
 export default withTranslation()(ImporterWrapper);

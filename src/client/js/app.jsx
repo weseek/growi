@@ -196,22 +196,6 @@ if (adminUserGroupPageElem != null) {
   );
 }
 
-
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    ReactDOM.render(
-      <Provider inject={injectableContainers}>
-        <I18nextProvider i18n={i18n}>
-          {componentMappings[key]}
-        </I18nextProvider>
-      </Provider>,
-      elem,
-    );
-  }
-});
-
-
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
