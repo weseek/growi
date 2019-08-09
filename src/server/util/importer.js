@@ -171,7 +171,7 @@ module.exports = (crowi) => {
    */
   const getTeamNameFromEsa = () => {
     return new Promise((resolve, reject) => {
-       esaClient.api.team((err, res) => {
+      esaClient.api.team((err, res) => {
         if (err) {
           return reject(err);
         }
