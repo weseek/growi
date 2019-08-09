@@ -1183,11 +1183,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   actions.api.importerSettingQiita = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
+    const form = req.body;
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
