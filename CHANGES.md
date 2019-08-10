@@ -3,6 +3,7 @@
 ## 3.5.6-RC
 
 * Fix: Saving new page is failed when empty string tag is set
+* Fix: Link of Create template page button in New Page Modal is broken
 
 ## 3.5.5
 
