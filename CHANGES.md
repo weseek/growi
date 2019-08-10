@@ -2,7 +2,7 @@
 
 ## 3.5.6-RC
 
-* 
+* Fix: Saving new page is failed when empty string tag is set
 
 ## 3.5.5
 
