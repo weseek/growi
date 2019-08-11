@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { distanceInWordsStrict } from 'date-fns';
 import dateFnsFormat from 'date-fns/format';
+
+import Tooltip from 'react-bootstrap/es/Tooltip';
+import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -65,9 +69,25 @@ class Comment extends React.Component {
     return this.props.comment.revision === this.props.pageContainer.state.revisionId;
   }
 
-  getRootClassName() {
-    return `page-comment ${
-      this.isCurrentUserEqualsToAuthor() ? 'page-comment-me ' : ''}`;
+  getRootClassName(comment) {
+    let className = 'page-comment';
+
+    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+    if (comment.revision === revisionId) {
+      className += ' page-comment-current';
+    }
+    else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
+      className += ' page-comment-newer';
+    }
+    else {
+      className += ' page-comment-older';
+    }
+
+    if (this.isCurrentUserEqualsToAuthor()) {
+      className += ' page-comment-me';
+    }
+
+    return className;
   }
 
   getRevisionLabelClassName() {
@@ -202,46 +222,38 @@ class Comment extends React.Component {
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
 
-    const rootClassName = this.getRootClassName();
-    const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
+    const rootClassName = this.getRootClassName(comment);
+    const commentDate = distanceInWordsStrict(comment.createdAt, new Date());
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
-
-    let isNewer;
-    if (comment.revision === revisionId) {
-      isNewer = 'page-comments-list-current';
-    }
-    else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-      isNewer = 'page-comments-list-newer';
-    }
-    else {
-      isNewer = 'page-comments-list-older';
-    }
-
+    const commentDateTooltip = (
+      <Tooltip id={`commentDateTooltip-${comment._id}`}>
+        {dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm')}
+      </Tooltip>
+    );
 
     return (
       <div>
-        <div className={isNewer}>
-          <div className={rootClassName}>
-            <UserPicture user={creator} />
-            <div className="page-comment-main">
-              <div className="page-comment-creator">
-                <Username user={creator} />
-              </div>
-              <div className="page-comment-body">{commentBody}</div>
-              <div className="page-comment-meta">
-                {commentDate}&nbsp;
-                <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
-              </div>
-              <div className="page-comment-control">
-                <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-                  <i className="ti-close"></i>
-                </button>
-              </div>
+        <div className={rootClassName}>
+          <UserPicture user={creator} />
+          <div className="page-comment-main">
+            <div className="page-comment-creator">
+              <Username user={creator} />
+            </div>
+            <div className="page-comment-body">{commentBody}</div>
+            <div className="page-comment-meta">
+              <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
+                <span>{commentDate}</span>
+              </OverlayTrigger>
+              <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
+            </div>
+            <div className="page-comment-control">
+              <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+                <i className="ti-close"></i>
+              </button>
             </div>
           </div>
         </div>

@@ -65,12 +65,11 @@
       word-wrap: break-word;
     }
     .page-comment-meta {
+      display: flex;
+      justify-content: flex-end;
+
       font-size: 0.9em;
-      color: #e5ecf1;
-      text-align: right;
-      * {
-        vertical-align: 25%;
-      }
+      color: #999;
     }
   } // show when hover
   .page-comment-main:hover > .page-comment-control {

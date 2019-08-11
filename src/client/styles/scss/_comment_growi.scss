@@ -77,13 +77,11 @@
     }
 
     .page-comment-meta {
+      display: flex;
+      justify-content: flex-end;
+
       font-size: 0.9em;
       color: #999;
-      text-align: right;
-
-      * {
-        vertical-align: 25%;
-      }
     }
   }
 
