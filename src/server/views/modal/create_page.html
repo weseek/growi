@@ -44,9 +44,10 @@
           </fieldset>
         </form>
 
+        {% set templateParentPath = parentPath(path | preventXss | escape) %}
         <div id="template-form" class="row form-horizontal m-t-15">
           <fieldset class="col-xs-12">
-            <legend>{{ t('template.modal_label.Create template under', parentPath(path | preventXss | escape)) }}</legend>
+            <legend>{{ t('template.modal_label.Create template under', templateParentPath) }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
@@ -72,8 +73,8 @@
             // modify href
             const value = $(this).val();
             const pageName = (value === 'children') ? '_template' : '__template';
-            const truePath = "{% if page.path || path %}{{ page.path || path | addTrailingSlash }}{% else %}{{ page.path || path }}{% endif %}"
-            const link = truePath + pageName + '#edit-form';
+            const parentPath = '{{templateParentPath}}';
+            const link = parentPath + pageName + '#edit-form';
             $('#link-to-template').attr('href', link);
           });
         </script>

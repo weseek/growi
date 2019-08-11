@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 schema.plugin(mongoosePaginate);
@@ -25,9 +26,24 @@ class Tag {
   static async findOrCreate(tagName) {
     const tag = await this.findOne({ name: tagName });
     if (!tag) {
-      return await this.create({ name: tagName });
+      return this.create({ name: tagName });
     }
     return tag;
+  }
+
+  static async findOrCreateMany(tagNames) {
+    const existTags = await this.find({ name: { $in: tagNames } });
+    const existTagNames = existTags.map((tag) => { return tag.name });
+
+    // bulk insert
+    const tagsToCreate = tagNames.filter((tagName) => { return !existTagNames.includes(tagName) });
+    await this.insertMany(
+      tagsToCreate.map((tag) => {
+        return { name: tag };
+      }),
+    );
+
+    return this.find({ name: { $in: tagNames } });
   }
 
 }

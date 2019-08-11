@@ -1,6 +1,12 @@
 # CHANGES
 
-## 3.5.5-RC
+## 3.5.6-RC
+
+* Fix: Saving new page is failed when empty string tag is set
+* Fix: Link of Create template page button in New Page Modal is broken
+* Fix: Global Notification dows not work when creating/moving/deleting/like/comment
+
+## 3.5.5
 
 * Feature: Support S3-compatible object storage (e.g. MinIO)
 * Feature: Enable/Disable ID/Password Authentication
