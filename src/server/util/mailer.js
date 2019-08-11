@@ -3,7 +3,7 @@
  */
 
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:lib:mailer');
+  const logger = require('@alias/logger')('growi:lib:mailer');
   const nodemailer = require('nodemailer');
   const swig = require('swig-templates');
 
@@ -13,7 +13,7 @@ module.exports = function(crowi) {
   let mailer = {};
 
   function createSMTPClient(option) {
-    debug('createSMTPClient option', option);
+    logger.debug('createSMTPClient option', option);
     if (!option) {
       option = { // eslint-disable-line no-param-reassign
         host: configManager.getConfig('crowi', 'mail:smtpHost'),
@@ -34,7 +34,7 @@ module.exports = function(crowi) {
 
     const client = nodemailer.createTransport(option);
 
-    debug('mailer set up for SMTP', client);
+    logger.debug('mailer set up for SMTP', client);
     return client;
   }
 
@@ -49,7 +49,7 @@ module.exports = function(crowi) {
     const ses = require('nodemailer-ses-transport');
     const client = nodemailer.createTransport(ses(option));
 
-    debug('mailer set up for SES', client);
+    logger.debug('mailer set up for SES', client);
     return client;
   }
 
@@ -75,7 +75,7 @@ module.exports = function(crowi) {
     mailConfig.from = configManager.getConfig('crowi', 'mail:from');
     mailConfig.subject = `${appService.getAppTitle()}からのメール`;
 
-    debug('mailer initialized');
+    logger.debug('mailer initialized');
   }
 
   function setupMailConfig(overrideConfig) {
@@ -110,7 +110,7 @@ module.exports = function(crowi) {
       );
     }
 
-    debug('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
+    logger.debug('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     return callback(new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.'), null);
   }
 
