@@ -155,6 +155,18 @@ class Comment extends React.Component {
 
   }
 
+  renderReply(reply) {
+    return (
+      <div key={reply._id} className="page-comment-reply">
+        <CommentWrapper
+          comment={reply}
+          deleteBtnClicked={this.props.deleteBtnClicked}
+          growiRenderer={this.props.growiRenderer}
+        />
+      </div>
+    );
+  }
+
   renderReplies() {
     const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
     let replyList = this.props.replyList;
@@ -177,16 +189,7 @@ class Comment extends React.Component {
     const hiddenReplies = replyList.slice(0, replyList.length - 2);
 
     const toggleElements = hiddenReplies.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <CommentWrapper
-            comment={reply}
-            deleteBtnClicked={this.props.deleteBtnClicked}
-            growiRenderer={this.props.growiRenderer}
-            replyList={[]}
-          />
-        </div>
-      );
+      return this.renderReply(reply);
     });
 
     const toggleBlock = (
@@ -196,24 +199,15 @@ class Comment extends React.Component {
     );
 
     const shownBlock = shownReplies.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <CommentWrapper
-            comment={reply}
-            deleteBtnClicked={this.props.deleteBtnClicked}
-            growiRenderer={this.props.growiRenderer}
-            replyList={[]}
-          />
-        </div>
-      );
+      return this.renderReply(reply);
     });
 
     return (
-      <div>
+      <React.Fragment>
         {toggleBlock}
         {toggleOlder}
         {shownBlock}
-      </div>
+      </React.Fragment>
     );
   }
 
@@ -236,7 +230,8 @@ class Comment extends React.Component {
     );
 
     return (
-      <div>
+      <React.Fragment>
+
         <div className={rootClassName}>
           <UserPicture user={creator} />
           <div className="page-comment-main">
@@ -257,12 +252,10 @@ class Comment extends React.Component {
             </div>
           </div>
         </div>
-        <div className="container-fluid">
-          <div className="row">
-            {this.renderReplies()}
-          </div>
-        </div>
-      </div>
+
+        {this.renderReplies()}
+
+      </React.Fragment>
     );
   }
 
@@ -283,6 +276,9 @@ Comment.propTypes = {
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
+};
+Comment.defaultProps = {
+  replyList: [],
 };
 
 export default CommentWrapper;

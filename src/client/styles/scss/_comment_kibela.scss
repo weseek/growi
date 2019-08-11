@@ -3,8 +3,7 @@
   %comment-section {
     position: relative;
     padding: 1em;
-    margin-bottom: 1em; // screen-xs
-    margin-left: 4.5em;
+    margin: 1em 0 0.2em 4.5em;
     @media (max-width: $screen-xs) {
       margin-left: 3.5em;
     } // speech balloon
