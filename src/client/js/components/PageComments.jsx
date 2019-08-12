@@ -31,8 +31,6 @@ class PageComments extends React.Component {
     super(props);
 
     this.state = {
-      isLayoutTypeGrowi: false,
-
       // for deleting comment
       commentToDelete: undefined,
       isDeleteConfirmModalShown: false,
@@ -60,9 +58,6 @@ class PageComments extends React.Component {
     if (!this.props.pageContainer.state.pageId) {
       return;
     }
-
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
 
     this.props.commentContainer.retrieveComments();
   }
