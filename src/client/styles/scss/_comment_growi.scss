@@ -74,14 +74,6 @@
       margin-bottom: 0.5em;
       word-wrap: break-word;
     }
-
-    .page-comment-meta {
-      display: flex;
-      justify-content: flex-end;
-
-      font-size: 0.9em;
-      color: #999;
-    }
   }
 
   /*
@@ -92,7 +84,7 @@
     margin-right: 15px;
     margin-left: 6em;
   }
-
+  // reply button
   .btn.btn-comment-reply {
     width: 120px;
     margin-right: 15px;
