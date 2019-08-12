@@ -21,9 +21,9 @@
             <a class="m-r-5" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
               <img src="{{ page.creator|default(author)|picture }}" class="picture img-circle">
             </a>
-            <div class="d-flex align-items-end flex-column">
+            <div>
               <div>Created by <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a></div>
-              <div class="text-muted" data-toggle="tooltip" data-placement="bottom" title="{{ page.createdAt|datetz('Y/m/d H:i:s') }}">{{ page.createdAt|dateDistance }}</div>
+              <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
             </div>
           </div>
           <div class="d-flex align-items-center only-affix">
@@ -31,7 +31,7 @@
               <img src="{{ page.creator|default(author)|picture }}" class="picture picture-xs img-circle">
             </a>
             <div class="ml-auto">
-              <div>Created in <span class="text-muted" data-toggle="tooltip" data-placement="bottom" title="{{ page.createdAt|datetz('Y/m/d H:i:s') }}">{{ page.createdAt|dateDistance }}</span></div>
+              <div>Created in <span class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</span></div>
             </div>
           </div>
         </li>
@@ -40,9 +40,9 @@
             <a class="m-r-5" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
               <img src="{{ author|picture }}" class="picture img-circle">
             </a>
-            <div class="d-flex align-items-end flex-column">
+            <div>
               <div>Updated by <a href="{{ userPageRoot(page.revision.author) }}">{{ author.name }}</a></div>
-              <div class="text-muted" data-toggle="tooltip" data-placement="bottom" title="{{ page.updatedAt|datetz('Y/m/d H:i:s') }}">{{ page.updatedAt|dateDistance }}</div>
+              <div class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
             </div>
           </div>
           <div class="d-flex align-items-center only-affix">
@@ -50,7 +50,7 @@
               <img src="{{ author|picture }}" class="picture picture-xs img-circle">
             </a>
             <div class="ml-auto">
-              <div>Updated in <span class="text-muted"  data-toggle="tooltip" data-placement="bottom" title="{{ page.updatedAt|datetz('Y/m/d H:i:s') }}">{{ page.updatedAt|dateDistance }}</span></div>
+              <div>Updated in <span class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</span></div>
             </div>
           </div>
         </li>
