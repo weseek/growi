@@ -3,7 +3,7 @@
   %comment-section {
     position: relative;
     padding: 1em;
-    margin: 1em 0 0.2em 4.5em;
+    margin-left: 4.5em;
 
     @media (max-width: $screen-xs) {
       margin-left: 3.5em;
@@ -82,6 +82,13 @@
   /*
    * reply
    */
+  .page-comment-reply {
+    margin-top: 1em;
+  }
+  // remove margin after hidden replies
+  .page-comments-hidden-replies + .page-comment-reply {
+    margin-top: 0;
+  }
   .page-comment-reply,
   .page-comment-reply-form {
     margin-right: 15px;
@@ -90,7 +97,12 @@
   // reply button
   .btn.btn-comment-reply {
     width: 120px;
+    margin-top: 0.5em;
     margin-right: 15px;
+
+    border-top: none;
+    border-right: none;
+    border-left: none;
   }
 
   // show when hover
@@ -105,7 +117,8 @@
     }
 
     position: relative;
-    margin-top: 2em;
+    margin-top: 1em;
+
     // user icon
     .picture {
       @extend %picture;

@@ -46,12 +46,6 @@ class Comment extends React.Component {
 
   componentWillMount() {
     this.renderHtml(this.props.comment.comment);
-    this.init();
-  }
-
-  init() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -208,12 +202,12 @@ class Comment extends React.Component {
     return (
       <React.Fragment>
         { areThereHiddenReplies && (
-          <React.Fragment>
-            <Collapse className="page-comments-list-older" in={this.state.isOlderRepliesShown}>
+          <div className="page-comments-hidden-replies">
+            <Collapse in={this.state.isOlderRepliesShown}>
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">{toggleButton}</div>
-          </React.Fragment>
+          </div>
         ) }
 
         {shownElements}

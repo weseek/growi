@@ -158,7 +158,7 @@ class PageComments extends React.Component {
             </Button>
           </div>
         )}
-        { showEditor && (
+        { showEditor && isLoggedIn && (
           <div className="page-comment-reply-form">
             <CommentEditor
               growiRenderer={this.growiRenderer}
@@ -175,8 +175,11 @@ class PageComments extends React.Component {
     const topLevelComments = [];
     const allReplies = [];
 
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
+
     let comments = this.props.commentContainer.state.comments;
-    if (this.state.isLayoutTypeGrowi) {
+    if (isBaloonStyle) {
       // replace with asc order array
       comments = comments.slice().reverse(); // non-destructive reverse
     }
