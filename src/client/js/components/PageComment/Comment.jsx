@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import { distanceInWordsStrict } from 'date-fns';
 import dateFnsFormat from 'date-fns/format';
 
+import Button from 'react-bootstrap/es/Button';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+import Collapse from 'react-bootstrap/es/Collapse';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -30,7 +32,7 @@ class Comment extends React.Component {
 
     this.state = {
       html: '',
-      isLayoutTypeGrowi: false,
+      isOlderRepliesShown: false,
     };
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
@@ -168,45 +170,53 @@ class Comment extends React.Component {
   }
 
   renderReplies() {
-    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
+
     let replyList = this.props.replyList;
-    if (!isLayoutTypeGrowi) {
+    if (!isBaloonStyle) {
       replyList = replyList.slice().reverse();
     }
 
     const areThereHiddenReplies = replyList.length > 2;
 
-    const iconForOlder = <i className="icon-options-vertical"></i>;
-    const toggleOlder = areThereHiddenReplies
-      ? (
-        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          {iconForOlder} Read More
-        </a>
-      )
-      : <div></div>;
+    const { isOlderRepliesShown } = this.state;
+    const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
+    const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
+    const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
+    const toggleButton = (
+      <Button
+        bsStyle="link"
+        className="page-comments-list-toggle-older"
+        onClick={() => { this.setState({ isOlderRepliesShown: !isOlderRepliesShown }) }}
+      >
+        {toggleButtonIcon} {toggleButtonLabel}
+      </Button>
+    );
 
     const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
     const hiddenReplies = replyList.slice(0, replyList.length - 2);
 
-    const toggleElements = hiddenReplies.map((reply) => {
+    const hiddenElements = hiddenReplies.map((reply) => {
       return this.renderReply(reply);
     });
 
-    const toggleBlock = (
-      <div className="page-comments-list-older collapse out" id="page-comments-list-older">
-        {toggleElements}
-      </div>
-    );
-
-    const shownBlock = shownReplies.map((reply) => {
+    const shownElements = shownReplies.map((reply) => {
       return this.renderReply(reply);
     });
 
     return (
       <React.Fragment>
-        {toggleBlock}
-        {toggleOlder}
-        {shownBlock}
+        { areThereHiddenReplies && (
+          <React.Fragment>
+            <Collapse className="page-comments-list-older" in={this.state.isOlderRepliesShown}>
+              <div>{hiddenElements}</div>
+            </Collapse>
+            <div className="text-center">{toggleButton}</div>
+          </React.Fragment>
+        ) }
+
+        {shownElements}
       </React.Fragment>
     );
   }

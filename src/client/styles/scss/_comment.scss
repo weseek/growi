@@ -23,12 +23,9 @@
 
 .main-container {
   .page-comments {
-    .page-comments-list-toggle-newer,
     .page-comments-list-toggle-older {
-      display: block;
-      margin: 8px;
+      display: inline-block;
       font-size: 0.9em;
-      text-align: center;
     }
 
     .page-comment {
