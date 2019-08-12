@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import { distanceInWordsStrict } from 'date-fns';
 import dateFnsFormat from 'date-fns/format';
 
+import Button from 'react-bootstrap/es/Button';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+import Collapse from 'react-bootstrap/es/Collapse';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -30,7 +32,7 @@ class Comment extends React.Component {
 
     this.state = {
       html: '',
-      isLayoutTypeGrowi: false,
+      isOlderRepliesShown: false,
     };
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
@@ -44,12 +46,6 @@ class Comment extends React.Component {
 
   componentWillMount() {
     this.renderHtml(this.props.comment.comment);
-    this.init();
-  }
-
-  init() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -155,65 +151,67 @@ class Comment extends React.Component {
 
   }
 
+  renderReply(reply) {
+    return (
+      <div key={reply._id} className="page-comment-reply">
+        <CommentWrapper
+          comment={reply}
+          deleteBtnClicked={this.props.deleteBtnClicked}
+          growiRenderer={this.props.growiRenderer}
+        />
+      </div>
+    );
+  }
+
   renderReplies() {
-    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
+
     let replyList = this.props.replyList;
-    if (!isLayoutTypeGrowi) {
+    if (!isBaloonStyle) {
       replyList = replyList.slice().reverse();
     }
 
     const areThereHiddenReplies = replyList.length > 2;
 
-    const iconForOlder = <i className="icon-options-vertical"></i>;
-    const toggleOlder = areThereHiddenReplies
-      ? (
-        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          {iconForOlder} Read More
-        </a>
-      )
-      : <div></div>;
+    const { isOlderRepliesShown } = this.state;
+    const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
+    const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
+    const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
+    const toggleButton = (
+      <Button
+        bsStyle="link"
+        className="page-comments-list-toggle-older"
+        onClick={() => { this.setState({ isOlderRepliesShown: !isOlderRepliesShown }) }}
+      >
+        {toggleButtonIcon} {toggleButtonLabel}
+      </Button>
+    );
 
     const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
     const hiddenReplies = replyList.slice(0, replyList.length - 2);
 
-    const toggleElements = hiddenReplies.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <CommentWrapper
-            comment={reply}
-            deleteBtnClicked={this.props.deleteBtnClicked}
-            growiRenderer={this.props.growiRenderer}
-            replyList={[]}
-          />
-        </div>
-      );
+    const hiddenElements = hiddenReplies.map((reply) => {
+      return this.renderReply(reply);
     });
 
-    const toggleBlock = (
-      <div className="page-comments-list-older collapse out" id="page-comments-list-older">
-        {toggleElements}
-      </div>
-    );
-
-    const shownBlock = shownReplies.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <CommentWrapper
-            comment={reply}
-            deleteBtnClicked={this.props.deleteBtnClicked}
-            growiRenderer={this.props.growiRenderer}
-            replyList={[]}
-          />
-        </div>
-      );
+    const shownElements = shownReplies.map((reply) => {
+      return this.renderReply(reply);
     });
 
     return (
-      <div>
-        {toggleBlock}
-        {toggleOlder}
-        {shownBlock}
-      </div>
+      <React.Fragment>
+        { areThereHiddenReplies && (
+          <div className="page-comments-hidden-replies">
+            <Collapse in={this.state.isOlderRepliesShown}>
+              <div>{hiddenElements}</div>
+            </Collapse>
+            <div className="text-center">{toggleButton}</div>
+          </div>
+        ) }
+
+        {shownElements}
+      </React.Fragment>
     );
   }
 
@@ -236,7 +234,8 @@ class Comment extends React.Component {
     );
 
     return (
-      <div>
+      <React.Fragment>
+
         <div className={rootClassName}>
           <UserPicture user={creator} />
           <div className="page-comment-main">
@@ -257,12 +256,10 @@ class Comment extends React.Component {
             </div>
           </div>
         </div>
-        <div className="container-fluid">
-          <div className="row">
-            {this.renderReplies()}
-          </div>
-        </div>
-      </div>
+
+        {this.renderReplies()}
+
+      </React.Fragment>
     );
   }
 
@@ -283,6 +280,9 @@ Comment.propTypes = {
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
+};
+Comment.defaultProps = {
+  replyList: [],
 };
 
 export default CommentWrapper;

@@ -2,6 +2,7 @@
 
 ## 3.5.6-RC
 
+* Improvement: Show commented date with date distance format
 * Fix: Saving new page is failed when empty string tag is set
 * Fix: Link of Create template page button in New Page Modal is broken
 * Fix: Global Notification dows not work when creating/moving/deleting/like/comment

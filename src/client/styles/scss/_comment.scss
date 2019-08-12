@@ -23,12 +23,9 @@
 
 .main-container {
   .page-comments {
-    .page-comments-list-toggle-newer,
     .page-comments-list-toggle-older {
-      display: block;
-      margin: 8px;
+      display: inline-block;
       font-size: 0.9em;
-      text-align: center;
     }
 
     .page-comment {
@@ -43,16 +40,14 @@
           opacity: 1;
         }
       }
+
+      .page-comment-meta {
+        display: flex;
+        justify-content: flex-end;
+
+        font-size: 0.9em;
+        color: #999;
+      }
     }
   }
-}
-
-.btn-xxs {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 10px;
-  font-size: 11px;
-  border-radius: 1px;
 }

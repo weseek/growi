@@ -31,8 +31,6 @@ class PageComments extends React.Component {
     super(props);
 
     this.state = {
-      isLayoutTypeGrowi: false,
-
       // for deleting comment
       commentToDelete: undefined,
       isDeleteConfirmModalShown: false,
@@ -60,9 +58,6 @@ class PageComments extends React.Component {
     if (!this.props.pageContainer.state.pageId) {
       return;
     }
-
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
 
     this.props.commentContainer.retrieveComments();
   }
@@ -110,10 +105,10 @@ class PageComments extends React.Component {
     });
   }
 
-  // adds replies to specific comment object
-  addRepliesToComments(comment, replies) {
+  // get replies to specific comment object
+  getRepliesFor(comment, allReplies) {
     const replyList = [];
-    replies.forEach((reply) => {
+    allReplies.forEach((reply) => {
       if (reply.replyTo === comment._id) {
         replyList.push(reply);
       }
@@ -122,102 +117,87 @@ class PageComments extends React.Component {
   }
 
   /**
-   * generate Elements of Comment
+   * render Elements of Comment Thread
    *
-   * @param {any} comments Array of Comment Model Obj
+   * @param {any} comment Comment Model Obj
+   * @param {any} replies List of Reply Comment Model Obj
    *
    * @memberOf PageComments
    */
-  generateCommentElements(comments, replies) {
-    return comments.map((comment) => {
+  renderThread(comment, replies) {
+    const commentId = comment._id;
+    const showEditor = this.state.showEditorIds.has(commentId);
+    const isLoggedIn = this.props.appContainer.me != null;
 
-      const commentId = comment._id;
-      const showEditor = this.state.showEditorIds.has(commentId);
-      const username = this.props.appContainer.me;
+    let rootClassNames = 'page-comment-thread';
+    if (replies.length === 0) {
+      rootClassNames += ' page-comment-thread-no-replies';
+    }
 
-      const replyList = this.addRepliesToComments(comment, replies);
-
-      return (
-        <div key={commentId}>
-          <Comment
-            comment={comment}
-            deleteBtnClicked={this.confirmToDeleteComment}
-            growiRenderer={this.growiRenderer}
-            replyList={replyList}
-          />
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-                { !showEditor && (
-                  <div>
-                    { username
-                    && (
-                      <div className="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
-                        <Button
-                          bsStyle="primary"
-                          className="fcbtn btn btn-outline btn-rounded btn-xxs"
-                          onClick={() => { return this.replyButtonClickedHandler(commentId) }}
-                        >
-                          Reply <i className="fa fa-mail-reply"></i>
-                        </Button>
-                      </div>
-                    )
-                  }
-                  </div>
-                )}
-                { showEditor && (
-                  <CommentEditor
-                    growiRenderer={this.growiRenderer}
-                    replyTo={commentId}
-                    commentButtonClickedHandler={this.commentButtonClickedHandler}
-                  />
-                )}
-              </div>
-            </div>
+    return (
+      <div key={commentId} className={`mb-5 ${rootClassNames}`}>
+        <Comment
+          comment={comment}
+          deleteBtnClicked={this.confirmToDeleteComment}
+          growiRenderer={this.growiRenderer}
+          replyList={replies}
+        />
+        { !showEditor && isLoggedIn && (
+          <div className="text-right">
+            <Button
+              bsStyle="default"
+              className="btn btn-outline btn-default btn-sm btn-comment-reply"
+              onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+            >
+              <i className="icon-fw icon-action-redo"></i> Reply
+            </Button>
           </div>
-          <br />
-        </div>
-      );
-    });
+        )}
+        { showEditor && isLoggedIn && (
+          <div className="page-comment-reply-form">
+            <CommentEditor
+              growiRenderer={this.growiRenderer}
+              replyTo={commentId}
+              commentButtonClickedHandler={this.commentButtonClickedHandler}
+            />
+          </div>
+        )}
+      </div>
+    );
   }
 
   render() {
-    const currentComments = [];
-    const currentReplies = [];
+    const topLevelComments = [];
+    const allReplies = [];
+
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
     let comments = this.props.commentContainer.state.comments;
-    if (this.state.isLayoutTypeGrowi) {
+    if (isBaloonStyle) {
       // replace with asc order array
       comments = comments.slice().reverse(); // non-destructive reverse
     }
 
     comments.forEach((comment) => {
       if (comment.replyTo === undefined) {
-      // comment is not a reply
-        currentComments.push(comment);
+        // comment is not a reply
+        topLevelComments.push(comment);
       }
       else {
-      // comment is a reply
-        currentReplies.push(comment);
+        // comment is a reply
+        allReplies.push(comment);
       }
     });
 
-    // generate elements
-    const currentElements = this.generateCommentElements(currentComments, currentReplies);
-
-    // generate blocks
-    const currentBlock = (
-      <div className="page-comments-list-current" id="page-comments-list-current">
-        {currentElements}
-      </div>
-    );
-
-    // layout blocks
-    const commentsElements = (<div>{currentBlock}</div>);
-
     return (
       <div>
-        {commentsElements}
+        { topLevelComments.map((topLevelComment) => {
+          // get related replies
+          const replies = this.getRepliesFor(topLevelComment, allReplies);
+
+          return this.renderThread(topLevelComment, replies);
+        }) }
 
         <DeleteCommentModal
           isShown={this.state.isDeleteConfirmModalShown}

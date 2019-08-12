@@ -2,8 +2,8 @@
   %comment-section {
     position: relative;
     padding: 1em;
-    margin-bottom: 1em;
     margin-left: 4.5em;
+
     // screen-xs
     @media (max-width: $screen-xs) {
       margin-left: 3.5em;
@@ -75,14 +75,32 @@
       margin-bottom: 0.5em;
       word-wrap: break-word;
     }
+  }
 
-    .page-comment-meta {
-      display: flex;
-      justify-content: flex-end;
+  /*
+   * reply
+   */
+  .page-comment-reply {
+    margin-top: 1em;
+  }
+  // remove margin after hidden replies
+  .page-comments-hidden-replies + .page-comment-reply {
+    margin-top: 0;
+  }
+  .page-comment-reply,
+  .page-comment-reply-form {
+    margin-right: 15px;
+    margin-left: 6em;
+  }
+  // reply button
+  .btn.btn-comment-reply {
+    width: 120px;
+    margin-top: 0.5em;
+    margin-right: 15px;
 
-      font-size: 0.9em;
-      color: #999;
-    }
+    border-top: none;
+    border-right: none;
+    border-left: none;
   }
 
   // show when hover
@@ -97,7 +115,8 @@
     }
 
     position: relative;
-    margin-top: 2em;
+    margin-top: 1em;
+
     // user icon
     .picture {
       @extend %picture;
