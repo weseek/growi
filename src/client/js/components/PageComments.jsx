@@ -132,31 +132,40 @@ class PageComments extends React.Component {
   renderThread(comment, replies) {
     const commentId = comment._id;
     const showEditor = this.state.showEditorIds.has(commentId);
-    const username = this.props.appContainer.me;
+    const isLoggedIn = this.props.appContainer.me != null;
+
+    let rootClassNames = 'page-comment-thread';
+    if (replies.length === 0) {
+      rootClassNames += ' page-comment-thread-no-replies';
+    }
 
     return (
-      <div key={commentId} className="mb-5">
+      <div key={commentId} className={`mb-5 ${rootClassNames}`}>
         <Comment
           comment={comment}
           deleteBtnClicked={this.confirmToDeleteComment}
           growiRenderer={this.growiRenderer}
           replyList={replies}
         />
-        { !showEditor && username && (
-          <Button
-            bsStyle="default"
-            className="btn btn-outline btn-default btn-sm"
-            onClick={() => { return this.replyButtonClickedHandler(commentId) }}
-          >
-            <i className="icon-fw icon-action-redo"></i> Reply
-          </Button>
+        { !showEditor && isLoggedIn && (
+          <div className="text-right">
+            <Button
+              bsStyle="default"
+              className="btn btn-outline btn-default btn-sm btn-comment-reply"
+              onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+            >
+              <i className="icon-fw icon-action-redo"></i> Reply
+            </Button>
+          </div>
         )}
         { showEditor && (
-          <CommentEditor
-            growiRenderer={this.growiRenderer}
-            replyTo={commentId}
-            commentButtonClickedHandler={this.commentButtonClickedHandler}
-          />
+          <div className="page-comment-reply-form">
+            <CommentEditor
+              growiRenderer={this.growiRenderer}
+              replyTo={commentId}
+              commentButtonClickedHandler={this.commentButtonClickedHandler}
+            />
+          </div>
         )}
       </div>
     );

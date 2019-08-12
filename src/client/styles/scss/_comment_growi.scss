@@ -84,9 +84,22 @@
     }
   }
 
-  .page-comment-reply {
+  /*
+   * reply
+   */
+  .page-comment-reply,
+  .page-comment-reply-form {
     margin-right: 15px;
     margin-left: 6em;
+  }
+
+  .btn.btn-comment-reply {
+    width: 120px;
+    margin-right: 15px;
+
+    border-top: none;
+    border-right: none;
+    border-left: none;
   }
 
   // show when hover
