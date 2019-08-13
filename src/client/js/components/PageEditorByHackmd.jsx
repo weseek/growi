@@ -17,7 +17,6 @@ class PageEditorByHackmd extends React.Component {
     super(props);
 
     this.state = {
-      markdown: this.props.pageContainer.state.markdown,
       isInitialized: false,
       isInitializing: false,
       // for error
@@ -47,11 +46,7 @@ class PageEditorByHackmd extends React.Component {
       return Promise.reject(new Error('HackmdEditor component has not initialized'));
     }
 
-    return this.hackmdEditor.getValue()
-      .then((document) => {
-        this.setState({ markdown: document });
-        return document;
-      });
+    return this.hackmdEditor.getValue();
   }
 
   /**
@@ -188,7 +183,7 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // do nothing if contents are same
-    if (this.state.markdown === body) {
+    if (pageContainer.state.markdown === body) {
       return;
     }
 
@@ -336,7 +331,7 @@ class PageEditorByHackmd extends React.Component {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer } = this.props;
     const {
-      pageIdOnHackmd, hasDraftOnHackmd,
+      markdown, pageIdOnHackmd, hasDraftOnHackmd,
     } = pageContainer.state;
 
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
@@ -350,7 +345,7 @@ class PageEditorByHackmd extends React.Component {
           ref={(c) => { this.hackmdEditor = c }}
           hackmdUri={hackmdUri}
           pageIdOnHackmd={pageIdOnHackmd}
-          initializationMarkdown={isResume ? null : this.state.markdown}
+          initializationMarkdown={isResume ? null : markdown}
           onChange={this.hackmdEditorChangeHandler}
           onSaveWithShortcut={(document) => {
             this.onSaveWithShortcut(document);
