@@ -122,6 +122,8 @@ module.exports = function(crowi, app) {
         await axios.get(`${hackmdUri}/${page.pageIdOnHackmd}`);
       }
       catch (err) {
+        logger.error(err);
+
         // reset if pages doesn't exist
         page.pageIdOnHackmd = undefined;
       }
@@ -149,12 +151,19 @@ module.exports = function(crowi, app) {
   };
 
   async function createNewPageOnHackmdAndRegister(hackmdUri, page) {
-    // access to HackMD and create page
-    const response = await axios.get(`${hackmdUri}/new`);
-    logger.debug('HackMD responds', response);
+    // access to HackMD and create page w/o redirect
+    const response = await axios.get(`${hackmdUri}/new`, {
+      maxRedirects: 0,
+      // validate HTTP status is 302 (redirect to new page)
+      validateStatus: (status) => {
+        return status === 302;
+      },
+    });
+
+    logger.debug('HackMD response.headers', response.headers);
 
     // extract page id on HackMD
-    const pagePathOnHackmd = response.request.path; // e.g. '/NC7bSRraT1CQO1TO7wjCPw'
+    const pagePathOnHackmd = response.headers.location; // e.g. '/NC7bSRraT1CQO1TO7wjCPw'
     const pageIdOnHackmd = pagePathOnHackmd.substr(1); // strip the head '/'
 
     return Page.registerHackmdPage(page, pageIdOnHackmd);
