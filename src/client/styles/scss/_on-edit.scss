@@ -277,22 +277,15 @@ body.on-edit {
       color: $muted;
     }
 
-    .hackmd-start-button-container,
-    .hackmd-resume-button-container {
-      .btn-lg .btn-label {
-        padding-top: 6px; // for SplitButton
-        padding-bottom: 6px; // for SplitButton
+    .hackmd-resume-button-container,
+    .hackmd-discard-button-container {
+      .btn-text {
+        display: inline-block;
+        min-width: 230px;
       }
     }
 
-    .hackmd-resume-button-container {
-      .dropdown-menu {
-        right: 0;
-        left: unset;
-      }
-    }
-
-    .hackmd-discard-button {
+    .btn-view-outdated-draft {
       text-decoration: underline;
       vertical-align: unset;
     }

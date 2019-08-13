@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import SplitButton from 'react-bootstrap/es/SplitButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
-
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -249,59 +246,57 @@ class PageEditorByHackmd extends React.Component {
     else if (isResume) {
       const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
-      const title = (
-        <React.Fragment>
-          <span className="btn-label"><i className="icon-control-end"></i></span>
-          Resume to edit with HackMD
-        </React.Fragment>
-      );
-
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <div className="text-center hackmd-resume-button-container mb-3">
-            <SplitButton
-              id="split-button-resume-hackmd"
-              title={title}
-              bsStyle="success"
-              bsSize="large"
-              className="btn-resume waves-effect waves-light"
-              onClick={() => { return this.resumeToEdit() }}
-            >
-              <MenuItem className="text-center" onClick={() => { return this.discardChanges() }}>
-                <i className="icon-control-rewind"></i> Discard changes
-              </MenuItem>
-            </SplitButton>
-          </div>
-          <p className="text-center">
-            Click to edit from the previous continuation<br />
-            or
-            <button
-              type="button"
-              className="btn btn-link text-danger p-0 hackmd-discard-button"
-              onClick={() => { return this.discardChanges() }}
-            >
-              Discard changes
-            </button>.
-          </p>
-          { isHackmdDocumentOutdated
-            && (
-            <div className="panel panel-warning mt-5">
+          <p className="text-center"><strong>HackMD has unsaved draft.</strong></p>
+
+          { isHackmdDocumentOutdated && (
+            <div className="panel panel-warning">
               <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
               <div className="panel-body text-center">
                 The current draft on HackMD is based on&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.<br />
-                <button
-                  type="button"
-                  className="btn btn-link text-danger p-0 hackmd-discard-button"
-                  onClick={() => { return this.discardChanges() }}
-                >
-                  Discard it
-                </button> to start to edit with current revision.
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.
+
+                <div className="text-center mt-3">
+                  <button
+                    className="btn btn-link btn-view-outdated-draft p-0"
+                    type="button"
+                    disabled={this.state.isInitializing}
+                    onClick={() => { return this.resumeToEdit() }}
+                  >
+                    View the outdated draft on HackMD
+                  </button>
+                </div>
               </div>
             </div>
-            )
-          }
+          ) }
+
+          { !isHackmdDocumentOutdated && (
+            <div className="text-center hackmd-resume-button-container mb-3">
+              <button
+                className="btn btn-success btn-lg waves-effect waves-light"
+                type="button"
+                disabled={this.state.isInitializing}
+                onClick={() => { return this.resumeToEdit() }}
+              >
+                <span className="btn-label"><i className="icon-control-end"></i></span>
+                <span className="btn-text">Resume to edit with HackMD</span>
+              </button>
+            </div>
+          ) }
+
+          <div className="text-center hackmd-discard-button-container mb-3">
+            <button
+              className="btn btn-default btn-lg waves-effect waves-light"
+              type="button"
+              onClick={() => { return this.discardChanges() }}
+            >
+              <span className="btn-label"><i className="icon-control-start"></i></span>
+              <span className="btn-text">Discard changes of HackMD</span>
+            </button>
+          </div>
+
         </div>
       );
     }
