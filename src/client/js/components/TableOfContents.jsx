@@ -70,6 +70,10 @@ class TableOfContents extends React.Component {
   resetScrollbar(revisionTocTop) {
     const tocContentElem = document.querySelector('.revision-toc .markdownIt-TOC');
 
+    if (tocContentElem == null) {
+      return;
+    }
+
     // window height - revisionTocTop - .system-version height
     const viewHeight = window.innerHeight - revisionTocTop - 20;
 
