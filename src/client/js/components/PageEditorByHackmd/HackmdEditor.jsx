@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import connectToChild from 'penpal/lib/connectToChild';
 
 const DEBUG_PENPAL = false;
+
+const logger = loggerFactory('growi:HackmdEditor');
 
 export default class HackmdEditor extends React.PureComponent {
 
@@ -11,6 +14,7 @@ export default class HackmdEditor extends React.PureComponent {
     super(props);
 
     this.state = {
+      hasPenpalError: true,
     };
 
     this.hackmd = null;
@@ -26,7 +30,7 @@ export default class HackmdEditor extends React.PureComponent {
     this.initHackmdWithPenpal();
   }
 
-  initHackmdWithPenpal() {
+  async initHackmdWithPenpal() {
     const _this = this; // for in methods scope
 
     const iframe = document.createElement('iframe');
@@ -43,14 +47,21 @@ export default class HackmdEditor extends React.PureComponent {
           _this.saveWithShortcutHandler(document);
         },
       },
+      timeout: 15000,
       debug: DEBUG_PENPAL,
     });
-    connection.promise.then((child) => {
+
+    try {
+      const child = await connection.promise;
       this.hackmd = child;
       if (this.props.initializationMarkdown != null) {
         child.setValueOnInit(this.props.initializationMarkdown);
       }
-    });
+    }
+    catch (err) {
+      logger.error(err);
+      this.setState({ hasPenpalError: true });
+    }
   }
 
   /**
@@ -80,8 +91,22 @@ export default class HackmdEditor extends React.PureComponent {
 
   render() {
     return (
-      // will be rendered in componentDidMount
-      <div id="iframe-hackmd-container" ref={(c) => { this.iframeContainer = c }}></div>
+      <div className="position-relative">
+        {/* will be rendered in componentDidMount */}
+        <div id="iframe-hackmd-container" ref={(c) => { this.iframeContainer = c }}></div>
+
+        { this.state.hasPenpalError && (
+          <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
+            <div className="white-box text-center">
+              <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> HackMD Integration failed</h2>
+              <p>
+                GROWI system could not connect to GROWI agent for HackMD.<br />
+                Check your configuration following <a href="https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html">the manual</a>.
+              </p>
+            </div>
+          </div>
+        ) }
+      </div>
     );
   }
 
