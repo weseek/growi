@@ -1333,12 +1333,7 @@ module.exports = function(crowi) {
    * @param {string} pageIdOnHackmd
    */
   pageSchema.statics.registerHackmdPage = function(pageData, pageIdOnHackmd) {
-    if (pageData.pageIdOnHackmd != null) {
-      throw new Error(`'pageIdOnHackmd' of the page '${pageData.path}' is not empty`);
-    }
-
     pageData.pageIdOnHackmd = pageIdOnHackmd;
-
     return this.syncRevisionToHackmd(pageData);
   };
 
