@@ -13,10 +13,6 @@ export default class HackmdEditor extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      hasPenpalError: true,
-    };
-
     this.hackmd = null;
 
     this.initHackmdWithPenpal = this.initHackmdWithPenpal.bind(this);
@@ -60,7 +56,10 @@ export default class HackmdEditor extends React.PureComponent {
     }
     catch (err) {
       logger.error(err);
-      this.setState({ hasPenpalError: true });
+
+      if (this.props.onPenpalErrorOccured != null) {
+        this.props.onPenpalErrorOccured(err);
+      }
     }
   }
 
@@ -91,22 +90,8 @@ export default class HackmdEditor extends React.PureComponent {
 
   render() {
     return (
-      <div className="position-relative">
-        {/* will be rendered in componentDidMount */}
-        <div id="iframe-hackmd-container" ref={(c) => { this.iframeContainer = c }}></div>
-
-        { this.state.hasPenpalError && (
-          <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
-            <div className="white-box text-center">
-              <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> HackMD Integration failed</h2>
-              <p>
-                GROWI system could not connect to GROWI agent for HackMD.<br />
-                Check your configuration following <a href="https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html">the manual</a>.
-              </p>
-            </div>
-          </div>
-        ) }
-      </div>
+      // will be rendered in componentDidMount
+      <div id="iframe-hackmd-container" ref={(c) => { this.iframeContainer = c }}></div>
     );
   }
 
@@ -118,4 +103,5 @@ HackmdEditor.propTypes = {
   initializationMarkdown: PropTypes.string,
   onChange: PropTypes.func,
   onSaveWithShortcut: PropTypes.func,
+  onPenpalErrorOccured: PropTypes.func,
 };

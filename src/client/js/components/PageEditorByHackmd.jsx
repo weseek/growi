@@ -23,6 +23,10 @@ class PageEditorByHackmd extends React.Component {
       markdown: this.props.pageContainer.state.markdown,
       isInitialized: false,
       isInitializing: false,
+      // for error
+      hasError: false,
+      errorMessage: '',
+      errorReason: '',
     };
 
     this.getHackmdUri = this.getHackmdUri.bind(this);
@@ -30,6 +34,7 @@ class PageEditorByHackmd extends React.Component {
     this.resumeToEdit = this.resumeToEdit.bind(this);
     this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
+    this.penpalErrorOccuredHandler = this.penpalErrorOccuredHandler.bind(this);
   }
 
   componentWillMount() {
@@ -85,26 +90,33 @@ class PageEditorByHackmd extends React.Component {
       pageId: pageContainer.state.pageId,
     };
 
+    let res;
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+      res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
 
       if (!res.ok) {
         throw new Error(res.error);
       }
-
-      await pageContainer.setState({
-        pageIdOnHackmd: res.pageIdOnHackmd,
-        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
-      });
-      this.setState({
-        isInitialized: true,
-      });
     }
     catch (err) {
       pageContainer.showErrorToastr(err);
+
+      this.setState({
+        hasError: true,
+        errorMessage: 'GROWI server failed to connect to HackMD.',
+        errorReason: err.toString(),
+      });
     }
 
-    this.setState({ isInitializing: false });
+    await pageContainer.setState({
+      pageIdOnHackmd: res.pageIdOnHackmd,
+      revisionIdHackmdSynced: res.revisionIdHackmdSynced,
+    });
+
+    this.setState({
+      isInitialized: true,
+      isInitializing: false,
+    });
   }
 
   /**
@@ -179,7 +191,19 @@ class PageEditorByHackmd extends React.Component {
     }
   }
 
-  render() {
+  penpalErrorOccuredHandler(error) {
+    const { pageContainer } = this.props;
+
+    pageContainer.showErrorToastr(error);
+
+    this.setState({
+      hasError: true,
+      errorMessage: 'GROWI client failed to connect to GROWI agent for HackMD.',
+      errorReason: error.toString(),
+    });
+  }
+
+  renderPreInitContent() {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer } = this.props;
     const {
@@ -189,26 +213,8 @@ class PageEditorByHackmd extends React.Component {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
     const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
-    if (this.state.isInitialized) {
-      return (
-        <HackmdEditor
-          ref={(c) => { this.hackmdEditor = c }}
-          hackmdUri={hackmdUri}
-          pageIdOnHackmd={pageIdOnHackmd}
-          initializationMarkdown={isResume ? null : this.state.markdown}
-          onChange={this.hackmdEditorChangeHandler}
-          onSaveWithShortcut={(document) => {
-            this.onSaveWithShortcut(document);
-          }}
-        >
-        </HackmdEditor>
-      );
-    }
-
-    const isRevisionOutdated = revisionId !== remoteRevisionId;
-    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
-
     let content;
+
     /*
      * HackMD is not setup
      */
@@ -223,12 +229,15 @@ class PageEditorByHackmd extends React.Component {
      * Resume to edit or discard changes
      */
     else if (isResume) {
+      const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+
       const title = (
         <React.Fragment>
           <span className="btn-label"><i className="icon-control-end"></i></span>
           Resume to edit with HackMD
         </React.Fragment>
       );
+
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
@@ -282,6 +291,8 @@ class PageEditorByHackmd extends React.Component {
      * Start to edit
      */
     else {
+      const isRevisionOutdated = revisionId !== remoteRevisionId;
+
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
@@ -304,6 +315,63 @@ class PageEditorByHackmd extends React.Component {
     return (
       <div className="hackmd-preinit d-flex justify-content-center align-items-center">
         {content}
+      </div>
+    );
+  }
+
+  render() {
+    const hackmdUri = this.getHackmdUri();
+    const { pageContainer } = this.props;
+    const {
+      pageIdOnHackmd, hasDraftOnHackmd,
+    } = pageContainer.state;
+
+    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
+    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
+
+    let content;
+
+    if (this.state.isInitialized) {
+      content = (
+        <HackmdEditor
+          ref={(c) => { this.hackmdEditor = c }}
+          hackmdUri={hackmdUri}
+          pageIdOnHackmd={pageIdOnHackmd}
+          initializationMarkdown={isResume ? null : this.state.markdown}
+          onChange={this.hackmdEditorChangeHandler}
+          onSaveWithShortcut={(document) => {
+            this.onSaveWithShortcut(document);
+          }}
+          onPenpalErrorOccured={this.penpalErrorOccuredHandler}
+        >
+        </HackmdEditor>
+      );
+    }
+    else {
+      content = this.renderPreInitContent();
+    }
+
+
+    return (
+      <div className="position-relative">
+
+        {content}
+
+        { this.state.hasError && (
+          <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
+            <div className="white-box text-center">
+              <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> HackMD Integration failed</h2>
+              <h4>{this.state.errorMessage}</h4>
+              <p className="well well-sm text-danger">
+                {this.state.errorReason}
+              </p>
+              <p>
+                Check your configuration following <a href="https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html">the manual</a>.
+              </p>
+            </div>
+          </div>
+        ) }
+
       </div>
     );
   }
