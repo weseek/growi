@@ -90,13 +90,17 @@ class PageEditorByHackmd extends React.Component {
       pageId: pageContainer.state.pageId,
     };
 
-    let res;
     try {
-      res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
 
       if (!res.ok) {
         throw new Error(res.error);
       }
+
+      await pageContainer.setState({
+        pageIdOnHackmd: res.pageIdOnHackmd,
+        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
+      });
     }
     catch (err) {
       pageContainer.showErrorToastr(err);
@@ -107,11 +111,6 @@ class PageEditorByHackmd extends React.Component {
         errorReason: err.toString(),
       });
     }
-
-    await pageContainer.setState({
-      pageIdOnHackmd: res.pageIdOnHackmd,
-      revisionIdHackmdSynced: res.revisionIdHackmdSynced,
-    });
 
     this.setState({
       isInitialized: true,
