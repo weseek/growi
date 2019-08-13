@@ -116,23 +116,53 @@ module.exports = function(crowi, app) {
     const hackmdUri = process.env.HACKMD_URI_FOR_SERVER || process.env.HACKMD_URI;
     let page = req.page;
 
-    if (page.pageIdOnHackmd != null) {
-      try {
-        // check if page exists in HackMD
-        await axios.get(`${hackmdUri}/${page.pageIdOnHackmd}`);
-      }
-      catch (err) {
-        logger.error(err);
+    const hackmdPageUri = (page.pageIdOnHackmd != null)
+      ? `${hackmdUri}/${page.pageIdOnHackmd}`
+      : `${hackmdUri}/new`;
 
-        // reset if pages doesn't exist
-        page.pageIdOnHackmd = undefined;
-      }
+    let hackmdResponse;
+    try {
+      // check if page is found or created in HackMD
+      hackmdResponse = await axios.get(hackmdPageUri, {
+        maxRedirects: 0,
+        // validate HTTP status is 200 or 302 or 404
+        validateStatus: (status) => {
+          return status === 200 || status === 302 || status === 404;
+        },
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    const { status, headers } = hackmdResponse;
+
+    // validate HackMD/CodiMD specific header
+    if (headers['codimd-version'] == null && headers['hackmd-version'] == null) {
+      const message = 'Connecting to a non-HackMD server.';
+      logger.error(message);
+      return res.json(ApiResponse.error(message));
     }
 
     try {
-      if (page.pageIdOnHackmd == null) {
-        page = await createNewPageOnHackmdAndRegister(hackmdUri, page);
+      // when page is not found
+      if (status === 404) {
+        // reset registered data
+        page = await Page.registerHackmdPage(page, undefined);
+        // re-invoke
+        return integrate(req, res);
       }
+
+      // when redirect
+      if (status === 302) {
+        // extract page id on HackMD
+        const pagePathOnHackmd = headers.location; // e.g. '/NC7bSRraT1CQO1TO7wjCPw'
+        const pageIdOnHackmd = pagePathOnHackmd.substr(1); //        strip the head '/'
+
+        page = await Page.registerHackmdPage(page, pageIdOnHackmd);
+      }
+      // when page is found
       else {
         page = await Page.syncRevisionToHackmd(page);
       }
@@ -149,25 +179,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Integration with HackMD process failed'));
     }
   };
-
-  async function createNewPageOnHackmdAndRegister(hackmdUri, page) {
-    // access to HackMD and create page w/o redirect
-    const response = await axios.get(`${hackmdUri}/new`, {
-      maxRedirects: 0,
-      // validate HTTP status is 302 (redirect to new page)
-      validateStatus: (status) => {
-        return status === 302;
-      },
-    });
-
-    logger.debug('HackMD response.headers', response.headers);
-
-    // extract page id on HackMD
-    const pagePathOnHackmd = response.headers.location; // e.g. '/NC7bSRraT1CQO1TO7wjCPw'
-    const pageIdOnHackmd = pagePathOnHackmd.substr(1); // strip the head '/'
-
-    return Page.registerHackmdPage(page, pageIdOnHackmd);
-  }
 
   /**
    * POST /_api/hackmd.saveOnHackmd
