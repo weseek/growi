@@ -67,7 +67,7 @@ class PageEditorByHackmd extends React.Component {
   /**
    * Start integration with HackMD
    */
-  startToEdit() {
+  async startToEdit() {
     const { pageContainer } = this.props;
     const hackmdUri = this.getHackmdUri();
 
@@ -84,26 +84,27 @@ class PageEditorByHackmd extends React.Component {
     const params = {
       pageId: pageContainer.state.pageId,
     };
-    this.props.appContainer.apiPost('/hackmd.integrate', params)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.error);
-        }
 
-        this.setState({
-          isInitialized: true,
-        });
-        pageContainer.setState({
-          pageIdOnHackmd: res.pageIdOnHackmd,
-          revisionIdHackmdSynced: res.revisionIdHackmdSynced,
-        });
-      })
-      .catch((err) => {
-        pageContainer.showErrorToastr(err);
-      })
-      .then(() => {
-        this.setState({ isInitializing: false });
+    try {
+      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      await pageContainer.setState({
+        pageIdOnHackmd: res.pageIdOnHackmd,
+        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
       });
+      this.setState({
+        isInitialized: true,
+      });
+    }
+    catch (err) {
+      pageContainer.showErrorToastr(err);
+    }
+
+    this.setState({ isInitializing: false });
   }
 
   /**
