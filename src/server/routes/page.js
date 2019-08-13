@@ -169,6 +169,10 @@ module.exports = function(crowi, app) {
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
+    if (req.user == null) {
+      return '';
+    }
+
     const definitions = {
       pagepath: getPathFromRequest(req),
       username: req.user.name,
@@ -427,13 +431,14 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/not_found';
 
       // retrieve templates
-      const template = await Page.findTemplate(path);
-
-      if (template.templateBody) {
-        const body = replacePlaceholdersOfTemplate(template.templateBody, req);
-        const tags = template.templateTags;
-        renderVars.template = body;
-        renderVars.templateTags = tags;
+      if (req.user != null) {
+        const template = await Page.findTemplate(path);
+        if (template.templateBody) {
+          const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+          const tags = template.templateTags;
+          renderVars.template = body;
+          renderVars.templateTags = tags;
+        }
       }
 
       // add scope variables by ancestor page

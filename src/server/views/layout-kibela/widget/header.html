@@ -29,12 +29,12 @@
       </li>
       <li class="m-t-5">
         <div class="d-flex align-items-center">
-          <a class="m-r-5" href="{{ userPageRoot(page.revision.author) }}">
-            <img src="{{ page.revision.author|default(author)|picture }}" class="picture img-circle">
+          <a class="m-r-5" href="{{ userPageRoot(author) }}">
+            <img src="{{ author|picture }}" class="picture img-circle">
           </a>
           <div>
             <div>Updated by
-              <a href="{{ userPageRoot(page.revision.author) }}">{{ page.revision.author.name|default(author.name) }}</a>
+              <a href="{{ userPageRoot(author) }}">{{ author.name }}</a>
             </div>
             <div class="text-muted">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
           </div>

@@ -17,8 +17,8 @@
 
       <ul class="authors hidden-sm hidden-xs text-nowrap">
         <li>
-          <div class="d-flex align-items-center">
-            <a class="m-r-5" href="{{ userPageRoot(page.creator) }}">
+          <div class="d-flex align-items-center not-affix">
+            <a class="m-r-5" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
               <img src="{{ page.creator|default(author)|picture }}" class="picture img-circle">
             </a>
             <div>
@@ -26,15 +26,31 @@
               <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
             </div>
           </div>
+          <div class="d-flex align-items-center only-affix">
+            <a class="m-r-5" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
+              <img src="{{ page.creator|default(author)|picture }}" class="picture picture-xs img-circle">
+            </a>
+            <div class="ml-auto">
+              <div>Created in <span class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</span></div>
+            </div>
+          </div>
         </li>
         <li class="m-t-5">
-          <div class="d-flex align-items-center">
-            <a class="m-r-5" href="{{ userPageRoot(page.revision.author) }}">
-              <img src="{{ page.revision.author|default(author)|picture }}" class="picture img-circle">
+          <div class="d-flex align-items-center not-affix">
+            <a class="m-r-5" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
+              <img src="{{ author|picture }}" class="picture img-circle">
             </a>
             <div>
-              <div>Updated by <a href="{{ userPageRoot(page.revision.author) }}">{{ page.revision.author.name|default(author.name) }}</a></div>
-              <div class="text-muted">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
+              <div>Updated by <a href="{{ userPageRoot(page.revision.author) }}">{{ author.name }}</a></div>
+              <div class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center only-affix">
+            <a class="m-r-5" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
+              <img src="{{ author|picture }}" class="picture picture-xs img-circle">
+            </a>
+            <div class="ml-auto">
+              <div>Updated in <span class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</span></div>
             </div>
           </div>
         </li>

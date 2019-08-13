@@ -42,13 +42,13 @@ export default class PageContainer extends Container {
       likerUserIds: [],
 
       tags: [],
-      templateTagData: mainContent.getAttribute('data-template-tags'),
+      templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
-      revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
+      revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: undefined,
-      pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd'),
+      pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
     };

@@ -1,5 +1,6 @@
 const debug = require('debug')('growi:lib:middlewares');
 const logger = require('@alias/logger')('growi:lib:middlewares');
+const { distanceInWordsStrict } = require('date-fns');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
@@ -117,6 +118,10 @@ module.exports = (crowi, app) => {
         // timezone
         const swigFilters = require('swig-templates/lib/filters');
         return swigFilters.date(input, format, app.get('tzoffset'));
+      });
+
+      swig.setFilter('dateDistance', (input) => {
+        return distanceInWordsStrict(input, new Date());
       });
 
       swig.setFilter('nl2br', (string) => {

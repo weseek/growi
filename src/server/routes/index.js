@@ -226,6 +226,7 @@ module.exports = function(crowi, app) {
   app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
   app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
   app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequired() , csrf, hackmd.validateForApi, hackmd.integrate);
+  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequired() , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequired() , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   // API v3

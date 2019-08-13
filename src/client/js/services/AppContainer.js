@@ -29,7 +29,7 @@ export default class AppContainer extends Container {
 
     const body = document.querySelector('body');
 
-    this.me = body.dataset.currentUsername;
+    this.me = body.dataset.currentUsername || null; // will be initialized with null when data is empty string
     this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';

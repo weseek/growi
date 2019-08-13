@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { distanceInWordsStrict } from 'date-fns';
 import dateFnsFormat from 'date-fns/format';
+
+import Button from 'react-bootstrap/es/Button';
+import Tooltip from 'react-bootstrap/es/Tooltip';
+import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+import Collapse from 'react-bootstrap/es/Collapse';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -26,7 +32,7 @@ class Comment extends React.Component {
 
     this.state = {
       html: '',
-      isLayoutTypeGrowi: false,
+      isOlderRepliesShown: false,
     };
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
@@ -40,12 +46,6 @@ class Comment extends React.Component {
 
   componentWillMount() {
     this.renderHtml(this.props.comment.comment);
-    this.init();
-  }
-
-  init() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,9 +65,25 @@ class Comment extends React.Component {
     return this.props.comment.revision === this.props.pageContainer.state.revisionId;
   }
 
-  getRootClassName() {
-    return `page-comment ${
-      this.isCurrentUserEqualsToAuthor() ? 'page-comment-me ' : ''}`;
+  getRootClassName(comment) {
+    let className = 'page-comment';
+
+    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+    if (comment.revision === revisionId) {
+      className += ' page-comment-current';
+    }
+    else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
+      className += ' page-comment-newer';
+    }
+    else {
+      className += ' page-comment-older';
+    }
+
+    if (this.isCurrentUserEqualsToAuthor()) {
+      className += ' page-comment-me';
+    }
+
+    return className;
   }
 
   getRevisionLabelClassName() {
@@ -135,65 +151,67 @@ class Comment extends React.Component {
 
   }
 
+  renderReply(reply) {
+    return (
+      <div key={reply._id} className="page-comment-reply">
+        <CommentWrapper
+          comment={reply}
+          deleteBtnClicked={this.props.deleteBtnClicked}
+          growiRenderer={this.props.growiRenderer}
+        />
+      </div>
+    );
+  }
+
   renderReplies() {
-    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
+
     let replyList = this.props.replyList;
-    if (!isLayoutTypeGrowi) {
+    if (!isBaloonStyle) {
       replyList = replyList.slice().reverse();
     }
 
     const areThereHiddenReplies = replyList.length > 2;
 
-    const iconForOlder = <i className="icon-options-vertical"></i>;
-    const toggleOlder = areThereHiddenReplies
-      ? (
-        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          {iconForOlder} Read More
-        </a>
-      )
-      : <div></div>;
+    const { isOlderRepliesShown } = this.state;
+    const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
+    const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
+    const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
+    const toggleButton = (
+      <Button
+        bsStyle="link"
+        className="page-comments-list-toggle-older"
+        onClick={() => { this.setState({ isOlderRepliesShown: !isOlderRepliesShown }) }}
+      >
+        {toggleButtonIcon} {toggleButtonLabel}
+      </Button>
+    );
 
     const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
     const hiddenReplies = replyList.slice(0, replyList.length - 2);
 
-    const toggleElements = hiddenReplies.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <CommentWrapper
-            comment={reply}
-            deleteBtnClicked={this.props.deleteBtnClicked}
-            growiRenderer={this.props.growiRenderer}
-            replyList={[]}
-          />
-        </div>
-      );
+    const hiddenElements = hiddenReplies.map((reply) => {
+      return this.renderReply(reply);
     });
 
-    const toggleBlock = (
-      <div className="page-comments-list-older collapse out" id="page-comments-list-older">
-        {toggleElements}
-      </div>
-    );
-
-    const shownBlock = shownReplies.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <CommentWrapper
-            comment={reply}
-            deleteBtnClicked={this.props.deleteBtnClicked}
-            growiRenderer={this.props.growiRenderer}
-            replyList={[]}
-          />
-        </div>
-      );
+    const shownElements = shownReplies.map((reply) => {
+      return this.renderReply(reply);
     });
 
     return (
-      <div>
-        {toggleBlock}
-        {toggleOlder}
-        {shownBlock}
-      </div>
+      <React.Fragment>
+        { areThereHiddenReplies && (
+          <div className="page-comments-hidden-replies">
+            <Collapse in={this.state.isOlderRepliesShown}>
+              <div>{hiddenElements}</div>
+            </Collapse>
+            <div className="text-center">{toggleButton}</div>
+          </div>
+        ) }
+
+        {shownElements}
+      </React.Fragment>
     );
   }
 
@@ -202,55 +220,46 @@ class Comment extends React.Component {
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
 
-    const rootClassName = this.getRootClassName();
-    const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
+    const rootClassName = this.getRootClassName(comment);
+    const commentDate = distanceInWordsStrict(comment.createdAt, new Date());
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
-
-    let isNewer;
-    if (comment.revision === revisionId) {
-      isNewer = 'page-comments-list-current';
-    }
-    else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-      isNewer = 'page-comments-list-newer';
-    }
-    else {
-      isNewer = 'page-comments-list-older';
-    }
-
+    const commentDateTooltip = (
+      <Tooltip id={`commentDateTooltip-${comment._id}`}>
+        {dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm')}
+      </Tooltip>
+    );
 
     return (
-      <div>
-        <div className={isNewer}>
-          <div className={rootClassName}>
-            <UserPicture user={creator} />
-            <div className="page-comment-main">
-              <div className="page-comment-creator">
-                <Username user={creator} />
-              </div>
-              <div className="page-comment-body">{commentBody}</div>
-              <div className="page-comment-meta">
-                {commentDate}&nbsp;
-                <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
-              </div>
-              <div className="page-comment-control">
-                <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-                  <i className="ti-close"></i>
-                </button>
-              </div>
+      <React.Fragment>
+
+        <div className={rootClassName}>
+          <UserPicture user={creator} />
+          <div className="page-comment-main">
+            <div className="page-comment-creator">
+              <Username user={creator} />
+            </div>
+            <div className="page-comment-body">{commentBody}</div>
+            <div className="page-comment-meta">
+              <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
+                <span>{commentDate}</span>
+              </OverlayTrigger>
+              <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
+            </div>
+            <div className="page-comment-control">
+              <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+                <i className="ti-close"></i>
+              </button>
             </div>
           </div>
         </div>
-        <div className="container-fluid">
-          <div className="row">
-            {this.renderReplies()}
-          </div>
-        </div>
-      </div>
+
+        {this.renderReplies()}
+
+      </React.Fragment>
     );
   }
 
@@ -271,6 +280,9 @@ Comment.propTypes = {
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
+};
+Comment.defaultProps = {
+  replyList: [],
 };
 
 export default CommentWrapper;
