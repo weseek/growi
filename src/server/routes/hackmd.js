@@ -181,6 +181,32 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * POST /_api/hackmd.discard
+   *
+   * Create page on HackMD and start to integrate
+   * @param {object} req
+   * @param {object} res
+   */
+  const discard = async function(req, res) {
+    let page = req.page;
+
+    try {
+      page = await Page.syncRevisionToHackmd(page);
+
+      const data = {
+        pageIdOnHackmd: page.pageIdOnHackmd,
+        revisionIdHackmdSynced: page.revisionHackmdSynced,
+        hasDraftOnHackmd: page.hasDraftOnHackmd,
+      };
+      return res.json(ApiResponse.success(data));
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error('discard process failed'));
+    }
+  };
+
+  /**
    * POST /_api/hackmd.saveOnHackmd
    *
    * receive when save operation triggered on HackMD
@@ -208,6 +234,7 @@ module.exports = function(crowi, app) {
     loadStyles,
     validateForApi,
     integrate,
+    discard,
     saveOnHackmd,
   };
 };

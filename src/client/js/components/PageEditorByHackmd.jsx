@@ -128,8 +128,27 @@ class PageEditorByHackmd extends React.Component {
   /**
    * Reset draft
    */
-  discardChanges() {
-    this.props.pageContainer.setState({ hasDraftOnHackmd: false });
+  async discardChanges() {
+    const { pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await this.props.appContainer.apiPost('/hackmd.discard', { pageId });
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      this.props.pageContainer.setState({
+        hasDraftOnHackmd: false,
+        pageIdOnHackmd: res.pageIdOnHackmd,
+        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      pageContainer.showErrorToastr(err);
+    }
   }
 
   /**
