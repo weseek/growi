@@ -1,16 +1,18 @@
 # CHANGES
 
-## 3.5.8-RC
+## 3.5.9-RC
 
 * 
 
-## 3.5.7
+## 3.5.8
 
 * Improvement: Controls when HackMD/CodiMD has unsaved draft
 * Improvement: Show hints if HackMD/CodiMD integration is not working
 * Improvement: GROWI server obtains HackMD/CodiMD page id from the 302 response header
 * Improvement: Comment Thread Layout
 * Improvement: Show commented date with date distance format
+
+## 3.5.7 (Missing number)
 
 ## 3.5.6
 
