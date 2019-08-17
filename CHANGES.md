@@ -2,7 +2,7 @@
 
 ## 3.5.9-RC
 
-* 
+* Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
 
 ## 3.5.8
 
