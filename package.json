@@ -134,12 +134,16 @@
     "xss": "^1.0.6"
   },
   "devDependencies": {
+    "//": [
+      "@handsontable/react: v3 requires handsontable >= 7.0.0.",
+      "handsontable: v7.0.0 or above is no loger MIT lisence."
+    ],
     "@alienfast/i18next-loader": "^1.0.16",
     "@babel/core": "^7.4.5",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@handsontable/react": "^2.0.0",
+    "@handsontable/react": "=2.1.0",
     "autoprefixer": "^9.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.6",
@@ -164,7 +168,7 @@
     "eslint-plugin-jest": "^22.7.1",
     "eslint-plugin-react": "^7.14.2",
     "file-loader": "^4.0.0",
-    "handsontable": "^6.0.1",
+    "handsontable": "=6.2.2",
     "i18next-browser-languagedetector": "^3.0.1",
     "imports-loader": "^0.8.0",
     "jest": "^24.8.0",
@@ -188,7 +192,7 @@
     "mini-css-extract-plugin": "^0.8.0",
     "morgan": "^1.9.0",
     "node-dev": "^4.0.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "normalize-path": "^3.0.0",
     "null-loader": "^3.0.0",
     "on-headers": "^1.0.1",
