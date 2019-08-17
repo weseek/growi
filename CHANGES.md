@@ -7,6 +7,7 @@
     * entities
     * openid-client
     * rimraf
+    * style-loader
 
 ## 3.5.8
 
