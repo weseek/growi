@@ -11,7 +11,7 @@ Install
 1. install plugin
 
     ```bash
-    npm install --save growi-plugin-attachment-refs
+    yarn add growi-plugin-attachment-refs
     ```
 
 1. build client app (see official documents)
