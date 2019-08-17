@@ -3,6 +3,10 @@
 ## 3.5.9-RC
 
 * Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
+* Support: Upgrade libs
+    * entities
+    * openid-client
+    * rimraf
 
 ## 3.5.8
 
