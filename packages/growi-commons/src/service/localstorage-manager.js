@@ -1,12 +1,12 @@
-let instance = null;
+let _instance = null;
 class LocalStorageManager {
 
   static getInstance() {
-    if (instance == null) {
-      instance = new LocalStorageManager();
+    if (_instance == null) {
+      _instance = new LocalStorageManager();
     }
 
-    return instance;
+    return _instance;
   }
 
   /**
@@ -47,7 +47,7 @@ class LocalStorageManager {
    *
    * @param {string} namespace
    */
-  static clearAllStateCaches(namespace) {
+  clearAllStateCaches(namespace) {
     sessionStorage.removeItem(namespace);
   }
 
