@@ -4,7 +4,7 @@ module.exports = {
   envUtils: require('./util/env-utils'),
   // plugin
   customTagUtils: require('./plugin/util/custom-tag-utils'),
-  TagCacheManager: require('.plugin/service/tag-cache-manager'),
+  TagCacheManager: require('./plugin/service/tag-cache-manager'),
   // service
   LocalStorageManager: require('./service/localstorage-manager'),
 };
