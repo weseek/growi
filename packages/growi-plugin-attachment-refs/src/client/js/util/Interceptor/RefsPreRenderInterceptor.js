@@ -1,13 +1,13 @@
 import { customTagUtils, BasicInterceptor } from 'growi-commons';
 
-import CacheHelper from '../CacheHelper';
+import TagCacheManagerFactory from '../TagCacheManagerFactory';
 
 /**
  * The interceptor for refs
  *
  *  replace refs tag to a React target element
  */
-export default class PreRenderInterceptor extends BasicInterceptor {
+export default class RefsPreRenderInterceptor extends BasicInterceptor {
 
   /**
    * @inheritdoc
@@ -22,18 +22,23 @@ export default class PreRenderInterceptor extends BasicInterceptor {
   /**
    * @inheritdoc
    */
+  isProcessableParallel() {
+    return false;
+  }
+
+  /**
+   * @inheritdoc
+   */
   async process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
     const parsedHTML = context.parsedHTML;
     this.initializeCache(contextName);
 
-    context.lsxContextMap = {};
-
     const tagPattern = /ref|refs|refimg|refsimg/;
     const result = customTagUtils.findTagAndReplace(tagPattern, parsedHTML);
 
     context.parsedHTML = result.html;
-    context.tagContextMap = result.tagContextMap;
+    context.refsContextMap = result.tagContextMap;
 
     return context;
   }
@@ -47,7 +52,7 @@ export default class PreRenderInterceptor extends BasicInterceptor {
    */
   initializeCache(contextName) {
     if (contextName === 'preRenderHtml') {
-      CacheHelper.clearAllStateCaches();
+      TagCacheManagerFactory.getInstance().clearAllStateCaches();
     }
   }
 

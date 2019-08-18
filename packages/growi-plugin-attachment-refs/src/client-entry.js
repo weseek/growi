@@ -1,10 +1,10 @@
-import PreRenderInterceptor from './client/js/util/Interceptor/PreRenderInterceptor';
-import PostRenderInterceptor from './client/js/util/Interceptor/PostRenderInterceptor';
+import RefsPreRenderInterceptor from './client/js/util/Interceptor/RefsPreRenderInterceptor';
+import RefsPostRenderInterceptor from './client/js/util/Interceptor/RefsPostRenderInterceptor';
 
 export default (appContainer) => {
   // add interceptors
   appContainer.interceptorManager.addInterceptors([
-    new PreRenderInterceptor(),
-    new PostRenderInterceptor(appContainer),
+    new RefsPreRenderInterceptor(),
+    new RefsPostRenderInterceptor(appContainer),
   ]);
 };

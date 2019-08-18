@@ -11,7 +11,7 @@ import AttachmentList from '../../components/AttachmentList';
  *
  *  render React DOM
  */
-export default class PostRenderInterceptor extends BasicInterceptor {
+export default class RefsPostRenderInterceptor extends BasicInterceptor {
 
   constructor(appContainer) {
     super();
@@ -34,15 +34,13 @@ export default class PostRenderInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
 
-    // forEach keys of tagContextMap
-    Object.keys(context.tagContextMap).forEach((domId) => {
+    // forEach keys of refsContextMap
+    Object.keys(context.refsContextMap).forEach((domId) => {
       const elem = document.getElementById(domId);
 
       if (elem) {
-        // get TagContext instance from context
-        const tagContext = context.tagContextMap[domId] || {};
-        // create RefsContext instance
-        const refsContext = new RefsContext(tagContext);
+        // instanciate RefsContext from context
+        const refsContext = new RefsContext(context.refsContextMap[domId] || {});
         refsContext.fromPagePath = context.currentPagePath;
 
         this.renderReactDOM(refsContext, elem);

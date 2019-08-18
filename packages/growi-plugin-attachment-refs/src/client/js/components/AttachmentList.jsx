@@ -5,7 +5,7 @@ import * as url from 'url';
 
 import { pathUtils } from 'growi-commons';
 import RefsContext from '../util/RefsContext';
-import CacheHelper from '../util/CacheHelper';
+import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
 
 
 export default class AttachmentList extends React.Component {
@@ -18,6 +18,8 @@ export default class AttachmentList extends React.Component {
       isError: false,
       errorMessage: '',
     };
+
+    this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
   // eslint-disable-next-line react/no-deprecated
@@ -25,7 +27,7 @@ export default class AttachmentList extends React.Component {
     const pluginContext = this.props.refContext || this.props.refsContext;
 
     // get state object cache
-    const stateCache = CacheHelper.getStateCache(pluginContext);
+    const stateCache = this.tagCacheManager.getStateCache(pluginContext);
 
     // check cache exists
     if (stateCache != null) {
@@ -98,6 +100,6 @@ export default class AttachmentList extends React.Component {
 
 AttachmentList.propTypes = {
   appContainer: PropTypes.object.isRequired,
-  refContext: PropTypes.instanceOf(PropTypes.instanceOf(Object)),
-  refsContext: PropTypes.instanceOf(PropTypes.instanceOf(RefsContext)),
+  // refContext: PropTypes.instanceOf(PropTypes.instanceOf(Object)),
+  // refsContext: PropTypes.instanceOf(PropTypes.instanceOf(RefsContext)),
 };
