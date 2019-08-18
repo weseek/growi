@@ -37,6 +37,7 @@
     "jest": "^24.7.1",
     "jest-localstorage-mock": "^2.4.0",
     "module-alias": "^2.2.0",
+    "npm-run-all": "^4.1.5",
     "prettier-stylelint": "^0.4.2"
   },
   "_moduleAliases": {
