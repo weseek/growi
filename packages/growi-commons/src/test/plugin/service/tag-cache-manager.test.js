@@ -111,4 +111,16 @@ describe('TagCacheManager', () => {
     expect(saveToSessionStorageMockCalls[0][1]).toBe('dummy key');
     expect(saveToSessionStorageMockCalls[0][2]).toBe(stateMock);
   });
+
+  test('.clearAllStateCaches', () => {
+    // mock for LocalStorageManager
+    localStorageManagerMock.clearAllStateCaches = jest.fn();
+
+    // when
+    tagCacheManager.clearAllStateCaches();
+    // then
+    const clearAllStateCachesMockCalls = localStorageManagerMock.clearAllStateCaches.mock.calls;
+    expect(clearAllStateCachesMockCalls.length).toBe(1);
+    expect(clearAllStateCachesMockCalls[0][0]).toBe('dummy ns');
+  });
 });
