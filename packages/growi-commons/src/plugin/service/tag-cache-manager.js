@@ -1,10 +1,9 @@
 import { LocalStorageManager } from '../../service/localstorage-manager';
 
-
 /**
  * Service Class for caching React state and TagContext
  */
-export default class TagCacheManager {
+class TagCacheManager {
 
   /**
    * @callback generateCacheKey
@@ -19,6 +18,16 @@ export default class TagCacheManager {
    * @param {generateCacheKey} generateCacheKey
    */
   constructor(cacheNs, generateCacheKey) {
+    if (cacheNs == null) {
+      throw new Error('args \'cacheNs\' is required.');
+    }
+    if (generateCacheKey == null) {
+      throw new Error('args \'generateCacheKey\' is required.');
+    }
+    if (typeof generateCacheKey !== 'function') {
+      throw new Error('args \'generateCacheKey\' should be function.');
+    }
+
     this.cacheNs = cacheNs;
     this.generateCacheKey = generateCacheKey;
   }
@@ -58,3 +67,5 @@ export default class TagCacheManager {
   }
 
 }
+
+module.exports = TagCacheManager;
