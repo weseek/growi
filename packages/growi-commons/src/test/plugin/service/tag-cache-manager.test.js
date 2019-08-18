@@ -88,4 +88,27 @@ describe('TagCacheManager', () => {
     expect(retrieveFromSessionStorageMockCalls[0][0]).toBe('dummy ns');
     expect(retrieveFromSessionStorageMockCalls[0][1]).toBe('dummy key');
   });
+
+  test('.getStateCache', () => {
+    // partial mock
+    tagCacheManager.generateCacheKey = jest.fn().mockReturnValue('dummy key');
+
+    // mock for LocalStorageManager
+    localStorageManagerMock.saveToSessionStorage = jest.fn();
+
+    const tagContextMock = jest.fn();
+    const stateMock = jest.fn();
+
+    // when
+    tagCacheManager.cacheState(tagContextMock, stateMock);
+    // then
+    const generateCacheKeyMockCalls = tagCacheManager.generateCacheKey.mock.calls;
+    expect(generateCacheKeyMockCalls.length).toBe(1);
+    expect(generateCacheKeyMockCalls[0][0]).toBe(tagContextMock);
+    const saveToSessionStorageMockCalls = localStorageManagerMock.saveToSessionStorage.mock.calls;
+    expect(saveToSessionStorageMockCalls.length).toBe(1);
+    expect(saveToSessionStorageMockCalls[0][0]).toBe('dummy ns');
+    expect(saveToSessionStorageMockCalls[0][1]).toBe('dummy key');
+    expect(saveToSessionStorageMockCalls[0][2]).toBe(stateMock);
+  });
 });
