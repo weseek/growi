@@ -63,7 +63,7 @@ class TagCacheManager {
    */
   clearAllStateCaches() {
     const localStorageManager = LocalStorageManager.getInstance();
-    localStorageManager.saveToSessionStorage(this.cacheNs, {});
+    localStorageManager.clearAllStateCaches(this.cacheNs);
   }
 
 }
