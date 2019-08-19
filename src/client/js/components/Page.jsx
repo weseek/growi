@@ -47,6 +47,7 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const { pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -60,7 +61,7 @@ class Page extends React.Component {
       editorContainer.disableUnsavedWarning();
 
       // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(newMarkdown);
+      const { page, tags } = await pageContainer.save(newMarkdown, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();

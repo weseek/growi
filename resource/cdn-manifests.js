@@ -2,7 +2,7 @@ module.exports = {
   js: [
     {
       name: 'basis',
-      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1,npm/bootstrap@3.4.1/dist/js/bootstrap.min.js',
+      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.4.0,npm/bootstrap@3.4.1/dist/js/bootstrap.min.js',
       groups: ['basis'],
       args: {
         integrity: '',
