@@ -161,6 +161,7 @@ class Comment extends React.Component {
       <div key={reply._id} className="page-comment-reply">
         <CommentWrapper
           comment={reply}
+          editBtnClicked={this.props.editBtnClicked}
           deleteBtnClicked={this.props.deleteBtnClicked}
           growiRenderer={this.props.growiRenderer}
         />
