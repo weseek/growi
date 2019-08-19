@@ -29,12 +29,22 @@ module.exports = function(crowi, app) {
     csrfVerify: csrf,
   } = middlewares;
 
+  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
+
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
   app.get('/'                        , middlewares.applicationInstalled, loginRequired(false) , page.showTopPage);
 
-  app.get('/installer'               , middlewares.applicationNotInstalled , installer.index);
-  app.post('/installer'              , middlewares.applicationNotInstalled , form.register , csrf, installer.install);
+  // API v3
+  app.use('/api-docs', require('./apiv3/docs')(crowi));
+  app.use('/_api/v3', require('./apiv3')(crowi));
+
+  // installer
+  if (!isInstalled) {
+    app.get('/installer'               , middlewares.applicationNotInstalled , installer.index);
+    app.post('/installer'              , middlewares.applicationNotInstalled , form.register , csrf, installer.install);
+    return;
+  }
 
   app.get('/login/error/:reason'     , login.error);
   app.get('/login'                   , middlewares.applicationInstalled    , login.login);
@@ -228,10 +238,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequired() , csrf, hackmd.validateForApi, hackmd.integrate);
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequired() , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequired() , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
-
-  // API v3
-  app.use('/api-docs', require('./apiv3/docs')(crowi));
-  app.use('/_api/v3', require('./apiv3')(crowi));
 
   app.get('/*/$'                   , loginRequired(false) , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired(false) , page.showPage, page.notFound);

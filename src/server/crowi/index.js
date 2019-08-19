@@ -15,6 +15,8 @@ const mongoose = require('mongoose');
 
 const models = require('../models');
 
+const PluginService = require('../plugins/plugin.service');
+
 function Crowi(rootdir) {
   const self = this;
 
@@ -363,6 +365,10 @@ Crowi.prototype.start = async function() {
   await this.init();
   const express = await this.buildServer();
 
+  // setup plugins
+  this.pluginService = new PluginService(this, express);
+  this.pluginService.autoDetectAndLoadPlugins();
+
   const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
   // listen
@@ -390,19 +396,6 @@ Crowi.prototype.buildServer = function() {
   const env = this.node_env;
 
   require('./express-init')(this, express);
-
-  // import plugins
-  const isEnabledPlugins = this.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
-  if (isEnabledPlugins) {
-    debug('Plugins are enabled');
-    const PluginService = require('../plugins/plugin.service');
-    const pluginService = new PluginService(this, express);
-    pluginService.autoDetectAndLoadPlugins();
-
-    if (env === 'development') {
-      this.crowiDev.loadPlugins(express);
-    }
-  }
 
   // use bunyan
   if (env === 'production') {
