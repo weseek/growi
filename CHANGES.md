@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.5.9-RC
+## 3.5.10-RC
+
+* 
+
+## 3.5.9
 
 * Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
 * Fix: Plugins are not initialized when first launching
