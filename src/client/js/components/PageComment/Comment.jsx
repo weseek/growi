@@ -250,6 +250,10 @@ class Comment extends React.Component {
               <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
             </div>
             <div className="page-comment-control">
+              {/* TODO GW-63 adjust layout */}
+              <button type="button" className="btn btn-link" onClick={this.editBtnClickedHandler}>
+                <i className="ti-pencil"></i>
+              </button>
               <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
                 <i className="ti-close"></i>
               </button>
