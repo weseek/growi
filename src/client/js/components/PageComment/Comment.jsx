@@ -91,6 +91,10 @@ class Comment extends React.Component {
       this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
   }
 
+  editBtnClickedHandler() {
+    this.props.editBtnClicked(this.props.comment);
+  }
+
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
   }
