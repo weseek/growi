@@ -64,6 +64,7 @@ class PageComments extends React.Component {
   }
 
   confirmToEditComment(comment) {
+    // TODO GW-141 show editor
     console.log("Pushed Edit button");
   }
 
