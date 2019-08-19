@@ -5,6 +5,7 @@
 * Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
 * Support: Upgrade libs
     * entities
+    * growi-commons
     * openid-client
     * rimraf
     * style-loader

@@ -94,7 +94,7 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^4.0.3",
+    "growi-commons": "^4.0.7",
     "helmet": "^3.13.0",
     "i18next": "^17.0.3",
     "i18next-express-middleware": "^1.4.1",
