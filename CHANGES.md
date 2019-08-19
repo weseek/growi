@@ -3,6 +3,8 @@
 ## 3.5.9-RC
 
 * Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
+* Fix: Plugins are not initialized when first launching
+    * Introduced by 3.5.0
 * Support: Upgrade libs
     * entities
     * growi-commons
