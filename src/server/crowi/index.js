@@ -391,19 +391,6 @@ Crowi.prototype.buildServer = function() {
 
   require('./express-init')(this, express);
 
-  // import plugins
-  const isEnabledPlugins = this.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
-  if (isEnabledPlugins) {
-    debug('Plugins are enabled');
-    const PluginService = require('../plugins/plugin.service');
-    const pluginService = new PluginService(this, express);
-    pluginService.autoDetectAndLoadPlugins();
-
-    if (env === 'development') {
-      this.crowiDev.loadPlugins(express);
-    }
-  }
-
   // use bunyan
   if (env === 'production') {
     const expressBunyanLogger = require('express-bunyan-logger');
@@ -417,6 +404,19 @@ Crowi.prototype.buildServer = function() {
   else {
     const morgan = require('morgan');
     express.use(morgan('dev'));
+  }
+
+  // import plugins
+  const isEnabledPlugins = this.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
+  if (isEnabledPlugins) {
+    debug('Plugins are enabled');
+    const PluginService = require('../plugins/plugin.service');
+    const pluginService = new PluginService(this, express);
+    pluginService.autoDetectAndLoadPlugins();
+
+    if (env === 'development') {
+      this.crowiDev.loadPlugins(express);
+    }
   }
 
   return Promise.resolve(express);
