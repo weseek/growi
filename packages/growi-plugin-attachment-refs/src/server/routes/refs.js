@@ -6,6 +6,7 @@ module.exports = (crowi) => {
   const express = crowi.require('express');
   const router = express.Router();
 
+  const User = crowi.model('User');
   const Page = crowi.model('Page');
   const Attachment = crowi.model('Attachment');
 
@@ -23,9 +24,8 @@ module.exports = (crowi) => {
     }
 
     try {
-      const attachment = await Attachment.findOne({
-        originalName: fileName,
-      });
+      const attachment = await Attachment.findOne({ originalName: fileName })
+        .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
 
       // not found
       if (attachment == null) {
@@ -43,7 +43,7 @@ module.exports = (crowi) => {
         return;
       }
 
-      res.status(200).send({ status: 'ok', attachment: attachment.toObject() });
+      res.status(200).send({ attachment });
     }
     catch (err) {
       logger.error(err);

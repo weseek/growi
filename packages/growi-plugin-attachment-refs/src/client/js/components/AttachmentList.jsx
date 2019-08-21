@@ -1,8 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// eslint-disable-next-line import/no-unresolved
+import axios from 'axios'; // import axios from growi dependencies
+
+import Attachment from '@client/js/components/PageAttachment/Attachment';
+
 import RefsContext from '../util/RefsContext';
 import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
+
+// eslint-disable-next-line no-unused-vars
+import styles from '../../css/index.css';
 
 
 export default class AttachmentList extends React.Component {
@@ -12,7 +20,7 @@ export default class AttachmentList extends React.Component {
 
     this.state = {
       isLoading: true,
-      errorMessage: '',
+      errorMessage: null,
 
       attachments: [],
     };
@@ -22,20 +30,19 @@ export default class AttachmentList extends React.Component {
 
   // eslint-disable-next-line react/no-deprecated
   async componentWillMount() {
-    const { appContainer, refsContext } = this.props;
+    const { refsContext } = this.props;
 
     // get state object cache
     const stateCache = this.tagCacheManager.getStateCache(refsContext);
 
     // check cache exists
-    // if (stateCache != null) {
-    //   this.setState({
-    //     isLoading: false,
-    //     isError: stateCache.isError,
-    //     errorMessage: stateCache.errorMessage,
-    //   });
-    //   return; // go to render()
-    // }
+    if (stateCache != null) {
+      this.setState({
+        ...stateCache,
+        isLoading: false,
+      });
+      return; // go to render()
+    }
 
     refsContext.parse();
 
@@ -43,21 +50,17 @@ export default class AttachmentList extends React.Component {
     try {
       this.setState({ isLoading: true });
 
-      console.log(refsContext);
-
-      // TODO: try to use async/await
-      res = await appContainer.apiGet('/plugin/ref', {
-        pagePath: refsContext.pagePath,
-        fileName: refsContext.fileName,
-        options: refsContext.options,
+      res = await axios.get('/_api/plugin/ref', {
+        params: {
+          pagePath: refsContext.pagePath,
+          fileName: refsContext.fileName,
+          options: refsContext.options,
+        },
       });
 
-      console.log(res);
-
-      if (res.status === 'ok') {
+      if (res.status === 200) {
         this.setState({
-          isLoaded: true,
-          attachments: [res.attachment]
+          attachments: [res.data.attachment],
         });
       }
     }
@@ -68,57 +71,42 @@ export default class AttachmentList extends React.Component {
     }
     finally {
       this.setState({ isLoading: false });
+
+      // store to sessionStorage
+      this.tagCacheManager.cacheState(refsContext, this.state);
     }
 
-    // this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: pluginContext.options })
-    //   .then((res) => {
-    //     if (res.ok) {
-    //       const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
-    //       this.setState({ nodeTree });
-    //     }
-    //     else {
-    //       return Promise.reject(res.error);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     this.setState({ isError: true, errorMessage: error.message });
-    //   })
-    //   // finally
-    //   .then(() => {
-    //     this.setState({ isLoading: false });
-
-    //     // store to sessionStorage
-    //     CacheHelper.cacheState(pluginContext, this.state);
-    //   });
   }
 
-  // renderContents() {
-  //   const lsxContext = this.props.lsxContext;
+  renderContents() {
+    const { refsContext } = this.props;
 
-  //   if (this.state.isLoading) {
-  //     return (
-  //       <div className="text-muted">
-  //         <i className="fa fa-spinner fa-pulse mr-1"></i>
-  //         <span className="lsx-blink">{lsxContext.tagExpression}</span>
-  //       </div>
-  //     );
-  //   }
-  //   if (this.state.isError) {
-  //     return (
-  //       <div className="text-warning">
-  //         <i className="fa fa-exclamation-triangle fa-fw"></i>
-  //         {lsxContext.tagExpression} (-&gt; <small>{this.state.errorMessage}</small>)
-  //       </div>
-  //     );
-  //   }
-  //   // render tree
+    if (this.state.isLoading) {
+      return (
+        <div className="text-muted">
+          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <span className="attachment-refs-blink">{refsContext.tagExpression}</span>
+        </div>
+      );
+    }
+    if (this.state.errorMessage != null) {
+      return (
+        <div className="text-warning">
+          <i className="fa fa-exclamation-triangle fa-fw"></i>
+          {refsContext.tagExpression} (-&gt; <small>{this.state.errorMessage}</small>)
+        </div>
+      );
+    }
 
-  //   return <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />;
-
-  // }
+    return (
+      this.state.attachments.map((attachment) => {
+        return <Attachment key={attachment._id} attachment={attachment} />;
+      })
+    );
+  }
 
   render() {
-    return <div className="refs-attachment-list">{JSON.stringify(this.props.refsContext)}</div>;
+    return <div className="attachment-refs">{this.renderContents()}</div>;
   }
 
 }
