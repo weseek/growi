@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as url from 'url';
-
-import { pathUtils } from 'growi-commons';
 import RefsContext from '../util/RefsContext';
 import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
 
@@ -15,35 +12,63 @@ export default class AttachmentList extends React.Component {
 
     this.state = {
       isLoading: true,
-      isError: false,
       errorMessage: '',
+
+      attachments: [],
     };
 
     this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
   // eslint-disable-next-line react/no-deprecated
-  componentWillMount() {
-    const pluginContext = this.props.refContext || this.props.refsContext;
+  async componentWillMount() {
+    const { appContainer, refsContext } = this.props;
 
     // get state object cache
-    const stateCache = this.tagCacheManager.getStateCache(pluginContext);
+    const stateCache = this.tagCacheManager.getStateCache(refsContext);
 
     // check cache exists
-    if (stateCache != null) {
-      this.setState({
-        isLoading: false,
-        isError: stateCache.isError,
-        errorMessage: stateCache.errorMessage,
+    // if (stateCache != null) {
+    //   this.setState({
+    //     isLoading: false,
+    //     isError: stateCache.isError,
+    //     errorMessage: stateCache.errorMessage,
+    //   });
+    //   return; // go to render()
+    // }
+
+    refsContext.parse();
+
+    let res;
+    try {
+      this.setState({ isLoading: true });
+
+      console.log(refsContext);
+
+      // TODO: try to use async/await
+      res = await appContainer.apiGet('/plugin/ref', {
+        pagePath: refsContext.pagePath,
+        fileName: refsContext.fileName,
+        options: refsContext.options,
       });
-      return; // go to render()
+
+      console.log(res);
+
+      if (res.status === 'ok') {
+        this.setState({
+          isLoaded: true,
+          attachments: [res.attachment]
+        });
+      }
     }
-
-    pluginContext.parse();
-
-    // // add slash ensure not to forward match to another page
-    // // ex: '/Java/' not to match to '/JavaScript'
-    // const pagePath = pathUtils.addTrailingSlash(pluginContext.pagePath);
+    catch (err) {
+      this.setState({
+        errorMessage: err,
+      });
+    }
+    finally {
+      this.setState({ isLoading: false });
+    }
 
     // this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: pluginContext.options })
     //   .then((res) => {
@@ -93,13 +118,12 @@ export default class AttachmentList extends React.Component {
   // }
 
   render() {
-    return <div className="refs-attachment-list">AttachmentList</div>;
+    return <div className="refs-attachment-list">{JSON.stringify(this.props.refsContext)}</div>;
   }
 
 }
 
 AttachmentList.propTypes = {
   appContainer: PropTypes.object.isRequired,
-  // refContext: PropTypes.instanceOf(PropTypes.instanceOf(Object)),
-  // refsContext: PropTypes.instanceOf(PropTypes.instanceOf(RefsContext)),
+  refsContext: PropTypes.instanceOf(RefsContext).isRequired,
 };

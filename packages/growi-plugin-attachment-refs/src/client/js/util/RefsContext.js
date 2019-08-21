@@ -45,6 +45,7 @@ export default class RefsContext extends TagContext {
    * parse method for 'ref' and 'refimg'
    */
   parseForSingle(parsedArgs) {
+    this.fileName = parsedArgs.firstArgsKey;
     this.pagePath = this.resolvePath(this.options.page || this.fromPagePath);
   }
 
@@ -52,7 +53,6 @@ export default class RefsContext extends TagContext {
    * parse method for 'refs' and 'refsimg'
    */
   parseForMulti(parsedArgs) {
-    console.log(parsedArgs);
     if (this.options.prefix) {
       this.prefix = this.resolvePath(this.options.prefix);
     }
