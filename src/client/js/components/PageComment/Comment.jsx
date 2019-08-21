@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { distanceInWordsStrict } from 'date-fns';
-import dateFnsFormat from 'date-fns/format';
+import { format, formatDistanceStrict } from 'date-fns';
 
 import Button from 'react-bootstrap/es/Button';
 import Tooltip from 'react-bootstrap/es/Tooltip';
@@ -219,9 +218,10 @@ class Comment extends React.Component {
     const comment = this.props.comment;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
+    const createdAt = new Date(comment.createdAt);
 
     const rootClassName = this.getRootClassName(comment);
-    const commentDate = distanceInWordsStrict(comment.createdAt, new Date());
+    const commentDate = formatDistanceStrict(createdAt, new Date());
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
@@ -229,7 +229,7 @@ class Comment extends React.Component {
 
     const commentDateTooltip = (
       <Tooltip id={`commentDateTooltip-${comment._id}`}>
-        {dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm')}
+        {format(createdAt, 'yyyy/MM/dd HH:mm')}
       </Tooltip>
     );
 

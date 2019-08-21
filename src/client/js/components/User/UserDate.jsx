@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import dateFnsFormat from 'date-fns/format';
+import { format } from 'date-fns';
 
 /**
  * UserDate
@@ -11,7 +11,8 @@ import dateFnsFormat from 'date-fns/format';
 export default class UserDate extends React.Component {
 
   render() {
-    const dt = dateFnsFormat(this.props.dateTime, this.props.format);
+    const date = new Date(this.props.dateTime);
+    const dt = format(date, this.props.format);
 
     return (
       <span className={this.props.className}>
@@ -29,6 +30,6 @@ UserDate.propTypes = {
 };
 
 UserDate.defaultProps = {
-  format: 'YYYY/MM/DD HH:mm:ss',
+  format: 'yyyy/MM/dd HH:mm:ss',
   className: '',
 };
