@@ -24,7 +24,7 @@ class PageHistory extends React.Component {
     this.onDiffOpenClicked = this.onDiffOpenClicked.bind(this);
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     const pageId = this.props.pageId;
 
     if (!pageId) {
