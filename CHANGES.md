@@ -2,7 +2,8 @@
 
 ## 3.5.10-RC
 
-* 
+* Fix: Code Highlight Theme does not change
+    * Introduced by 3.5.2
 
 ## 3.5.9
 
