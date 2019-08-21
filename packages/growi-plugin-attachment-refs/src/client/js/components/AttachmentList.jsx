@@ -20,6 +20,7 @@ export default class AttachmentList extends React.Component {
 
     this.state = {
       isLoading: true,
+      isError: false,
       errorMessage: null,
 
       attachments: [],
@@ -58,15 +59,14 @@ export default class AttachmentList extends React.Component {
         },
       });
 
-      if (res.status === 200) {
-        this.setState({
-          attachments: [res.data.attachment],
-        });
-      }
+      this.setState({
+        attachments: [res.data.attachment],
+      });
     }
     catch (err) {
       this.setState({
-        errorMessage: err,
+        isError: true,
+        errorMessage: err.response.data,
       });
     }
     finally {

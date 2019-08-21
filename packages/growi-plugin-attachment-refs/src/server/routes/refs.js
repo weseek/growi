@@ -23,32 +23,38 @@ module.exports = (crowi) => {
       return;
     }
 
-    try {
-      const attachment = await Attachment.findOne({ originalName: fileName })
-        .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
+    const page = await Page.findByPathAndViewer(pagePath, user);
 
-      // not found
-      if (attachment == null) {
-        res.status(404).send(`fileName: '${fileName}' is not found.`);
-        return;
-      }
-
-      logger.debug(`attachment '${attachment.id}' is found from filename '${fileName}'`);
-
-      // forbidden
-      const isAccessible = await Page.isAccessiblePageByViewer(attachment.page, user);
-      if (!isAccessible) {
-        logger.debug(`attachment '${attachment.id}' is forbidden for user '${user && user.username}'`);
-        res.status(403).send(`page '${attachment.page}' is forbidden.`);
-        return;
-      }
-
-      res.status(200).send({ attachment });
+    // not found
+    if (page == null) {
+      res.status(404).send(`pagePath: '${pagePath}' is not found or forbidden.`);
+      return;
     }
-    catch (err) {
-      logger.error(err);
-      res.status(503).send({ err });
+
+    const attachment = await Attachment
+      .findOne({
+        page: page._id,
+        originalName: fileName,
+      })
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
+
+    // not found
+    if (attachment == null) {
+      res.status(404).send(`fileName: '${fileName}' is not found.`);
+      return;
     }
+
+    logger.debug(`attachment '${attachment.id}' is found from filename '${fileName}'`);
+
+    // forbidden
+    const isAccessible = await Page.isAccessiblePageByViewer(attachment.page, user);
+    if (!isAccessible) {
+      logger.debug(`attachment '${attachment.id}' is forbidden for user '${user && user.username}'`);
+      res.status(403).send(`page '${attachment.page}' is forbidden.`);
+      return;
+    }
+
+    res.status(200).send({ attachment });
   });
 
   return router;
