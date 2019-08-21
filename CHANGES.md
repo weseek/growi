@@ -5,6 +5,8 @@
 * Improvement: Show loading spinner when fetching page history data
 * Fix: Code Highlight Theme does not change
     * Introduced by 3.5.2
+* Support: Upgrade libs
+    * date-fns
 
 ## 3.5.9
 
