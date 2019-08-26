@@ -56,7 +56,14 @@ export default class RefsContext extends TagContext {
       throw new Error('fileName is not specified. set first argument or specify \'file\' option');
     }
 
-    this.pagePath = this.resolvePath(this.options.page || this.fromPagePath);
+    // determine pagePath
+    // order:
+    //   1: ref(page=..., ...)
+    //   2: constructor argument
+    const specifiedPath = this.options.page || this.fromPagePath;
+    this.pagePath = this.getAbsolutePathFor(specifiedPath);
+
+    console.log('pagePath', this.pagePath);
   }
 
   /**
@@ -73,12 +80,10 @@ export default class RefsContext extends TagContext {
       //   2: refs(firstArgs, ...)
       //   3: constructor argument
       const specifiedPath = this.options.page
-          || ((parsedArgs.firstArgsValue === true) ? parsedArgs.firstArgsKey : undefined)
-          || this.fromPagePath;
+      || ((parsedArgs.firstArgsValue === true) ? parsedArgs.firstArgsKey : undefined)
+      || this.fromPagePath;
 
-      this.pagePath = (specifiedPath !== undefined)
-        ? decodeURIComponent(url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), specifiedPath))
-        : this.fromPagePath;
+      this.pagePath = this.getAbsolutePathFor(specifiedPath);
     }
 
   }
@@ -101,4 +106,16 @@ export default class RefsContext extends TagContext {
     return OptionParser.parseRange(this.options.depth);
   }
 
+  /**
+   * return absolute path for the specified path
+   *
+   * @param {string} relativePath relative path from `this.fromPagePath`
+   */
+  getAbsolutePathFor(relativePath) {
+    return decodeURIComponent(
+      pathUtils.normalizePath( // normalize like /foo/bar
+        url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), relativePath)
+      )
+    );
+  }
 }
