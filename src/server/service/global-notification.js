@@ -21,7 +21,7 @@ class GlobalNotificationService {
     // send slack notification here
   }
 
-  sendNotification(notifications, option) {
+  fire(notifications, option) {
     notifications.forEach((notification) => {
       if (notification.__t === 'mail') {
         this.notifyByMail(notification, option.mail);
@@ -55,7 +55,7 @@ class GlobalNotificationService {
 
     logger.debug('notifyPageCreate', option);
 
-    this.sendNotification(notifications, option);
+    this.fire(notifications, option);
   }
 
   /**
@@ -81,7 +81,7 @@ class GlobalNotificationService {
 
     logger.debug('notifyPageEdit', option);
 
-    this.sendNotification(notifications, option);
+    this.fire(notifications, option);
   }
 
   /**
@@ -105,7 +105,7 @@ class GlobalNotificationService {
       slack: {},
     };
 
-    this.sendNotification(notifications, option);
+    this.fire(notifications, option);
   }
 
   /**
@@ -130,7 +130,7 @@ class GlobalNotificationService {
       slack: {},
     };
 
-    this.sendNotification(notifications, option);
+    this.fire(notifications, option);
   }
 
   /**
@@ -154,7 +154,7 @@ class GlobalNotificationService {
       slack: {},
     };
 
-    this.sendNotification(notifications, option);
+    this.fire(notifications, option);
   }
 
   /**
@@ -181,7 +181,7 @@ class GlobalNotificationService {
       slack: {},
     };
 
-    this.sendNotification(notifications, option);
+    this.fire(notifications, option);
   }
 
 }

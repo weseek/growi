@@ -335,10 +335,10 @@ module.exports = function(crowi, app) {
         setting = new GlobalNotificationMailSetting(crowi);
         setting.toEmail = form.toEmail;
         break;
-      // case 'slack':
-      //   setting = new GlobalNotificationSlackSetting(crowi);
-      //   setting.slackChannels = form.slackChannels;
-      //   break;
+      case 'slack':
+        setting = new GlobalNotificationSlackSetting(crowi);
+        setting.slackChannels = form.slackChannels;
+        break;
       default:
         logger.error('GlobalNotificationSetting Type Error: undefined type');
         req.flash('errorMessage', 'Error occurred in creating a new global notification setting: undefined notification type');
@@ -360,9 +360,9 @@ module.exports = function(crowi, app) {
       case 'mail':
         setting.toEmail = form.toEmail;
         break;
-      // case 'slack':
-      //   setting.slackChannels = form.slackChannels;
-      //   break;
+      case 'slack':
+        setting.slackChannels = form.slackChannels;
+        break;
       default:
         logger.error('GlobalNotificationSetting Type Error: undefined type');
         req.flash('errorMessage', 'Error occurred in updating the global notification setting: undefined notification type');
