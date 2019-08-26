@@ -1,5 +1,7 @@
 const debug = require('debug')('growi:util:slack');
+const { promisify } = require('util');
 const urljoin = require('url-join');
+const swig = require('swig-templates');
 
 /**
  * slack
@@ -168,6 +170,27 @@ module.exports = function(crowi) {
     return message;
   };
 
+  /**
+   * For GlobalNotification
+   * @param {GlobalNotification} notification
+  */
+  const prepareSlackMessageForGlobalNotification = async(notification, config) => {
+    const appTitle = crowi.appService.getAppTitle();
+    const templateVars = config.vars || {};
+    const output = await promisify(swig.renderFile)(
+      config.template,
+      templateVars,
+    );
+
+    const message = {
+      channel: `#${notification.slackChannels}`,
+      username: appTitle,
+      text: output,
+    };
+
+    return message;
+  };
+
   const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
     let text;
     const url = crowi.appService.getSiteUrl();
@@ -200,6 +223,12 @@ module.exports = function(crowi) {
 
   slack.postComment = (comment, user, channel, path) => {
     const messageObj = prepareSlackMessageForComment(comment, user, channel, path);
+
+    return slackPost(messageObj);
+  };
+
+  slack.sendGlobalNotification = async(notification, config) => {
+    const messageObj = await prepareSlackMessageForGlobalNotification(notification, config);
 
     return slackPost(messageObj);
   };

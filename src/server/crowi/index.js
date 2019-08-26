@@ -98,12 +98,16 @@ Crowi.prototype.init = async function() {
     this.setupMailer(),
     this.setupSlack(),
     this.setupCsrf(),
-    this.setUpGlobalNotification(),
     this.setUpFileUpload(),
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroup(),
+  ]);
+
+  // globalNotification depends on slack and mailer
+  await Promise.all([
+    this.setUpGlobalNotification(),
   ]);
 };
 
