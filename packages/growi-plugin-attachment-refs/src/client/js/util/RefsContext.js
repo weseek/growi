@@ -45,7 +45,17 @@ export default class RefsContext extends TagContext {
    * parse method for 'ref' and 'refimg'
    */
   parseForSingle(parsedArgs) {
-    this.fileName = parsedArgs.firstArgsKey;
+    // determine fileName
+    // order:
+    //   1: ref(file=..., ...)
+    //   2: refs(firstArgs, ...)
+    this.fileName = this.options.file
+      || ((parsedArgs.firstArgsValue === true) ? parsedArgs.firstArgsKey : undefined);
+
+    if (this.fileName == null) {
+      throw new Error('fileName is not specified. set first argument or specify \'file\' option');
+    }
+
     this.pagePath = this.resolvePath(this.options.page || this.fromPagePath);
   }
 

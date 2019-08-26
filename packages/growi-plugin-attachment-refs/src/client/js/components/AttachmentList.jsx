@@ -19,7 +19,8 @@ export default class AttachmentList extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: true,
+      isLoading: false,
+      isLoaded: false,
       isError: false,
       errorMessage: null,
 
@@ -45,7 +46,27 @@ export default class AttachmentList extends React.Component {
       return; // go to render()
     }
 
-    refsContext.parse();
+    // parse
+    try {
+      refsContext.parse();
+    }
+    catch (err) {
+      this.setState({
+        isError: true,
+        errorMessage: err.toString(),
+      });
+
+      // store to sessionStorage
+      this.tagCacheManager.cacheState(refsContext, this.state);
+
+      return;
+    }
+
+    this.loadContents();
+  }
+
+  async loadContents() {
+    const { refsContext } = this.props;
 
     let res;
     try {
@@ -60,6 +81,7 @@ export default class AttachmentList extends React.Component {
       });
 
       this.setState({
+        isLoaded: true,
         attachments: [res.data.attachment],
       });
     }
@@ -68,6 +90,8 @@ export default class AttachmentList extends React.Component {
         isError: true,
         errorMessage: err.response.data,
       });
+
+      return;
     }
     finally {
       this.setState({ isLoading: false });
@@ -97,12 +121,13 @@ export default class AttachmentList extends React.Component {
         </div>
       );
     }
-
-    return (
-      this.state.attachments.map((attachment) => {
-        return <Attachment key={attachment._id} attachment={attachment} />;
-      })
-    );
+    if (this.state.isLoaded) {
+      return (
+        this.state.attachments.map((attachment) => {
+          return <Attachment key={attachment._id} attachment={attachment} />;
+        })
+      );
+    }
   }
 
   render() {

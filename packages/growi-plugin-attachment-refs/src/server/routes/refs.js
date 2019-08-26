@@ -16,7 +16,7 @@ module.exports = (crowi) => {
   router.get('/ref', async(req, res) => {
     const user = req.user;
     const { pagePath, fileName } = req.query;
-    // const options = JSON.parse(req.query.options);
+    const options = JSON.parse(req.query.options);
 
     if (pagePath == null) {
       res.status(400).send('the param \'pagePath\' must be set.');
@@ -40,7 +40,7 @@ module.exports = (crowi) => {
 
     // not found
     if (attachment == null) {
-      res.status(404).send(`fileName: '${fileName}' is not found.`);
+      res.status(404).send(`attachment (fileName: '${fileName}') is not found.`);
       return;
     }
 
