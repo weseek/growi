@@ -43,16 +43,32 @@ export default class RefsPostRenderInterceptor extends BasicInterceptor {
         const refsContext = new RefsContext(context.refsContextMap[domId] || {});
         refsContext.fromPagePath = context.currentPagePath;
 
-        this.renderReactDOM(refsContext, elem);
+        switch (refsContext.method) {
+          case 'ref':
+          case 'refs':
+            this.renderReactDomForRefs(refsContext, elem);
+            break;
+          case 'refimg':
+          case 'refsimg':
+            this.renderReactDomForRefsimg(refsContext, elem);
+            break;
+        }
       }
     });
 
     return Promise.resolve();
   }
 
-  renderReactDOM(refsContext, elem) {
+  renderReactDomForRefs(refsContext, elem) {
     ReactDOM.render(
       <AttachmentList appContainer={this.appContainer} refsContext={refsContext} />,
+      elem,
+    );
+  }
+
+  renderReactDomForRefsimg(refsContext, elem) {
+    ReactDOM.render(
+      <span>refimg, refsimg</span>,
       elem,
     );
   }
