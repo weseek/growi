@@ -62,8 +62,6 @@ export default class RefsContext extends TagContext {
     //   2: constructor argument
     const specifiedPath = this.options.page || this.fromPagePath;
     this.pagePath = this.getAbsolutePathFor(specifiedPath);
-
-    console.log('pagePath', this.pagePath);
   }
 
   /**
@@ -115,7 +113,7 @@ export default class RefsContext extends TagContext {
     return decodeURIComponent(
       pathUtils.normalizePath( // normalize like /foo/bar
         url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), relativePath)
-      )
+      ),
     );
   }
 }

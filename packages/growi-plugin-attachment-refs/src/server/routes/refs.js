@@ -16,6 +16,7 @@ module.exports = (crowi) => {
   router.get('/ref', async(req, res) => {
     const user = req.user;
     const { pagePath, fileName } = req.query;
+    // eslint-disable-next-line no-unused-vars
     const options = JSON.parse(req.query.options);
 
     if (pagePath == null) {
@@ -55,6 +56,23 @@ module.exports = (crowi) => {
     }
 
     res.status(200).send({ attachment });
+  });
+
+  /**
+   * return a list of Attachment
+   */
+  router.get('/refs', async(req, res) => {
+    const user = req.user;
+    const { prefix, pagePath } = req.query;
+    // eslint-disable-next-line no-unused-vars
+    const options = JSON.parse(req.query.options);
+
+    if (prefix == null && pagePath == null) {
+      res.status(400).send('either the param \'prefix\' or \'pagePath\' must be set.');
+      return;
+    }
+
+    res.status(200).send({ attachments: [] });
   });
 
   return router;
