@@ -175,17 +175,23 @@ module.exports = function(crowi) {
    * @param {{ template: string, vars: object, slackChannels: string }} option
   */
   const prepareSlackMessageForGlobalNotification = async(option) => {
-    const appTitle = crowi.appService.getAppTitle();
     const templateVars = option.vars || {};
     const output = await promisify(swig.renderFile)(
       option.template,
       templateVars,
     );
 
+    const attachment = {
+      color: '#263a3c',
+      text: output,
+      mrkdwn_in: ['text'],
+    };
+
     const message = {
       channel: `#${option.slackChannels}`,
-      username: appTitle,
-      text: output,
+      username: option.appTitle,
+      text: option.subject,
+      attachments: [attachment],
     };
 
     return message;
