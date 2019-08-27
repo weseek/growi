@@ -15,8 +15,6 @@ module.exports = {
     siteUrl: require('./admin/siteUrl'),
     mail: require('./admin/mail'),
     aws: require('./admin/aws'),
-    importerEsa: require('./admin/importerEsa'),
-    importerQiita: require('./admin/importerQiita'),
     plugin: require('./admin/plugin'),
     securityGeneral: require('./admin/securityGeneral'),
     securityPassportLdap: require('./admin/securityPassportLdap'),

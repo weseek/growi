@@ -64,8 +64,8 @@ class Importer extends React.Component {
   esaHandleSubmitUpdate() {
     try {
       const params = {
-        'importer:qiita:team_name': this.state.qiitaTeamName,
-        'importer:qiita:access_token': this.state.qiitaAccessToken,
+        'importer:esa:team_name': this.state.esaTeamName,
+        'importer:esa:access_token': this.state.esaaAccessToken,
       };
       this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Update');
