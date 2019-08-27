@@ -72,17 +72,37 @@ export default class AttachmentList extends React.Component {
     try {
       this.setState({ isLoading: true });
 
-      res = await axios.get('/_api/plugin/ref', {
-        params: {
-          pagePath: refsContext.pagePath,
-          fileName: refsContext.fileName,
-          options: refsContext.options,
-        },
-      });
+      switch (refsContext.method) {
+        case 'ref':
+          res = await axios.get('/_api/plugin/ref', {
+            params: {
+              pagePath: refsContext.pagePath,
+              fileName: refsContext.fileName,
+              options: refsContext.options,
+            },
+          });
+          this.setState({
+            attachments: [res.data.attachment],
+          });
+          break;
+        case 'refs':
+          res = await axios.get('/_api/plugin/refs', {
+            params: {
+              prefix: refsContext.prefix,
+              pagePath: refsContext.pagePath,
+              options: refsContext.options,
+            },
+          });
+          this.setState({
+            attachments: res.data.attachments,
+          });
+          break;
+        default:
+          throw new Error('this component should be used for method \'ref\' or \'refs\'');
+      }
 
       this.setState({
         isLoaded: true,
-        attachments: [res.data.attachment],
       });
     }
     catch (err) {
