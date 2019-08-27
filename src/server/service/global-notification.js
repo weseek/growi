@@ -25,10 +25,10 @@ class GlobalNotificationService {
   fire(notifications, option) {
     notifications.forEach((notification) => {
       if (notification.__t === 'mail') {
-        this.notifyByMail(notification, option.mail);
+        this.notifyByMail(notification, option);
       }
       else if (notification.__t === 'slack') {
-        this.notifyBySlack(notification, option.slack);
+        this.notifyBySlack(notification, option);
       }
     });
   }
@@ -41,21 +41,13 @@ class GlobalNotificationService {
   async notifyPageCreate(page) {
     const notifications = await this.GlobalNotification.findSettingByPathAndEvent(page.path, 'pageCreate');
     const lang = 'en-US'; // FIXME
-    const baseOption = {
+    const option = {
+      subject: `#pageCreate - ${page.creator.username} created ${page.path}`,
       template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageCreate.txt`),
       vars: {
         appTitle: this.appTitle,
         path: page.path,
         username: page.creator.username,
-      },
-    };
-    const option = {
-      mail: {
-        subject: `#pageCreate - ${page.creator.username} created ${page.path}`,
-        ...baseOption,
-      },
-      slack: {
-        ...baseOption,
       },
     };
 
@@ -72,21 +64,13 @@ class GlobalNotificationService {
   async notifyPageEdit(page) {
     const notifications = await this.GlobalNotification.findSettingByPathAndEvent(page.path, 'pageEdit');
     const lang = 'en-US'; // FIXME
-    const baseOption = {
+    const option = {
+      subject: `#pageEdit - ${page.creator.username} edited ${page.path}`,
       template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageEdit.txt`),
       vars: {
         appTitle: this.appTitle,
         path: page.path,
         username: page.creator.username,
-      },
-    };
-    const option = {
-      mail: {
-        subject: `#pageEdit - ${page.creator.username} edited ${page.path}`,
-        ...baseOption,
-      },
-      slack: {
-        ...baseOption,
       },
     };
 
@@ -103,22 +87,13 @@ class GlobalNotificationService {
   async notifyPageDelete(page, triggeredBy) {
     const notifications = await this.GlobalNotification.findSettingByPathAndEvent(page.path, 'pageDelete');
     const lang = 'en-US'; // FIXME
-    const baseOption = {
+    const option = {
+      subject: `#pageDelete - ${triggeredBy.username} deleted ${page.path}`, // FIXME
       template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageDelete.txt`),
       vars: {
         appTitle: this.appTitle,
         path: page.path,
         username: triggeredBy.username,
-      },
-    };
-    const option = {
-      mail: {
-        subject: `#pageDelete - ${triggeredBy.username} deleted ${page.path}`, // FIXME
-        ...baseOption,
-      },
-      slack: {
-        ...baseOption,
-
       },
     };
 
@@ -133,22 +108,14 @@ class GlobalNotificationService {
   async notifyPageMove(page, oldPagePath, triggeredBy) {
     const notifications = await this.GlobalNotification.findSettingByPathAndEvent(page.path, 'pageMove');
     const lang = 'en-US'; // FIXME
-    const baseOption = {
+    const option = {
+      subject: `#pageMove - ${triggeredBy.username} moved ${page.path} to ${page.path}`, // FIXME
       template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageMove.txt`),
       vars: {
         appTitle: this.appTitle,
         oldPath: oldPagePath,
         newPath: page.path,
         username: triggeredBy.username,
-      },
-    };
-    const option = {
-      mail: {
-        subject: `#pageMove - ${triggeredBy.username} moved ${page.path} to ${page.path}`, // FIXME
-        ...baseOption,
-      },
-      slack: {
-        ...baseOption,
       },
     };
 
@@ -163,21 +130,13 @@ class GlobalNotificationService {
   async notifyPageLike(page, triggeredBy) {
     const notifications = await this.GlobalNotification.findSettingByPathAndEvent(page.path, 'pageLike');
     const lang = 'en-US'; // FIXME
-    const baseOption = {
+    const option = {
+      subject: `#pageLike - ${triggeredBy.username} liked ${page.path}`,
       template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageLike.txt`),
       vars: {
         appTitle: this.appTitle,
         path: page.path,
         username: triggeredBy.username,
-      },
-    };
-    const option = {
-      mail: {
-        subject: `#pageLike - ${triggeredBy.username} liked ${page.path}`,
-        ...baseOption,
-      },
-      slack: {
-        ...baseOption,
       },
     };
 
@@ -194,22 +153,14 @@ class GlobalNotificationService {
     const notifications = await this.GlobalNotification.findSettingByPathAndEvent(path, 'comment');
     const lang = 'en-US'; // FIXME
     const triggeredBy = await this.User.findOne({ _id: comment.creator });
-    const baseOption = {
+    const option = {
+      subject: `#comment - ${triggeredBy.username} commented on ${path}`,
       template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/comment.txt`),
       vars: {
         appTitle: this.appTitle,
         path,
         username: triggeredBy.username,
         comment: comment.comment,
-      },
-    };
-    const option = {
-      mail: {
-        subject: `#comment - ${triggeredBy.username} commented on ${path}`,
-        ...baseOption,
-      },
-      slack: {
-        ...baseOption,
       },
     };
 
