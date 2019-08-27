@@ -999,7 +999,7 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success(result));
 
     // global notification
-    return globalNotificationService.notifyPageDelete(page);
+    return globalNotificationService.notifyPageDelete(page, req.user);
   };
 
   /**
