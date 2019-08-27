@@ -16,6 +16,14 @@ module.exports = (crowi) => {
   const importer = {};
   let esaClient = {};
 
+  const { check, validationResult } = require('express-validator/check');
+
+  const actions = {};
+  const api = {};
+
+  actions.api = api;
+  api.validators = {};
+
   /**
    * Initialize importer
    */
@@ -183,6 +191,27 @@ module.exports = (crowi) => {
   // initialize when server starts
   importer.initializeEsaClient();
   importer.initializeQiitaClient();
+
+  api.validators.add = function() {
+    const validator = [
+      check('esaAccessToken').exists(),
+      check('esaTeamName').exists(),
+      check('qiitaAccessToken').exists(),
+      check('qiitaTeamName').exists(),
+    ];
+    return validator;
+  };
+
+  api.add = async function(req, res) {
+    const { validationResult } = require('express-validator/check');
+
+    const errors = validationResult(req.check);
+    if (!errors.isEmpty()) {
+      // return res.json(ApiResponse.error('Invalid comment.'));
+      // return res.status(422).json({ errors: errors.array() });
+      return res.json(ApiResponse.error('空欄の項目があります'));
+    }
+  };
 
   return importer;
 };
