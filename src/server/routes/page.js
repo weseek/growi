@@ -11,6 +11,7 @@ module.exports = function(crowi, app) {
   const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -607,7 +608,7 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.notifyPageCreate(createdPage);
+      await globalNotificationService.fire(GlobalNotificationSetting.schema.EVENT.PAGE_CREATE, createdPage.path, req.user);
     }
     catch (err) {
       logger.error(err);
@@ -694,7 +695,7 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.notifyPageEdit(page);
+      await globalNotificationService.fire(GlobalNotificationSetting.schema.EVENT.PAGE_EDIT, page.path, req.user);
     }
     catch (err) {
       logger.error(err);
@@ -862,7 +863,7 @@ module.exports = function(crowi, app) {
 
     try {
       // global notification
-      globalNotificationService.notifyPageLike(page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.schema.EVENT.PAGE_LIKE, page.path, req.user);
     }
     catch (err) {
       logger.error('Like failed', err);
@@ -999,7 +1000,7 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success(result));
 
     // global notification
-    return globalNotificationService.notifyPageDelete(page, req.user);
+    await globalNotificationService.fire(GlobalNotificationSetting.schema.EVENT.PAGE_DELETE, page.path, req.user);
   };
 
   /**
@@ -1104,7 +1105,9 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success(result));
 
     // global notification
-    globalNotificationService.notifyPageMove(page, req.body.path, req.user);
+    globalNotificationService.fire(GlobalNotificationSetting.schema.EVENT.PAGE_MOVE, page.path, req.user, {
+      oldPath: req.body.path,
+    });
 
     return page;
   };

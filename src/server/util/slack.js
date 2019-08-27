@@ -172,18 +172,18 @@ module.exports = function(crowi) {
 
   /**
    * For GlobalNotification
-   * @param {GlobalNotification} notification
+   * @param {{ template: string, vars: object, slackChannels: string }} option
   */
-  const prepareSlackMessageForGlobalNotification = async(notification, config) => {
+  const prepareSlackMessageForGlobalNotification = async(option) => {
     const appTitle = crowi.appService.getAppTitle();
-    const templateVars = config.vars || {};
+    const templateVars = option.vars || {};
     const output = await promisify(swig.renderFile)(
-      config.template,
+      option.template,
       templateVars,
     );
 
     const message = {
-      channel: `#${notification.slackChannels}`,
+      channel: `#${option.slackChannels}`,
       username: appTitle,
       text: output,
     };
@@ -227,8 +227,8 @@ module.exports = function(crowi) {
     return slackPost(messageObj);
   };
 
-  slack.sendGlobalNotification = async(notification, config) => {
-    const messageObj = await prepareSlackMessageForGlobalNotification(notification, config);
+  slack.sendGlobalNotification = async(option) => {
+    const messageObj = await prepareSlackMessageForGlobalNotification(option);
 
     return slackPost(messageObj);
   };

@@ -11,6 +11,18 @@ const globalNotificationSettingSchema = new mongoose.Schema({
   triggerEvents: { type: [String] },
 });
 
+/**
+ * global notifcation event master
+ */
+globalNotificationSettingSchema.EVENT = {
+  PAGE_CREATE: 'pageCreate',
+  PAGE_EDIT: 'pageEdit',
+  PAGE_DELETE: 'pageDelete',
+  PAGE_MOVE: 'pageMove',
+  PAGE_LIKE: 'pageLike',
+  COMMENT: 'comment',
+};
+
 /*
 * e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
 */
@@ -92,12 +104,13 @@ class GlobalNotificationSetting {
    * @param {string} path
    * @param {string} event
    */
-  static async findSettingByPathAndEvent(path, event) {
+  static async findSettingByPathAndEvent(event, path, type) {
     const pathsToMatch = generatePathsToMatch(path);
 
     const settings = await this.find({
       triggerPath: { $in: pathsToMatch },
       triggerEvents: event,
+      __t: type,
       isEnabled: true,
     })
       .sort({ triggerPath: 1 });
@@ -106,7 +119,6 @@ class GlobalNotificationSetting {
   }
 
 }
-
 
 module.exports = {
   class: GlobalNotificationSetting,
