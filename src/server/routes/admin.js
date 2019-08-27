@@ -31,6 +31,10 @@ module.exports = function(crowi, app) {
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
+  const { check } = require('express-validator/check');
+
+  const api = {};
+
   function createPager(total, limit, page, pagesCount, maxPageList) {
     const pager = {
       page,
@@ -807,12 +811,24 @@ module.exports = function(crowi, app) {
 
   // Importer management
   actions.importer = {};
+  actions.importer.api = api;
+  api.validators = {};
   actions.importer.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'importer:');
-
     return res.render('admin/importer', {
       settingForm,
     });
+  };
+
+  api.validators.add = function() {
+    const validator = [
+      check('esaAccessToken').not().isEmpty(),
+      check('esaTeamName').not().isEmpty(),
+      check('qiitaAccessToken').not().isEmpty(),
+      check('qiitaTeamName').not().isEmpty(),
+    ];
+    return validator;
+
   };
 
   actions.api = {};
@@ -1170,9 +1186,17 @@ module.exports = function(crowi, app) {
   actions.api.importerSettingEsa = async(req, res) => {
     const form = req.body;
 
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // return res.json(ApiResponse.error('Invalid comment.'));
+      // return res.status(422).json({ errors: errors.array() });
+      console.log('validator', errors);
+      return res.json(ApiResponse.error('空欄の項目があります'));
+    }
+
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeEsaClient(); // let it run in the back aftert res
-
     return res.json({ status: true });
   };
 
