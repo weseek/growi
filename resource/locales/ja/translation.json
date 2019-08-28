@@ -8,6 +8,7 @@
   "Click to copy": "クリックでコピー",
   "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
+  "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
   "Seen by": "見た人",
@@ -240,13 +241,14 @@
   },
 
   "page_page": {
-      "notice": {
-          "version": "これは現在の版ではありません。",
-          "moved": "このページは <code>%s</code> から移動しました。",
-          "duplicated": "このページは <code>%s</code> から複製されました。",
-          "unlinked": "このページへのリダイレクトは削除されました。",
-          "restricted": "このページの閲覧は制限されています"
-      }
+    "notice": {
+      "version": "これは現在の版ではありません。",
+      "moved": "このページは <code>%s</code> から移動しました。",
+      "redirected": "リダイレクト元 >> <code>%s</code>",
+      "duplicated": "このページは <code>%s</code> から複製されました。",
+      "unlinked": "このページへのリダイレクトは削除されました。",
+      "restricted": "このページの閲覧は制限されています"
+    }
   },
 
   "page_edit": {

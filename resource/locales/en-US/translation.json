@@ -8,6 +8,7 @@
   "Click to copy": "Click to copy",
   "Move/Rename": "Move/Rename",
   "Moved": "Moved",
+  "Redirected": "Redirected",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
@@ -242,13 +243,14 @@
   },
 
   "page_page": {
-      "notice": {
-          "version": "This is not the current version.",
-          "moved": "This page was moved from <code>%s</code>",
-          "duplicated": "This page was duplicated from <code>%s</code>",
-          "unlinked": "Redirect pages to this page have been deleted.",
-          "restricted": "Access to this page is restricted"
-      }
+    "notice": {
+      "version": "This is not the current version.",
+      "moved": "This page was moved from <code>%s</code>",
+      "redirected": "You are redirected from <code>%s</code>",
+      "duplicated": "This page was duplicated from <code>%s</code>",
+      "unlinked": "Redirect pages to this page have been deleted.",
+      "restricted": "Access to this page is restricted"
+    }
   },
 
   "page_edit": {
