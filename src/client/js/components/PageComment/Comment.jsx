@@ -39,6 +39,7 @@ class Comment extends React.Component {
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
+    this.editBtnClickedHandler = this.editBtnClickedHandler.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
@@ -89,6 +90,10 @@ class Comment extends React.Component {
   getRevisionLabelClassName() {
     return `page-comment-revision label ${
       this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
+  }
+
+  editBtnClickedHandler() {
+    this.props.editBtnClicked(this.props.comment);
   }
 
   deleteBtnClickedHandler() {
@@ -156,6 +161,7 @@ class Comment extends React.Component {
       <div key={reply._id} className="page-comment-reply">
         <CommentWrapper
           comment={reply}
+          editBtnClicked={this.props.editBtnClicked}
           deleteBtnClicked={this.props.deleteBtnClicked}
           growiRenderer={this.props.growiRenderer}
         />
@@ -250,6 +256,10 @@ class Comment extends React.Component {
               <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
             </div>
             <div className="page-comment-control">
+              {/* TODO GW-63 adjust layout */}
+              <button type="button" className="btn btn-link" onClick={this.editBtnClickedHandler}>
+                <i className="ti-pencil"></i>
+              </button>
               <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
                 <i className="ti-close"></i>
               </button>
@@ -278,6 +288,7 @@ Comment.propTypes = {
 
   comment: PropTypes.object.isRequired,
   growiRenderer: PropTypes.object.isRequired,
+  editBtnClicked: PropTypes.func.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
 };
