@@ -17,7 +17,6 @@ class UserGroupDetailPage extends React.Component {
         グループ一覧に戻る
         </a>
         <UserGroupEditForm
-          crowi={this.props.crowi}
           userGroup={this.props.userGroup}
         />
         <UserGroupUserTable />
@@ -30,7 +29,6 @@ class UserGroupDetailPage extends React.Component {
 }
 
 UserGroupDetailPage.propTypes = {
-  crowi: PropTypes.object.isRequired,
   userGroup: PropTypes.object.isRequired,
 };
 

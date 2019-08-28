@@ -175,9 +175,37 @@ module.exports = (crowi) => {
   // router.get('/:id', async(req, res) => {
   // });
 
+  validator.update = [
+    body('name', 'Group name is required').trim().exists(),
+  ];
+
   // update one group with the id
-  // router.put('/:id/update', async(req, res) => {
-  // });
+  router.put('/:id', loginRequired(), adminRequired, csrf, validator.update, ApiV3FormValidator, async(req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      if (userGroup == null) {
+        throw new Error('The group does not exist');
+      }
+
+      // check if the new group name is available
+      const isRegisterableName = await UserGroup.isRegisterableName(name);
+      if (!isRegisterableName) {
+        throw new Error('The group name is already taken');
+      }
+
+      await userGroup.updateName(name);
+
+      res.apiv3({ userGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating a user group name';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-update-failed'));
+    }
+  });
 
   /**
    * @swagger

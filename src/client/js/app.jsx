@@ -153,12 +153,13 @@ const adminUserGroupDetailElem = document.getElementById('admin-user-group-detai
 if (adminUserGroupDetailElem != null) {
   const userGroup = JSON.parse(adminUserGroupDetailElem.getAttribute('data-user-group'));
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <UserGroupDetailPage
-        crowi={crowi}
-        userGroup={userGroup}
-      />
-    </I18nextProvider>,
+    <Provider inject={[]}>
+      <I18nextProvider i18n={i18n}>
+        <UserGroupDetailPage
+          userGroup={userGroup}
+        />
+      </I18nextProvider>
+    </Provider>,
     adminUserGroupDetailElem,
   );
 }

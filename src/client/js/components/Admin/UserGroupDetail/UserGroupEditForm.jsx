@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 class UserGroupEditForm extends React.Component {
 
   constructor(props) {
@@ -11,6 +15,8 @@ class UserGroupEditForm extends React.Component {
     this.state = {
       name: props.userGroup.name,
     };
+
+    this.xss = window.xss;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,22 +35,17 @@ class UserGroupEditForm extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    alert(`new name is ${this.state.name}`);
-    this.setState({ name: '' });
 
-    // try {
-    //   // action="/admin/user-group/{{userGroup.id}}/update"
-    //   const res = await this.props.crowi.apiGet('/admin/user-groups');
-    //   if (res.ok) {
-    //     groups = res.userGroups;
-    //   }
-    //   else {
-    //     throw new Error('Unable to fetch groups from server');
-    //   }
-    // }
-    // catch (err) {
-    //   this.handleError(err);
-    // }
+    try {
+      const res = await this.props.appContainer.apiv3.put(`/user-groups/${this.props.userGroup._id}`, {
+        name: this.state.name,
+      });
+
+      toastSuccess(`Updated the group name to "${this.xss.process(res.data.userGroup.name)}"`);
+    }
+    catch (err) {
+      toastError(new Error('Unable to update the group name'));
+    }
   }
 
   validateForm() {
@@ -87,7 +88,15 @@ class UserGroupEditForm extends React.Component {
 
 UserGroupEditForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   userGroup: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(UserGroupEditForm);
+/**
+ * Wrapper component for using unstated
+ */
+const UserGroupEditFormWrapper = (props) => {
+  return createSubscribedElement(UserGroupEditForm, props, [AppContainer]);
+};
+
+export default withTranslation()(UserGroupEditFormWrapper);
