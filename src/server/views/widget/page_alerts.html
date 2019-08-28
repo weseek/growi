@@ -13,35 +13,18 @@
       </p>
     {% endif %}
 
-    {% if isTrashPage() %}
-    <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
-      <div>
-        <i class="icon-trash" aria-hidden="true"></i>
-        This page is in the trash.
-        {% if page.isDeleted() %}
-        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
-        {% endif %}
-      </div>
-      {% if page.isDeleted() and user %}
-      <ul class="list-inline">
-        <li>
-          <button href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
-        </li>
-        <li>
-            <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
-        </li>
-      </ul>{# /.pull-right #}
-      {% endif %}
-    </div>
-    {% endif %}
-
-    {% if not page.isDeleted() and (redirectFrom or req.query.renamed or req.query.redirectFrom) %}
+    {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
     <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(fromPath)) }}
+        {% if redirectFrom or req.query.redirectFrom %}
+          <strong>{{ t('Redirected') }}:</strong> {{ t('page_page.notice.redirected', req.sanitize(fromPath)) }}
+        {% endif %}
+        {% if req.query.renamed %}
+          <strong>{{ t('Moved') }}:</strong> {{ t('page_page.notice.moved', req.sanitize(fromPath)) }}
+        {% endif %}
       </span>
-      {% if user %}
+      {% if user and not page.isDeleted() %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <input type="hidden" name="path" value="{{ path }}">
@@ -79,6 +62,27 @@
     {% if dmessage.length %}
     <div class="alert alert-danger m-b-15">
       {{ dmessage }}
+    </div>
+    {% endif %}
+
+    {% if isTrashPage() %}
+    <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
+      <div>
+        This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
+        {% if page.isDeleted() %}
+        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+        {% endif %}
+      </div>
+      {% if page.isDeleted() and user %}
+      <ul class="list-inline">
+        <li>
+          <button href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
+        </li>
+        <li>
+            <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
+        </li>
+      </ul>{# /.pull-right #}
+      {% endif %}
     </div>
     {% endif %}
   </div>
