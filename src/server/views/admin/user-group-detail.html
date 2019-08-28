@@ -110,7 +110,7 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">{{ t('Created') }}</label>
               <div class="col-sm-4">
-                <input class="form-control" type="text" disabled value="{{userGroup.createdAt|date('Y-m-d', sRelation.relatedUser.createdAt.getTimezoneOffset()) }}">
+                <input class="form-control" type="text" disabled value="{{userGroup.createdAt|datetz('Y-m-d') }}">
               </div>
             </div>
             <div class="form-group">
@@ -136,7 +136,7 @@
             </th>
             <th>{{ t('Name') }}</th>
             <th width="100px">{{ t('Created') }}</th>
-            <th width="150px">{{ t('Last Login')}}</th>
+            <th width="160px">{{ t('Last Login')}}</th>
             <th width="70px"></th>
           </tr>
         </thead>
@@ -151,9 +151,9 @@
               <strong>{{ sRelation.relatedUser.username }}</strong>
             </td>
             <td>{{ sRelation.relatedUser.name }}</td>
-            <td>{{ sRelation.relatedUser.createdAt|date('Y-m-d', sRelation.relatedUser.createdAt.getTimezoneOffset()) }}</td>
+            <td>{{ sRelation.relatedUser.createdAt|datetz('Y-m-d') }}</td>
             <td>
-              {% if sRelation.relatedUser.lastLoginAt %} {{ sRelation.relatedUser.lastLoginAt|date('Y-m-d H:i', sRelation.relatedUser.createdAt.getTimezoneOffset()) }} {% endif %}
+              {% if sRelation.relatedUser.lastLoginAt %} {{ sRelation.relatedUser.lastLoginAt|datetz('Y-m-d H:i:s') }} {% endif %}
             </td>
             <td>
               <div class="btn-group admin-user-menu">

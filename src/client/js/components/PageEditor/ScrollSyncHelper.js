@@ -144,7 +144,7 @@ class ScrollSyncHelper {
 
       scrollTo -= this.getParentElementOffset(previewElement);
 
-      previewElement.scroll(0, previewElement.scrollTop + scrollTo);
+      previewElement.scrollTop += scrollTo;
     }
   }
 
@@ -176,7 +176,7 @@ class ScrollSyncHelper {
         return;
       }
 
-      previewElement.scroll(0, scrollTo);
+      previewElement.scrollTop = scrollTo;
     }
   }
 

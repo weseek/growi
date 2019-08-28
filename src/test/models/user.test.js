@@ -10,40 +10,42 @@ describe('User', () => {
 
   beforeAll(async(done) => {
     crowi = await getInstance();
-    done();
-  });
-
-  beforeEach(async(done) => {
     User = mongoose.model('User');
+
+    await User.create({
+      name: 'Example for User Test',
+      username: 'usertest',
+      email: 'usertest@example.com',
+      password: 'usertestpass',
+      lang: 'en',
+    });
+
     done();
   });
 
   describe('Create and Find.', () => {
     describe('The user', () => {
-      test('should created', (done) => {
-        User.createUserByEmailAndPassword('Aoi Miyazaki', 'aoi', 'aoi@example.com', 'hogefuga11', 'en', (err, userData) => {
+      test('should created with createUserByEmailAndPassword', (done) => {
+        User.createUserByEmailAndPassword('Example2 for User Test', 'usertest2', 'usertest2@example.com', 'usertest2pass', 'en', (err, userData) => {
           expect(err).toBeNull();
           expect(userData).toBeInstanceOf(User);
+          expect(userData.name).toBe('Example2 for User Test');
           done();
         });
       });
 
-      test('should be found by findUserByUsername', (done) => {
-        User.findUserByUsername('aoi')
-          .then((userData) => {
-            expect(userData).toBeInstanceOf(User);
-            done();
-          });
+      test('should be found by findUserByUsername', async() => {
+        const user = await User.findUserByUsername('usertest');
+        expect(user).toBeInstanceOf(User);
+        expect(user.name).toBe('Example for User Test');
       });
 
-      test('should be found by findUsersByPartOfEmail', (done) => {
-        User.findUsersByPartOfEmail('ao', {})
-          .then((userData) => {
-            expect(userData).toBeInstanceOf(Array);
-            expect(userData[0]).toBeInstanceOf(User);
-            expect(userData[0].email).toEqual('aoi@example.com');
-            done();
-          });
+      test('should be found by findUsersByPartOfEmail', async() => {
+        const users = await User.findUsersByPartOfEmail('usert', {});
+        expect(users).toBeInstanceOf(Array);
+        expect(users.length).toBe(2);
+        expect(users[0]).toBeInstanceOf(User);
+        expect(users[1]).toBeInstanceOf(User);
       });
     });
   });

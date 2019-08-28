@@ -6,7 +6,7 @@
   "Duplicate": "Duplicate",
   "Copy": "Copy",
   "Click to copy": "Click to copy",
-  "Move": "Move",
+  "Move/Rename": "Move/Rename",
   "Moved": "Moved",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
@@ -27,6 +27,8 @@
   "Category": "Category",
   "User": "User",
   "status":"Status",
+  "account_id": "Account Id",
+
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -105,13 +107,12 @@
   "Customize": "Customize",
   "Notification Settings": "Notification Settings",
   "User_Management": "User Management",
-  "External Account management": "External Account management",
+  "external_account_management": "External Account Management",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
   "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
-  "Guest users access": "Guest users access",
   "Register limitation": "Register limitation",
   "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
   "Public": "Public",
@@ -267,15 +268,17 @@
 
   "modal_rename": {
     "label": {
-      "Rename page": "Rename page",
+      "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
       "Current page name": "Current page name",
-      "Move recursively": "Move recursively",
+      "Recursively": "Recursively",
+      "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses <code>%s</code>",
-      "recursive": "Rename children of under <code>%s</code> recursively"
+      "metadata": "Remains last update user and updated date as is",
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
 
@@ -285,9 +288,9 @@
   "modal_delete": {
     "delete_page": "Delete Page",
     "deleting_page": "Deleting Page",
-    "delete_recursively": "Delete child pages under %s recursively.",
+    "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete Completely",
-    "delete_completely_restriction": "You have no admin to delete completely.",
+    "delete_completely_restriction": "You don't have the authority to delete pages completely.",
     "recursively": "Delete children of under <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
@@ -433,14 +436,12 @@
   },
 
   "security_setting": {
-		"Basic authentication": "Basic Authentication",
 		"Security settings": "Security settings",
-		"Guest users access": "Guest users access",
-		"Register limitation": "Register limitation",
+    "Guest Users Access": "Guest Users Access",
+    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
+    "Register limitation": "Register limitation",
+    "Register limitation desc": "Restricts ways to register new user.",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-		"common_authentication": "If you set the basic authentication, common authentication is applied on the whole page.",
-		"without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
-		"basic_acl_disable": "Because of Public Wiki  setting, basic authentication can not be used.",
 		"users_without_account": "Users without account is not accessible",
     "example": "Example",
     "restrict_emails": "You can restrict registerable e-mail address.",
@@ -469,13 +470,13 @@
     "clientID": "Client ID",
     "client_secret": "Client Secret",
     "guest_mode": {
-      "deny": "Deny Unregistered Users",
-      "readonly": "View Only"
+      "deny": "Deny (Registered Users Only)",
+      "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
-      "open": "Anyone",
-      "restricted": "Require Admin permission",
-      "closed": "Invitation Only"
+      "open": "Open (Anyone can registre)",
+      "restricted": "Restricted (Requires approval by administrators)",
+      "closed": "Closed (Invitation Only)"
     },
     "configuration": " Configuration",
     "optional": "Optional",
@@ -666,6 +667,7 @@
 
   "user_management": {
     "target_user": "Target User",
+    "new_password": "New Password",
     "invite_users": "Invite New Users",
     "emails": "Emails",
     "invite_thru_email": "Send Invitation Email",
@@ -685,6 +687,7 @@
     "unset": "No",
     "temporary_password": "The created user has a temporary password",
     "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+    "password_reset_message": "Let the user know the new password below and strongly recommend to change another one immediately.",
     "send_new_password": "Please send the new password to the user.",
     "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
     "reset_password": "Reset Password",
@@ -718,11 +721,12 @@
     "no_pages": "There are no pages the group has view permission",
     "how_to_add1": "Enter a username to add",
     "how_to_add2": "Select a user from user list",
-    "remove_from_group": "Remove this group"
+    "remove_from_group": "Remove this user"
   },
 
   "importer_management": {
-    "import_from": "Import from %s",
+    "import_from_esa": "Import from esa.io",
+    "import_from_qiita": "import_from Qiita:Team",
     "esa_settings": {
       "team_name": "Team name",
       "access_token": "Access token",

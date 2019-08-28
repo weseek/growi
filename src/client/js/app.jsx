@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
@@ -106,6 +104,7 @@ let componentMappings = {
   'admin-full-text-search-management': <FullTextSearchManagement />,
 
   'staff-credit': <StaffCredit />,
+  'admin-importer': <Importer />,
 };
 
 // additional definitions if data exists
@@ -210,15 +209,6 @@ if (adminUserGroupPageElem != null) {
     adminUserGroupPageElem,
   );
 }
-
-const adminImporterElem = document.getElementById('admin-importer');
-if (adminImporterElem != null) {
-  ReactDOM.render(
-    <Importer />,
-    adminImporterElem,
-  );
-}
-
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

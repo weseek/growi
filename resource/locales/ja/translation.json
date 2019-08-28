@@ -6,7 +6,7 @@
   "Duplicate": "複製",
   "Copy": "コピー",
   "Click to copy": "クリックでコピー",
-  "Move": "移動",
+  "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
@@ -27,6 +27,7 @@
   "Category": "カテゴリー",
   "User": "ユーザー",
   "status": "ステータス",
+  "account_id": "アカウントID",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -105,13 +106,11 @@
   "Customize": "カスタマイズ",
   "Notification Settings": "通知設定",
   "User_Management": "ユーザー管理",
-  "External Account management": "外部アカウント管理",
+  "external_account_management": "外部アカウント管理",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
   "Basic Settings": "基本設定",
-  "Basic authentication": "Basic認証",
-  "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
   "Public": "公開",
@@ -267,15 +266,17 @@
 
   "modal_rename": {
     "label": {
-      "Rename page": "ページを移動する",
+      "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
       "Current page name": "現在のページ名",
-      "Move recursively": "再帰的に移動",
+      "Recursively": "再帰的に移動/名前変更",
+      "Do not update metadata": "メタデータを更新しない",
       "Redirect": "リダイレクトする"
     },
     "help": {
       "redirect": "<code>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
-      "recursive": "<code>%s</code> 配下のページも移動します"
+      "metadata": "最終更新ユーザー、最終更新日を更新せず維持します",
+      "recursive": "<code>%s</code> 配下のページも移動/名前変更します"
     }
   },
 
@@ -433,13 +434,11 @@
    },
 
   "security_setting": {
-    "Basic authentication": "Basic認証",
-    "Guest users access": "ゲストユーザーのアクセス",
+    "Guest Users Access": "ゲストユーザーのアクセス",
+    "Fixed by env var": "環境変数 <code>%s=%s</code> により固定されています。",
     "Register limitation": "登録の制限",
+    "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "common_authentication": "Basic認証を設定すると、ページ全体に共通の認証がかかります。",
-    "without_encryption": "IDとパスワードは暗号化されずに送信されるのでご注意下さい。",
-    "basic_acl_disable": "Public Wiki の設定のため、Basic認証は利用できません。",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
     "restrict_emails": "登録可能なメールアドレスを制限することができます。",
@@ -465,8 +464,8 @@
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
     "guest_mode": {
-      "deny": "アカウントを持たないユーザーはアクセス不可",
-      "readonly": "閲覧のみ許可"
+      "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
+      "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",
@@ -651,6 +650,7 @@
 
   "user_management": {
     "target_user": "対象ユーザー",
+    "new_password": "新しいパスワード",
     "invite_users": "新規ユーザーの招待",
     "emails": "メールアドレス (複数行入力で複数人招待可能)",
     "invite_thru_email": "招待をメールで送信",
@@ -670,6 +670,7 @@
     "unset": "未設定",
     "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
     "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
+    "password_reset_message": "対象ユーザーに下記のパスワードを伝え、すぐに新しく別のパスワードを設定するよう伝えてください。",
     "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
     "password_never_seen": "表示されたパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。",
     "reset_password": "パスワードの再発行",
@@ -690,7 +691,8 @@
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
     "add_user": "グループへのユーザー追加",
-    "deny_create_group": "現在の設定では新規グループの作成はできません。",
+    "deny_create_group": "新規グループの作成はできません。",
+    "is_loading_data": "データを取得中です...",
     "choose_action": "削除するグループの限定公開ページの処理を選択してください",
     "delete_group": "グループの削除",
     "group_name": "グループ名",
@@ -707,7 +709,8 @@
   },
 
   "importer_management": {
-    "import_from": "%s からインポート",
+    "import_from_esa": "esa.ioからインポート",
+    "import_from_qiita": "Qiita:Teamからインポート",
     "esa_settings": {
       "team_name": "チーム名",
       "access_token": "アクセストークン",
