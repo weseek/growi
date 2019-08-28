@@ -3,6 +3,7 @@
 ## 3.5.10-RC
 
 * Improvement: Show loading spinner when fetching page history data
+* Improvement: Hierarchical page link when the page is in /Trash
 * Fix: Code Highlight Theme does not change
     * Introduced by 3.5.2
 * Support: Upgrade libs
