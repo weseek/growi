@@ -7,7 +7,6 @@ import { Provider } from 'unstated';
 
 import { pathUtils } from 'growi-commons';
 
-import GrowiRenderer from '../util/GrowiRenderer';
 import RevisionLoader from '../components/Page/RevisionLoader';
 
 const entities = require('entities');
@@ -493,7 +492,7 @@ $(() => {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
-      growiRendererForTimeline = GrowiRenderer.generate('timeline');
+      growiRendererForTimeline = appContainer.getRenderer('timeline');
     }
 
     if (isShown === 0) {
@@ -501,7 +500,6 @@ $(() => {
         const id = $(this).attr('id');
         const revisionBody = `#${id} .revision-body`;
         const revisionBodyElem = document.querySelector(revisionBody);
-        const revisionPath = `#${id} .revision-path`; // eslint-disable-line no-unused-vars
         const timelineElm = document.getElementById(id);
         const pageId = timelineElm.getAttribute('data-page-id');
         const pagePath = timelineElm.getAttribute('data-page-path');
