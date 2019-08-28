@@ -813,6 +813,8 @@ module.exports = function(crowi, app) {
   actions.importer = {};
   actions.importer.api = api;
   api.validators = {};
+  api.validators.importer = {};
+
   actions.importer.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'importer:');
     return res.render('admin/importer', {
@@ -820,16 +822,22 @@ module.exports = function(crowi, app) {
     });
   };
 
-  api.validators.add = function() {
+  api.validators.importer.esa = function() {
     const validator = [
-      check('esaAccessToken').not().isEmpty(),
-      check('esaTeamName').not().isEmpty(),
-      check('qiitaAccessToken').not().isEmpty(),
-      check('qiitaTeamName').not().isEmpty(),
+      check('importer:esa:team_name').not().isEmpty().withMessage('Error. Empty esa:team_name'),
+      check('importer:esa:access_token').not().isEmpty().withMessage('Error. Empty esa:access_token'),
     ];
     return validator;
-
   };
+
+  api.validators.importer.qiita = function() {
+    const validator = [
+      check('importer:qiita:team_name').not().isEmpty().withMessage('Error. Empty qiita:team_name'),
+      check('importer:qiita:access_token').not().isEmpty().withMessage('Error. Empty qiita:access_token'),
+    ];
+    return validator;
+  };
+
 
   actions.api = {};
   actions.api.appSetting = async function(req, res) {
@@ -1192,7 +1200,7 @@ module.exports = function(crowi, app) {
       // return res.json(ApiResponse.error('Invalid comment.'));
       // return res.status(422).json({ errors: errors.array() });
       console.log('validator', errors);
-      return res.json(ApiResponse.error('空欄の項目があります'));
+      return res.json(ApiResponse.error('Esaの空欄の項目があります'));
     }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
@@ -1208,6 +1216,15 @@ module.exports = function(crowi, app) {
    */
   actions.api.importerSettingQiita = async(req, res) => {
     const form = req.body;
+
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // return res.json(ApiResponse.error('Invalid comment.'));
+      // return res.status(422).json({ errors: errors.array() });
+      console.log('validator', errors);
+      return res.json(ApiResponse.error('Qiitaの空欄の項目があります'));
+    }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res

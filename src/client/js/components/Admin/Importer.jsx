@@ -65,7 +65,7 @@ class Importer extends React.Component {
     try {
       const params = {
         'importer:esa:team_name': this.state.esaTeamName,
-        'importer:esa:access_token': this.state.esaaAccessToken,
+        'importer:esa:access_token': this.state.esaAccessToken,
       };
       this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Update');
