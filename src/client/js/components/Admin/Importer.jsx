@@ -62,17 +62,21 @@ class Importer extends React.Component {
   }
 
   esaHandleSubmitUpdate() {
-    try {
-      const params = {
-        'importer:esa:team_name': this.state.esaTeamName,
-        'importer:esa:access_token': this.state.esaAccessToken,
-      };
-      this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
-      toastSuccess('Update');
-    }
-    catch (error) {
-      toastError(error);
-    }
+    const params = {
+      'importer:esa:team_name': this.state.esaTeamName,
+      'importer:esa:access_token': this.state.esaAccessToken,
+    };
+    this.props.appContainer.apiPost('/admin/settings/importerEsa', params)
+      .then((res) => {
+        if (res.ok) {
+          toastSuccess('Update');
+        }
+
+        toastError('入力された値がesaと一致しないよ');
+      })
+      .catch((err) => {
+        toastError(err, '入力された値がesaと一致しないよ');
+      });
   }
 
   qiitaHandleSubmit() {
