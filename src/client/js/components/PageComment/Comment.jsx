@@ -261,9 +261,8 @@ class Comment extends React.Component {
         {showReEditor ? (
           <CommentEditor
             growiRenderer={this.growiRenderer}
-            currentComment={comment}
+            currentCommentId={commentId}
             commentBody={comment.comment}
-            reEdit
             replyTo={undefined}
             commentButtonClickedHandler={this.commentButtonClickedHandler}
           />
