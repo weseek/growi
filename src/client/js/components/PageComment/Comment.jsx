@@ -37,14 +37,16 @@ class Comment extends React.Component {
       showReEditorIds: new Set(),
     };
 
+    this.growiRenderer = this.props.appContainer.getRenderer('comment');
+
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
-    this.editBtnClickedHandler = this.editBtnClickedHandler.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
+    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
   componentWillMount() {
@@ -97,6 +99,15 @@ class Comment extends React.Component {
   editBtnClickedHandler(commentId) {
     const ids = this.state.showReEditorIds.add(commentId);
     this.setState({ showReEditorIds: ids });
+  }
+
+  commentButtonClickedHandler(commentId) {
+    this.setState((prevState) => {
+      prevState.showReEditorIds.delete(commentId);
+      return {
+        showReEditorIds: prevState.showReEditorIds,
+      };
+    });
   }
 
   deleteBtnClickedHandler() {
