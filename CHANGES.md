@@ -8,6 +8,7 @@
     * Introduced by 3.5.2
 * Support: Upgrade libs
     * date-fns
+    * eslint-config-weseek
 
 ## 3.5.9
 
