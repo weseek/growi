@@ -103,7 +103,14 @@ class CommentEditor extends React.Component {
     }
 
     if (this.props.reEdit) {
-      this.props.commentContainer.putComment();
+      this.props.commentContainer.putComment(
+        this.state.comment,
+        this.state.isMarkdown,
+        this.props.replyTo,
+        this.props.commentContainer.state.isSlackEnabled,
+        this.props.commentContainer.state.slackChannels,
+        this.props.currentComment,
+      );
     }
 
     this.props.commentContainer.postComment(
