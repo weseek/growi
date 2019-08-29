@@ -98,6 +98,7 @@ class CommentEditor extends React.Component {
    * Post comment with CommentContainer and update state
    */
   postHandler(event) {
+    // TODO GW-61 implementation for reEdit comment
     if (event != null) {
       event.preventDefault();
     }
