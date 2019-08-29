@@ -126,7 +126,7 @@ export default class AttachmentList extends React.Component {
 
     const AttachmentElementClass = (refsContext.isExtractImg) ? AttachmentExtracted : AttachmentLink;
 
-    return <AttachmentElementClass key={attachment._id} attachment={attachment} />;
+    return <AttachmentElementClass key={attachment._id} attachment={attachment} refsContext={refsContext} />;
   }
 
   renderContents() {

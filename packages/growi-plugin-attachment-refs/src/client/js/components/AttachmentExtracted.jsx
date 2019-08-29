@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import Attachment from '@client/js/components/PageAttachment/Attachment';
 
+import RefsContext from '../util/RefsContext';
+
 const AttachmentLink = Attachment;
 
 /**
@@ -11,13 +13,41 @@ const AttachmentLink = Attachment;
  */
 export default class AttachmentExtracted extends React.PureComponent {
 
+  renderExtractedImage(attachment) {
+    const { refsContext } = this.props;
+    const { options } = refsContext;
+
+    const {
+      width,
+      height,
+      'max-width': maxWidth,
+      'max-height': maxHeight,
+    } = options;
+
+    const styles = {
+      width, height, maxWidth, maxHeight,
+    };
+
+    // determine alt
+    let alt = refsContext.isSingle ? options.alt : undefined; // use only when single mode
+    alt = alt || attachment.originalName; //                     use 'originalName' if options.alt is not specified
+
+    return (
+      <div>
+        <a href="#">
+          <img src={attachment.filePathProxied} alt={alt} style={styles} />
+        </a>
+      </div>
+    );
+  }
+
   render() {
     const { attachment } = this.props;
 
     const isImage = attachment.fileFormat.startsWith('image/');
 
     return (isImage)
-      ? <div><a href="#"><img src={attachment.filePathProxied} alt={attachment.originalName} /></a></div>
+      ? this.renderExtractedImage(attachment)
       : <AttachmentLink key={attachment._id} attachment={attachment} />;
   }
 
@@ -25,4 +55,5 @@ export default class AttachmentExtracted extends React.PureComponent {
 
 AttachmentExtracted.propTypes = {
   attachment: PropTypes.object.isRequired,
+  refsContext: PropTypes.instanceOf(RefsContext).isRequired,
 };
