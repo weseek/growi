@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-jest.setTimeout(15000); // default 5000
+jest.setTimeout(30000); // default 5000
 
 beforeAll(async(done) => {
   await mongoose.connect(mongoUri, { useNewUrlParser: true });

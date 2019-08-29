@@ -3,6 +3,8 @@ const urljoin = require('url-join');
 
 const helpers = require('@commons/util/helpers');
 
+const { envUtils } = require('growi-commons');
+
 const cdnLocalScriptRoot = 'public/js/cdn';
 const cdnLocalScriptWebRoot = '/js/cdn';
 const cdnLocalStyleRoot = 'public/styles/cdn';
@@ -14,8 +16,11 @@ class CdnResourcesService {
   constructor() {
     this.logger = require('@alias/logger')('growi:service:CdnResourcesService');
 
-    this.noCdn = !!process.env.NO_CDN;
     this.loadManifests();
+  }
+
+  get noCdn() {
+    return envUtils.toBoolean(process.env.NO_CDN);
   }
 
   loadManifests() {
@@ -72,9 +77,8 @@ class CdnResourcesService {
    * Generate script tag string
    *
    * @param {Object} manifest
-   * @param {boolean} noCdn
    */
-  generateScriptTag(manifest, noCdn) {
+  generateScriptTag(manifest) {
     const attrs = [];
     const args = manifest.args || {};
 
@@ -87,7 +91,7 @@ class CdnResourcesService {
 
     // TODO process integrity
 
-    const url = noCdn
+    const url = this.noCdn
       ? `${urljoin(cdnLocalScriptWebRoot, manifest.name)}.js`
       : manifest.url;
     return `<script src="${url}" ${attrs.join(' ')}></script>`;
@@ -95,7 +99,7 @@ class CdnResourcesService {
 
   getScriptTagByName(name) {
     const manifest = this.getScriptManifestByName(name);
-    return this.generateScriptTag(manifest, this.noCdn);
+    return this.generateScriptTag(manifest);
   }
 
   getScriptTagsByGroup(group) {
@@ -104,7 +108,7 @@ class CdnResourcesService {
         return manifest.groups != null && manifest.groups.includes(group);
       })
       .map((manifest) => {
-        return this.generateScriptTag(manifest, this.noCdn);
+        return this.generateScriptTag(manifest);
       });
   }
 
@@ -112,9 +116,8 @@ class CdnResourcesService {
    * Generate style tag string
    *
    * @param {Object} manifest
-   * @param {boolean} noCdn
    */
-  generateStyleTag(manifest, noCdn) {
+  generateStyleTag(manifest) {
     const attrs = [];
     const args = manifest.args || {};
 
@@ -127,7 +130,7 @@ class CdnResourcesService {
 
     // TODO process integrity
 
-    const url = noCdn
+    const url = this.noCdn
       ? `${urljoin(cdnLocalStyleWebRoot, manifest.name)}.css`
       : manifest.url;
 
@@ -136,7 +139,7 @@ class CdnResourcesService {
 
   getStyleTagByName(name) {
     const manifest = this.getStyleManifestByName(name);
-    return this.generateStyleTag(manifest, this.noCdn);
+    return this.generateStyleTag(manifest);
   }
 
   getStyleTagsByGroup(group) {
@@ -145,7 +148,7 @@ class CdnResourcesService {
         return manifest.groups != null && manifest.groups.includes(group);
       })
       .map((manifest) => {
-        return this.generateStyleTag(manifest, this.noCdn);
+        return this.generateStyleTag(manifest);
       });
   }
 
@@ -160,7 +163,7 @@ class CdnResourcesService {
       manifest = Object.assign(manifest, { url: url.toString() });
     }
 
-    return this.generateStyleTag(manifest, this.noCdn);
+    return this.generateStyleTag(manifest);
   }
 
 }

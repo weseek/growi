@@ -1,5 +1,6 @@
 const debug = require('debug')('growi:lib:middlewares');
 const logger = require('@alias/logger')('growi:lib:middlewares');
+const { formatDistanceStrict } = require('date-fns');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
@@ -119,6 +120,10 @@ module.exports = (crowi, app) => {
         return swigFilters.date(input, format, app.get('tzoffset'));
       });
 
+      swig.setFilter('dateDistance', (input) => {
+        return formatDistanceStrict(input, new Date());
+      });
+
       swig.setFilter('nl2br', (string) => {
         return string
           .replace(/\n/g, '<br>');
@@ -170,8 +175,6 @@ module.exports = (crowi, app) => {
   };
 
   middlewares.adminRequired = function(req, res, next) {
-    // check the user logged in
-    //  make sure that req.user isn't username/email string to login which is set by basic-auth-connect
     if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
       if (req.user.admin) {
         next();
@@ -189,18 +192,19 @@ module.exports = (crowi, app) => {
    */
   middlewares.loginRequired = function(isStrictly = true) {
     return function(req, res, next) {
-      const User = crowi.model('User');
 
       // when the route is not strictly restricted
       if (!isStrictly) {
         // when allowed to read
-        if (crowi.aclService.getIsGuestAllowedToRead()) {
+        if (crowi.aclService.isGuestAllowedToRead()) {
+          logger.debug('Allowed to read: ', req.path);
           return next();
         }
       }
 
+      const User = crowi.model('User');
+
       // check the user logged in
-      //  make sure that req.user isn't username/email string to login which is set by basic-auth-connect
       if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
         if (req.user.status === User.STATUS_ACTIVE) {
           // Active の人だけ先に進める
@@ -275,7 +279,7 @@ module.exports = (crowi, app) => {
 
   middlewares.awsEnabled = function() {
     return function(req, res, next) {
-      if (configManager.getConfig('crowi', 'aws:region') !== ''
+      if ((configManager.getConfig('crowi', 'aws:region') !== '' || this.configManager.getConfig('crowi', 'aws:customEndpoint') !== '')
           && configManager.getConfig('crowi', 'aws:bucket') !== ''
           && configManager.getConfig('crowi', 'aws:accessKeyId') !== ''
           && configManager.getConfig('crowi', 'aws:secretAccessKey') !== '') {

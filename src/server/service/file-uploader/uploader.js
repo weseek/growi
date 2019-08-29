@@ -13,7 +13,9 @@ class Uploader {
     if (method === 'aws' && (
       !this.configManager.getConfig('crowi', 'aws:accessKeyId')
         || !this.configManager.getConfig('crowi', 'aws:secretAccessKey')
-        || !this.configManager.getConfig('crowi', 'aws:region')
+        || (
+          !this.configManager.getConfig('crowi', 'aws:region')
+            && !this.configManager.getConfig('crowi', 'aws:customEndpoint'))
         || !this.configManager.getConfig('crowi', 'aws:bucket'))) {
       return false;
     }

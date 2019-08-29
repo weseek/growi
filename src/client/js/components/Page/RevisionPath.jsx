@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import urljoin from 'url-join';
+
 import CopyDropdown from './CopyDropdown';
 
 class RevisionPath extends React.Component {
@@ -14,6 +16,7 @@ class RevisionPath extends React.Component {
       pages: [],
       isListPage: false,
       isLinkToListPage: true,
+      isInTrash: false,
     };
 
     // retrieve xss library from window
@@ -30,6 +33,23 @@ class RevisionPath extends React.Component {
     const isLinkToListPage = (behaviorType === 'crowi');
     this.setState({ isLinkToListPage });
 
+    this.generateHierarchyData();
+  }
+
+  /**
+   * 1. split `pagePath` with '/'
+   * 2. list hierararchical page paths
+   *
+   * e.g.
+   *  when `pagePath` is '/foo/bar/baz`
+   *  return:
+   *  [
+   *    { pagePath: '/foo',         pageName: 'foo' },
+   *    { pagePath: '/foo/bar',     pageName: 'bar' },
+   *    { pagePath: '/foo/bar/baz', pageName: 'baz' },
+   *  ]
+   */
+  generateHierarchyData() {
     // generate pages obj
     const splitted = this.props.pagePath.split(/\//);
     splitted.shift(); // omit first element with shift()
@@ -38,13 +58,19 @@ class RevisionPath extends React.Component {
     }
 
     const pages = [];
-    let parentPath = '/';
+    const pagePaths = [];
     splitted.forEach((pageName) => {
+      // skip trash
+      if (pageName === 'trash' && splitted.length > 1) {
+        this.setState({ isInTrash: true });
+        return;
+      }
+
+      pagePaths.push(encodeURIComponent(pageName));
       pages.push({
-        pagePath: parentPath + encodeURIComponent(pageName),
+        pagePath: urljoin('/', ...pagePaths),
         pageName: this.xss.process(pageName),
       });
-      parentPath += `${pageName}/`;
     });
 
     this.setState({ pages });
@@ -86,6 +112,7 @@ class RevisionPath extends React.Component {
       padding: '0 2px',
     };
 
+    const { isInTrash } = this.state;
     const pageLength = this.state.pages.length;
 
     const afterElements = [];
@@ -109,7 +136,12 @@ class RevisionPath extends React.Component {
 
     return (
       <span className="d-flex align-items-center">
-        <span className="separator" style={rootStyle}>
+        { isInTrash && (
+          <span className="path-segment">
+            <a href="/trash"><i className="icon-trash"></i></a>
+          </span>
+        ) }
+        <span className="separator" style={isInTrash ? separatorStyle : rootStyle}>
           <a href="/">/</a>
         </span>
         {afterElements}

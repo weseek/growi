@@ -47,6 +47,14 @@ module.exports = function(crowi, app) {
     if (page.revisionHackmdSynced != null && page.revisionHackmdSynced._id != null) {
       returnObj.revisionHackmdSynced = page.revisionHackmdSynced._id;
     }
+
+    if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+      returnObj.lastUpdateUser = page.lastUpdateUser.toObject();
+    }
+    if (page.creator != null && page.creator instanceof User) {
+      returnObj.creator = page.creator.toObject();
+    }
+
     return returnObj;
   }
 
@@ -161,6 +169,10 @@ module.exports = function(crowi, app) {
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
+    if (req.user == null) {
+      return '';
+    }
+
     const definitions = {
       pagepath: getPathFromRequest(req),
       username: req.user.name,
@@ -419,13 +431,14 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/not_found';
 
       // retrieve templates
-      const template = await Page.findTemplate(path);
-
-      if (template.templateBody) {
-        const body = replacePlaceholdersOfTemplate(template.templateBody, req);
-        const tags = template.templateTags;
-        renderVars.template = body;
-        renderVars.templateTags = tags;
+      if (req.user != null) {
+        const template = await Page.findTemplate(path);
+        if (template.templateBody) {
+          const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+          const tags = template.templateTags;
+          renderVars.template = body;
+          renderVars.templateTags = tags;
+        }
       }
 
       // add scope variables by ancestor page
@@ -585,8 +598,6 @@ module.exports = function(crowi, app) {
     }
 
     const result = { page: serializeToObj(createdPage), tags: savedTags };
-    result.page.lastUpdateUser = User.filterToPublicFields(createdPage.lastUpdateUser);
-    result.page.creator = User.filterToPublicFields(createdPage.creator);
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -674,7 +685,6 @@ module.exports = function(crowi, app) {
     }
 
     const result = { page: serializeToObj(page), tags: savedTags };
-    result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -1047,11 +1057,11 @@ module.exports = function(crowi, app) {
     const previousRevision = req.body.revision_id || null;
     const newPagePath = pathUtils.normalizePath(req.body.new_path);
     const options = {
-      createRedirectPage: req.body.create_redirect || 0,
-      moveUnderTrees: req.body.move_trees || 0,
+      createRedirectPage: (req.body.create_redirect != null),
+      updateMetadata: (req.body.remain_metadata == null),
       socketClientId: +req.body.socketClientId || undefined,
     };
-    const isRecursively = req.body.recursively || 0;
+    const isRecursively = (req.body.recursively != null);
 
     if (!Page.isCreatableName(newPagePath)) {
       return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
@@ -1124,7 +1134,7 @@ module.exports = function(crowi, app) {
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
     req.body.grantedUsers = page.grantedUsers;
-    req.body.grantedGroup = page.grantedGroup;
+    req.body.grantUserGroupId = page.grantedGroup;
     req.body.pageTags = originTags;
 
     return api.create(req, res);

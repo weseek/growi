@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
@@ -33,6 +31,7 @@ import RecentCreated from './components/RecentCreated/RecentCreated';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
+import TableOfContents from './components/TableOfContents';
 
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -108,6 +107,7 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
     'page-comment-write':  <CommentEditorLazyRenderer />,
+    'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,

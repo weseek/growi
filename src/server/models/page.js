@@ -5,12 +5,15 @@
 
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
+const urljoin = require('url-join');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-const escapeStringRegexp = require('escape-string-regexp');
+const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
+const escapeStringRegexp = require('escape-string-regexp');
+
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*
  * define schema
@@ -809,7 +812,7 @@ module.exports = function(crowi) {
 
     // determine User condition
     const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hidePagesRestrictedByGroupInList');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
     let userGroups = null;
@@ -842,17 +845,19 @@ module.exports = function(crowi) {
   /**
    * find all templates applicable to the new page
    */
-  pageSchema.statics.findTemplate = function(path) {
+  pageSchema.statics.findTemplate = async function(path) {
     const templatePath = nodePath.posix.dirname(path);
     const pathList = generatePathsOnTree(path, []);
-    const regexpList = pathList.map((path) => { return new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`) });
+    const regexpList = pathList.map((path) => {
+      const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+      return new RegExp(`^${escapeStringRegexp(pathWithTrailingSlash)}_{1,2}template$`);
+    });
 
-    return this
-      .find({ path: { $in: regexpList } })
+    const templatePages = await this.find({ path: { $in: regexpList } })
       .populate({ path: 'revision', model: 'Revision' })
-      .then((templates) => {
-        return fetchTemplate(templates, templatePath);
-      });
+      .exec();
+
+    return fetchTemplate(templatePages, templatePath);
   };
 
   const generatePathsOnTree = (path, pathList) => {
@@ -868,11 +873,11 @@ module.exports = function(crowi) {
   };
 
   const assignTemplateByType = (templates, path, type) => {
-    for (let i = 0; i < templates.length; i++) {
-      if (templates[i].path === `${path}/${type}template`) {
-        return templates[i];
-      }
-    }
+    const targetTemplatePath = urljoin(path, `${type}template`);
+
+    return templates.find((template) => {
+      return (template.path === targetTemplatePath);
+    });
   };
 
   const assignDecendantsTemplate = (decendantsTemplates, path) => {
@@ -995,9 +1000,8 @@ module.exports = function(crowi) {
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1021,9 +1025,8 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user);
-    savedPage = await this.findByPath(revision.path)
-      .populate('revision')
-      .populate('creator');
+    savedPage = await this.findByPath(revision.path);
+    await savedPage.populateDataToShowRevision();
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
@@ -1063,11 +1066,12 @@ module.exports = function(crowi) {
     const newPath = this.getDeletedPageName(pageData.path);
     const isTrashed = checkIfTrashed(pageData.path);
 
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
+    }
+
     const socketClientId = options.socketClientId || null;
     if (this.isDeletableName(pageData.path)) {
-      if (isTrashed) {
-        return this.completelyDeletePage(pageData, user, options);
-      }
 
       pageData.status = STATUS_DELETED;
       const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
@@ -1086,7 +1090,7 @@ module.exports = function(crowi) {
     const isTrashed = checkIfTrashed(targetPage.path);
 
     if (isTrashed) {
-      return this.completelyDeletePageRecursively(targetPage, user, options);
+      throw new Error('This method does NOT supports deleting trashed pages.');
     }
 
     const findOpts = { includeRedirect: true };
@@ -1157,6 +1161,7 @@ module.exports = function(crowi) {
     const Bookmark = crowi.model('Bookmark');
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
+    const PageTagRelation = crowi.model('PageTagRelation');
     const Revision = crowi.model('Revision');
     const pageId = pageData._id;
     const socketClientId = options.socketClientId || null;
@@ -1166,6 +1171,7 @@ module.exports = function(crowi) {
     await Bookmark.removeBookmarksByPageId(pageId);
     await Attachment.removeAttachmentsByPageId(pageId);
     await Comment.removeCommentsByPageId(pageId);
+    await PageTagRelation.remove({ relatedPage: pageId });
     await Revision.removeRevisionsByPath(pageData.path);
     await this.findByIdAndRemove(pageId);
     await this.removeRedirectOriginPageByPath(pageData.path);
@@ -1228,7 +1234,8 @@ module.exports = function(crowi) {
     const Page = this;
     const Revision = crowi.model('Revision');
     const path = pageData.path;
-    const createRedirectPage = options.createRedirectPage || 0;
+    const createRedirectPage = options.createRedirectPage || false;
+    const updateMetadata = options.updateMetadata || false;
     const socketClientId = options.socketClientId || null;
 
     // sanitize path
@@ -1236,8 +1243,10 @@ module.exports = function(crowi) {
 
     // update Page
     pageData.path = newPagePath;
-    pageData.lastUpdateUser = user;
-    pageData.updatedAt = Date.now();
+    if (updateMetadata) {
+      pageData.lastUpdateUser = user;
+      pageData.updatedAt = Date.now();
+    }
     const updatedPageData = await pageData.save();
 
     // update Rivisions
@@ -1324,12 +1333,7 @@ module.exports = function(crowi) {
    * @param {string} pageIdOnHackmd
    */
   pageSchema.statics.registerHackmdPage = function(pageData, pageIdOnHackmd) {
-    if (pageData.pageIdOnHackmd != null) {
-      throw new Error(`'pageIdOnHackmd' of the page '${pageData.path}' is not empty`);
-    }
-
     pageData.pageIdOnHackmd = pageIdOnHackmd;
-
     return this.syncRevisionToHackmd(pageData);
   };
 

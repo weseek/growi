@@ -1,9 +1,11 @@
 const debug = require('debug')('growi:service:ConfigLoader');
 
+const { envUtils } = require('growi-commons');
+
 const TYPES = {
   NUMBER:  { parse: (v) => { return parseInt(v, 10) } },
   STRING:  { parse: (v) => { return v } },
-  BOOLEAN: { parse: (v) => { return /^(true|1)$/i.test(v) } },
+  BOOLEAN: { parse: (v) => { return envUtils.toBoolean(v) } },
 };
 
 /**
@@ -133,6 +135,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'gridfs:totalLimit',
     type:    TYPES.NUMBER,
     default: Infinity,
+  },
+  FORCE_WIKI_MODE: {
+    ns:      'crowi',
+    key:     'security:wikiMode',
+    type:    TYPES.STRING,
+    default: undefined,
+  },
+  LOCAL_STRATEGY_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-local:isEnabled',
+    type:    TYPES.BOOLEAN,
+    default: true,
+  },
+  LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
+    ns:      'crowi',
+    key:     'security:passport-local:useOnlyEnvVarsForSomeOptions',
+    type:    TYPES.BOOLEAN,
+    default: false,
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',

@@ -1,5 +1,5 @@
 const logger = require('@alias/logger')('growi:service:GlobalNotification');
-const path = require('path');
+const nodePath = require('path');
 /**
  * the service class of GlobalNotificationSetting
  */
@@ -43,7 +43,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#pageCreate - ${page.creator.username} created ${page.path}`,
-        template: `../../locales/${lang}/notifications/pageCreate.txt`,
+        template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageCreate.txt`),
         vars: {
           appTitle: this.appTitle,
           path: page.path,
@@ -69,7 +69,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#pageEdit - ${page.creator.username} edited ${page.path}`,
-        template: path.join(this.crowi.localeDir, `${lang}/notifications/pageEdit.txt`),
+        template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageEdit.txt`),
         vars: {
           appTitle: this.appTitle,
           path: page.path,
@@ -95,7 +95,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#pageDelete - ${page.creator.username} deleted ${page.path}`, // FIXME
-        template: `../../locales/${lang}/notifications/pageDelete.txt`,
+        template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageDelete.txt`),
         vars: {
           appTitle: this.appTitle,
           path: page.path,
@@ -119,7 +119,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#pageMove - ${user.username} moved ${page.path} to ${page.path}`, // FIXME
-        template: `../../locales/${lang}/notifications/pageMove.txt`,
+        template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageMove.txt`),
         vars: {
           appTitle: this.appTitle,
           oldPath: oldPagePath,
@@ -144,7 +144,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#pageLike - ${user.username} liked ${page.path}`,
-        template: `../../locales/${lang}/notifications/pageLike.txt`,
+        template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/pageLike.txt`),
         vars: {
           appTitle: this.appTitle,
           path: page.path,
@@ -170,7 +170,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#comment - ${user.username} commented on ${path}`,
-        template: `../../locales/${lang}/notifications/comment.txt`,
+        template: nodePath.join(this.crowi.localeDir, `${lang}/notifications/comment.txt`),
         vars: {
           appTitle: this.appTitle,
           path,

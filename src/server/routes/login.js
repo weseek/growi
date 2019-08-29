@@ -99,10 +99,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.register = function(req, res) {
-    // redirect to '/' if both of these are true:
-    //  1. user has logged in
-    //  2. req.user is not username/email string (which is set by basic-auth-connect)
-    if (req.user != null && req.user instanceof Object) {
+    if (req.user != null) {
       return res.redirect('/');
     }
 

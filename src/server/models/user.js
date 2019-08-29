@@ -65,6 +65,18 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
+  }, {
+    toObject: {
+      transform: (doc, ret, opt) => {
+        // omit password
+        delete ret.password;
+        // omit email
+        if (!doc.isEmailPublished) {
+          delete ret.email;
+        }
+        return ret;
+      },
+    },
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
@@ -374,24 +386,6 @@ module.exports = function(crowi) {
     return true;
   };
 
-  userSchema.statics.filterToPublicFields = function(user) {
-    debug('User is', typeof user, user);
-    if (typeof user !== 'object' || !user._id) {
-      return user;
-    }
-
-    const filteredUser = {};
-    const fields = USER_PUBLIC_FIELDS.split(' ');
-    for (let i = 0; i < fields.length; i++) {
-      const key = fields[i];
-      if (user[key]) {
-        filteredUser[key] = user[key];
-      }
-    }
-
-    return filteredUser;
-  };
-
   userSchema.statics.findUsers = function(options, callback) {
     const sort = options.sort || { status: 1, createdAt: 1 };
 
@@ -444,17 +438,14 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.findUsersWithPagination = async function(options) {
-    const sort = options.sort || { status: 1, username: 1, createdAt: 1 };
+    const defaultOptions = {
+      sort: { status: 1, username: 1, createdAt: 1 },
+      page: 1,
+      limit: PAGE_ITEMS,
+    };
+    const mergedOptions = Object.assign(defaultOptions, options);
 
-    // eslint-disable-next-line no-return-await
-    return await this.paginate({ status: { $ne: STATUS_DELETED } }, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, (err, result) => {
-      if (err) {
-        debug('Error on pagination:', err);
-        throw new Error(err);
-      }
-
-      return result;
-    }, { sortBy: sort });
+    return this.paginate({ status: { $ne: STATUS_DELETED } }, mergedOptions);
   };
 
   userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
@@ -607,28 +598,18 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.resetPasswordByRandomString = function(id) {
-    const User = this;
+  userSchema.statics.resetPasswordByRandomString = async function(id) {
+    const user = await this.findById(id);
 
-    return new Promise(((resolve, reject) => {
-      User.findById(id, (err, userData) => {
-        if (!userData) {
-          return reject(new Error('User not found'));
-        }
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-        // is updatable check
-        // if (userData.isUp
-        const newPassword = generateRandomTempPassword();
-        userData.setPassword(newPassword);
-        userData.save((err, userData) => {
-          if (err) {
-            return reject(err);
-          }
+    const newPassword = generateRandomTempPassword();
+    user.setPassword(newPassword);
+    await user.save();
 
-          resolve({ user: userData, newPassword });
-        });
-      });
-    }));
+    return newPassword;
   };
 
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {

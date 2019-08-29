@@ -2,7 +2,7 @@ module.exports = {
   js: [
     {
       name: 'basis',
-      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1,npm/bootstrap@3.4.1/dist/js/bootstrap.min.js',
+      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.4.0,npm/bootstrap@3.4.1/dist/js/bootstrap.min.js',
       groups: ['basis'],
       args: {
         integrity: '',
@@ -28,6 +28,8 @@ module.exports = {
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/scss.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/typescript.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js,'
+        + 'gh/highlightjs/cdn-release@9.13.0/build/languages/swift.min.js,'
+        + 'gh/highlightjs/cdn-release@9.13.0/build/languages/kotlin.min.js,'
         + 'npm/highlightjs-line-numbers.js@2.6.0/dist/highlightjs-line-numbers.min.js',
       args: {
         async: true,

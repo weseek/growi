@@ -70,6 +70,7 @@ const contributors = [
           { name: 'kmyk' },
           { name: 'aximov' },
           { name: 'tats-u' },
+          { name: 'yamatomo717' },
         ],
       },
     ],

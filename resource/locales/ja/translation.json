@@ -6,8 +6,9 @@
   "Duplicate": "複製",
   "Copy": "コピー",
   "Click to copy": "クリックでコピー",
-  "Move": "移動",
+  "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
+  "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
   "Seen by": "見た人",
@@ -28,6 +29,7 @@
   "Category": "カテゴリー",
   "User": "ユーザー",
   "status": "ステータス",
+  "account_id": "アカウントID",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -106,13 +108,11 @@
   "Customize": "カスタマイズ",
   "Notification Settings": "通知設定",
   "User_Management": "ユーザー管理",
-  "External Account management": "外部アカウント管理",
+  "external_account_management": "外部アカウント管理",
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
   "Basic Settings": "基本設定",
-  "Basic authentication": "Basic認証",
-  "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
   "Public": "公開",
@@ -242,13 +242,14 @@
   },
 
   "page_page": {
-      "notice": {
-          "version": "これは現在の版ではありません。",
-          "moved": "このページは <code>%s</code> から移動しました。",
-          "duplicated": "このページは <code>%s</code> から複製されました。",
-          "unlinked": "このページへのリダイレクトは削除されました。",
-          "restricted": "このページの閲覧は制限されています"
-      }
+    "notice": {
+      "version": "これは現在の版ではありません。",
+      "moved": "このページは <code>%s</code> から移動しました。",
+      "redirected": "リダイレクト元 >> <code>%s</code>",
+      "duplicated": "このページは <code>%s</code> から複製されました。",
+      "unlinked": "このページへのリダイレクトは削除されました。",
+      "restricted": "このページの閲覧は制限されています"
+    }
   },
 
   "page_edit": {
@@ -268,15 +269,17 @@
 
   "modal_rename": {
     "label": {
-      "Rename page": "ページを移動する",
+      "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
       "Current page name": "現在のページ名",
-      "Move recursively": "再帰的に移動",
+      "Recursively": "再帰的に移動/名前変更",
+      "Do not update metadata": "メタデータを更新しない",
       "Redirect": "リダイレクトする"
     },
     "help": {
       "redirect": "<code>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
-      "recursive": "<code>%s</code> 配下のページも移動します"
+      "metadata": "最終更新ユーザー、最終更新日を更新せず維持します",
+      "recursive": "<code>%s</code> 配下のページも移動/名前変更します"
     }
   },
 
@@ -425,6 +428,8 @@
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket name": "バケット名",
+    "custom endpoint": "カスタムエンドポイント",
+    "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
     "Plugin settings": "プラグイン設定",
     "Enable plugin loading": "プラグインの読み込みを有効にします。",
     "Load plugins": "プラグインを読み込む",
@@ -434,13 +439,11 @@
    },
 
   "security_setting": {
-    "Basic authentication": "Basic認証",
-    "Guest users access": "ゲストユーザーのアクセス",
+    "Guest Users Access": "ゲストユーザーのアクセス",
+    "Fixed by env var": "環境変数 <code>%s=%s</code> により固定されています。",
     "Register limitation": "登録の制限",
+    "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "common_authentication": "Basic認証を設定すると、ページ全体に共通の認証がかかります。",
-    "without_encryption": "IDとパスワードは暗号化されずに送信されるのでご注意下さい。",
-    "basic_acl_disable": "Public Wiki の設定のため、Basic認証は利用できません。",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
     "restrict_emails": "登録可能なメールアドレスを制限することができます。",
@@ -466,8 +469,8 @@
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
     "guest_mode": {
-      "deny": "アカウントを持たないユーザーはアクセス不可",
-      "readonly": "閲覧のみ許可"
+      "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
+      "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",
@@ -483,6 +486,9 @@
     "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
     "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
+    "Local": {
+      "name": "ID/Password"
+    },
     "ldap": {
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
@@ -522,6 +528,11 @@
       "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
       "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
+    },
+    "Basic": {
+      "name": "Basic 認証",
+      "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
+      "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
     },
     "OAuth": {
       "register": "%sに登録",
@@ -691,7 +702,7 @@
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
     "add_user": "グループへのユーザー追加",
-    "deny_create_group": "現在の設定では新規グループの作成はできません。",
+    "deny_create_group": "新規グループの作成はできません。",
     "is_loading_data": "データを取得中です...",
     "choose_action": "削除するグループの限定公開ページの処理を選択してください",
     "delete_group": "グループの削除",

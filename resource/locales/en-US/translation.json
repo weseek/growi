@@ -6,8 +6,9 @@
   "Duplicate": "Duplicate",
   "Copy": "Copy",
   "Click to copy": "Click to copy",
-  "Move": "Move",
+  "Move/Rename": "Move/Rename",
   "Moved": "Moved",
+  "Redirected": "Redirected",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
@@ -28,6 +29,8 @@
   "Category": "Category",
   "User": "User",
   "status":"Status",
+  "account_id": "Account Id",
+
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -106,13 +109,12 @@
   "Customize": "Customize",
   "Notification Settings": "Notification Settings",
   "User_Management": "User Management",
-  "External Account management": "External Account management",
+  "external_account_management": "External Account Management",
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
   "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
-  "Guest users access": "Guest users access",
   "Register limitation": "Register limitation",
   "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
   "Public": "Public",
@@ -242,13 +244,14 @@
   },
 
   "page_page": {
-      "notice": {
-          "version": "This is not the current version.",
-          "moved": "This page was moved from <code>%s</code>",
-          "duplicated": "This page was duplicated from <code>%s</code>",
-          "unlinked": "Redirect pages to this page have been deleted.",
-          "restricted": "Access to this page is restricted"
-      }
+    "notice": {
+      "version": "This is not the current version.",
+      "moved": "This page was moved from <code>%s</code>",
+      "redirected": "You are redirected from <code>%s</code>",
+      "duplicated": "This page was duplicated from <code>%s</code>",
+      "unlinked": "Redirect pages to this page have been deleted.",
+      "restricted": "Access to this page is restricted"
+    }
   },
 
   "page_edit": {
@@ -268,15 +271,17 @@
 
   "modal_rename": {
     "label": {
-      "Rename page": "Rename page",
+      "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
       "Current page name": "Current page name",
-      "Move recursively": "Move recursively",
+      "Recursively": "Recursively",
+      "Do not update metadata": "Do not update metadata",
       "Redirect": "Redirect"
     },
     "help": {
       "redirect": "Redirect to new page if someone accesses <code>%s</code>",
-      "recursive": "Rename children of under <code>%s</code> recursively"
+      "metadata": "Remains last update user and updated date as is",
+      "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
 
@@ -286,9 +291,9 @@
   "modal_delete": {
     "delete_page": "Delete Page",
     "deleting_page": "Deleting Page",
-    "delete_recursively": "Delete child pages under %s recursively.",
+    "delete_recursively": "Delete child pages recursively.",
     "delete_completely": "Delete Completely",
-    "delete_completely_restriction": "You have no admin to delete completely.",
+    "delete_completely_restriction": "You don't have the authority to delete pages completely.",
     "recursively": "Delete children of under <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
@@ -425,6 +430,8 @@
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
     "bucket name": "Bucket name",
+    "custom endpoint": "Custom endpoint",
+    "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
     "Plugin settings": "Plugin settings",
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
@@ -434,14 +441,12 @@
   },
 
   "security_setting": {
-		"Basic authentication": "Basic Authentication",
 		"Security settings": "Security settings",
-		"Guest users access": "Guest users access",
-		"Register limitation": "Register limitation",
+    "Guest Users Access": "Guest Users Access",
+    "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
+    "Register limitation": "Register limitation",
+    "Register limitation desc": "Restricts ways to register new user.",
 		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-		"common_authentication": "If you set the basic authentication, common authentication is applied on the whole page.",
-		"without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
-		"basic_acl_disable": "Because of Public Wiki  setting, basic authentication can not be used.",
 		"users_without_account": "Users without account is not accessible",
     "example": "Example",
     "restrict_emails": "You can restrict registerable e-mail address.",
@@ -470,13 +475,13 @@
     "clientID": "Client ID",
     "client_secret": "Client Secret",
     "guest_mode": {
-      "deny": "Deny Unregistered Users",
-      "readonly": "View Only"
+      "deny": "Deny (Registered Users Only)",
+      "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
-      "open": "Anyone",
-      "restricted": "Require Admin permission",
-      "closed": "Invitation Only"
+      "open": "Open (Anyone can register)",
+      "restricted": "Restricted (Requires approval by administrators)",
+      "closed": "Closed (Invitation Only)"
     },
     "configuration": " Configuration",
     "optional": "Optional",
@@ -487,6 +492,9 @@
     "Use env var if empty": "Use env var <code>%s</code> if empty",
     "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
+    "Local": {
+      "name": "ID/Password"
+    },
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -527,6 +535,11 @@
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
+    "Basic": {
+      "name": "Basic Authentication",
+      "desc_1": "Login with <code>username</code> in Authorization header.",
+      "desc_2": "User will be automatically generated if not exist."
+    },
     "OAuth": {
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
@@ -535,7 +548,7 @@
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Create Project if no projects exist",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "Facebook": {
@@ -546,13 +559,13 @@
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Sign in Twitter",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "GitHub": {
         "name": "GitHub OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
-        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "OIDC": {
@@ -562,7 +575,7 @@
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
         "mapping_detail": "Specification of mappings for %s when creating new users",
         "register_1": "Contant to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "how_to": {
@@ -706,7 +719,7 @@
     "group_example": "e.g. : Group1",
     "created_group": "Group was created",
     "add_user": "Add a User to the Created Group",
-    "deny_create_group": "You can't create a new group with the current settings",
+    "deny_create_group": "You can't create a new group.",
     "is_loading_data": "Loading data...",
     "choose_action": "Choose an action for private pages",
     "delete_group": "Delete Group",
@@ -720,7 +733,7 @@
     "no_pages": "There are no pages the group has view permission",
     "how_to_add1": "Enter a username to add",
     "how_to_add2": "Select a user from user list",
-    "remove_from_group": "Remove this group"
+    "remove_from_group": "Remove this user"
   },
 
   "importer_management": {

@@ -1,11 +1,9 @@
-/* eslint no-restricted-globals: ['error', 'locaion'] */
+/* eslint-disable react/jsx-filename-extension */
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { Provider } from 'unstated';
-
-import { debounce } from 'throttle-debounce';
 
 import { pathUtils } from 'growi-commons';
 
@@ -25,14 +23,6 @@ if (!window) {
   window = {};
 }
 window.Crowi = Crowi;
-
-/**
- * render Table Of Contents
- * @param {string} tocHtml
- */
-Crowi.renderTocContent = (tocHtml) => {
-  $('#revision-toc-content').html(tocHtml);
-};
 
 /**
  * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
@@ -155,60 +145,6 @@ Crowi.initAffix = () => {
     });
     $affixContentContainer.css({ 'min-height': containerHeight });
   }
-};
-
-Crowi.initSlimScrollForRevisionToc = () => {
-  const revisionTocElem = document.querySelector('.growi .revision-toc');
-  const tocContentElem = document.querySelector('.growi .revision-toc .markdownIt-TOC');
-
-  // growi layout only
-  if (revisionTocElem == null || tocContentElem == null) {
-    return;
-  }
-
-  function getCurrentRevisionTocTop() {
-    // calculate absolute top of '#revision-toc' element
-    return revisionTocElem.getBoundingClientRect().top;
-  }
-
-  function resetScrollbar(revisionTocTop) {
-    // window height - revisionTocTop - .system-version height
-    let h = window.innerHeight - revisionTocTop - 20;
-
-    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
-
-    h = Math.min(h, tocContentHeight);
-
-    $('#revision-toc-content').slimScroll({
-      railVisible: true,
-      position: 'right',
-      height: h,
-    });
-  }
-
-  const resetScrollbarDebounced = debounce(100, resetScrollbar);
-
-  // initialize
-  const revisionTocTop = getCurrentRevisionTocTop();
-  resetScrollbar(revisionTocTop);
-
-  /*
-   * set event listener
-   */
-  // resize
-  window.addEventListener('resize', (event) => {
-    resetScrollbarDebounced(getCurrentRevisionTocTop());
-  });
-  // affix on
-  $('#revision-toc').on('affixed.bs.affix', () => {
-    resetScrollbar(getCurrentRevisionTocTop());
-  });
-  // affix off
-  $('#revision-toc').on('affixed-top.bs.affix', () => {
-    // calculate sum of height (.navbar-header + .bg-title) + margin-top of .main
-    const sum = 138;
-    resetScrollbar(sum);
-  });
 };
 
 Crowi.initClassesByOS = function() {
@@ -340,7 +276,7 @@ $(() => {
     if (input2 === '') {
       prefix2 = prefix2.slice(0, -1);
     }
-    top.location.href = `${prefix1 + input1 + prefix2 + input2}#edit`;
+    window.location.href = `${prefix1 + input1 + prefix2 + input2}#edit`;
     return false;
   });
 
@@ -352,7 +288,7 @@ $(() => {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = `${pathUtils.encodePagePath(name)}#edit`;
+    window.location.href = `${pathUtils.encodePagePath(name)}#edit`;
     return false;
   });
 
@@ -387,7 +323,7 @@ $(() => {
         }
         else {
           const page = res.page;
-          top.location.href = `${page.path}?renamed=${pagePath}`;
+          window.location.href = `${page.path}?renamed=${pagePath}`;
         }
       });
 
@@ -424,7 +360,7 @@ $(() => {
       }
       else {
         const page = res.page;
-        top.location.href = `${page.path}?duplicated=${pagePath}`;
+        window.location.href = `${page.path}?duplicated=${pagePath}`;
       }
     });
 
@@ -456,7 +392,7 @@ $(() => {
       }
       else {
         const page = res.page;
-        top.location.href = page.path;
+        window.location.href = page.path;
       }
     });
 
@@ -481,7 +417,7 @@ $(() => {
       }
       else {
         const page = res.page;
-        top.location.href = page.path;
+        window.location.href = page.path;
       }
     });
 
@@ -500,7 +436,7 @@ $(() => {
           $('#delete-errors').addClass('alert-danger');
         }
         else {
-          top.location.href = `${res.path}?unlinked=true`;
+          window.location.href = `${res.path}?unlinked=true`;
         }
       });
 
@@ -527,7 +463,7 @@ $(() => {
     $('#edit').removeClass('active');
     $('body').removeClass('on-edit');
     $('body').removeClass('builtin-editor');
-    location.hash = '#';
+    window.location.hash = '#';
   });
 
   /*
@@ -598,7 +534,7 @@ $(() => {
 
       const editorContainer = appContainer.getContainer('EditorContainer');
       editorContainer.saveDraft(path, template);
-      top.location.href = `${path}#edit`;
+      window.location.href = `${path}#edit`;
     });
 
     if (!isSeen) {
@@ -675,7 +611,7 @@ $(() => {
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
       // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
       window.location.hash = '#';
-      window.history.replaceState('', '', location.href);
+      window.history.replaceState('', '', window.location.href);
     });
   }
   else {
@@ -689,7 +625,7 @@ $(() => {
       window.history.replaceState('', 'HackMD', '#hackmd');
     });
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
-      window.history.replaceState('', '', location.href.replace(location.hash, ''));
+      window.history.replaceState('', '', window.location.href.replace(window.location.hash, ''));
     });
     // replace all href="#edit" link behaviors
     $(document).on('click', 'a[href="#edit"]', () => {
@@ -707,8 +643,8 @@ window.addEventListener('load', (e) => {
   const { appContainer } = window;
 
   // hash on page
-  if (location.hash) {
-    if ((location.hash === '#edit' || location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
+  if (window.location.hash) {
+    if ((window.location.hash === '#edit' || window.location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
       appContainer.setState({ editorMode: 'builtin' });
 
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
@@ -718,14 +654,14 @@ window.addEventListener('load', (e) => {
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
+    else if (window.location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
       appContainer.setState({ editorMode: 'hackmd' });
 
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
     }
-    else if (location.hash === '#revision-history' && $('.tab-pane#revision-history').length > 0) {
+    else if (window.location.hash === '#revision-history' && $('.tab-pane#revision-history').length > 0) {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
@@ -767,9 +703,8 @@ window.addEventListener('load', (e) => {
     });
   }
 
-  Crowi.highlightSelectedSection(location.hash);
+  Crowi.highlightSelectedSection(window.location.hash);
   Crowi.modifyScrollTop();
-  Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
   Crowi.initClassesByOS();
 });
@@ -780,14 +715,14 @@ window.addEventListener('hashchange', (e) => {
   Crowi.modifyScrollTop();
 
   // hash on page
-  if (location.hash) {
-    if (location.hash === '#edit') {
+  if (window.location.hash) {
+    if (window.location.hash === '#edit') {
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
     }
-    else if (location.hash === '#hackmd') {
+    else if (window.location.hash === '#hackmd') {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
     }
-    else if (location.hash === '#revision-history') {
+    else if (window.location.hash === '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }

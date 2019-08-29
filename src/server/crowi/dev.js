@@ -123,21 +123,6 @@ class CrowiDev {
     app.use(require('connect-browser-sync')(bs));
   }
 
-  loadPlugins(app) {
-    if (process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
-        && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
-      const pluginNames = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
-      logger.debug('[development] loading Plugins', pluginNames);
-
-      // merge and remove duplicates
-      if (pluginNames.length > 0) {
-        const PluginService = require('../plugins/plugin.service');
-        const pluginService = new PluginService(this.crowi, app);
-        pluginService.loadPlugins(pluginNames);
-      }
-    }
-  }
-
 }
 
 module.exports = CrowiDev;

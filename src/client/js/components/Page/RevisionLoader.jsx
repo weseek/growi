@@ -35,7 +35,7 @@ class RevisionLoader extends React.Component {
     }
   }
 
-  loadData() {
+  async loadData() {
     if (!this.state.isLoaded && !this.state.isLoading) {
       this.setState({ isLoading: true });
     }
@@ -46,23 +46,17 @@ class RevisionLoader extends React.Component {
     };
 
     // load data with REST API
-    this.props.appContainer.apiGet('/revisions.get', requestData)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.error);
-        }
+    const res = await this.props.appContainer.apiGet('/revisions.get', requestData);
+    this.setState({ isLoaded: true, isLoading: false });
 
-        this.setState({
-          markdown: res.revision.body,
-          error: null,
-        });
-      })
-      .catch((err) => {
-        this.setState({ error: err });
-      })
-      .finally(() => {
-        this.setState({ isLoaded: true, isLoading: false });
-      });
+    if (res != null && !res.ok) {
+      throw new Error(res.error);
+    }
+
+    this.setState({
+      markdown: res.revision.body,
+      error: null,
+    });
   }
 
   onWaypointChange(event) {

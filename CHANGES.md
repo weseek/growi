@@ -1,31 +1,83 @@
 # CHANGES
 
-## 3.5.1-RC
+## 3.5.10-RC
 
-### BREAKING CHANGES
+* Improvement: Show loading spinner when fetching page history data
+* Improvement: Hierarchical page link when the page is in /Trash
+* Fix: Code Highlight Theme does not change
+    * Introduced by 3.5.2
+* Support: Upgrade libs
+    * date-fns
 
-* GROWI no longer supports plugins with schema version 2
-    * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
-    * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
-](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
-) to v3.0.0 or above
-* The restriction mode of the root page (`/`) will be set 'Public'
-* The restriction mode of the root page (`/`) can not be changed after v 3.5.1
+## 3.5.9
 
-### Updates
+* Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
+* Fix: Plugins are not initialized when first launching
+    * Introduced by 3.5.0
+* Support: Upgrade libs
+    * entities
+    * growi-commons
+    * openid-client
+    * rimraf
+    * style-loader
 
-* Support: Use Babel 7
-* Support: Support plugins with schema version 3
-* Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
-* Upgrade libs
-    * css-loader
-    * eslint
-    * eslint-config-weseek
-    * eslint-plugin-import
-    * eslint-plugin-jest
-    * eslint-plugin-react
+## 3.5.8
 
-## 3.5.0
+* Improvement: Controls when HackMD/CodiMD has unsaved draft
+* Improvement: Show hints if HackMD/CodiMD integration is not working
+* Improvement: GROWI server obtains HackMD/CodiMD page id from the 302 response header
+* Improvement: Comment Thread Layout
+* Improvement: Show commented date with date distance format
+
+## 3.5.7 (Missing number)
+
+## 3.5.6
+
+* Fix: Saving new page is failed when empty string tag is set
+* Fix: Link of Create template page button in New Page Modal is broken
+* Fix: Global Notification dows not work when creating/moving/deleting/like/comment
+
+## 3.5.5
+
+* Feature: Support S3-compatible object storage (e.g. MinIO)
+* Feature: Enable/Disable ID/Password Authentication
+* Improvement: Login Mechanism with HTTP Basic Authentication header
+* Improvement: Reactify Table Of Contents
+* Fix: Profile images are broken in User Management
+* Fix: Template page under root page doesn't work
+* Support: Upgrade libs
+    * csv-to-markdown-table
+    * express-validator
+    * markdown-it
+    * mini-css-extract-plugin
+    * react-hotkeys
+
+## 3.5.4
+
+* Fix: List private pages wrongly
+* Fix: Global Notification Trigger Path does not parse glob correctly
+* Fix: Consecutive page deletion requests cause unexpected complete page deletion
+
+## 3.5.3
+
+* Improvement: Calculate string width when save with Spreadsheet like GUI (Handsontable)
+* Fix: Search Result Page doesn't work
+* Fix: Create/Update page API returns data includes author's password hash
+* Fix: Dropdown to copy page path/URL/MarkdownLink shows under CodeMirror vscrollbar
+* Fix: Link to /trash in Dropdown menu
+
+## 3.5.2
+
+* Feature: Remain metadata option when Move/Rename page
+* Improvement: Support code highlight for Swift and Kotlin
+* Fix: Couldn't restrict page with user group permission
+* Fix: Couldn't duplicate a page when it restricted by a user group permission
+* Fix: Consider timezone on admin page
+* Fix: Editor doesn't work on Microsoft Edge
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.5.1
 
 ### BREAKING CHANGES
 
@@ -33,6 +85,13 @@
     * Protection system with Basic Authentication
     * Crowi Classic Authentication Mechanism
     * [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+* GROWI no lonnger supports plugins with schema version 2
+    * Upgrade [weseek/growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx) to v3.0.0 or above
+    * Upgrade [weseek/growi-plugin-pukiwiki-like-linker
+](https://github.com/weseek/growi-plugin-pukiwiki-like-linker
+) to v3.0.0 or above
+* The restriction mode of the root page (`/`) will be set 'Public'
+* The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
 Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
@@ -46,15 +105,24 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 * Improvement Draft list
 * Fix: Deleting page completely
 * Fix: Search with `prefix:` param with CJK pathname
+* Fix: Could not edit UserGroup even if `PUBLIC_WIKI_ONLY` is not set
 * I18n: User Management Details
 * I18n: Group Management Details
 * Support: Apply unstated
+* Support: Use Babel 7
+* Support: Support plugins with schema version 3
 * Support: Abolish Old Config API
 * Support: Apply Jest for Tests
 * Support: Upgrade libs
     * async
     * axios
     * connect-mongo
+    * css-loader
+    * eslint
+    * eslint-config-weseek
+    * eslint-plugin-import
+    * eslint-plugin-jest
+    * eslint-plugin-react
     * file-loader
     * googleapis
     * i18next
@@ -64,6 +132,8 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
     * mongoose-gridfs
     * mongoose-unique-validator
     * null-loader
+
+## 3.5.0 (Missing number)
 
 ## 3.4.7
 

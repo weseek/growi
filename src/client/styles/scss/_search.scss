@@ -148,7 +148,7 @@
       padding-right: 0;
 
       &.affix {
-        top: 58px;
+        top: 64px;
         width: 33%;
         height: 100%;
         padding-right: 5px;
@@ -188,9 +188,8 @@
       margin-top: -48px;
 
       > h2 {
-        display: inline;
         margin-right: 10px;
-        font-size: 20px;
+        font-size: 22px;
         line-height: 1em;
       }
 
@@ -212,7 +211,10 @@
   position: sticky;
   top: 0;
   z-index: 99;
-  padding: 10px 0;
+
+  // for sticky layout
+  padding-top: 15px;
+  margin-bottom: 15px;
 
   .input-group-btn .btn {
     height: 34px;
