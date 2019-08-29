@@ -36,7 +36,7 @@ class CommentEditor extends React.Component {
     const isUploadableFile = config.upload.file;
 
     this.state = {
-      comment: '',
+      comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
       key: 1,
@@ -330,6 +330,7 @@ CommentEditor.propTypes = {
   replyTo: PropTypes.string,
   reEdit: PropTypes.bool,
   currentComment: PropTypes.object,
+  commentBody: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 
