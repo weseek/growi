@@ -121,6 +121,28 @@ export default class AttachmentList extends React.Component {
 
   }
 
+  renderNoAttachmentsMessage() {
+    const { refsContext } = this.props;
+
+    let message;
+
+    if (refsContext.prefix != null) {
+      message = `${refsContext.prefix} and descendant pages have no attachments`;
+    }
+    else {
+      message = `${refsContext.pagePath} has no attachments`;
+    }
+
+    return (
+      <div className="text-muted">
+        <small>
+          <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+          {message}
+        </small>
+      </div>
+    );
+  }
+
   renderContents() {
     const { refsContext } = this.props;
 
@@ -143,6 +165,11 @@ export default class AttachmentList extends React.Component {
 
     if (this.state.isLoaded) {
       const { attachments } = this.state;
+
+      // no attachments
+      if (attachments.length === 0) {
+        return this.renderNoAttachmentsMessage();
+      }
 
       return (refsContext.isExtractImg)
         ? <ExtractedAttachments attachments={attachments} refsContext={refsContext} />
