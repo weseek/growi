@@ -1263,10 +1263,10 @@ eslint-config-airbnb@^17.1.0:
     object.assign "^4.1.0"
     object.entries "^1.0.4"
 
-eslint-config-weseek@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-weseek/-/eslint-config-weseek-1.0.1.tgz#f8291c0af8f7001cf3c0b7b60c97c01a9cf5422c"
-  integrity sha512-zwF2a08COqmx74wv9WV0QUdYdM4XeAHGGxYASKihHxfL6yq/thAGDf1fYormMaI6RCpaSYntwjf2O8aEegQogw==
+eslint-config-weseek@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/eslint-config-weseek/-/eslint-config-weseek-1.0.3.tgz#420f583371447def71af11a78baf39d65a3d9e4a"
+  integrity sha512-AXOuaZomA/h34EHMT+CmhU7TTDbsyqCl702yaY0PGt6wype/YWra9phTbPyHjuI+Uh8gh9eKX2tAhnruKK3Ivw==
   dependencies:
     eslint-config-airbnb "^17.1.0"
 
