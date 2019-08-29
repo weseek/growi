@@ -98,19 +98,17 @@ class CommentEditor extends React.Component {
    * Post comment with CommentContainer and update state
    */
   postHandler(event) {
-    // TODO GW-61 implementation for reEdit comment
     if (event != null) {
       event.preventDefault();
     }
 
-    const { commentContainer } = this.props;
 
     this.props.commentContainer.postComment(
       this.state.comment,
       this.state.isMarkdown,
       this.props.replyTo,
-      commentContainer.state.isSlackEnabled,
-      commentContainer.state.slackChannels,
+      this.props.commentContainer.state.isSlackEnabled,
+      this.props.commentContainer.state.slackChannels,
     )
       .then((res) => {
         this.setState({
