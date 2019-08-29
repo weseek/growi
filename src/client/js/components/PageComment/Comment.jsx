@@ -302,7 +302,6 @@ Comment.propTypes = {
 
   comment: PropTypes.object.isRequired,
   growiRenderer: PropTypes.object.isRequired,
-  editBtnClicked: PropTypes.func.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
 };
