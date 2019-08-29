@@ -42,7 +42,6 @@ class PageComments extends React.Component {
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
     this.init = this.init.bind(this);
-    this.confirmToEditComment = this.confirmToEditComment.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
@@ -61,11 +60,6 @@ class PageComments extends React.Component {
     }
 
     this.props.commentContainer.retrieveComments();
-  }
-
-  confirmToEditComment(comment) {
-    // TODO GW-141 show editor
-    console.log("Pushed Edit button");
   }
 
   confirmToDeleteComment(comment) {
