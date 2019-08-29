@@ -84,13 +84,7 @@ class CommentEditor extends React.Component {
   }
 
   toggleEditor() {
-    let targetId;
-    if (this.props.reEdit) {
-      targetId = this.props.currentComment._id;
-    }
-    else {
-      targetId = this.props.replyTo;
-    }
+    const targetId = this.props.replyTo || this.props.currentCommentId;
     this.props.commentButtonClickedHandler(targetId);
   }
 
@@ -337,8 +331,7 @@ CommentEditor.propTypes = {
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   replyTo: PropTypes.string,
-  reEdit: PropTypes.bool,
-  currentComment: PropTypes.object,
+  currentCommentId: PropTypes.string,
   commentBody: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };
