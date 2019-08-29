@@ -101,10 +101,19 @@ module.exports = (crowi) => {
       }
     }
 
-    const builder = new PageQueryBuilder(Page.find());
-    builder.addConditionToListWithDescendants(prefix || pagePath)
-      .addConditionToExcludeTrashed()
-      .addConditionToExcludeRedirect();
+    let builder;
+
+    // builder to retrieve descendance
+    if (prefix != null) {
+      builder = new PageQueryBuilder(Page.find())
+        .addConditionToListWithDescendants(prefix)
+        .addConditionToExcludeTrashed()
+        .addConditionToExcludeRedirect();
+    }
+    // builder to get single page
+    else {
+      builder = new PageQueryBuilder(Page.find({ path: pagePath }));
+    }
 
     Page.addConditionToFilteringByViewerForList(builder, user, false);
 

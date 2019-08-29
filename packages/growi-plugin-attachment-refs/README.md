@@ -125,7 +125,6 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 TODO
 -----
 
-- [ ] use `findOne` when `prefix` is not specified
 - [ ] `depth` option
 - [ ] `format` option
 - [ ] `layout` option
