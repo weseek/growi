@@ -36,7 +36,7 @@ class CommentEditor extends React.Component {
     const isUploadableFile = config.upload.file;
 
     this.state = {
-      comment: '',
+      comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
       key: 1,
@@ -84,13 +84,15 @@ class CommentEditor extends React.Component {
   }
 
   toggleEditor() {
-    this.props.commentButtonClickedHandler(this.props.replyTo);
+    const targetId = this.props.replyTo || this.props.currentCommentId;
+    this.props.commentButtonClickedHandler(targetId);
   }
 
   /**
    * Post comment with CommentContainer and update state
    */
   postHandler(event) {
+    // TODO GW-61 implementation for reEdit comment
     if (event != null) {
       event.preventDefault();
     }
@@ -321,6 +323,8 @@ CommentEditor.propTypes = {
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   replyTo: PropTypes.string,
+  currentCommentId: PropTypes.string,
+  commentBody: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 
