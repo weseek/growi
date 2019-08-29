@@ -16,6 +16,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
+import CommentEditor from './CommentEditor';
 
 /**
  *
@@ -247,7 +248,13 @@ class Comment extends React.Component {
     return (
       <React.Fragment>
 
-        {showReEditor ? (<p>reEditは押された</p>) : (
+        {showReEditor ? (
+          <CommentEditor
+            growiRenderer={this.growiRenderer}
+            replyTo={commentId}
+            commentButtonClickedHandler={this.commentButtonClickedHandler}
+          />
+        ) : (
           <div className={rootClassName}>
             <UserPicture user={creator} />
             <div className="page-comment-main">
