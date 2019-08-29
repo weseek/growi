@@ -12,7 +12,7 @@ import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
 
-import AttachmentExtracted from './AttachmentExtracted';
+import ExtractedAttachments from './ExtractedAttachments';
 
 const AttachmentLink = Attachment;
 
@@ -121,14 +121,6 @@ export default class AttachmentList extends React.Component {
 
   }
 
-  renderElement(attachment) {
-    const { refsContext } = this.props;
-
-    const AttachmentElementClass = (refsContext.isExtractImg) ? AttachmentExtracted : AttachmentLink;
-
-    return <AttachmentElementClass key={attachment._id} attachment={attachment} refsContext={refsContext} />;
-  }
-
   renderContents() {
     const { refsContext } = this.props;
 
@@ -148,8 +140,15 @@ export default class AttachmentList extends React.Component {
         </div>
       );
     }
+
     if (this.state.isLoaded) {
-      return this.state.attachments.map(attachment => this.renderElement(attachment));
+      const { attachments } = this.state;
+
+      return (refsContext.isExtractImg)
+        ? <ExtractedAttachments attachments={attachments} refsContext={refsContext} />
+        : attachments.map((attachment) => {
+          return <AttachmentLink key={attachment._id} attachment={attachment} />;
+        });
     }
   }
 
