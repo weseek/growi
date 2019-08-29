@@ -74,7 +74,6 @@ class UserGroupEditForm extends React.Component {
             </div>
             <div className="form-group">
               <div className="col-sm-offset-2 col-sm-10">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
                 <button type="submit" className="btn btn-primary">{ t('Update') }</button>
               </div>
             </div>
