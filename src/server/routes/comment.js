@@ -108,14 +108,18 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    let createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo)
-      .catch((err) => {
-        return res.json(ApiResponse.error(err));
-      });
+    let createdComment;
+    try {
+      createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
 
-    createdComment = await createdComment
-      .populate('creator')
-      .execPopulate();
+      await Comment.populate(createdComment, [
+        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
+      ]);
+
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
 
     // update page
     const page = await Page.findOneAndUpdate({ _id: pageId }, {
