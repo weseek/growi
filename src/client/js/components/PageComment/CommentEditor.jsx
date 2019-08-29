@@ -84,7 +84,14 @@ class CommentEditor extends React.Component {
   }
 
   toggleEditor() {
-    this.props.commentButtonClickedHandler(this.props.replyTo);
+    let targetId;
+    if (this.props.reEdit) {
+      targetId = this.props.currentComment._id;
+    }
+    else {
+      targetId = this.props.replyTo;
+    }
+    this.props.commentButtonClickedHandler(targetId);
   }
 
   /**
