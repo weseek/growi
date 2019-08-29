@@ -12,6 +12,9 @@ import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
 
+import AttachmentExtracted from './AttachmentExtracted';
+
+const AttachmentLink = Attachment;
 
 export default class AttachmentList extends React.Component {
 
@@ -72,33 +75,29 @@ export default class AttachmentList extends React.Component {
     try {
       this.setState({ isLoading: true });
 
-      switch (refsContext.method) {
-        case 'ref':
-          res = await axios.get('/_api/plugin/ref', {
-            params: {
-              pagePath: refsContext.pagePath,
-              fileName: refsContext.fileName,
-              options: refsContext.options,
-            },
-          });
-          this.setState({
-            attachments: [res.data.attachment],
-          });
-          break;
-        case 'refs':
-          res = await axios.get('/_api/plugin/refs', {
-            params: {
-              prefix: refsContext.prefix,
-              pagePath: refsContext.pagePath,
-              options: refsContext.options,
-            },
-          });
-          this.setState({
-            attachments: res.data.attachments,
-          });
-          break;
-        default:
-          throw new Error('this component should be used for method \'ref\' or \'refs\'');
+      if (refsContext.isSingle) {
+        res = await axios.get('/_api/plugin/ref', {
+          params: {
+            pagePath: refsContext.pagePath,
+            fileName: refsContext.fileName,
+            options: refsContext.options,
+          },
+        });
+        this.setState({
+          attachments: [res.data.attachment],
+        });
+      }
+      else {
+        res = await axios.get('/_api/plugin/refs', {
+          params: {
+            prefix: refsContext.prefix,
+            pagePath: refsContext.pagePath,
+            options: refsContext.options,
+          },
+        });
+        this.setState({
+          attachments: res.data.attachments,
+        });
       }
 
       this.setState({
@@ -122,6 +121,14 @@ export default class AttachmentList extends React.Component {
 
   }
 
+  renderElement(attachment) {
+    const { refsContext } = this.props;
+
+    const AttachmentElementClass = (refsContext.isExtractImg) ? AttachmentExtracted : AttachmentLink;
+
+    return <AttachmentElementClass key={attachment._id} attachment={attachment} />;
+  }
+
   renderContents() {
     const { refsContext } = this.props;
 
@@ -142,11 +149,7 @@ export default class AttachmentList extends React.Component {
       );
     }
     if (this.state.isLoaded) {
-      return (
-        this.state.attachments.map((attachment) => {
-          return <Attachment key={attachment._id} attachment={attachment} />;
-        })
-      );
+      return this.state.attachments.map(attachment => this.renderElement(attachment));
     }
   }
 

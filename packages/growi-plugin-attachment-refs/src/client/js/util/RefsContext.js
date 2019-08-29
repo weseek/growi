@@ -23,6 +23,14 @@ export default class RefsContext extends TagContext {
     this.options = {};
   }
 
+  get isSingle() {
+    return this.method.match(/^(ref|refimg)$/);
+  }
+
+  get isExtractImg() {
+    return this.method.match(/^(refimg|refsimg)$/);
+  }
+
   parse() {
     if (this.isParsed) {
       return;
@@ -31,10 +39,10 @@ export default class RefsContext extends TagContext {
     const parsedArgs = ArgsParser.parse(this.args);
     this.options = parsedArgs.options;
 
-    if (this.method.match(/^(ref|refimg)$/)) {
+    if (this.isSingle) {
       this.parseForSingle(parsedArgs);
     }
-    else if (this.method.match(/^(refs|refsimg)$/)) {
+    else {
       this.parseForMulti(parsedArgs);
     }
 
