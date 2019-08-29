@@ -354,13 +354,32 @@ module.exports = function(crowi, app) {
 
   actions.globalNotification.update = async(req, res) => {
     const form = req.form.notificationGlobal;
-    const setting = await GlobalNotificationSetting.findOne({ _id: form.id });
+
+    const models = {
+      [GlobalNotificationSetting.TYPE.MAIL]: GlobalNotificationMailSetting,
+      [GlobalNotificationSetting.TYPE.SLACK]: GlobalNotificationSlackSetting,
+    };
+
+    let setting = await GlobalNotificationSetting.findOne({ _id: form.id });
+    setting = setting.toObject();
+
+    // when switching from one type to another,
+    // remove toEmail from slack setting and slackChannels from mail setting
+    if (setting.__t !== form.notifyToType) {
+      setting = models[setting.__t].hydrate(setting);
+      setting.toEmail = undefined;
+      setting.slackChannels = undefined;
+      await setting.save();
+      setting = setting.toObject();
+    }
 
     switch (form.notifyToType) {
       case GlobalNotificationSetting.TYPE.MAIL:
+        setting = GlobalNotificationMailSetting.hydrate(setting);
         setting.toEmail = form.toEmail;
         break;
       case GlobalNotificationSetting.TYPE.SLACK:
+        setting = GlobalNotificationSlackSetting.hydrate(setting);
         setting.slackChannels = form.slackChannels;
         break;
       default:
@@ -369,9 +388,10 @@ module.exports = function(crowi, app) {
         return res.redirect('/admin/notification#global-notification');
     }
 
+    setting.__t = form.notifyToType;
     setting.triggerPath = form.triggerPath;
     setting.triggerEvents = getNotificationEvents(form);
-    setting.save();
+    await setting.save();
 
     return res.redirect('/admin/notification#global-notification');
   };
