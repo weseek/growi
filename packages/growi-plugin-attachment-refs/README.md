@@ -35,7 +35,8 @@ $ref(file.txt, page=/somewhere/page)
 
 #### Options
 
-- **`page`** : Target page path of reference file
+- **`file`** : File name of reference file (default: the first argument)
+- *`page`* : Target page path of reference file (default: current page)
 
 ### `refs` tag
 
@@ -51,8 +52,11 @@ $refs(/somewhere/page, regexp=/^file.*\.txt$/)
 
 #### Options
 
-- **`regexp`** : Regular Expression to retrieve
-- **`format`** : File format specification
+- *`page`* : Target page path to search attachments (default: the first argument || current page)
+- *`prefix`* : Page prefix to search attachments
+- *`depth`* : page depth to search attachments
+- *`regexp`* : Regular Expression to retrieve
+- *`format`* : File format filtering
 
 
 ### `refimg` tag
@@ -71,11 +75,12 @@ $refimg(pict.png, width=50%, alt=Pic)
 
 #### Options
 
-- **`width`** : width
-- **`height`** : height
-- **`max-width`** : max-width
-- **`max-height`** : max-height
-- **`alt`** : alt text
+- **`file`** : File name of reference file (default: the first argument)
+- *`width`* : width
+- *`height`* : height
+- *`max-width`* : max-width
+- *`max-height`* : max-height
+- *`alt`* : alt text
 
 
 ### `refsimg` tag
@@ -98,20 +103,22 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 
 #### Options
 
-- **`width`** : width
-- **`height`** : height
-- **`max-width`** : max-width
-- **`max-height`** : max-height
+- *`page`* : Target page path to search attachments (default: the first argument || current page)
+- *`prefix`* : Page prefix to search attachments
+- *`depth`* : page depth to search attachments
+- *`regexp`* : Regular Expression to retrieve
+- *`format`* : File format filtering
+- *`width`* : width
+- *`height`* : height
+- *`max-width`* : max-width
+- *`max-height`* : max-height
 
 
 TODO
 -----
 
-- [ ] ref
-- [ ] refs
-    - [ ] `regexp` option
-    - [ ] `format` option
-- [ ] refimg
-- [ ] refsimg
+- [ ] use `findOne` when `prefix` is not specified
+- [ ] `depth` option
+- [ ] `format` option
 
 [GROWI]: https://github.com/weseek/growi
