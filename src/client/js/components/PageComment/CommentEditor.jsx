@@ -102,6 +102,9 @@ class CommentEditor extends React.Component {
       event.preventDefault();
     }
 
+    if (this.props.reEdit) {
+      this.props.commentContainer.putComment();
+    }
 
     this.props.commentContainer.postComment(
       this.state.comment,

@@ -100,6 +100,13 @@ export default class CommentContainer extends Container {
       });
   }
 
+  /**
+   * Load data of comments and rerender <PageComments />
+   */
+  putComment() {
+    console.log('ここはCommentContainer');
+  }
+
   deleteComment(comment) {
     return this.appContainer.apiPost('/comments.remove', { comment_id: comment._id })
       .then((res) => {
