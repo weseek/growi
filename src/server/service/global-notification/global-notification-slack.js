@@ -67,7 +67,9 @@ class GlobalNotificationSlackService {
         if (oldPath == null) {
           throw new Error(`invalid vars supplied to GlobalNotificationSlackService.generateOption for event ${event}`);
         }
-        messageBody = `:bell: ${username} moved ${oldPath} to ${pageUrl}`;
+        // eslint-disable-next-line no-case-declarations
+        const oldPageUrl = `<${urljoin(this.crowi.appService.getSiteUrl(), oldPath)}|${oldPath}>`;
+        messageBody = `:bell: ${username} moved ${oldPageUrl} to ${pageUrl}`;
         break;
       case this.event.PAGE_LIKE:
         messageBody = `:bell: ${username} liked ${pageUrl}`;
