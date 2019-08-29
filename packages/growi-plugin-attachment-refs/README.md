@@ -112,6 +112,14 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 - *`height`* : height
 - *`max-width`* : max-width
 - *`max-height`* : max-height
+- *`layout`* : How to layout images (default: block)
+  - `block` : set `display: block`
+  - `inline-block` : set `display: inline-block`
+  - `col-6` : Grid layout with `col-6` by Bootstrap
+  - `col-4` : Grid layout with `col-4` by Bootstrap
+  - `col-3` : Grid layout with `col-3` by Bootstrap
+  - `col-2` : Grid layout with `col-2` by Bootstrap
+  - `col-1` : Grid layout with `col-1` by Bootstrap
 
 
 TODO
@@ -120,5 +128,6 @@ TODO
 - [ ] use `findOne` when `prefix` is not specified
 - [ ] `depth` option
 - [ ] `format` option
+- [ ] `layout` option
 
 [GROWI]: https://github.com/weseek/growi
