@@ -323,7 +323,6 @@ CommentEditor.propTypes = {
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   replyTo: PropTypes.string,
-  reEdit: PropTypes.bool,
   currentCommentId: PropTypes.string,
   commentBody: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
