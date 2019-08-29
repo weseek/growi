@@ -132,7 +132,7 @@ module.exports = function(crowi, app) {
     const path = page.path;
 
     // global notification
-    globalNotificationService.fire(GlobalNotificationSetting.schema.EVENT.COMMENT, path, req.user, {
+    globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, path, req.user, {
       comment: createdComment,
     });
 

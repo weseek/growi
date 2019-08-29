@@ -331,11 +331,11 @@ module.exports = function(crowi, app) {
     let setting;
 
     switch (form.notifyToType) {
-      case 'mail':
+      case GlobalNotificationSetting.TYPE.MAIL:
         setting = new GlobalNotificationMailSetting(crowi);
         setting.toEmail = form.toEmail;
         break;
-      case 'slack':
+      case GlobalNotificationSetting.TYPE.SLACK:
         setting = new GlobalNotificationSlackSetting(crowi);
         setting.slackChannels = form.slackChannels;
         break;
@@ -357,10 +357,10 @@ module.exports = function(crowi, app) {
     const setting = await GlobalNotificationSetting.findOne({ _id: form.id });
 
     switch (form.notifyToType) {
-      case 'mail':
+      case GlobalNotificationSetting.TYPE.MAIL:
         setting.toEmail = form.toEmail;
         break;
-      case 'slack':
+      case GlobalNotificationSetting.TYPE.SLACK:
         setting.slackChannels = form.slackChannels;
         break;
       default:

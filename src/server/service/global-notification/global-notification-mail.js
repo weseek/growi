@@ -8,9 +8,9 @@ class GlobalNotificationMailService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.type = 'mail';
     this.mailer = crowi.getMailer();
-    this.event = crowi.model('GlobalNotificationSetting').schema.EVENT;
+    this.type = crowi.model('GlobalNotificationSetting').TYPE.MAIL;
+    this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
 
   /**

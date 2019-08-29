@@ -11,18 +11,6 @@ const globalNotificationSettingSchema = new mongoose.Schema({
   triggerEvents: { type: [String] },
 });
 
-/**
- * global notifcation event master
- */
-globalNotificationSettingSchema.EVENT = {
-  PAGE_CREATE: 'pageCreate',
-  PAGE_EDIT: 'pageEdit',
-  PAGE_DELETE: 'pageDelete',
-  PAGE_MOVE: 'pageMove',
-  PAGE_LIKE: 'pageLike',
-  COMMENT: 'comment',
-};
-
 /*
 * e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
 */

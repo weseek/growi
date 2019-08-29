@@ -9,9 +9,14 @@ module.exports = function(crowi) {
   GlobalNotificationSettingSchema.loadClass(GlobalNotificationSettingClass);
 
   const GlobalNotificationSettingModel = mongoose.model('GlobalNotificationSetting', GlobalNotificationSettingSchema);
-  const GlobalNotificationMailSettingModel = GlobalNotificationSettingModel.discriminator('mail', new mongoose.Schema({
-    toEmail: String,
-  }, { discriminatorKey: 'type' }));
+  const GlobalNotificationMailSettingModel = GlobalNotificationSettingModel.discriminator(
+    GlobalNotificationSetting.schema.statics.TYPE.MAIL,
+    new mongoose.Schema({
+      toEmail: String,
+    }, {
+      discriminatorKey: 'type',
+    }),
+  );
 
   return GlobalNotificationMailSettingModel;
 };

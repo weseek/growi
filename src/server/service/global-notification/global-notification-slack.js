@@ -8,9 +8,9 @@ class GlobalNotificationSlackService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.type = 'slack';
     this.slack = crowi.getSlack();
-    this.event = crowi.model('GlobalNotificationSetting').schema.EVENT;
+    this.type = crowi.model('GlobalNotificationSetting').TYPE.SLACK;
+    this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
 
   /**
