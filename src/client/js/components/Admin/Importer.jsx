@@ -68,9 +68,7 @@ class Importer extends React.Component {
     };
     this.props.appContainer.apiPost('/admin/settings/importerEsa', params)
       .then((res) => {
-        if (res.ok) {
           toastSuccess('Update');
-        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -109,17 +107,18 @@ class Importer extends React.Component {
   }
 
   qiitaHandleSubmitUpdate() {
-    try {
-      const params = {
-        'importer:qiita:team_name': this.state.qiitaTeamName,
-        'importer:qiita:access_token': this.state.qiitaAccessToken,
-      };
-      this.props.appContainer.apiPost('/admin/settings/importerQiita', params);
-      toastSuccess('Update');
-    }
-    catch (error) {
-      toastError(error);
-    }
+    const params = {
+      'importer:qiita:team_name': this.state.qiitaTeamName,
+      'importer:qiita:access_token': this.state.qiitaAccessToken,
+    };
+    this.props.appContainer.apiPost('/admin/settings/importerQiita', params)
+      .then((res) => {
+        toastSuccess('Update');
+      })
+      .catch((err) => {
+        console.log(err.message);
+        toastError(err, 'Errors');
+      });
   }
 
   render() {

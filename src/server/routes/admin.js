@@ -1229,7 +1229,7 @@ module.exports = function(crowi, app) {
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
 
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
