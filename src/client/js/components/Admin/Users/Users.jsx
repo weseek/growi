@@ -21,10 +21,12 @@ class UserPage extends React.Component {
       activePage: 1,
       pagingLimit: Infinity,
       isPasswordResetModalShown: false,
+      isUserInviteModalShown: false,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
+    this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
   }
 
   // TODO unstatedContainerを作ってそこにリファクタすべき
@@ -53,6 +55,13 @@ class UserPage extends React.Component {
     this.setState({ isPasswordResetModalShown: false });
   }
 
+  /**
+   * user招待モーダルを開閉する
+   */
+  toggleUserInviteModal() {
+    this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
+  }
+
 
   render() {
     const { t } = this.props;
@@ -67,7 +76,7 @@ class UserPage extends React.Component {
           />
         ) }
         <p>
-          <InviteUserControl />
+          <InviteUserControl toggleUserInviteModal={this.toggleUserInviteModal} />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
             <i className="icon-user-follow" aria-hidden="true"></i>
             { t('user_management.external_account') }

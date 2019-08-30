@@ -7,8 +7,18 @@ import AppContainer from '../../../services/AppContainer';
 
 class InviteUserControl extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
+    };
+
+    this.onUserInviteClicked = this.onUserInviteClicked.bind(this);
+  }
+
   onUserInviteClicked() {
-    console.log('hello');
+    this.props.toggleUserInviteModal();
   }
 
   render() {
@@ -32,6 +42,7 @@ const InviteUserControlWrapper = (props) => {
 InviteUserControl.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  toggleUserInviteModal: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(InviteUserControlWrapper);
