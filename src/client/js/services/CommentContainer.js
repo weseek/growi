@@ -103,7 +103,7 @@ export default class CommentContainer extends Container {
   /**
    * Load data of comments and rerender <PageComments />
    */
-  putComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels, commentId) {
+  putComment(comment, isMarkdown, commentId) {
     const { pageId, revisionId } = this.getPageContainer().state;
 
     return this.appContainer.apiPost('/comments.update', {
@@ -112,7 +112,6 @@ export default class CommentContainer extends Container {
         page_id: pageId,
         revision_id: revisionId,
         is_markdown: isMarkdown,
-        replyTo,
         comment_id: commentId,
       },
     })
