@@ -2,7 +2,6 @@ import React from 'react';
 
 import UserGroupEditForm from './UserGroupEditForm';
 import UserGroupUserTable from './UserGroupUserTable';
-import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
 
 class UserGroupDetailPage extends React.Component {
@@ -12,9 +11,13 @@ class UserGroupDetailPage extends React.Component {
 
     const elem = document.getElementById('admin-user-group-detail');
     const userGroup = JSON.parse(elem.getAttribute('data-user-group'));
+    const userGroupRelations = JSON.parse(elem.getAttribute('data-user-group-relations'));
+    const notRelatedUsers = JSON.parse(elem.getAttribute('data-not-related-users'));
 
     this.state = {
       userGroup,
+      userGroupRelations,
+      notRelatedUsers,
     };
   }
 
@@ -29,8 +32,11 @@ class UserGroupDetailPage extends React.Component {
         <UserGroupEditForm
           userGroup={this.state.userGroup}
         />
-        <UserGroupUserTable />
-        <UserGroupUserModal />
+        <UserGroupUserTable
+          userGroupRelations={this.state.userGroupRelations}
+          notRelatedUsers={this.state.notRelatedUsers}
+          userGroup={this.state.userGroup}
+        />
         <UserGroupPageList />
       </div>
     );

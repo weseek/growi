@@ -61,14 +61,6 @@ $(() => {
     return false;
   });
 
-  $('form#user-group-relation-create').on('submit', function(e) {
-    $.post('/admin/user-group-relation/create', $(this).serialize(), (res) => {
-      $('#admin-add-user-group-relation-modal').modal('hide');
-      return;
-    });
-  });
-
-
   $('#pictureUploadForm input[name=userGroupPicture]').on('change', function() {
     const $form = $('#pictureUploadForm');
     const fd = new FormData($form[0]);

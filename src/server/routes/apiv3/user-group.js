@@ -17,7 +17,12 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
-  const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
+  const {
+    ErrorV3,
+    UserGroup,
+    UserGroupRelation,
+    User,
+  } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
 
   const {
@@ -179,6 +184,8 @@ module.exports = (crowi) => {
     body('name', 'Group name is required').trim().exists(),
   ];
 
+  validator.users = {};
+
   /**
    * @swagger
    *
@@ -280,6 +287,66 @@ module.exports = (crowi) => {
       const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-fetch-failed'));
+    }
+  });
+
+  validator.users.post = [
+    param('id').trim().exists(),
+    param('username').trim().exists({ checkFalsy: true }),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id/users}:
+   *      post:
+   *        tags: [UserGroup]
+   *        description: Add a user to the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *          - name: username
+   *            in: path
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: users are added
+   *            content:
+   *              application/json:
+   *                schema:
+   *                type: object
+   *                  properties:
+   *                    user:
+   *                      type: object
+   *                    userGroup:
+   *                      type: object
+   *                      description: user objects
+   */
+  router.post('/:id/users/:username', loginRequired(), adminRequired, validator.users.post, ApiV3FormValidator, async(req, res) => {
+    const { id, username } = req.params;
+
+    try {
+      const [userGroup, user] = await Promise.all([
+        UserGroup.findById(id),
+        User.findUserByUsername(username),
+      ]);
+
+      await UserGroupRelation.createRelation(userGroup, user);
+
+      return res.apiv3({ userGroup, user });
+    }
+    catch (err) {
+      const msg = `Error occurred in adding an user "${username}" to group "${id}"`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-add-user-failed'));
     }
   });
 

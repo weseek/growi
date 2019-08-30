@@ -136,7 +136,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/user-group-detail/:id'          , loginRequired(), adminRequired, admin.userGroup.detail);
 
   // user-group-relations admin
-  app.post('/admin/user-group-relation/create', loginRequired(), adminRequired, csrf, admin.userGroupRelation.create);
   app.post('/admin/user-group-relation/:id/remove-relation/:relationId', loginRequired(), adminRequired, csrf, admin.userGroupRelation.remove);
 
   // importer management for admin

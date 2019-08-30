@@ -721,40 +721,6 @@ module.exports = function(crowi, app) {
 
   };
 
-  actions.userGroupRelation.create = function(req, res) {
-    const User = crowi.model('User');
-    const UserGroup = crowi.model('UserGroup');
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-
-    // req params
-    const userName = req.body.user_name;
-    const userGroupId = req.body.user_group_id;
-
-    let user = null;
-    let userGroup = null;
-
-    Promise.all([
-      // ユーザグループをIDで検索
-      UserGroup.findById(userGroupId),
-      // ユーザを名前で検索
-      User.findUserByUsername(userName),
-    ])
-      .then((resolves) => {
-        userGroup = resolves[0];
-        user = resolves[1];
-        // Relation を作成
-        UserGroupRelation.createRelation(userGroup, user);
-      })
-      .then((result) => {
-        return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
-      })
-      .catch((err) => {
-        debug('Error on create user-group relation', err);
-        req.flash('errorMessage', 'Error on create user-group relation');
-        return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
-      });
-  };
-
   actions.userGroupRelation.remove = function(req, res) {
     const UserGroupRelation = crowi.model('UserGroupRelation');
     const userGroupId = req.params.id;
