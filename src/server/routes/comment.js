@@ -153,13 +153,52 @@ module.exports = function(crowi, app) {
    * @apiGroup Comment
    *
    */
-  api.update = function(req, res) {
+  api.update = async function(req, res) {
+    const { commentForm } = req.body;
+    const { validationResult } = require('express-validator/check');
 
-    if (req.body.commentForm.comment_id == null) {
+    const errors = validationResult(req.body);
+    if (!errors.isEmpty()) {
+      // return res.json(ApiResponse.error('Invalid comment.'));
+      // return res.status(422).json({ errors: errors.array() });
+      return res.json(ApiResponse.error('コメントを入力してください。'));
+    }
+
+    const pageId = commentForm.page_id;
+    const revisionId = commentForm.revision_id;
+    const comment = commentForm.comment;
+    const isMarkdown = commentForm.is_markdown;
+    const commentId = commentForm.comment_id;
+
+    if (commentId == null) {
       return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
     }
 
-    return console.log('Idが渡ってきています');
+    // check whether accessible
+    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user._id, revisionId, comment, isMarkdown, req.user);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
+
+    const updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
+    // TODO GW-61 catch err
+    // .catch((err) => {
+    //   return res.json(ApiResponse.error(err));
+    // });
+
+    // update page
+    const page = await Page.findOneAndUpdate({ _id: pageId }, {
+      lastUpdateUser: req.user,
+      updatedAt: new Date(),
+    });
+
+    res.json(ApiResponse.success({ comment: updatedComment }));
+
+    const path = page.path;
+
+    // global notification
+    globalNotificationService.notifyComment(updatedComment, path);
+
   };
 
 
