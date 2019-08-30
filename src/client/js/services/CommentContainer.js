@@ -104,7 +104,27 @@ export default class CommentContainer extends Container {
    * Load data of comments and rerender <PageComments />
    */
   putComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels, commentId) {
-    console.log(commentId);
+    const { pageId, revisionId } = this.getPageContainer().state;
+
+    return this.appContainer.apiPost('/comments.update', {
+      commentForm: {
+        comment,
+        page_id: pageId,
+        revision_id: revisionId,
+        is_markdown: isMarkdown,
+        replyTo,
+        comment_id: commentId,
+      },
+      slackNotificationForm: {
+        isSlackEnabled,
+        slackChannels,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return this.retrieveComments();
+        }
+      });
   }
 
   deleteComment(comment) {

@@ -148,6 +148,22 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {post} /comments.update Update comment dody
+   * @apiName UpdateComment
+   * @apiGroup Comment
+   *
+   */
+  api.update = function(req, res) {
+
+    if (req.body.commentForm.comment_id == null) {
+      return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
+    }
+
+    return console.log('Idが渡ってきています');
+  };
+
+
+  /**
    * @api {post} /comments.remove Remove specified comment
    * @apiName RemoveComment
    * @apiGroup Comment
