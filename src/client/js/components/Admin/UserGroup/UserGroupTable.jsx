@@ -73,7 +73,7 @@ class UserGroupTable extends React.Component {
                       })}
                     </ul>
                   </td>
-                  <td>{dateFnsFormat(new Date(group.createdAt), 'YYYY-MM-DD')}</td>
+                  <td>{dateFnsFormat(new Date(group.createdAt), 'yyyy-MM-dd')}</td>
                   {this.props.isAclEnabled
                     ? (
                       <td>

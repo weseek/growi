@@ -8,6 +8,17 @@ import UserGroupPageList from './UserGroupPageList';
 
 class UserGroupDetailPage extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    const elem = document.getElementById('admin-user-group-detail');
+    const userGroup = JSON.parse(elem.getAttribute('data-user-group'));
+
+    this.state = {
+      userGroup,
+    };
+  }
+
   render() {
 
     return (
@@ -17,7 +28,7 @@ class UserGroupDetailPage extends React.Component {
         グループ一覧に戻る
         </a>
         <UserGroupEditForm
-          userGroup={this.props.userGroup}
+          userGroup={this.state.userGroup}
         />
         <UserGroupUserTable />
         <UserGroupUserModal />
@@ -29,7 +40,6 @@ class UserGroupDetailPage extends React.Component {
 }
 
 UserGroupDetailPage.propTypes = {
-  userGroup: PropTypes.object.isRequired,
 };
 
 export default UserGroupDetailPage;

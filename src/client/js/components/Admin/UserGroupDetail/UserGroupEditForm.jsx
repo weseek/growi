@@ -24,12 +24,8 @@ class UserGroupEditForm extends React.Component {
   }
 
   handleChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
     this.setState({
-      [name]: value,
+      name: event.target.value,
     });
   }
 
@@ -69,7 +65,7 @@ class UserGroupEditForm extends React.Component {
             <div className="form-group">
               <label className="col-sm-2 control-label">{ t('Created') }</label>
               <div className="col-sm-4">
-                <input className="form-control" type="text" disabled value={dateFnsFormat(new Date(this.props.userGroup.createdAt), 'YYYY-MM-DD')} />
+                <input className="form-control" type="text" disabled value={dateFnsFormat(new Date(this.props.userGroup.createdAt), 'yyyy-MM-dd')} />
               </div>
             </div>
             <div className="form-group">

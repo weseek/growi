@@ -151,13 +151,10 @@ Object.keys(componentMappings).forEach((key) => {
 // render for admin
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
-  const userGroup = JSON.parse(adminUserGroupDetailElem.getAttribute('data-user-group'));
   ReactDOM.render(
     <Provider inject={[]}>
       <I18nextProvider i18n={i18n}>
-        <UserGroupDetailPage
-          userGroup={userGroup}
-        />
+        <UserGroupDetailPage />
       </I18nextProvider>
     </Provider>,
     adminUserGroupDetailElem,
