@@ -14,6 +14,7 @@ class UserGroupEditForm extends React.Component {
 
     this.state = {
       name: props.userGroup.name,
+      nameCache: props.userGroup.name, // cache for name. update every submit
     };
 
     this.xss = window.xss;
@@ -38,6 +39,9 @@ class UserGroupEditForm extends React.Component {
       });
 
       toastSuccess(`Updated the group name to "${this.xss.process(res.data.userGroup.name)}"`);
+      this.setState({
+        nameCache: this.state.name,
+      });
     }
     catch (err) {
       toastError(new Error('Unable to update the group name'));
@@ -45,7 +49,10 @@ class UserGroupEditForm extends React.Component {
   }
 
   validateForm() {
-    return this.state.name !== '';
+    return (
+      this.state.name !== this.state.nameCache
+      && this.state.name !== ''
+    );
   }
 
   render() {
@@ -59,7 +66,7 @@ class UserGroupEditForm extends React.Component {
             <div className="form-group">
               <label htmlFor="name" className="col-sm-2 control-label">{ t('Name') }</label>
               <div className="col-sm-4">
-                <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.handleChange} disabled={!this.validateForm()} />
+                <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.handleChange} />
               </div>
             </div>
             <div className="form-group">
@@ -70,7 +77,7 @@ class UserGroupEditForm extends React.Component {
             </div>
             <div className="form-group">
               <div className="col-sm-offset-2 col-sm-10">
-                <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+                <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{ t('Update') }</button>
               </div>
             </div>
           </fieldset>
