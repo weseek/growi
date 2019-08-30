@@ -1200,12 +1200,12 @@ module.exports = function(crowi, app) {
       // return res.json(ApiResponse.error('Invalid comment.'));
       // return res.status(422).json({ errors: errors.array() });
       console.log('validator', errors);
-      return res.json(ApiResponse.error('Esaの空欄の項目があります'));
+      return res.json(ApiResponse.error('esa.io form is blank'));
     }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeEsaClient(); // let it run in the back aftert res
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1223,7 +1223,7 @@ module.exports = function(crowi, app) {
       // return res.json(ApiResponse.error('Invalid comment.'));
       // return res.status(422).json({ errors: errors.array() });
       console.log('validator', errors);
-      return res.json(ApiResponse.error('Qiitaの空欄の項目があります'));
+      return res.json(ApiResponse.error('Qiita form is blank'));
     }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);

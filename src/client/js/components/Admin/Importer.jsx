@@ -71,11 +71,10 @@ class Importer extends React.Component {
         if (res.ok) {
           toastSuccess('Update');
         }
-
-        toastError('入力された値がesaと一致しないよ');
       })
       .catch((err) => {
-        toastError(err, '入力された値がesaと一致しないよ');
+        console.log(err.message);
+        toastError(err, 'Errors');
       });
   }
 
