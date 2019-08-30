@@ -9,9 +9,14 @@ module.exports = function(crowi) {
   GlobalNotificationSettingSchema.loadClass(GlobalNotificationSettingClass);
 
   const GlobalNotificationSettingModel = mongoose.model('GlobalNotificationSetting', GlobalNotificationSettingSchema);
-  const GlobalNotificationSlackSettingModel = GlobalNotificationSettingModel.discriminator('slack', new mongoose.Schema({
-    slackChannels: String,
-  }, { discriminatorKey: 'type' }));
+  const GlobalNotificationSlackSettingModel = GlobalNotificationSettingModel.discriminator(
+    GlobalNotificationSetting.schema.statics.TYPE.SLACK,
+    new mongoose.Schema({
+      slackChannels: String,
+    }, {
+      discriminatorKey: 'type',
+    }),
+  );
 
   return GlobalNotificationSlackSettingModel;
 };
