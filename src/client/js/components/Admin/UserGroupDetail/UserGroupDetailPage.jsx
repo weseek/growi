@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import UserGroupEditForm from './UserGroupEditForm';
 import UserGroupUserTable from './UserGroupUserTable';
@@ -38,8 +37,5 @@ class UserGroupDetailPage extends React.Component {
   }
 
 }
-
-UserGroupDetailPage.propTypes = {
-};
 
 export default UserGroupDetailPage;
