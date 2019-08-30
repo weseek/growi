@@ -89,8 +89,6 @@ module.exports = function(crowi, app) {
 
     const errors = validationResult(req.body);
     if (!errors.isEmpty()) {
-      // return res.json(ApiResponse.error('Invalid comment.'));
-      // return res.status(422).json({ errors: errors.array() });
       return res.json(ApiResponse.error('コメントを入力してください。'));
     }
 

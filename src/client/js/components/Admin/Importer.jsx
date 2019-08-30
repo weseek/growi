@@ -68,7 +68,7 @@ class Importer extends React.Component {
     };
     this.props.appContainer.apiPost('/admin/settings/importerEsa', params)
       .then((res) => {
-        toastSuccess('Update');
+        toastSuccess('Updated');
       })
       .catch((err) => {
         console.log(err.message);
