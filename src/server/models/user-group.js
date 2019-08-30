@@ -118,10 +118,10 @@ class UserGroup {
   }
 
   // グループ名の更新
-  updateName(name) {
+  async updateName(name) {
     // 名前を設定して更新
     this.name = name;
-    return this.save();
+    await this.save();
   }
 
 }

@@ -716,41 +716,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/user-group-detail', renderVar);
   };
 
-  //
-  actions.userGroup.update = function(req, res) {
-    const userGroupId = req.params.userGroupId;
-    const name = crowi.xss.process(req.body.name);
-
-    UserGroup.findById(userGroupId)
-      .then((userGroupData) => {
-        if (userGroupData == null) {
-          req.flash('errorMessage', 'グループの検索に失敗しました。');
-          return new Promise();
-        }
-
-        // 名前存在チェック
-        return UserGroup.isRegisterableName(name)
-          .then((isRegisterableName) => {
-          // 既に存在するグループ名に更新しようとした場合はエラー
-            if (!isRegisterableName) {
-              req.flash('errorMessage', 'グループ名が既に存在します。');
-            }
-            else {
-              return userGroupData.updateName(name)
-                .then(() => {
-                  req.flash('successMessage', 'グループ名を更新しました。');
-                })
-                .catch((err) => {
-                  req.flash('errorMessage', 'グループ名の更新に失敗しました。');
-                });
-            }
-          });
-      })
-      .then(() => {
-        return res.redirect(`/admin/user-group-detail/${userGroupId}`);
-      });
-  };
-
   actions.userGroupRelation = {};
   actions.userGroupRelation.index = function(req, res) {
 

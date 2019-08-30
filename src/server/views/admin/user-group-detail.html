@@ -31,12 +31,19 @@
       {% include './widget/menu.html' with {current: 'user-group'} %}
     </div>
 
-    <div class="col-md-9">
+    <div
+      id="admin-user-group-detail"
+      class="col-md-9"
+      data-user-group="{{ userGroup|json }}"
+    >
+      <!-- そのまま start -->
       <a href="/admin/user-groups" class="btn btn-default">
         <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
         {{ t('user_group_management.back_to_list') }}
       </a>
+      <!-- そのまま end -->
 
+      <!-- UserGroupUserModal start -->
       <div class="modal fade" id="admin-add-user-group-relation-modal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -87,7 +94,9 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
+      <!-- UserGroupUserModal end -->
 
+      <!-- UserGroupEditForm start -->
       <div class="m-t-20 form-box">
         <form action="/admin/user-group/{{userGroup.id}}/update" method="post" class="form-horizontal" role="form">
           <fieldset>
@@ -113,7 +122,9 @@
           </fieldset>
         </form>
       </div>
+      <!-- UserGroupEditForm end -->
 
+      <!-- UserGroupUserTable start -->
       <legend class="m-t-20">{{ t('User List') }}</legend>
 
       <table class="table table-bordered table-user-list">
@@ -180,15 +191,18 @@
           {% endif %}
         </tbody>
       </table>
+      <!-- UserGroupUserTable end -->
 
       <!-- {% include '../widget/pager.html' with {path: "/admin/user-group-detail", pager: pager} %} -->
 
       <legend class="m-t-20">{{ t('Page') }}</legend>
 
+      <!-- UserGroupPageList start -->
       <div class="page-list">
         {% if relatedPages.length == 0 %}<p>{{ t('user_group_management.no_pages') }}</p>{% endif %}
         {% include '../widget/page_list.html' with { pages: relatedPages } %}
       </div>
+      <!-- UserGroupPageList end -->
 
     </div>
   </div>
