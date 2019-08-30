@@ -96,14 +96,14 @@ class CommentEditor extends React.Component {
       event.preventDefault();
     }
 
-    if (this.props.reEdit) {
+    if (this.props.currentCommentId != null) {
       this.props.commentContainer.putComment(
         this.state.comment,
         this.state.isMarkdown,
         this.props.replyTo,
         this.props.commentContainer.state.isSlackEnabled,
         this.props.commentContainer.state.slackChannels,
-        this.props.currentComment,
+        this.props.currentCommentId,
       );
     }
 

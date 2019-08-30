@@ -103,8 +103,8 @@ export default class CommentContainer extends Container {
   /**
    * Load data of comments and rerender <PageComments />
    */
-  putComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels, prevComment) {
-    console.log(prevComment);
+  putComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels, commentId) {
+    console.log(commentId);
   }
 
   deleteComment(comment) {
