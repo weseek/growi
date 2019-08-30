@@ -10,6 +10,8 @@ const { body, param, query } = require('express-validator/check');
 
 const validator = {};
 
+const { ObjectId } = require('mongoose').Types;
+
 /**
  * @swagger
  *  tags:
@@ -291,7 +293,7 @@ module.exports = (crowi) => {
   });
 
   validator.users.post = [
-    param('id').trim().exists(),
+    param('id').trim().exists({ checkFalsy: true }),
     param('username').trim().exists({ checkFalsy: true }),
   ];
 
@@ -318,17 +320,18 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: users are added
+   *            description: a user is added
    *            content:
    *              application/json:
    *                schema:
-   *                type: object
+   *                  type: object
    *                  properties:
    *                    user:
    *                      type: object
+   *                      description: the user added to the group
    *                    userGroup:
    *                      type: object
-   *                      description: user objects
+   *                      description: the group to which a user was added
    */
   router.post('/:id/users/:username', loginRequired(), adminRequired, validator.users.post, ApiV3FormValidator, async(req, res) => {
     const { id, username } = req.params;
@@ -344,9 +347,75 @@ module.exports = (crowi) => {
       return res.apiv3({ userGroup, user });
     }
     catch (err) {
-      const msg = `Error occurred in adding an user "${username}" to group "${id}"`;
+      const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-add-user-failed'));
+    }
+  });
+
+  validator.users.delete = [
+    param('id').trim().exists({ checkFalsy: true }),
+    param('username').trim().exists({ checkFalsy: true }),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id/users}:
+   *      delete:
+   *        tags: [UserGroup]
+   *        description: remove a user from the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *          - name: username
+   *            in: path
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: a user was removed
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    user:
+   *                      type: object
+   *                      description: the user removed from the group
+   *                    userGroup:
+   *                      type: object
+   *                      description: the group from which a user was removed
+   */
+  router.delete('/:id/users/:username', loginRequired(), adminRequired, validator.users.delete, ApiV3FormValidator, async(req, res) => {
+    const { id, username } = req.params;
+
+    try {
+      const [userGroup, user] = await Promise.all([
+        UserGroup.findById(id),
+        User.findUserByUsername(username),
+      ]);
+
+      const userGroupRelation = await UserGroupRelation.findOne({ relatedUser: new ObjectId(user._id), relatedGroup: new ObjectId(userGroup._id) });
+      if (userGroupRelation == null) {
+        throw new Error(`Group "${id}" does not exist or user "${username}" does not belong to group "${id}"`);
+      }
+
+      await userGroupRelation.remove();
+
+      return res.apiv3({ userGroup, user });
+    }
+    catch (err) {
+      const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }
   });
 

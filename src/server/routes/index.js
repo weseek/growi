@@ -135,9 +135,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/user-groups'                    , loginRequired(), adminRequired, admin.userGroup.index);
   app.get('/admin/user-group-detail/:id'          , loginRequired(), adminRequired, admin.userGroup.detail);
 
-  // user-group-relations admin
-  app.post('/admin/user-group-relation/:id/remove-relation/:relationId', loginRequired(), adminRequired, csrf, admin.userGroupRelation.remove);
-
   // importer management for admin
   app.get('/admin/importer'                , loginRequired() , adminRequired , admin.importer.index);
   app.post('/_api/admin/settings/importerEsa' , loginRequired() , adminRequired , csrf , form.admin.importerEsa , admin.api.importerSettingEsa);

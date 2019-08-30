@@ -716,26 +716,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/user-group-detail', renderVar);
   };
 
-  actions.userGroupRelation = {};
-  actions.userGroupRelation.index = function(req, res) {
-
-  };
-
-  actions.userGroupRelation.remove = function(req, res) {
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-    const userGroupId = req.params.id;
-    const relationId = req.params.relationId;
-
-    UserGroupRelation.removeById(relationId)
-      .then(() => {
-        return res.redirect(`/admin/user-group-detail/${userGroupId}`);
-      })
-      .catch((err) => {
-        debug('Error on remove user-group-relation', err);
-        req.flash('errorMessage', 'グループのユーザ削除に失敗しました。');
-      });
-  };
-
   // Importer management
   actions.importer = {};
   actions.importer.index = function(req, res) {

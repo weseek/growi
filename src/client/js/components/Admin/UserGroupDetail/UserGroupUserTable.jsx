@@ -18,8 +18,21 @@ class UserGroupUserTable extends React.Component {
       isUserGroupUserModalOpen: false,
     };
 
+    this.xss = window.xss;
+
+    this.removeUser = this.removeUser.bind(this);
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
+  }
+
+  async removeUser(username) {
+    try {
+      await this.props.appContainer.apiv3.delete(`/user-groups/${this.props.userGroup._id}/users/${username}`);
+      toastSuccess(`Removed "${username}" from "${this.xss.process(this.props.userGroup.name)}"`);
+    }
+    catch (err) {
+      toastError(new Error(`Unable to remove "${this.xss.process(username)}" from "${this.xss.process(this.props.userGroup.name)}"`));
+    }
   }
 
   openUserGroupUserModal() {
@@ -71,11 +84,8 @@ class UserGroupUserTable extends React.Component {
                         <i className="icon-settings"></i> <span className="caret"></span>
                       </button>
                       <ul className="dropdown-menu" role="menu">
-                        <form id="form_removeFromGroup_{{ loop.index }}" action="/admin/user-group-relation/{{userGroup._id.toString()}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
-                          <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                        </form>
                         <li>
-                          <a href="javascript:form_removeFromGroup_{{ loop.index }}.submit()">
+                          <a onClick={() => { return this.removeUser(relatedUser.username) }}>
                             <i className="icon-fw icon-user-unfollow"></i> { t('user_group_management.remove_from_group')}
                           </a>
                         </li>
