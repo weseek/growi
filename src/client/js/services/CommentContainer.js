@@ -115,10 +115,6 @@ export default class CommentContainer extends Container {
         replyTo,
         comment_id: commentId,
       },
-      slackNotificationForm: {
-        isSlackEnabled,
-        slackChannels,
-      },
     })
       .then((res) => {
         if (res.ok) {
