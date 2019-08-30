@@ -179,7 +179,34 @@ module.exports = (crowi) => {
     body('name', 'Group name is required').trim().exists(),
   ];
 
-  // update one group with the id
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}:
+   *      put:
+   *        tags: [UserGroup]
+   *        description: Updates userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: userGroup is updated
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroup:
+   *                      type: object
+   *                      description: A result of `UserGroup.updateName`
+   */
   router.put('/:id', loginRequired(), adminRequired, csrf, validator.update, ApiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const { name } = req.body;
