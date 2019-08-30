@@ -118,6 +118,7 @@ module.exports = function(crowi, app) {
 
     }
     catch (err) {
+      logger.error(err);
       return res.json(ApiResponse.error(err));
     }
 
