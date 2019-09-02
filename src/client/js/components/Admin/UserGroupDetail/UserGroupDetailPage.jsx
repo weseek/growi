@@ -40,6 +40,7 @@ class UserGroupDetailPage extends React.Component {
           userGroup={this.state.userGroup}
         />
         <UserGroupPageList
+          userGroup={this.state.userGroup}
           relatedPages={this.state.relatedPages}
         />
       </div>

@@ -7,10 +7,13 @@ const express = require('express');
 const router = express.Router();
 
 const { body, param, query } = require('express-validator/check');
+const { sanitizeQuery } = require('express-validator/filter');
 
 const validator = {};
 
 const { ObjectId } = require('mongoose').Types;
+
+const { toPagingLimit, toPagingOffset } = require('../../util/validator');
 
 /**
  * @swagger
@@ -24,6 +27,7 @@ module.exports = (crowi) => {
     UserGroup,
     UserGroupRelation,
     User,
+    Page,
   } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
 
@@ -425,6 +429,34 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }
   });
+
+  validator.pages = {};
+
+  validator.pages.get = [
+    param('id').trim().exists({ checkFalsy: true }),
+    sanitizeQuery('limit').customSanitizer(toPagingLimit),
+    sanitizeQuery('offset').customSanitizer(toPagingOffset),
+  ];
+
+  router.get('/:id/pages', loginRequired(), adminRequired, validator.pages.get, ApiV3FormValidator, async(req, res) => {
+    const { id } = req.params;
+    const { limit, offset } = req.query;
+
+    try {
+      const pages = await Page
+        .find({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [id] } }, null, { skip: offset, limit })
+        .populate('lastUpdateUser', User.USER_PUBLIC_FIELDS)
+        .exec();
+
+      return res.apiv3({ pages });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching related pages for the user group "${id}"`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-fetch-page-list-failed'));
+    }
+  });
+
 
   return router;
 };

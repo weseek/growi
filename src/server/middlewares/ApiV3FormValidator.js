@@ -13,7 +13,7 @@ class ApiV3FormValidator {
       }
 
       const errs = errObjArray.array().map((err) => {
-        logger.error(`${err.param} in ${err.location}: ${err.msg}`);
+        logger.error(`${err.location}.${err.param}: ${err.value} - ${err.msg}`);
         return new ErrorV3(`${err.param}: ${err.msg}`, 'validation_failed');
       });
 

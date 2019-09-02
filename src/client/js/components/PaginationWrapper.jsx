@@ -42,7 +42,7 @@ class PaginationWrapper extends React.Component {
 
     let paginationStart = activePage - 2;
     let maxViewPageNum = activePage + 2;
-    // pagiNation Number area size = 5 , pageNuber calculate in here
+    // if pagiNation Number area size = 5 , pageNumber is calculated here
     // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
     if (paginationStart < 1) {
       const diff = 1 - paginationStart;
