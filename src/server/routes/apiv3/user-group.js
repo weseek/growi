@@ -332,6 +332,9 @@ module.exports = (crowi) => {
    *                    userGroup:
    *                      type: object
    *                      description: the group to which a user was added
+   *                    userGroupRelation:
+   *                      type: object
+   *                      description: the associative entity between user and userGroup
    */
   router.post('/:id/users/:username', loginRequired(), adminRequired, validator.users.post, ApiV3FormValidator, async(req, res) => {
     const { id, username } = req.params;
@@ -394,6 +397,9 @@ module.exports = (crowi) => {
    *                    userGroup:
    *                      type: object
    *                      description: the group from which a user was removed
+   *                    userGroupRelation:
+   *                      type: object
+   *                      description: the associative entity between user and userGroup
    */
   router.delete('/:id/users/:username', loginRequired(), adminRequired, validator.users.delete, ApiV3FormValidator, async(req, res) => {
     const { id, username } = req.params;

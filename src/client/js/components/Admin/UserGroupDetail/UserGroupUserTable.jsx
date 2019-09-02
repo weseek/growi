@@ -116,20 +116,18 @@ class UserGroupUserTable extends React.Component {
               );
             })}
 
-            {this.state.userGroupRelations.length === 0 ? (
-              <tr>
-                <td></td>
-                <td className="text-center">
-                  <button className="btn btn-default" type="button" onClick={this.openUserGroupUserModal}>
-                    <i className="ti-plus"></i>
-                  </button>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            ) : null}
+            <tr>
+              <td></td>
+              <td className="text-center">
+                <button className="btn btn-default" type="button" onClick={this.openUserGroupUserModal}>
+                  <i className="ti-plus"></i>
+                </button>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
 
           </tbody>
         </table>

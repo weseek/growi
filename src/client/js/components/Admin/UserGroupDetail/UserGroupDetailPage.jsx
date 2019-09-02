@@ -13,11 +13,13 @@ class UserGroupDetailPage extends React.Component {
     const userGroup = JSON.parse(elem.getAttribute('data-user-group'));
     const userGroupRelations = JSON.parse(elem.getAttribute('data-user-group-relations'));
     const notRelatedUsers = JSON.parse(elem.getAttribute('data-not-related-users'));
+    const relatedPages = JSON.parse(elem.getAttribute('data-related-pages'));
 
     this.state = {
       userGroup,
       userGroupRelations,
       notRelatedUsers,
+      relatedPages,
     };
   }
 
@@ -37,7 +39,9 @@ class UserGroupDetailPage extends React.Component {
           notRelatedUsers={this.state.notRelatedUsers}
           userGroup={this.state.userGroup}
         />
-        <UserGroupPageList />
+        <UserGroupPageList
+          relatedPages={this.state.relatedPages}
+        />
       </div>
     );
   }
