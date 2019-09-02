@@ -15,6 +15,8 @@ class UserGroupUserTable extends React.Component {
     super(props);
 
     this.state = {
+      userGroupRelations: props.userGroupRelations,
+      notRelatedUsers: props.notRelatedUsers,
       isUserGroupUserModalOpen: false,
     };
 
@@ -23,11 +25,20 @@ class UserGroupUserTable extends React.Component {
     this.removeUser = this.removeUser.bind(this);
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
+    this.addUser = this.addUser.bind(this);
   }
 
   async removeUser(username) {
     try {
-      await this.props.appContainer.apiv3.delete(`/user-groups/${this.props.userGroup._id}/users/${username}`);
+      const res = await this.props.appContainer.apiv3.delete(`/user-groups/${this.props.userGroup._id}/users/${username}`);
+
+      this.setState((prevState) => {
+        return {
+          userGroupRelations: prevState.userGroupRelations.filter((u) => { return u._id !== res.data.userGroupRelation._id }),
+          notRelatedUsers: [...prevState.notRelatedUsers, res.data.user],
+        };
+      });
+
       toastSuccess(`Removed "${username}" from "${this.xss.process(this.props.userGroup.name)}"`);
     }
     catch (err) {
@@ -41,6 +52,15 @@ class UserGroupUserTable extends React.Component {
 
   closeUserGroupUserModal() {
     this.setState({ isUserGroupUserModalOpen: false });
+  }
+
+  addUser(user, userGroup, userGroupRelation) {
+    this.setState((prevState) => {
+      return {
+        userGroupRelations: [...prevState.userGroupRelations, userGroupRelation],
+        notRelatedUsers: prevState.notRelatedUsers.filter((u) => { return u._id !== user._id }),
+      };
+    });
   }
 
   render() {
@@ -64,7 +84,7 @@ class UserGroupUserTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.userGroupRelations.map((sRelation) => {
+            {this.state.userGroupRelations.map((sRelation) => {
               const { relatedUser } = sRelation;
 
               return (
@@ -96,7 +116,7 @@ class UserGroupUserTable extends React.Component {
               );
             })}
 
-            {this.props.userGroupRelations.length === 0 ? (
+            {this.state.userGroupRelations.length === 0 ? (
               <tr>
                 <td></td>
                 <td className="text-center">
@@ -116,8 +136,9 @@ class UserGroupUserTable extends React.Component {
 
         <UserGroupUserModal
           show={this.state.isUserGroupUserModalOpen}
-          handleClose={this.closeUserGroupUserModal}
-          notRelatedUsers={this.props.notRelatedUsers}
+          onClose={this.closeUserGroupUserModal}
+          onAdd={this.addUser}
+          notRelatedUsers={this.state.notRelatedUsers}
           userGroup={this.props.userGroup}
         />
 

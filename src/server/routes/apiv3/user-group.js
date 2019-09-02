@@ -342,9 +342,10 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
-      await UserGroupRelation.createRelation(userGroup, user);
+      const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
+      await userGroupRelation.populate('relatedUser', User.USER_PUBLIC_FIELDS).execPopulate();
 
-      return res.apiv3({ userGroup, user });
+      return res.apiv3({ user, userGroup, userGroupRelation });
     }
     catch (err) {
       const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
@@ -410,7 +411,7 @@ module.exports = (crowi) => {
 
       await userGroupRelation.remove();
 
-      return res.apiv3({ userGroup, user });
+      return res.apiv3({ user, userGroup, userGroupRelation });
     }
     catch (err) {
       const msg = `Error occurred in removing the user "${username}" from group "${id}"`;

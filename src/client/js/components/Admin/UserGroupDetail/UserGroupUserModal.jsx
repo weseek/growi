@@ -31,37 +31,40 @@ class UserGroupUserModal extends React.Component {
   async addUserBySubmit(e) {
     e.preventDefault();
 
-    await this.addUser(this.state.username);
+    const { user, userGroup, userGroupRelation } = await this.addUser(this.state.username);
 
     this.setState({ username: '' });
-    this.handlePostAddUser();
+    this.handlePostAdd(user, userGroup, userGroupRelation);
   }
 
   async addUserByClick(username) {
-    await this.addUser(username);
+    const { user, userGroup, userGroupRelation } = await this.addUser(username);
 
-    this.handlePostAddUser();
+    this.handlePostAdd(user, userGroup, userGroupRelation);
   }
 
   async addUser(username) {
     try {
-      await this.props.appContainer.apiv3.post(`/user-groups/${this.props.userGroup._id}/users/${username}`);
+      const res = await this.props.appContainer.apiv3.post(`/user-groups/${this.props.userGroup._id}/users/${username}`);
       toastSuccess(`Added "${username}" to "${this.xss.process(this.props.userGroup.name)}"`);
+
+      return res.data;
     }
     catch (err) {
       toastError(new Error(`Unable to add "${this.xss.process(username)}" to "${this.xss.process(this.props.userGroup.name)}"`));
     }
   }
 
-  handlePostAddUser() {
-    this.props.handleClose();
+  handlePostAdd(user, userGroup, userGroupRelation) {
+    this.props.onAdd(user, userGroup, userGroupRelation);
+    this.props.onClose();
   }
 
   render() {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.show} onHide={this.props.handleClose}>
+      <Modal show={this.props.show} onHide={this.props.onClose}>
         <Modal.Header closeButton>
           <Modal.Title>{ t('user_group_management.add_user') }</Modal.Title>
         </Modal.Header>
@@ -116,7 +119,8 @@ UserGroupUserModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   show: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
   userGroup: PropTypes.object.isRequired,
   notRelatedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
