@@ -31,6 +31,10 @@ module.exports = function(crowi, app) {
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
+  const { check } = require('express-validator/check');
+
+  const api = {};
+
   function createPager(total, limit, page, pagesCount, maxPageList) {
     const pager = {
       page,
@@ -807,13 +811,33 @@ module.exports = function(crowi, app) {
 
   // Importer management
   actions.importer = {};
+  actions.importer.api = api;
+  api.validators = {};
+  api.validators.importer = {};
+
   actions.importer.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'importer:');
-
     return res.render('admin/importer', {
       settingForm,
     });
   };
+
+  api.validators.importer.esa = function() {
+    const validator = [
+      check('importer:esa:team_name').not().isEmpty().withMessage('Error. Empty esa:team_name'),
+      check('importer:esa:access_token').not().isEmpty().withMessage('Error. Empty esa:access_token'),
+    ];
+    return validator;
+  };
+
+  api.validators.importer.qiita = function() {
+    const validator = [
+      check('importer:qiita:team_name').not().isEmpty().withMessage('Error. Empty qiita:team_name'),
+      check('importer:qiita:access_token').not().isEmpty().withMessage('Error. Empty qiita:access_token'),
+    ];
+    return validator;
+  };
+
 
   actions.api = {};
   actions.api.appSetting = async function(req, res) {
@@ -1170,10 +1194,15 @@ module.exports = function(crowi, app) {
   actions.api.importerSettingEsa = async(req, res) => {
     const form = req.body;
 
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.json(ApiResponse.error('esa.io form is blank'));
+    }
+
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeEsaClient(); // let it run in the back aftert res
-
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1183,16 +1212,19 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   actions.api.importerSettingQiita = async(req, res) => {
-    const form = req.form.settingForm;
+    const form = req.body;
 
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log('validator', errors);
+      return res.json(ApiResponse.error('Qiita form is blank'));
     }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
 
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1213,9 +1245,9 @@ module.exports = function(crowi, app) {
     }
 
     if (errors.length > 0) {
-      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+      return res.json(ApiResponse.error(`<br> - ${errors.join('<br> - ')}`));
     }
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1236,9 +1268,9 @@ module.exports = function(crowi, app) {
     }
 
     if (errors.length > 0) {
-      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+      return res.json(ApiResponse.error(`<br> - ${errors.join('<br> - ')}`));
     }
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1250,10 +1282,10 @@ module.exports = function(crowi, app) {
   actions.api.testEsaAPI = async(req, res) => {
     try {
       await importer.testConnectionToEsa();
-      return res.json({ status: true });
+      return res.json(ApiResponse.success());
     }
     catch (err) {
-      return res.json({ status: false, message: `${err}` });
+      return res.json(ApiResponse.error(err));
     }
   };
 
@@ -1266,10 +1298,10 @@ module.exports = function(crowi, app) {
   actions.api.testQiitaAPI = async(req, res) => {
     try {
       await importer.testConnectionToQiita();
-      return res.json({ status: true });
+      return res.json(ApiResponse.success());
     }
     catch (err) {
-      return res.json({ status: false, message: `${err}` });
+      return res.json(ApiResponse.error(err));
     }
   };
 

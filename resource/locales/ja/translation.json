@@ -709,8 +709,8 @@
   },
 
   "importer_management": {
-    "import_from_esa": "esa.ioからインポート",
-    "import_from_qiita": "Qiita:Teamからインポート",
+    "import_form_esa": "esa.ioからインポート",
+    "import_form_qiita": "Qiita:Teamからインポート",
     "esa_settings": {
       "team_name": "チーム名",
       "access_token": "アクセストークン",

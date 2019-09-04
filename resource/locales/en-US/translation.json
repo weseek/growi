@@ -725,8 +725,8 @@
   },
 
   "importer_management": {
-    "import_from_esa": "Import from esa.io",
-    "import_from_qiita": "import_from Qiita:Team",
+    "import_form_esa": "Import from esa.io",
+    "import_form_qiita": "import_from Qiita:Team",
     "esa_settings": {
       "team_name": "Team name",
       "access_token": "Access token",

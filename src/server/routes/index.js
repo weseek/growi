@@ -142,12 +142,12 @@ module.exports = function(crowi, app) {
 
   // importer management for admin
   app.get('/admin/importer'                , loginRequired() , adminRequired , admin.importer.index);
-  app.post('/_api/admin/settings/importerEsa' , loginRequired() , adminRequired , csrf , form.admin.importerEsa , admin.api.importerSettingEsa);
-  app.post('/_api/admin/settings/importerQiita' , loginRequired() , adminRequired , csrf , form.admin.importerQiita , admin.api.importerSettingQiita);
+  app.post('/_api/admin/settings/importerEsa' ,  loginRequired() , adminRequired , csrf, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
+  app.post('/_api/admin/settings/importerQiita' ,loginRequired() , adminRequired , csrf , admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
   app.post('/_api/admin/import/esa'        , loginRequired() , adminRequired , admin.api.importDataFromEsa);
-  app.post('/_api/admin/import/testEsaAPI' , loginRequired() , adminRequired , csrf , form.admin.importerEsa , admin.api.testEsaAPI);
+  app.post('/_api/admin/import/testEsaAPI' , loginRequired() , adminRequired , csrf, admin.api.testEsaAPI);
   app.post('/_api/admin/import/qiita'        , loginRequired() , adminRequired , admin.api.importDataFromQiita);
-  app.post('/_api/admin/import/testQiitaAPI' , loginRequired() , adminRequired , csrf , form.admin.importerQiita , admin.api.testQiitaAPI);
+  app.post('/_api/admin/import/testQiitaAPI' , loginRequired() , adminRequired , csrf, admin.api.testQiitaAPI);
 
   app.get('/me'                       , loginRequired() , me.index);
   app.get('/me/password'              , loginRequired() , me.password);
