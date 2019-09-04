@@ -61,19 +61,19 @@ class Importer extends React.Component {
     }
   }
 
-  esaHandleSubmitUpdate() {
+  async esaHandleSubmitUpdate() {
     const params = {
       'importer:esa:team_name': this.state.esaTeamName,
       'importer:esa:access_token': this.state.esaAccessToken,
     };
-    this.props.appContainer.apiPost('/admin/settings/importerEsa', params)
-      .then((res) => {
-        toastSuccess('Updated');
-      })
-      .catch((err) => {
-        console.log(err.message);
-        toastError(err, 'Errors');
-      });
+    try {
+      await this.props.appContainer.apiPost('/admin/settings/importerEsa', params);
+      toastSuccess('Updated');
+    }
+    catch (err) {
+      console.log(err.message);
+      toastError(err, 'Errors');
+    }
   }
 
   qiitaHandleSubmit() {
@@ -89,6 +89,7 @@ class Importer extends React.Component {
       toastError(error, 'Error occurred in importing pages from qiita:team');
     }
   }
+
 
   qiitaHandleSubmitTest() {
     try {
@@ -106,19 +107,19 @@ class Importer extends React.Component {
     }
   }
 
-  qiitaHandleSubmitUpdate() {
+  async qiitaHandleSubmitUpdate() {
     const params = {
       'importer:qiita:team_name': this.state.qiitaTeamName,
       'importer:qiita:access_token': this.state.qiitaAccessToken,
     };
-    this.props.appContainer.apiPost('/admin/settings/importerQiita', params)
-      .then((res) => {
-        toastSuccess('Update');
-      })
-      .catch((err) => {
-        console.log(err.message);
-        toastError(err, 'Errors');
-      });
+    try {
+      await this.props.appContainer.apiPost('/admin/settings/importerQiita', params);
+      toastSuccess('Updated');
+    }
+    catch (err) {
+      console.log(err.message);
+      toastError(err, 'Errors');
+    }
   }
 
   render() {
