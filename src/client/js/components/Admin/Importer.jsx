@@ -1,10 +1,13 @@
 import React, { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import AppContainer from '../../services/AppContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '../../util/apiNotification';
+
+const logger = loggerFactory('growi:importer');
 
 class Importer extends React.Component {
 
@@ -40,8 +43,9 @@ class Importer extends React.Component {
       await this.props.appContainer.apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
     }
-    catch (error) {
-      toastError(error, 'Error occurred in importing pages from esa.io');
+    catch (err) {
+      logger.error(err);
+      toastError(err, 'Error occurred in importing pages from esa.io');
     }
   }
 
@@ -69,7 +73,7 @@ class Importer extends React.Component {
       toastSuccess('Updated');
     }
     catch (err) {
-      console.log(err.message);
+      logger.error(err);
       toastError(err, 'Errors');
     }
   }
@@ -83,8 +87,9 @@ class Importer extends React.Component {
       await this.props.appContainer.apiPost('/admin/import/qiita', params);
       toastSuccess('Import posts from qiita:team success.');
     }
-    catch (error) {
-      toastError(error, 'Error occurred in importing pages from qiita:team');
+    catch (err) {
+      logger.error(err);
+      toastError(err, 'Error occurred in importing pages from qiita:team');
     }
   }
 
@@ -98,8 +103,9 @@ class Importer extends React.Component {
       await this.props.appContainer.apiPost('/admin/import/testQiitaAPI', params);
       toastSuccess('Test connection to qiita:team success.');
     }
-    catch (error) {
-      toastError(error, 'Test connection to qiita:team failed.');
+    catch (err) {
+      logger.error(err);
+      toastError(err, 'Test connection to qiita:team failed.');
     }
   }
 
@@ -113,7 +119,7 @@ class Importer extends React.Component {
       toastSuccess('Updated');
     }
     catch (err) {
-      console.log(err.message);
+      logger.error(err);
       toastError(err, 'Errors');
     }
   }

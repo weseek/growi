@@ -1217,8 +1217,6 @@ module.exports = function(crowi, app) {
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // return res.json(ApiResponse.error('Invalid comment.'));
-      // return res.status(422).json({ errors: errors.array() });
       console.log('validator', errors);
       return res.json(ApiResponse.error('Qiita form is blank'));
     }
