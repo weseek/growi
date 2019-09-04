@@ -46,6 +46,7 @@ function Crowi(rootdir) {
   this.appService = null;
   this.fileUploadService = null;
   this.restQiitaAPIService = null;
+  this.exportService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -103,6 +104,7 @@ Crowi.prototype.init = async function() {
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroup(),
+    this.setupExport(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -533,6 +535,13 @@ Crowi.prototype.setupUserGroup = async function() {
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
     return this.userGroupService.init();
+  }
+};
+
+Crowi.prototype.setupExport = async function() {
+  const ExportService = require('../service/export');
+  if (this.exportService == null) {
+    this.exportService = new ExportService(this);
   }
 };
 

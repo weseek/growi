@@ -8,5 +8,8 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   router.use('/healthcheck', require('./healthcheck')(crowi));
+
+  router.use('/pages', require('./page')(crowi));
+
   return router;
 };
