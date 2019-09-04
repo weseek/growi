@@ -2,6 +2,7 @@
 
 ## 3.5.10-RC
 
+* Feature: Send Global Notification with Slack
 * Improvement: Show loading spinner when fetching page history data
 * Improvement: Hierarchical page link when the page is in /Trash
 * Fix: Code Highlight Theme does not change
