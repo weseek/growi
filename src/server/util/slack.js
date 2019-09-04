@@ -168,6 +168,32 @@ module.exports = function(crowi) {
     return message;
   };
 
+  /**
+   * For GlobalNotification
+   *
+   * @param {string} messageBody
+   * @param {string} attachmentBody
+   * @param {string} slackChannel
+  */
+  const prepareSlackMessageForGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
+    const appTitle = crowi.appService.getAppTitle();
+
+    const attachment = {
+      color: '#263a3c',
+      text: attachmentBody,
+      mrkdwn_in: ['text'],
+    };
+
+    const message = {
+      channel: `#${slackChannel}`,
+      username: appTitle,
+      text: messageBody,
+      attachments: [attachment],
+    };
+
+    return message;
+  };
+
   const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
     let text;
     const url = crowi.appService.getSiteUrl();
@@ -200,6 +226,12 @@ module.exports = function(crowi) {
 
   slack.postComment = (comment, user, channel, path) => {
     const messageObj = prepareSlackMessageForComment(comment, user, channel, path);
+
+    return slackPost(messageObj);
+  };
+
+  slack.sendGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
+    const messageObj = await prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, slackChannel);
 
     return slackPost(messageObj);
   };

@@ -92,12 +92,13 @@ class GlobalNotificationSetting {
    * @param {string} path
    * @param {string} event
    */
-  static async findSettingByPathAndEvent(path, event) {
+  static async findSettingByPathAndEvent(event, path, type) {
     const pathsToMatch = generatePathsToMatch(path);
 
     const settings = await this.find({
       triggerPath: { $in: pathsToMatch },
       triggerEvents: event,
+      __t: type,
       isEnabled: true,
     })
       .sort({ triggerPath: 1 });
@@ -106,7 +107,6 @@ class GlobalNotificationSetting {
   }
 
 }
-
 
 module.exports = {
   class: GlobalNotificationSetting,

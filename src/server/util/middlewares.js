@@ -1,6 +1,6 @@
 const debug = require('debug')('growi:lib:middlewares');
 const logger = require('@alias/logger')('growi:lib:middlewares');
-const { distanceInWordsStrict } = require('date-fns');
+const { formatDistanceStrict } = require('date-fns');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
@@ -121,7 +121,7 @@ module.exports = (crowi, app) => {
       });
 
       swig.setFilter('dateDistance', (input) => {
-        return distanceInWordsStrict(input, new Date());
+        return formatDistanceStrict(input, new Date());
       });
 
       swig.setFilter('nl2br', (string) => {

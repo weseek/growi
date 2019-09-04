@@ -93,7 +93,7 @@ module.exports = function(crowi) {
     return mc;
   }
 
-  function send(config, callback) {
+  function send(config, callback = () => {}) {
     if (mailer) {
       const templateVars = config.vars || {};
       return swig.renderFile(

@@ -1,6 +1,16 @@
 # CHANGES
 
-## 3.5.9-RC
+## 3.5.10-RC
+
+* Improvement: Show loading spinner when fetching page history data
+* Improvement: Hierarchical page link when the page is in /Trash
+* Fix: Code Highlight Theme does not change
+    * Introduced by 3.5.2
+* Support: Upgrade libs
+    * date-fns
+    * eslint-config-weseek
+
+## 3.5.9
 
 * Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
 * Fix: Plugins are not initialized when first launching
