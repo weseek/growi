@@ -17,7 +17,7 @@ class UserGroupPageList extends React.Component {
 
   renderPageList(page) {
     return (
-      <li>
+      <li key={page._id}>
         <UserPicture user={page.lastUpdateUser} className="picture img-circle" />
         <a
           href={page.path}
