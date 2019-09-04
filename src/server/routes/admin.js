@@ -1249,7 +1249,7 @@ module.exports = function(crowi, app) {
     if (errors.length > 0) {
       return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
     }
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1272,7 +1272,7 @@ module.exports = function(crowi, app) {
     if (errors.length > 0) {
       return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
     }
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1284,7 +1284,7 @@ module.exports = function(crowi, app) {
   actions.api.testEsaAPI = async(req, res) => {
     try {
       await importer.testConnectionToEsa();
-      return res.json({ status: true });
+      return res.json(ApiResponse.success());
     }
     catch (err) {
       return res.json({ status: false, message: `${err}` });
@@ -1300,7 +1300,7 @@ module.exports = function(crowi, app) {
   actions.api.testQiitaAPI = async(req, res) => {
     try {
       await importer.testConnectionToQiita();
-      return res.json({ status: true });
+      return res.json(ApiResponse.success());
     }
     catch (err) {
       return res.json({ status: false, message: `${err}` });

@@ -31,13 +31,13 @@ class Importer extends React.Component {
     });
   }
 
-  esaHandleSubmit() {
+  async esaHandleSubmit() {
     try {
       const params = {
         'importer:esa:team_name': this.state.esaTeamName,
         'importer:esa:access_token': this.state.esaAccessToken,
       };
-      this.props.appContainer.apiPost('/admin/import/esa', params);
+      await this.props.appContainer.apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
     }
     catch (error) {
@@ -45,15 +45,13 @@ class Importer extends React.Component {
     }
   }
 
-  esaHandleSubmitTest() {
+  async esaHandleSubmitTest() {
     try {
       const params = {
         'importer:esa:team_name': this.state.esaTeamName,
         'importer:esa:access_token': this.state.esaAccessToken,
-
       };
-
-      this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
+      await this.props.appContainer.apiPost('/admin/import/testEsaAPI', params);
       toastSuccess('Test connection to esa success.');
     }
     catch (error) {
@@ -76,13 +74,13 @@ class Importer extends React.Component {
     }
   }
 
-  qiitaHandleSubmit() {
+  async qiitaHandleSubmit() {
     try {
       const params = {
         'importer:qiita:team_name': this.state.qiitaTeamName,
         'importer:qiita:access_token': this.state.qiitaAccessToken,
       };
-      this.props.appContainer.apiPost('/admin/import/qiita', params);
+      await this.props.appContainer.apiPost('/admin/import/qiita', params);
       toastSuccess('Import posts from qiita:team success.');
     }
     catch (error) {
@@ -91,15 +89,13 @@ class Importer extends React.Component {
   }
 
 
-  qiitaHandleSubmitTest() {
+  async qiitaHandleSubmitTest() {
     try {
       const params = {
         'importer:qiita:team_name': this.state.qiitaTeamName,
         'importer:qiita:access_token': this.state.qiitaAccessToken,
-
       };
-
-      this.props.appContainer.apiPost('/admin/import/testQiitaAPI', params);
+      await this.props.appContainer.apiPost('/admin/import/testQiitaAPI', params);
       toastSuccess('Test connection to qiita:team success.');
     }
     catch (error) {
