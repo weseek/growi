@@ -1247,7 +1247,7 @@ module.exports = function(crowi, app) {
     }
 
     if (errors.length > 0) {
-      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+      return res.json(ApiResponse.error(`<br> - ${errors.join('<br> - ')}`));
     }
     return res.json(ApiResponse.success());
   };
@@ -1270,7 +1270,7 @@ module.exports = function(crowi, app) {
     }
 
     if (errors.length > 0) {
-      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+      return res.json(ApiResponse.error(`<br> - ${errors.join('<br> - ')}`));
     }
     return res.json(ApiResponse.success());
   };
@@ -1287,7 +1287,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.success());
     }
     catch (err) {
-      return res.json({ status: false, message: `${err}` });
+      return res.json(ApiResponse.error(err));
     }
   };
 
@@ -1303,7 +1303,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.success());
     }
     catch (err) {
-      return res.json({ status: false, message: `${err}` });
+      return res.json(ApiResponse.error(err));
     }
   };
 
