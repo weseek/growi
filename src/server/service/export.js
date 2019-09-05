@@ -33,7 +33,7 @@ class ExportService {
    * @memberOf ExportService
    * @param {string} file path to json file to be written
    * @param {readStream} readStream  read stream
-   * @param {int} [total] number of target items (optional)
+   * @param {number} [total] number of target items (optional)
    */
   async export(file, readStream, total) {
     const ws = fs.createWriteStream(file, { encoding: this.encoding });
@@ -62,6 +62,13 @@ class ExportService {
     );
   }
 
+  /**
+   * log export progress
+   *
+   * @memberOf ExportService
+   * @param {number} n number of items exported
+   * @param {number} [total] number of target items (optional)
+   */
   logProgress(n, total) {
     let output;
     if (total) {
