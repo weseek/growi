@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-filename-extension */
 
+import { pathUtils } from 'growi-commons';
+
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
