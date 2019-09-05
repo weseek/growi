@@ -4,6 +4,7 @@
 
 * Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
     * Introduced by 3.5.8
+* Fix: Last Login field does not shown in /admin/user
 * Support: Upgrade libs
     * env-cmd
     * sass-loader
