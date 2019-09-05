@@ -31,9 +31,9 @@ class ExportService {
    * dump a collection into json
    *
    * @memberOf ExportService
-   * @param {string} file path to json file to write
+   * @param {string} file path to json file to be written
    * @param {readStream} readStream  read stream
-   * @param {func} total number of target items (optional)
+   * @param {int} [total] number of target items (optional)
    */
   async export(file, readStream, total) {
     const ws = fs.createWriteStream(file, { encoding: this.encoding });
@@ -84,13 +84,14 @@ class ExportService {
    * @param {object} Model instance of mongoose model
    */
   async exportCollection(Model) {
-    const file = this.files[Model.collection.collectionName];
+    const modelName = Model.collection.collectionName;
+    const file = this.files[modelName];
     const total = await Model.countDocuments();
     const readStream = Model.find().cursor();
 
     await this.export(file, readStream, total);
 
-    logger.debug(`exported ${Model.collection.collectionName} collection into ${file}`);
+    logger.debug(`exported ${modelName} collection into ${file}`);
   }
 
 }
