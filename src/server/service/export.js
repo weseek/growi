@@ -9,7 +9,7 @@ class ExportService {
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.extension = 'json';
     this.encoding = 'utf-8';
-    this.per = 10;
+    this.per = 100;
 
     this.files = {};
     // populate this.files
