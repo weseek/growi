@@ -440,7 +440,7 @@ module.exports = function(crowi, app) {
 
     const result = await User.findUsersWithPagination({
       page,
-      select: User.USER_PUBLIC_FIELDS,
+      select: `${User.USER_PUBLIC_FIELDS} lastLoginAt`,
       populate: User.IMAGE_POPULATION,
     });
 
