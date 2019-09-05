@@ -34,8 +34,8 @@ class UserGroupDetailPage extends React.Component {
 
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
-    this.removeUser = this.removeUser.bind(this);
-    this.addUser = this.addUser.bind(this);
+    this.removeUserFromState = this.removeUserFromState.bind(this);
+    this.addUserToState = this.addUserToState.bind(this);
   }
 
   openUserGroupUserModal() {
@@ -46,7 +46,7 @@ class UserGroupDetailPage extends React.Component {
     this.setState({ isUserGroupUserModalOpen: false });
   }
 
-  async removeUser(username) {
+  async removeUserFromState(username) {
     try {
       const res = await this.props.appContainer.apiv3.delete(`/user-groups/${this.state.userGroup._id}/users/${username}`);
 
@@ -64,7 +64,7 @@ class UserGroupDetailPage extends React.Component {
     }
   }
 
-  addUser(user, userGroup, userGroupRelation) {
+  addUserToState(user, userGroup, userGroupRelation) {
     this.setState((prevState) => {
       return {
         userGroupRelations: [...prevState.userGroupRelations, userGroupRelation],
@@ -89,12 +89,12 @@ class UserGroupDetailPage extends React.Component {
         <UserGroupUserTable
           userGroupRelations={this.state.userGroupRelations}
           openUserGroupUserModal={this.openUserGroupUserModal}
-          removeUser={this.removeUser}
+          removeUser={this.removeUserFromState}
         />
         <UserGroupUserModal
           show={this.state.isUserGroupUserModalOpen}
           onClose={this.closeUserGroupUserModal}
-          onAdd={this.addUser}
+          onAdd={this.addUserToState}
           notRelatedUsers={this.state.notRelatedUsers}
           userGroup={this.state.userGroup}
         />
