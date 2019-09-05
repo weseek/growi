@@ -1,13 +1,15 @@
 const logger = require('@alias/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
+const streamToPromise = require('stream-to-promise');
 
 class ExportService {
 
   constructor(crowi) {
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.extension = 'json';
-    this.per = 3;
+    this.encoding = 'utf-8';
+    this.per = 10;
 
     this.files = {};
     // populate this.files
@@ -34,29 +36,30 @@ class ExportService {
    * @param {func} total number of target items (optional)
    */
   async export(file, readStream, total) {
+    const ws = fs.createWriteStream(file, { encoding: this.encoding });
     let n = 0;
-
-    const ws = fs.createWriteStream(file, { encoding: 'utf-8' });
 
     // open an array
     ws.write('[');
 
-    await readStream
-      .on('data', (chunk) => {
-        if (n !== 0) {
-          ws.write(',');
-        }
+    await streamToPromise(
+      readStream
+        .on('data', (chunk) => {
+          if (n !== 0) {
+            ws.write(',');
+          }
 
-        ws.write(JSON.stringify(chunk));
+          ws.write(JSON.stringify(chunk));
 
-        n++;
-        this.logProgress(n, total);
-      })
-      .on('end', () => {
+          n++;
+          this.logProgress(n, total);
+        })
+        .on('end', () => {
         // close the array
-        ws.write(']');
-        ws.close();
-      });
+          ws.write(']');
+          ws.close();
+        }),
+    );
   }
 
   logProgress(n, total) {
