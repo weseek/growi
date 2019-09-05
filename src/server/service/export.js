@@ -2,6 +2,7 @@ const logger = require('@alias/logger')('growi:services:ExportService'); // esli
 const fs = require('fs');
 const path = require('path');
 const streamToPromise = require('stream-to-promise');
+const archiver = require('archiver');
 
 class ExportService {
 
@@ -10,6 +11,7 @@ class ExportService {
     this.extension = 'json';
     this.encoding = 'utf-8';
     this.per = 100;
+    this.zlibLevel = 9; // 0(min) - 9(max)
 
     this.files = {};
     // populate this.files
@@ -36,26 +38,26 @@ class ExportService {
    * @param {number} [total] number of target items (optional)
    */
   async export(file, readStream, total) {
-    const ws = fs.createWriteStream(file, { encoding: this.encoding });
     let n = 0;
+    const ws = fs.createWriteStream(file, { encoding: this.encoding });
+
+    readStream.on('data', (chunk) => {
+      if (n !== 0) ws.write(',');
+      ws.write(JSON.stringify(chunk));
+      n++;
+      this.logProgress(n, total);
+    });
+
+    readStream.on('end', () => {
+      // close the array
+      ws.write(']');
+      ws.close();
+    });
 
     // open an array
     ws.write('[');
 
-    await streamToPromise(
-      readStream
-        .on('data', (chunk) => {
-          if (n !== 0) ws.write(',');
-          ws.write(JSON.stringify(chunk));
-          n++;
-          this.logProgress(n, total);
-        })
-        .on('end', () => {
-        // close the array
-          ws.write(']');
-          ws.close();
-        }),
-    );
+    await streamToPromise(readStream);
   }
 
   /**
@@ -74,10 +76,53 @@ class ExportService {
       output = `${n} items written`;
     }
 
-    // output every this.per items and last item
-    if (n % this.per === 0 || n === total) {
-      logger.debug(output);
-    }
+    // output every this.per items
+    if (n % this.per === 0) logger.debug(output);
+    // output last item
+    else if (n === total) logger.info(output);
+  }
+
+  /**
+   * zip a file
+   *
+   * @memberOf ExportService
+   * @param {string} from path to input file
+   * @param {string} [to=`${path.join(path.dirname(from), `${path.basename(from, path.extname(from))}.zip`)}`] path to output file
+   * @param {string} [as=path.basename(from)] file name after unzipped
+   * @see https://www.archiverjs.com/#quick-start
+   */
+  async zipSingleFile(from, to = `${path.join(path.dirname(from), `${path.basename(from, path.extname(from))}.zip`)}`, as = path.basename(from)) {
+    const archive = archiver('zip', {
+      zlib: { level: this.zlibLevel },
+    });
+    const input = fs.createReadStream(from);
+    const output = fs.createWriteStream(to);
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') logger.error(err);
+      else throw err;
+    });
+
+    // good practice to catch this error explicitly
+    archive.on('error', (err) => { throw err });
+
+    // append a file from stream
+    archive.append(input, { name: as });
+
+    // pipe archive data to the file
+    archive.pipe(output);
+
+    // finalize the archive (ie we are done appending files but streams have to finish yet)
+    // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+    archive.finalize();
+
+    await streamToPromise(archive);
+
+    return {
+      file: to,
+      size: archive.pointer(),
+    };
   }
 
   /**
@@ -94,7 +139,9 @@ class ExportService {
 
     await this.export(file, readStream, total);
 
-    logger.debug(`exported ${modelName} collection into ${file}`);
+    const { file: zipFile, size } = await this.zipSingleFile(file);
+
+    logger.info(`exported ${modelName} collection into ${zipFile} (${size} bytes)`);
   }
 
 }
