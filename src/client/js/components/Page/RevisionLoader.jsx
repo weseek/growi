@@ -57,6 +57,10 @@ class RevisionLoader extends React.Component {
       markdown: res.revision.body,
       error: null,
     });
+
+    if (this.props.onRevisionLoaded != null) {
+      this.props.onRevisionLoaded(res.revision);
+    }
   }
 
   onWaypointChange(event) {
@@ -117,6 +121,7 @@ RevisionLoader.propTypes = {
   pageId: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
+  onRevisionLoaded: PropTypes.func,
   highlightKeywords: PropTypes.string,
 };
 
