@@ -9,7 +9,7 @@ const router = express.Router();
 module.exports = (crowi) => {
   router.use('/healthcheck', require('./healthcheck')(crowi));
 
-  router.use('/pages', require('./page')(crowi));
+  router.use('/export', require('./export')(crowi));
 
   return router;
 };

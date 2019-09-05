@@ -1,6 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:export'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 
@@ -9,16 +9,17 @@ const router = express.Router();
 /**
  * @swagger
  *  tags:
- *    name: Page
+ *    name: Export
  */
 
 module.exports = (crowi) => {
   const { exportService } = crowi;
+  const { Page } = crowi.models;
 
   /**
    * @swagger
    *
-   *  /page/dump:
+   *  /export/pages:
    *    get:
    *      tags: [Page]
    *      description: generate a zipped json for page collection
@@ -30,13 +31,15 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    */
-  router.get('/dump', async(req, res) => {
+  router.get('/pages', async(req, res) => {
+    // TODO: rename path to "/:collection" and add express validator
     try {
-      await exportService.exportPageCollection();
+      await exportService.exportCollection(Page);
+      // TODO:use res.apiv3
       return res.status(200).send({ status: 'DONE' });
     }
     catch (err) {
-      // TODO:user ApiV3Error
+      // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ status: 'ERROR' });
     }

@@ -2,19 +2,26 @@ const logger = require('@alias/logger')('growi:services:ExportService'); // esli
 
 const fs = require('fs');
 const path = require('path');
-const mongoose = require('mongoose');
-
-const Page = mongoose.model('Page');
 
 class ExportService {
 
   constructor(crowi) {
-    this.baseDir = crowi.tmpDir;
+    this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.limit = 100;
 
-    this.files = {
-      pages: path.join(this.baseDir, 'pages.json'),
-    };
+    this.files = {};
+    // populate this.files
+    // this.files = {
+    //   configs: path.join(this.baseDir, 'configs.json'),
+    //   pages: path.join(this.baseDir, 'pages.json'),
+    //   pagetagrelations: path.join(this.baseDir, 'pagetagrelations.json'),
+    //   ...
+    // };
+    // TODO: handle 3 globalnotificationsettings collection properly
+    Object.values(crowi.models).forEach((m) => {
+      const name = m.collection.collectionName;
+      this.files[name] = path.join(this.baseDir, `${name}.json`);
+    });
   }
 
   /**
@@ -87,26 +94,27 @@ class ExportService {
   }
 
   /**
-   * dump page collection
+   * dump a mongodb collection into json
    *
    * @memberOf ExportService
+   * @param {object} Model instance of mongoose model
    */
-  async exportPageCollection() {
-    const file = this.files.pages;
+  async exportCollection(Model) {
+    const file = this.files[Model.collection.collectionName];
 
     const getTotalFn = () => {
-      return Page.countDocuments();
+      return Model.countDocuments();
     };
 
     const paginatedQueryFn = (limit, pageNum) => {
-      return Page
+      return Model
         .find()
         .skip(limit * pageNum)
         .limit(limit);
     };
 
     await this.export(file, getTotalFn, paginatedQueryFn);
-    logger.debug(`exported page collection into ${file}`);
+    logger.debug(`exported ${Model.collection.collectionName} collection into ${file}`);
   }
 
 }
