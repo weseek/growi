@@ -98,12 +98,16 @@ Crowi.prototype.init = async function() {
     this.setupMailer(),
     this.setupSlack(),
     this.setupCsrf(),
-    this.setUpGlobalNotification(),
     this.setUpFileUpload(),
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
     this.setupUserGroup(),
+  ]);
+
+  // globalNotification depends on slack and mailer
+  await Promise.all([
+    this.setUpGlobalNotification(),
   ]);
 };
 
@@ -127,12 +131,16 @@ Crowi.prototype.initForTest = async function() {
   //   this.setupMailer(),
   //   this.setupSlack(),
   //   this.setupCsrf(),
-  //   this.setUpGlobalNotification(),
   //   this.setUpFileUpload(),
     this.setUpAcl(),
   //   this.setUpCustomize(),
   //   this.setUpRestQiitaAPI(),
   ]);
+
+  // globalNotification depends on slack and mailer
+  // await Promise.all([
+  //   this.setUpGlobalNotification(),
+  // ]);
 };
 
 Crowi.prototype.isPageId = function(pageId) {
@@ -264,6 +272,10 @@ Crowi.prototype.getSearcher = function() {
 
 Crowi.prototype.getMailer = function() {
   return this.mailer;
+};
+
+Crowi.prototype.getSlack = function() {
+  return this.slack;
 };
 
 Crowi.prototype.getInterceptorManager = function() {

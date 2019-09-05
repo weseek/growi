@@ -3,6 +3,7 @@ module.exports = function(crowi, app) {
   const Comment = crowi.model('Comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { body } = require('express-validator/check');
@@ -107,10 +108,19 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo)
-      .catch((err) => {
-        return res.json(ApiResponse.error(err));
-      });
+    let createdComment;
+    try {
+      createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
+
+      await Comment.populate(createdComment, [
+        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
+      ]);
+
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err));
+    }
 
     // update page
     const page = await Page.findOneAndUpdate({ _id: pageId }, {
@@ -123,7 +133,9 @@ module.exports = function(crowi, app) {
     const path = page.path;
 
     // global notification
-    globalNotificationService.notifyComment(createdComment, path);
+    globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, path, req.user, {
+      comment: createdComment,
+    });
 
     // slack notification
     if (slackNotificationForm.isSlackEnabled) {
