@@ -19,6 +19,7 @@ import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
+import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -106,6 +107,7 @@ if (pageContainer.state.pageId != null) {
     'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
+    'page-timeline':  <PageTimeline />,
     'page-comment-write':  <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,

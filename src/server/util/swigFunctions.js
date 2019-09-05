@@ -174,6 +174,15 @@ module.exports = function(crowi, app, req, locals) {
     return `/user/${user.username}`;
   };
 
+  locals.pagesDataForTimeline = function(pages) {
+    return pages.map((page) => {
+      return {
+        id: page.id,
+        revision: page.revision,
+      };
+    });
+  };
+
   locals.css = {
     grant(pageData) {
       if (!pageData) {
