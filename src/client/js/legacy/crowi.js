@@ -1,14 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import { Provider } from 'unstated';
-
 import { pathUtils } from 'growi-commons';
-
-import GrowiRenderer from '../util/GrowiRenderer';
-import RevisionLoader from '../components/Page/RevisionLoader';
 
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -485,44 +477,6 @@ $(() => {
     const pattern = `${escapeStringRegexp(entities.encodeHTML(shortPath))}(/)?$`;
 
     $link.html(path.replace(new RegExp(pattern), `<strong>${shortPath}$1</strong>`));
-  });
-
-  // for list page
-  let growiRendererForTimeline = null;
-  $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', () => {
-    const isShown = $('#view-timeline').data('shown');
-
-    if (growiRendererForTimeline == null) {
-      growiRendererForTimeline = GrowiRenderer.generate('timeline');
-    }
-
-    if (isShown === 0) {
-      $('#view-timeline .timeline-body').each(function() {
-        const id = $(this).attr('id');
-        const revisionBody = `#${id} .revision-body`;
-        const revisionBodyElem = document.querySelector(revisionBody);
-        const revisionPath = `#${id} .revision-path`; // eslint-disable-line no-unused-vars
-        const timelineElm = document.getElementById(id);
-        const pageId = timelineElm.getAttribute('data-page-id');
-        const pagePath = timelineElm.getAttribute('data-page-path');
-        const revisionId = timelineElm.getAttribute('data-revision');
-
-        ReactDOM.render(
-          <Provider inject={[appContainer]}>
-            <RevisionLoader
-              lazy
-              growiRenderer={growiRendererForTimeline}
-              pageId={pageId}
-              pagePath={pagePath}
-              revisionId={revisionId}
-            />
-          </Provider>,
-          revisionBodyElem,
-        );
-      });
-
-      $('#view-timeline').data('shown', 1);
-    }
   });
 
   if (pageId) {
