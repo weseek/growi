@@ -95,7 +95,6 @@ class RevisionLoader extends React.Component {
     return (
       <RevisionRenderer
         growiRenderer={this.props.growiRenderer}
-        pagePath={this.props.pagePath}
         markdown={markdown}
         highlightKeywords={this.props.highlightKeywords}
       />
@@ -116,7 +115,6 @@ RevisionLoader.propTypes = {
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
-  pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
   highlightKeywords: PropTypes.string,
