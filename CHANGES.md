@@ -4,6 +4,12 @@
 
 * Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
     * Introduced by 3.5.8
+* Support: Upgrade libs
+    * env-cmd
+    * sass-loader
+    * webpack
+    * webpack-cli
+    * webpack-merge
 
 ## 3.5.10
 
