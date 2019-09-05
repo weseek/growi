@@ -1,5 +1,4 @@
 const logger = require('@alias/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
-
 const fs = require('fs');
 const path = require('path');
 
@@ -7,7 +6,8 @@ class ExportService {
 
   constructor(crowi) {
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
-    this.limit = 100;
+    this.extension = 'json';
+    this.per = 3;
 
     this.files = {};
     // populate this.files
@@ -18,29 +18,11 @@ class ExportService {
     //   ...
     // };
     // TODO: handle 3 globalnotificationsettings collection properly
+    // see Object.values(crowi.models).forEach((m) => { return console.log(m.collection.collectionName) });
     Object.values(crowi.models).forEach((m) => {
       const name = m.collection.collectionName;
-      this.files[name] = path.join(this.baseDir, `${name}.json`);
+      this.files[name] = path.join(this.baseDir, `${name}.${this.extension}`);
     });
-  }
-
-  /**
-   * conver an array into writable string
-   * e.g. [1, 2, 3,] => "1,2,3"
-   *
-   * @memberOf ExportService
-   * @param {array} array
-   */
-  stringify(array) {
-    // validate arguments
-    if (!Array.isArray(array)) {
-      throw new Error('Invalid input. Must be an array.');
-    }
-
-    const stringified = JSON.stringify(array);
-
-    // remove the leading "[" and trailing "]"
-    return stringified.substring(1, stringified.length - 1);
   }
 
   /**
@@ -48,18 +30,10 @@ class ExportService {
    *
    * @memberOf ExportService
    * @param {string} file path to json file to write
-   * @param {func} getTotalFn function to get the total count of documents in a collection
-   * @param {func} paginatedQueryFn function to query db with pagination
+   * @param {readStream} readStream  read stream
+   * @param {func} total number of target items (optional)
    */
-  async export(file, getTotalFn, paginatedQueryFn) {
-    // validate arguments
-    if (typeof getTotalFn !== 'function' || typeof paginatedQueryFn !== 'function') {
-      throw new Error('getTotalFn and paginatedQueryFn must be a function)');
-    }
-
-    // convert to Promise if not
-    const total = await Promise.resolve(getTotalFn());
-    let pageNum = 0;
+  async export(file, readStream, total) {
     let n = 0;
 
     const ws = fs.createWriteStream(file, { encoding: 'utf-8' });
@@ -67,30 +41,37 @@ class ExportService {
     // open an array
     ws.write('[');
 
-    while (n < total) {
-      // convert to Promise if not
-      // eslint-disable-next-line no-await-in-loop
-      const pages = await Promise.resolve(paginatedQueryFn(this.limit, pageNum));
+    await readStream
+      .on('data', (chunk) => {
+        if (n !== 0) {
+          ws.write(',');
+        }
 
-      // write comma for second chunk on
-      if (n !== 0) {
-        ws.write(',');
-      }
+        ws.write(JSON.stringify(chunk));
 
-      // wirte chunk to the file
-      ws.write(this.stringify(pages));
+        n++;
+        this.logProgress(n, total);
+      })
+      .on('end', () => {
+        // close the array
+        ws.write(']');
+        ws.close();
+      });
+  }
 
-      // increment number of items written and page number
-      n += pages.length;
-      pageNum++;
-
-      logger.debug(`page ${pageNum} ... ${n}/${total} written`);
+  logProgress(n, total) {
+    let output;
+    if (total) {
+      output = `${n}/${total} written`;
+    }
+    else {
+      output = `${n} items written`;
     }
 
-    // close the array
-    ws.write(']');
-
-    ws.close();
+    // output every this.per items and last item
+    if (n % this.per === 0 || n === total) {
+      logger.debug(output);
+    }
   }
 
   /**
@@ -101,19 +82,11 @@ class ExportService {
    */
   async exportCollection(Model) {
     const file = this.files[Model.collection.collectionName];
+    const total = await Model.countDocuments();
+    const readStream = Model.find().cursor();
 
-    const getTotalFn = () => {
-      return Model.countDocuments();
-    };
+    await this.export(file, readStream, total);
 
-    const paginatedQueryFn = (limit, pageNum) => {
-      return Model
-        .find()
-        .skip(limit * pageNum)
-        .limit(limit);
-    };
-
-    await this.export(file, getTotalFn, paginatedQueryFn);
     logger.debug(`exported ${Model.collection.collectionName} collection into ${file}`);
   }
 
