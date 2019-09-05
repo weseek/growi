@@ -74,7 +74,7 @@ class PageTimeline extends React.Component {
     const pageIdsElm = document.getElementById('page-timeline-data');
 
     if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-      return;
+      return null;
     }
 
     let pages = JSON.parse(pageIdsElm.text);
