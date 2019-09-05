@@ -1,7 +1,10 @@
 module.exports = function(crowi, app, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
+  const entities = require('entities');
+
   const { pathUtils } = require('growi-commons');
+
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const {
@@ -172,6 +175,16 @@ module.exports = function(crowi, app, req, locals) {
       return '';
     }
     return `/user/${user.username}`;
+  };
+
+  locals.pagesDataForTimeline = function(pages) {
+    return pages.map((page) => {
+      return {
+        id: page.id,
+        path: entities.encodeHTML(page.path),
+        revision: page.revision,
+      };
+    });
   };
 
   locals.css = {

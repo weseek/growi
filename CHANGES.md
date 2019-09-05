@@ -1,7 +1,22 @@
 # CHANGES
 
-## 3.5.10-RC
+## 3.5.11-RC
 
+* Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
+    * Introduced by 3.5.8
+* Fix: Timeline doesn't work
+    * Introduced by 3.5.1
+* Fix: Last Login field does not shown in /admin/user
+* Support: Upgrade libs
+    * env-cmd
+    * sass-loader
+    * webpack
+    * webpack-cli
+    * webpack-merge
+
+## 3.5.10
+
+* Feature: Send Global Notification with Slack
 * Improvement: Show loading spinner when fetching page history data
 * Improvement: Hierarchical page link when the page is in /Trash
 * Fix: Code Highlight Theme does not change
