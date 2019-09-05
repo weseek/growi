@@ -45,12 +45,8 @@ class ExportService {
     await streamToPromise(
       readStream
         .on('data', (chunk) => {
-          if (n !== 0) {
-            ws.write(',');
-          }
-
+          if (n !== 0) ws.write(',');
           ws.write(JSON.stringify(chunk));
-
           n++;
           this.logProgress(n, total);
         })
