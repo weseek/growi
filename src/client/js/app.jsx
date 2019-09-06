@@ -37,6 +37,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import ExportPage from './components/Admin/Export/ExportPage';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import AppContainer from './services/AppContainer';
@@ -182,6 +183,20 @@ if (adminGrantSelectorElem != null) {
       />
     </I18nextProvider>,
     adminGrantSelectorElem,
+  );
+}
+
+const adminExportPageElem = document.getElementById('admin-export-page');
+if (adminExportPageElem != null) {
+  ReactDOM.render(
+    <Provider inject={[]}>
+      <I18nextProvider i18n={i18n}>
+        <ExportPage
+          crowi={appContainer}
+        />
+      </I18nextProvider>
+    </Provider>,
+    adminExportPageElem,
   );
 }
 
