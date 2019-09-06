@@ -155,20 +155,16 @@ module.exports = function(crowi, app) {
    */
   api.update = async function(req, res) {
     const { commentForm } = req.body;
-    const { validationResult } = require('express-validator/check');
-
-    const errors = validationResult(req.body);
-    if (!errors.isEmpty()) {
-      // return res.json(ApiResponse.error('Invalid comment.'));
-      // return res.status(422).json({ errors: errors.array() });
-      return res.json(ApiResponse.error('コメントを入力してください。'));
-    }
 
     const pageId = commentForm.page_id;
     const revisionId = commentForm.revision_id;
     const comment = commentForm.comment;
     const isMarkdown = commentForm.is_markdown;
     const commentId = commentForm.comment_id;
+
+    if (comment === '') {
+      return res.json(ApiResponse.error('comment text is required'));
+    }
 
     if (commentId == null) {
       return res.json(ApiResponse.error('\'comment_id\' is undefined'));
