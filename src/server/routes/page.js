@@ -100,14 +100,25 @@ module.exports = function(crowi, app) {
 
   // user notification
   // TODO create '/service/user-notification' module
-  async function notifyToSlackByUser(page, user, slackChannels, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannels)
+  /**
+   *
+   * @param {Page} page
+   * @param {User} user
+   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
+   * @param {boolean} updateOrCreate
+   * @param {string} previousRevision
+   */
+  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
+    await page.updateSlackChannel(slackChannelsStr)
       .catch((err) => {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
+
     if (slackNotificationService.hasSlackConfig()) {
-      const promises = slackChannels.split(',').map((chan) => {
+      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
+
+      const promises = slackChannels.map((chan) => {
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
 
@@ -615,7 +626,7 @@ module.exports = function(crowi, app) {
     }
 
     // user notification
-    if (isSlackEnabled && slackChannels != null) {
+    if (isSlackEnabled) {
       await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
     }
   };
@@ -702,7 +713,7 @@ module.exports = function(crowi, app) {
     }
 
     // user notification
-    if (isSlackEnabled && slackChannels != null) {
+    if (isSlackEnabled) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
   };
