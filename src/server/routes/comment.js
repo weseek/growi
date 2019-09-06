@@ -163,7 +163,7 @@ module.exports = function(crowi, app) {
     const commentId = commentForm.comment_id;
 
     if (comment === '') {
-      return res.json(ApiResponse.error('comment text is required'));
+      return res.json(ApiResponse.error('Comment text is required'));
     }
 
     if (commentId == null) {
