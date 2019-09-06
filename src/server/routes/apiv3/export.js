@@ -33,17 +33,10 @@ module.exports = (crowi) => {
    *            application/json:
    */
   router.get('/', async(req, res) => {
-    try {
-      const files = exportService.getStatus();
+    const files = exportService.getStatus();
 
-      // TODO:use res.apiv3
-      return res.json({ ok: true, files });
-    }
-    catch (err) {
-      // TODO: use ApiV3Error
-      logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
-    }
+    // TODO: use res.apiv3
+    return res.json({ ok: true, files });
   });
 
   /**
@@ -98,7 +91,7 @@ module.exports = (crowi) => {
     // TODO: rename path to "/:collection" and add express validator
     try {
       const file = await exportService.exportCollection(Page);
-      // TODO:use res.apiv3
+      // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
         collection: [Page.collection.collectionName],
@@ -127,19 +120,19 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    */
-  router.delete('/pages', async(req, res) => {
-    // TODO: rename path to "/:collection" and add express validator
-    try {
-      // remove .json and .zip for collection
-      // TODO:use res.apiv3
-      return res.status(200).send({ status: 'DONE' });
-    }
-    catch (err) {
-      // TODO: use ApiV3Error
-      logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
-    }
-  });
+  // router.delete('/pages', async(req, res) => {
+  //   // TODO: rename path to "/:collection" and add express validator
+  //   try {
+  //     // remove .json and .zip for collection
+  //     // TODO: use res.apiv3
+  //     return res.status(200).send({ status: 'DONE' });
+  //   }
+  //   catch (err) {
+  //     // TODO: use ApiV3Error
+  //     logger.error(err);
+  //     return res.status(500).send({ status: 'ERROR' });
+  //   }
+  // });
 
   return router;
 };
