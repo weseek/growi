@@ -7,6 +7,7 @@ import AppContainer from '../../../services/AppContainer';
 import UserInviteModal from './UserInviteModal';
 
 class InviteUserControl extends React.Component {
+
   constructor(props) {
     super(props);
 
