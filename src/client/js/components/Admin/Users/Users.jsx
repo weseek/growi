@@ -53,6 +53,7 @@ class UserPage extends React.Component {
     this.setState({ isPasswordResetModalShown: false });
   }
 
+
   render() {
     const { t } = this.props;
 
