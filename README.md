@@ -258,7 +258,7 @@ License
 =======
 
 * The MIT License (MIT)
-* See LICENSE file.
+* See [LICENSE](https://github.com/weseek/growi/blob/master/LICENSE) and [THIRD-PARTY-NOTICES.md](https://github.com/weseek/growi/blob/master/THIRD-PARTY-NOTICES.md).
 
 
 [crowi]: https://github.com/crowi/crowi
