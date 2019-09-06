@@ -347,10 +347,7 @@ Crowi.prototype.setupSlack = async function() {
   const self = this;
 
   return new Promise(((resolve, reject) => {
-    if (this.slackNotificationService.hasSlackConfig()) {
-      self.slack = require('../util/slack')(self);
-    }
-
+    self.slack = require('../util/slack')(self);
     resolve();
   }));
 };
