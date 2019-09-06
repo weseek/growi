@@ -163,6 +163,9 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/qiita'        , loginRequired() , adminRequired , admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI' , loginRequired() , adminRequired , csrf , form.admin.importerQiita , admin.api.testQiitaAPI);
 
+  // export management for admin
+  app.get('/admin/export' , loginRequired() , adminRequired ,admin.export.index);
+
   app.get('/me'                       , loginRequired() , me.index);
   app.get('/me/password'              , loginRequired() , me.password);
   app.get('/me/apiToken'              , loginRequired() , me.apiToken);
