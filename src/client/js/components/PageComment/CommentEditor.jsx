@@ -109,22 +109,15 @@ class CommentEditor extends React.Component {
       event.preventDefault();
     }
 
-    if (this.props.currentCommentId != null) {
-      try {
+    try {
+      if (this.props.currentCommentId != null) {
         await this.props.commentContainer.putComment(
           this.state.comment,
           this.state.isMarkdown,
           this.props.currentCommentId,
         );
-        this.initializeEditor();
       }
-      catch (err) {
-        const errorMessage = err.message || 'An unknown error occured when puting comment';
-        this.setState({ errorMessage });
-      }
-    }
-    else {
-      try {
+      else {
         await this.props.commentContainer.postComment(
           this.state.comment,
           this.state.isMarkdown,
@@ -132,12 +125,12 @@ class CommentEditor extends React.Component {
           this.props.commentContainer.state.isSlackEnabled,
           this.props.commentContainer.state.slackChannels,
         );
-        this.initializeEditor();
       }
-      catch (err) {
-        const errorMessage = err.message || 'An unknown error occured when posting comment';
-        this.setState({ errorMessage });
-      }
+      this.initializeEditor();
+    }
+    catch (err) {
+      const errorMessage = err.message || 'An unknown error occured when posting comment';
+      this.setState({ errorMessage });
     }
   }
 
