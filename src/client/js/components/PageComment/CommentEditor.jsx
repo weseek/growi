@@ -88,36 +88,7 @@ class CommentEditor extends React.Component {
     this.props.commentButtonClickedHandler(targetId);
   }
 
-  /**
-   * Post comment with CommentContainer and update state
-   */
-  async postHandler(event) {
-    if (event != null) {
-      event.preventDefault();
-    }
-
-    if (this.props.currentCommentId != null) {
-      await this.props.commentContainer.putComment(
-        this.state.comment,
-        this.state.isMarkdown,
-        this.props.currentCommentId,
-      ).catch((err) => {
-        const errorMessage = err.message || 'An unknown error occured when puting comment';
-        this.setState({ errorMessage });
-      });
-    }
-    else {
-      await this.props.commentContainer.postComment(
-        this.state.comment,
-        this.state.isMarkdown,
-        this.props.replyTo,
-        this.props.commentContainer.state.isSlackEnabled,
-        this.props.commentContainer.state.slackChannels,
-      ).catch((err) => {
-        const errorMessage = err.message || 'An unknown error occured when posting comment';
-        this.setState({ errorMessage });
-      });
-    }
+  initializeEditor() {
     this.setState({
       comment: '',
       isMarkdown: true,
@@ -128,6 +99,46 @@ class CommentEditor extends React.Component {
     // reset value
     this.editor.setValue('');
     this.toggleEditor();
+  }
+
+  /**
+   * Post comment with CommentContainer and update state
+   */
+  async postHandler(event) {
+    if (event != null) {
+      event.preventDefault();
+    }
+
+    if (this.props.currentCommentId != null) {
+      try {
+        await this.props.commentContainer.putComment(
+          this.state.comment,
+          this.state.isMarkdown,
+          this.props.currentCommentId,
+        );
+        this.initializeEditor();
+      }
+      catch (err) {
+        const errorMessage = err.message || 'An unknown error occured when puting comment';
+        this.setState({ errorMessage });
+      }
+    }
+    else {
+      try {
+        await this.props.commentContainer.postComment(
+          this.state.comment,
+          this.state.isMarkdown,
+          this.props.replyTo,
+          this.props.commentContainer.state.isSlackEnabled,
+          this.props.commentContainer.state.slackChannels,
+        );
+        this.initializeEditor();
+      }
+      catch (err) {
+        const errorMessage = err.message || 'An unknown error occured when posting comment';
+        this.setState({ errorMessage });
+      }
+    }
   }
 
   uploadHandler(file) {
