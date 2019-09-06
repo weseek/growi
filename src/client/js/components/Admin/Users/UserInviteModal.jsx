@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
-import FormControl from 'react-bootstrap/es/FormControl';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -16,26 +15,25 @@ class UserInviteModal extends React.Component {
 
     this.state = {
       email: '',
+      sendEmail: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleInput = this.handleInput.bind(this);
+    this.handleCheckBox = this.handleCheckBox.bind(this);
   }
 
   handleSubmit() {
     console.log('push submit');
   }
 
-  handleChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
+  handleInput(event) {
+    this.setState({ email: event.target.value });
   }
 
+  handleCheckBox() {
+    this.setState({ sendEmail: !this.state.sendEmail });
+  }
 
   render() {
     const { t } = this.props;
@@ -50,24 +48,18 @@ class UserInviteModal extends React.Component {
         <Modal.Body>
           <label> { t('user_management.emails') }</label>
           <input
-            id="email"
-            name="email"
             className="form-control"
             placeholder="e.g. user@growi.org"
             value={this.state.email}
-            onChange={this.handleChange}
+            onChange={this.handleInput}
           />
         </Modal.Body>
         <Modal.Footer className="d-flex">
           <label className="mr-3 text-left" style={{ flex: 1 }}>
-            {/* TODO Check Boxの値を設定する */}
             <input
               type="checkbox"
-              id="comment-form-is-markdown"
-              name="isMarkdown"
-              checked={this.state.isMarkdown}
-              value="1"
-              onChange={this.updateStateCheckbox}
+              defaultChecked={this.state.sendEmail}
+              onChange={this.handleCheckBox}
             />
             <span className="ml-2">{ t('user_management.invite_thru_email') }</span>
           </label>
