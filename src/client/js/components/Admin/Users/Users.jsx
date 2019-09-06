@@ -21,12 +21,10 @@ class UserPage extends React.Component {
       activePage: 1,
       pagingLimit: Infinity,
       isPasswordResetModalShown: false,
-      isUserInviteModalShown: false,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
-    this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
   }
 
   // TODO unstatedContainerを作ってそこにリファクタすべき
@@ -54,14 +52,6 @@ class UserPage extends React.Component {
   hidePasswordResetModal() {
     this.setState({ isPasswordResetModalShown: false });
   }
-
-  /**
-   * user招待モーダルを開閉する
-   */
-  toggleUserInviteModal() {
-    this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
-  }
-
 
   render() {
     const { t } = this.props;
