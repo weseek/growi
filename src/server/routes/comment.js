@@ -171,7 +171,7 @@ module.exports = function(crowi, app) {
     const commentId = commentForm.comment_id;
 
     if (commentId == null) {
-      return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
+      return res.json(ApiResponse.error('\'comment_id\' is undefined'));
     }
 
     // check whether accessible
@@ -180,16 +180,17 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    const updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
-    // TODO GW-61 catch err
-    // .catch((err) => {
-    //   return res.json(ApiResponse.error(err));
-    // });
+    const updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId)
+      .catch((err) => {
+        return res.json(ApiResponse.error(err));
+      });
 
     // update page
     const page = await Page.findOneAndUpdate({ _id: pageId }, {
       lastUpdateUser: req.user,
       updatedAt: new Date(),
+    }).catch((err) => {
+      return res.json(ApiResponse.error(err));
     });
 
     res.json(ApiResponse.success({ comment: updatedComment }));
