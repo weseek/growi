@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.5.11-RC
+## 3.5.12-RC
+
+* 
+
+## 3.5.11
 
 * Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
     * Introduced by 3.5.8
