@@ -15,14 +15,27 @@ class UserInviteModal extends React.Component {
     super(props);
 
     this.state = {
+      email: '',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleSubmit() {
     console.log('push submit');
   }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
 
   render() {
     const { t } = this.props;
@@ -36,8 +49,13 @@ class UserInviteModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <label> { t('user_management.emails') }</label>
-          <FormControl
+          <input
+            id="email"
+            name="email"
+            className="form-control"
             placeholder="e.g. user@growi.org"
+            value={this.state.email}
+            onChange={this.handleChange}
           />
         </Modal.Body>
         <Modal.Footer className="d-flex">
