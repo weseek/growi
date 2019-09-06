@@ -9,7 +9,6 @@ import UserTable from './UserTable';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UserInviteModal from './UserInviteModal';
 
 class UserPage extends React.Component {
 
@@ -76,12 +75,8 @@ class UserPage extends React.Component {
             onHideModal={this.hidePasswordResetModal}
           />
         ) }
-        <UserInviteModal
-          show={this.state.isUserInviteModalShown}
-          onToggleModal={this.toggleUserInviteModal}
-        />
         <p>
-          <InviteUserControl toggleUserInviteModal={this.toggleUserInviteModal} />
+          <InviteUserControl />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
             <i className="icon-user-follow" aria-hidden="true"></i>
             { t('user_management.external_account') }
