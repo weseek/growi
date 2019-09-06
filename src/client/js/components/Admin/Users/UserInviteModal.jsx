@@ -24,6 +24,7 @@ class UserInviteModal extends React.Component {
   }
 
   handleSubmit() {
+    // TODO GW-165 新規ユーザーを招待するAPIを叩く
     console.log('push submit');
   }
 
