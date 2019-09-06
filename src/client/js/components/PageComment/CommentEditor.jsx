@@ -102,47 +102,32 @@ class CommentEditor extends React.Component {
         this.state.isMarkdown,
         this.props.currentCommentId,
       ).catch((err) => {
-        const errorMessage = err.message || 'An unknown error occured when posting comment';
+        const errorMessage = err.message || 'An unknown error occured when puting comment';
         this.setState({ errorMessage });
       });
-
-      this.setState({
-        comment: '',
-        isMarkdown: true,
-        html: '',
-        key: 1,
-        errorMessage: undefined,
-      });
-      // reset value
-      this.editor.setValue('');
-      this.toggleEditor();
-
     }
     else {
-      this.props.commentContainer.postComment(
+      await this.props.commentContainer.postComment(
         this.state.comment,
         this.state.isMarkdown,
         this.props.replyTo,
         this.props.commentContainer.state.isSlackEnabled,
         this.props.commentContainer.state.slackChannels,
-      )
-        .then((res) => {
-          this.setState({
-            comment: '',
-            isMarkdown: true,
-            html: '',
-            key: 1,
-            errorMessage: undefined,
-          });
-          // reset value
-          this.editor.setValue('');
-          this.toggleEditor();
-        })
-        .catch((err) => {
-          const errorMessage = err.message || 'An unknown error occured when posting comment';
-          this.setState({ errorMessage });
-        });
+      ).catch((err) => {
+        const errorMessage = err.message || 'An unknown error occured when posting comment';
+        this.setState({ errorMessage });
+      });
     }
+    this.setState({
+      comment: '',
+      isMarkdown: true,
+      html: '',
+      key: 1,
+      errorMessage: undefined,
+    });
+    // reset value
+    this.editor.setValue('');
+    this.toggleEditor();
   }
 
   uploadHandler(file) {
