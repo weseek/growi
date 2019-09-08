@@ -2,7 +2,9 @@
 
 ## 3.5.12-RC
 
-* 
+* Improvement: Use Elasticsearch Alias
+* Fix: Global Notification doesn't work after updating Webhook URL
+* Fix: User Trigger Notification is not be sent when channel is not specified
 
 ## 3.5.11
 
