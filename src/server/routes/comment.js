@@ -140,22 +140,22 @@ module.exports = function(crowi, app) {
     // slack notification
     if (slackNotificationForm.isSlackEnabled) {
       const user = await User.findUserByUsername(req.user.username);
-      const channels = slackNotificationForm.slackChannels;
+      const channelsStr = slackNotificationForm.slackChannels || null;
 
-      if (channels) {
-        page.updateSlackChannel(channels).catch((err) => {
-          logger.error('Error occured in updating slack channels: ', err);
+      page.updateSlackChannel(channelsStr).catch((err) => {
+        logger.error('Error occured in updating slack channels: ', err);
+      });
+
+      const channels = channelsStr != null ? channelsStr.split(',') : [null];
+
+      const promises = channels.map((chan) => {
+        return crowi.slack.postComment(createdComment, user, chan, path);
+      });
+
+      Promise.all(promises)
+        .catch((err) => {
+          logger.error('Error occured in sending slack notification: ', err);
         });
-
-        const promises = channels.split(',').map((chan) => {
-          return crowi.slack.postComment(createdComment, user, chan, path);
-        });
-
-        Promise.all(promises)
-          .catch((err) => {
-            logger.error('Error occured in sending slack notification: ', err);
-          });
-      }
     }
   };
 
