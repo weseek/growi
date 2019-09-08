@@ -321,18 +321,17 @@ Crowi.prototype.setupSearcher = async function() {
   const searcherUri = this.env.ELASTICSEARCH_URI
     || this.env.BONSAI_URL
     || null;
-  return new Promise(((resolve, reject) => {
-    if (searcherUri) {
-      try {
-        self.searcher = new (require(path.join(self.libDir, 'util', 'search')))(self, searcherUri);
-      }
-      catch (e) {
-        logger.error('Error on setup searcher', e);
-        self.searcher = null;
-      }
+
+  if (searcherUri) {
+    try {
+      self.searcher = new (require(path.join(self.libDir, 'util', 'search')))(self, searcherUri);
+      self.searcher.initIndices();
     }
-    resolve();
-  }));
+    catch (e) {
+      logger.error('Error on setup searcher', e);
+      self.searcher = null;
+    }
+  }
 };
 
 Crowi.prototype.setupMailer = async function() {
