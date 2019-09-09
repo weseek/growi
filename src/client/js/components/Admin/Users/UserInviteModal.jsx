@@ -7,7 +7,6 @@ import Modal from 'react-bootstrap/es/Modal';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
