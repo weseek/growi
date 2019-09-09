@@ -439,23 +439,18 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.invite = function(req, res) {
-    const form = req.form.inviteForm;
-    const toSendEmail = form.sendEmail || false;
-    if (req.form.isValid) {
-      User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, (err, userList) => {
-        if (err) {
-          req.flash('errorMessage', req.form.errors.join('\n'));
-        }
-        else {
-          req.flash('createdUser', userList);
-        }
-        return res.redirect('/admin/users');
-      });
+  actions.user.invite = async function(req, res) {
+    if (req.body.email === '') {
+      return res.json(ApiResponse.error('Email is required'));
     }
-    else {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return res.redirect('/admin/users');
+
+    try {
+      // TODO
+      // await User.createUsersByInvitation(req.body.email.split('\n'), req.body.sendEmail);
+      return res.json(ApiResponse.success());
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
     }
   };
 
