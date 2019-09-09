@@ -64,11 +64,14 @@ module.exports = function(crowi) {
     }));
   };
 
-  commentSchema.statics.updateCommentsByPageId = function(comment, isMarkdown, pageId) {
-    // TODO GW-61 update new comment add return comment data
-    console.log('ここはmodel');
+  commentSchema.statics.updateCommentsByPageId = function(comment, isMarkdown, commentId) {
+    const Comment = this;
 
-    return pageId;
+    return Comment.findOneAndUpdate(
+      { _id: commentId },
+      { $set: { comment, isMarkdown } },
+    );
+
   };
 
   commentSchema.statics.removeCommentsByPageId = function(pageId) {
