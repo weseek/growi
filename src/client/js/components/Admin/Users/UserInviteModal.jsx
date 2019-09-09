@@ -31,6 +31,7 @@ class UserInviteModal extends React.Component {
 
     try {
       await appContainer.apiPost('/admin/user/invite', { email: this.state.email, sendEmail: this.state.sendEmail });
+      this.props.onToggleModal();
       toastSuccess('Inviting user success');
     }
     catch (err) {
