@@ -445,7 +445,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      // TODO
+      // TODO after inputting multiple people
       // await User.createUsersByInvitation(req.body.email.split('\n'), req.body.sendEmail);
       return res.json(ApiResponse.success());
     }
