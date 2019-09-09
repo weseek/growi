@@ -5,6 +5,9 @@ import { withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
@@ -23,9 +26,16 @@ class UserInviteModal extends React.Component {
     this.handleCheckBox = this.handleCheckBox.bind(this);
   }
 
-  handleSubmit() {
-    // TODO GW-165 新規ユーザーを招待するAPIを叩く
-    console.log('push submit');
+  async handleSubmit() {
+    const { appContainer } = this.props;
+
+    try {
+      await appContainer.apiPost('/admin/user/invite', { email: this.state.email, sendEmail: this.state.sendEmail });
+      toastSuccess('Inviting user success');
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   handleInput(event) {
