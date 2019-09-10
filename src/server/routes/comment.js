@@ -161,6 +161,7 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const isMarkdown = commentForm.is_markdown;
     const commentId = commentForm.comment_id;
+    const author = commentForm.author;
 
     if (comment === '') {
       return res.json(ApiResponse.error('Comment text is required'));
@@ -168,6 +169,10 @@ module.exports = function(crowi, app) {
 
     if (commentId == null) {
       return res.json(ApiResponse.error('\'comment_id\' is undefined'));
+    }
+
+    if (author !== req.user.username) {
+      return res.json(ApiResponse.error('Only the author can edit'));
     }
 
     // check whether accessible

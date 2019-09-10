@@ -113,6 +113,7 @@ export default class CommentContainer extends Container {
         revision_id: revisionId,
         is_markdown: isMarkdown,
         comment_id: commentId,
+        author: this.appContainer.me,
       },
     })
       .then((res) => {

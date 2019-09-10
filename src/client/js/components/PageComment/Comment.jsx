@@ -62,6 +62,10 @@ class Comment extends React.Component {
     this.renderHtml(markdown);
   }
 
+  checkPermissionToControlComment() {
+    return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
+  }
+
   isCurrentUserEqualsToAuthor() {
     return this.props.comment.creator.username === this.props.appContainer.me;
   }
@@ -280,15 +284,17 @@ class Comment extends React.Component {
                 </OverlayTrigger>
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              <div className="page-comment-control">
-                {/* TODO GW-63 adjust layout */}
-                <button type="button" className="btn btn-link" onClick={() => { this.editBtnClickedHandler(commentId) }}>
-                  <i className="ti-pencil"></i>
-                </button>
-                <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-                  <i className="ti-close"></i>
-                </button>
-              </div>
+              { this.checkPermissionToControlComment() && (
+                <div className="page-comment-control">
+                  {/* TODO GW-63 adjust layout */}
+                  <button type="button" className="btn btn-link" onClick={() => { this.editBtnClickedHandler(commentId) }}>
+                    <i className="ti-pencil"></i>
+                  </button>
+                  <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+                    <i className="ti-close"></i>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )
