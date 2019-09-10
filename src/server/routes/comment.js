@@ -172,7 +172,7 @@ module.exports = function(crowi, app) {
     }
 
     if (creatorId !== req.user.id) {
-      return res.json(ApiResponse.error('Only the creator can edit'));
+      return res.json(ApiResponse.error('Only the author can edit'));
     }
 
     // check whether accessible
