@@ -1,6 +1,15 @@
 # CHANGES
 
-## 3.5.11-RC
+## 3.5.12-RC
+
+* Improvement: Use Elasticsearch Alias
+* Improvement: Connect to HTTPS PlantUML URL in default
+* Fix: Global Notification doesn't work after updating Webhook URL
+* Fix: User Trigger Notification is not be sent when channel is not specified
+* Support: Upgrade libs
+    * terser-webpack-plugin
+
+## 3.5.11
 
 * Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
     * Introduced by 3.5.8

@@ -7,7 +7,7 @@ export default class PlantUMLConfigurer {
     this.crowi = crowi;
     const config = crowi.getConfig();
 
-    this.serverUrl = config.env.PLANTUML_URI || 'http://plantuml.com/plantuml';
+    this.serverUrl = config.env.PLANTUML_URI || 'https://plantuml.com/plantuml';
 
     this.generateSource = this.generateSource.bind(this);
   }

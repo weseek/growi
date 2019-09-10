@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.5.11-RC",
+  "version": "3.5.12-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -66,6 +66,7 @@
       "mongoose: somehow GlobalNotificationSetting CRUD does not work with mongoose v5.6.0",
       "openid-client: Node.js 12 or higher is required for openid-client@3 and above."
     ],
+    "archiver": "^3.1.1",
     "async": "^3.0.1",
     "aws-sdk": "^2.88.0",
     "axios": "^0.19.0",
@@ -220,7 +221,7 @@
     "style-loader": "^1.0.0",
     "stylelint-config-recess-order": "^2.0.1",
     "swagger-jsdoc": "^3.2.9",
-    "terser-webpack-plugin": "^1.2.2",
+    "terser-webpack-plugin": "^2.0.1",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "unstated": "^2.1.1",
