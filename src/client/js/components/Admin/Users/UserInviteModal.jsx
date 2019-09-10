@@ -87,6 +87,7 @@ class UserInviteModal extends React.Component {
               bsStyle="primary"
               className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
               onClick={this.handleSubmit}
+              disabled={!this.validEmail()}
             >
               Done
             </Button>
