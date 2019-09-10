@@ -58,35 +58,33 @@ class UserGroupEditForm extends React.Component {
     const { t, userGroupDetailContainer } = this.props;
 
     return (
-      <div className="m-t-20 form-box">
-        <form className="form-horizontal" onSubmit={this.handleSubmit}>
-          <fieldset>
-            <legend>基本情報</legend>
-            <div className="form-group">
-              <label htmlFor="name" className="col-sm-2 control-label">{ t('Name') }</label>
-              <div className="col-sm-4">
-                <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.changeUserGroupName} />
-              </div>
+      <form className="form-horizontal" onSubmit={this.handleSubmit}>
+        <fieldset>
+          <legend>基本情報</legend>
+          <div className="form-group">
+            <label htmlFor="name" className="col-sm-2 control-label">{ t('Name') }</label>
+            <div className="col-sm-4">
+              <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.changeUserGroupName} />
             </div>
-            <div className="form-group">
-              <label className="col-sm-2 control-label">{ t('Created') }</label>
-              <div className="col-sm-4">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={dateFnsFormat(new Date(userGroupDetailContainer.state.userGroup.createdAt), 'YYYY-MM-DD')}
-                  disabled
-                />
-              </div>
+          </div>
+          <div className="form-group">
+            <label className="col-sm-2 control-label">{ t('Created') }</label>
+            <div className="col-sm-4">
+              <input
+                type="text"
+                className="form-control"
+                value={dateFnsFormat(new Date(userGroupDetailContainer.state.userGroup.createdAt), 'YYYY-MM-DD')}
+                disabled
+              />
             </div>
-            <div className="form-group">
-              <div className="col-sm-offset-2 col-sm-10">
-                <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{ t('Update') }</button>
-              </div>
+          </div>
+          <div className="form-group">
+            <div className="col-sm-offset-2 col-sm-10">
+              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{ t('Update') }</button>
             </div>
-          </fieldset>
-        </form>
-      </div>
+          </div>
+        </fieldset>
+      </form>
     );
   }
 

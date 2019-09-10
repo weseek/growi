@@ -20,12 +20,16 @@ class UserGroupDetailPage extends React.Component {
           <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
         グループ一覧に戻る
         </a>
-        <UserGroupEditForm />
+        <div className="m-t-20 form-box">
+          <UserGroupEditForm />
+        </div>
         <legend className="m-t-20">{ t('User List') }</legend>
         <UserGroupUserTable />
         <UserGroupUserModal />
         <legend className="m-t-20">{ t('Page') }</legend>
-        <UserGroupPageList />
+        <div className="page-list">
+          <UserGroupPageList />
+        </div>
       </div>
     );
   }

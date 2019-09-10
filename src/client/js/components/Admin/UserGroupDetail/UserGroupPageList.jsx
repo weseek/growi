@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -13,12 +13,12 @@ class UserGroupPageList extends React.Component {
     const { t, userGroupDetailContainer } = this.props;
 
     return (
-      <div className="page-list">
+      <Fragment>
         <ul className="page-list-ul page-list-ul-flat">
           {userGroupDetailContainer.state.relatedPages.map((page) => { return <Page key={page._id} page={page} /> })}
         </ul>
         {userGroupDetailContainer.state.relatedPages.length === 0 ? <p>{ t('user_group_management.no_pages') }</p> : null}
-      </div>
+      </Fragment>
     );
   }
 

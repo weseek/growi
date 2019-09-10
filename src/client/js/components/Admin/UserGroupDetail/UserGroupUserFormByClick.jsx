@@ -44,11 +44,7 @@ class UserGroupUserFormByClick extends React.Component {
             })}
         </ul>
 
-        {userGroupDetailContainer.state.unrelatedUsers.length === 0 ? (
-          <Fragment>
-              No users available.
-          </Fragment>
-          ) : null}
+        {userGroupDetailContainer.state.unrelatedUsers.length === 0 ? 'No users available.' : null}
       </Fragment>
     );
   }
