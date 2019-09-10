@@ -35,7 +35,6 @@ class Comment extends React.Component {
       html: '',
       isOlderRepliesShown: false,
       showReEditorIds: new Set(),
-      permissionToControlComment: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
@@ -60,15 +59,7 @@ class Comment extends React.Component {
   }
 
   checkPermissionToControlComment() {
-    const { appContainer } = this.props;
-
-    if (appContainer.isAdmin) {
-      this.setState({ permissionToControlComment: true });
-    }
-
-    if (this.isCurrentUserEqualsToAuthor()) {
-      this.setState({ permissionToControlComment: true });
-    }
+    return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
   }
 
   // not used
@@ -295,7 +286,7 @@ class Comment extends React.Component {
                 </OverlayTrigger>
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              { this.state.permissionToControlComment && (
+              { this.checkPermissionToControlComment() && (
                 <div className="page-comment-control">
                   {/* TODO GW-63 adjust layout */}
                   <button type="button" className="btn btn-link" onClick={() => { this.editBtnClickedHandler(commentId) }}>
