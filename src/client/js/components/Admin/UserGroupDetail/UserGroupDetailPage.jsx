@@ -1,24 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import UserGroupEditForm from './UserGroupEditForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 
 class UserGroupDetailPage extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    const elem = document.getElementById('admin-user-group-detail');
-    const userGroup = JSON.parse(elem.getAttribute('data-user-group'));
-
-    this.state = {
-      userGroup,
-    };
-  }
-
   render() {
+    const { t } = this.props;
 
     return (
       <div>
@@ -26,16 +20,32 @@ class UserGroupDetailPage extends React.Component {
           <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
         グループ一覧に戻る
         </a>
-        <UserGroupEditForm
-          userGroup={this.state.userGroup}
-        />
+        <div className="m-t-20 form-box">
+          <UserGroupEditForm />
+        </div>
+        <legend className="m-t-20">{ t('User List') }</legend>
         <UserGroupUserTable />
         <UserGroupUserModal />
-        <UserGroupPageList />
+        <legend className="m-t-20">{ t('Page') }</legend>
+        <div className="page-list">
+          <UserGroupPageList />
+        </div>
       </div>
     );
   }
 
 }
 
-export default UserGroupDetailPage;
+UserGroupDetailPage.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const UserGroupDetailPageWrapper = (props) => {
+  return createSubscribedElement(UserGroupDetailPage, props, [AppContainer]);
+};
+
+export default withTranslation()(UserGroupDetailPageWrapper);
