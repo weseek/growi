@@ -20,6 +20,7 @@
   "New": "New",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
+  "add": "Add",
   "Undo": "Undo",
   "Article": "Article",
   "Page": "Page",
@@ -28,7 +29,6 @@
   "User": "User",
   "status":"Status",
   "account_id": "Account Id",
-
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -49,6 +49,7 @@
   "History": "History",
   "Presentation Mode": "Presentation",
 
+  "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
   "Last_Login": "Last Login",
@@ -704,6 +705,8 @@
   "user_group_management": {
     "group_list": "Group List",
     "back_to_list": "Go Back to Group List",
+    "basic_info": "Basic Info",
+    "user_list": "User List",
     "create_group": "Create New Group",
     "group_example": "e.g. : Group1",
     "created_group": "Group was created",

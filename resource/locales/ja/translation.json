@@ -20,6 +20,7 @@
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
+  "add": "追加",
   "Undo": "元に戻す",
   "Article": "記事",
   "Page": "ページ",
@@ -48,6 +49,7 @@
   "History": "更新履歴",
   "Presentation Mode": "プレゼンテーション",
 
+  "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
   "Last_Login": "最終ログイン",
@@ -687,6 +689,8 @@
   "user_group_management": {
     "group_list": "グループ一覧",
     "back_to_list": "グループ一覧に戻る",
+    "basic_info": "基本情報",
+    "user_list": "ユーザー一覧",
     "create_group": "新規グループの作成",
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
