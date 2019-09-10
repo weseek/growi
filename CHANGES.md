@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.5.12-RC
+## 3.5.13-RC
+
+* 
+
+## 3.5.12
 
 * Improvement: Use Elasticsearch Alias
 * Improvement: Connect to HTTPS PlantUML URL in default
