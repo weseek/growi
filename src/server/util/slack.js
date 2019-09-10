@@ -132,7 +132,7 @@ module.exports = function(crowi) {
     }
 
     const message = {
-      channel: `#${channel}`,
+      channel: (channel != null) ? `#${channel}` : undefined,
       username: appTitle,
       text: getSlackMessageTextForPage(page.path, page.id, user, updateType),
       attachments: [attachment],
@@ -159,7 +159,7 @@ module.exports = function(crowi) {
     }
 
     const message = {
-      channel: `#${channel}`,
+      channel: (channel != null) ? `#${channel}` : undefined,
       username: appTitle,
       text: getSlackMessageTextForComment(path, String(comment.page), user),
       attachments: [attachment],
@@ -185,7 +185,7 @@ module.exports = function(crowi) {
     };
 
     const message = {
-      channel: `#${slackChannel}`,
+      channel: (slackChannel != null) ? `#${slackChannel}` : undefined,
       username: appTitle,
       text: messageBody,
       attachments: [attachment],

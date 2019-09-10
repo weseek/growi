@@ -16,6 +16,7 @@ https://github.com/weseek/growi.
 2. crowi/crowi (https://github.com/crowi/crowi)
 3. Microsoft/vscode (https://github.com/Microsoft/vscode)
 4. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
+5. EmojiOne Version 3 (https://github.com/joypixels/emojione/tree/v3.1.1)
 
 
 License Notice for Apache License, Version 2.0 Derivative Works
@@ -96,4 +97,14 @@ https://creativecommons.org/licenses/by-sa/3.0/
 
 ```
 Copyright (c) 2018 Stephen Hutchings
+```
+
+
+License Notice for EmojiOne
+------------------------
+
+https://creativecommons.org/licenses/by/4.0/
+
+```
+author: "EmojiOne <ryan@emojione.com> (http://emojione.com)"
 ```

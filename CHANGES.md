@@ -1,6 +1,26 @@
 # CHANGES
 
-## 3.5.10-RC
+## 3.5.12-RC
+
+* Improvement: Use Elasticsearch Alias
+* Fix: Global Notification doesn't work after updating Webhook URL
+* Fix: User Trigger Notification is not be sent when channel is not specified
+
+## 3.5.11
+
+* Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
+    * Introduced by 3.5.8
+* Fix: Timeline doesn't work
+    * Introduced by 3.5.1
+* Fix: Last Login field does not shown in /admin/user
+* Support: Upgrade libs
+    * env-cmd
+    * sass-loader
+    * webpack
+    * webpack-cli
+    * webpack-merge
+
+## 3.5.10
 
 * Feature: Send Global Notification with Slack
 * Improvement: Show loading spinner when fetching page history data

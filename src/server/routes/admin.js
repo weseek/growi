@@ -440,7 +440,7 @@ module.exports = function(crowi, app) {
 
     const result = await User.findUsersWithPagination({
       page,
-      select: User.USER_PUBLIC_FIELDS,
+      select: `${User.USER_PUBLIC_FIELDS} lastLoginAt`,
       populate: User.IMAGE_POPULATION,
     });
 
@@ -1372,38 +1372,14 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
     }
 
-    // first, delete index
-    try {
-      await search.deleteIndex();
-    }
-    catch (err) {
-      logger.warn('Delete index Error, but if it is initialize, its ok.', err);
-    }
-
-    // second, create index
-    try {
-      await search.buildIndex();
-    }
-    catch (err) {
-      logger.error('Error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
     searchEvent.on('addPageProgress', (total, current, skip) => {
       crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
     });
     searchEvent.on('finishAddPage', (total, current, skip) => {
       crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
     });
-    // add all page
-    search
-      .addAllPages()
-      .then(() => {
-        debug('Data is successfully indexed. ------------------ ✧✧');
-      })
-      .catch((err) => {
-        logger.error('Error', err);
-      });
+
+    await search.buildIndex();
 
     return res.json(ApiResponse.success());
   };
