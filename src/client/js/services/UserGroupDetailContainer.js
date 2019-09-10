@@ -65,6 +65,13 @@ export default class UserGroupDetailContainer extends Container {
     }
   }
 
+  /**
+   * update user group
+   *
+   * @memberOf UserGroupDetailContainer
+   * @param {object} param update param for user group
+   * @return {object} response object
+   */
   async updateUserGroup(param) {
     const res = await this.appContainer.apiv3.put(`/user-groups/${this.state.userGroup._id}`, param);
     const { userGroup } = res.data;
@@ -74,14 +81,30 @@ export default class UserGroupDetailContainer extends Container {
     return res;
   }
 
+  /**
+   * open a modal
+   *
+   * @memberOf UserGroupDetailContainer
+   */
   async openUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: true });
   }
 
+  /**
+   * close a modal
+   *
+   * @memberOf UserGroupDetailContainer
+   */
   async closeUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: false });
   }
 
+  /**
+   * update user group
+   *
+   * @memberOf UserGroupDetailContainer
+   * @param {string} username username of the user to be added to the group
+   */
   async addUserByUsername(username) {
     const res = await this.appContainer.apiv3.post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
     const { userGroupRelation } = res.data;
@@ -93,6 +116,12 @@ export default class UserGroupDetailContainer extends Container {
     });
   }
 
+  /**
+   * update user group
+   *
+   * @memberOf UserGroupDetailContainer
+   * @param {string} username username of the user to be removed from the group
+   */
   async removeUserByUsername(username) {
     const res = await this.appContainer.apiv3.delete(`/user-groups/${this.state.userGroup._id}/users/${username}`);
 
