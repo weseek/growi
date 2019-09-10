@@ -1,5 +1,9 @@
 const loggerFactory = require('@alias/logger');
 
+const { customTagUtils } = require('growi-commons');
+
+const { OptionParser } = customTagUtils;
+
 const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
 module.exports = (crowi) => {
@@ -24,6 +28,38 @@ module.exports = (crowi) => {
     return (matches != null)
       ? new RegExp(matches[1], matches[2])
       : new RegExp(expression);
+  }
+
+  /**
+   * add depth condition that limit fetched pages
+   *
+   * @param {any} query
+   * @param {any} pagePath
+   * @param {any} optionsDepth
+   * @returns query
+   */
+  function addDepthCondition(query, pagePath, optionsDepth) {
+    // when option strings is 'depth=', the option value is true
+    if (optionsDepth == null || optionsDepth === true) {
+      throw new Error('The value of depth option is invalid.');
+    }
+
+    const range = OptionParser.parseRange(optionsDepth);
+    const start = range.start;
+    const end = range.end;
+
+    if (start < 1 || end < 1) {
+      throw new Error(`specified depth is [${start}:${end}] : start and end are must be larger than 1`);
+    }
+
+    // count slash
+    const slashNum = pagePath.split('/').length - 1;
+    const depthStart = slashNum; // start is not affect to fetch page
+    const depthEnd = slashNum + end - 1;
+
+    return query.and({
+      path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`),
+    });
   }
 
   /**
@@ -117,7 +153,19 @@ module.exports = (crowi) => {
 
     Page.addConditionToFilteringByViewerForList(builder, user, false);
 
-    const results = await builder.query.select('id').exec();
+    let pageQuery = builder.query;
+
+    // depth
+    try {
+      if (prefix != null && options.depth != null) {
+        pageQuery = addDepthCondition(pageQuery, prefix, options.depth);
+      }
+    }
+    catch (err) {
+      return res.status(400).send(err);
+    }
+
+    const results = await pageQuery.select('id').exec();
     const pageIds = results.map(result => result.id);
 
     logger.debug('retrieve attachments for pages:', pageIds);
