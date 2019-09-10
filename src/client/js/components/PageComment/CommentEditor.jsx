@@ -336,6 +336,7 @@ CommentEditor.propTypes = {
   replyTo: PropTypes.string,
   currentCommentId: PropTypes.string,
   commentBody: PropTypes.string,
+  creatorId: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 
