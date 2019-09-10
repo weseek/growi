@@ -439,6 +439,7 @@ module.exports = function(crowi, app) {
     });
   };
   api.validators = {};
+  actions.user.api = api;
 
   api.validators.inviteEmail = [
     check('email').isEmail().withMessage('Error. Valid email address is required'),

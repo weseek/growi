@@ -118,7 +118,7 @@ module.exports = function(crowi, app) {
   app.post('/admin/global-notification/:id/remove', loginRequired() , adminRequired , admin.globalNotification.remove);
 
   app.get('/admin/users'                , loginRequired() , adminRequired , admin.user.index);
-  app.post('/_api/admin/user/invite'         , form.admin.userInvite ,  loginRequired() , adminRequired , csrf, admin.importer.api.validators.inviteEmail, admin.user.invite);
+  app.post('/_api/admin/user/invite'         , form.admin.userInvite ,  loginRequired() , adminRequired , csrf, admin.user.api.validators.inviteEmail, admin.user.invite);
   app.post('/admin/user/:id/makeAdmin'  , loginRequired() , adminRequired , csrf, admin.user.makeAdmin);
   app.post('/admin/user/:id/removeFromAdmin', loginRequired() , adminRequired , admin.user.removeFromAdmin);
   app.post('/admin/user/:id/activate'   , loginRequired() , adminRequired , csrf, admin.user.activate);
