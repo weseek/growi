@@ -221,7 +221,7 @@
     "style-loader": "^1.0.0",
     "stylelint-config-recess-order": "^2.0.1",
     "swagger-jsdoc": "^3.2.9",
-    "terser-webpack-plugin": "^1.2.2",
+    "terser-webpack-plugin": "^2.0.1",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "unstated": "^2.1.1",

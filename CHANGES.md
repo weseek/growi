@@ -6,6 +6,8 @@
 * Improvement: Connect to HTTPS PlantUML URL in default
 * Fix: Global Notification doesn't work after updating Webhook URL
 * Fix: User Trigger Notification is not be sent when channel is not specified
+* Support: Upgrade libs
+    * terser-webpack-plugin
 
 ## 3.5.11
 
