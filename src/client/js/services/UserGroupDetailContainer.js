@@ -19,6 +19,7 @@ export default class UserGroupDetailContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      // TODO: [SPA] get userGroup from props
       userGroup: JSON.parse(document.getElementById('admin-user-group-detail').getAttribute('data-user-group')),
       userGroupRelations: [],
       unrelatedUsers: [],
