@@ -57,13 +57,13 @@ class Comment extends React.Component {
     this.renderHtml(nextProps.comment.comment);
   }
 
-  checkPermissionToControlComment() {
-    return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
-  }
-
   // not used
   setMarkdown(markdown) {
     this.renderHtml(markdown);
+  }
+
+  checkPermissionToControlComment() {
+    return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
   }
 
   isCurrentUserEqualsToAuthor() {
