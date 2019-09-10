@@ -171,6 +171,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('\'comment_id\' is undefined'));
     }
 
+    if (creatorId !== req.user.id) {
+      return res.json(ApiResponse.error('Only the creator can edit'));
+    }
+
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user._id, revisionId, comment, isMarkdown, req.user);
     if (!isAccessible) {
