@@ -51,7 +51,6 @@ class Comment extends React.Component {
 
   componentWillMount() {
     this.renderHtml(this.props.comment.comment);
-    this.checkPermissionToControlComment();
   }
 
   componentWillReceiveProps(nextProps) {
