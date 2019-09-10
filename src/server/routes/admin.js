@@ -438,6 +438,15 @@ module.exports = function(crowi, app) {
       isUserCountExceedsUpperLimit,
     });
   };
+  api.validators = {};
+  api.validators.inviteEmail = {};
+
+  api.validators.inviteEmail = function() {
+    const validator = [
+      check('email').notEmpty().isEmail().withMessage('Error. Valid email address is required'),
+    ];
+    return validator;
+  };
 
   actions.user.invite = async function(req, res) {
     if (req.body.email === '') {
@@ -807,7 +816,6 @@ module.exports = function(crowi, app) {
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
-  api.validators = {};
   api.validators.importer = {};
 
   actions.importer.index = function(req, res) {
