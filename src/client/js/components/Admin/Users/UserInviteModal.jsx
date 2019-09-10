@@ -26,7 +26,7 @@ class UserInviteModal extends React.Component {
   }
 
   validEmail() {
-    return this.state.email.match(/.+@.+\..+/) == null;
+    return this.state.email.match(/.+@.+\..+/) != null;
   }
 
   async handleSubmit() {
@@ -68,7 +68,7 @@ class UserInviteModal extends React.Component {
             value={this.state.email}
             onChange={this.handleInput}
           />
-          {this.validEmail() && <p className="m-2 text-danger">Valid email address is required</p>}
+          {!this.validEmail() && <p className="m-2 text-danger">Valid email address is required</p>}
         </Modal.Body>
         <Modal.Footer className="d-flex">
           <label className="mr-3 text-left" style={{ flex: 1 }}>
