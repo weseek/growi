@@ -20,7 +20,6 @@ export default class UserGroupDetailContainer extends Container {
 
     this.state = {
       userGroup: JSON.parse(document.getElementById('admin-user-group-detail').getAttribute('data-user-group')),
-      relatedUsers: [],
       userGroupRelations: [],
       unrelatedUsers: [],
       relatedPages: [],
@@ -48,19 +47,16 @@ export default class UserGroupDetailContainer extends Container {
   async init() {
     try {
       const [
-        relatedUsers,
         unrelatedUsers,
         userGroupRelations,
         relatedPages,
       ] = await Promise.all([
-        this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/users`).then((res) => { return res.data.users }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`).then((res) => { return res.data.users }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
       ]);
 
       await this.setState({
-        relatedUsers,
         unrelatedUsers,
         userGroupRelations,
         relatedPages,
@@ -96,7 +92,6 @@ export default class UserGroupDetailContainer extends Container {
     this.setState((prevState) => {
       return {
         userGroupRelations: [...prevState.userGroupRelations, userGroupRelation],
-        relatedUsers: [...prevState.relatedUsers, user],
         unrelatedUsers: prevState.unrelatedUsers.filter((u) => { return u._id !== user._id }),
       };
     });
