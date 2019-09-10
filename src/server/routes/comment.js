@@ -161,6 +161,7 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const isMarkdown = commentForm.is_markdown;
     const commentId = commentForm.comment_id;
+    const creatorId = commentForm.creator_id;
 
     if (comment === '') {
       return res.json(ApiResponse.error('Comment text is required'));

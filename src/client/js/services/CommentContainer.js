@@ -103,7 +103,7 @@ export default class CommentContainer extends Container {
   /**
    * Load data of comments and rerender <PageComments />
    */
-  putComment(comment, isMarkdown, commentId) {
+  putComment(comment, isMarkdown, commentId, creatorId) {
     const { pageId, revisionId } = this.getPageContainer().state;
 
     return this.appContainer.apiPost('/comments.update', {
@@ -113,6 +113,7 @@ export default class CommentContainer extends Container {
         revision_id: revisionId,
         is_markdown: isMarkdown,
         comment_id: commentId,
+        creator_id: creatorId,
       },
     })
       .then((res) => {
