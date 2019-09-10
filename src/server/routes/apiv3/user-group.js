@@ -24,6 +24,7 @@ module.exports = (crowi) => {
     UserGroup,
     UserGroupRelation,
     User,
+    Page,
   } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
 
@@ -40,7 +41,7 @@ module.exports = (crowi) => {
    *    /_api/v3/user-groups:
    *      get:
    *        tags: [UserGroup]
-   *        description: Gets usergroups
+   *        description: Get usergroups
    *        produces:
    *          - application/json
    *        responses:
@@ -70,7 +71,7 @@ module.exports = (crowi) => {
   });
 
   validator.create = [
-    body('name', 'Group name is required').trim().exists(),
+    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
   ];
 
   /**
@@ -120,8 +121,8 @@ module.exports = (crowi) => {
   });
 
   validator.delete = [
-    param('id').trim().exists(),
-    query('actionName').trim().exists(),
+    param('id').trim().exists({ checkFalsy: true }),
+    query('actionName').trim().exists({ checkFalsy: true }),
     query('transferToUserGroupId').trim(),
   ];
 
@@ -183,10 +184,8 @@ module.exports = (crowi) => {
   // });
 
   validator.update = [
-    body('name', 'Group name is required').trim().exists(),
+    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
   ];
-
-  validator.users = {};
 
   /**
    * @swagger
@@ -195,7 +194,7 @@ module.exports = (crowi) => {
    *    /_api/v3/user-groups/{:id}:
    *      put:
    *        tags: [UserGroup]
-   *        description: Updates userGroup
+   *        description: Update userGroup
    *        produces:
    *          - application/json
    *        parameters:
@@ -243,14 +242,16 @@ module.exports = (crowi) => {
     }
   });
 
+  validator.users = {};
+
   /**
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id/users}:
+   *    /_api/v3/user-groups/{:id}/users:
    *      get:
    *        tags: [UserGroup]
-   *        description: Gets the users related to the userGroup
+   *        description: Get users related to the userGroup
    *        produces:
    *          - application/json
    *        parameters:
@@ -288,7 +289,52 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-fetch-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-user-list-fetch-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/unrelated-users:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Get users unrelated to the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    users:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: user objects
+   */
+  router.get('/:id/unrelated-users', loginRequired(), adminRequired, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup);
+
+      return res.apiv3({ users });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching unrelated users for group: ${id}`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-unrelated-user-list-fetch-failed'));
     }
   });
 
@@ -301,7 +347,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id/users}:
+   *    /_api/v3/user-groups/{:id}/users:
    *      post:
    *        tags: [UserGroup]
    *        description: Add a user to the userGroup
@@ -366,7 +412,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id/users}:
+   *    /_api/v3/user-groups/{:id}/users:
    *      delete:
    *        tags: [UserGroup]
    *        description: remove a user from the userGroup
@@ -423,6 +469,103 @@ module.exports = (crowi) => {
       const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
+    }
+  });
+
+  validator.userGroupRelations = {};
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/user-group-relations:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Get the user group relations for the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: user group relations are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroupRelations:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroupRelation objects
+   */
+  router.get('/:id/user-group-relations', loginRequired(), adminRequired, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
+
+      return res.apiv3({ userGroupRelations });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching user group relations for group: ${id}`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-user-group-relation-list-fetch-failed'));
+    }
+  });
+
+  validator.userGroupRelations = {};
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/pages:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Get closed pages for the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: pages are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    pages:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: page objects
+   */
+  router.get('/:id/pages', loginRequired(), adminRequired, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      const pages = await Page
+        .find({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [userGroup] } })
+        .populate('lastUpdateUser', User.USER_PUBLIC_FIELDS)
+        .exec();
+
+      return res.apiv3({ pages });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching pages for group: ${id}`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-page-list-fetch-failed'));
     }
   });
 

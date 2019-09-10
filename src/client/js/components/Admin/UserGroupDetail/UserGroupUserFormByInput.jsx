@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
+import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserGroupUserFormByInput extends React.Component {
@@ -17,6 +20,7 @@ class UserGroupUserFormByInput extends React.Component {
 
     this.changeUsername = this.changeUsername.bind(this);
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   changeUsername(e) {
@@ -28,16 +32,17 @@ class UserGroupUserFormByInput extends React.Component {
     const { username } = this.state;
 
     try {
-      const res = await this.props.addUserByUsername(username);
-      const { user, userGroup, userGroupRelation } = res.data;
-      this.props.onAdd(user, userGroup, userGroupRelation);
-      toastSuccess(`Added "${this.xss.process(username)}"`);
+      await this.props.userGroupDetailContainer.addUserByUsername(username);
+      toastSuccess(`Added "${this.xss.process(username)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
       this.setState({ username: '' });
-      this.props.onClose();
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${this.xss.process(username)}"`));
+      toastError(new Error(`Unable to add "${this.xss.process(username)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
     }
+  }
+
+  validateForm() {
+    return this.state.username !== '';
   }
 
   render() {
@@ -55,7 +60,7 @@ class UserGroupUserFormByInput extends React.Component {
             onChange={this.changeUsername}
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success">{ t('Add') }</button>
+        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('Add') }</button>
       </form>
     );
   }
@@ -64,9 +69,15 @@ class UserGroupUserFormByInput extends React.Component {
 
 UserGroupUserFormByInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  onClose: PropTypes.func.isRequired,
-  addUserByUsername: PropTypes.func.isRequired,
-  onAdd: PropTypes.func.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  userGroupDetailContainer: PropTypes.instanceOf(UserGroupDetailContainer).isRequired,
 };
 
-export default withTranslation()(UserGroupUserFormByInput);
+/**
+ * Wrapper component for using unstated
+ */
+const UserGroupUserFormByInputWrapper = (props) => {
+  return createSubscribedElement(UserGroupUserFormByInput, props, [AppContainer, UserGroupDetailContainer]);
+};
+
+export default withTranslation()(UserGroupUserFormByInputWrapper);
