@@ -22,7 +22,6 @@ export default class UserGroupDetailContainer extends Container {
       // TODO: [SPA] get userGroup from props
       userGroup: JSON.parse(document.getElementById('admin-user-group-detail').getAttribute('data-user-group')),
       userGroupRelations: [],
-      unrelatedUsers: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
     };
@@ -48,17 +47,14 @@ export default class UserGroupDetailContainer extends Container {
   async init() {
     try {
       const [
-        unrelatedUsers,
         userGroupRelations,
         relatedPages,
       ] = await Promise.all([
-        this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`).then((res) => { return res.data.users }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
       ]);
 
       await this.setState({
-        unrelatedUsers,
         userGroupRelations,
         relatedPages,
       });
@@ -69,6 +65,13 @@ export default class UserGroupDetailContainer extends Container {
     }
   }
 
+  /**
+   * update user group
+   *
+   * @memberOf UserGroupDetailContainer
+   * @param {object} param update param for user group
+   * @return {object} response object
+   */
   async updateUserGroup(param) {
     const res = await this.appContainer.apiv3.put(`/user-groups/${this.state.userGroup._id}`, param);
     const { userGroup } = res.data;
@@ -78,33 +81,53 @@ export default class UserGroupDetailContainer extends Container {
     return res;
   }
 
+  /**
+   * open a modal
+   *
+   * @memberOf UserGroupDetailContainer
+   */
   async openUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: true });
   }
 
+  /**
+   * close a modal
+   *
+   * @memberOf UserGroupDetailContainer
+   */
   async closeUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: false });
   }
 
+  /**
+   * update user group
+   *
+   * @memberOf UserGroupDetailContainer
+   * @param {string} username username of the user to be added to the group
+   */
   async addUserByUsername(username) {
     const res = await this.appContainer.apiv3.post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
-    const { user, userGroupRelation } = res.data;
+    const { userGroupRelation } = res.data;
 
     this.setState((prevState) => {
       return {
         userGroupRelations: [...prevState.userGroupRelations, userGroupRelation],
-        unrelatedUsers: prevState.unrelatedUsers.filter((u) => { return u._id !== user._id }),
       };
     });
   }
 
+  /**
+   * update user group
+   *
+   * @memberOf UserGroupDetailContainer
+   * @param {string} username username of the user to be removed from the group
+   */
   async removeUserByUsername(username) {
     const res = await this.appContainer.apiv3.delete(`/user-groups/${this.state.userGroup._id}/users/${username}`);
 
     this.setState((prevState) => {
       return {
         userGroupRelations: prevState.userGroupRelations.filter((u) => { return u._id !== res.data.userGroupRelation._id }),
-        unrelatedUsers: [...prevState.unrelatedUsers, res.data.user],
       };
     });
   }

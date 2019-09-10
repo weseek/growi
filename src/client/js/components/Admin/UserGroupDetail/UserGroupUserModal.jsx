@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap/es/Modal';
 
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
-import UserGroupUserFormByClick from './UserGroupUserFormByClick';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
@@ -20,15 +19,7 @@ class UserGroupUserModal extends React.Component {
           <Modal.Title>{ t('user_group_management.add_user') }</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            <strong>{ t('Method') }1.</strong> { t('user_group_management.how_to_add1') }
-          </p>
           <UserGroupUserFormByInput />
-          <hr />
-          <p>
-            <strong>{ t('Method') }2.</strong> { t('user_group_management.how_to_add2') }
-          </p>
-          <UserGroupUserFormByClick />
         </Modal.Body>
       </Modal>
     );
