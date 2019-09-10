@@ -438,24 +438,28 @@ module.exports = function(crowi, app) {
       isUserCountExceedsUpperLimit,
     });
   };
+  api.validators = {};
+  actions.user.api = api;
 
-  actions.user.invite = function(req, res) {
-    const form = req.form.inviteForm;
-    const toSendEmail = form.sendEmail || false;
-    if (req.form.isValid) {
-      User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, (err, userList) => {
-        if (err) {
-          req.flash('errorMessage', req.form.errors.join('\n'));
-        }
-        else {
-          req.flash('createdUser', userList);
-        }
-        return res.redirect('/admin/users');
-      });
+  api.validators.inviteEmail = [
+    check('email').isEmail().withMessage('Error. Valid email address is required'),
+  ];
+
+  actions.user.invite = async function(req, res) {
+
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.json(ApiResponse.error('Valid email address is required'));
     }
-    else {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return res.redirect('/admin/users');
+
+    try {
+      // TODO GW-170 after inputting multiple people
+      // await User.createUsersByInvitation(req.body.email.split('\n'), req.body.sendEmail);
+      return res.json(ApiResponse.success());
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
     }
   };
 
@@ -812,7 +816,6 @@ module.exports = function(crowi, app) {
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
-  api.validators = {};
   api.validators.importer = {};
 
   actions.importer.index = function(req, res) {

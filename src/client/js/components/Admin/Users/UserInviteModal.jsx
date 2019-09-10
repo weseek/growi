@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
@@ -23,9 +25,21 @@ class UserInviteModal extends React.Component {
     this.handleCheckBox = this.handleCheckBox.bind(this);
   }
 
-  handleSubmit() {
-    // TODO GW-165 新規ユーザーを招待するAPIを叩く
-    console.log('push submit');
+  validEmail() {
+    return this.state.email.match(/.+@.+\..+/) != null;
+  }
+
+  async handleSubmit() {
+    const { appContainer } = this.props;
+
+    try {
+      await appContainer.apiPost('/admin/user/invite', { email: this.state.email, sendEmail: this.state.sendEmail });
+      this.props.onToggleModal();
+      toastSuccess('Inviting user success');
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   handleInput(event) {
@@ -54,6 +68,7 @@ class UserInviteModal extends React.Component {
             value={this.state.email}
             onChange={this.handleInput}
           />
+          {!this.validEmail() && <p className="m-2 text-danger">{ t('user_management.valid_email') }</p>}
         </Modal.Body>
         <Modal.Footer className="d-flex">
           <label className="mr-3 text-left" style={{ flex: 1 }}>
@@ -72,6 +87,7 @@ class UserInviteModal extends React.Component {
               bsStyle="primary"
               className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
               onClick={this.handleSubmit}
+              disabled={!this.validEmail()}
             >
               Done
             </Button>
