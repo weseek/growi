@@ -719,8 +719,6 @@
     "select_group": "Select a group",
     "no_groups": "No groups to select",
     "no_pages": "There are no pages the group has view permission",
-    "how_to_add1": "Enter a username to add",
-    "how_to_add2": "Select a user from user list",
     "remove_from_group": "Remove this user"
   },
 
