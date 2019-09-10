@@ -42,10 +42,19 @@ export default class AttachmentList extends React.Component {
 
     // check cache exists
     if (stateCache != null) {
+      // restore state
       this.setState({
         ...stateCache,
         isLoading: false,
       });
+      // parse with no effect
+      try {
+        refsContext.parse();
+      }
+      catch (err) {
+        // do nothing
+      }
+
       return; // go to render()
     }
 
