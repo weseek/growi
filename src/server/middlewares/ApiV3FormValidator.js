@@ -7,6 +7,10 @@ class ApiV3FormValidator {
     const { ErrorV3 } = crowi.models;
 
     return (req, res, next) => {
+      logger.debug('req.query', req.query);
+      logger.debug('req.params', req.params);
+      logger.debug('req.body', req.body);
+
       const errObjArray = validationResult(req);
       if (errObjArray.isEmpty()) {
         return next();

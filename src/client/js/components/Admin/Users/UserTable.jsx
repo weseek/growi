@@ -94,9 +94,9 @@ class UserTable extends React.Component {
                   </td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
-                  <td>{dateFnsFormat(new Date(user.createdAt), 'yyyy-MM-DD')}</td>
+                  <td>{dateFnsFormat(new Date(user.createdAt), 'YYYY-MM-DD')}</td>
                   <td>
-                    { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-DD HH:mm')}</span> }
+                    { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'YYYY-MM-DD HH:mm')}</span> }
                   </td>
                   <td>
                     <UserMenu user={user} onPasswordResetClicked={this.props.onPasswordResetClicked} />
