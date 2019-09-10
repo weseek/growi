@@ -439,18 +439,20 @@ module.exports = function(crowi, app) {
     });
   };
   api.validators = {};
-  api.validators.inviteEmail = {};
 
   api.validators.inviteEmail = function() {
     const validator = [
-      check('email').notEmpty().isEmail().withMessage('Error. Valid email address is required'),
+      check('email').isEmail().withMessage('Error. Valid email address is required'),
     ];
     return validator;
   };
 
   actions.user.invite = async function(req, res) {
-    if (req.body.email === '') {
-      return res.json(ApiResponse.error('Email is required'));
+
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.json(ApiResponse.error('Valid email address is required'));
     }
 
     try {
