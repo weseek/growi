@@ -35,6 +35,7 @@ class Comment extends React.Component {
       html: '',
       isOlderRepliesShown: false,
       showReEditorIds: new Set(),
+      permissionToControlComment: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
@@ -51,10 +52,23 @@ class Comment extends React.Component {
 
   componentWillMount() {
     this.renderHtml(this.props.comment.comment);
+    this.checkPermissionToControlComment();
   }
 
   componentWillReceiveProps(nextProps) {
     this.renderHtml(nextProps.comment.comment);
+  }
+
+  checkPermissionToControlComment() {
+    const { appContainer } = this.props;
+
+    if (appContainer.isAdmin) {
+      this.setState({ permissionToControlComment: true });
+    }
+
+    if (this.isCurrentUserEqualsToAuthor()) {
+      this.setState({ permissionToControlComment: true });
+    }
   }
 
   // not used
@@ -281,15 +295,17 @@ class Comment extends React.Component {
                 </OverlayTrigger>
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              <div className="page-comment-control">
-                {/* TODO GW-63 adjust layout */}
-                <button type="button" className="btn btn-link" onClick={() => { this.editBtnClickedHandler(commentId) }}>
-                  <i className="ti-pencil"></i>
-                </button>
-                <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-                  <i className="ti-close"></i>
-                </button>
-              </div>
+              { this.state.permissionToControlComment && (
+                <div className="page-comment-control">
+                  {/* TODO GW-63 adjust layout */}
+                  <button type="button" className="btn btn-link" onClick={() => { this.editBtnClickedHandler(commentId) }}>
+                    <i className="ti-pencil"></i>
+                  </button>
+                  <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+                    <i className="ti-close"></i>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )
