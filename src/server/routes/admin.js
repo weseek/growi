@@ -868,6 +868,12 @@ module.exports = function(crowi, app) {
     });
   };
 
+  // Export management
+  actions.export = {};
+  actions.export.index = (req, res) => {
+    return res.render('admin/export');
+  };
+
   actions.api = {};
   actions.api.appSetting = async function(req, res) {
     const form = req.form.settingForm;
