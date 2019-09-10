@@ -698,7 +698,8 @@
     "administrator_menu":"Administrator Menu",
     "cannot_remove":"You cannot remove yourself from administrator",
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
-    "current_users": "Current users:"
+    "current_users": "Current users:",
+    "valid_email": "Valid email address is required"
   },
 
   "user_group_management": {

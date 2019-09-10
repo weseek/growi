@@ -68,7 +68,7 @@ class UserInviteModal extends React.Component {
             value={this.state.email}
             onChange={this.handleInput}
           />
-          {!this.validEmail() && <p className="m-2 text-danger">Valid email address is required</p>}
+          {!this.validEmail() && <p className="m-2 text-danger">{ t('user_management.valid_email') }</p>}
         </Modal.Body>
         <Modal.Footer className="d-flex">
           <label className="mr-3 text-left" style={{ flex: 1 }}>
