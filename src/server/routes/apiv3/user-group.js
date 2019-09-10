@@ -564,12 +564,18 @@ module.exports = (crowi) => {
     const { limit, offset } = req.query;
 
     try {
-      const pages = await Page
-        .find({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [id] } }, null, { skip: offset, limit })
-        .populate('lastUpdateUser', User.USER_PUBLIC_FIELDS)
-        .exec();
+      const [pages, total] = await Promise.all([
+        Page
+          .find({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [id] } }, null, { skip: offset, limit })
+          .populate('lastUpdateUser', User.USER_PUBLIC_FIELDS)
+          .exec(),
+        Page.countDocuments({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [id] } }),
+      ]);
 
-      return res.apiv3({ pages });
+      const current = offset / limit + 1;
+
+      // TODO: create a moudle for paginated response
+      return res.apiv3({ total, current, pages });
     }
     catch (err) {
       const msg = `Error occurred in fetching pages for group: ${id}`;
