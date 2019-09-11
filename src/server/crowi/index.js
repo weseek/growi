@@ -47,6 +47,7 @@ function Crowi(rootdir) {
   this.fileUploadService = null;
   this.restQiitaAPIService = null;
   this.exportService = null;
+  this.importService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -105,6 +106,7 @@ Crowi.prototype.init = async function() {
     this.setUpRestQiitaAPI(),
     this.setupUserGroup(),
     this.setupExport(),
+    this.setupImport(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -137,6 +139,9 @@ Crowi.prototype.initForTest = async function() {
     this.setUpAcl(),
   //   this.setUpCustomize(),
   //   this.setUpRestQiitaAPI(),
+  //   this.setupUserGroup(),
+  //   this.setupExport(),
+  //   this.setupImport(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -538,6 +543,13 @@ Crowi.prototype.setupExport = async function() {
   const ExportService = require('../service/export');
   if (this.exportService == null) {
     this.exportService = new ExportService(this);
+  }
+};
+
+Crowi.prototype.setupImport = async function() {
+  const ImportService = require('../service/import');
+  if (this.importService == null) {
+    this.importService = new ImportService(this);
   }
 };
 

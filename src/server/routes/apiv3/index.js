@@ -11,5 +11,7 @@ module.exports = (crowi) => {
 
   router.use('/export', require('./export')(crowi));
 
+  router.use('/import', require('./import')(crowi));
+
   return router;
 };
