@@ -56,7 +56,7 @@ $refs(/somewhere/page, regexp=/^file.*\.txt$/)
 - *`prefix`* : Page prefix to search attachments
 - *`depth`* : page depth to search attachments
 - *`regexp`* : Regular Expression to retrieve
-- *`format`* : File format filtering
+- (TBD) *`format`* : File format filtering
 
 
 ### `refimg` tag
@@ -107,26 +107,27 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 - *`prefix`* : Page prefix to search attachments
 - *`depth`* : page depth to search attachments
 - *`regexp`* : Regular Expression to retrieve
-- *`format`* : File format filtering
+- (TBD) *`format`* : File format filtering
 - *`width`* : width
+  - e.g. `width=200px`, `width=50%`
 - *`height`* : height
+  - e.g. `height=100px`
 - *`max-width`* : max-width
+  - e.g. `max-width=200px`, `max-width=50%`
 - *`max-height`* : max-height
-- *`layout`* : How to layout images (default: block)
-  - `block` : set `display: block`
-  - `inline-block` : set `display: inline-block`
+  - e.g. `max-height=100px`
+- *`display`* : `display` property for image (use `display: block` when undefined)
+- *`grid`* : Grid layout settings
   - `col-6` : Grid layout with `col-6` by Bootstrap
   - `col-4` : Grid layout with `col-4` by Bootstrap
   - `col-3` : Grid layout with `col-3` by Bootstrap
   - `col-2` : Grid layout with `col-2` by Bootstrap
   - `col-1` : Grid layout with `col-1` by Bootstrap
 
-
 TODO
 -----
 
-- [ ] `depth` option
 - [ ] `format` option
-- [ ] `layout` option
+- [ ] use [react-images](https://github.com/jossmac/react-images)
 
 [GROWI]: https://github.com/weseek/growi
