@@ -91,7 +91,6 @@ export default class RefsContext extends TagContext {
 
       this.pagePath = this.getAbsolutePathFor(specifiedPath);
     }
-
   }
 
   // resolve pagePath
@@ -110,6 +109,34 @@ export default class RefsContext extends TagContext {
       return undefined;
     }
     return OptionParser.parseRange(this.options.depth);
+  }
+
+  getOptColumnSize() {
+    const { grid } = this.options;
+
+    let columnSize = null;
+
+    if (grid != null) {
+      switch (grid) {
+        case 'col-6':
+          columnSize = 6;
+          break;
+        case 'col-4':
+          columnSize = 4;
+          break;
+        case 'col-3':
+          columnSize = 3;
+          break;
+        case 'col-2':
+          columnSize = 2;
+          break;
+        case 'col-1':
+          columnSize = 1;
+          break;
+      }
+    }
+
+    return columnSize;
   }
 
   /**
