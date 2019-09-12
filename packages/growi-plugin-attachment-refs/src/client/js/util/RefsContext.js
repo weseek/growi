@@ -52,7 +52,7 @@ export default class RefsContext extends TagContext {
     }
 
     const parsedArgs = ArgsParser.parse(this.args);
-    this.options = parsedArgs.options;
+    this.options = Object.assign(this.options, parsedArgs.options);
 
     if (this.isSingle) {
       this.parseForSingle(parsedArgs);

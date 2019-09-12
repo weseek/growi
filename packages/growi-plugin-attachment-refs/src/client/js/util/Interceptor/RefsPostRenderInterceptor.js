@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import { BasicInterceptor } from 'growi-commons';
 
 import RefsContext from '../RefsContext';
+import GalleryContext from '../GalleryContext';
+
 import AttachmentList from '../../components/AttachmentList';
 
 /**
@@ -34,13 +36,17 @@ export default class RefsPostRenderInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
 
-    // forEach keys of refsContextMap
-    Object.keys(context.refsContextMap).forEach((domId) => {
+    // forEach keys of tagContextMap
+    Object.keys(context.tagContextMap).forEach((domId) => {
       const elem = document.getElementById(domId);
 
       if (elem) {
+        const tagContext = context.tagContextMap[domId];
+
         // instanciate RefsContext from context
-        const refsContext = new RefsContext(context.refsContextMap[domId] || {});
+        const refsContext = (tagContext.method === 'gallery')
+          ? new GalleryContext(tagContext || {})
+          : new RefsContext(tagContext || {});
         refsContext.fromPagePath = context.currentPagePath;
 
         this.renderReactDom(refsContext, elem);

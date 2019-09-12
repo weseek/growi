@@ -89,16 +89,15 @@ $refimg(pict.png, width=50%, alt=Pic)
 
 ```
 $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
+$refsimg(prefix=/somewhere, grid=autofill, grid-gap=1px)
 ```
 
 #### Output
 
 ```html
-<ul>
-  <li><img src="/attachment/xxxxx" style="max-width: 200"></li>
-  <li><img src="/attachment/yyyyy" style="max-width: 200"></li>
-  <li><img src="/attachment/zzzzz" style="max-width: 200"></li>
-</ul>
+<div><img src="/attachment/xxxxx" style="max-width: 200"></div>
+<div><img src="/attachment/yyyyy" style="max-width: 200"></div>
+<div><img src="/attachment/zzzzz" style="max-width: 200"></div>
 ```
 
 #### Options
@@ -131,6 +130,31 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 - *`grid-gap`* : Grid gap
   - e.g. `grid-gap=1px`
 - *`no-carousel`* : Omit carousel function and just show images
+
+
+### `gallery` tag
+
+#### Syntax
+
+```
+$gallery(prefix=/somewhere/page)
+```
+
+`gallery` is a Grid Mode Sugar Syntax for `refsimg`.  
+This is same to:
+
+```
+$refsimg(prefix=/somewhere, grid=col-4, grid-gap=1px)
+```
+
+#### Output
+
+```html
+<div><img src="/attachment/xxxxx" style="max-width: 200"></div>
+<div><img src="/attachment/yyyyy" style="max-width: 200"></div>
+<div><img src="/attachment/zzzzz" style="max-width: 200"></div>
+```
+
 
 TODO
 -----

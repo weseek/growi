@@ -34,11 +34,11 @@ export default class RefsPreRenderInterceptor extends BasicInterceptor {
     const parsedHTML = context.parsedHTML;
     this.initializeCache(contextName);
 
-    const tagPattern = /ref|refs|refimg|refsimg/;
+    const tagPattern = /ref|refs|refimg|refsimg|gallery/;
     const result = customTagUtils.findTagAndReplace(tagPattern, parsedHTML);
 
     context.parsedHTML = result.html;
-    context.refsContextMap = result.tagContextMap;
+    context.tagContextMap = result.tagContextMap;
 
     return context;
   }
