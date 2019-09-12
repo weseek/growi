@@ -65,6 +65,7 @@ class UserInviteModal extends React.Component {
           <textarea
             className="form-control"
             placeholder="e.g. user@growi.org"
+            style={{ height: '200px' }}
             value={this.state.email}
             onChange={this.handleInput}
           />
