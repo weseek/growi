@@ -130,11 +130,11 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
   - `col-6` : Grid layout with 6 columns
 - *`grid-gap`* : Grid gap
   - e.g. `grid-gap=1px`
+- *`no-carousel`* : Omit carousel function and just show images
 
 TODO
 -----
 
 - [ ] `format` option
-- [ ] use [react-images](https://github.com/jossmac/react-images)
 
 [GROWI]: https://github.com/weseek/growi
