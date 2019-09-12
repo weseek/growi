@@ -454,9 +454,13 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Valid email address is required'));
     }
 
+    const array = req.body.emailInputValue.split('\n');
+    const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
+    console.log(emailList);
+
     try {
-      // TODO GW-170 after inputting multiple people
-      // await User.createUsersByInvitation(req.body.email.split('\n'), req.body.sendEmail);
+      // TODO GW-170 Create users based on mail list passed in array
+      // await User.createUsersByInvitation(req.body.emailList.split('\n'), req.body.sendEmail);
       return res.json(ApiResponse.success());
     }
     catch (err) {
