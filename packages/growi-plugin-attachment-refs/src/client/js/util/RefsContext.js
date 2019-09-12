@@ -17,7 +17,7 @@ const GRID_AVAILABLE_OPTIONS_LIST = [
   'col-4',
   'col-5',
   'col-6',
-]
+];
 
 /**
  * Context Object class for $refs() and $refsimg()
@@ -141,6 +141,39 @@ export default class RefsContext extends TagContext {
     return (optGrid != null) && optGrid.startsWith('col-');
   }
 
+  getOptGridColumnsNum() {
+    const { grid } = this.options;
+
+    let columnsNum = null;
+
+    switch (grid) {
+      case 'col-2':
+        columnsNum = 2;
+        break;
+      case 'col-3':
+        columnsNum = 3;
+        break;
+      case 'col-4':
+        columnsNum = 4;
+        break;
+      case 'col-5':
+        columnsNum = 5;
+        break;
+      case 'col-6':
+        columnsNum = 6;
+        break;
+    }
+
+    return columnsNum;
+  }
+
+  /**
+   * return auto-calculated grid width
+   * rules:
+   *  1. when column mode (e.g. col-6, col5, ...), the width specification is disabled
+   *  2. when width option is set, return it
+   *  3. otherwise, the mode should be autofill and the width will be calculated according to the size
+   */
   getOptGridWidth() {
     const grid = this.getOptGrid();
     const { width } = this.options;
@@ -180,6 +213,13 @@ export default class RefsContext extends TagContext {
     return `${GRID_DEFAULT_TRACK_WIDTH * autofillMagnification}px`;
   }
 
+  /**
+   * return auto-calculated grid height
+   * rules:
+   *  1. when height option is set, return it
+   *  2. otherwise, the same value to the width will be returned
+   */
+
   getOptGridHeight() {
     const { height } = this.options;
 
@@ -190,32 +230,6 @@ export default class RefsContext extends TagContext {
 
     // return the value which is same to width
     return this.getOptGridWidth();
-  }
-
-  getOptGridColumnsNum() {
-    const { grid } = this.options;
-
-    let columnsNum = null;
-
-    switch (grid) {
-      case 'col-2':
-        columnsNum = 2;
-        break;
-      case 'col-3':
-        columnsNum = 3;
-        break;
-      case 'col-4':
-        columnsNum = 4;
-        break;
-      case 'col-5':
-        columnsNum = 5;
-        break;
-      case 'col-6':
-        columnsNum = 6;
-        break;
-    }
-
-    return columnsNum;
   }
 
   /**
