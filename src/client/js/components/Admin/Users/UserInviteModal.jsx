@@ -16,7 +16,7 @@ class UserInviteModal extends React.Component {
     super(props);
 
     this.state = {
-      email: '',
+      emailInputValue: '',
       sendEmail: false,
     };
 
@@ -26,7 +26,7 @@ class UserInviteModal extends React.Component {
   }
 
   validEmail() {
-    return this.state.email.match(/.+@.+\..+/) != null;
+    return this.state.emailInputValue.match(/.+@.+\..+/) != null;
   }
 
   async handleSubmit() {
@@ -43,7 +43,7 @@ class UserInviteModal extends React.Component {
   }
 
   handleInput(event) {
-    this.setState({ email: event.target.value });
+    this.setState({ emailInputValue: event.target.value });
   }
 
   handleCheckBox() {
@@ -66,7 +66,7 @@ class UserInviteModal extends React.Component {
             className="form-control"
             placeholder="e.g. user@growi.org"
             style={{ height: '200px' }}
-            value={this.state.email}
+            value={this.state.emailInputValue}
             onChange={this.handleInput}
           />
           {!this.validEmail() && <p className="m-2 text-danger">{ t('user_management.valid_email') }</p>}
