@@ -4,6 +4,21 @@ import { customTagUtils, pathUtils } from 'growi-commons';
 
 const { TagContext, ArgsParser, OptionParser } = customTagUtils;
 
+const GRID_DEFAULT_TRACK_WIDTH = 64;
+const GRID_AVAILABLE_OPTIONS_LIST = [
+  'autofill',
+  'autofill-xs',
+  'autofill-sm',
+  'autofill-md',
+  'autofill-lg',
+  'autofill-xl',
+  'col-2',
+  'col-3',
+  'col-4',
+  'col-5',
+  'col-6',
+]
+
 /**
  * Context Object class for $refs() and $refsimg()
  */
@@ -91,6 +106,11 @@ export default class RefsContext extends TagContext {
 
       this.pagePath = this.getAbsolutePathFor(specifiedPath);
     }
+
+    if (this.options.grid != null && this.getOptGrid() == null) {
+      throw new Error('\'grid\' option is invalid. '
+        + 'Available value is: \'autofill-( xs | sm | md | lg | xl )\' or \'col-( 2 | 3 | 4 | 5 | 6 )\'');
+    }
   }
 
   // resolve pagePath
@@ -111,13 +131,19 @@ export default class RefsContext extends TagContext {
     return OptionParser.parseRange(this.options.depth);
   }
 
-  isOptGridColumnEnabled() {
+  getOptGrid() {
     const { grid } = this.options;
-    return (grid != null) && grid.startsWith('col-');
+    return GRID_AVAILABLE_OPTIONS_LIST.find(item => item === grid);
+  }
+
+  isOptGridColumnEnabled() {
+    const optGrid = this.getOptGrid();
+    return (optGrid != null) && optGrid.startsWith('col-');
   }
 
   getOptGridWidth() {
-    const { grid, width } = this.options;
+    const grid = this.getOptGrid();
+    const { width } = this.options;
 
     // when Grid column mode
     if (this.isOptGridColumnEnabled()) {
@@ -134,21 +160,24 @@ export default class RefsContext extends TagContext {
     let autofillMagnification = 1;
 
     switch (grid) {
-      case 'autofill-4x':
-        autofillMagnification = 4;
-        break;
-      case 'autofill-3x':
+      case 'autofill-xl':
         autofillMagnification = 3;
         break;
-      case 'autofill-2x':
+      case 'autofill-lg':
         autofillMagnification = 2;
         break;
+      case 'autofill-sm':
+        autofillMagnification = 0.75;
+        break;
+      case 'autofill-xs':
+        autofillMagnification = 0.5;
+        break;
       case 'autofill':
-      default:
+      case 'autofill-md':
         break;
     }
 
-    return `${autofillMagnification * 100}px`;
+    return `${GRID_DEFAULT_TRACK_WIDTH * autofillMagnification}px`;
   }
 
   getOptGridHeight() {
@@ -168,24 +197,22 @@ export default class RefsContext extends TagContext {
 
     let columnsNum = null;
 
-    if (grid != null) {
-      switch (grid) {
-        case 'col-2':
-          columnsNum = 2;
-          break;
-        case 'col-3':
-          columnsNum = 3;
-          break;
-        case 'col-4':
-          columnsNum = 4;
-          break;
-        case 'col-5':
-          columnsNum = 5;
-          break;
-        case 'col-6':
-          columnsNum = 6;
-          break;
-      }
+    switch (grid) {
+      case 'col-2':
+        columnsNum = 2;
+        break;
+      case 'col-3':
+        columnsNum = 3;
+        break;
+      case 'col-4':
+        columnsNum = 4;
+        break;
+      case 'col-5':
+        columnsNum = 5;
+        break;
+      case 'col-6':
+        columnsNum = 6;
+        break;
     }
 
     return columnsNum;
@@ -203,4 +230,5 @@ export default class RefsContext extends TagContext {
       ),
     );
   }
+
 }
