@@ -439,13 +439,11 @@ module.exports = function(crowi, app) {
     });
   };
   api.validators = {};
+  actions.user.api = api;
 
-  api.validators.inviteEmail = function() {
-    const validator = [
-      check('emailList').isIn(/.+@.+\..+/).withMessage('Error. Valid email address is required'),
-    ];
-    return validator;
-  };
+  api.validators.inviteEmail = [
+    check('email').isEmail().withMessage('Error. Valid email address is required'),
+  ];
 
   actions.user.invite = async function(req, res) {
 
