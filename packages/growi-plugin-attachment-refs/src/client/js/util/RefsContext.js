@@ -199,7 +199,7 @@ export default class RefsContext extends TagContext {
   getAbsolutePathFor(relativePath) {
     return decodeURIComponent(
       pathUtils.normalizePath( // normalize like /foo/bar
-        url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), relativePath)
+        url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), relativePath),
       ),
     );
   }
