@@ -13,23 +13,6 @@ const AttachmentLink = Attachment;
  */
 export default class ExtractedAttachments extends React.PureComponent {
 
-  /**
-   * Splits an array into an array of smaller arrays containing `chunkSize` members
-   * @see https://gist.github.com/webinista/11240585#gistcomment-1421302
-   * @param {Array} array
-   * @param {number} chunkSize
-   */
-  splitToChunks(array, chunkSize) {
-    const sets = [];
-    const chunks = array.length / chunkSize;
-
-    for (let i = 0, j = 0; i < chunks; i++, j += chunkSize) {
-      sets[i] = array.slice(j, j + chunkSize);
-    }
-
-    return sets;
-  }
-
   getClassesAndStyles() {
     const { refsContext } = this.props;
     const { options } = refsContext;
@@ -40,34 +23,37 @@ export default class ExtractedAttachments extends React.PureComponent {
       'max-width': maxWidth,
       'max-height': maxHeight,
       display = 'block',
+      grid,
     } = options;
 
-    let anchorClasses = [];
     let imageClasses = [];
     const anchorStyles = {
-      width, height, maxWidth, maxHeight,
+      maxWidth, maxHeight,
     };
     const imageStyles = {
-      height, maxHeight,
+      maxWidth, maxHeight,
     };
 
-    const columnSize = refsContext.getOptColumnSize();
     // grid mode
-    if (columnSize != null) {
-      anchorClasses = anchorClasses.concat([`col-sm-${columnSize}`]);
+    if (grid != null) {
       // fit image to the parent
-      imageClasses = imageClasses.concat(['w-100']);
+      imageClasses = imageClasses.concat(['w-100', 'h-100']);
       Object.assign(imageStyles, { objectFit: 'cover' });
+      Object.assign(anchorStyles, {
+        width: refsContext.getOptGridWidth(),
+        height: refsContext.getOptGridHeight(),
+      });
     }
     else {
-      // init width/maxWidth
-      Object.assign(imageStyles, { width, maxWidth });
+      // set width/height
+      Object.assign(anchorStyles, { width, height });
+      Object.assign(imageStyles, { width, height });
+      // set display
+      Object.assign(anchorStyles, { display });
     }
 
-    Object.assign(anchorStyles, { display });
 
     return {
-      anchorClasses,
       imageClasses,
       anchorStyles,
       imageStyles,
@@ -84,11 +70,11 @@ export default class ExtractedAttachments extends React.PureComponent {
 
     // get styles
     const {
-      anchorClasses, imageClasses, anchorStyles, imageStyles,
+      imageClasses, anchorStyles, imageStyles,
     } = this.getClassesAndStyles();
 
     return (
-      <a key={attachment._id} href="#" className={anchorClasses.join(' ')} style={anchorStyles}>
+      <a key={attachment._id} href="#" style={anchorStyles}>
         <img src={attachment.filePathProxied} alt={alt} className={imageClasses.join(' ')} style={imageStyles} />
       </a>
     );
@@ -96,6 +82,7 @@ export default class ExtractedAttachments extends React.PureComponent {
 
   render() {
     const { refsContext } = this.props;
+    const { grid, 'grid-gap': gridGap } = refsContext.options;
 
     const contents = this.props.attachments.map((attachment) => {
       const isImage = attachment.fileFormat.startsWith('image/');
@@ -105,23 +92,26 @@ export default class ExtractedAttachments extends React.PureComponent {
         : <AttachmentLink key={attachment._id} attachment={attachment} />;
     });
 
-    const columnSize = refsContext.getOptColumnSize();
-    let contentChunks; // [[c1, c2, c3], [c4, c5, c6], ...]
-    if (columnSize != null) {
-      contentChunks = this.splitToChunks(contents, 12 / columnSize);
-    }
-    else {
-      contentChunks = [contents];
+    const styles = {};
+
+    let gridTemplateColumns;
+    if (grid != null) {
+      gridTemplateColumns = (refsContext.isOptGridColumnEnabled())
+        ? `repeat(${refsContext.getOptGridColumnsNum()}, 1fr)`
+        : `repeat(auto-fill, ${refsContext.getOptGridWidth()})`;
+      Object.assign(styles, {
+        display: 'grid',
+        gridTemplateColumns,
+        gridAutoRows: '1fr',
+        gridGap,
+      });
     }
 
-    return contentChunks.map((chunk, index) => {
-      return (
-        // eslint-disable-next-line react/no-array-index-key
-        <div key={`row-chunk-${index}`} className="row mt-5">
-          {chunk}
-        </div>
-      );
-    });
+    return (
+      <div style={styles}>
+        {contents}
+      </div>
+    );
   }
 
 }

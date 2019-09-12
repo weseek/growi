@@ -117,12 +117,19 @@ $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 - *`max-height`* : max-height
   - e.g. `max-height=100px`
 - *`display`* : `display` property for image (use `display: block` when undefined)
+  - This option is disabled when `grid` option is set.
 - *`grid`* : Grid layout settings
-  - `col-6` : Grid layout with `col-6` by Bootstrap
-  - `col-4` : Grid layout with `col-4` by Bootstrap
-  - `col-3` : Grid layout with `col-3` by Bootstrap
-  - `col-2` : Grid layout with `col-2` by Bootstrap
-  - `col-1` : Grid layout with `col-1` by Bootstrap
+  - `autofill` : Grid layout with auto filling with 100px tracks
+  - `autofill-2x` : Grid layout with auto filling with 200px tracks
+  - `autofill-3x` : Grid layout with auto filling with 300px tracks
+  - `autofill-4x` : Grid layout with auto filling with 400px tracks
+  - `col-2` : Grid layout with 2 columns
+  - `col-3` : Grid layout with 3 columns
+  - `col-4` : Grid layout with 4 columns
+  - `col-5` : Grid layout with 5 columns
+  - `col-6` : Grid layout with 6 columns
+- *`grid-gap`* : Grid gap
+  - e.g. `grid-gap=1px`
 
 TODO
 -----

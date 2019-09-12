@@ -111,32 +111,84 @@ export default class RefsContext extends TagContext {
     return OptionParser.parseRange(this.options.depth);
   }
 
-  getOptColumnSize() {
+  isOptGridColumnEnabled() {
+    const { grid } = this.options;
+    return (grid != null) && grid.startsWith('col-');
+  }
+
+  getOptGridWidth() {
+    const { grid, width } = this.options;
+
+    // when Grid column mode
+    if (this.isOptGridColumnEnabled()) {
+      // not specify and ignore width
+      return undefined;
+    }
+
+    // when width is specified
+    if (width != null) {
+      return width;
+    }
+
+    // when Grid autofill mode
+    let autofillMagnification = 1;
+
+    switch (grid) {
+      case 'autofill-4x':
+        autofillMagnification = 4;
+        break;
+      case 'autofill-3x':
+        autofillMagnification = 3;
+        break;
+      case 'autofill-2x':
+        autofillMagnification = 2;
+        break;
+      case 'autofill':
+      default:
+        break;
+    }
+
+    return `${autofillMagnification * 100}px`;
+  }
+
+  getOptGridHeight() {
+    const { height } = this.options;
+
+    // when height is specified
+    if (height != null) {
+      return height;
+    }
+
+    // return the value which is same to width
+    return this.getOptGridWidth();
+  }
+
+  getOptGridColumnsNum() {
     const { grid } = this.options;
 
-    let columnSize = null;
+    let columnsNum = null;
 
     if (grid != null) {
       switch (grid) {
-        case 'col-6':
-          columnSize = 6;
-          break;
-        case 'col-4':
-          columnSize = 4;
+        case 'col-2':
+          columnsNum = 2;
           break;
         case 'col-3':
-          columnSize = 3;
+          columnsNum = 3;
           break;
-        case 'col-2':
-          columnSize = 2;
+        case 'col-4':
+          columnsNum = 4;
           break;
-        case 'col-1':
-          columnSize = 1;
+        case 'col-5':
+          columnsNum = 5;
+          break;
+        case 'col-6':
+          columnsNum = 6;
           break;
       }
     }
 
-    return columnSize;
+    return columnsNum;
   }
 
   /**
