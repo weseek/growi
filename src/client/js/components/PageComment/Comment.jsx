@@ -238,6 +238,19 @@ class Comment extends React.Component {
     );
   }
 
+  renderCommentControl(comment) {
+    return (
+      <div className="page-comment-control">
+        <button type="button" className="btn btn-link p-2" onClick={() => { this.editBtnClickedHandler(comment._id) }}>
+          <i className="ti-pencil"></i>
+        </button>
+        <button type="button" className="btn btn-link p-2 mr-2" onClick={this.deleteBtnClickedHandler}>
+          <i className="ti-close"></i>
+        </button>
+      </div>
+    );
+  }
+
   render() {
     const comment = this.props.comment;
     const commentId = comment._id;
@@ -284,17 +297,7 @@ class Comment extends React.Component {
                 </OverlayTrigger>
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              { this.checkPermissionToControlComment() && (
-                <div className="page-comment-control">
-                  {/* TODO GW-63 adjust layout */}
-                  <button type="button" className="btn btn-link p-2" onClick={() => { this.editBtnClickedHandler(commentId) }}>
-                    <i className="ti-pencil"></i>
-                  </button>
-                  <button type="button" className="btn btn-link p-2 mr-2" onClick={this.deleteBtnClickedHandler}>
-                    <i className="ti-close"></i>
-                  </button>
-                </div>
-              )}
+              { this.checkPermissionToControlComment() && this.renderCommentControl(comment) }
             </div>
           </div>
         )
