@@ -151,8 +151,6 @@ module.exports = function(crowi, app) {
    * @api {post} /comments.update Update comment dody
    * @apiName UpdateComment
    * @apiGroup Comment
-   *
-   * @apiParam {Object} commentForm Comment Form
    */
   api.update = async function(req, res) {
     const { commentForm } = req.body;
