@@ -1,11 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Attachment from '@client/js/components/PageAttachment/Attachment';
-
 import RefsContext from '../util/RefsContext';
-
-const AttachmentLink = Attachment;
 
 /**
  *  1. when 'fileFormat' is image, render Attachment as an image
@@ -13,7 +9,7 @@ const AttachmentLink = Attachment;
  */
 export default class ExtractedAttachments extends React.PureComponent {
 
-  getClassesAndStyles() {
+  getClassesAndStylesForNonGrid() {
     const { refsContext } = this.props;
     const { options } = refsContext;
 
@@ -23,41 +19,64 @@ export default class ExtractedAttachments extends React.PureComponent {
       'max-width': maxWidth,
       'max-height': maxHeight,
       display = 'block',
-      grid,
     } = options;
 
-    let imageClasses = [];
     const anchorStyles = {
-      maxWidth, maxHeight,
+      width, height, maxWidth, maxHeight, display,
     };
+
+    const imageClasses = [];
     const imageStyles = {
-      maxWidth, maxHeight,
+      width, height, maxWidth, maxHeight,
     };
-
-    // grid mode
-    if (grid != null) {
-      // fit image to the parent
-      imageClasses = imageClasses.concat(['w-100', 'h-100']);
-      Object.assign(imageStyles, { objectFit: 'cover' });
-      Object.assign(anchorStyles, {
-        width: refsContext.getOptGridWidth(),
-        height: refsContext.getOptGridHeight(),
-      });
-    }
-    else {
-      // set width/height
-      Object.assign(anchorStyles, { width, height });
-      Object.assign(imageStyles, { width, height });
-      // set display
-      Object.assign(anchorStyles, { display });
-    }
-
 
     return {
       imageClasses,
       anchorStyles,
       imageStyles,
     };
+  }
+
+  getClassesAndStylesForGrid() {
+    const { refsContext } = this.props;
+    const { options } = refsContext;
+
+    const {
+      'max-width': maxWidth,
+      'max-height': maxHeight,
+    } = options;
+
+    const anchorStyles = {
+      width: refsContext.getOptGridWidth(),
+      height: refsContext.getOptGridHeight(),
+      maxWidth,
+      maxHeight,
+    };
+
+    const imageClasses = ['w-100', 'h-100'];
+    const imageStyles = {
+      objectFit: 'cover',
+      maxWidth,
+      maxHeight,
+    };
+
+    return {
+      imageClasses,
+      anchorStyles,
+      imageStyles,
+    };
+  }
+
+  /**
+   * wrapper method for getClassesAndStylesForGrid/getClassesAndStylesForNonGrid
+   */
+  getClassesAndStyles() {
+    const { refsContext } = this.props;
+    const { options } = refsContext;
+
+    return (options.grid != null)
+      ? this.getClassesAndStylesForGrid()
+      : this.getClassesAndStylesForNonGrid();
   }
 
   renderExtractedImage(attachment) {
@@ -82,30 +101,30 @@ export default class ExtractedAttachments extends React.PureComponent {
 
   render() {
     const { refsContext } = this.props;
-    const { grid, 'grid-gap': gridGap } = refsContext.options;
-
-    const contents = this.props.attachments.map((attachment) => {
-      const isImage = attachment.fileFormat.startsWith('image/');
-
-      return (isImage)
-        ? this.renderExtractedImage(attachment)
-        : <AttachmentLink key={attachment._id} attachment={attachment} />;
-    });
+    const { options } = refsContext;
+    const { grid, 'grid-gap': gridGap } = options;
 
     const styles = {};
 
-    let gridTemplateColumns;
+    // Grid mode
     if (grid != null) {
-      gridTemplateColumns = (refsContext.isOptGridColumnEnabled())
+
+      const gridTemplateColumns = (refsContext.isOptGridColumnEnabled())
         ? `repeat(${refsContext.getOptGridColumnsNum()}, 1fr)`
         : `repeat(auto-fill, ${refsContext.getOptGridWidth()})`;
+
       Object.assign(styles, {
         display: 'grid',
         gridTemplateColumns,
         gridAutoRows: '1fr',
         gridGap,
       });
+
     }
+
+    const contents = this.props.attachments
+      .filter(attachment => attachment.fileFormat.startsWith('image/'))
+      .map(attachment => this.renderExtractedImage(attachment));
 
     return (
       <div style={styles}>
