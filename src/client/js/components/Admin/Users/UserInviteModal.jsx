@@ -62,7 +62,7 @@ class UserInviteModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <label> { t('user_management.emails') }</label>
-          <input
+          <textarea
             className="form-control"
             placeholder="e.g. user@growi.org"
             value={this.state.email}
