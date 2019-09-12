@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Carousel, { Modal, ModalGateway } from 'react-images';
+
 import RefsContext from '../util/RefsContext';
 
 /**
@@ -8,6 +10,27 @@ import RefsContext from '../util/RefsContext';
  *  2. when 'fileFormat' is not image, render Attachment as an Attachment component
  */
 export default class ExtractedAttachments extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showCarousel: false,
+      currentIndex: null,
+    };
+  }
+
+  imageClickedHandler(index) {
+    this.setState({
+      showCarousel: true,
+      currentIndex: index,
+    });
+  }
+
+  getAttachmentsFilteredByFormat() {
+    return this.props.attachments
+      .filter(attachment => attachment.fileFormat.startsWith('image/'));
+  }
 
   getClassesAndStylesForNonGrid() {
     const { refsContext } = this.props;
@@ -21,7 +44,7 @@ export default class ExtractedAttachments extends React.PureComponent {
       display = 'block',
     } = options;
 
-    const anchorStyles = {
+    const containerStyles = {
       width, height, maxWidth, maxHeight, display,
     };
 
@@ -31,8 +54,8 @@ export default class ExtractedAttachments extends React.PureComponent {
     };
 
     return {
+      containerStyles,
       imageClasses,
-      anchorStyles,
       imageStyles,
     };
   }
@@ -46,7 +69,7 @@ export default class ExtractedAttachments extends React.PureComponent {
       'max-height': maxHeight,
     } = options;
 
-    const anchorStyles = {
+    const containerStyles = {
       width: refsContext.getOptGridWidth(),
       height: refsContext.getOptGridHeight(),
       maxWidth,
@@ -61,8 +84,8 @@ export default class ExtractedAttachments extends React.PureComponent {
     };
 
     return {
+      containerStyles,
       imageClasses,
-      anchorStyles,
       imageStyles,
     };
   }
@@ -79,7 +102,7 @@ export default class ExtractedAttachments extends React.PureComponent {
       : this.getClassesAndStylesForNonGrid();
   }
 
-  renderExtractedImage(attachment) {
+  renderExtractedImage(attachment, index) {
     const { refsContext } = this.props;
     const { options } = refsContext;
 
@@ -89,20 +112,67 @@ export default class ExtractedAttachments extends React.PureComponent {
 
     // get styles
     const {
-      imageClasses, anchorStyles, imageStyles,
+      containerStyles, imageClasses, imageStyles,
     } = this.getClassesAndStyles();
 
+    // carousel settings
+    let onClick;
+    if (options['no-carousel'] == null) {
+      // pointer cursor
+      Object.assign(containerStyles, { cursor: 'pointer' });
+      // set click handler
+      onClick = () => {
+        this.imageClickedHandler(index);
+      };
+    }
+
     return (
-      <a key={attachment._id} href="#" style={anchorStyles}>
+      <div key={attachment._id} style={containerStyles} onClick={onClick}>
         <img src={attachment.filePathProxied} alt={alt} className={imageClasses.join(' ')} style={imageStyles} />
-      </a>
+      </div>
+    );
+  }
+
+  renderCarousel() {
+    const { options } = this.props.refsContext;
+    const withCarousel = options['no-carousel'] == null;
+
+    const { showCarousel, currentIndex } = this.state;
+
+    const images = this.getAttachmentsFilteredByFormat()
+      .map((attachment) => {
+        return { src: attachment.filePathProxied };
+      });
+
+    // overwrite react-images modal styles
+    const zIndex = 9; // > .on-edit.bg-title
+    const modalStyles = {
+      blanket: (styleObj) => {
+        return Object.assign(styleObj, { zIndex });
+      },
+      positioner: (styleObj) => {
+        return Object.assign(styleObj, { zIndex });
+      },
+    };
+
+    return (
+      <ModalGateway>
+        { withCarousel && showCarousel && (
+          <Modal styles={modalStyles} onClose={() => { this.setState({ showCarousel: false }) }}>
+            <Carousel views={images} currentIndex={currentIndex} />
+          </Modal>
+        ) }
+      </ModalGateway>
     );
   }
 
   render() {
     const { refsContext } = this.props;
     const { options } = refsContext;
-    const { grid, 'grid-gap': gridGap } = options;
+    const {
+      grid,
+      'grid-gap': gridGap,
+    } = options;
 
     const styles = {};
 
@@ -122,14 +192,17 @@ export default class ExtractedAttachments extends React.PureComponent {
 
     }
 
-    const contents = this.props.attachments
-      .filter(attachment => attachment.fileFormat.startsWith('image/'))
-      .map(attachment => this.renderExtractedImage(attachment));
+    const contents = this.getAttachmentsFilteredByFormat()
+      .map((attachment, index) => this.renderExtractedImage(attachment, index));
 
     return (
-      <div style={styles}>
-        {contents}
-      </div>
+      <React.Fragment>
+        <div style={styles}>
+          {contents}
+        </div>
+
+        { this.renderCarousel() }
+      </React.Fragment>
     );
   }
 

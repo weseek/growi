@@ -38,7 +38,8 @@
     "npm-run-all": "^4.1.5",
     "prettier-stylelint": "^0.4.2",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-images": "^1.0.0"
   },
   "engines": {
     "node": ">=8.11.1 <11",
