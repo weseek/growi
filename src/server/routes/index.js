@@ -215,6 +215,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/tags.update'        , accessTokenParser, loginRequired(false), tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(false) , comment.api.get);
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequired() , csrf, comment.api.add);
+  app.post('/_api/comments.update'       , comment.api.validators.add(), accessTokenParser , loginRequired() , csrf, comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired() , csrf, comment.api.remove);
   app.get('/_api/bookmarks.get'       , accessTokenParser , loginRequired(false) , bookmark.api.get);
   app.post('/_api/bookmarks.add'      , accessTokenParser , loginRequired() , csrf, bookmark.api.add);

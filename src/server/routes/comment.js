@@ -160,6 +160,59 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {post} /comments.update Update comment dody
+   * @apiName UpdateComment
+   * @apiGroup Comment
+   */
+  api.update = async function(req, res) {
+    const { commentForm } = req.body;
+
+    const pageId = commentForm.page_id;
+    const revisionId = commentForm.revision_id;
+    const comment = commentForm.comment;
+    const isMarkdown = commentForm.is_markdown;
+    const commentId = commentForm.comment_id;
+    const author = commentForm.author;
+
+    if (comment === '') {
+      return res.json(ApiResponse.error('Comment text is required'));
+    }
+
+    if (commentId == null) {
+      return res.json(ApiResponse.error('\'comment_id\' is undefined'));
+    }
+
+    if (author !== req.user.username) {
+      return res.json(ApiResponse.error('Only the author can edit'));
+    }
+
+    // check whether accessible
+    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user._id, revisionId, comment, isMarkdown, req.user);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
+
+    try {
+      const updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
+
+      const page = await Page.findOneAndUpdate({ _id: pageId }, {
+        lastUpdateUser: req.user,
+        updatedAt: new Date(),
+      });
+
+      res.json(ApiResponse.success({ comment: updatedComment }));
+
+      const path = page.path;
+
+      // global notification
+      globalNotificationService.notifyComment(updatedComment, path);
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+  };
+
+  /**
    * @api {post} /comments.remove Remove specified comment
    * @apiName RemoveComment
    * @apiGroup Comment

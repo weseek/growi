@@ -15,6 +15,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
+import CommentEditor from './CommentEditor';
 
 /**
  *
@@ -32,7 +33,10 @@ class Comment extends React.Component {
     this.state = {
       html: '',
       isOlderRepliesShown: false,
+      showReEditorIds: new Set(),
     };
+
+    this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
@@ -41,6 +45,7 @@ class Comment extends React.Component {
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
+    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
   componentWillMount() {
@@ -54,6 +59,10 @@ class Comment extends React.Component {
   // not used
   setMarkdown(markdown) {
     this.renderHtml(markdown);
+  }
+
+  checkPermissionToControlComment() {
+    return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
   }
 
   isCurrentUserEqualsToAuthor() {
@@ -88,6 +97,20 @@ class Comment extends React.Component {
   getRevisionLabelClassName() {
     return `page-comment-revision label ${
       this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
+  }
+
+  editBtnClickedHandler(commentId) {
+    const ids = this.state.showReEditorIds.add(commentId);
+    this.setState({ showReEditorIds: ids });
+  }
+
+  commentButtonClickedHandler(commentId) {
+    this.setState((prevState) => {
+      prevState.showReEditorIds.delete(commentId);
+      return {
+        showReEditorIds: prevState.showReEditorIds,
+      };
+    });
   }
 
   deleteBtnClickedHandler() {
@@ -214,11 +237,27 @@ class Comment extends React.Component {
     );
   }
 
+  renderCommentControl(comment) {
+    return (
+      <div className="page-comment-control">
+        <button type="button" className="btn btn-link p-2" onClick={() => { this.editBtnClickedHandler(comment._id) }}>
+          <i className="ti-pencil"></i>
+        </button>
+        <button type="button" className="btn btn-link p-2 mr-2" onClick={this.deleteBtnClickedHandler}>
+          <i className="ti-close"></i>
+        </button>
+      </div>
+    );
+  }
+
   render() {
     const comment = this.props.comment;
+    const commentId = comment._id;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
     const createdAt = new Date(comment.createdAt);
+
+    const showReEditor = this.state.showReEditorIds.has(commentId);
 
     const rootClassName = this.getRootClassName(comment);
     const commentDate = formatDistanceStrict(createdAt, new Date());
@@ -236,27 +275,33 @@ class Comment extends React.Component {
     return (
       <React.Fragment>
 
-        <div className={rootClassName}>
-          <UserPicture user={creator} />
-          <div className="page-comment-main">
-            <div className="page-comment-creator">
-              <Username user={creator} />
-            </div>
-            <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-meta">
-              <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
-                <span>{commentDate}</span>
-              </OverlayTrigger>
-              <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
-            </div>
-            <div className="page-comment-control">
-              <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-                <i className="ti-close"></i>
-              </button>
+        {showReEditor ? (
+          <CommentEditor
+            growiRenderer={this.growiRenderer}
+            currentCommentId={commentId}
+            commentBody={comment.comment}
+            replyTo={undefined}
+            commentButtonClickedHandler={this.commentButtonClickedHandler}
+          />
+        ) : (
+          <div className={rootClassName}>
+            <UserPicture user={creator} />
+            <div className="page-comment-main">
+              <div className="page-comment-creator">
+                <Username user={creator} />
+              </div>
+              <div className="page-comment-body">{commentBody}</div>
+              <div className="page-comment-meta">
+                <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
+                  <span>{commentDate}</span>
+                </OverlayTrigger>
+                <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
+              </div>
+              { this.checkPermissionToControlComment() && this.renderCommentControl(comment) }
             </div>
           </div>
-        </div>
-
+        )
+      }
         {this.renderReplies()}
 
       </React.Fragment>
