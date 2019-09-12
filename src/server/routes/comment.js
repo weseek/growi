@@ -152,6 +152,7 @@ module.exports = function(crowi, app) {
    * @apiName UpdateComment
    * @apiGroup Comment
    *
+   * @apiParam {Object} commentForm Comment Form.
    */
   api.update = async function(req, res) {
     const { commentForm } = req.body;
@@ -200,7 +201,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
   };
-
 
   /**
    * @api {post} /comments.remove Remove specified comment
