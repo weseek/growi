@@ -442,7 +442,7 @@ module.exports = function(crowi, app) {
 
   api.validators.inviteEmail = function() {
     const validator = [
-      check('email').isEmail().withMessage('Error. Valid email address is required'),
+      check('emails').isEmail().withMessage('Error. Valid email address is required'),
     ];
     return validator;
   };
