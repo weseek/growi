@@ -287,10 +287,10 @@ class Comment extends React.Component {
               { this.checkPermissionToControlComment() && (
                 <div className="page-comment-control">
                   {/* TODO GW-63 adjust layout */}
-                  <button type="button" className="btn btn-link" onClick={() => { this.editBtnClickedHandler(commentId) }}>
+                  <button type="button" className="btn btn-link p-2" onClick={() => { this.editBtnClickedHandler(commentId) }}>
                     <i className="ti-pencil"></i>
                   </button>
-                  <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+                  <button type="button" className="btn btn-link p-2 mr-2" onClick={this.deleteBtnClickedHandler}>
                     <i className="ti-close"></i>
                   </button>
                 </div>
