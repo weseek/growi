@@ -140,7 +140,7 @@ $refsimg(prefix=/somewhere, grid=autofill, grid-gap=1px)
 $gallery(prefix=/somewhere/page)
 ```
 
-`gallery` is a Grid Mode Sugar Syntax for `refsimg`.  
+`gallery` is a Grid Mode Syntax Sugar for `refsimg`.  
 This is same to:
 
 ```
@@ -154,6 +154,10 @@ $refsimg(prefix=/somewhere, grid=col-4, grid-gap=1px)
 <div><img src="/attachment/yyyyy" style="max-width: 200"></div>
 <div><img src="/attachment/zzzzz" style="max-width: 200"></div>
 ```
+
+#### Options
+
+See the options of `refsimg`
 
 
 TODO
