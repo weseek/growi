@@ -100,6 +100,29 @@ export default class CommentContainer extends Container {
       });
   }
 
+  /**
+   * Load data of comments and rerender <PageComments />
+   */
+  putComment(comment, isMarkdown, commentId) {
+    const { pageId, revisionId } = this.getPageContainer().state;
+
+    return this.appContainer.apiPost('/comments.update', {
+      commentForm: {
+        comment,
+        page_id: pageId,
+        revision_id: revisionId,
+        is_markdown: isMarkdown,
+        comment_id: commentId,
+        author: this.appContainer.me,
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return this.retrieveComments();
+        }
+      });
+  }
+
   deleteComment(comment) {
     return this.appContainer.apiPost('/comments.remove', { comment_id: comment._id })
       .then((res) => {

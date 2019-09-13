@@ -64,6 +64,16 @@ module.exports = function(crowi) {
     }));
   };
 
+  commentSchema.statics.updateCommentsByPageId = function(comment, isMarkdown, commentId) {
+    const Comment = this;
+
+    return Comment.findOneAndUpdate(
+      { _id: commentId },
+      { $set: { comment, isMarkdown } },
+    );
+
+  };
+
   commentSchema.statics.removeCommentsByPageId = function(pageId) {
     const Comment = this;
 
