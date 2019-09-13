@@ -5,7 +5,7 @@
 // Utilities
 @import 'mixins/breakpoints';
 // @import "mixins/hover";
-// @import "mixins/image";
+@import 'mixins/image';
 // @import "mixins/badge";
 // @import "mixins/resize";
 // @import "mixins/screen-reader";
@@ -29,7 +29,7 @@
 
 // // Skins
 // @import "mixins/background-variant";
-// @import "mixins/border-radius";
+@import 'mixins/border-radius';
 // @import "mixins/box-shadow";
 // @import "mixins/gradients";
 // @import "mixins/transition";
