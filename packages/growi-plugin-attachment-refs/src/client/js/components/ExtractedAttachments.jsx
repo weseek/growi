@@ -145,7 +145,7 @@ export default class ExtractedAttachments extends React.PureComponent {
       });
 
     // overwrite react-images modal styles
-    const zIndex = 9; // > .on-edit.bg-title
+    const zIndex = 17; // > header.affix
     const modalStyles = {
       blanket: (styleObj) => {
         return Object.assign(styleObj, { zIndex });
