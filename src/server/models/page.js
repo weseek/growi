@@ -6,6 +6,7 @@
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -64,6 +65,7 @@ const pageSchema = new mongoose.Schema({
   toObject: { getters: true },
 });
 // apply plugins
+pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
 

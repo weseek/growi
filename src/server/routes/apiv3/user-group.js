@@ -7,8 +7,13 @@ const express = require('express');
 const router = express.Router();
 
 const { body, param, query } = require('express-validator/check');
+const { sanitizeQuery } = require('express-validator/filter');
 
 const validator = {};
+
+const { ObjectId } = require('mongoose').Types;
+
+const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 /**
  * @swagger
@@ -17,7 +22,13 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
-  const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
+  const {
+    ErrorV3,
+    UserGroup,
+    UserGroupRelation,
+    User,
+    Page,
+  } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
 
   const {
@@ -33,7 +44,7 @@ module.exports = (crowi) => {
    *    /_api/v3/user-groups:
    *      get:
    *        tags: [UserGroup]
-   *        description: Gets usergroups
+   *        description: Get usergroups
    *        produces:
    *          - application/json
    *        responses:
@@ -63,7 +74,7 @@ module.exports = (crowi) => {
   });
 
   validator.create = [
-    body('name', 'Group name is required').trim().exists(),
+    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
   ];
 
   /**
@@ -113,8 +124,8 @@ module.exports = (crowi) => {
   });
 
   validator.delete = [
-    param('id').trim().exists(),
-    query('actionName').trim().exists(),
+    param('id').trim().exists({ checkFalsy: true }),
+    query('actionName').trim().exists({ checkFalsy: true }),
     query('transferToUserGroupId').trim(),
   ];
 
@@ -175,18 +186,75 @@ module.exports = (crowi) => {
   // router.get('/:id', async(req, res) => {
   // });
 
-  // update one group with the id
-  // router.put('/:id/update', async(req, res) => {
-  // });
+  validator.update = [
+    body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
+  ];
 
   /**
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id/users}:
+   *    /_api/v3/user-groups/{:id}:
+   *      put:
+   *        tags: [UserGroup]
+   *        description: Update userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: userGroup is updated
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroup:
+   *                      type: object
+   *                      description: A result of `UserGroup.updateName`
+   */
+  router.put('/:id', loginRequired(), adminRequired, csrf, validator.update, ApiV3FormValidator, async(req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      if (userGroup == null) {
+        throw new Error('The group does not exist');
+      }
+
+      // check if the new group name is available
+      const isRegisterableName = await UserGroup.isRegisterableName(name);
+      if (!isRegisterableName) {
+        throw new Error('The group name is already taken');
+      }
+
+      await userGroup.updateName(name);
+
+      res.apiv3({ userGroup });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating a user group name';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-update-failed'));
+    }
+  });
+
+  validator.users = {};
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/users:
    *      get:
    *        tags: [UserGroup]
-   *        description: Gets the users related to the userGroup
+   *        description: Get users related to the userGroup
    *        produces:
    *          - application/json
    *        parameters:
@@ -224,7 +292,299 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-fetch-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-user-list-fetch-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/unrelated-users:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Get users unrelated to the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    users:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: user objects
+   */
+  router.get('/:id/unrelated-users', loginRequired(), adminRequired, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup);
+
+      return res.apiv3({ users });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching unrelated users for group: ${id}`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-unrelated-user-list-fetch-failed'));
+    }
+  });
+
+  validator.users.post = [
+    param('id').trim().exists({ checkFalsy: true }),
+    param('username').trim().exists({ checkFalsy: true }),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/users:
+   *      post:
+   *        tags: [UserGroup]
+   *        description: Add a user to the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *          - name: username
+   *            in: path
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: a user is added
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    user:
+   *                      type: object
+   *                      description: the user added to the group
+   *                    userGroup:
+   *                      type: object
+   *                      description: the group to which a user was added
+   *                    userGroupRelation:
+   *                      type: object
+   *                      description: the associative entity between user and userGroup
+   */
+  router.post('/:id/users/:username', loginRequired(), adminRequired, validator.users.post, ApiV3FormValidator, async(req, res) => {
+    const { id, username } = req.params;
+
+    try {
+      const [userGroup, user] = await Promise.all([
+        UserGroup.findById(id),
+        User.findUserByUsername(username),
+      ]);
+
+      const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
+      await userGroupRelation.populate('relatedUser', User.USER_PUBLIC_FIELDS).execPopulate();
+
+      return res.apiv3({ user, userGroup, userGroupRelation });
+    }
+    catch (err) {
+      const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-add-user-failed'));
+    }
+  });
+
+  validator.users.delete = [
+    param('id').trim().exists({ checkFalsy: true }),
+    param('username').trim().exists({ checkFalsy: true }),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/users:
+   *      delete:
+   *        tags: [UserGroup]
+   *        description: remove a user from the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *          - name: username
+   *            in: path
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: a user was removed
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    user:
+   *                      type: object
+   *                      description: the user removed from the group
+   *                    userGroup:
+   *                      type: object
+   *                      description: the group from which a user was removed
+   *                    userGroupRelation:
+   *                      type: object
+   *                      description: the associative entity between user and userGroup
+   */
+  router.delete('/:id/users/:username', loginRequired(), adminRequired, validator.users.delete, ApiV3FormValidator, async(req, res) => {
+    const { id, username } = req.params;
+
+    try {
+      const [userGroup, user] = await Promise.all([
+        UserGroup.findById(id),
+        User.findUserByUsername(username),
+      ]);
+
+      const userGroupRelation = await UserGroupRelation.findOne({ relatedUser: new ObjectId(user._id), relatedGroup: new ObjectId(userGroup._id) });
+      if (userGroupRelation == null) {
+        throw new Error(`Group "${id}" does not exist or user "${username}" does not belong to group "${id}"`);
+      }
+
+      await userGroupRelation.remove();
+
+      return res.apiv3({ user, userGroup, userGroupRelation });
+    }
+    catch (err) {
+      const msg = `Error occurred in removing the user "${username}" from group "${id}"`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
+    }
+  });
+
+  validator.userGroupRelations = {};
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/user-group-relations:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Get the user group relations for the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: user group relations are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userGroupRelations:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: userGroupRelation objects
+   */
+  router.get('/:id/user-group-relations', loginRequired(), adminRequired, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
+
+      return res.apiv3({ userGroupRelations });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching user group relations for group: ${id}`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-user-group-relation-list-fetch-failed'));
+    }
+  });
+
+  validator.pages = {};
+
+  validator.pages.get = [
+    param('id').trim().exists({ checkFalsy: true }),
+    sanitizeQuery('limit').customSanitizer(toPagingLimit),
+    sanitizeQuery('offset').customSanitizer(toPagingOffset),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/user-groups/{:id}/pages:
+   *      get:
+   *        tags: [UserGroup]
+   *        description: Get closed pages for the userGroup
+   *        produces:
+   *          - application/json
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            description: id of userGroup
+   *            schema:
+   *              type: ObjectId
+   *        responses:
+   *          200:
+   *            description: pages are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    pages:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                      description: page objects
+   */
+  router.get('/:id/pages', loginRequired(), adminRequired, validator.pages.get, ApiV3FormValidator, async(req, res) => {
+    const { id } = req.params;
+    const { limit, offset } = req.query;
+
+    try {
+      const { docs, total } = await Page.paginate({
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: { $in: [id] },
+      }, {
+        offset,
+        limit,
+        populate: {
+          path: 'lastUpdateUser',
+          select: User.USER_PUBLIC_FIELDS,
+        },
+      });
+
+      const current = offset / limit + 1;
+
+      // TODO: create a common moudule for paginated response
+      return res.apiv3({ total, current, pages: docs });
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching pages for group: ${id}`;
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-page-list-fetch-failed'));
     }
   });
 

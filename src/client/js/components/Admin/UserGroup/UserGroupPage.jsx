@@ -155,8 +155,7 @@ class UserGroupPage extends React.Component {
           changePage={this.handlePage}
           totalItemsCount={this.state.totalUserGroups}
           pagingLimit={this.state.pagingLimit}
-        >
-        </PaginationWrapper>
+        />
         <UserGroupDeleteModal
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}

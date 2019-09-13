@@ -332,7 +332,7 @@ export default class AppContainer extends Container {
     return this.apiv3Request('get', path, { params });
   }
 
-  async apiv3Post(path, params) {
+  async apiv3Post(path, params = {}) {
     if (!params._csrf) {
       params._csrf = this.csrfToken;
     }
@@ -340,7 +340,7 @@ export default class AppContainer extends Container {
     return this.apiv3Request('post', path, params);
   }
 
-  async apiv3Put(path, params) {
+  async apiv3Put(path, params = {}) {
     if (!params._csrf) {
       params._csrf = this.csrfToken;
     }
@@ -348,7 +348,7 @@ export default class AppContainer extends Container {
     return this.apiv3Request('put', path, params);
   }
 
-  async apiv3Delete(path, params) {
+  async apiv3Delete(path, params = {}) {
     if (!params._csrf) {
       params._csrf = this.csrfToken;
     }
