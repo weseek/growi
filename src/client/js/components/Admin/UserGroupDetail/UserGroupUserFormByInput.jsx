@@ -55,12 +55,12 @@ class UserGroupUserFormByInput extends React.Component {
             type="text"
             name="username"
             className="form-control input-sm"
-            placeholder={t('User Name')}
+            placeholder={t('username')}
             value={this.state.username}
             onChange={this.changeUsername}
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('Add') }</button>
+        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('add') }</button>
       </form>
     );
   }

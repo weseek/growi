@@ -60,7 +60,7 @@ class UserGroupEditForm extends React.Component {
     return (
       <form className="form-horizontal" onSubmit={this.handleSubmit}>
         <fieldset>
-          <legend>基本情報</legend>
+          <legend>{ t('user_group_management.basic_info') }</legend>
           <div className="form-group">
             <label htmlFor="name" className="col-sm-2 control-label">{ t('Name') }</label>
             <div className="col-sm-4">

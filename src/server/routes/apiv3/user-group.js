@@ -7,10 +7,13 @@ const express = require('express');
 const router = express.Router();
 
 const { body, param, query } = require('express-validator/check');
+const { sanitizeQuery } = require('express-validator/filter');
 
 const validator = {};
 
 const { ObjectId } = require('mongoose').Types;
+
+const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 /**
  * @swagger
@@ -519,7 +522,13 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.userGroupRelations = {};
+  validator.pages = {};
+
+  validator.pages.get = [
+    param('id').trim().exists({ checkFalsy: true }),
+    sanitizeQuery('limit').customSanitizer(toPagingLimit),
+    sanitizeQuery('offset').customSanitizer(toPagingOffset),
+  ];
 
   /**
    * @swagger
@@ -550,17 +559,27 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: page objects
    */
-  router.get('/:id/pages', loginRequired(), adminRequired, async(req, res) => {
+  router.get('/:id/pages', loginRequired(), adminRequired, validator.pages.get, ApiV3FormValidator, async(req, res) => {
     const { id } = req.params;
+    const { limit, offset } = req.query;
 
     try {
-      const userGroup = await UserGroup.findById(id);
-      const pages = await Page
-        .find({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [userGroup] } })
-        .populate('lastUpdateUser', User.USER_PUBLIC_FIELDS)
-        .exec();
+      const { docs, total } = await Page.paginate({
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroup: { $in: [id] },
+      }, {
+        offset,
+        limit,
+        populate: {
+          path: 'lastUpdateUser',
+          select: User.USER_PUBLIC_FIELDS,
+        },
+      });
 
-      return res.apiv3({ pages });
+      const current = offset / limit + 1;
+
+      // TODO: create a common moudule for paginated response
+      return res.apiv3({ total, current, pages: docs });
     }
     catch (err) {
       const msg = `Error occurred in fetching pages for group: ${id}`;

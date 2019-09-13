@@ -39,11 +39,11 @@ class UserGroupUserTable extends React.Component {
           <tr>
             <th width="100px">#</th>
             <th>
-              { t('User') }
+              { t('username') }
             </th>
             <th>{ t('Name') }</th>
             <th width="100px">{ t('Created') }</th>
-            <th width="160px">{ t('Last Login')}</th>
+            <th width="160px">{ t('Last_Login')}</th>
             <th width="70px"></th>
           </tr>
         </thead>
