@@ -41,7 +41,14 @@ module.exports = (crowi) => {
     const zipFilePath = path.join(file.destination, file.filename);
 
     try {
-      await importService.importFromZip(Page, zipFilePath);
+      let overwriteOption;
+      const overwriteOptionFn = importService.getOverwriteOption(Page);
+      // await in case overwriteOption is a Promise
+      if (overwriteOptionFn != null) {
+        overwriteOption = await overwriteOptionFn(req);
+      }
+
+      await importService.importFromZip(Page, zipFilePath, overwriteOption);
 
       // TODO: use res.apiv3
       return res.send({ status: 'OK' });
