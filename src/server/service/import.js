@@ -4,14 +4,14 @@ const path = require('path');
 const mongoose = require('mongoose');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
+const unzip = require('unzipper');
 
 class ImportService {
 
   constructor(crowi) {
-    this.baseDir = path.join(crowi.tmpDir, 'downloads');
+    this.baseDir = path.join(crowi.tmpDir, 'imports');
     this.encoding = 'utf-8';
-    this.per = 100;
-    this.zlibLevel = 9; // 0(min) - 9(max)
+    this.per = 2;
 
     const { ObjectId } = require('mongoose').Types;
     const keepOriginal = v => v;
@@ -42,6 +42,7 @@ class ImportService {
       },
     };
 
+    // overwrite documents with values unrelated to original documents
     this.overwriteOption = {
       pages: (req) => {
         return {
@@ -62,13 +63,17 @@ class ImportService {
    */
   async importFromZip(Model, filePath, overwriteOption = {}) {
     const { collectionName } = Model.collection;
+
+    // extract zip file
+    await this.unzip(filePath);
+
     let counter = 0;
     let nInsertedTotal = 0;
 
     let failedIds = [];
     let unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
 
-    const readStream = fs.createReadStream(path.join(this.baseDir, 'pages.json')); // FIXME
+    const readStream = fs.createReadStream(path.join(this.baseDir, `${collectionName}.json`), { encoding: this.encoding });
     const jsonStream = readStream.pipe(JSONStream.parse('*'));
 
     jsonStream.on('data', async(document) => {
@@ -76,6 +81,7 @@ class ImportService {
       unorderedBulkOp.insert(this.convertDocuments(Model, document, overwriteOption));
 
       counter++;
+      console.log(counter);
 
       if (counter % this.per === 0) {
         // puase jsonStream to prevent more items to be added to unorderedBulkOp
@@ -110,6 +116,24 @@ class ImportService {
 
     // streamToPromise(jsonStream) throws error, so await readStream instead
     await streamToPromise(readStream);
+  }
+
+  /**
+   * extract a zip file
+   *
+   * @memberOf ImportService
+   * @param {string} zipFilePath path to zip file
+   */
+  unzip(zipFilePath) {
+    return new Promise((resolve, reject) => {
+      const unzipStream = fs.createReadStream(zipFilePath).pipe(unzip.Extract({ path: this.baseDir }));
+      unzipStream.on('error', (err) => {
+        reject(err);
+      });
+      unzipStream.on('close', () => {
+        resolve();
+      });
+    });
   }
 
   /**
@@ -188,6 +212,13 @@ class ImportService {
     return document;
   }
 
+  /**
+   * get overwirteOption for model
+   *
+   * @memberOf ImportService
+   * @param {object} Model instance of mongoose model
+   * @return {object} overwirteOption
+   */
   getOverwriteOption(Model) {
     return this.overwriteOption[Model.collection.collectionName];
   }

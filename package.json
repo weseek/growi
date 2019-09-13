@@ -132,6 +132,7 @@
     "string-width": "^4.1.0",
     "swig-templates": "^2.0.2",
     "uglifycss": "^0.0.29",
+    "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
     "xss": "^1.0.6"
   },

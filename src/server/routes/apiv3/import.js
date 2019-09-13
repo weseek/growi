@@ -18,7 +18,15 @@ const router = express.Router();
 module.exports = (crowi) => {
   const { importService } = crowi;
   const { Page } = crowi.models;
-  const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
+  const uploads = multer({
+    dest: importService.baseDir,
+    fileFilter: (req, file, cb) => {
+      if (path.extname(file.originalname) === '.zip') {
+        return cb(null, true);
+      }
+      cb(new Error('Only .zip is allowed'));
+    },
+  });
 
   /**
    * @swagger
