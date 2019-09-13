@@ -13,7 +13,7 @@ const validator = {};
 
 const { ObjectId } = require('mongoose').Types;
 
-const { toPagingLimit, toPagingOffset } = require('../../util/validator');
+const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 /**
  * @swagger
