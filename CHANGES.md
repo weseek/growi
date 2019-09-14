@@ -2,7 +2,9 @@
 
 ## 3.5.13-RC
 
-* 
+* Support: Update libs
+    * entities
+    * markdown-it
 
 ## 3.5.12
 
