@@ -2,6 +2,7 @@
 
 ## 3.5.13-RC
 
+* Feature: Re-edit comments
 * Support: Update libs
     * entities
     * markdown-it
