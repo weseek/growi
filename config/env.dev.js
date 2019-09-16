@@ -9,6 +9,7 @@ module.exports = {
   PLUGIN_NAMES_TOBE_LOADED: [
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
+    // 'growi-plugin-attachment-refs',
   ],
   // PUBLISH_OPEN_API: true,
   // USER_UPPER_LIMIT: 0,

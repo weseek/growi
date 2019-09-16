@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.5.12-RC",
+  "version": "3.5.13-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -62,7 +62,6 @@
   "dependencies": {
     "//": [
       "check-node-version: see https://github.com/parshap/check-node-version/issues/35",
-      "entities: markdown-it@9.0.1 depends on entities@~1.1.1",
       "mongoose: somehow GlobalNotificationSetting CRUD does not work with mongoose v5.6.0",
       "openid-client: Node.js 12 or higher is required for openid-client@3 and above."
     ],
@@ -83,7 +82,7 @@
     "date-fns": "^2.0.0",
     "diff": "^4.0.1",
     "elasticsearch": "^16.0.0",
-    "entities": "=1.1.2",
+    "entities": "^2.0.0",
     "env-cmd": "^10.0.1",
     "esa-nodejs": "^0.0.7",
     "escape-string-regexp": "^2.0.0",
@@ -179,7 +178,7 @@
     "jquery.cookie": "~1.4.1",
     "load-css-file": "^1.0.0",
     "lodash-webpack-plugin": "^0.11.5",
-    "markdown-it": "^9.0.1",
+    "markdown-it": "^10.0.0",
     "markdown-it-blockdiag": "^1.0.2",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-footnote": "^3.0.1",

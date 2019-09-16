@@ -138,6 +138,7 @@ class PageComments extends React.Component {
       <div key={commentId} className={`mb-5 ${rootClassNames}`}>
         <Comment
           comment={comment}
+          editBtnClicked={this.confirmToEditComment}
           deleteBtnClicked={this.confirmToDeleteComment}
           growiRenderer={this.growiRenderer}
           replyList={replies}
