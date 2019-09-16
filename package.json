@@ -154,7 +154,7 @@
     "browser-sync": "^2.26.3",
     "bunyan-debug": "^2.0.0",
     "cli": "~1.0.1",
-    "codemirror": "^5.42.0",
+    "codemirror": "^5.48.4",
     "colors": "^1.2.5",
     "connect-browser-sync": "^2.1.0",
     "core-js": "=2.6.9",
