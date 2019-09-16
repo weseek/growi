@@ -69,9 +69,9 @@ module.exports = function(crowi) {
   };
 
   attachmentSchema.statics.removeAttachmentsByPageId = async function(pageId) {
-    const attachments = this.find({ page: pageId });
+    const attachments = await this.find({ page: pageId });
 
-    const promises = attachments.map((attachment) => {
+    const promises = attachments.map(async(attachment) => {
       return this.removeWithSubstanceById(attachment._id);
     });
 
