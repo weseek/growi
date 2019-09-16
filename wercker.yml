@@ -51,12 +51,18 @@ build-prod:
     - script:
       name: install plugins
       code: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+        yarn add -D react-images react-motion
 
     - script:
       name: npm run build:prod:analyze
       code: |
         npm run build:prod:analyze
+
+    - script:
+      name: shrink dependencies for production
+      code: |
+        yarn install --production
 
     - script:
       name: npm run server:prod:ci
