@@ -68,28 +68,14 @@ module.exports = function(crowi) {
     return attachment;
   };
 
-  attachmentSchema.statics.removeAttachmentsByPageId = function(pageId) {
-    const Attachment = this;
+  attachmentSchema.statics.removeAttachmentsByPageId = async function(pageId) {
+    const attachments = this.find({ page: pageId });
 
-    return new Promise((resolve, reject) => {
-      Attachment.find({ page: pageId })
-        .then((attachments) => {
-          for (const attachment of attachments) {
-            Attachment.removeWithSubstanceById(attachment._id)
-              .then((res) => {
-                // do nothing
-              })
-              .catch((err) => {
-                debug('Attachment remove error', err);
-              });
-          }
-
-          resolve(attachments);
-        })
-        .catch((err) => {
-          reject(err);
-        });
+    const promises = attachments.map((attachment) => {
+      return this.removeWithSubstanceById(attachment._id);
     });
+
+    return Promise.all(promises);
   };
 
   attachmentSchema.statics.removeWithSubstanceById = async function(id) {
