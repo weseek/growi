@@ -1,6 +1,6 @@
 {
   "name": "growi-plugin-attachment-refs",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "keywords": [
     "growi",
@@ -41,7 +41,8 @@
     "react-dom": "^16.4.1"
   },
   "peerDependencies": {
-    "react-images": "^1.0.0"
+    "react-images": "^1.0.0",
+    "react-motion": "^0.5.2"
   },
   "engines": {
     "node": ">=8.11.1 <11",
