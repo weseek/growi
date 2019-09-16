@@ -1,7 +1,6 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
-const debug = require('debug')('growi:models:attachment');
 // eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:models:attachment');
 const path = require('path');
