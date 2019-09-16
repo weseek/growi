@@ -4,7 +4,6 @@
 [![devDependencies Status](https://david-dm.org/weseek/growi-plugin-attachment-refs/dev-status.svg)](https://david-dm.org/weseek/growi-plugin-attachment-refs?type=dev)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-
 Install
 --------
 
@@ -17,10 +16,26 @@ Install
 1. build client app (see official documents)
 
 
+Examples
+-------
+
+### List attachments
+
+![refs](https://user-images.githubusercontent.com/1638767/64986526-1b23be00-d902-11e9-9e33-65ad15767920.gif)
+
+### Extract image attachments
+
+![refsimg](https://user-images.githubusercontent.com/1638767/64986528-1c54eb00-d902-11e9-95dc-2784fa15746c.gif)
+
+### Image Carousel
+
+![lightbox](https://user-images.githubusercontent.com/1638767/64986530-1e1eae80-d902-11e9-8711-b5df3572769c.gif)
+
+
 Usage
 ------
 
-### `ref` tag
+### `$ref` tag
 
 #### Syntax
 
@@ -29,26 +44,19 @@ $ref(file.txt)
 $ref(file.txt, page=/somewhere/page)
 ```
 
-#### Output
-
-![here](resource/img/ref_example.png)
-
 #### Options
 
 - **`file`** : File name of reference file (default: the first argument)
 - *`page`* : Target page path of reference file (default: current page)
 
-### `refs` tag
+
+### `$refs` tag
 
 #### Syntax
 
 ```
 $refs(/somewhere/page, regexp=/^file.*\.txt$/)
 ```
-
-#### Output
-
-![ref_example](resource/img/refs_example.png)
 
 #### Options
 
@@ -59,18 +67,12 @@ $refs(/somewhere/page, regexp=/^file.*\.txt$/)
 - (TBD) *`format`* : File format filtering
 
 
-### `refimg` tag
+### `$refimg` tag
 
 #### Syntax
 
 ```
 $refimg(pict.png, width=50%, alt=Pic)
-```
-
-#### Output
-
-```html
-<img src="/attachment/xxxxx" width="50%" alt="Pic">
 ```
 
 #### Options
@@ -83,21 +85,13 @@ $refimg(pict.png, width=50%, alt=Pic)
 - *`alt`* : alt text
 
 
-### `refsimg` tag
+### `$refsimg` tag
 
 #### Syntax
 
 ```
 $refsimg(/somewhere/page, regexp=/^.*\.png$/, max-width=200)
 $refsimg(prefix=/somewhere, grid=autofill, grid-gap=1px)
-```
-
-#### Output
-
-```html
-<div><img src="/attachment/xxxxx" style="max-width: 200"></div>
-<div><img src="/attachment/yyyyy" style="max-width: 200"></div>
-<div><img src="/attachment/zzzzz" style="max-width: 200"></div>
 ```
 
 #### Options
@@ -118,10 +112,12 @@ $refsimg(prefix=/somewhere, grid=autofill, grid-gap=1px)
 - *`display`* : `display` property for image (use `display: block` when undefined)
   - This option is disabled when `grid` option is set.
 - *`grid`* : Grid layout settings
-  - `autofill` : Grid layout with auto filling with 100px tracks
-  - `autofill-2x` : Grid layout with auto filling with 200px tracks
-  - `autofill-3x` : Grid layout with auto filling with 300px tracks
-  - `autofill-4x` : Grid layout with auto filling with 400px tracks
+  - `autofill` : Grid layout with auto filling with 64px tracks
+  - `autofill-xs` : Grid layout with auto filling with 32px tracks
+  - `autofill-sm` : Grid layout with auto filling with 48px tracks
+  - `autofill-md` : Grid layout with auto filling with 64px tracks
+  - `autofill-lg` : Grid layout with auto filling with 128px tracks
+  - `autofill-xl` : Grid layout with auto filling with 192px tracks
   - `col-2` : Grid layout with 2 columns
   - `col-3` : Grid layout with 3 columns
   - `col-4` : Grid layout with 4 columns
@@ -132,27 +128,16 @@ $refsimg(prefix=/somewhere, grid=autofill, grid-gap=1px)
 - *`no-carousel`* : Omit carousel function and just show images
 
 
-### `gallery` tag
+### `$gallery` tag
+
+![gallery](https://user-images.githubusercontent.com/1638767/64987263-d00aaa80-d903-11e9-83f6-7669e9945015.png)
+
+Short-hand for `$refsimg(grid=col4, grid-gap=1px)`.
 
 #### Syntax
 
 ```
 $gallery(prefix=/somewhere/page)
-```
-
-`gallery` is a Grid Mode Syntax Sugar for `refsimg`.  
-This is same to:
-
-```
-$refsimg(prefix=/somewhere, grid=col-4, grid-gap=1px)
-```
-
-#### Output
-
-```html
-<div><img src="/attachment/xxxxx" style="max-width: 200"></div>
-<div><img src="/attachment/yyyyy" style="max-width: 200"></div>
-<div><img src="/attachment/zzzzz" style="max-width: 200"></div>
 ```
 
 #### Options
