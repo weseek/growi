@@ -1,8 +1,13 @@
 # CHANGES
 
-## 3.5.13-RC
+## 3.5.14-RC
+
+* 
+
+## 3.5.13
 
 * Feature: Re-edit comments
+* Support: [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs)
 * Support: Update libs
     * entities
     * markdown-it
