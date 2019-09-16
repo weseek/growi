@@ -11,6 +11,7 @@ Install
 
     ```bash
     yarn add growi-plugin-attachment-refs
+    yarn add -D react-images
     ```
 
 1. build client app (see official documents)
