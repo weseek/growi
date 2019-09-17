@@ -8,25 +8,37 @@ class ExportService {
 
   constructor(crowi) {
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
-    this.extension = 'json';
     this.encoding = 'utf-8';
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
 
-    this.files = {};
-    // populate this.files
+    // { pages: Page, users: User, ... }
+    this.collectionMap = {};
+    this.initCollectionMap(crowi.models);
+
     // this.files = {
     //   configs: path.join(this.baseDir, 'configs.json'),
     //   pages: path.join(this.baseDir, 'pages.json'),
     //   pagetagrelations: path.join(this.baseDir, 'pagetagrelations.json'),
     //   ...
     // };
-    // TODO: handle 3 globalnotificationsettings collection properly
-    // see Object.values(crowi.models).forEach((m) => { return console.log(m.collection.collectionName) });
+    this.files = {};
     Object.values(crowi.models).forEach((m) => {
       const name = m.collection.collectionName;
-      this.files[name] = path.join(this.baseDir, `${name}.${this.extension}`);
+      this.files[name] = path.join(this.baseDir, `${name}.json`);
     });
+  }
+
+  /**
+   * initialize collection map
+   *
+   * @memberOf ExportService
+   * @param {object} models from models/index.js
+   */
+  initCollectionMap(models) {
+    for (const model of Object.values(models)) {
+      this.collectionMap[model.collection.collectionName] = model;
+    }
   }
 
   /**
@@ -47,6 +59,12 @@ class ExportService {
 
     files.forEach((file) => {
       status[path.basename(file, '.zip')] = file;
+    });
+
+    files.forEach((file) => {
+      const stats = fs.statSync(path.join(this.baseDir, file));
+      stats.name = file;
+      status[path.basename(file, '.zip')] = stats;
     });
 
     return status;
@@ -198,6 +216,23 @@ class ExportService {
     }
 
     return zip;
+  }
+
+  /**
+   * get a model from collection name
+   *
+   * @memberOf ExportService
+   * @param {object} collectionName collection name
+   * @return {object} instance of mongoose model
+   */
+  getModelFromCollectionName(collectionName) {
+    const Model = this.collectionMap[collectionName];
+
+    if (Model == null) {
+      throw new Error(`cannot find a model for collection name "${collectionName}"`);
+    }
+
+    return Model;
   }
 
 }

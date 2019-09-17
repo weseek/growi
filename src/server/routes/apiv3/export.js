@@ -87,14 +87,17 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    */
-  router.post('/pages', async(req, res) => {
-    // TODO: rename path to "/:collection" and add express validator
+  router.post('/:collection', async(req, res) => {
+    // TODO: add express validator
     try {
-      const file = await exportService.exportCollection(Page);
+      const { collection } = req.params;
+      const Model = exportService.getModelFromCollectionName(collection);
+
+      const file = await exportService.exportCollection(Model);
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        collection: [Page.collection.collectionName],
+        collection: [Model.collection.collectionName],
         file: path.basename(file),
       });
     }
