@@ -14,10 +14,12 @@ class ExportPage extends React.Component {
 
     this.state = {
       files: {},
+      collections: new Set(),
     };
 
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.exportSingle = this.exportSingle.bind(this);
+    this.exportMultiple = this.exportMultiple.bind(this);
     this.deleteZipFile = this.deleteZipFile.bind(this);
   }
 
@@ -31,14 +33,36 @@ class ExportPage extends React.Component {
     const { target } = e;
     const { name, checked } = target;
 
-    this.setState({
-      [name]: checked,
+    this.setState((prevState) => {
+      const collections = new Set(prevState.collections);
+      if (checked) {
+        collections.add(name);
+      }
+      else {
+        collections.delete(name);
+      }
+
+      return { collections };
     });
   }
 
   async exportSingle(collection) {
     // TODO use appContainer.apiv3.post
     const res = await this.props.appContainer.apiPost(`/v3/export/${collection}`, {});
+    // TODO toastSuccess, toastError
+    this.setState((prevState) => {
+      return {
+        files: {
+          ...prevState.files,
+          [res.collection]: res.file,
+        },
+      };
+    });
+  }
+
+  async exportMultiple() {
+    // TODO use appContainer.apiv3.post
+    const res = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
     // TODO toastSuccess, toastError
     this.setState((prevState) => {
       return {
@@ -74,7 +98,7 @@ class ExportPage extends React.Component {
                   className="form-check-input"
                   value={file}
                   disabled={disabled}
-                  checked={this.state[file]}
+                  checked={this.state.collections.has(file)}
                   onChange={this.toggleCheckbox}
                 />
                 <label className={`form-check-label ml-3 ${disabled ? 'text-muted' : ''}`} htmlFor={file}>
@@ -87,7 +111,7 @@ class ExportPage extends React.Component {
             );
           })}
         </form>
-        <button type="button" className="btn btn-sm btn-default" onClick={this.exportSingle}>Generate</button>
+        <button type="button" className="btn btn-sm btn-default" onClick={this.exportMultiple}>Generate</button>
         <a href="/_api/v3/export/pages">
           <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
         </a>
