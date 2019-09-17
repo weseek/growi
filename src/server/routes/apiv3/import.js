@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-lin
 const path = require('path');
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
+const { ObjectId } = require('mongoose').Types;
 
 const express = require('express');
 
@@ -17,24 +18,39 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const { importService } = crowi;
-  const { Page } = crowi.models;
   const uploads = multer({
     dest: importService.baseDir,
     fileFilter: (req, file, cb) => {
       if (path.extname(file.originalname) === '.zip') {
         return cb(null, true);
       }
-      cb(new Error('Only .zip is allowed'));
+      cb(new Error('Only ".zip" is allowed'));
     },
   });
 
   /**
+   * defined overwrite option for each collection
+   * all imported documents are overwriten by this value
+   * may use async function
+   *
+   * @param {object} req
+   * @return {object} document to be persisted
+   */
+  const overwriteParamsFn = {};
+  overwriteParamsFn.pages = (req) => {
+    return {
+      creator: ObjectId(req.user._id), // FIXME when importing users
+      lastUpdateUser: ObjectId(req.user._id), // FIXME when importing users
+    };
+  };
+
+  /**
    * @swagger
    *
-   *  /export/pages:
+   *  /export/:collection:
    *    post:
    *      tags: [Import]
-   *      description: import a collection from a zipped json for page collection
+   *      description: import a collection from a zipped json
    *      produces:
    *        - application/json
    *      responses:
@@ -43,20 +59,21 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    */
-  router.post('/pages', uploads.single('file'), autoReap, async(req, res) => {
-    // TODO: rename path to "/:collection" and add express validator
+  router.post('/:collection', uploads.single('file'), autoReap, async(req, res) => {
+    // TODO: add express validator
     const { file } = req;
+    const { collection } = req.params;
+    const Model = importService.getModelFromCollectionName(collection);
     const zipFilePath = path.join(file.destination, file.filename);
 
     try {
-      let overwriteOption;
-      const overwriteOptionFn = importService.getOverwriteOption(Page);
-      // await in case overwriteOption is a Promise
-      if (overwriteOptionFn != null) {
-        overwriteOption = await overwriteOptionFn(req);
+      let overwriteParams;
+      if (overwriteParamsFn[collection] != null) {
+        // await in case overwriteParamsFn[collection] is a Promise
+        overwriteParams = await overwriteParamsFn[collection](req);
       }
 
-      await importService.importFromZip(Page, zipFilePath, overwriteOption);
+      await importService.importFromZip(Model, zipFilePath, overwriteParams);
 
       // TODO: use res.apiv3
       return res.send({ status: 'OK' });

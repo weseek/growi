@@ -1,7 +1,6 @@
 const logger = require('@alias/logger')('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
-const mongoose = require('mongoose');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
 const unzip = require('unzipper');
@@ -11,46 +10,85 @@ class ImportService {
   constructor(crowi) {
     this.baseDir = path.join(crowi.tmpDir, 'imports');
     this.encoding = 'utf-8';
-    this.per = 2;
+    this.per = 100;
+    this.ObjectId = require('mongoose').Types.ObjectId;
+    this.keepOriginal = this.keepOriginal.bind(this);
 
-    const { ObjectId } = require('mongoose').Types;
-    const keepOriginal = v => v;
-    const toObjectId = v => ObjectId(v);
+    // { pages: Page, users: User, ... }
+    this.collectionMap = {};
+    this.initCollectionMap(crowi.models);
+
+    // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
+    this.convertMap = {};
+    this.initConvertMap(crowi.models);
+  }
+
+  /**
+   * initialize collection map
+   *
+   * @memberOf ImportService
+   * @param {object} models from models/index.js
+   */
+  initCollectionMap(models) {
+    for (const model of Object.values(models)) {
+      this.collectionMap[model.collection.collectionName] = model;
+    }
+  }
+
+  /**
+   * initialize convert map
+   *
+   * @memberOf ImportService
+   * @param {object} models from models/index.js
+   */
+  initConvertMap(models) {
+    // by default, original value is used for imported documents
+    for (const model of Object.values(models)) {
+      this.convertMap[model.collection.collectionName] = {};
+      for (const key of Object.keys(model.schema.paths)) {
+        this.convertMap[model.collection.collectionName][key] = this.keepOriginal;
+      }
+    }
+
     // each key accepts either function or hardcoded value
-    // to filter out an attribute, try "[key]: undefined" or unlisting the key
-    this.attrMap = {
-      pages: {
-        _id: toObjectId,
-        path: keepOriginal,
-        revision: toObjectId,
-        redirectTo: keepOriginal,
+    // 1. to keep the value => unlist the key
+    // 2. to filter out an attribute, explicitly set it to undefined. e.g. "[key]: undefined"
+    this.convertMap = {
+      pages: Object.assign(this.convertMap.pages, {
         status: 'published', // FIXME when importing users and user groups
         grant: 1, // FIXME when importing users and user groups
         grantedUsers: [], // FIXME when importing users and user groups
         grantedGroup: null, // FIXME when importing users and user groups
-        // creator: keepOriginal, // FIXME when importing users
-        // lastUpdateUser: keepOriginal, // FIXME when importing users
         liker: [], // FIXME when importing users
         seenUsers: [], // FIXME when importing users
         commentCount: 0, // FIXME when importing comments
         extended: {}, // FIXME when ?
-        // pageIdOnHackmd: keepOriginal, // FIXME when importing hackmd?
-        // revisionHackmdSynced: keepOriginal, // FIXME when importing hackmd?
-        // hasDraftOnHackmd: keepOriginal, // FIXME when importing hackmd?
-        createdAt: keepOriginal,
-        updatedAt: keepOriginal,
-      },
+        pageIdOnHackmd: undefined, // FIXME when importing hackmd?
+        revisionHackmdSynced: undefined, // FIXME when importing hackmd?
+        hasDraftOnHackmd: undefined, // FIXME when importing hackmd?
+      }),
     };
+  }
 
-    // overwrite documents with values unrelated to original documents
-    this.overwriteOption = {
-      pages: (req) => {
-        return {
-          creator: mongoose.Types.ObjectId(req.user._id),
-          lastUpdateUser: mongoose.Types.ObjectId(req.user._id),
-        };
-      },
-    };
+  /**
+   * keep original value
+   * automatically convert ObjectId
+   *
+   * @memberOf ImportService
+   * @param {array<object>} _value value from imported document
+   * @param {{ _document: object, schema: object, key: string }}
+   * @return {any} new value for the document
+   */
+  keepOriginal(_value, { _document, schema, key }) {
+    let value;
+    if (schema[key].instance === 'ObjectID' && this.ObjectId.isValid(_value)) {
+      value = this.ObjectId(_value);
+    }
+    else {
+      value = _value;
+    }
+
+    return value;
   }
 
   /**
@@ -59,9 +97,9 @@ class ImportService {
    * @memberOf ImportService
    * @param {object} Model instance of mongoose model
    * @param {string} filePath path to zipped json
-   * @param {object} overwriteOption overwrite each document with unrelated value. e.g. { creator: req.user }
+   * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
    */
-  async importFromZip(Model, filePath, overwriteOption = {}) {
+  async importFromZip(Model, filePath, overwriteParams = {}) {
     const { collectionName } = Model.collection;
 
     // extract zip file
@@ -78,10 +116,9 @@ class ImportService {
 
     jsonStream.on('data', async(document) => {
       // documents are not persisted until unorderedBulkOp.execute()
-      unorderedBulkOp.insert(this.convertDocuments(Model, document, overwriteOption));
+      unorderedBulkOp.insert(this.convertDocuments(Model, document, overwriteParams));
 
       counter++;
-      console.log(counter);
 
       if (counter % this.per === 0) {
         // puase jsonStream to prevent more items to be added to unorderedBulkOp
@@ -176,36 +213,39 @@ class ImportService {
    * @memberOf ImportService
    * @param {object} Model instance of mongoose model
    * @param {object} _document document being imported
-   * @param {object} overwriteOption overwrite each document with unrelated value. e.g. { creator: req.user }
+   * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
    * @return {object} document to be persisted
    */
-  convertDocuments(Model, _document, overwriteOption) {
-    const attrMap = this.attrMap[Model.collection.collectionName];
-    if (attrMap == null) {
-      throw new Error(`attribute map is not defined for ${Model.collection.collectionName}`);
+  convertDocuments(Model, _document, overwriteParams) {
+    const collectionName = Model.collection.collectionName;
+    const schema = Model.schema.paths;
+    const convertMap = this.convertMap[collectionName];
+
+    if (convertMap == null) {
+      throw new Error(`attribute map is not defined for ${collectionName}`);
     }
 
     const document = {};
 
-    // generate value from documents being imported
-    for (const entry of Object.entries(attrMap)) {
-      const key = entry[0];
-      const value = entry[1];
+    // assign value from documents being imported
+    for (const entry of Object.entries(convertMap)) {
+      const [key, value] = entry;
 
       // distinguish between null and undefined
-      if (_document[key] !== undefined) {
-        document[key] = (typeof value === 'function') ? value(_document[key]) : value;
+      if (_document[key] === undefined) {
+        continue; // next entry
       }
+
+      document[key] = (typeof value === 'function') ? value(_document[key], { _document, key, schema }) : value;
     }
 
-    // overwrite documents
-    for (const entry of Object.entries(overwriteOption)) {
-      const key = entry[0];
-      const value = entry[1];
+    // overwrite documents with custom values
+    for (const entry of Object.entries(overwriteParams)) {
+      const [key, value] = entry;
 
       // distinguish between null and undefined
       if (_document[key] !== undefined) {
-        document[key] = (typeof value === 'function') ? value(_document[key]) : value;
+        document[key] = (typeof value === 'function') ? value(_document[key], { _document, key, schema }) : value;
       }
     }
 
@@ -213,14 +253,20 @@ class ImportService {
   }
 
   /**
-   * get overwirteOption for model
+   * get a model from collection name
    *
    * @memberOf ImportService
-   * @param {object} Model instance of mongoose model
-   * @return {object} overwirteOption
+   * @param {object} collectionName collection name
+   * @return {object} instance of mongoose model
    */
-  getOverwriteOption(Model) {
-    return this.overwriteOption[Model.collection.collectionName];
+  getModelFromCollectionName(collectionName) {
+    const Model = this.collectionMap[collectionName];
+
+    if (Model == null) {
+      throw new Error(`cannot find a model for collection name "${collectionName}"`);
+    }
+
+    return Model;
   }
 
 }
