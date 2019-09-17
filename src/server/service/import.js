@@ -4,6 +4,7 @@ const path = require('path');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
 const unzip = require('unzipper');
+const { ObjectId } = require('mongoose').Types;
 
 class ImportService {
 
@@ -11,7 +12,6 @@ class ImportService {
     this.baseDir = path.join(crowi.tmpDir, 'imports');
     this.encoding = 'utf-8';
     this.per = 100;
-    this.ObjectId = require('mongoose').Types.ObjectId;
     this.keepOriginal = this.keepOriginal.bind(this);
 
     // { pages: Page, users: User, ... }
@@ -81,8 +81,8 @@ class ImportService {
    */
   keepOriginal(_value, { _document, schema, key }) {
     let value;
-    if (schema[key].instance === 'ObjectID' && this.ObjectId.isValid(_value)) {
-      value = this.ObjectId(_value);
+    if (schema[key].instance === 'ObjectID' && ObjectId.isValid(_value)) {
+      value = ObjectId(_value);
     }
     else {
       value = _value;

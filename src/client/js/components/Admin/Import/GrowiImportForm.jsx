@@ -37,7 +37,11 @@ class GrowiImportForm extends React.Component {
   }
 
   validateForm() {
-    return this.inputRef.current && this.inputRef.current.files[0] != null;
+    return (
+      this.inputRef.current // null check
+      && this.inputRef.current.files[0] // null check
+      && /\.zip$/.test(this.inputRef.current.files[0].name) // validate extension
+    );
   }
 
   render() {
