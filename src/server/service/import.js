@@ -111,7 +111,8 @@ class ImportService {
     let failedIds = [];
     let unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
 
-    const readStream = fs.createReadStream(path.join(this.baseDir, `${collectionName}.json`), { encoding: this.encoding });
+    const tmpJson = path.join(this.baseDir, `${collectionName}.json`);
+    const readStream = fs.createReadStream(tmpJson, { encoding: this.encoding });
     const jsonStream = readStream.pipe(JSONStream.parse('*'));
 
     jsonStream.on('data', async(document) => {
@@ -153,6 +154,9 @@ class ImportService {
 
     // streamToPromise(jsonStream) throws error, so await readStream instead
     await streamToPromise(readStream);
+
+    // clean up tmp directory
+    fs.unlinkSync(tmpJson);
   }
 
   /**
