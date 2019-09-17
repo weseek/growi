@@ -63,6 +63,8 @@ module.exports = function(crowi) {
       Key: filePath,
     };
 
+    // TODO: ensure not to throw error even when the file does not exist
+
     return s3.deleteObject(params).promise();
   };
 

@@ -256,6 +256,8 @@ class Comment extends React.Component {
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
     const createdAt = new Date(comment.createdAt);
+    const updatedAt = new Date(comment.updatedAt);
+    const isEdited = createdAt < updatedAt;
 
     const showReEditor = this.state.showReEditorIds.has(commentId);
 
@@ -271,6 +273,13 @@ class Comment extends React.Component {
         {format(createdAt, 'yyyy/MM/dd HH:mm')}
       </Tooltip>
     );
+    const editedDateTooltip = isEdited
+      ? (
+        <Tooltip id={`editedDateTooltip-${comment._id}`}>
+          {format(updatedAt, 'yyyy/MM/dd HH:mm')}
+        </Tooltip>
+      )
+      : null;
 
     return (
       <React.Fragment>
@@ -295,6 +304,11 @@ class Comment extends React.Component {
                 <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
                   <span>{commentDate}</span>
                 </OverlayTrigger>
+                { isEdited && (
+                  <OverlayTrigger overlay={editedDateTooltip} placement="bottom">
+                    <span>&nbsp;(edited)</span>
+                  </OverlayTrigger>
+                ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
               { this.checkPermissionToControlComment() && this.renderCommentControl(comment) }

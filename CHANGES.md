@@ -1,8 +1,17 @@
 # CHANGES
 
-## 3.5.13-RC
+## 3.5.14-RC
 
-* 
+* Support: Upgrade libs
+    * codemirror
+
+## 3.5.13
+
+* Feature: Re-edit comments
+* Support: [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs)
+* Support: Upgrade libs
+    * entities
+    * markdown-it
 
 ## 3.5.12
 

@@ -192,24 +192,18 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
+    let updatedComment;
     try {
-      const updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
-
-      const page = await Page.findOneAndUpdate({ _id: pageId }, {
-        lastUpdateUser: req.user,
-        updatedAt: new Date(),
-      });
-
-      res.json(ApiResponse.success({ comment: updatedComment }));
-
-      const path = page.path;
-
-      // global notification
-      globalNotificationService.notifyComment(updatedComment, path);
+      updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
     }
     catch (err) {
+      logger.error(err);
       return res.json(ApiResponse.error(err));
     }
+
+    res.json(ApiResponse.success({ comment: updatedComment }));
+
+    // process notification if needed
   };
 
   /**
