@@ -59,36 +59,40 @@
     }
   }
 
+  //// TODO: migrate to Bootstrap 4
+  //// omit all .btn-toggle and use Switches
+  //// https://getbootstrap.com/docs/4.2/components/forms/#switches
+  //
   // Toggle Twitter Bootstrap button class when active
   // https://jsfiddle.net/ms040m01/3/
-  @mixin active-color($color, $bg-color, $border-color) {
-    color: $color;
-    background-color: darken($bg-color, 10%);
-    border-color: $border-color;
+  // @mixin active-color($color, $bg-color, $border-color) {
+  //   color: $color;
+  //   background-color: darken($bg-color, 10%);
+  //   border-color: $border-color;
 
-    &:hover {
-      background-color: darken($bg-color, 15%);
-    }
-  }
-  .btn-group.btn-toggle {
-    .btn {
-      min-width: 60px;
-    }
-    .btn.active[data-active-class='default'] {
-      @include active-color($btn-default-color, $btn-default-bg, $btn-default-border);
-    }
-    .btn.active[data-active-class='primary'] {
-      @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
-    }
+  //   &:hover {
+  //     background-color: darken($bg-color, 15%);
+  //   }
+  // }
+  // .btn-group.btn-toggle {
+  //   .btn {
+  //     min-width: 60px;
+  //   }
+  //   .btn.active[data-active-class='default'] {
+  //     @include active-color($btn-default-color, $btn-default-bg, $btn-default-border);
+  //   }
+  //   .btn.active[data-active-class='primary'] {
+  //     @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+  //   }
 
-    // disabled btn-group styles
-    &.btn-group-disabled {
-      .btn:hover {
-        cursor: not-allowed;
-        background-color: unset;
-      }
-    }
-  }
+  //   // disabled btn-group styles
+  //   &.btn-group-disabled {
+  //     .btn:hover {
+  //       cursor: not-allowed;
+  //       background-color: unset;
+  //     }
+  //   }
+  // }
 
   // theme selector
   #themeOptions {

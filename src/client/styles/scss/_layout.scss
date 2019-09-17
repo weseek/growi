@@ -15,16 +15,6 @@
         cursor: default;
       }
     }
-
-    .nav-item-admin,
-    .nav-item-create-page {
-      span {
-        margin-left: 0.5em;
-        @media (max-width: $screen-xs-min) {
-          display: none;
-        }
-      }
-    }
   }
 
   /*

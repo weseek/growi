@@ -1,12 +1,10 @@
 #shortcuts-modal {
-  // more than tablet size
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-only(xs) {
     .modal-dialog {
       width: 750px;
     }
   }
-  // less than tablet size
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-up(sm) {
     table {
       table-layout: fixed;
     }

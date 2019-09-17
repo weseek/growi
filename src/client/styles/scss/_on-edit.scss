@@ -120,11 +120,6 @@ body.on-edit {
     .tag-viewer.new-page {
       display: block;
     }
-
-    // hide if screen size is less than tablet
-    @media (max-width: $screen-sm) {
-      display: none;
-    }
   }
 
   .page-editor-footer {
@@ -234,11 +229,6 @@ body.on-edit {
             margin-right: 10px;
           }
         }
-      }
-
-      // less than smartphone size
-      @media (max-width: $screen-xs-max) {
-        display: none;
       }
     }
 

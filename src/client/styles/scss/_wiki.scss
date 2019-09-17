@@ -227,8 +227,7 @@ div.body {
   }
 }
 
-// tablet and iphone size
-@media (max-width: $screen-sm-max) {
+@include media-breakpoint-down(sm) {
   .main-container .main .wiki {
     img {
       max-width: 100%;

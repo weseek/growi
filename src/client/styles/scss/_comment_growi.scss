@@ -4,8 +4,7 @@
     padding: 1em;
     margin-left: 4.5em;
 
-    // screen-xs
-    @media (max-width: $screen-xs) {
+    @include media-breakpoint-down(xs) {
       margin-left: 3.5em;
     }
 
@@ -20,8 +19,7 @@
       border: 1em solid transparent;
       border-left-width: 0;
 
-      // screen-xs
-      @media (max-width: $screen-xs) {
+      @include media-breakpoint-down(xs) {
         top: 1em;
       }
     }
@@ -32,8 +30,8 @@
     width: 3em;
     height: 3em;
     margin-top: 0.8em;
-    // screen-xs
-    @media (max-width: $screen-xs) {
+
+    @include media-breakpoint-down(xs) {
       width: 2em;
       height: 2em;
     }

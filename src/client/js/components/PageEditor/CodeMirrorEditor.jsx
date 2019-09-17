@@ -808,7 +808,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderLoadingKeymapOverlay() }
 
-        <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
+        <div className="overlay overlay-gfm-cheatsheet d-none d-sm-block mt-1 p-3 pt-3">
           { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
           { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
         </div>

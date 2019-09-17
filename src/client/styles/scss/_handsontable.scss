@@ -37,7 +37,7 @@
   transform: none;
 
   .modal-navbar {
-    background-color: $navbar-default-bg;
+    @extend .bg-light;
     border-bottom: $border 1px solid;
   }
 

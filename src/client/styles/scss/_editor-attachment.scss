@@ -120,19 +120,3 @@
     }
   }
 }
-
-#page-editor {
-  @media (max-width: $screen-xs) {
-    .desc-long {
-      display: none;
-    }
-  }
-}
-
-.comment-form {
-  @media (max-width: $screen-sm) {
-    .desc-long {
-      display: none;
-    }
-  }
-}

@@ -1,6 +1,6 @@
 .modal.create-page {
   // more than tablet size
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     .modal-dialog {
       width: 750px;
     }
@@ -26,7 +26,7 @@
         }
 
         // change layout by screen size
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           flex-direction: column;
           .create-page-button-container {
             margin-top: 10px;

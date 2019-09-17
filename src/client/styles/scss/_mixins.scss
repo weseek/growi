@@ -1,16 +1,17 @@
 @mixin variable-font-size($basesize) {
-  font-size: $basesize;
-  @media (max-width: $screen-lg) {
-    font-size: #{$basesize * 0.9};
-  }
-  @media (max-width: $screen-md) {
-    font-size: #{$basesize * 0.8};
-  }
-  @media (max-width: $screen-sm) {
+  font-size: $basesize * 0.6;
+
+  @include media-breakpoint-only(sm) {
     font-size: #{$basesize * 0.7};
   }
-  @media (max-width: $screen-xs) {
-    font-size: #{$basesize * 0.6};
+  @include media-breakpoint-only(md) {
+    font-size: #{$basesize * 0.8};
+  }
+  @include media-breakpoint-only(lg) {
+    font-size: #{$basesize * 0.9};
+  }
+  @include media-breakpoint-only(xl) {
+    font-size: $basesize;
   }
 }
 
@@ -64,7 +65,7 @@
             height: calc(100vh - #{$editor-margin});
           }
 
-          @media (min-width: $screen-md) {
+          @include media-breakpoint-up(md) {
             padding-right: 0;
           }
         }

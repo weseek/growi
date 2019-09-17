@@ -314,7 +314,7 @@ export default class Editor extends AbstractEditor {
 
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
             Attach files
-            <span className="desc-long">
+            <span className="d-none d-sm-block">
               &nbsp;by dragging &amp; dropping,&nbsp;
               <span className="btn-link">selecting them</span>,&nbsp;
               or pasting from the clipboard.

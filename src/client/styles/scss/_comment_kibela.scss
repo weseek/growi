@@ -5,7 +5,7 @@
     padding: 1em;
     margin-left: 4.5em;
 
-    @media (max-width: $screen-xs) {
+    @include media-breakpoint-down(xs) {
       margin-left: 3.5em;
     }
 
@@ -24,7 +24,7 @@
       border-left: 20px solid transparent;
       border-left-width: 0;
 
-      @media (max-width: $screen-xs) {
+      @include media-breakpoint-down(xs) {
         top: 1em;
       }
     }
@@ -33,9 +33,10 @@
   %picture {
     float: left;
     width: 3em;
-    height: 3em; // screen-xs
+    height: 3em;
     margin-top: 0.8em;
-    @media (max-width: $screen-xs) {
+
+    @include media-breakpoint-down(xs) {
       width: 2em;
       height: 2em;
     }
@@ -149,22 +150,25 @@
     .CodeMirror {
       border: 0px !important;
     }
-    #page-editor {
-      @media (max-width: $screen-sm) {
-        .desc-long {
-          display: none;
-        }
-      }
-    }
-    @media screen and (max-width: 1400px) {
-      .desc-long {
-        display: none;
-      }
-      @media screen and (max-width: 570px) {
-        .gfm-cheatsheet {
-          display: none;
-        }
-      }
-    }
+
+    //// TODO: migrate to Bootstrap 4
+    // use @include media-breakpoint-*
+    // #page-editor {
+    //   @media (max-width: $screen-sm) {
+    //     .desc-long {
+    //       display: none;
+    //     }
+    //   }
+    // }
+    // @media screen and (max-width: 1400px) {
+    //   .desc-long {
+    //     display: none;
+    //   }
+    //   @media screen and (max-width: 570px) {
+    //     .gfm-cheatsheet {
+    //       display: none;
+    //     }
+    //   }
+    // }
   }
 }

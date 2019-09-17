@@ -59,11 +59,6 @@
         opacity: 1;
       }
     }
-
-    // hide on smartphone
-    @media (max-width: $screen-xs) {
-      display: none;
-    }
   }
 }
 
