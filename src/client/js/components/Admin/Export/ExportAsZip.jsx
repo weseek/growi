@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { format } from 'date-fns';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -13,9 +14,12 @@ class ExportPage extends React.Component {
 
     this.state = {
       files: {},
+      collections: new Set(),
     };
 
-    this.createZipFile = this.createZipFile.bind(this);
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
+    this.exportSingle = this.exportSingle.bind(this);
+    this.exportMultiple = this.exportMultiple.bind(this);
     this.deleteZipFile = this.deleteZipFile.bind(this);
   }
 
@@ -25,9 +29,40 @@ class ExportPage extends React.Component {
     this.setState({ files: res.files });
   }
 
-  async createZipFile() {
+  toggleCheckbox(e) {
+    const { target } = e;
+    const { name, checked } = target;
+
+    this.setState((prevState) => {
+      const collections = new Set(prevState.collections);
+      if (checked) {
+        collections.add(name);
+      }
+      else {
+        collections.delete(name);
+      }
+
+      return { collections };
+    });
+  }
+
+  async exportSingle(collection) {
     // TODO use appContainer.apiv3.post
-    const res = await this.props.appContainer.apiPost('/v3/export/pages', {});
+    const res = await this.props.appContainer.apiPost(`/v3/export/${collection}`, {});
+    // TODO toastSuccess, toastError
+    this.setState((prevState) => {
+      return {
+        files: {
+          ...prevState.files,
+          [res.collection]: res.file,
+        },
+      };
+    });
+  }
+
+  async exportMultiple() {
+    // TODO use appContainer.apiv3.post
+    const res = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
     // TODO toastSuccess, toastError
     this.setState((prevState) => {
       return {
@@ -51,29 +86,36 @@ class ExportPage extends React.Component {
       <Fragment>
         <h2>Export Data as Zip</h2>
         <form className="my-5">
-          {Object.keys(this.state.files).map((file) => {
-            const disabled = file !== 'pages';
+          {Object.keys(this.state.files).map((collectionName) => {
+            const disabled = !(collectionName === 'pages' || collectionName === 'revisions');
+            const stat = this.state.files[collectionName] || {};
             return (
-              <div className="form-check" key={file}>
+              <div className="checkbox checkbox-info" key={collectionName}>
                 <input
-                  type="radio"
-                  id={file}
-                  name="collection"
+                  type="checkbox"
+                  id={collectionName}
+                  name={collectionName}
                   className="form-check-input"
-                  value={file}
+                  value={collectionName}
                   disabled={disabled}
-                  checked={!disabled}
-                  onChange={() => {}}
+                  checked={this.state.collections.has(collectionName)}
+                  onChange={this.toggleCheckbox}
                 />
-                <label className={`form-check-label ml-3 ${disabled ? 'text-muted' : ''}`} htmlFor={file}>
-                  {file} ({this.state.files[file] || 'not found'})
+                <label className={`form-check-label ml-3 ${disabled ? 'text-muted' : ''}`} htmlFor={collectionName}>
+                  {collectionName} ({stat.name || 'not found'}) ({stat.mtime ? format(new Date(stat.mtime), 'yyyy/MM/dd HH:mm:ss') : ''})
                 </label>
+                <button type="button" className="btn btn-sm btn-primary" onClick={() => this.exportSingle(collectionName)} disabled={disabled}>
+                  Create zip file
+                </button>
+                <a href={`/_api/v3/export/${collectionName}`}>
+                  <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
+                </a>
               </div>
             );
           })}
         </form>
-        <button type="button" className="btn btn-sm btn-default" onClick={this.createZipFile}>Generate</button>
-        <a href="/_api/v3/export/pages">
+        <button type="button" className="btn btn-sm btn-default" onClick={this.exportMultiple}>Generate</button>
+        <a href="/_api/v3/export/download">
           <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
         </a>
         {/* <button type="button" className="btn btn-sm btn-danger ml-2" onClick={this.deleteZipFile}>Clear</button> */}
