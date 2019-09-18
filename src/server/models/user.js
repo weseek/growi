@@ -2,14 +2,12 @@
 
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
-const path = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
-const async = require('async');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
