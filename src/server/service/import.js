@@ -93,31 +93,6 @@ class ImportService {
     return value;
   }
 
-  getConvertMap(collectionName) {
-    const convertMap = {};
-
-    // each key accepts either function or hardcoded value
-    // 1. to keep the same value => unlist the key
-    // 2. to filter out an attribute, explicitly set it to undefined. e.g. "[key]: undefined"
-    if (collectionName === 'pages') {
-      Object.assign(convertMap, {
-        status: 'published', // FIXME when importing users and user groups
-        grant: 1, // FIXME when importing users and user groups
-        grantedUsers: [], // FIXME when importing users and user groups
-        grantedGroup: null, // FIXME when importing users and user groups
-        liker: [], // FIXME when importing users
-        seenUsers: [], // FIXME when importing users
-        commentCount: 0, // FIXME when importing comments
-        extended: {}, // FIXME when ?
-        pageIdOnHackmd: undefined, // FIXME when importing hackmd?
-        revisionHackmdSynced: undefined, // FIXME when importing hackmd?
-        hasDraftOnHackmd: undefined, // FIXME when importing hackmd?
-      });
-    }
-
-    return convertMap;
-  }
-
   /**
    * import a collection from json
    *
