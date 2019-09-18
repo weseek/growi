@@ -619,6 +619,8 @@ module.exports = function(crowi) {
 
     const User = this;
     const createdUserList = [];
+    // TODO GW-206 move to anothor function
+    // const mailer = crowi.getMailer();
 
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
@@ -676,44 +678,45 @@ module.exports = function(crowi) {
     };
 
     await Promise.all(emailList.map((email) => { return createUser(email) }));
-
-    // if (toSendEmail) {
-    //   // TODO: メール送信部分のロジックをサービス化する
-    //   async.each(
-    //     createdUserList,
-    //     (user, next) => {
-    //       if (user.password === null) {
-    //         return next();
-    //       }
-
-    //       const appTitle = crowi.appService.getAppTitle();
-
-    //       mailer.send({
-    //         to: user.email,
-    //         subject: `Invitation to ${appTitle}`,
-    //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-    //         vars: {
-    //           email: user.email,
-    //           password: user.password,
-    //           url: crowi.appService.getSiteUrl(),
-    //           appTitle,
-    //         },
-    //       },
-    //       (err, s) => {
-    //         debug('completed to send email: ', err, s);
-    //         next();
-    //       });
-    //     },
-    //     (err) => {
-    //       debug('Sending invitation email completed.', err);
-    //     },
-    //   );
-    // }
-
-    //     debug('createdUserList!!! ', createdUserList);
-    //   },
-    // );
   };
+
+  //  TODO GW-206 Independence as function
+  // if (toSendEmail) {
+  //   // TODO: メール送信部分のロジックをサービス化する
+  //   async.each(
+  //     createdUserList,
+  //     (user, next) => {
+  //       if (user.password === null) {
+  //         return next();
+  //       }
+
+  //       const appTitle = crowi.appService.getAppTitle();
+
+  //       mailer.send({
+  //         to: user.email,
+  //         subject: `Invitation to ${appTitle}`,
+  //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+  //         vars: {
+  //           email: user.email,
+  //           password: user.password,
+  //           url: crowi.appService.getSiteUrl(),
+  //           appTitle,
+  //         },
+  //       },
+  //       (err, s) => {
+  //         debug('completed to send email: ', err, s);
+  //         next();
+  //       });
+  //     },
+  //     (err) => {
+  //       debug('Sending invitation email completed.', err);
+  //     },
+  //   );
+  // }
+
+  //     debug('createdUserList!!! ', createdUserList);
+  //   },
+  // );
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
