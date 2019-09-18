@@ -50,7 +50,7 @@ class ImportService {
   }
 
   /**
-   * initialize convert map
+   * initialize convert map. set keepOriginal as default
    *
    * @memberOf ImportService
    * @param {object} models from models/index.js
@@ -62,9 +62,11 @@ class ImportService {
       // temporary store for convert map
       const _convertMap = this.convertMap[collectionName];
       this.convertMap[collectionName] = {};
+
       for (const key of Object.keys(model.schema.paths)) {
         this.convertMap[collectionName][key] = this.keepOriginal;
       }
+
       // assign back the original convert map
       Object.assign(this.convertMap[collectionName], _convertMap);
     }
