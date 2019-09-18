@@ -13,6 +13,9 @@ class ExportService {
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
 
+    // path to zip file for exporting multiple collection
+    this.zipFile = path.join(this.baseDir, 'GROWI.zip');
+
     // { pages: Page, users: User, ... }
     this.collectionMap = {};
     this.initCollectionMap(crowi.models);
@@ -157,7 +160,7 @@ class ExportService {
    * @param {string} from path to input file
    * @param {string} [to=`${path.join(path.dirname(from), `${path.basename(from, path.extname(from))}.zip`)}`] path to output file
    * @param {string} [as=path.basename(from)] file name after unzipped
-   * @return {object} file path and file size
+   * @return {string} path to zip file
    * @see https://www.archiverjs.com/#quick-start
    */
   async zipSingleFile(from, to = this.replaceExtension(from, 'zip'), as = path.basename(from)) {
@@ -193,11 +196,18 @@ class ExportService {
     return to;
   }
 
-  async zipMultipleFiles(configs, to = path.join(this.baseDir, `${this.appService.getAppTitle()}-${(new Date()).getTime()}.zip`)) {
+  /**
+   * zip a file
+   *
+   * @memberOf ExportService
+   * @param {array} configs array of object { from: "path to source file", as: "file name appears after unzipped" }
+   * @return {string} path to zip file
+   */
+  async zipMultipleFiles(configs) {
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });
-    const output = fs.createWriteStream(to);
+    const output = fs.createWriteStream(this.zipFile);
 
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
     archive.on('warning', (err) => {
@@ -224,9 +234,9 @@ class ExportService {
 
     await streamToPromise(archive);
 
-    logger.debug(`zipped growi data into ${to} (${archive.pointer()} bytes)`);
+    logger.debug(`zipped growi data into ${this.zipFile} (${archive.pointer()} bytes)`);
 
-    return to;
+    return this.zipFile;
   }
 
   /**

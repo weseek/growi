@@ -115,7 +115,7 @@ class ExportPage extends React.Component {
           })}
         </form>
         <button type="button" className="btn btn-sm btn-default" onClick={this.exportMultiple}>Generate</button>
-        <a href="/_api/v3/export/pages">
+        <a href="/_api/v3/export/download">
           <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
         </a>
         {/* <button type="button" className="btn btn-sm btn-danger ml-2" onClick={this.deleteZipFile}>Clear</button> */}

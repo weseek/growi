@@ -25,6 +25,12 @@ module.exports = (crowi) => {
    *      description: get mongodb collections names and zip files for them
    *      produces:
    *        - application/json
+   *      parameters:
+   *        - name: collectionName
+   *          in: path
+   *          description: collection name
+   *          schema:
+   *            type: string
    *      responses:
    *        200:
    *          description: export cache info
@@ -41,10 +47,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/:collection:
+   *  /export/download:
    *    get:
    *      tags: [Export]
-   *      description: download a zipped json for page collection
+   *      description: download a zipped json for multiple collections
    *      produces:
    *        - application/json
    *      responses:
@@ -53,10 +59,43 @@ module.exports = (crowi) => {
    *          content:
    *            application/zip:
    */
-  router.get('/:collection', async(req, res) => {
+  router.get('/download', async(req, res) => {
     // TODO: add express validator
     try {
-      const { collection: collectionName } = req.params;
+      return res.download(exportService.zipFile);
+    }
+    catch (err) {
+      // TODO: use ApiV3Error
+      logger.error(err);
+      return res.status(500).send({ status: 'ERROR' });
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  /export/:collectionName:
+   *    get:
+   *      tags: [Export]
+   *      description: download a zipped json for a single collection
+   *      produces:
+   *        - application/json
+   *      parameters:
+   *        - name: collectionName
+   *          in: path
+   *          description: collection name
+   *          schema:
+   *            type: string
+   *      responses:
+   *        200:
+   *          description: a zip file
+   *          content:
+   *            application/zip:
+   */
+  router.get('/:collectionName', async(req, res) => {
+    // TODO: add express validator
+    try {
+      const { collectionName } = req.params;
       // get model for collection
       const Model = exportService.getModelFromCollectionName(collectionName);
       // get zip file path
@@ -74,22 +113,28 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/pages:
+   *  /export/:collectionName:
    *    post:
    *      tags: [Export]
-   *      description: generate a zipped json for page collection
+   *      description: generate a zipped json for a single collection
    *      produces:
    *        - application/json
+   *      parameters:
+   *        - name: collectionName
+   *          in: path
+   *          description: collection name
+   *          schema:
+   *            type: string
    *      responses:
    *        200:
    *          description: a zip file is generated
    *          content:
    *            application/json:
    */
-  router.post('/:collection', async(req, res) => {
+  router.post('/:collectionName', async(req, res) => {
     // TODO: add express validator
     try {
-      const { collection: collectionName } = req.params;
+      const { collectionName } = req.params;
       // get model for collection
       const Model = exportService.getModelFromCollectionName(collectionName);
       // export into json
@@ -155,22 +200,28 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/:collection:
+   *  /export/:collectionName:
    *    delete:
    *      tags: [Export]
-   *      description: unlink a json and zip file for page collection
+   *      description: unlink a json and zip file for a single collection
    *      produces:
    *        - application/json
+   *      parameters:
+   *        - name: collectionName
+   *          in: path
+   *          description: collection name
+   *          schema:
+   *            type: string
    *      responses:
    *        200:
    *          description: the json and zip file are removed
    *          content:
    *            application/json:
    */
-  // router.delete('/:collection', async(req, res) => {
+  // router.delete('/:collectionName', async(req, res) => {
   //   // TODO: add express validator
   //   try {
-  //     const { collection: collectionName } = req.params;
+  //     const { collectionName } = req.params;
   //     // get model for collection
   //     const Model = exportService.getModelFromCollectionName(collectionName);
   //     // remove .json and .zip for collection
