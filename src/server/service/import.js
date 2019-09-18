@@ -19,7 +19,21 @@ class ImportService {
     this.initCollectionMap(crowi.models);
 
     // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
-    this.convertMap = {};
+    this.convertMap = {
+      pages: {
+        status: 'published', // FIXME when importing users and user groups
+        grant: 1, // FIXME when importing users and user groups
+        grantedUsers: [], // FIXME when importing users and user groups
+        grantedGroup: null, // FIXME when importing users and user groups
+        liker: [], // FIXME when importing users
+        seenUsers: [], // FIXME when importing users
+        commentCount: 0, // FIXME when importing comments
+        extended: {}, // FIXME when ?
+        pageIdOnHackmd: undefined, // FIXME when importing hackmd?
+        revisionHackmdSynced: undefined, // FIXME when importing hackmd?
+        hasDraftOnHackmd: undefined, // FIXME when importing hackmd?
+      },
+    };
     this.initConvertMap(crowi.models);
   }
 
@@ -44,10 +58,15 @@ class ImportService {
   initConvertMap(models) {
     // by default, original value is used for imported documents
     for (const model of Object.values(models)) {
-      this.convertMap[model.collection.collectionName] = {};
+      const { collectionName } = model.collection;
+      // temporary store for convert map
+      const _convertMap = this.convertMap[collectionName];
+      this.convertMap[collectionName] = {};
       for (const key of Object.keys(model.schema.paths)) {
-        this.convertMap[model.collection.collectionName][key] = this.keepOriginal;
+        this.convertMap[collectionName][key] = this.keepOriginal;
       }
+      // assign back the original convert map
+      Object.assign(this.convertMap[collectionName], _convertMap);
     }
   }
 
