@@ -692,41 +692,40 @@ module.exports = function(crowi) {
           debug('error occured while iterate email list');
         }
 
-        if (toSendEmail) {
-          // TODO: メール送信部分のロジックをサービス化する
-          async.each(
-            createdUserList,
-            (user, next) => {
-              if (user.password === null) {
-                return next();
-              }
+        // if (toSendEmail) {
+        //   // TODO: メール送信部分のロジックをサービス化する
+        //   async.each(
+        //     createdUserList,
+        //     (user, next) => {
+        //       if (user.password === null) {
+        //         return next();
+        //       }
 
-              const appTitle = crowi.appService.getAppTitle();
+        //       const appTitle = crowi.appService.getAppTitle();
 
-              mailer.send({
-                to: user.email,
-                subject: `Invitation to ${appTitle}`,
-                template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-                vars: {
-                  email: user.email,
-                  password: user.password,
-                  url: crowi.appService.getSiteUrl(),
-                  appTitle,
-                },
-              },
-              (err, s) => {
-                debug('completed to send email: ', err, s);
-                next();
-              });
-            },
-            (err) => {
-              debug('Sending invitation email completed.', err);
-            },
-          );
-        }
+        //       mailer.send({
+        //         to: user.email,
+        //         subject: `Invitation to ${appTitle}`,
+        //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+        //         vars: {
+        //           email: user.email,
+        //           password: user.password,
+        //           url: crowi.appService.getSiteUrl(),
+        //           appTitle,
+        //         },
+        //       },
+        //       (err, s) => {
+        //         debug('completed to send email: ', err, s);
+        //         next();
+        //       });
+        //     },
+        //     (err) => {
+        //       debug('Sending invitation email completed.', err);
+        //     },
+        //   );
+        // }
 
         debug('createdUserList!!! ', createdUserList);
-        return callback(null, createdUserList);
       },
     );
   };
