@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-use-before-define */
 
 const debug = require('debug')('growi:models:user');
@@ -620,9 +621,6 @@ module.exports = function(crowi) {
     const User = this;
     const createdUserList = [];
 
-    // TODO 切り分け
-    // const mailer = crowi.getMailer();
-
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
@@ -676,42 +674,113 @@ module.exports = function(crowi) {
         });
       }
 
-        // if (toSendEmail) {
-        //   // TODO: メール送信部分のロジックをサービス化する
-        //   async.each(
-        //     createdUserList,
-        //     (user, next) => {
-        //       if (user.password === null) {
-        //         return next();
-        //       }
+    };
 
-        //       const appTitle = crowi.appService.getAppTitle();
+    await Promise.all(emailList.map((email) => { createUser(email) }));
 
-        //       mailer.send({
-        //         to: user.email,
-        //         subject: `Invitation to ${appTitle}`,
-        //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-        //         vars: {
-        //           email: user.email,
-        //           password: user.password,
-        //           url: crowi.appService.getSiteUrl(),
-        //           appTitle,
-        //         },
-        //       },
-        //       (err, s) => {
-        //         debug('completed to send email: ', err, s);
-        //         next();
-        //       });
-        //     },
-        //     (err) => {
-        //       debug('Sending invitation email completed.', err);
-        //     },
-        //   );
-        // }
+    // async.each(
+    //   emailList,
+    //   (email, next) => {
+    //     const newUser = new User();
+    //     let tmpUsername;
+    //     let password;
 
-        debug('createdUserList!!! ', createdUserList);
-      },
-    );
+    //     // eslint-disable-next-line no-param-reassign
+    //     email = email.trim();
+
+    //     // email check
+    //     // TODO: 削除済みはチェック対象から外そう〜
+    //     User.findOne({ email }, (err, userData) => {
+    //       // The user is exists
+    //       if (userData) {
+    //         createdUserList.push({
+    //           email,
+    //           password: null,
+    //           user: null,
+    //         });
+
+    //         return next();
+    //       }
+
+    //       /* eslint-disable newline-per-chained-call */
+    //       tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
+    //       password = Math.random().toString(36).slice(-16);
+    //       /* eslint-enable newline-per-chained-call */
+
+    //       newUser.username = tmpUsername;
+    //       newUser.email = email;
+    //       newUser.setPassword(password);
+    //       newUser.createdAt = Date.now();
+    //       newUser.status = STATUS_INVITED;
+
+    //       const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    //       if (globalLang != null) {
+    //         newUser.lang = globalLang;
+    //       }
+
+    //       newUser.save((err, userData) => {
+    //         if (err) {
+    //           createdUserList.push({
+    //             email,
+    //             password: null,
+    //             user: null,
+    //           });
+    //           debug('save failed!! ', err);
+    //         }
+    //         else {
+    //           createdUserList.push({
+    //             email,
+    //             password,
+    //             user: userData,
+    //           });
+    //           debug('saved!', email);
+    //         }
+
+    //         next();
+    //       });
+    //     });
+    //   },
+    //   (err) => {
+    //     if (err) {
+    //       debug('error occured while iterate email list');
+    //     }
+
+    // if (toSendEmail) {
+    //   // TODO: メール送信部分のロジックをサービス化する
+    //   async.each(
+    //     createdUserList,
+    //     (user, next) => {
+    //       if (user.password === null) {
+    //         return next();
+    //       }
+
+    //       const appTitle = crowi.appService.getAppTitle();
+
+    //       mailer.send({
+    //         to: user.email,
+    //         subject: `Invitation to ${appTitle}`,
+    //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+    //         vars: {
+    //           email: user.email,
+    //           password: user.password,
+    //           url: crowi.appService.getSiteUrl(),
+    //           appTitle,
+    //         },
+    //       },
+    //       (err, s) => {
+    //         debug('completed to send email: ', err, s);
+    //         next();
+    //       });
+    //     },
+    //     (err) => {
+    //       debug('Sending invitation email completed.', err);
+    //     },
+    //   );
+    // }
+
+    //     debug('createdUserList!!! ', createdUserList);
+    //   },
+    // );
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
