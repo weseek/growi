@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 /* eslint-disable no-use-before-define */
 
 const debug = require('debug')('growi:models:user');
@@ -676,7 +675,7 @@ module.exports = function(crowi) {
 
     };
 
-    await Promise.all(emailList.map((email) => { createUser(email) }));
+    await Promise.all(emailList.map((email) => { return createUser(email) }));
 
     // async.each(
     //   emailList,
