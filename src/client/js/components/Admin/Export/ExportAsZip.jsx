@@ -86,27 +86,30 @@ class ExportPage extends React.Component {
       <Fragment>
         <h2>Export Data as Zip</h2>
         <form className="my-5">
-          {Object.keys(this.state.files).map((file) => {
-            const disabled = !(file === 'pages' || file === 'revisions');
-            const stat = this.state.files[file] || {};
+          {Object.keys(this.state.files).map((collectionName) => {
+            const disabled = !(collectionName === 'pages' || collectionName === 'revisions');
+            const stat = this.state.files[collectionName] || {};
             return (
-              <div className="checkbox checkbox-info" key={file}>
+              <div className="checkbox checkbox-info" key={collectionName}>
                 <input
                   type="checkbox"
-                  id={file}
-                  name={file}
+                  id={collectionName}
+                  name={collectionName}
                   className="form-check-input"
-                  value={file}
+                  value={collectionName}
                   disabled={disabled}
-                  checked={this.state.collections.has(file)}
+                  checked={this.state.collections.has(collectionName)}
                   onChange={this.toggleCheckbox}
                 />
-                <label className={`form-check-label ml-3 ${disabled ? 'text-muted' : ''}`} htmlFor={file}>
-                  {file} ({stat.name || 'not found'}) ({stat.mtime ? format(new Date(stat.mtime), 'yyyy/MM/dd HH:mm:ss') : ''})
+                <label className={`form-check-label ml-3 ${disabled ? 'text-muted' : ''}`} htmlFor={collectionName}>
+                  {collectionName} ({stat.name || 'not found'}) ({stat.mtime ? format(new Date(stat.mtime), 'yyyy/MM/dd HH:mm:ss') : ''})
                 </label>
-                <button type="button" className="btn btn-sm btn-primary" onClick={() => this.exportSingle(file)} disabled={disabled}>
+                <button type="button" className="btn btn-sm btn-primary" onClick={() => this.exportSingle(collectionName)} disabled={disabled}>
                   Create zip file
                 </button>
+                <a href={`/_api/v3/export/${collectionName}`}>
+                  <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
+                </a>
               </div>
             );
           })}

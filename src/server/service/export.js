@@ -7,6 +7,7 @@ const archiver = require('archiver');
 class ExportService {
 
   constructor(crowi) {
+    this.appService = crowi.appService;
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.encoding = 'utf-8';
     this.per = 100;
@@ -77,6 +78,7 @@ class ExportService {
    * @param {string} file path to json file to be written
    * @param {readStream} readStream  read stream
    * @param {number} [total] number of target items (optional)
+   * @return {string} path to the exported json file
    */
   async export(file, readStream, total) {
     let n = 0;
@@ -99,6 +101,8 @@ class ExportService {
     });
 
     await streamToPromise(readStream);
+
+    return file;
   }
 
   /**
@@ -108,19 +112,20 @@ class ExportService {
    * @param {object} Model instance of mongoose model
    * @return {string} path to zip file
    */
-  async exportCollection(Model) {
-    const modelName = Model.collection.collectionName;
-    const file = this.files[modelName];
+  async exportCollectionToJson(Model) {
+    const { collectionName } = Model.collection;
+    const targetFile = this.files[collectionName];
     const total = await Model.countDocuments();
     const readStream = Model.find().cursor();
 
-    await this.export(file, readStream, total);
+    const file = await this.export(targetFile, readStream, total);
 
-    const { file: zipFile, size } = await this.zipSingleFile(file);
+    return file;
+  }
 
-    logger.info(`exported ${modelName} collection into ${zipFile} (${size} bytes)`);
-
-    return zipFile;
+  async exportMultipleCollectionsToJsons(models) {
+    const jsonFiles = await Promise.all(models.map(Model => this.exportCollectionToJson(Model)));
+    return jsonFiles;
   }
 
   /**
@@ -183,10 +188,45 @@ class ExportService {
 
     await streamToPromise(archive);
 
-    return {
-      file: to,
-      size: archive.pointer(),
-    };
+    logger.debug(`zipped ${from} into ${to} (${archive.pointer()} bytes)`);
+
+    return to;
+  }
+
+  async zipMultipleFiles(configs, to = path.join(this.baseDir, `${this.appService.getAppTitle()}-${(new Date()).getTime()}.zip`)) {
+    const archive = archiver('zip', {
+      zlib: { level: this.zlibLevel },
+    });
+    const output = fs.createWriteStream(to);
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') logger.error(err);
+      else throw err;
+    });
+
+    // good practice to catch this error explicitly
+    archive.on('error', (err) => { throw err });
+
+    for (const { from, as } of configs) {
+      const input = fs.createReadStream(from);
+
+      // append a file from stream
+      archive.append(input, { name: as });
+    }
+
+    // pipe archive data to the file
+    archive.pipe(output);
+
+    // finalize the archive (ie we are done appending files but streams have to finish yet)
+    // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+    archive.finalize();
+
+    await streamToPromise(archive);
+
+    logger.debug(`zipped growi data into ${to} (${archive.pointer()} bytes)`);
+
+    return to;
   }
 
   /**
@@ -212,7 +252,7 @@ class ExportService {
     const json = this.files[Model.collection.collectionName];
     const zip = this.replaceExtension(json, 'zip');
     if (!fs.existsSync(zip)) {
-      return null;
+      throw new Error(`${zip} does not exist`);
     }
 
     return zip;
