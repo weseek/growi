@@ -458,7 +458,6 @@ module.exports = function(crowi, app) {
     const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
 
     try {
-      // TODO GW-170 Create users based on mail list passed in array
       await User.createUsersByInvitation(emailList, req.body.sendEmail);
       return res.json(ApiResponse.success());
     }
