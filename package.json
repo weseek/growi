@@ -65,6 +65,7 @@
       "mongoose: somehow GlobalNotificationSetting CRUD does not work with mongoose v5.6.0",
       "openid-client: Node.js 12 or higher is required for openid-client@3 and above."
     ],
+    "JSONStream": "^1.3.5",
     "archiver": "^3.1.1",
     "async": "^3.0.1",
     "aws-sdk": "^2.88.0",
@@ -130,6 +131,7 @@
     "string-width": "^4.1.0",
     "swig-templates": "^2.0.2",
     "uglifycss": "^0.0.29",
+    "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
     "xss": "^1.0.6"
   },
