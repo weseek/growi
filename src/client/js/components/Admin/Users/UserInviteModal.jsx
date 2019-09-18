@@ -16,7 +16,7 @@ class UserInviteModal extends React.Component {
     super(props);
 
     this.state = {
-      email: '',
+      emailInputValue: '',
       sendEmail: false,
     };
 
@@ -26,14 +26,14 @@ class UserInviteModal extends React.Component {
   }
 
   validEmail() {
-    return this.state.email.match(/.+@.+\..+/) != null;
+    return this.state.emailInputValue.match(/.+@.+\..+/) != null;
   }
 
   async handleSubmit() {
     const { appContainer } = this.props;
 
     try {
-      await appContainer.apiPost('/admin/user/invite', { email: this.state.email, sendEmail: this.state.sendEmail });
+      await appContainer.apiPost('/admin/user/invite', { emailInputValue: this.state.emailInputValue, sendEmail: this.state.sendEmail });
       this.props.onToggleModal();
       toastSuccess('Inviting user success');
     }
@@ -43,7 +43,7 @@ class UserInviteModal extends React.Component {
   }
 
   handleInput(event) {
-    this.setState({ email: event.target.value });
+    this.setState({ emailInputValue: event.target.value });
   }
 
   handleCheckBox() {
@@ -62,10 +62,11 @@ class UserInviteModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <label> { t('user_management.emails') }</label>
-          <input
+          <textarea
             className="form-control"
             placeholder="e.g. user@growi.org"
-            value={this.state.email}
+            style={{ height: '200px' }}
+            value={this.state.emailInputValue}
             onChange={this.handleInput}
           />
           {!this.validEmail() && <p className="m-2 text-danger">{ t('user_management.valid_email') }</p>}
