@@ -612,7 +612,7 @@ module.exports = function(crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail) {
+  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
     validateCrowi();
 
     const configManager = crowi.configManager;
