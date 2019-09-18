@@ -627,72 +627,54 @@ module.exports = function(crowi) {
       debug('emailList is not array');
     }
 
-    async.each(
-      emailList,
-      (email, next) => {
-        const newUser = new User();
-        let tmpUsername;
-        let password;
+    const createUser = async(email) => {
+      const newUser = new User();
 
-        // eslint-disable-next-line no-param-reassign
-        email = email.trim();
+      // eslint-disable-next-line no-param-reassign
+      email = email.trim();
 
-        // email check
-        // TODO: 削除済みはチェック対象から外そう〜
-        User.findOne({ email }, (err, userData) => {
-          // The user is exists
-          if (userData) {
-            createdUserList.push({
-              email,
-              password: null,
-              user: null,
-            });
-
-            return next();
-          }
-
-          /* eslint-disable newline-per-chained-call */
-          tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
-          password = Math.random().toString(36).slice(-16);
-          /* eslint-enable newline-per-chained-call */
-
-          newUser.username = tmpUsername;
-          newUser.email = email;
-          newUser.setPassword(password);
-          newUser.createdAt = Date.now();
-          newUser.status = STATUS_INVITED;
-
-          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
-          if (globalLang != null) {
-            newUser.lang = globalLang;
-          }
-
-          newUser.save((err, userData) => {
-            if (err) {
-              createdUserList.push({
-                email,
-                password: null,
-                user: null,
-              });
-              debug('save failed!! ', err);
-            }
-            else {
-              createdUserList.push({
-                email,
-                password,
-                user: userData,
-              });
-              debug('saved!', email);
-            }
-
-            next();
-          });
+      // email check
+      const userData = await User.find({ email, userStatus: !STATUS_DELETED });
+      // The user is exists
+      if (userData.length > 0) {
+        return createdUserList.push({
+          email,
+          password: null,
+          user: null,
         });
-      },
-      (err) => {
-        if (err) {
-          debug('error occured while iterate email list');
-        }
+      }
+
+      /* eslint-disable newline-per-chained-call */
+      const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
+      const password = Math.random().toString(36).slice(-16);
+      /* eslint-enable newline-per-chained-call */
+
+      newUser.username = tmpUsername;
+      newUser.email = email;
+      newUser.setPassword(password);
+      newUser.createdAt = Date.now();
+      newUser.status = STATUS_INVITED;
+
+      const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+      if (globalLang != null) {
+        newUser.lang = globalLang;
+      }
+
+      try {
+        const newUserData = await newUser.save();
+        return createdUserList.push({
+          email,
+          password,
+          user: newUserData,
+        });
+      }
+      catch (err) {
+        return createdUserList.push({
+          email,
+          password: null,
+          user: null,
+        });
+      }
 
         // if (toSendEmail) {
         //   // TODO: メール送信部分のロジックをサービス化する
