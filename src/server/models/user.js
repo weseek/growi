@@ -678,6 +678,7 @@ module.exports = function(crowi) {
     };
 
     await Promise.all(emailList.map((email) => { return createUser(email) }));
+
   };
 
   //  TODO GW-206 Independence as function
