@@ -612,14 +612,16 @@ module.exports = function(crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
+  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail) {
     validateCrowi();
 
     const configManager = crowi.configManager;
 
     const User = this;
     const createdUserList = [];
-    const mailer = crowi.getMailer();
+
+    // TODO 切り分け
+    // const mailer = crowi.getMailer();
 
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
