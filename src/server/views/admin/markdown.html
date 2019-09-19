@@ -17,8 +17,8 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'markdown'} %}
     </div>
-    <div class="col-md-9">
-
+    <div class="col-md-9" id="markdown-setting">
+      <!-- TODO Delete html after reactfy -->
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
       <div class="alert alert-success">

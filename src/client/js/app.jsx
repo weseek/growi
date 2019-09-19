@@ -37,6 +37,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserPage from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Importer from './components/Admin/Importer';
@@ -101,6 +102,7 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
+  'markdown-setting': <MarkdownSetting />,
   'admin-user-page': <UserPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
 
