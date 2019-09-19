@@ -15,12 +15,11 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const { exportService } = crowi;
-  const { Page } = crowi.models;
 
   /**
    * @swagger
    *
-   *  /export:
+   *  /export/status:
    *    get:
    *      tags: [Export]
    *      description: get mongodb collections names and zip files for them
@@ -28,11 +27,11 @@ module.exports = (crowi) => {
    *        - application/json
    *      responses:
    *        200:
-   *          description: export cache info
+   *          description: export cache status
    *          content:
    *            application/json:
    */
-  router.get('/', async(req, res) => {
+  router.get('/status', async(req, res) => {
     const files = exportService.getStatus();
 
     // TODO: use res.apiv3
@@ -42,10 +41,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/pages:
+   *  /export/download:
    *    get:
    *      tags: [Export]
-   *      description: download a zipped json for page collection
+   *      description: download a zipped json for multiple collections
    *      produces:
    *        - application/json
    *      responses:
@@ -54,16 +53,10 @@ module.exports = (crowi) => {
    *          content:
    *            application/zip:
    */
-  router.get('/pages', async(req, res) => {
-    // TODO: rename path to "/:collection" and add express validator
+  router.get('/', async(req, res) => {
+    // TODO: add express validator
     try {
-      const file = exportService.getZipFile(Page);
-
-      if (file == null) {
-        throw new Error('the target file does not exist');
-      }
-
-      return res.download(file);
+      return res.download(exportService.zipFile);
     }
     catch (err) {
       // TODO: use ApiV3Error
@@ -75,10 +68,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/pages:
+   *  /export:
    *    post:
    *      tags: [Export]
-   *      description: generate a zipped json for page collection
+   *      description: generate a zipped json for multiple collections
    *      produces:
    *        - application/json
    *      responses:
@@ -87,15 +80,23 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    */
-  router.post('/pages', async(req, res) => {
-    // TODO: rename path to "/:collection" and add express validator
+  router.post('/', async(req, res) => {
+    // TODO: add express validator
     try {
-      const file = await exportService.exportCollection(Page);
+      const { collections } = req.body;
+      // get model for collection
+      const models = collections.map(collectionName => exportService.getModelFromCollectionName(collectionName));
+      // export into json
+      const jsonFiles = await exportService.exportMultipleCollectionsToJsons(models);
+      // zip json
+      const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
+      const zipFile = await exportService.zipFiles(configs);
+
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        collection: [Page.collection.collectionName],
-        file: path.basename(file),
+        // collection: [Model.collection.collectionName],
+        file: path.basename(zipFile),
       });
     }
     catch (err) {
@@ -108,20 +109,20 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/pages:
+   *  /export:
    *    delete:
    *      tags: [Export]
-   *      description: unlink a json and zip file for page collection
+   *      description: unlink all json and zip files for exports
    *      produces:
    *        - application/json
    *      responses:
    *        200:
-   *          description: the json and zip file are removed
+   *          description: the json and zip file are deleted
    *          content:
    *            application/json:
    */
-  // router.delete('/pages', async(req, res) => {
-  //   // TODO: rename path to "/:collection" and add express validator
+  // router.delete('/', async(req, res) => {
+  //   // TODO: add express validator
   //   try {
   //     // remove .json and .zip for collection
   //     // TODO: use res.apiv3
