@@ -633,7 +633,7 @@ module.exports = function(crowi) {
       // email check
       const userData = await User.findOne({ email, userStatus: !STATUS_DELETED });
       // The user is exists
-      if (userData) {
+      if (userData != null) {
         return createdUserList.push({
           email,
           password: null,
