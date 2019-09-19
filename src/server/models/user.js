@@ -671,6 +671,7 @@ module.exports = function(crowi) {
       debug('emailList is not array');
     }
 
+    // TODO GW-230 use List in client side
     // const afterWorkEmailList = await this.createUserByEmail(emailList);
 
   };
