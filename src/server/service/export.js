@@ -8,6 +8,7 @@ const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 class ExportService {
 
   constructor(crowi) {
+    this.crowi = crowi;
     this.appService = crowi.appService;
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.zipFileName = 'GROWI.zip';
@@ -75,6 +76,31 @@ class ExportService {
   }
 
   /**
+   * create meta.json
+   *
+   * @memberOf ExportService
+   * @return {string} path to meta.json
+   */
+  async createMetaJson() {
+    const metaJson = this.getMetaJson();
+    const writeStream = fs.createWriteStream(metaJson, { encoding: this.encoding });
+
+    const metaData = {
+      version: this.crowi.version,
+      url: this.appService.getSiteUrl(),
+      passwordSeed: this.crowi.env.PASSWORD_SEED,
+      exportedAt: new Date(),
+    };
+
+    writeStream.write(JSON.stringify(metaData));
+    writeStream.close();
+
+    await streamToPromise(writeStream);
+
+    return metaJson;
+  }
+
+  /**
    * dump a collection into json
    *
    * @memberOf ExportService
@@ -126,8 +152,16 @@ class ExportService {
     return file;
   }
 
+  /**
+   * export multiple collections
+   *
+   * @memberOf ExportService
+   * @param {number} models number of items exported
+   * @return {Array.<string>} paths to json files created
+   */
   async exportMultipleCollectionsToJsons(models) {
     const jsonFiles = await Promise.all(models.map(Model => this.exportCollectionToJson(Model)));
+
     return jsonFiles;
   }
 
@@ -227,6 +261,35 @@ class ExportService {
     }
 
     return zipFile;
+  }
+
+  /**
+   * get the absolute path to the zip file
+   *
+   * @memberOf ImportService
+   * @param {boolean} [validate=false] boolean to check if the file exists
+   * @return {string} absolute path to meta.json
+   */
+  getMetaJson(validate = false) {
+    const jsonFile = path.join(this.baseDir, this.metaFileName);
+
+    if (validate) {
+      try {
+        fs.accessSync(jsonFile);
+      }
+      catch (err) {
+        if (err.code === 'ENOENT') {
+          logger.error(`${jsonFile} does not exist`, err);
+        }
+        else {
+          logger.error(err);
+        }
+
+        throw err;
+      }
+    }
+
+    return jsonFile;
   }
 
   /**

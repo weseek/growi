@@ -86,10 +86,17 @@ module.exports = (crowi) => {
       const { collections } = req.body;
       // get model for collection
       const models = collections.map(collectionName => exportService.getModelFromCollectionName(collectionName));
-      // export into json
-      const jsonFiles = await exportService.exportMultipleCollectionsToJsons(models);
+
+      const [metaJson, jsonFiles] = await Promise.all([
+        exportService.createMetaJson(),
+        exportService.exportMultipleCollectionsToJsons(models),
+      ]);
+
       // zip json
       const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
+      // add meta.json in zip
+      configs.push({ from: metaJson, as: path.basename(metaJson) });
+      // exec zip
       const zipFile = await exportService.zipFiles(configs);
 
       // TODO: use res.apiv3

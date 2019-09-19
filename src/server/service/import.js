@@ -143,7 +143,7 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {string} zipFile path to zip file
-   * @return {object} meta{object} and files{array<object>}
+   * @return {object} meta{object} and files{Array.<object>}
    */
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
@@ -183,7 +183,7 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {object} unorderedBulkOp result of Model.collection.initializeUnorderedBulkOp()
-   * @return {{nInserted: number, failed: string[]}} number of docuemnts inserted and failed
+   * @return {{nInserted: number, failed: Array.<string>}} number of docuemnts inserted and failed
    */
   async execUnorderedBulkOpSafely(unorderedBulkOp) {
     // keep the number of documents inserted and failed for logger
