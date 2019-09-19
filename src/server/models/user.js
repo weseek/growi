@@ -618,7 +618,7 @@ module.exports = function(crowi) {
     const newUser = new User();
 
     const createdSucceedUserList = [];
-    const createdFailedUserList = [];
+    const createdFailedEmailList = [];
 
     // check exists and get list of tyr to create
     const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
@@ -652,13 +652,13 @@ module.exports = function(crowi) {
         });
       }
       catch (err) {
-        return createdFailedUserList.push({
+        return createdFailedEmailList.push({
           email,
         });
       }
     }));
 
-    return [createdSucceedUserList, createdFailedUserList, existingEmailList];
+    return [createdSucceedUserList, createdFailedEmailList, existingEmailList];
   };
 
   userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
