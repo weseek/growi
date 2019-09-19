@@ -671,7 +671,7 @@ module.exports = function(crowi) {
       debug('emailList is not array');
     }
 
-    const afterWorkEmailList = await this.createUserByEmail(emailList);
+    // const afterWorkEmailList = await this.createUserByEmail(emailList);
 
   };
 
