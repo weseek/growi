@@ -610,55 +610,60 @@ module.exports = function(crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUserByEmail = async function(emailList) {
+  userSchema.statics.createUserByEmail = async function(email) {
 
     const configManager = crowi.configManager;
 
     const User = this;
     const newUser = new User();
 
-    const createdSucceedUserList = [];
-    const createdFailedEmailList = [];
+    /* eslint-disable newline-per-chained-call */
+    const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
+    const password = Math.random().toString(36).slice(-16);
+    /* eslint-enable newline-per-chained-call */
+
+    newUser.username = tmpUsername;
+    newUser.email = email;
+    newUser.setPassword(password);
+    newUser.createdAt = Date.now();
+    newUser.status = STATUS_INVITED;
+
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    if (globalLang != null) {
+      newUser.lang = globalLang;
+    }
+
+    try {
+      const newUserData = await newUser.save();
+      return {
+        email,
+        password,
+        user: newUserData,
+      };
+    }
+    catch (err) {
+      return {
+        email,
+      };
+    }
+  };
+
+  userSchema.statics.createUsersByEmailList = async function(emailList) {
+
+    const User = this;
 
     // check exists and get list of tyr to create
     const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
+    const createdUserList = [];
     await Promise.all(creationEmailList.map(async(email) => {
-
-      /* eslint-disable newline-per-chained-call */
-      const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
-      const password = Math.random().toString(36).slice(-16);
-      /* eslint-enable newline-per-chained-call */
-
-      newUser.username = tmpUsername;
-      newUser.email = email;
-      newUser.setPassword(password);
-      newUser.createdAt = Date.now();
-      newUser.status = STATUS_INVITED;
-
-      const globalLang = configManager.getConfig('crowi', 'app:globalLang');
-      if (globalLang != null) {
-        newUser.lang = globalLang;
-      }
-
-      try {
-        const newUserData = await newUser.save();
-        return createdSucceedUserList.push({
-          email,
-          password,
-          user: newUserData,
-        });
-      }
-      catch (err) {
-        return createdFailedEmailList.push({
-          email,
-        });
-      }
+      const createdEmail = await this.createUserByEmail(email);
+      createdUserList.push(createdEmail);
     }));
 
-    return [createdSucceedUserList, createdFailedEmailList, existingEmailList];
+    return [existingEmailList, createdUserList];
   };
 
   userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
@@ -672,7 +677,9 @@ module.exports = function(crowi) {
     }
 
     // TODO GW-230 use List in client side
-    // const afterWorkEmailList = await this.createUserByEmail(emailList);
+    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
+
+    console.log(afterWorkEmailList);
 
   };
 
