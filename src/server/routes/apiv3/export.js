@@ -24,13 +24,9 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Export]
    *      description: get mongodb collections names and zip files for them
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: export cache info
-   *          content:
-   *            application/json:
    */
   router.get('/', async(req, res) => {
     const files = exportService.getStatus();
@@ -46,13 +42,9 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Export]
    *      description: download a zipped json for page collection
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: a zip file
-   *          content:
-   *            application/zip:
    */
   router.get('/pages', async(req, res) => {
     // TODO: rename path to "/:collection" and add express validator
@@ -79,13 +71,9 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Export]
    *      description: generate a zipped json for page collection
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: a zip file is generated
-   *          content:
-   *            application/json:
    */
   router.post('/pages', async(req, res) => {
     // TODO: rename path to "/:collection" and add express validator
@@ -112,13 +100,9 @@ module.exports = (crowi) => {
    *    delete:
    *      tags: [Export]
    *      description: unlink a json and zip file for page collection
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: the json and zip file are removed
-   *          content:
-   *            application/json:
    */
   // router.delete('/pages', async(req, res) => {
   //   // TODO: rename path to "/:collection" and add express validator
