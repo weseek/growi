@@ -611,7 +611,6 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.createUserByEmail = async function(email) {
-
     const configManager = crowi.configManager;
 
     const User = this;
@@ -649,7 +648,6 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.createUsersByEmailList = async function(emailList) {
-
     const User = this;
 
     // check exists and get list of tyr to create
