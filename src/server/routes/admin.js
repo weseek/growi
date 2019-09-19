@@ -456,9 +456,10 @@ module.exports = function(crowi, app) {
 
     const array = req.body.emailInputValue.split('\n');
     const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
+    const shapedEmailList = emailList.map((email)=>email.trim())
 
     try {
-      await User.createUsersByInvitation(emailList, req.body.sendEmail);
+      await User.createUsersByInvitation(shapedEmailList, req.body.sendEmail);
       return res.json(ApiResponse.success());
     }
     catch (err) {

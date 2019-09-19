@@ -627,9 +627,6 @@ module.exports = function(crowi) {
     const createUser = async(email) => {
       const newUser = new User();
 
-      // eslint-disable-next-line no-param-reassign
-      email = email.trim();
-
       // email check
       const userData = await User.findOne({ email, userStatus: !STATUS_DELETED });
       // The user is exists
