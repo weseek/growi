@@ -19,25 +19,19 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export:
+   *  /export/status:
    *    get:
    *      tags: [Export]
    *      description: get mongodb collections names and zip files for them
    *      produces:
    *        - application/json
-   *      parameters:
-   *        - name: collectionName
-   *          in: path
-   *          description: collection name
-   *          schema:
-   *            type: string
    *      responses:
    *        200:
-   *          description: export cache info
+   *          description: export cache status
    *          content:
    *            application/json:
    */
-  router.get('/', async(req, res) => {
+  router.get('/status', async(req, res) => {
     const files = exportService.getStatus();
 
     // TODO: use res.apiv3
@@ -59,7 +53,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/zip:
    */
-  router.get('/download', async(req, res) => {
+  router.get('/', async(req, res) => {
     // TODO: add express validator
     try {
       return res.download(exportService.zipFile);
@@ -118,21 +112,18 @@ module.exports = (crowi) => {
    *  /export:
    *    delete:
    *      tags: [Export]
-   *      description: unlink a json and zip file for a single collection
+   *      description: unlink all json and zip files for exports
    *      produces:
    *        - application/json
    *      responses:
    *        200:
-   *          description: the json and zip file are removed
+   *          description: the json and zip file are deleted
    *          content:
    *            application/json:
    */
   // router.delete('/', async(req, res) => {
   //   // TODO: add express validator
   //   try {
-  //     const { collectionName } = req.params;
-  //     // get model for collection
-  //     const Model = exportService.getModelFromCollectionName(collectionName);
   //     // remove .json and .zip for collection
   //     // TODO: use res.apiv3
   //     return res.status(200).send({ status: 'DONE' });
