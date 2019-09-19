@@ -15,9 +15,142 @@ class MarkdownSetting extends React.Component {
     };
   }
 
-
   render() {
-    return <a>hogehoge</a>;
+    const { t } = this.props;
+    return (
+      <React.Fragment>
+        <div className="row my-3">
+          <div className="form-group">
+            <legend>{ t('markdown_setting.line_break_setting') }</legend>
+            <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
+            <fieldset className="row">
+              <div className="form-group">
+                <label className="col-xs-4 control-label text-right">
+                  { t('markdown_setting.Enable Line Break') }
+                </label>
+                <div className="col-xs-5">
+                  <div className="btn-group btn-toggle">
+                    <label className="btn btn-default btn-rounded btn-outline">
+                      ON
+                    </label>
+                    <label className="btn btn-default btn-rounded btn-outline">
+                      OFF
+                    </label>
+                  </div>
+                  <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset className="row">
+              <div className="form-group my-3">
+                <label className="col-xs-4 control-label text-right">
+                  { t('markdown_setting.Enable Line Break for comment') }
+                </label>
+                <div className="col-xs-5">
+                  <div className="btn-group btn-toggle">
+                    <label className="btn btn-default btn-rounded btn-outline">
+                      ON
+                    </label>
+                    <label className="btn btn-default btn-rounded btn-outline">
+                      OFF
+                    </label>
+                  </div>
+                  <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div className="form-group my-3">
+            <div className="col-xs-offset-4 col-xs-5">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+              <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="row my-3">
+          <div className="form-group">
+            <legend>{ t('markdown_setting.presentation_setting') }</legend>
+            <p className="well">{ t('markdown_setting.presentation_setting_desc') }</p>
+          </div>
+          <fieldset className="form-group row my-2">
+
+            <label className="col-xs-3 control-label text-right">
+              { t('markdown_setting.Page break setting') }
+            </label>
+
+            <div className="col-xs-3 radio radio-primary">
+              <input type="radio" id="pageBreakOption1" value="1" />
+              <label htmlFor="pageBreakOption1">
+                <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
+                <p className="mt-3">
+                  { t('markdown_setting.Preset one separator desc') }
+                  <pre><code>{ t('markdown_setting.Preset one separator value') }</code></pre>
+                </p>
+              </label>
+            </div>
+
+            <div className="col-xs-3 radio radio-primary mt-3">
+              <input type="radio" id="pageBreakOption2" value="2" />
+              <label htmlFor="pageBreakOption2">
+                <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
+                <p className="mt-3">
+                  { t('markdown_setting.Preset two separator desc') }
+                  <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
+                </p>
+              </label>
+            </div>
+
+            <div className="col-xs-3 radio radio-primary mt-3">
+              <input type="radio" id="pageBreakOption3" value="3" />
+              <label htmlFor="pageBreakOption3">
+                <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
+                <p className="mt-3">
+                  { t('markdown_setting.Custom separator desc') }
+                  <div>
+                    <input className="form-control" />
+                  </div>
+                </p>
+              </label>
+            </div>
+
+            <div className="form-group my-3">
+              <div className="col-xs-offset-4 col-xs-5">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+                <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+              </div>
+            </div>
+
+          </fieldset>
+        </div>
+
+        <div className="row my-3">
+          <div className="form-group">
+            <legend>{ t('markdown_setting.XSS_setting') }</legend>
+            <p className="well">{ t('markdown_setting.XSS_setting_desc') }</p>
+          </div>
+          <fieldset className="row">
+            <div className="form-group">
+              <label className="col-xs-4 control-label text-right">
+                { t('markdown_setting.Enable XSS prevention') }
+              </label>
+              <div className="col-xs-5">
+                <div className="btn-group btn-toggle" data-toggle="buttons">
+                  <label className="btn btn-default btn-rounded btn-outline" data-active-class="primary">
+                    <input name="{{nameForIsXssEnabled}}" value="true" type="radio" />
+                      ON
+                  </label>
+                  <label className="btn btn-default btn-rounded btn-outline" data-active-class="default">
+                    <input name="{{nameForIsXssEnabled}}" value="false" type="radio" />
+                      OFF
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </React.Fragment>
+    );
   }
 
 }
