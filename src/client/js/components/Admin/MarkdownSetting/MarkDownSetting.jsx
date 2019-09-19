@@ -11,12 +11,16 @@ class MarkdownSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    const { appContainer } = this.props;
+
     this.state = {
+      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
     };
   }
 
   render() {
     const { t } = this.props;
+
     return (
       <React.Fragment>
         <div className="row my-3">
@@ -30,12 +34,12 @@ class MarkdownSetting extends React.Component {
                 </label>
                 <div className="col-xs-5">
                   <div className="btn-group btn-toggle" data-toggle="buttons">
-                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="primary">
-                      <input name="{{nameForIsXssEnabled}}" value="true" type="radio" />
+                    <label className={` btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaks && 'active'}`} data-active-class="primary">
+                      <input name="lineBreakEnabled" value="true" type="radio" checked={this.state.isEnabledLinebreaks} />
                         ON
                     </label>
-                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="default">
-                      <input name="{{nameForIsXssEnabled}}" value="false" type="radio" />
+                    <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaks && 'active'}`} data-active-class="default">
+                      <input name="lineBreakEnabled" value="false" type="radio" />
                         OFF
                     </label>
                   </div>
