@@ -18,7 +18,6 @@ class ExportPage extends React.Component {
     };
 
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
-    this.exportSingle = this.exportSingle.bind(this);
     this.exportMultiple = this.exportMultiple.bind(this);
     this.deleteZipFile = this.deleteZipFile.bind(this);
   }
@@ -43,20 +42,6 @@ class ExportPage extends React.Component {
       }
 
       return { collections };
-    });
-  }
-
-  async exportSingle(collection) {
-    // TODO use appContainer.apiv3.post
-    const res = await this.props.appContainer.apiPost(`/v3/export/${collection}`, {});
-    // TODO toastSuccess, toastError
-    this.setState((prevState) => {
-      return {
-        files: {
-          ...prevState.files,
-          [res.collection]: res.file,
-        },
-      };
     });
   }
 
@@ -104,12 +89,6 @@ class ExportPage extends React.Component {
                 <label className={`form-check-label ml-3 ${disabled ? 'text-muted' : ''}`} htmlFor={collectionName}>
                   {collectionName} ({stat.name || 'not found'}) ({stat.mtime ? format(new Date(stat.mtime), 'yyyy/MM/dd HH:mm:ss') : ''})
                 </label>
-                <button type="button" className="btn btn-sm btn-primary" onClick={() => this.exportSingle(collectionName)} disabled={disabled}>
-                  Create zip file
-                </button>
-                <a href={`/_api/v3/export/${collectionName}`}>
-                  <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
-                </a>
               </div>
             );
           })}
