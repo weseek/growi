@@ -37,13 +37,14 @@ module.exports = (crowi) => {
    * @param {object} req request object
    * @return {object} document to be persisted
    */
-  const overwriteParamsFn = async(Model, req) => {
+  const overwriteParamsFn = async(Model, schema, req) => {
     const { collectionName } = Model.collection;
 
     /* eslint-disable no-case-declarations */
     switch (Model.collection.collectionName) {
       case 'pages':
-        // TODO: use req.body to generate overwriteParams
+        // TODO: use schema and req to generate overwriteParams
+        // e.g. { creator: schema.creator === 'me' ? ObjectId(req.user._id) : importService.keepOriginal }
         return {
           status: 'published', // FIXME when importing users and user groups
           grant: 1, // FIXME when importing users and user groups
@@ -73,7 +74,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/:collection:
+   *  /import:
    *    post:
    *      tags: [Import]
    *      description: import a collection from a zipped json
@@ -85,24 +86,46 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    */
-  router.post('/:collection', uploads.single('file'), autoReap, async(req, res) => {
+  router.post('/', async(req, res) => {
     // TODO: add express validator
-    const { file } = req;
-    const { collection } = req.params;
-    const Model = importService.getModelFromCollectionName(collection);
-    const zipFilePath = path.join(file.destination, file.filename);
+    // eslint-disable-next-line no-unused-vars
+    const { meta, options } = req.body;
+
+    // TODO: validate using meta data
 
     try {
-      let overwriteParams;
-      if (overwriteParamsFn[collection] != null) {
-        // await in case overwriteParamsFn[collection] is a Promise
-        overwriteParams = await overwriteParamsFn(Model, req);
-      }
+      await Promise.all(options.map(async({ collectionName, fileName, schema }) => {
+        const Model = importService.getModelFromCollectionName(collectionName);
+        const jsonFile = importService.getJsonFile(fileName, true);
 
-      await importService.importFromZip(Model, zipFilePath, overwriteParams);
+        let overwriteParams;
+        if (overwriteParamsFn[collectionName] != null) {
+          // await in case overwriteParamsFn[collection] is a Promise
+          overwriteParams = await overwriteParamsFn(Model, schema, req);
+        }
+
+        await importService.import(Model, jsonFile, overwriteParams);
+      }));
 
       // TODO: use res.apiv3
       return res.send({ status: 'OK' });
+    }
+    catch (err) {
+      // TODO: use ApiV3Error
+      logger.error(err);
+      return res.status(500).send({ status: 'ERROR' });
+    }
+  });
+
+  router.post('/upload', uploads.single('file'), autoReap, async(req, res) => {
+    const { file } = req;
+    const zipFile = path.join(file.destination, file.filename);
+
+    try {
+      const data = await importService.unzip(zipFile);
+
+      // TODO: use res.apiv3
+      return res.send({ ok: true, data });
     }
     catch (err) {
       // TODO: use ApiV3Error

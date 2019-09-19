@@ -3,13 +3,14 @@ const fs = require('fs');
 const path = require('path');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
-const unzip = require('unzipper');
+const unzipper = require('unzipper');
 const { ObjectId } = require('mongoose').Types;
 
 class ImportService {
 
   constructor(crowi) {
     this.baseDir = path.join(crowi.tmpDir, 'imports');
+    this.metaFileName = 'meta.json';
     this.encoding = 'utf-8';
     this.per = 100;
     this.keepOriginal = this.keepOriginal.bind(this);
@@ -79,14 +80,10 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {object} Model instance of mongoose model
-   * @param {string} filePath path to zipped json
    * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
    */
-  async importFromZip(Model, filePath, overwriteParams = {}) {
+  async import(Model, jsonFile, overwriteParams = {}) {
     const { collectionName } = Model.collection;
-
-    // extract zip file
-    await this.unzip(filePath);
 
     let counter = 0;
     let nInsertedTotal = 0;
@@ -94,8 +91,7 @@ class ImportService {
     let failedIds = [];
     let unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
 
-    const tmpJson = path.join(this.baseDir, `${collectionName}.json`);
-    const readStream = fs.createReadStream(tmpJson, { encoding: this.encoding });
+    const readStream = fs.createReadStream(jsonFile, { encoding: this.encoding });
     const jsonStream = readStream.pipe(JSONStream.parse('*'));
 
     jsonStream.on('data', async(document) => {
@@ -139,25 +135,47 @@ class ImportService {
     await streamToPromise(readStream);
 
     // clean up tmp directory
-    fs.unlinkSync(tmpJson);
+    fs.unlinkSync(jsonFile);
   }
 
   /**
    * extract a zip file
    *
    * @memberOf ImportService
-   * @param {string} zipFilePath path to zip file
+   * @param {string} zipFile path to zip file
+   * @return  {object} meta{object} and files{array<object>}
    */
-  unzip(zipFilePath) {
-    return new Promise((resolve, reject) => {
-      const unzipStream = fs.createReadStream(zipFilePath).pipe(unzip.Extract({ path: this.baseDir }));
-      unzipStream.on('error', (err) => {
-        reject(err);
-      });
-      unzipStream.on('close', () => {
-        resolve();
-      });
+  async unzip(zipFile) {
+    const readStream = fs.createReadStream(zipFile);
+    const unzipStream = readStream.pipe(unzipper.Parse());
+    const files = [];
+
+    unzipStream.on('entry', (entry) => {
+      const fileName = entry.path;
+      const size = entry.vars.uncompressedSize; // There is also compressedSize;
+
+      if (fileName === this.metaFileName) {
+        // TODO: parse meta.json
+        entry.autodrain();
+      }
+      else {
+        const writeStream = fs.createWriteStream(this.getJsonFile(fileName), { encoding: this.encoding });
+        entry.pipe(writeStream);
+
+        files.push({
+          fileName,
+          collectionName: path.basename(fileName, '.json'),
+          size,
+        });
+      }
     });
+
+    await streamToPromise(unzipStream);
+
+    return {
+      meta: {},
+      files,
+    };
   }
 
   /**
@@ -254,6 +272,36 @@ class ImportService {
     }
 
     return Model;
+  }
+
+  /**
+   * get the absolute path to a file
+   *
+   * @memberOf ImportService
+   * @param {object} fileName base name of file
+   * @param {boolean} [validate=false] boolean to check if the file exists
+   * @return {string} absolute path to the file
+   */
+  getJsonFile(fileName, validate = false) {
+    const jsonFile = path.join(this.baseDir, fileName);
+
+    if (validate) {
+      try {
+        fs.accessSync(jsonFile);
+      }
+      catch (err) {
+        if (err.code === 'ENOENT') {
+          logger.error(`${jsonFile} does not exist`, err);
+        }
+        else {
+          logger.error(err);
+        }
+
+        throw err;
+      }
+    }
+
+    return jsonFile;
   }
 
 }

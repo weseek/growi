@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -11,9 +11,19 @@ class GrowiImportForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      meta: {},
+      files: [],
+      schema: {
+        pages: {},
+        revisions: {},
+      },
+    };
+
     this.inputRef = React.createRef();
 
     this.changeFileName = this.changeFileName.bind(this);
+    this.uploadZipFile = this.uploadZipFile.bind(this);
     this.import = this.import.bind(this);
     this.validateForm = this.validateForm.bind(this);
   }
@@ -24,7 +34,7 @@ class GrowiImportForm extends React.Component {
     this.setState({ name: e.target.files[0].name });
   }
 
-  async import(e) {
+  async uploadZipFile(e) {
     e.preventDefault();
 
     const formData = new FormData();
@@ -32,7 +42,24 @@ class GrowiImportForm extends React.Component {
     formData.append('file', this.inputRef.current.files[0]);
 
     // TODO use appContainer.apiv3.post
-    await this.props.appContainer.apiPost('/v3/import/pages', formData);
+    const { data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
+    this.setState({ meta: data.meta, files: data.files });
+    // TODO toastSuccess, toastError
+  }
+
+  async import(e) {
+    e.preventDefault();
+
+    // TODO use appContainer.apiv3.post
+    await this.props.appContainer.apiPost('/v3/import', {
+      meta: this.state.meta,
+      options: this.state.files.map((option) => {
+        return {
+          ...option,
+          schema: this.state.schema[option.collectionName],
+        };
+      }),
+    });
     // TODO toastSuccess, toastError
   }
 
@@ -48,35 +75,67 @@ class GrowiImportForm extends React.Component {
     const { t } = this.props;
 
     return (
-      <form className="form-horizontal" onSubmit={this.import}>
-        <fieldset>
-          <legend>Import</legend>
-          <div className="well well-sm small">
-            <ul>
-              <li>Imported pages will overwrite existing pages</li>
-            </ul>
-          </div>
-          <div className="form-group d-flex align-items-center">
-            <label htmlFor="file" className="col-xs-3 control-label">Zip File</label>
-            <div className="col-xs-6">
-              <input
-                type="file"
-                name="file"
-                className="form-control-file"
-                ref={this.inputRef}
-                onChange={this.changeFileName}
-              />
+      <Fragment>
+        <form className="form-horizontal" onSubmit={this.uploadZipFile}>
+          <fieldset>
+            <legend>Import</legend>
+            <div className="well well-sm small">
+              <ul>
+                <li>Imported pages will overwrite existing pages</li>
+              </ul>
             </div>
-          </div>
-          <div className="form-group">
-            <div className="col-xs-offset-3 col-xs-6">
-              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
-                { t('importer_management.import') }
-              </button>
+            <div className="form-group d-flex align-items-center">
+              <label htmlFor="file" className="col-xs-3 control-label">Zip File</label>
+              <div className="col-xs-6">
+                <input
+                  type="file"
+                  name="file"
+                  className="form-control-file"
+                  ref={this.inputRef}
+                  onChange={this.changeFileName}
+                />
+              </div>
             </div>
-          </div>
-        </fieldset>
-      </form>
+            <div className="form-group">
+              <div className="col-xs-offset-3 col-xs-6">
+                <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
+                  Upload
+                </button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+
+        {/* TODO: move to another component 1 */}
+        {this.state.files.length > 0 && (
+          <Fragment>
+            {/* TODO: move to another component 2 */}
+            <div>{JSON.stringify(this.state.meta)}</div>
+            <table className="table table-bordered table-mapping">
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Collection</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.files.map((file) => {
+                  return (
+                    <tr key={file.fileName}>
+                      <td>{file.fileName}</td>
+                      <td>{file.collectionName}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {/* TODO: move to another component 3 */}
+            <button type="submit" className="btn btn-primary" onClick={this.import}>
+              { t('importer_management.import') }
+            </button>
+          </Fragment>
+        )}
+      </Fragment>
     );
   }
 
