@@ -108,7 +108,7 @@ module.exports = (crowi) => {
       }));
 
       // TODO: use res.apiv3
-      return res.send({ status: 'OK' });
+      return res.send({ ok: true });
     }
     catch (err) {
       // TODO: use ApiV3Error

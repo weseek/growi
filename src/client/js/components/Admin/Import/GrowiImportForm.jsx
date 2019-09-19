@@ -11,7 +11,7 @@ class GrowiImportForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.initialState = {
       meta: {},
       files: [],
       schema: {
@@ -19,6 +19,8 @@ class GrowiImportForm extends React.Component {
         revisions: {},
       },
     };
+
+    this.state = this.initialState;
 
     this.inputRef = React.createRef();
 
@@ -61,6 +63,7 @@ class GrowiImportForm extends React.Component {
       }),
     });
     // TODO toastSuccess, toastError
+    this.setState(this.initialState);
   }
 
   validateForm() {

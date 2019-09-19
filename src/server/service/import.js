@@ -59,7 +59,7 @@ class ImportService {
    * automatically convert ObjectId
    *
    * @memberOf ImportService
-   * @param {array<object>} _value value from imported document
+   * @param {any} _value value from imported document
    * @param {{ _document: object, schema: object, key: string }}
    * @return {any} new value for the document
    */
@@ -143,7 +143,7 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {string} zipFile path to zip file
-   * @return  {object} meta{object} and files{array<object>}
+   * @return {object} meta{object} and files{array<object>}
    */
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
@@ -261,7 +261,7 @@ class ImportService {
    * get a model from collection name
    *
    * @memberOf ImportService
-   * @param {object} collectionName collection name
+   * @param {string} collectionName collection name
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {
@@ -278,7 +278,7 @@ class ImportService {
    * get the absolute path to a file
    *
    * @memberOf ImportService
-   * @param {object} fileName base name of file
+   * @param {string} fileName base name of file
    * @param {boolean} [validate=false] boolean to check if the file exists
    * @return {string} absolute path to the file
    */

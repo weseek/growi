@@ -163,7 +163,7 @@ class ExportService {
    */
   async zipFiles(_configs) {
     const configs = toArrayIfNot(_configs);
-    const zipFile = path.join(this.baseDir, this.zipFileName);
+    const zipFile = this.getZipFile();
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });
@@ -201,32 +201,32 @@ class ExportService {
   }
 
   /**
-   * replace a file extension
+   * get the absolute path to the zip file
    *
-   * @memberOf ExportService
-   * @param {string} file file path
-   * @param {string} extension new extension
-   * @return {string} path to file with new extension
+   * @memberOf ImportService
+   * @param {boolean} [validate=false] boolean to check if the file exists
+   * @return {string} absolute path to the zip file
    */
-  replaceExtension(file, extension) {
-    return `${path.join(path.dirname(file), `${path.basename(file, path.extname(file))}.${extension}`)}`;
-  }
+  getZipFile(validate = false) {
+    const zipFile = path.join(this.baseDir, this.zipFileName);
 
-  /**
-   * get the path to the zipped file for a collection
-   *
-   * @memberOf ExportService
-   * @param {object} Model instance of mongoose model
-   * @return {string} path to zip file
-   */
-  getZipFile(Model) {
-    const json = this.files[Model.collection.collectionName];
-    const zip = this.replaceExtension(json, 'zip');
-    if (!fs.existsSync(zip)) {
-      throw new Error(`${zip} does not exist`);
+    if (validate) {
+      try {
+        fs.accessSync(zipFile);
+      }
+      catch (err) {
+        if (err.code === 'ENOENT') {
+          logger.error(`${zipFile} does not exist`, err);
+        }
+        else {
+          logger.error(err);
+        }
+
+        throw err;
+      }
     }
 
-    return zip;
+    return zipFile;
   }
 
   /**
