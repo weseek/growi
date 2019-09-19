@@ -2,14 +2,12 @@
 
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
-const path = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
-const async = require('async');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
@@ -612,124 +610,112 @@ module.exports = function(crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
-    validateCrowi();
-
+  userSchema.statics.createUserByEmail = async function(email) {
     const configManager = crowi.configManager;
 
     const User = this;
+    const newUser = new User();
+
+    /* eslint-disable newline-per-chained-call */
+    const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
+    const password = Math.random().toString(36).slice(-16);
+    /* eslint-enable newline-per-chained-call */
+
+    newUser.username = tmpUsername;
+    newUser.email = email;
+    newUser.setPassword(password);
+    newUser.createdAt = Date.now();
+    newUser.status = STATUS_INVITED;
+
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    if (globalLang != null) {
+      newUser.lang = globalLang;
+    }
+
+    try {
+      const newUserData = await newUser.save();
+      return {
+        email,
+        password,
+        user: newUserData,
+      };
+    }
+    catch (err) {
+      return {
+        email,
+      };
+    }
+  };
+
+  userSchema.statics.createUsersByEmailList = async function(emailList) {
+    const User = this;
+
+    // check exists and get list of tyr to create
+    const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
+    const existingEmailList = existingUserList.map((user) => { return user.email });
+    const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
+
     const createdUserList = [];
-    const mailer = crowi.getMailer();
+    await Promise.all(creationEmailList.map(async(email) => {
+      const createdEmail = await this.createUserByEmail(email);
+      createdUserList.push(createdEmail);
+    }));
+
+    return [existingEmailList, createdUserList];
+  };
+
+  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
+    validateCrowi();
+
+    // TODO GW-206 move to anothor function
+    // const mailer = crowi.getMailer();
 
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
 
-    async.each(
-      emailList,
-      (email, next) => {
-        const newUser = new User();
-        let tmpUsername;
-        let password;
+    // TODO GW-230 use List in client side
+    // const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
-        // eslint-disable-next-line no-param-reassign
-        email = email.trim();
-
-        // email check
-        // TODO: 削除済みはチェック対象から外そう〜
-        User.findOne({ email }, (err, userData) => {
-          // The user is exists
-          if (userData) {
-            createdUserList.push({
-              email,
-              password: null,
-              user: null,
-            });
-
-            return next();
-          }
-
-          /* eslint-disable newline-per-chained-call */
-          tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
-          password = Math.random().toString(36).slice(-16);
-          /* eslint-enable newline-per-chained-call */
-
-          newUser.username = tmpUsername;
-          newUser.email = email;
-          newUser.setPassword(password);
-          newUser.createdAt = Date.now();
-          newUser.status = STATUS_INVITED;
-
-          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
-          if (globalLang != null) {
-            newUser.lang = globalLang;
-          }
-
-          newUser.save((err, userData) => {
-            if (err) {
-              createdUserList.push({
-                email,
-                password: null,
-                user: null,
-              });
-              debug('save failed!! ', err);
-            }
-            else {
-              createdUserList.push({
-                email,
-                password,
-                user: userData,
-              });
-              debug('saved!', email);
-            }
-
-            next();
-          });
-        });
-      },
-      (err) => {
-        if (err) {
-          debug('error occured while iterate email list');
-        }
-
-        if (toSendEmail) {
-          // TODO: メール送信部分のロジックをサービス化する
-          async.each(
-            createdUserList,
-            (user, next) => {
-              if (user.password === null) {
-                return next();
-              }
-
-              const appTitle = crowi.appService.getAppTitle();
-
-              mailer.send({
-                to: user.email,
-                subject: `Invitation to ${appTitle}`,
-                template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-                vars: {
-                  email: user.email,
-                  password: user.password,
-                  url: crowi.appService.getSiteUrl(),
-                  appTitle,
-                },
-              },
-              (err, s) => {
-                debug('completed to send email: ', err, s);
-                next();
-              });
-            },
-            (err) => {
-              debug('Sending invitation email completed.', err);
-            },
-          );
-        }
-
-        debug('createdUserList!!! ', createdUserList);
-        return callback(null, createdUserList);
-      },
-    );
   };
+
+  //  TODO GW-206 Independence as function
+  // if (toSendEmail) {
+  //   // TODO: メール送信部分のロジックをサービス化する
+  //   async.each(
+  //     createdUserList,
+  //     (user, next) => {
+  //       if (user.password === null) {
+  //         return next();
+  //       }
+
+  //       const appTitle = crowi.appService.getAppTitle();
+
+  //       mailer.send({
+  //         to: user.email,
+  //         subject: `Invitation to ${appTitle}`,
+  //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+  //         vars: {
+  //           email: user.email,
+  //           password: user.password,
+  //           url: crowi.appService.getSiteUrl(),
+  //           appTitle,
+  //         },
+  //       },
+  //       (err, s) => {
+  //         debug('completed to send email: ', err, s);
+  //         next();
+  //       });
+  //     },
+  //     (err) => {
+  //       debug('Sending invitation email completed.', err);
+  //     },
+  //   );
+  // }
+
+  //     debug('createdUserList!!! ', createdUserList);
+  //   },
+  // );
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
