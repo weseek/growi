@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
+const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
 class ExportService {
 
@@ -154,60 +155,18 @@ class ExportService {
   }
 
   /**
-   * zip a file
+   * zip files into one zip file
    *
    * @memberOf ExportService
-   * @param {string} from path to input file
-   * @param {string} [to=`${path.join(path.dirname(from), `${path.basename(from, path.extname(from))}.zip`)}`] path to output file
-   * @param {string} [as=path.basename(from)] file name after unzipped
+   * @param {object|array<object>} configs array of object { from: "path to source file", as: "file name after unzipped" }
    * @return {string} path to zip file
    * @see https://www.archiverjs.com/#quick-start
    */
-  async zipSingleFile(from, to = this.replaceExtension(from, 'zip'), as = path.basename(from)) {
+  async zipFiles(_configs) {
+    const configs = toArrayIfNot(_configs);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });
-    const input = fs.createReadStream(from);
-    const output = fs.createWriteStream(to);
-
-    // good practice to catch warnings (ie stat failures and other non-blocking errors)
-    archive.on('warning', (err) => {
-      if (err.code === 'ENOENT') logger.error(err);
-      else throw err;
-    });
-
-    // good practice to catch this error explicitly
-    archive.on('error', (err) => { throw err });
-
-    // append a file from stream
-    archive.append(input, { name: as });
-
-    // pipe archive data to the file
-    archive.pipe(output);
-
-    // finalize the archive (ie we are done appending files but streams have to finish yet)
-    // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
-    archive.finalize();
-
-    await streamToPromise(archive);
-
-    logger.debug(`zipped ${from} into ${to} (${archive.pointer()} bytes)`);
-
-    return to;
-  }
-
-  /**
-   * zip a file
-   *
-   * @memberOf ExportService
-   * @param {array} configs array of object { from: "path to source file", as: "file name appears after unzipped" }
-   * @return {string} path to zip file
-   */
-  async zipMultipleFiles(configs) {
-    const archive = archiver('zip', {
-      zlib: { level: this.zlibLevel },
-    });
-    const output = fs.createWriteStream(this.zipFile);
 
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
     archive.on('warning', (err) => {
@@ -224,6 +183,8 @@ class ExportService {
       // append a file from stream
       archive.append(input, { name: as });
     }
+
+    const output = fs.createWriteStream(this.zipFile);
 
     // pipe archive data to the file
     archive.pipe(output);

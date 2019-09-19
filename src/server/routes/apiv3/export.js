@@ -19,25 +19,19 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export:
+   *  /export/status:
    *    get:
    *      tags: [Export]
    *      description: get mongodb collections names and zip files for them
    *      produces:
    *        - application/json
-   *      parameters:
-   *        - name: collectionName
-   *          in: path
-   *          description: collection name
-   *          schema:
-   *            type: string
    *      responses:
    *        200:
-   *          description: export cache info
+   *          description: export cache status
    *          content:
    *            application/json:
    */
-  router.get('/', async(req, res) => {
+  router.get('/status', async(req, res) => {
     const files = exportService.getStatus();
 
     // TODO: use res.apiv3
@@ -59,95 +53,10 @@ module.exports = (crowi) => {
    *          content:
    *            application/zip:
    */
-  router.get('/download', async(req, res) => {
+  router.get('/', async(req, res) => {
     // TODO: add express validator
     try {
       return res.download(exportService.zipFile);
-    }
-    catch (err) {
-      // TODO: use ApiV3Error
-      logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *  /export/:collectionName:
-   *    get:
-   *      tags: [Export]
-   *      description: download a zipped json for a single collection
-   *      produces:
-   *        - application/json
-   *      parameters:
-   *        - name: collectionName
-   *          in: path
-   *          description: collection name
-   *          schema:
-   *            type: string
-   *      responses:
-   *        200:
-   *          description: a zip file
-   *          content:
-   *            application/zip:
-   */
-  router.get('/:collectionName', async(req, res) => {
-    // TODO: add express validator
-    try {
-      const { collectionName } = req.params;
-      // get model for collection
-      const Model = exportService.getModelFromCollectionName(collectionName);
-      // get zip file path
-      const zipFile = exportService.getZipFile(Model);
-
-      return res.download(zipFile);
-    }
-    catch (err) {
-      // TODO: use ApiV3Error
-      logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *  /export/:collectionName:
-   *    post:
-   *      tags: [Export]
-   *      description: generate a zipped json for a single collection
-   *      produces:
-   *        - application/json
-   *      parameters:
-   *        - name: collectionName
-   *          in: path
-   *          description: collection name
-   *          schema:
-   *            type: string
-   *      responses:
-   *        200:
-   *          description: a zip file is generated
-   *          content:
-   *            application/json:
-   */
-  router.post('/:collectionName', async(req, res) => {
-    // TODO: add express validator
-    try {
-      const { collectionName } = req.params;
-      // get model for collection
-      const Model = exportService.getModelFromCollectionName(collectionName);
-      // export into json
-      const jsonFile = await exportService.exportCollectionToJson(Model);
-      // zip json
-      const zipFile = await exportService.zipSingleFile(jsonFile);
-
-      // TODO: use res.apiv3
-      return res.status(200).json({
-        ok: true,
-        collection: [Model.collection.collectionName],
-        file: path.basename(zipFile),
-      });
     }
     catch (err) {
       // TODO: use ApiV3Error
@@ -181,7 +90,7 @@ module.exports = (crowi) => {
       const jsonFiles = await exportService.exportMultipleCollectionsToJsons(models);
       // zip json
       const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
-      const zipFile = await exportService.zipMultipleFiles(configs);
+      const zipFile = await exportService.zipFiles(configs);
 
       // TODO: use res.apiv3
       return res.status(200).json({
@@ -200,30 +109,21 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/:collectionName:
+   *  /export:
    *    delete:
    *      tags: [Export]
-   *      description: unlink a json and zip file for a single collection
+   *      description: unlink all json and zip files for exports
    *      produces:
    *        - application/json
-   *      parameters:
-   *        - name: collectionName
-   *          in: path
-   *          description: collection name
-   *          schema:
-   *            type: string
    *      responses:
    *        200:
-   *          description: the json and zip file are removed
+   *          description: the json and zip file are deleted
    *          content:
    *            application/json:
    */
-  // router.delete('/:collectionName', async(req, res) => {
+  // router.delete('/', async(req, res) => {
   //   // TODO: add express validator
   //   try {
-  //     const { collectionName } = req.params;
-  //     // get model for collection
-  //     const Model = exportService.getModelFromCollectionName(collectionName);
   //     // remove .json and .zip for collection
   //     // TODO: use res.apiv3
   //     return res.status(200).send({ status: 'DONE' });
