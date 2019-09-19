@@ -29,12 +29,14 @@ class MarkdownSetting extends React.Component {
                   { t('markdown_setting.Enable Line Break') }
                 </label>
                 <div className="col-xs-5">
-                  <div className="btn-group btn-toggle">
-                    <label className="btn btn-default btn-rounded btn-outline">
-                      ON
+                  <div className="btn-group btn-toggle" data-toggle="buttons">
+                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="primary">
+                      <input name="{{nameForIsXssEnabled}}" value="true" type="radio" />
+                        ON
                     </label>
-                    <label className="btn btn-default btn-rounded btn-outline">
-                      OFF
+                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="default">
+                      <input name="{{nameForIsXssEnabled}}" value="false" type="radio" />
+                        OFF
                     </label>
                   </div>
                   <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
@@ -47,12 +49,14 @@ class MarkdownSetting extends React.Component {
                   { t('markdown_setting.Enable Line Break for comment') }
                 </label>
                 <div className="col-xs-5">
-                  <div className="btn-group btn-toggle">
-                    <label className="btn btn-default btn-rounded btn-outline">
-                      ON
+                  <div className="btn-group btn-toggle" data-toggle="buttons">
+                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="primary">
+                      <input name="{{nameForIsXssEnabled}}" value="true" type="radio" />
+                        ON
                     </label>
-                    <label className="btn btn-default btn-rounded btn-outline">
-                      OFF
+                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="default">
+                      <input name="{{nameForIsXssEnabled}}" value="false" type="radio" />
+                        OFF
                     </label>
                   </div>
                   <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
