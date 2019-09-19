@@ -677,9 +677,7 @@ module.exports = function(crowi) {
     }
 
     // TODO GW-230 use List in client side
-    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
-
-    console.log(afterWorkEmailList);
+    // const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
   };
 
