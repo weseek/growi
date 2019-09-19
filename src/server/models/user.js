@@ -610,39 +610,22 @@ module.exports = function(crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
-    validateCrowi();
+  userSchema.statics.createUserByEmail = async function(emailList) {
 
     const configManager = crowi.configManager;
 
     const User = this;
-    const createdUserList = [];
+    const newUser = new User();
+
+    const createdSucceedUserList = [];
+    const createdFailedUserList = [];
 
     // check exists and get list of tyr to create
     const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
-    // TODO GW-206 move to anothor function
-    // const mailer = crowi.getMailer();
-
-    if (!Array.isArray(emailList)) {
-      debug('emailList is not array');
-    }
-
-    const createUser = async(email) => {
-      const newUser = new User();
-
-      // email check
-      const userData = await User.findOne({ email, userStatus: !STATUS_DELETED });
-      // The user is exists
-      if (userData != null) {
-        return createdUserList.push({
-          email,
-          password: null,
-          user: null,
-        });
-      }
+    await Promise.all(creationEmailList.map(async(email) => {
 
       /* eslint-disable newline-per-chained-call */
       const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
@@ -662,23 +645,33 @@ module.exports = function(crowi) {
 
       try {
         const newUserData = await newUser.save();
-        return createdUserList.push({
+        return createdSucceedUserList.push({
           email,
           password,
           user: newUserData,
         });
       }
       catch (err) {
-        return createdUserList.push({
+        return createdFailedUserList.push({
           email,
-          password: null,
-          user: null,
         });
       }
+    }));
 
-    };
+    return [createdSucceedUserList, createdFailedUserList, existingEmailList];
+  };
 
-    await Promise.all(emailList.map((email) => { return createUser(email) }));
+  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
+    validateCrowi();
+
+    // TODO GW-206 move to anothor function
+    // const mailer = crowi.getMailer();
+
+    if (!Array.isArray(emailList)) {
+      debug('emailList is not array');
+    }
+
+    const afterWorkEmailList = await this.createUserByEmail(emailList);
 
   };
 
