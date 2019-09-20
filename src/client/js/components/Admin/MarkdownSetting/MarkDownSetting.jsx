@@ -17,8 +17,10 @@ class MarkdownSetting extends React.Component {
     this.state = {
       isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
+      // TODO GW-220 get correct BreakOption value
+      pageBreakOption: 1,
       // TODO GW-221 get correct Xss value
-      isEnabledXss: appContainer.config.isEnabledXss,
+      isEnabledXss: false,
     };
   }
 
@@ -91,7 +93,7 @@ class MarkdownSetting extends React.Component {
             </label>
 
             <div className="col-xs-3 radio radio-primary">
-              <input type="radio" id="pageBreakOption1" name="nameForPageBreakOption" value="1" />
+              <input type="radio" id="pageBreakOption1" name="pageBreakOption" value="1" checked={this.state.pageBreakOption === 1} />
               <label htmlFor="pageBreakOption1">
                 <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
                 <p className="mt-3">
@@ -102,7 +104,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
             <div className="col-xs-3 radio radio-primary mt-3">
-              <input type="radio" id="pageBreakOption2" name="nameForPageBreakOption" value="2" />
+              <input type="radio" id="pageBreakOption2" name="pageBreakOption" value="2" checked={this.state.pageBreakOption === 2} />
               <label htmlFor="pageBreakOption2">
                 <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
                 <p className="mt-3">
@@ -113,7 +115,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
             <div className="col-xs-3 radio radio-primary mt-3">
-              <input type="radio" id="pageBreakOption3" name="nameForPageBreakOption" value="3" />
+              <input type="radio" id="pageBreakOption3" name="pageBreakOption" value="3" checked={this.state.pageBreakOption === 3} />
               <label htmlFor="pageBreakOption3">
                 <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
                 <p className="mt-3">
