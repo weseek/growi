@@ -159,6 +159,13 @@ class MarkdownSetting extends React.Component {
                 </div>
               </div>
             </div>
+
+            <div className="form-group my-3">
+              <div className="col-xs-offset-4 col-xs-5">
+                <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+              </div>
+            </div>
+
           </fieldset>
         </div>
       </React.Fragment>
