@@ -664,48 +664,39 @@ module.exports = function(crowi) {
     return [existingEmailList, createdUserList];
   };
 
-  userSchema.statics.sendEmailbyUserList = async function(createdUserList) {
-    console.log("ここはメール送信場所")
-    console.log(createdUserList)
-  //   async.each(
-  //     createdUserList,
-  //     (user, next) => {
-  //       if (user.password === null) {
-  //         return next();
-  //       }
+  userSchema.statics.sendEmailbyUserList = async function(userList) {
 
-  //       const appTitle = crowi.appService.getAppTitle();
+    const mailer = crowi.getMailer();
+    const appTitle = crowi.appService.getAppTitle();
 
-  //       mailer.send({
-  //         to: user.email,
-  //         subject: `Invitation to ${appTitle}`,
-  //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-  //         vars: {
-  //           email: user.email,
-  //           password: user.password,
-  //           url: crowi.appService.getSiteUrl(),
-  //           appTitle,
-  //         },
-  //       },
-  //       (err, s) => {
-  //         debug('completed to send email: ', err, s);
-  //         next();
-  //       });
-  //     },
-  //     (err) => {
-  //       debug('Sending invitation email completed.', err);
-  //     },
-  //   );
-  // }
+    await Promise.all(userList.map(async(user) => {
+      if (user.password === null) {
+        return
+      }
 
-  // );
+      try {
+        return mailer.send({
+          to: user.email,
+          subject: `Invitation to ${appTitle}`,
+          template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+          vars: {
+            email: user.email,
+            password: user.password,
+            url: crowi.appService.getSiteUrl(),
+            appTitle,
+          },
+        })
+      }
+      catch (err) {
+        debug('fail to send email: ', err);
+        return
+      }
+    }))
+
   }
 
   userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
     validateCrowi();
-
-    // TODO GW-206 move to anothor function
-    // const mailer = crowi.getMailer();
 
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
