@@ -2,6 +2,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
+import ToggleButton from 'react-bootstrap/es/ToggleButton';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -22,6 +24,16 @@ class MarkdownSetting extends React.Component {
       // TODO GW-221 get correct Xss value
       isEnabledXss: false,
     };
+
+    this.btnHandler = this.btnHandler.bind(this);
+  }
+
+  btnHandler(e) {
+    const { target } = e;
+    const { value } = target;
+
+    console.log(value);
+    console.log("clicked!");
   }
 
   render() {
@@ -41,7 +53,7 @@ class MarkdownSetting extends React.Component {
                 <div className="col-xs-5">
                   <div className="btn-group btn-toggle" data-toggle="buttons">
                     <label className={` btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaks && 'active'}`} data-active-class="primary">
-                      <input name="lineBreakEnabled" value="true" type="radio" checked={this.state.isEnabledLinebreaks} />
+                      <input name="lineBreakEnabled" value="true" type="radio" checked={this.state.isEnabledLinebreaks} onCkick={this.btnHandler} />
                         ON
                     </label>
                     <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaks && 'active'}`} data-active-class="default">
@@ -49,6 +61,14 @@ class MarkdownSetting extends React.Component {
                         OFF
                     </label>
                   </div>
+                  <ButtonGroup toggle onChange={this.btnHandler}>
+                    <ToggleButton className={`btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaks && 'active'}`} type="radio" value="true" data-active-class="primary">
+                      ON
+                    </ToggleButton>
+                    <ToggleButton className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaks && 'active'}`} type="radio" value="false" data-active-class="default">
+                      OFF
+                    </ToggleButton>
+                  </ButtonGroup>
                   <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
                 </div>
               </div>
