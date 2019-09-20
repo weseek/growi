@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -15,6 +16,7 @@ class MarkdownSetting extends React.Component {
 
     this.state = {
       isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
     };
   }
 
@@ -39,7 +41,7 @@ class MarkdownSetting extends React.Component {
                         ON
                     </label>
                     <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaks && 'active'}`} data-active-class="default">
-                      <input name="lineBreakEnabled" value="false" type="radio" />
+                      <input name="lineBreakEnabled" value="false" type="radio" checked={!this.state.isEnabledLinebreaks} />
                         OFF
                     </label>
                   </div>
@@ -54,12 +56,12 @@ class MarkdownSetting extends React.Component {
                 </label>
                 <div className="col-xs-5">
                   <div className="btn-group btn-toggle" data-toggle="buttons">
-                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="primary">
-                      <input name="{{nameForIsXssEnabled}}" value="true" type="radio" />
+                    <label className={`btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaksInComments && 'active'}`} data-active-class="primary">
+                      <input name="lineBreakInComments" value="true" type="radio" checked={this.state.isEnabledLinebreaksInComments} />
                         ON
                     </label>
-                    <label className="btn btn-default btn-rounded btn-outline" data-active-class="default">
-                      <input name="{{nameForIsXssEnabled}}" value="false" type="radio" />
+                    <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaksInComments && 'active'}`} data-active-class="default">
+                      <input name="lineBreakInComments" value="false" type="radio" checked={!this.state.isEnabledLinebreaksInComments} />
                         OFF
                     </label>
                   </div>
@@ -70,7 +72,7 @@ class MarkdownSetting extends React.Component {
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+              <input type="hidden" name="_csrf" value="csrf()" />
               <button type="submit" className="btn btn-primary">{ t('Update') }</button>
             </div>
           </div>
