@@ -2,8 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-import ToggleButton from 'react-bootstrap/es/ToggleButton';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -33,7 +31,6 @@ class MarkdownSetting extends React.Component {
     const { value } = target;
 
     console.log(value);
-    console.log("clicked!");
   }
 
   render() {
@@ -51,24 +48,7 @@ class MarkdownSetting extends React.Component {
                   { t('markdown_setting.Enable Line Break') }
                 </label>
                 <div className="col-xs-5">
-                  <div className="btn-group btn-toggle" data-toggle="buttons">
-                    <label className={` btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaks && 'active'}`} data-active-class="primary">
-                      <input name="lineBreakEnabled" value="true" type="radio" checked={this.state.isEnabledLinebreaks} onCkick={this.btnHandler} />
-                        ON
-                    </label>
-                    <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaks && 'active'}`} data-active-class="default">
-                      <input name="lineBreakEnabled" value="false" type="radio" checked={!this.state.isEnabledLinebreaks} />
-                        OFF
-                    </label>
-                  </div>
-                  <ButtonGroup toggle onChange={this.btnHandler}>
-                    <ToggleButton className={`btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaks && 'active'}`} type="radio" value="true" data-active-class="primary">
-                      ON
-                    </ToggleButton>
-                    <ToggleButton className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaks && 'active'}`} type="radio" value="false" data-active-class="default">
-                      OFF
-                    </ToggleButton>
-                  </ButtonGroup>
+                  <input type="checkbox" className="js-switch" checked={this.state.isEnabledLinebreaks} />
                   <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
                 </div>
               </div>
@@ -79,16 +59,7 @@ class MarkdownSetting extends React.Component {
                   { t('markdown_setting.Enable Line Break for comment') }
                 </label>
                 <div className="col-xs-5">
-                  <div className="btn-group btn-toggle" data-toggle="buttons">
-                    <label className={`btn btn-default btn-rounded btn-outline ${this.state.isEnabledLinebreaksInComments && 'active'}`} data-active-class="primary">
-                      <input name="lineBreakInComments" value="true" type="radio" checked={this.state.isEnabledLinebreaksInComments} />
-                        ON
-                    </label>
-                    <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledLinebreaksInComments && 'active'}`} data-active-class="default">
-                      <input name="lineBreakInComments" value="false" type="radio" checked={!this.state.isEnabledLinebreaksInComments} />
-                        OFF
-                    </label>
-                  </div>
+                  <input type="checkbox" className="js-switch" checked={this.state.isEnabledLinebreaksInComments} />
                   <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
                 </div>
               </div>
@@ -167,16 +138,7 @@ class MarkdownSetting extends React.Component {
                 { t('markdown_setting.Enable XSS prevention') }
               </label>
               <div className="col-xs-5">
-                <div className="btn-group btn-toggle" data-toggle="buttons">
-                  <label className={`btn btn-default btn-rounded btn-outline ${this.state.isEnabledXss && 'active'}`} data-active-class="primary">
-                    <input name="IsXssEnabled" value="true" type="radio" checked={this.state.isEnabledXss} />
-                      ON
-                  </label>
-                  <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledXss && 'active'}`} data-active-class="default">
-                    <input name="IsXssEnabled" value="false" type="radio" checked={!this.state.isEnabledXss} />
-                      OFF
-                  </label>
-                </div>
+                <input type="checkbox" className="js-switch" checked={this.state.isEnabledXss} />
               </div>
             </div>
 
