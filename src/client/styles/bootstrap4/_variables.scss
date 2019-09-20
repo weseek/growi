@@ -74,27 +74,27 @@ $black:    #000 !default;
 // $info:          $cyan !default;
 // $warning:       $yellow !default;
 // $danger:        $red !default;
-// $light:         $gray-100 !default;
-// $dark:          $gray-800 !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
 
-// $theme-colors: () !default;
-// // stylelint-disable-next-line scss/dollar-variable-default
-// $theme-colors: map-merge(
-//   (
-//     "primary":    $primary,
-//     "secondary":  $secondary,
-//     "success":    $success,
-//     "info":       $info,
-//     "warning":    $warning,
-//     "danger":     $danger,
-//     "light":      $light,
-//     "dark":       $dark
-//   ),
-//   $theme-colors
-// );
+$theme-colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$theme-colors: map-merge(
+  (
+    'primary':    $primary,
+    // 'secondary':  $secondary,
+    'success':    $success,
+    'info':       $info,
+    'warning':    $warning,
+    'danger':     $danger,
+    'light':      $light,
+    'dark':       $dark
+  ),
+  $theme-colors
+);
 
-// // Set a specific jump point for requesting color jumps
-// $theme-color-interval:      8% !default;
+// Set a specific jump point for requesting color jumps
+$theme-color-interval:      8% !default;
 
 // // The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
 // $yiq-contrasted-threshold:  150 !default;
