@@ -3,6 +3,7 @@
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
+const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate');
 
@@ -670,8 +671,8 @@ module.exports = function(crowi) {
     const appTitle = crowi.appService.getAppTitle();
 
     await Promise.all(userList.map(async(user) => {
-      if (user.password === null) {
-        return
+      if (user.password == null) {
+        return;
       }
 
       try {
@@ -685,15 +686,14 @@ module.exports = function(crowi) {
             url: crowi.appService.getSiteUrl(),
             appTitle,
           },
-        })
+        });
       }
       catch (err) {
-        debug('fail to send email: ', err);
-        return
+        return debug('fail to send email: ', err);
       }
-    }))
+    }));
 
-  }
+  };
 
   userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
     validateCrowi();
@@ -704,10 +704,11 @@ module.exports = function(crowi) {
 
     const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
-    if(toSendEmail){
-      await this.sendEmailbyUserList(afterWorkEmailList[1])
+    if (toSendEmail) {
+      await this.sendEmailbyUserList(afterWorkEmailList[1]);
     }
 
+    return afterWorkEmailList;
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {

@@ -459,8 +459,8 @@ module.exports = function(crowi, app) {
     const shapedEmailList = emailList.map((email) => { return email.trim() });
 
     try {
-      await User.createUsersByInvitation(shapedEmailList, req.body.sendEmail);
-      return res.json(ApiResponse.success());
+      const emailList = await User.createUsersByInvitation(shapedEmailList, req.body.sendEmail);
+      return emailList;
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
