@@ -17,6 +17,7 @@ class MarkdownSetting extends React.Component {
     this.state = {
       isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
+      // TODO GW-221 get correct Xss value
       isEnabledXss: appContainer.config.isEnabledXss,
     };
   }
@@ -73,7 +74,6 @@ class MarkdownSetting extends React.Component {
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}" />
               <button type="submit" className="btn btn-primary">{ t('Update') }</button>
             </div>
           </div>
@@ -127,7 +127,6 @@ class MarkdownSetting extends React.Component {
 
             <div className="form-group my-3">
               <div className="col-xs-offset-4 col-xs-5">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
                 <button type="submit" className="btn btn-primary">{ t('Update') }</button>
               </div>
             </div>
