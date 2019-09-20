@@ -531,30 +531,32 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
-  renderCheatsheetModalButton() {
-    const showCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: true });
-    };
-
+  renderCheatsheetModal() {
     const hideCheatsheetModal = () => {
       this.setState({ isCheatsheetModalShown: false });
     };
 
     return (
-      <React.Fragment>
-        <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
-          <Modal.Header closeButton>
-            <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="pt-1">
-            <Cheatsheet />
-          </Modal.Body>
-        </Modal>
+      <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
+        <Modal.Header closeButton>
+          <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="pt-1">
+          <Cheatsheet />
+        </Modal.Body>
+      </Modal>
+    );
+  }
 
-        <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { showCheatsheetModal() }}>
-          <i className="icon-question" /> Markdown
-        </button>
-      </React.Fragment>
+  renderCheatsheetModalButton() {
+    const showCheatsheetModal = () => {
+      this.setState({ isCheatsheetModalShown: true });
+    };
+
+    return (
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { showCheatsheetModal() }}>
+        <i className="icon-question" /> Markdown
+      </button>
     );
   }
 
@@ -823,11 +825,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
+        { this.renderCheatsheetModal() }
 
         <HandsontableModal
           ref={(c) => { this.handsontableModal = c }}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
         />
+
       </React.Fragment>
     );
   }
