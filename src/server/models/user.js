@@ -664,24 +664,9 @@ module.exports = function(crowi) {
     return [existingEmailList, createdUserList];
   };
 
-  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
-    validateCrowi();
-
-    // TODO GW-206 move to anothor function
-    // const mailer = crowi.getMailer();
-
-    if (!Array.isArray(emailList)) {
-      debug('emailList is not array');
-    }
-
-    // TODO GW-230 use List in client side
-    // const afterWorkEmailList = await this.createUsersByEmailList(emailList);
-
-  };
-
-  //  TODO GW-206 Independence as function
-  // if (toSendEmail) {
-  //   // TODO: メール送信部分のロジックをサービス化する
+  userSchema.statics.sendEmailbyUserList = async function(createdUserList) {
+    console.log("ここはメール送信場所")
+    console.log(createdUserList)
   //   async.each(
   //     createdUserList,
   //     (user, next) => {
@@ -713,9 +698,26 @@ module.exports = function(crowi) {
   //   );
   // }
 
-  //     debug('createdUserList!!! ', createdUserList);
-  //   },
   // );
+  }
+
+  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
+    validateCrowi();
+
+    // TODO GW-206 move to anothor function
+    // const mailer = crowi.getMailer();
+
+    if (!Array.isArray(emailList)) {
+      debug('emailList is not array');
+    }
+
+    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
+
+    if(toSendEmail){
+      await this.sendEmailbyUserList(afterWorkEmailList[1])
+    }
+
+  };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
