@@ -17,6 +17,7 @@ class MarkdownSetting extends React.Component {
     this.state = {
       isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
+      isEnabledXss: appContainer.config.isEnabledXss,
     };
   }
 
@@ -146,12 +147,12 @@ class MarkdownSetting extends React.Component {
               </label>
               <div className="col-xs-5">
                 <div className="btn-group btn-toggle" data-toggle="buttons">
-                  <label className="btn btn-default btn-rounded btn-outline" data-active-class="primary">
-                    <input name="{{nameForIsXssEnabled}}" value="true" type="radio" />
+                  <label className={`btn btn-default btn-rounded btn-outline ${this.state.isEnabledXss && 'active'}`} data-active-class="primary">
+                    <input name="IsXssEnabled" value="true" type="radio" checked={this.state.isEnabledXss} />
                       ON
                   </label>
-                  <label className="btn btn-default btn-rounded btn-outline" data-active-class="default">
-                    <input name="{{nameForIsXssEnabled}}" value="false" type="radio" />
+                  <label className={`btn btn-default btn-rounded btn-outline ${!this.state.isEnabledXss && 'active'}`} data-active-class="default">
+                    <input name="IsXssEnabled" value="false" type="radio" checked={!this.state.isEnabledXss} />
                       OFF
                   </label>
                 </div>
