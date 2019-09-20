@@ -72,7 +72,7 @@ class MarkdownSetting extends React.Component {
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
-              <input type="hidden" name="_csrf" value="csrf()" />
+              <input type="hidden" name="_csrf" value="{{ csrf() }}" />
               <button type="submit" className="btn btn-primary">{ t('Update') }</button>
             </div>
           </div>
@@ -90,7 +90,7 @@ class MarkdownSetting extends React.Component {
             </label>
 
             <div className="col-xs-3 radio radio-primary">
-              <input type="radio" id="pageBreakOption1" name="{{nameForPageBreakOption}}" value="1" />
+              <input type="radio" id="pageBreakOption1" name="nameForPageBreakOption" value="1" />
               <label htmlFor="pageBreakOption1">
                 <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
                 <p className="mt-3">
@@ -101,7 +101,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
             <div className="col-xs-3 radio radio-primary mt-3">
-              <input type="radio" id="pageBreakOption2" name="{{nameForPageBreakOption}}" value="2" />
+              <input type="radio" id="pageBreakOption2" name="nameForPageBreakOption" value="2" />
               <label htmlFor="pageBreakOption2">
                 <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
                 <p className="mt-3">
@@ -112,7 +112,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
             <div className="col-xs-3 radio radio-primary mt-3">
-              <input type="radio" id="pageBreakOption3" name="{{nameForPageBreakOption}}" value="3" />
+              <input type="radio" id="pageBreakOption3" name="nameForPageBreakOption" value="3" />
               <label htmlFor="pageBreakOption3">
                 <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
                 <p className="mt-3">
