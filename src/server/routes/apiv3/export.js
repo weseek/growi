@@ -14,7 +14,7 @@ const router = express.Router();
  */
 
 module.exports = (crowi) => {
-  const { exportService } = crowi;
+  const { growiBridgeService, exportService } = crowi;
 
   /**
    * @swagger
@@ -98,12 +98,13 @@ module.exports = (crowi) => {
       configs.push({ from: metaJson, as: path.basename(metaJson) });
       // exec zip
       const zipFile = await exportService.zipFiles(configs);
+      // get stats for the zip file
+      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
 
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        // collection: [Model.collection.collectionName],
-        file: path.basename(zipFile),
+        zipFileStat,
       });
     }
     catch (err) {

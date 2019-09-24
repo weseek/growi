@@ -46,14 +46,14 @@ class ExportAsZip extends React.Component {
 
   async export() {
     // TODO use appContainer.apiv3.post
-    const res = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
+    const { zipFileStat } = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
     // TODO toastSuccess, toastError
     this.setState((prevState) => {
       return {
-        files: {
-          ...prevState.files,
-          [res.collection]: res.file,
-        },
+        zipFileStats: [
+          ...prevState.zipFileStats,
+          zipFileStat,
+        ],
       };
     });
   }
@@ -61,6 +61,12 @@ class ExportAsZip extends React.Component {
   async deleteZipFile(zipFile) {
     // TODO use appContainer.apiv3.delete
     await this.props.appContainer.apiRequest('delete', `/v3/export/${zipFile}`, {});
+
+    this.setState((prevState) => {
+      return {
+        zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== zipFile),
+      };
+    });
     // TODO toastSuccess, toastError
   }
 
