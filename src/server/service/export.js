@@ -10,12 +10,11 @@ class ExportService {
   constructor(crowi) {
     this.appService = crowi.appService;
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
+    this.zipFileName = 'GROWI.zip';
+    this.metaFileName = 'meta.json';
     this.encoding = 'utf-8';
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
-
-    // path to zip file for exporting multiple collection
-    this.zipFile = path.join(this.baseDir, 'GROWI.zip');
 
     // { pages: Page, users: User, ... }
     this.collectionMap = {};
@@ -164,6 +163,7 @@ class ExportService {
    */
   async zipFiles(_configs) {
     const configs = toArrayIfNot(_configs);
+    const zipFile = path.join(this.baseDir, this.zipFileName);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });
@@ -184,7 +184,7 @@ class ExportService {
       archive.append(input, { name: as });
     }
 
-    const output = fs.createWriteStream(this.zipFile);
+    const output = fs.createWriteStream(zipFile);
 
     // pipe archive data to the file
     archive.pipe(output);
@@ -195,38 +195,24 @@ class ExportService {
 
     await streamToPromise(archive);
 
-    logger.debug(`zipped growi data into ${this.zipFile} (${archive.pointer()} bytes)`);
+    logger.debug(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
 
-    return this.zipFile;
+    return zipFile;
   }
 
   /**
-   * replace a file extension
+   * get the absolute path to the zip file
    *
-   * @memberOf ExportService
-   * @param {string} file file path
-   * @param {string} extension new extension
-   * @return {string} path to file with new extension
+   * @memberOf ImportService
+   * @return {string} absolute path to the zip file
    */
-  replaceExtension(file, extension) {
-    return `${path.join(path.dirname(file), `${path.basename(file, path.extname(file))}.${extension}`)}`;
-  }
+  getZipFile() {
+    const zipFile = path.join(this.baseDir, this.zipFileName);
 
-  /**
-   * get the path to the zipped file for a collection
-   *
-   * @memberOf ExportService
-   * @param {object} Model instance of mongoose model
-   * @return {string} path to zip file
-   */
-  getZipFile(Model) {
-    const json = this.files[Model.collection.collectionName];
-    const zip = this.replaceExtension(json, 'zip');
-    if (!fs.existsSync(zip)) {
-      throw new Error(`${zip} does not exist`);
-    }
+    // throws err if the file does not exist
+    fs.accessSync(zipFile);
 
-    return zip;
+    return zipFile;
   }
 
   /**

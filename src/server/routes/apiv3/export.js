@@ -56,7 +56,7 @@ module.exports = (crowi) => {
   router.get('/', async(req, res) => {
     // TODO: add express validator
     try {
-      return res.download(exportService.zipFile);
+      return res.download(exportService.getZipFile());
     }
     catch (err) {
       // TODO: use ApiV3Error
