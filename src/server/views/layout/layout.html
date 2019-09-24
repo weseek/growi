@@ -76,8 +76,8 @@
   <!-- Navigation -->
   {% block layout_head_nav %}
   <nav class="navbar navbar-default navbar-static-top mb-0">
-    <div class="navbar-header d-flex">
-      <a class="navbar-toggle visible-xs" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
+    <div class="navbar-header">
+      <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
         <i class="ti-menu"></i>
       </a>
       <div class="top-left-part">
@@ -99,7 +99,7 @@
         </a>
       </div>
 
-      <ul class="nav navbar-top-links hidden-xs">
+      <ul class="nav navbar-top-links navbar-left hidden-xs">
         <li>
           <a class="open-close hidden-xs waves-effect waves-light">
             <i class="ti-menu"></i>
@@ -116,26 +116,24 @@
         #}
         <li>
           {% if searchConfigured() %}
-          <div class="navbar-form search-top" role="search" id="search-top"></div>
+          <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
           {% endif %}
         </li>
       </ul>
 
-      <ul class="nav navbar-top-links d-sm-inline-flex ml-auto">
+      <ul class="nav navbar-top-links navbar-right pull-right">
         {% if user and user.admin %}
         <li class="nav-item-admin">
           <a href="/admin">
-            <i class="icon-settings"></i>
-            <span class="hidden-xs">{{ t('Admin') }}</span>
+            <i class="icon-settings"></i><span>{{ t('Admin') }}</span>
           </a>
         </li>
         {% endif %}
 
         {% if user %}
         <li class="nav-item-create-page">
-          <a href="#" data-target="#create-page" data-toggle="modal">
-            <i class="icon-pencil"></i>
-            <span class="hidden-xs">{{ t('New') }}</span>
+          <a href="#" data-target="#create-page" data-toggle="modal" class="d-none d-sm-block ml-1">
+            <i class="icon-pencil"></i><span>{{ t('New') }}</span>
           </a>
         </li>
         <li class="dropdown">
