@@ -70,7 +70,7 @@ class ExportService {
    * @return {string} path to meta.json
    */
   async createMetaJson() {
-    const metaJson = this.getMetaJson();
+    const metaJson = path.join(this.baseDir, this.metaFileName);
     const writeStream = fs.createWriteStream(metaJson, { encoding: this.encoding });
 
     const metaData = {
@@ -251,35 +251,6 @@ class ExportService {
     fs.accessSync(zipFile);
 
     return zipFile;
-  }
-
-  /**
-   * get the absolute path to the zip file
-   *
-   * @memberOf ExportService
-   * @param {boolean} [validate=false] boolean to check if the file exists
-   * @return {string} absolute path to meta.json
-   */
-  getMetaJson(validate = false) {
-    const jsonFile = path.join(this.baseDir, this.metaFileName);
-
-    if (validate) {
-      try {
-        fs.accessSync(jsonFile);
-      }
-      catch (err) {
-        if (err.code === 'ENOENT') {
-          logger.error(`${jsonFile} does not exist`, err);
-        }
-        else {
-          logger.error(err);
-        }
-
-        throw err;
-      }
-    }
-
-    return jsonFile;
   }
 
   /**
