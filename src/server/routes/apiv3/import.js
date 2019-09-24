@@ -96,18 +96,20 @@ module.exports = (crowi) => {
   router.post('/', async(req, res) => {
     // TODO: add express validator
 
-    const { zipFile, schema } = req.body;
+    const { fileName, schema } = req.body;
+    const zipFile = importService.getFile(fileName);
 
     // unzip
     await importService.unzip(zipFile);
     // eslint-disable-next-line no-unused-vars
-    const { meta, files } = await importService.parseZipFile(zipFile);
+    const { meta, fileStats } = await importService.parseZipFile(zipFile);
 
     // TODO: validate using meta data
 
     try {
-      await Promise.all(files.map(async({ fileName, collectionName, size }) => {
+      await Promise.all(fileStats.map(async({ fileName, collectionName, size }) => {
         const Model = importService.getModelFromCollectionName(collectionName);
+        const jsonFile = importService.getFile(fileName);
 
         let overwriteParams;
         if (overwriteParamsFn[collectionName] != null) {
@@ -115,7 +117,7 @@ module.exports = (crowi) => {
           overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
         }
 
-        await importService.import(Model, fileName, overwriteParams);
+        await importService.import(Model, jsonFile, overwriteParams);
       }));
 
       // TODO: use res.apiv3
@@ -130,7 +132,7 @@ module.exports = (crowi) => {
 
   router.post('/upload', uploads.single('file'), async(req, res) => {
     const { file } = req;
-    const zipFile = path.join(file.destination, file.filename);
+    const zipFile = importService.getFile(file.filename);
 
     try {
       const data = await importService.parseZipFile(zipFile);

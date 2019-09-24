@@ -14,7 +14,7 @@ class GrowiImportForm extends React.Component {
     this.initialState = {
       meta: {},
       zipFileName: '',
-      files: [],
+      fileStats: [],
       schema: {
         pages: {},
         revisions: {},
@@ -46,7 +46,7 @@ class GrowiImportForm extends React.Component {
 
     // TODO use appContainer.apiv3.post
     const { file, data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
-    this.setState({ meta: data.meta, zipFileName: file, files: data.files });
+    this.setState({ meta: data.meta, zipFileName: file, fileStats: data.fileStats });
     // TODO toastSuccess, toastError
   }
 
@@ -55,7 +55,7 @@ class GrowiImportForm extends React.Component {
 
     // TODO use appContainer.apiv3.post
     await this.props.appContainer.apiPost('/v3/import', {
-      zipFile: this.state.zipFileName,
+      fileName: this.state.zipFileName,
       schema: this.state.schema,
     });
     // TODO toastSuccess, toastError
@@ -106,7 +106,7 @@ class GrowiImportForm extends React.Component {
         </form>
 
         {/* TODO: move to another component 1 */}
-        {this.state.files.length > 0 && (
+        {this.state.fileStats.length > 0 && (
           <Fragment>
             {/* TODO: move to another component 2 */}
             <div>{this.state.zipFileName}</div>
@@ -119,7 +119,7 @@ class GrowiImportForm extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.files.map((file) => {
+                {this.state.fileStats.map((file) => {
                   return (
                     <tr key={file.fileName}>
                       <td>{file.fileName}</td>

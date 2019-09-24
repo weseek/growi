@@ -148,7 +148,7 @@ class ImportService {
   async parseZipFile(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const unzipStream = readStream.pipe(unzipper.Parse());
-    const files = [];
+    const fileStats = [];
 
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
@@ -159,7 +159,7 @@ class ImportService {
         entry.autodrain();
       }
       else {
-        files.push({
+        fileStats.push({
           fileName,
           collectionName: path.basename(fileName, '.json'),
           size,
@@ -173,7 +173,7 @@ class ImportService {
 
     return {
       meta: {},
-      files,
+      fileStats,
     };
   }
 
@@ -310,27 +310,13 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {string} fileName base name of file
-   * @param {boolean} [validate=false] boolean to check if the file exists
    * @return {string} absolute path to the file
    */
-  getJsonFile(fileName, validate = false) {
+  getFile(fileName) {
     const jsonFile = path.join(this.baseDir, fileName);
 
-    if (validate) {
-      try {
-        fs.accessSync(jsonFile);
-      }
-      catch (err) {
-        if (err.code === 'ENOENT') {
-          logger.error(`${jsonFile} does not exist`, err);
-        }
-        else {
-          logger.error(err);
-        }
-
-        throw err;
-      }
-    }
+    // throws err if the file does not exist
+    fs.accessSync(jsonFile);
 
     return jsonFile;
   }

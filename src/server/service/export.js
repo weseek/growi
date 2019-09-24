@@ -163,7 +163,7 @@ class ExportService {
    */
   async zipFiles(_configs) {
     const configs = toArrayIfNot(_configs);
-    const zipFile = this.getZipFile();
+    const zipFile = path.join(this.baseDir, this.zipFileName);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });
@@ -204,27 +204,13 @@ class ExportService {
    * get the absolute path to the zip file
    *
    * @memberOf ImportService
-   * @param {boolean} [validate=false] boolean to check if the file exists
    * @return {string} absolute path to the zip file
    */
-  getZipFile(validate = false) {
+  getZipFile() {
     const zipFile = path.join(this.baseDir, this.zipFileName);
 
-    if (validate) {
-      try {
-        fs.accessSync(zipFile);
-      }
-      catch (err) {
-        if (err.code === 'ENOENT') {
-          logger.error(`${zipFile} does not exist`, err);
-        }
-        else {
-          logger.error(err);
-        }
-
-        throw err;
-      }
-    }
+    // throws err if the file does not exist
+    fs.accessSync(zipFile);
 
     return zipFile;
   }
