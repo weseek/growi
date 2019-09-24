@@ -144,7 +144,7 @@ class ExportService {
    * export multiple collections
    *
    * @memberOf ExportService
-   * @param {number} models number of items exported
+   * @param {Array.<object>} models array of instances of mongoose model
    * @return {Array.<string>} paths to json files created
    */
   async exportMultipleCollectionsToJsons(models) {
@@ -179,8 +179,8 @@ class ExportService {
    * zip files into one zip file
    *
    * @memberOf ExportService
-   * @param {object|array<object>} configs array of object { from: "path to source file", as: "file name after unzipped" }
-   * @return {string} path to zip file
+   * @param {object|array<object>} configs object or array of object { from: "path to source file", as: "file name after unzipped" }
+   * @return {string} absolute path to the zip file
    * @see https://www.archiverjs.com/#quick-start
    */
   async zipFiles(_configs) {
@@ -257,7 +257,7 @@ class ExportService {
    * get a model from collection name
    *
    * @memberOf ExportService
-   * @param {object} collectionName collection name
+   * @param {string} collectionName collection name
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {

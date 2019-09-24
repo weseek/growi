@@ -81,6 +81,7 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {object} Model instance of mongoose model
+   * @param {string} jsonFile absolute path to the jsonFile being imported
    * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
    */
   async import(Model, jsonFile, overwriteParams = {}) {
@@ -143,7 +144,7 @@ class ImportService {
    * extract a zip file
    *
    * @memberOf ImportService
-   * @param {string} zipFile path to zip file
+   * @param {string} zipFile absolute path to zip file
    * @return {Array.<string>} array of absolute paths to extracted files
    */
   async unzip(zipFile) {
@@ -286,7 +287,7 @@ class ImportService {
   /**
    * validate using meta.json
    * to pass validation, all the criteria must be met
-   * - ${version of this growi} === ${version of growi that exported data}
+   *   - ${version of this growi} === ${version of growi that exported data}
    *
    * @memberOf ImportService
    * @param {object} meta meta data from meta.json
