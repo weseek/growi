@@ -139,16 +139,16 @@ class ImportService {
   }
 
   /**
-   * extract a zip file
+   * parse a zip file
    *
    * @memberOf ImportService
    * @param {string} zipFile path to zip file
    * @return {object} meta{object} and files{Array.<object>}
    */
-  async unzip(zipFile) {
+  async parseZipFile(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const unzipStream = readStream.pipe(unzipper.Parse());
-    const files = [];
+    const fileStats = [];
 
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
@@ -159,23 +159,54 @@ class ImportService {
         entry.autodrain();
       }
       else {
-        const writeStream = fs.createWriteStream(this.getJsonFile(fileName), { encoding: this.encoding });
-        entry.pipe(writeStream);
-
-        files.push({
+        fileStats.push({
           fileName,
           collectionName: path.basename(fileName, '.json'),
           size,
         });
       }
+
+      entry.autodrain();
     });
 
     await streamToPromise(unzipStream);
 
     return {
       meta: {},
-      files,
+      fileStats,
     };
+  }
+
+  /**
+   * extract a zip file
+   *
+   * @memberOf ImportService
+   * @param {string} zipFile path to zip file
+   * @return {Array.<string>} array of absolute paths to extracted files
+   */
+  async unzip(zipFile) {
+    const readStream = fs.createReadStream(zipFile);
+    const unzipStream = readStream.pipe(unzipper.Parse());
+    const files = [];
+
+    unzipStream.on('entry', (entry) => {
+      const fileName = entry.path;
+
+      if (fileName === this.metaFileName) {
+        // TODO: parse meta.json
+        entry.autodrain();
+      }
+      else {
+        const jsonFile = path.join(this.baseDir, fileName);
+        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.encoding });
+        entry.pipe(writeStream);
+        files.push(jsonFile);
+      }
+    });
+
+    await streamToPromise(unzipStream);
+
+    return files;
   }
 
   /**
@@ -279,27 +310,13 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {string} fileName base name of file
-   * @param {boolean} [validate=false] boolean to check if the file exists
    * @return {string} absolute path to the file
    */
-  getJsonFile(fileName, validate = false) {
+  getFile(fileName) {
     const jsonFile = path.join(this.baseDir, fileName);
 
-    if (validate) {
-      try {
-        fs.accessSync(jsonFile);
-      }
-      catch (err) {
-        if (err.code === 'ENOENT') {
-          logger.error(`${jsonFile} does not exist`, err);
-        }
-        else {
-          logger.error(err);
-        }
-
-        throw err;
-      }
-    }
+    // throws err if the file does not exist
+    fs.accessSync(jsonFile);
 
     return jsonFile;
   }
