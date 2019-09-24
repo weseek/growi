@@ -13,6 +13,7 @@ class GrowiImportForm extends React.Component {
 
     this.initialState = {
       meta: {},
+      zipFileName: '',
       files: [],
       schema: {
         pages: {},
@@ -44,8 +45,8 @@ class GrowiImportForm extends React.Component {
     formData.append('file', this.inputRef.current.files[0]);
 
     // TODO use appContainer.apiv3.post
-    const { data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
-    this.setState({ meta: data.meta, files: data.files });
+    const { file, data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
+    this.setState({ meta: data.meta, zipFileName: file, files: data.files });
     // TODO toastSuccess, toastError
   }
 
@@ -54,13 +55,8 @@ class GrowiImportForm extends React.Component {
 
     // TODO use appContainer.apiv3.post
     await this.props.appContainer.apiPost('/v3/import', {
-      meta: this.state.meta,
-      options: this.state.files.map((option) => {
-        return {
-          ...option,
-          schema: this.state.schema[option.collectionName],
-        };
-      }),
+      zipFile: this.state.zipFileName,
+      schema: this.state.schema,
     });
     // TODO toastSuccess, toastError
     this.setState(this.initialState);
@@ -113,6 +109,7 @@ class GrowiImportForm extends React.Component {
         {this.state.files.length > 0 && (
           <Fragment>
             {/* TODO: move to another component 2 */}
+            <div>{this.state.zipFileName}</div>
             <div>{JSON.stringify(this.state.meta)}</div>
             <table className="table table-bordered table-mapping">
               <thead>

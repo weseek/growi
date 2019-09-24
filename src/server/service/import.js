@@ -139,13 +139,13 @@ class ImportService {
   }
 
   /**
-   * extract a zip file
+   * parse a zip file
    *
    * @memberOf ImportService
    * @param {string} zipFile path to zip file
    * @return {object} meta{object} and files{array<object>}
    */
-  async unzip(zipFile) {
+  async parseZipFile(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const unzipStream = readStream.pipe(unzipper.Parse());
     const files = [];
@@ -159,15 +159,14 @@ class ImportService {
         entry.autodrain();
       }
       else {
-        const writeStream = fs.createWriteStream(this.getJsonFile(fileName), { encoding: this.encoding });
-        entry.pipe(writeStream);
-
         files.push({
           fileName,
           collectionName: path.basename(fileName, '.json'),
           size,
         });
       }
+
+      entry.autodrain();
     });
 
     await streamToPromise(unzipStream);
@@ -176,6 +175,38 @@ class ImportService {
       meta: {},
       files,
     };
+  }
+
+  /**
+   * extract a zip file
+   *
+   * @memberOf ImportService
+   * @param {string} zipFile path to zip file
+   * @return {Array.<string>} array of absolute paths to extracted files
+   */
+  async unzip(zipFile) {
+    const readStream = fs.createReadStream(zipFile);
+    const unzipStream = readStream.pipe(unzipper.Parse());
+    const files = [];
+
+    unzipStream.on('entry', (entry) => {
+      const fileName = entry.path;
+
+      if (fileName === this.metaFileName) {
+        // TODO: parse meta.json
+        entry.autodrain();
+      }
+      else {
+        const jsonFile = path.join(this.baseDir, fileName);
+        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.encoding });
+        entry.pipe(writeStream);
+        files.push(jsonFile);
+      }
+    });
+
+    await streamToPromise(unzipStream);
+
+    return files;
   }
 
   /**

@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 const path = require('path');
 const multer = require('multer');
-const autoReap = require('multer-autoreap');
 const { ObjectId } = require('mongoose').Types;
 
 const express = require('express');
@@ -19,7 +18,15 @@ const router = express.Router();
 module.exports = (crowi) => {
   const { importService } = crowi;
   const uploads = multer({
-    dest: importService.baseDir,
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, importService.baseDir);
+      },
+      filename(req, file, cb) {
+        // to prevent hashing the file name. files with same name will be overwritten.
+        cb(null, file.originalname);
+      },
+    }),
     fileFilter: (req, file, cb) => {
       if (path.extname(file.originalname) === '.zip') {
         return cb(null, true);
@@ -88,23 +95,27 @@ module.exports = (crowi) => {
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
+
+    const { zipFile, schema } = req.body;
+
+    // unzip
+    await importService.unzip(zipFile);
     // eslint-disable-next-line no-unused-vars
-    const { meta, options } = req.body;
+    const { meta, files } = await importService.parseZipFile(zipFile);
 
     // TODO: validate using meta data
 
     try {
-      await Promise.all(options.map(async({ collectionName, fileName, schema }) => {
+      await Promise.all(files.map(async({ fileName, collectionName, size }) => {
         const Model = importService.getModelFromCollectionName(collectionName);
-        const jsonFile = importService.getJsonFile(fileName, true);
 
         let overwriteParams;
         if (overwriteParamsFn[collectionName] != null) {
           // await in case overwriteParamsFn[collection] is a Promise
-          overwriteParams = await overwriteParamsFn(Model, schema, req);
+          overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
         }
 
-        await importService.import(Model, jsonFile, overwriteParams);
+        await importService.import(Model, fileName, overwriteParams);
       }));
 
       // TODO: use res.apiv3
@@ -117,15 +128,19 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/upload', uploads.single('file'), autoReap, async(req, res) => {
+  router.post('/upload', uploads.single('file'), async(req, res) => {
     const { file } = req;
     const zipFile = path.join(file.destination, file.filename);
 
     try {
-      const data = await importService.unzip(zipFile);
+      const data = await importService.parseZipFile(zipFile);
 
       // TODO: use res.apiv3
-      return res.send({ ok: true, data });
+      return res.send({
+        ok: true,
+        file: file.filename,
+        data,
+      });
     }
     catch (err) {
       // TODO: use ApiV3Error
