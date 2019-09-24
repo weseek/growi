@@ -102,15 +102,15 @@
 .search-top {
   margin-top: 10px;
   margin-bottom: 10px;
+}
 
-  .rbt-input.form-control {
-    width: 200px;
-    transition: 0.3s ease-out;
+.rbt-input.form-control {
+  width: 200px;
+  transition: 0.3s ease-out;
 
-    // focus
-    &.focus {
-      width: 300px;
-    }
+  // focus
+  &.focus {
+    width: 300px;
   }
 }
 
