@@ -662,7 +662,7 @@ module.exports = function(crowi) {
       createdUserList.push(createdEmail);
     }));
 
-    return [existingEmailList, createdUserList];
+    return { existingEmailList, createdUserList };
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {
@@ -705,7 +705,7 @@ module.exports = function(crowi) {
     const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
     if (toSendEmail) {
-      await this.sendEmailbyUserList(afterWorkEmailList[1]);
+      await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
     }
 
     return afterWorkEmailList;
