@@ -96,7 +96,7 @@ module.exports = (crowi) => {
   router.post('/', async(req, res) => {
     // TODO: add express validator
 
-    const { fileName, schema } = req.body;
+    const { fileName, collections, schema } = req.body;
     const zipFile = importService.getFile(fileName);
 
     // unzip
@@ -104,10 +104,13 @@ module.exports = (crowi) => {
     // eslint-disable-next-line no-unused-vars
     const { meta, fileStats } = await importService.parseZipFile(zipFile);
 
+    // filter fileStats
+    const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
+
     // TODO: validate using meta data
 
     try {
-      await Promise.all(fileStats.map(async({ fileName, collectionName, size }) => {
+      await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = importService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 

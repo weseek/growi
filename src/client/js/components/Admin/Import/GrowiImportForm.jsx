@@ -14,6 +14,7 @@ class GrowiImportForm extends React.Component {
     this.initialState = {
       meta: {},
       zipFileName: '',
+      collections: new Set(),
       fileStats: [],
       schema: {
         pages: {},
@@ -26,6 +27,7 @@ class GrowiImportForm extends React.Component {
     this.inputRef = React.createRef();
 
     this.changeFileName = this.changeFileName.bind(this);
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.uploadZipFile = this.uploadZipFile.bind(this);
     this.import = this.import.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -35,6 +37,22 @@ class GrowiImportForm extends React.Component {
     // to rerender onChange
     // eslint-disable-next-line react/no-unused-state
     this.setState({ name: e.target.files[0].name });
+  }
+
+  toggleCheckbox(e) {
+    const { target } = e;
+    const { name, checked } = target;
+
+    this.setState((prevState) => {
+      const collections = new Set(prevState.collections);
+      if (checked) {
+        collections.add(name);
+      }
+      else {
+        collections.delete(name);
+      }
+      return { collections };
+    });
   }
 
   async uploadZipFile(e) {
@@ -56,6 +74,7 @@ class GrowiImportForm extends React.Component {
     // TODO use appContainer.apiv3.post
     await this.props.appContainer.apiPost('/v3/import', {
       fileName: this.state.zipFileName,
+      collections: Array.from(this.state.collections),
       schema: this.state.schema,
     });
     // TODO toastSuccess, toastError
@@ -120,10 +139,22 @@ class GrowiImportForm extends React.Component {
               </thead>
               <tbody>
                 {this.state.fileStats.map((file) => {
+                  const { fileName, collectionName } = file;
                   return (
-                    <tr key={file.fileName}>
-                      <td>{file.fileName}</td>
-                      <td>{file.collectionName}</td>
+                    <tr key={fileName}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          id={collectionName}
+                          name={collectionName}
+                          className="form-check-input"
+                          value={collectionName}
+                          checked={this.state.collections.has(collectionName)}
+                          onChange={this.toggleCheckbox}
+                        />
+                      </td>
+                      <td>{fileName}</td>
+                      <td>{collectionName}</td>
                     </tr>
                   );
                 })}
