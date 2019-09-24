@@ -143,7 +143,6 @@ module.exports = (crowi) => {
       // TODO: use res.apiv3
       return res.send({
         ok: true,
-        file: file.filename,
         data,
       });
     }

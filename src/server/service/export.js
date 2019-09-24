@@ -10,6 +10,7 @@ class ExportService {
   constructor(crowi) {
     this.crowi = crowi;
     this.appService = crowi.appService;
+    this.growiBridgeService = crowi.growiBridgeService;
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.zipFileName = 'GROWI.zip';
     this.metaFileName = 'meta.json';
@@ -47,32 +48,19 @@ class ExportService {
   }
 
   /**
-   * dump a collection into json
+   * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {object} cache info for exported zip files
+   * @return {Array.<object>} info for zip files
    */
-  getStatus() {
-    const status = {};
-    const collections = Object.keys(this.files);
-    collections.forEach((file) => {
-      status[path.basename(file, '.zip')] = null;
-    });
+  async getStatus() {
+    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
+    const zipFileStats = await Promise.all(zipFiles.map((file) => {
+      const zipFile = this.getFile(file);
+      return this.growiBridgeService.parseZipFile(zipFile);
+    }));
 
-    // extract ${collectionName}.zip
-    const files = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' && collections.includes(path.basename(file, '.zip')) });
-
-    files.forEach((file) => {
-      status[path.basename(file, '.zip')] = file;
-    });
-
-    files.forEach((file) => {
-      const stats = fs.statSync(path.join(this.baseDir, file));
-      stats.name = file;
-      status[path.basename(file, '.zip')] = stats;
-    });
-
-    return status;
+    return zipFileStats;
   }
 
   /**
@@ -235,9 +223,25 @@ class ExportService {
   }
 
   /**
+   * get the absolute path to a file
+   *
+   * @memberOf ExportService
+   * @param {string} fileName base name of file
+   * @return {string} absolute path to the file
+   */
+  getFile(fileName) {
+    const jsonFile = path.join(this.baseDir, fileName);
+
+    // throws err if the file does not exist
+    fs.accessSync(jsonFile);
+
+    return jsonFile;
+  }
+
+  /**
    * get the absolute path to the zip file
    *
-   * @memberOf ImportService
+   * @memberOf ExportService
    * @return {string} absolute path to the zip file
    */
   getZipFile() {
@@ -252,7 +256,7 @@ class ExportService {
   /**
    * get the absolute path to the zip file
    *
-   * @memberOf ImportService
+   * @memberOf ExportService
    * @param {boolean} [validate=false] boolean to check if the file exists
    * @return {string} absolute path to meta.json
    */
@@ -293,6 +297,16 @@ class ExportService {
     }
 
     return Model;
+  }
+
+  /**
+   * remove zip file from downloads dir
+   *
+   * @param {string} zipFile absolute path to zip file
+   * @memberOf ExportService
+   */
+  deleteZipFile(zipFile) {
+    fs.unlinkSync(zipFile);
   }
 
 }

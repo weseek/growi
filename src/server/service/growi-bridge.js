@@ -6,8 +6,9 @@ const unzipper = require('unzipper');
 
 class GrowiBridgeService {
 
-  // constructor(crowi) {
-  // }
+  constructor(crowi) {
+    this.metaFileName = 'meta.json';
+  }
 
   /**
    * parse a zip file
@@ -20,14 +21,14 @@ class GrowiBridgeService {
     const readStream = fs.createReadStream(zipFile);
     const unzipStream = readStream.pipe(unzipper.Parse());
     const fileStats = [];
+    let meta = {};
 
-    unzipStream.on('entry', (entry) => {
+    unzipStream.on('entry', async(entry) => {
       const fileName = entry.path;
       const size = entry.vars.uncompressedSize; // There is also compressedSize;
 
       if (fileName === this.metaFileName) {
-        // TODO: parse meta.json
-        entry.autodrain();
+        meta = JSON.parse((await entry.buffer()).toString());
       }
       else {
         fileStats.push({
@@ -43,7 +44,8 @@ class GrowiBridgeService {
     await streamToPromise(unzipStream);
 
     return {
-      meta: {},
+      meta,
+      fileName: path.basename(zipFile),
       fileStats,
     };
   }

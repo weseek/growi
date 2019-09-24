@@ -154,7 +154,7 @@ class ImportService {
       const fileName = entry.path;
 
       if (fileName === this.metaFileName) {
-        // TODO: parse meta.json
+        // skip meta.json
         entry.autodrain();
       }
       else {
