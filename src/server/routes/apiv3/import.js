@@ -16,7 +16,7 @@ const router = express.Router();
  */
 
 module.exports = (crowi) => {
-  const { importService } = crowi;
+  const { growiBridgeService, importService } = crowi;
   const uploads = multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {
@@ -102,7 +102,7 @@ module.exports = (crowi) => {
     // unzip
     await importService.unzip(zipFile);
     // eslint-disable-next-line no-unused-vars
-    const { meta, fileStats } = await importService.parseZipFile(zipFile);
+    const { meta, fileStats } = await growiBridgeService.parseZipFile(zipFile);
 
     // filter fileStats
     const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
@@ -138,7 +138,7 @@ module.exports = (crowi) => {
     const zipFile = importService.getFile(file.filename);
 
     try {
-      const data = await importService.parseZipFile(zipFile);
+      const data = await growiBridgeService.parseZipFile(zipFile);
 
       // TODO: use res.apiv3
       return res.send({
