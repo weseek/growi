@@ -107,9 +107,10 @@ module.exports = (crowi) => {
     // filter fileStats
     const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
 
-    // TODO: validate using meta data
-
     try {
+      // validate with meta.json
+      importService.validate(meta);
+
       await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = importService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
@@ -139,6 +140,9 @@ module.exports = (crowi) => {
 
     try {
       const data = await growiBridgeService.parseZipFile(zipFile);
+
+      // validate with meta.json
+      importService.validate(data.meta);
 
       // TODO: use res.apiv3
       return res.send({

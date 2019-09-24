@@ -9,6 +9,7 @@ const { ObjectId } = require('mongoose').Types;
 class ImportService {
 
   constructor(crowi) {
+    this.crowi = crowi;
     this.baseDir = path.join(crowi.tmpDir, 'imports');
     this.metaFileName = 'meta.json';
     this.encoding = 'utf-8';
@@ -280,6 +281,24 @@ class ImportService {
     fs.accessSync(jsonFile);
 
     return jsonFile;
+  }
+
+  /**
+   * validate using meta.json
+   * to pass validation, all the criteria must be met
+   * - ${version of this growi} === ${version of growi that exported data}
+   *
+   * @memberOf ImportService
+   * @param {object} meta meta data from meta.json
+   */
+  validate(meta) {
+    if (meta.version !== this.crowi.version) {
+      throw new Error('the version of this growi and the growi that exported the data are not met');
+    }
+
+    // TODO: check if all migrations are completed
+    // - export: throw err if there are pending migrations
+    // - import: throw err if there are pending migrations
   }
 
 }
