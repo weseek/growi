@@ -46,6 +46,7 @@ function Crowi(rootdir) {
   this.appService = null;
   this.fileUploadService = null;
   this.restQiitaAPIService = null;
+  this.growiBridgeService = null;
   this.exportService = null;
   this.importService = null;
   this.cdnResourcesService = new CdnResourcesService();
@@ -87,10 +88,12 @@ Crowi.prototype.init = async function() {
   // customizeService depends on AppService and XssService
   // passportService depends on appService
   // slack depends on setUpSlacklNotification
+  // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
     this.setUpSlacklNotification(),
+    this.setUpGrowiBridge(),
   ]);
 
   await Promise.all([
@@ -126,6 +129,7 @@ Crowi.prototype.initForTest = async function() {
     this.setUpApp(),
     // this.setUpXss(),
     // this.setUpSlacklNotification(),
+    // this.setUpGrowiBridge(),
   ]);
 
   await Promise.all([
@@ -536,6 +540,13 @@ Crowi.prototype.setupUserGroup = async function() {
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
     return this.userGroupService.init();
+  }
+};
+
+Crowi.prototype.setUpGrowiBridge = async function() {
+  const GrowiBridgeService = require('../service/growi-bridge');
+  if (this.growiBridgeService == null) {
+    this.growiBridgeService = new GrowiBridgeService(this);
   }
 };
 

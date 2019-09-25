@@ -9,6 +9,7 @@ const { ObjectId } = require('mongoose').Types;
 class ImportService {
 
   constructor(crowi) {
+    this.crowi = crowi;
     this.baseDir = path.join(crowi.tmpDir, 'imports');
     this.metaFileName = 'meta.json';
     this.encoding = 'utf-8';
@@ -80,6 +81,7 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {object} Model instance of mongoose model
+   * @param {string} jsonFile absolute path to the jsonFile being imported
    * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
    */
   async import(Model, jsonFile, overwriteParams = {}) {
@@ -139,49 +141,10 @@ class ImportService {
   }
 
   /**
-   * parse a zip file
-   *
-   * @memberOf ImportService
-   * @param {string} zipFile path to zip file
-   * @return {object} meta{object} and files{array<object>}
-   */
-  async parseZipFile(zipFile) {
-    const readStream = fs.createReadStream(zipFile);
-    const unzipStream = readStream.pipe(unzipper.Parse());
-    const fileStats = [];
-
-    unzipStream.on('entry', (entry) => {
-      const fileName = entry.path;
-      const size = entry.vars.uncompressedSize; // There is also compressedSize;
-
-      if (fileName === this.metaFileName) {
-        // TODO: parse meta.json
-        entry.autodrain();
-      }
-      else {
-        fileStats.push({
-          fileName,
-          collectionName: path.basename(fileName, '.json'),
-          size,
-        });
-      }
-
-      entry.autodrain();
-    });
-
-    await streamToPromise(unzipStream);
-
-    return {
-      meta: {},
-      fileStats,
-    };
-  }
-
-  /**
    * extract a zip file
    *
    * @memberOf ImportService
-   * @param {string} zipFile path to zip file
+   * @param {string} zipFile absolute path to zip file
    * @return {Array.<string>} array of absolute paths to extracted files
    */
   async unzip(zipFile) {
@@ -193,7 +156,7 @@ class ImportService {
       const fileName = entry.path;
 
       if (fileName === this.metaFileName) {
-        // TODO: parse meta.json
+        // skip meta.json
         entry.autodrain();
       }
       else {
@@ -214,7 +177,7 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {object} unorderedBulkOp result of Model.collection.initializeUnorderedBulkOp()
-   * @return {{nInserted: number, failed: string[]}} number of docuemnts inserted and failed
+   * @return {{nInserted: number, failed: Array.<string>}} number of docuemnts inserted and failed
    */
   async execUnorderedBulkOpSafely(unorderedBulkOp) {
     // keep the number of documents inserted and failed for logger
@@ -319,6 +282,24 @@ class ImportService {
     fs.accessSync(jsonFile);
 
     return jsonFile;
+  }
+
+  /**
+   * validate using meta.json
+   * to pass validation, all the criteria must be met
+   *   - ${version of this growi} === ${version of growi that exported data}
+   *
+   * @memberOf ImportService
+   * @param {object} meta meta data from meta.json
+   */
+  validate(meta) {
+    if (meta.version !== this.crowi.version) {
+      throw new Error('the version of this growi and the growi that exported the data are not met');
+    }
+
+    // TODO: check if all migrations are completed
+    // - export: throw err if there are pending migrations
+    // - import: throw err if there are pending migrations
   }
 
 }

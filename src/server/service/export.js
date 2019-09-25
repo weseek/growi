@@ -8,7 +8,9 @@ const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 class ExportService {
 
   constructor(crowi) {
+    this.crowi = crowi;
     this.appService = crowi.appService;
+    this.growiBridgeService = crowi.growiBridgeService;
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.zipFileName = 'GROWI.zip';
     this.metaFileName = 'meta.json';
@@ -46,32 +48,44 @@ class ExportService {
   }
 
   /**
-   * dump a collection into json
+   * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {object} cache info for exported zip files
+   * @return {Array.<object>} info for zip files
    */
-  getStatus() {
-    const status = {};
-    const collections = Object.keys(this.files);
-    collections.forEach((file) => {
-      status[path.basename(file, '.zip')] = null;
-    });
+  async getStatus() {
+    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
+    const zipFileStats = await Promise.all(zipFiles.map((file) => {
+      const zipFile = this.getFile(file);
+      return this.growiBridgeService.parseZipFile(zipFile);
+    }));
 
-    // extract ${collectionName}.zip
-    const files = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' && collections.includes(path.basename(file, '.zip')) });
+    return zipFileStats;
+  }
 
-    files.forEach((file) => {
-      status[path.basename(file, '.zip')] = file;
-    });
+  /**
+   * create meta.json
+   *
+   * @memberOf ExportService
+   * @return {string} path to meta.json
+   */
+  async createMetaJson() {
+    const metaJson = path.join(this.baseDir, this.metaFileName);
+    const writeStream = fs.createWriteStream(metaJson, { encoding: this.encoding });
 
-    files.forEach((file) => {
-      const stats = fs.statSync(path.join(this.baseDir, file));
-      stats.name = file;
-      status[path.basename(file, '.zip')] = stats;
-    });
+    const metaData = {
+      version: this.crowi.version,
+      url: this.appService.getSiteUrl(),
+      passwordSeed: this.crowi.env.PASSWORD_SEED,
+      exportedAt: new Date(),
+    };
 
-    return status;
+    writeStream.write(JSON.stringify(metaData));
+    writeStream.close();
+
+    await streamToPromise(writeStream);
+
+    return metaJson;
   }
 
   /**
@@ -126,8 +140,16 @@ class ExportService {
     return file;
   }
 
+  /**
+   * export multiple collections
+   *
+   * @memberOf ExportService
+   * @param {Array.<object>} models array of instances of mongoose model
+   * @return {Array.<string>} paths to json files created
+   */
   async exportMultipleCollectionsToJsons(models) {
     const jsonFiles = await Promise.all(models.map(Model => this.exportCollectionToJson(Model)));
+
     return jsonFiles;
   }
 
@@ -157,8 +179,8 @@ class ExportService {
    * zip files into one zip file
    *
    * @memberOf ExportService
-   * @param {object|array<object>} configs array of object { from: "path to source file", as: "file name after unzipped" }
-   * @return {string} path to zip file
+   * @param {object|array<object>} configs object or array of object { from: "path to source file", as: "file name after unzipped" }
+   * @return {string} absolute path to the zip file
    * @see https://www.archiverjs.com/#quick-start
    */
   async zipFiles(_configs) {
@@ -201,9 +223,25 @@ class ExportService {
   }
 
   /**
+   * get the absolute path to a file
+   *
+   * @memberOf ExportService
+   * @param {string} fileName base name of file
+   * @return {string} absolute path to the file
+   */
+  getFile(fileName) {
+    const jsonFile = path.join(this.baseDir, fileName);
+
+    // throws err if the file does not exist
+    fs.accessSync(jsonFile);
+
+    return jsonFile;
+  }
+
+  /**
    * get the absolute path to the zip file
    *
-   * @memberOf ImportService
+   * @memberOf ExportService
    * @return {string} absolute path to the zip file
    */
   getZipFile() {
@@ -219,7 +257,7 @@ class ExportService {
    * get a model from collection name
    *
    * @memberOf ExportService
-   * @param {object} collectionName collection name
+   * @param {string} collectionName collection name
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {
@@ -230,6 +268,16 @@ class ExportService {
     }
 
     return Model;
+  }
+
+  /**
+   * remove zip file from downloads dir
+   *
+   * @param {string} zipFile absolute path to zip file
+   * @memberOf ExportService
+   */
+  deleteZipFile(zipFile) {
+    fs.unlinkSync(zipFile);
   }
 
 }

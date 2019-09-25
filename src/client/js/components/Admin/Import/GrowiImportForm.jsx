@@ -63,8 +63,8 @@ class GrowiImportForm extends React.Component {
     formData.append('file', this.inputRef.current.files[0]);
 
     // TODO use appContainer.apiv3.post
-    const { file, data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
-    this.setState({ meta: data.meta, zipFileName: file, fileStats: data.fileStats });
+    const { data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
+    this.setState({ meta: data.meta, zipFileName: data.fileName, fileStats: data.fileStats });
     // TODO toastSuccess, toastError
   }
 
@@ -133,6 +133,7 @@ class GrowiImportForm extends React.Component {
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
+                  <th></th>
                   <th>File</th>
                   <th>Collection</th>
                 </tr>
