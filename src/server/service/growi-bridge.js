@@ -4,6 +4,10 @@ const path = require('path');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
 
+/**
+ * the service class for bridging GROWIs (export and import)
+ * common properties and methods between export service and import service are defined in this service
+ */
 class GrowiBridgeService {
 
   constructor(crowi) {
