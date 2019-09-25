@@ -13,13 +13,10 @@ class GrowiZipImportSection extends React.Component {
   constructor(props) {
     super(props);
 
-    this.initialState = {
-      meta: {},
+    this.state = {
       fileName: '',
       fileStats: [],
     };
-
-    this.state = this.initialState;
 
     this.inputRef = React.createRef();
 

@@ -101,6 +101,7 @@ class GrowiImportForm extends React.Component {
                         <tr>
                           <td className="text-muted" colSpan="3">
                             TBD: define how to import {collectionName}
+                            {/* TODO: create a component for each collection to modify this.state.schema */}
                           </td>
                         </tr>
                       )}
