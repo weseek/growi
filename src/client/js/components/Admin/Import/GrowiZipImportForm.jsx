@@ -16,6 +16,7 @@ class GrowiImportForm extends React.Component {
       schema: {
         pages: {},
         revisions: {},
+        // ...
       },
     };
 
@@ -25,6 +26,7 @@ class GrowiImportForm extends React.Component {
 
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.import = this.import.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   toggleCheckbox(e) {
@@ -56,25 +58,28 @@ class GrowiImportForm extends React.Component {
     this.setState(this.initialState);
   }
 
+  validateForm() {
+    return this.state.collections.size > 0;
+  }
+
   render() {
     const { t } = this.props;
 
     return (
-      <Fragment>
-        {this.props.fileName && (
-          <form className="row">
-            <div className="col-xs-12">
-              <table className="table table-bordered table-mapping">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Extracted File</th>
-                    <th>Collection</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.props.fileStats.map((fileStat) => {
+      <form className="row">
+        <div className="col-xs-12">
+          <table className="table table-bordered table-mapping">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Extracted File</th>
+                <th>Collection</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.fileStats.map((fileStat) => {
                   const { fileName, collectionName } = fileStat;
+                  const checked = this.state.collections.has(collectionName);
                   return (
                     <Fragment key={collectionName}>
                       <tr>
@@ -85,14 +90,14 @@ class GrowiImportForm extends React.Component {
                             name={collectionName}
                             className="form-check-input"
                             value={collectionName}
-                            checked={this.state.collections.has(collectionName)}
+                            checked={checked}
                             onChange={this.toggleCheckbox}
                           />
                         </td>
                         <td>{fileName}</td>
                         <td className="text-capitalize">{collectionName}</td>
                       </tr>
-                      {this.state.collections.has(collectionName) && (
+                      {checked && (
                         <tr>
                           <td className="text-muted" colSpan="3">
                             TBD: define how to import {collectionName}
@@ -102,17 +107,15 @@ class GrowiImportForm extends React.Component {
                     </Fragment>
                   );
                 })}
-                </tbody>
-              </table>
-            </div>
-            <div className="col-xs-offset-3 col-xs-6">
-              <button type="submit" className="btn btn-primary" onClick={this.import}>
-                { t('importer_management.import') }
-              </button>
-            </div>
-          </form>
-        )}
-      </Fragment>
+            </tbody>
+          </table>
+        </div>
+        <div className="col-xs-offset-3 col-xs-6">
+          <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
+            { t('importer_management.import') }
+          </button>
+        </div>
+      </form>
     );
   }
 

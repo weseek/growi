@@ -21,7 +21,7 @@ class GrowiZipUploadForm extends React.Component {
   changeFileName(e) {
     // to trigger rerender at onChange event
     // eslint-disable-next-line react/no-unused-state
-    this.setState({ name: e.target.files[0].name });
+    this.setState({ dummy: e.target.files[0].name });
   }
 
   async uploadZipFile(e) {

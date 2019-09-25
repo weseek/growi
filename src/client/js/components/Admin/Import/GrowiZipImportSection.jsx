@@ -15,7 +15,7 @@ class GrowiZipImportSection extends React.Component {
 
     this.initialState = {
       meta: {},
-      zipFileName: '',
+      fileName: '',
       fileStats: [],
     };
 
@@ -45,10 +45,12 @@ class GrowiZipImportSection extends React.Component {
         <GrowiZipUploadForm
           onUpload={this.handleUpload}
         />
-        <GrowiZipImportForm
-          fileName={this.state.fileName}
-          fileStats={this.state.fileStats}
-        />
+        {this.state.fileName && (
+          <GrowiZipImportForm
+            fileName={this.state.fileName}
+            fileStats={this.state.fileStats}
+          />
+        )}
       </Fragment>
     );
   }
