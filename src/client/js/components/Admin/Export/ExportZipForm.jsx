@@ -15,8 +15,13 @@ class ExportZipForm extends React.Component {
       collections: new Set(),
     };
 
+    this.collections = ['pages', 'revisions'];
+
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
+    this.checkAll = this.checkAll.bind(this);
+    this.uncheckAll = this.uncheckAll.bind(this);
     this.export = this.export.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   toggleCheckbox(e) {
@@ -36,6 +41,14 @@ class ExportZipForm extends React.Component {
     });
   }
 
+  checkAll() {
+    this.setState({ collections: new Set(this.collections) });
+  }
+
+  uncheckAll() {
+    this.setState({ collections: new Set() });
+  }
+
   async export(e) {
     e.preventDefault();
 
@@ -45,15 +58,29 @@ class ExportZipForm extends React.Component {
     this.props.addZipFileStat(zipFileStat);
   }
 
+  validateForm() {
+    return this.state.collections.size > 0;
+  }
+
   render() {
     // const { t } = this.props;
-    const collections = ['pages', 'revisions'];
 
     return (
       <form className="my-5" onSubmit={this.export}>
-        {collections.map((collectionName) => {
+        <div className="row">
+          <div className="col-sm-12">
+            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+              <i className="fa fa-check-square-o"></i> Check All
+            </button>
+            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+              <i className="fa fa-square-o"></i> Uncheck All
+            </button>
+          </div>
+        </div>
+        <div className="row checkbox checkbox-info my-5">
+          {this.collections.map((collectionName) => {
           return (
-            <div className="checkbox checkbox-info" key={collectionName}>
+            <div className="col-md-6 my-1" key={collectionName}>
               <input
                 type="checkbox"
                 id={collectionName}
@@ -63,13 +90,18 @@ class ExportZipForm extends React.Component {
                 checked={this.state.collections.has(collectionName)}
                 onChange={this.toggleCheckbox}
               />
-              <label className="form-check-label ml-3" htmlFor={collectionName}>
+              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
                 {collectionName}
               </label>
             </div>
           );
         })}
-        <button type="submit" className="btn btn-sm btn-default">Export</button>
+        </div>
+        <div className="row">
+          <div className="col-sm-12 text-center">
+            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>Export</button>
+          </div>
+        </div>
       </form>
     );
   }
