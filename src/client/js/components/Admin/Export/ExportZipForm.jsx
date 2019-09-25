@@ -63,17 +63,17 @@ class ExportZipForm extends React.Component {
   }
 
   render() {
-    // const { t } = this.props;
+    const { t } = this.props;
 
     return (
       <form className="my-5" onSubmit={this.export}>
         <div className="row">
           <div className="col-sm-12">
             <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
-              <i className="fa fa-check-square-o"></i> Check All
+              <i className="fa fa-check-square-o"></i> {t('export_management.check_all')}
             </button>
             <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
-              <i className="fa fa-square-o"></i> Uncheck All
+              <i className="fa fa-square-o"></i> {t('export_management.uncheck_all')}
             </button>
           </div>
         </div>
@@ -99,7 +99,7 @@ class ExportZipForm extends React.Component {
         </div>
         <div className="row">
           <div className="col-sm-12 text-center">
-            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>Export</button>
+            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
           </div>
         </div>
       </form>
