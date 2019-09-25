@@ -47,16 +47,25 @@ module.exports = (crowi) => {
    *      description: download a zipped json for multiple collections
    *      produces:
    *        - application/json
+   *      parameters:
+   *        - name: fileName
+   *          in: path
+   *          description: file name of zip file
+   *          schema:
+   *            type: string
    *      responses:
    *        200:
    *          description: a zip file
    *          content:
    *            application/zip:
    */
-  router.get('/', async(req, res) => {
+  router.get('/:fileName', async(req, res) => {
     // TODO: add express validator
+    const { fileName } = req.params;
+
     try {
-      return res.download(exportService.getZipFile());
+      const zipFile = exportService.getFile(fileName);
+      return res.download(zipFile);
     }
     catch (err) {
       // TODO: use ApiV3Error

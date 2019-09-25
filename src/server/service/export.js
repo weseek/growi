@@ -239,21 +239,6 @@ class ExportService {
   }
 
   /**
-   * get the absolute path to the zip file
-   *
-   * @memberOf ExportService
-   * @return {string} absolute path to the zip file
-   */
-  getZipFile() {
-    const zipFile = path.join(this.baseDir, this.zipFileName);
-
-    // throws err if the file does not exist
-    fs.accessSync(zipFile);
-
-    return zipFile;
-  }
-
-  /**
    * get a model from collection name
    *
    * @memberOf ExportService
