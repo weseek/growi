@@ -75,77 +75,68 @@
 <div id="wrapper">
   <!-- Navigation -->
   {% block layout_head_nav %}
-  <nav class="navbar navbar-default navbar-static-top mb-0 bg-danger">
-    <div class="navbar-header d-flex">
+  <nav class="navbar navbar-default navbar-static-top mb-0 p-0" style="background: rgb(7, 146, 72);">
+    <div class="navbar-header d-flex w-100">
 
-      <!--1 mobile menu touch icon-->
-      <a class="navbar-toggle d-inline-flex bg-success" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
-        <i class="ti-menu"></i>
-      </a>
-
-      <!--2-->
-      <a class="logo d-block top-left-part bg-danger" href="/">
-        <b>
-          <div class="logo-mark">{% include '../widget/logo.html' %}</div>
-        </b>
-        <span class="hidden-xs" style="color: black">
+      <!--1 GROWI logo-->
+      <a class="logo d-block top-left-part px-3 my-auto" href="/" style="background: rgb(5, 70, 35);">
+        <div class="logo-mark d-inline-block py-3" style="fill: white;">{% include '../widget/logo.html' %}</div>
+        <span class="logo-text hidden-xs mx-3 text-white" style="color: black;">
           {% set appTitle = appService.getAppTitle() %}
           {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
-          <span class="logo-text">
-            <svg xmlns="http://www.w3.org/2000/svg">
-              <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
-                {% block title %}{{ appTitle }}{% endblock %}
-              </text>
-            </svg>
-          </span>
+          <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
+            {% block title %}{{ appTitle }}{% endblock %}
+          </text>
         </span>
       </a>
 
-      <!--3-->
-      <ul class="nav navbar-top-links d-none d-md-block bg-info">
-        <li>
-          <a class="open-close hidden-xs waves-effect waves-light">
-            <i class="ti-menu"></i>
-          </a>
-        </li>
+      <!--2 side nav open-->
+      <a class="open-close d-none d-md-block mx-3 my-auto waves-effect waves-light">
+        <i class="ti-menu text-white"></i>
+      </a>
+
+      <!--3 mobile menu touch icon-->
+      <a class="navbar-toggle d-md-none my-auto mx-3" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
+        <i class="ti-menu text-white"></i>
+      </a>
+
+      <!--4 search nav-->
+      <ul class="nav navbar-top-links d-none d-md-block my-auto" style="background: rgb(204, 238, 220);">
         {#  disabled temporary -- 2019.05.13 Yuki Takei
-        <li>
-          <li class="nav-item-admin">
-            <a href="/tags">
-              <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
-            </a>
-          </li>
+        <li class="nav-item-admin">
+          <a href="/tags">
+            <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
+          </a>
         </li>
         #}
         <li>
           {% if searchConfigured() %}
-          <div class="navbar-form search-top" role="search" id="search-top"></div>
+          <span class="navbar-form search-top" role="search" id="search-top"></span>
           {% endif %}
         </li>
       </ul>
 
-
-      <!--4-->
-      <ul class="nav navbar-top-links d-sm-inline-flex bg-primary">
+      <!--5 user action-->
+      <ul class="nav navbar-top-links ml-auto my-auto" style="background: rgb(7, 146, 72);">
         {% if user and user.admin %}
-        <li class="nav-item-admin">
-          <a href="/admin">
-            <i class="icon-settings"></i>
-            <span class="hidden-xs">{{ t('Admin') }}</span>
+        <li class="nav-item-admin mr-3">
+          <a class="text-white" href="/admin">
+            <i class="icon-settings mr-2"></i>
+            <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
           </a>
         </li>
         {% endif %}
 
         {% if user %}
-        <li class="nav-item-create-page">
-          <a href="#" data-target="#create-page" data-toggle="modal">
-            <i class="icon-pencil"></i>
-            <span class="hidden-xs">{{ t('New') }}</span>
+        <li class="nav-item-create-page mr-3">
+          <a class="text-white" href="#" data-target="#create-page" data-toggle="modal">
+            <i class="icon-pencil mr-2"></i>
+            <span class="d-none d-md-inline-block">{{ t('New') }}</span>
           </a>
         </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
-            <img src="{{ user|picture }}" class="picture img-circle" width="25" /> <span class="user-name">{{ user.name }}</span>
+        <li class="dropdown mr-3">
+          <a class="dropdown-toggle waves-effect waves-light text-white" data-toggle="dropdown">
+            <img src="{{ user|picture }}" class="picture rounded-circle" width="25" /> <span class="user-name">{{ user.name }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
@@ -166,9 +157,6 @@
         {% endif %}
       </ul>
 
-
-
-
     </div><!-- /.navbar-header -->
   </nav>
   {% include '../modal/create_page.html' %}
@@ -181,8 +169,8 @@
   <!-- Left navbar-header -->
   <div class="navbar-default sidebar" role="navigation">
 
-    <!--5 mobile drop down area-->
-    <div class="sidebar-nav navbar-collapse slimscrollsidebar bg-success">
+    <!--6 mobile drop down area-->
+    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
       <ul class="nav" id="side-menu">
         <li class="sidebar-search hidden-sm hidden-md hidden-lg">
           {% if searchConfigured() %}
