@@ -23,7 +23,6 @@ class ExportTableMenu extends React.Component {
   }
 
   render() {
-    // eslint-disable-next-line no-unused-vars
     const { t } = this.props;
 
     return (
@@ -32,15 +31,15 @@ class ExportTableMenu extends React.Component {
           <i className="icon-settings"></i> <span className="caret"></span>
         </button>
         <ul className="dropdown-menu" role="menu">
-          <li className="dropdown-header">Export Menu</li>
+          <li className="dropdown-header">{t('export_management.export_menu')}</li>
           <li>
             <a href={`/_api/v3/export/${this.props.fileName}`}>
-              <i className="icon-cloud-download" /> Download
+              <i className="icon-cloud-download" /> {t('export_management.download')}
             </a>
           </li>
           <li onClick={() => this.deleteZipFile(this.props.fileName)}>
             <a>
-              <i className="icon-trash" /> Delete
+              <span className="text-danger"><i className="icon-trash" /> {t('export_management.delete')}</span>
             </a>
           </li>
         </ul>

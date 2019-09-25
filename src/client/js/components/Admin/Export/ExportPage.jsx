@@ -45,9 +45,11 @@ class ExportPage extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <Fragment>
-        <h2>Export Data as Zip</h2>
+        <h2>{t('export_management.export_as_zip')}</h2>
         <ExportZipForm
           zipFileStats={this.state.zipFileStats}
           addZipFileStat={this.addZipFileStat}
