@@ -3,28 +3,16 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
+import ExportTableMenu from './ExportTableMenu';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class ZipFileTable extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.deleteZipFile = this.deleteZipFile.bind(this);
-  }
-
-  async deleteZipFile(zipFile) {
-    // TODO use appContainer.apiv3.delete
-    await this.props.appContainer.apiRequest('delete', `/v3/export/${zipFile}`, {});
-
-    this.props.removeZipFileStat(zipFile);
-    // TODO toastSuccess, toastError
-  }
-
   render() {
-    // const { t } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { t } = this.props;
 
     return (
       <table className="table table-bordered">
@@ -46,10 +34,10 @@ class ZipFileTable extends React.Component {
                 <td className="text-capitalize">{fileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
                 <td>{meta.exportedAt ? format(new Date(meta.exportedAt), 'yyyy/MM/dd HH:mm:ss') : ''}</td>
                 <td>
-                  <a href="/_api/v3/export">
-                    <button type="button" className="btn btn-sm btn-primary ml-2">Download</button>
-                  </a>
-                  <button type="button" className="btn btn-sm btn-danger ml-2" onClick={() => this.deleteZipFile(fileName)}>Delete</button>
+                  <ExportTableMenu
+                    fileName={fileName}
+                    removeZipFileStat={this.props.removeZipFileStat}
+                  />
                 </td>
               </tr>
             );
