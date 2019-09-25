@@ -81,7 +81,7 @@
       <!--1 GROWI logo-->
       <a class="logo d-block top-left-part px-3 my-auto" href="/" style="background: rgb(5, 70, 35);">
         <div class="logo-mark d-inline-block py-3" style="fill: white;">{% include '../widget/logo.html' %}</div>
-        <span class="logo-text hidden-xs mx-3 text-white" style="color: black;">
+        <span class="logo-text mx-3 text-white" style="color: black;">
           {% set appTitle = appService.getAppTitle() %}
           {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
           <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
@@ -167,7 +167,7 @@
 
   {% block sidebar %}
   <!-- Left navbar-header -->
-  <div class="navbar-default sidebar" role="navigation">
+  <div class="navbar-default sidebar d-print-none" role="navigation">
 
     <!--6 mobile drop down area-->
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
