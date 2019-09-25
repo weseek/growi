@@ -66,7 +66,7 @@ class GrowiImportForm extends React.Component {
     const { t } = this.props;
 
     return (
-      <form className="row">
+      <form className="row" onSubmit={this.import}>
         <div className="col-xs-12">
           <table className="table table-bordered table-mapping">
             <thead>
