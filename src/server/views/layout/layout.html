@@ -75,31 +75,34 @@
 <div id="wrapper">
   <!-- Navigation -->
   {% block layout_head_nav %}
-  <nav class="navbar navbar-default navbar-static-top mb-0">
+  <nav class="navbar navbar-default navbar-static-top mb-0 bg-danger">
     <div class="navbar-header d-flex">
-      <a class="navbar-toggle visible-xs" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
+
+      <!--1 mobile menu touch icon-->
+      <a class="navbar-toggle d-inline-flex bg-success" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
         <i class="ti-menu"></i>
       </a>
-      <div class="top-left-part">
-        <a class="logo" href="/">
-          <b>
-            <div class="logo-mark">{% include '../widget/logo.html' %}</div>
-          </b>
-          <span class="hidden-xs" style="color: black">
-            {% set appTitle = appService.getAppTitle() %}
-            {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
-            <span class="logo-text">
-              <svg xmlns="http://www.w3.org/2000/svg">
-                <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
-                  {% block title %}{{ appTitle }}{% endblock %}
-                </text>
-              </svg>
-            </span>
-          </span>
-        </a>
-      </div>
 
-      <ul class="nav navbar-top-links hidden-xs">
+      <!--2-->
+      <a class="logo d-block top-left-part bg-danger" href="/">
+        <b>
+          <div class="logo-mark">{% include '../widget/logo.html' %}</div>
+        </b>
+        <span class="hidden-xs" style="color: black">
+          {% set appTitle = appService.getAppTitle() %}
+          {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
+          <span class="logo-text">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
+                {% block title %}{{ appTitle }}{% endblock %}
+              </text>
+            </svg>
+          </span>
+        </span>
+      </a>
+
+      <!--3-->
+      <ul class="nav navbar-top-links d-none d-md-block bg-info">
         <li>
           <a class="open-close hidden-xs waves-effect waves-light">
             <i class="ti-menu"></i>
@@ -121,7 +124,9 @@
         </li>
       </ul>
 
-      <ul class="nav navbar-top-links d-sm-inline-flex ml-auto">
+
+      <!--4-->
+      <ul class="nav navbar-top-links d-sm-inline-flex bg-primary">
         {% if user and user.admin %}
         <li class="nav-item-admin">
           <a href="/admin">
@@ -160,6 +165,10 @@
         <li class="confidential"><a href="#">{{ getConfig('crowi', 'app:confidential') }}</a></li>
         {% endif %}
       </ul>
+
+
+
+
     </div><!-- /.navbar-header -->
   </nav>
   {% include '../modal/create_page.html' %}
@@ -170,8 +179,10 @@
 
   {% block sidebar %}
   <!-- Left navbar-header -->
-  <div class="navbar-default sidebar hidden-print" role="navigation">
-    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+  <div class="navbar-default sidebar" role="navigation">
+
+    <!--5 mobile drop down area-->
+    <div class="sidebar-nav navbar-collapse slimscrollsidebar bg-success">
       <ul class="nav" id="side-menu">
         <li class="sidebar-search hidden-sm hidden-md hidden-lg">
           {% if searchConfigured() %}
@@ -182,6 +193,8 @@
         <li class="tbd"><a href="#">(TBD) Create /Sidebar</a></li>
       </ul>
     </div>
+
+
   </div>
   <!-- Left navbar-header end -->
   {% endblock %}
