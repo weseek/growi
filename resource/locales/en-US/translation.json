@@ -738,6 +738,14 @@
 
   "importer_management": {
     "import_from": "Import from %s",
+    "import_form_growi": "Import from GROWI",
+    "growi_settings": {
+      "overwrite_documents": "Imported documents will overwrite existing documents",
+      "zip_file": "Zip File",
+      "extracted_file": "Extracted File",
+      "collection": "Collection",
+      "upload": "Upload"
+    },
     "esa_settings": {
       "team_name": "Team name",
       "access_token": "Access token",

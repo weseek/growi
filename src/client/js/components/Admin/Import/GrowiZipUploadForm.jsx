@@ -46,14 +46,13 @@ class GrowiZipUploadForm extends React.Component {
   }
 
   render() {
-    // eslint-disable-next-line no-unused-vars
     const { t } = this.props;
 
     return (
       <form className="form-horizontal" onSubmit={this.uploadZipFile}>
         <fieldset>
           <div className="form-group d-flex align-items-center">
-            <label htmlFor="file" className="col-xs-3 control-label">Zip File</label>
+            <label htmlFor="file" className="col-xs-3 control-label">{t('importer_management.growi_settings.zip_file')}</label>
             <div className="col-xs-6">
               <input
                 type="file"
@@ -67,7 +66,7 @@ class GrowiZipUploadForm extends React.Component {
           <div className="form-group">
             <div className="col-xs-offset-3 col-xs-6">
               <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
-                Upload
+                {t('importer_management.growi_settings.upload')}
               </button>
             </div>
           </div>

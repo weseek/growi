@@ -721,6 +721,14 @@
 
   "importer_management": {
     "import_from": "%s からインポート",
+    "import_form_growi": "GROWIからインポート",
+    "growi_settings": {
+      "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
+      "zip_file": "Zip ファイル",
+      "extracted_file": "展開されたファイル",
+      "collection": "コレクション",
+      "upload": "アップロード"
+    },
     "esa_settings": {
       "team_name": "チーム名",
       "access_token": "アクセストークン",

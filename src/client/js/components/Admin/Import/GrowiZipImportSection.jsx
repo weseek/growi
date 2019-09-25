@@ -28,15 +28,14 @@ class GrowiZipImportSection extends React.Component {
   }
 
   render() {
-    // eslint-disable-next-line no-unused-vars
     const { t } = this.props;
 
     return (
       <Fragment>
-        <legend>Import from GROWI</legend>
+        <legend>{t('importer_management.import_form_growi')}</legend>
         <div className="well well-sm small">
           <ul>
-            <li>Imported documents will overwrite existing pages</li>
+            <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
           </ul>
         </div>
         <GrowiZipUploadForm

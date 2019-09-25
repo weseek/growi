@@ -72,8 +72,8 @@ class GrowiImportForm extends React.Component {
             <thead>
               <tr>
                 <th></th>
-                <th>Extracted File</th>
-                <th>Collection</th>
+                <th>{t('importer_management.growi_settings.extracted_file')}</th>
+                <th>{t('importer_management.growi_settings.collection')}</th>
               </tr>
             </thead>
             <tbody>
@@ -100,7 +100,7 @@ class GrowiImportForm extends React.Component {
                       {checked && (
                         <tr>
                           <td className="text-muted" colSpan="3">
-                            TBD: define how to import {collectionName}
+                            TBD: define how {collectionName} are imported
                             {/* TODO: create a component for each collection to modify this.state.schema */}
                           </td>
                         </tr>
