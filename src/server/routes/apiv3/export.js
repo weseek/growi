@@ -22,7 +22,7 @@ module.exports = (crowi) => {
    *  /export/status:
    *    get:
    *      tags: [Export]
-   *      description: get mongodb collections names and zip files for them
+   *      description: get properties of zip files for export
    *      produces:
    *        - application/json
    *      responses:

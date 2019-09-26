@@ -14,6 +14,7 @@ class ExportPage extends React.Component {
     super(props);
 
     this.state = {
+      collections: [],
       zipFileStats: [],
     };
 
@@ -23,9 +24,13 @@ class ExportPage extends React.Component {
 
   async componentDidMount() {
     // TODO: use apiv3.get
-    const { zipFileStats } = await this.props.appContainer.apiGet('/v3/export/status', {});
-    this.setState({ zipFileStats });
+    const [{ collections }, { zipFileStats }] = await Promise.all([
+      this.props.appContainer.apiGet('/v3/mongo/collections', {}),
+      this.props.appContainer.apiGet('/v3/export/status', {}),
+    ]);
     // TODO toastSuccess, toastError
+
+    this.setState({ collections, zipFileStats });
   }
 
   onZipFileStatAdd(newStat) {
@@ -53,6 +58,7 @@ class ExportPage extends React.Component {
       <Fragment>
         <h2>{t('export_management.export_as_zip')}</h2>
         <ExportZipForm
+          collections={this.state.collections}
           zipFileStats={this.state.zipFileStats}
           onZipFileStatAdd={this.onZipFileStatAdd}
         />

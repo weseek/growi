@@ -15,8 +15,6 @@ class ExportZipForm extends React.Component {
       collections: new Set(),
     };
 
-    this.collections = ['pages', 'revisions'];
-
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.checkAll = this.checkAll.bind(this);
     this.uncheckAll = this.uncheckAll.bind(this);
@@ -42,7 +40,7 @@ class ExportZipForm extends React.Component {
   }
 
   checkAll() {
-    this.setState({ collections: new Set(this.collections) });
+    this.setState({ collections: new Set(this.props.collections) });
   }
 
   uncheckAll() {
@@ -78,7 +76,7 @@ class ExportZipForm extends React.Component {
           </div>
         </div>
         <div className="row checkbox checkbox-info my-5">
-          {this.collections.map((collectionName) => {
+          {this.props.collections.map((collectionName) => {
           return (
             <div className="col-md-6 my-1" key={collectionName}>
               <input
@@ -111,6 +109,8 @@ class ExportZipForm extends React.Component {
 ExportZipForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
+  collections: PropTypes.arrayOf(PropTypes.string).isRequired,
   zipFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onZipFileStatAdd: PropTypes.func.isRequired,
 };
