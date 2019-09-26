@@ -19,7 +19,7 @@ class ExportTableMenu extends React.Component {
         <ul className="dropdown-menu" role="menu">
           <li className="dropdown-header">{t('export_management.export_menu')}</li>
           <li>
-            <a href={`/_api/v3/export/${this.props.fileName}`}>
+            <a href={`/admin/export/${this.props.fileName}`}>
               <i className="icon-cloud-download" /> {t('export_management.download')}
             </a>
           </li>
