@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+import LineBreakSettings from './LineBreakSettings';
 
 class MarkdownSetting extends React.Component {
 
@@ -26,6 +28,7 @@ class MarkdownSetting extends React.Component {
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.changeLineBreakSetting = this.changeLineBreakSetting.bind(this);
   }
 
   // TODO Delete after component split
@@ -35,6 +38,18 @@ class MarkdownSetting extends React.Component {
     const name = target.name;
 
     this.setState({ [name]: value });
+  }
+
+  changeLineBreakSetting () {
+    try {
+      this.props.appContainer.apiPost('/admin/markdown/lineBreaksSetting', { isEnabledLinebreaks: this.state.isEnabledLinebreaks });
+      toastSuccess('Success change line braek setting');
+      this.props.appContainer.apiPost('/admin/markdown/lineBreaksSetting', { isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments });
+      toastSuccess('Success change line braek setting');
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
@@ -71,7 +86,7 @@ class MarkdownSetting extends React.Component {
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
-              <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+              <button type="submit" className="btn btn-primary" onClick={this.changeLineBreakSetting}>{ t('Update') }</button>
             </div>
           </div>
         </div>
