@@ -102,7 +102,7 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
-  'markdown-setting': <MarkdownSetting />,
+  'admin-markdown-setting': <MarkdownSetting />,
   'admin-user-page': <UserPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
 
