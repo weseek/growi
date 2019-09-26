@@ -75,13 +75,13 @@
 <div id="wrapper">
   <!-- Navigation -->
   {% block layout_head_nav %}
-  <nav class="navbar navbar-default mb-0 p-0" style="background: rgb(7, 146, 72);">
+  <nav class="navbar navbar-default bg-grw-green mb-0 p-0">
     <div class="navbar-header d-flex w-100">
 
       <!--1 GROWI logo-->
-      <a class="logo d-block top-left-part px-3 my-auto" href="/" style="background: rgb(5, 70, 35);">
-        <div class="logo-mark d-inline-block py-3" style="fill: white;">{% include '../widget/logo.html' %}</div>
-        <span class="logo-text mx-3 text-white" style="color: black;">
+      <a class="logo d-block top-left-part bg-grw-mos-green my-auto px-3" href="/">
+        <div class="logo-mark _white d-inline-block py-3">{% include '../widget/logo.html' %}</div>
+        <span class="logo-text mx-3 text-white">
           {% set appTitle = appService.getAppTitle() %}
           {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
           <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
@@ -101,7 +101,7 @@
       </a>
 
       <!--4 search nav-->
-      <ul class="nav navbar-top-links d-none d-md-block my-auto" style="background: rgb(204, 238, 220);">
+      <ul class="nav navbar-top-links d-none d-md-block bg-grw-light-green my-auto">
         {#  disabled temporary -- 2019.05.13 Yuki Takei
         <li class="nav-item-admin">
           <a href="/tags">
@@ -117,7 +117,7 @@
       </ul>
 
       <!--5 user action-->
-      <ul class="nav navbar-top-links ml-auto my-auto" style="background: rgb(7, 146, 72);">
+      <ul class="nav navbar-top-links flex-nowrap ml-auto my-auto">
         {% if user and user.admin %}
         <li class="nav-item-admin mr-3">
           <a class="text-white" href="/admin">
@@ -136,7 +136,8 @@
         </li>
         <li class="dropdown mr-3">
           <a class="dropdown-toggle waves-effect waves-light text-white" data-toggle="dropdown">
-            <img src="{{ user|picture }}" class="picture rounded-circle" width="25" /> <span class="user-name">{{ user.name }}</span>
+            <img src="{{ user|picture }}" class="picture rounded-circle" width="25" />
+            <span class="user-name text-wrap ml-2">{{ user.name }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>

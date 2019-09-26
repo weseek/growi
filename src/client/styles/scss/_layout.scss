@@ -166,3 +166,13 @@ $nav-main-left-tab-width: 95px;
     margin-left: 0.5em;
   }
 }
+
+// GROWI brand logo
+.logo {
+  .logo-mark {
+    &._white {
+      color: white;
+      fill: white !important;
+    }
+  }
+}
