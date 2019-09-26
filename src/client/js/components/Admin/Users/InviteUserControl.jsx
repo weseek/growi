@@ -15,9 +15,11 @@ class InviteUserControl extends React.Component {
     this.state = {
       isUserInviteModalShown: false,
       isConfirmationPassWordModalShown: false,
+      invitedEmailList: '',
     };
 
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
+    this.showConfirmationPasswordModal = this.showConfirmationPasswordModal.bind(this);
   }
 
   /**
@@ -25,6 +27,11 @@ class InviteUserControl extends React.Component {
    */
   toggleUserInviteModal() {
     this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
+  }
+
+  showConfirmationPasswordModal(emailList) {
+    this.setState({ invitedEmailList: emailList });
+    this.setState({ isConfirmationPassWordModalShown: true });
   }
 
   render() {
@@ -38,9 +45,11 @@ class InviteUserControl extends React.Component {
         <UserInviteModal
           show={this.state.isUserInviteModalShown}
           onToggleModal={this.toggleUserInviteModal}
+          showConfirmationPasswordModal={this.showConfirmationPasswordModal}
         />
         <ConfirmationPasswordModal
           show={this.state.isConfirmationPassWordModalShown}
+          invitedEmailList={this.state.invitedEmailList}
         />
       </Fragment>
     );

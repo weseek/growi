@@ -37,6 +37,7 @@ class UserInviteModal extends React.Component {
       // eslint-disable-next-line no-unused-vars
       const emailList = await appContainer.apiPost('/admin/user/invite', { emailInputValue: this.state.emailInputValue, sendEmail: this.state.sendEmail });
       this.props.onToggleModal();
+      this.props.showConfirmationPasswordModal(emailList);
       toastSuccess('Inviting user success');
     }
     catch (err) {
@@ -116,6 +117,7 @@ UserInviteModal.propTypes = {
 
   show: PropTypes.bool.isRequired,
   onToggleModal: PropTypes.func.isRequired,
+  showConfirmationPasswordModal: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserInviteModalWrapper);
