@@ -23,14 +23,15 @@ class MarkdownSetting extends React.Component {
       isEnabledXss: false,
     };
 
-    this.btnHandler = this.btnHandler.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  btnHandler(e) {
-    const { target } = e;
-    const { value } = target;
+  handleInputChange(e) {
+    const target = e.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
 
-    console.log(value);
+    this.setState({ [name]: value });
   }
 
   render() {
@@ -48,7 +49,7 @@ class MarkdownSetting extends React.Component {
                   { t('markdown_setting.Enable Line Break') }
                 </label>
                 <div className="col-xs-5">
-                  <input type="checkbox" className="js-switch" checked={this.state.isEnabledLinebreaks} />
+                  <input type="checkbox" name="isEnabledLinebreaks" checked={this.state.isEnabledLinebreaks} onChange={this.handleInputChange} />
                   <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
                 </div>
               </div>
@@ -59,7 +60,7 @@ class MarkdownSetting extends React.Component {
                   { t('markdown_setting.Enable Line Break for comment') }
                 </label>
                 <div className="col-xs-5">
-                  <input type="checkbox" className="js-switch" checked={this.state.isEnabledLinebreaksInComments} />
+                  <input type="checkbox" name="isEnabledLinebreaksInComments" checked={this.state.isEnabledLinebreaksInComments} onChange={this.handleInputChange} />
                   <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
                 </div>
               </div>
@@ -84,7 +85,7 @@ class MarkdownSetting extends React.Component {
             </label>
 
             <div className="col-xs-3 radio radio-primary">
-              <input type="radio" id="pageBreakOption1" name="pageBreakOption" value="1" checked={this.state.pageBreakOption === 1} />
+              <input type="radio" id="pageBreakOption1" name="pageBreakOption" value="1" checked={this.state.pageBreakOption === 1} onChange={this.handleInputChange} />
               <label htmlFor="pageBreakOption1">
                 <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
                 <p className="mt-3">
@@ -95,7 +96,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
             <div className="col-xs-3 radio radio-primary mt-3">
-              <input type="radio" id="pageBreakOption2" name="pageBreakOption" value="2" checked={this.state.pageBreakOption === 2} />
+              <input type="radio" id="pageBreakOption2" name="pageBreakOption" value="2" checked={this.state.pageBreakOption === 2} onChange={this.handleInputChange} />
               <label htmlFor="pageBreakOption2">
                 <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
                 <p className="mt-3">
@@ -106,7 +107,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
             <div className="col-xs-3 radio radio-primary mt-3">
-              <input type="radio" id="pageBreakOption3" name="pageBreakOption" value="3" checked={this.state.pageBreakOption === 3} />
+              <input type="radio" id="pageBreakOption3" name="pageBreakOption" value="3" checked={this.state.pageBreakOption === 3} onChange={this.handleInputChange} />
               <label htmlFor="pageBreakOption3">
                 <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
                 <p className="mt-3">
@@ -138,7 +139,7 @@ class MarkdownSetting extends React.Component {
                 { t('markdown_setting.Enable XSS prevention') }
               </label>
               <div className="col-xs-5">
-                <input type="checkbox" className="js-switch" checked={this.state.isEnabledXss} />
+                <input type="checkbox" name="isEnabledXss" checked={this.state.isEnabledXss} onChange={this.handleInputChange} />
               </div>
             </div>
 
