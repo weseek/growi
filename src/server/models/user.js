@@ -666,8 +666,12 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {
-
     const mailer = crowi.getMailer();
+
+    if (mailer == null) {
+      return debug('mailer setup is required');
+    }
+
     const appTitle = crowi.appService.getAppTitle();
 
     await Promise.all(userList.map(async(user) => {
