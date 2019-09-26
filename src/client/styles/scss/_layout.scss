@@ -9,6 +9,8 @@
   }
 
   .navbar-top-links {
+    height: 30px;
+    border-radius: 40px;
     .confidential {
       a {
         font-weight: bold;
@@ -162,5 +164,15 @@ $nav-main-left-tab-width: 95px;
 
   > span {
     margin-left: 0.5em;
+  }
+}
+
+// GROWI brand logo
+.logo {
+  .logo-mark {
+    &._white {
+      color: white;
+      fill: white !important;
+    }
   }
 }
