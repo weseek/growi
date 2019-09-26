@@ -460,7 +460,7 @@ module.exports = function(crowi, app) {
 
     try {
       const emailList = await User.createUsersByInvitation(shapedEmailList, req.body.sendEmail);
-      return emailList;
+      return res.json(ApiResponse.success(emailList));
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
