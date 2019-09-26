@@ -26,17 +26,6 @@ module.exports = (crowi) => {
     csrfVerify: csrf,
   } = require('../../util/middlewares')(crowi);
 
-  validator.inviteEmail = [
-    // isEmail prevents line breaks, so use isString
-    body('shapedEmailList').custom((value) => {
-      const array = value.filter((value) => { return isEmail(value) });
-      if (array.length === 0) {
-        throw new Error('At least one valid email address is required');
-      }
-      return array;
-    }),
-  ];
-
   /**
    * @swagger
    *
@@ -78,6 +67,17 @@ module.exports = (crowi) => {
    *                        type: string
    *                      description: Users email that already exists
    */
+  validator.inviteEmail = [
+    // isEmail prevents line breaks, so use isString
+    body('shapedEmailList').custom((value) => {
+      const array = value.filter((value) => { return isEmail(value) });
+      if (array.length === 0) {
+        throw new Error('At least one valid email address is required');
+      }
+      return array;
+    }),
+  ];
+
   router.post('/invite', loginRequired(), adminRequired, csrf, validator.inviteEmail, ApiV3FormValidator, async(req, res) => {
     try {
       const emailList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
