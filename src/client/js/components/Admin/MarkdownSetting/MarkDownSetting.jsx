@@ -19,6 +19,8 @@ class MarkdownSetting extends React.Component {
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       // TODO GW-220 get correct BreakOption value
       pageBreakOption: 1,
+      // TODO GW-258 get correct custom regular expression
+      customRegularExpression: '',
       // TODO GW-221 get correct Xss value
       isEnabledXss: false,
     };
@@ -113,7 +115,7 @@ class MarkdownSetting extends React.Component {
                 <p className="mt-3">
                   { t('markdown_setting.Custom separator desc') }
                   <div>
-                    <input className="form-control" />
+                    <input className="form-control" name="customRegularExpression" value={this.state.customRegularExpression} onChange={this.handleInputChange} />
                   </div>
                 </p>
               </label>
