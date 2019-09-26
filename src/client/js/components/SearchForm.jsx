@@ -46,7 +46,7 @@ class SearchForm extends React.Component {
     return (
       <table className="table grw-search-table search-help m-0">
         <caption className="text-left text-success p-2">
-          <h5><i className="icon-magnifier pr-2 mb-2" />{ t('search_help.title') }</h5>
+          <h5 className="h6"><i className="icon-magnifier pr-2 mb-2" />{ t('search_help.title') }</h5>
         </caption>
         <tbody>
           <tr>
@@ -54,34 +54,34 @@ class SearchForm extends React.Component {
               <code>word1</code> <code>word2</code><br></br>
               <small>({ t('search_help.and.syntax help') })</small>
             </th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.and.desc', { word1: 'word1', word2: 'word2' }) }</h6></td>
+            <td><h6 className="m-0">{ t('search_help.and.desc', { word1: 'word1', word2: 'word2' }) }</h6></td>
           </tr>
           <tr>
             <th className="text-right py-2">
               <code>&quot;This is GROWI&quot;</code><br></br>
               <small>({ t('search_help.phrase.syntax help') })</small>
             </th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.phrase.desc', { phrase: 'This is GROWI' }) }</h6></td>
+            <td><h6 className="m-0">{ t('search_help.phrase.desc', { phrase: 'This is GROWI' }) }</h6></td>
           </tr>
           <tr>
             <th className="text-right py-2"><code>-keyword</code></th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.exclude.desc', { word: 'keyword' }) }</h6></td>
+            <td><h6 className="m-0">{ t('search_help.exclude.desc', { word: 'keyword' }) }</h6></td>
           </tr>
           <tr>
             <th className="text-right py-2"><code>prefix:/user/</code></th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.prefix.desc', { path: '/user/' }) }</h6></td>
+            <td><h6 className="m-0">{ t('search_help.prefix.desc', { path: '/user/' }) }</h6></td>
           </tr>
           <tr>
             <th className="text-right py-2"><code>-prefix:/user/</code></th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.exclude_prefix.desc', { path: '/user/' }) }</h6></td>
+            <td><h6 className="m-0">{ t('search_help.exclude_prefix.desc', { path: '/user/' }) }</h6></td>
           </tr>
           <tr>
             <th className="text-right py-2"><code>tag:wiki</code></th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.tag.desc', { tag: 'wiki' }) }</h6></td>
+            <td><h6 className="m-0">{ t('search_help.tag.desc', { tag: 'wiki' }) }</h6></td>
           </tr>
           <tr>
-            <th className="text-right pt-2"><code>-tag:wiki</code></th>
-            <td className="align-middle"><h6 className="m-0">{ t('search_help.exclude_tag.desc', { tag: 'wiki' }) }</h6></td>
+            <th className="text-right py-2"><code>-tag:wiki</code></th>
+            <td><h6 className="m-0">{ t('search_help.exclude_tag.desc', { tag: 'wiki' }) }</h6></td>
           </tr>
         </tbody>
       </table>
