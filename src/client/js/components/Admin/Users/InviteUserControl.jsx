@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserInviteModal from './UserInviteModal';
+import ConfirmationPasswordModal from './ConfirmationPasswordModal';
 
 class InviteUserControl extends React.Component {
 
@@ -13,6 +14,7 @@ class InviteUserControl extends React.Component {
 
     this.state = {
       isUserInviteModalShown: false,
+      isConfirmationPassWordModalShown: false,
     };
 
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
@@ -36,6 +38,9 @@ class InviteUserControl extends React.Component {
         <UserInviteModal
           show={this.state.isUserInviteModalShown}
           onToggleModal={this.toggleUserInviteModal}
+        />
+        <ConfirmationPasswordModal
+          show={this.state.isConfirmationPassWordModalShown}
         />
       </Fragment>
     );
