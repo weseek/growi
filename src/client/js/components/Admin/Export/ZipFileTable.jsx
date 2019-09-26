@@ -36,7 +36,7 @@ class ZipFileTable extends React.Component {
                 <td>
                   <ExportTableMenu
                     fileName={fileName}
-                    removeZipFileStat={this.props.removeZipFileStat}
+                    onZipFileStatRemove={this.props.onZipFileStatRemove}
                   />
                 </td>
               </tr>
@@ -53,7 +53,7 @@ ZipFileTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   zipFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
-  removeZipFileStat: PropTypes.func.isRequired,
+  onZipFileStatRemove: PropTypes.func.isRequired,
 };
 
 /**

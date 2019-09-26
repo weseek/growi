@@ -55,7 +55,7 @@ class ExportZipForm extends React.Component {
     // TODO use appContainer.apiv3.post
     const { zipFileStat } = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
     // TODO toastSuccess, toastError
-    this.props.addZipFileStat(zipFileStat);
+    this.props.onZipFileStatAdd(zipFileStat);
   }
 
   validateForm() {
@@ -112,7 +112,7 @@ ExportZipForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   zipFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
-  addZipFileStat: PropTypes.func.isRequired,
+  onZipFileStatAdd: PropTypes.func.isRequired,
 };
 
 /**

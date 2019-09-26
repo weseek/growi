@@ -17,18 +17,18 @@ class ExportPage extends React.Component {
       zipFileStats: [],
     };
 
-    this.addZipFileStat = this.addZipFileStat.bind(this);
-    this.removeZipFileStat = this.removeZipFileStat.bind(this);
+    this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
+    this.onZipFileStatRemove = this.onZipFileStatRemove.bind(this);
   }
 
   async componentDidMount() {
-    // TODO: use apive.get
+    // TODO: use apiv3.get
     const { zipFileStats } = await this.props.appContainer.apiGet('/v3/export/status', {});
     this.setState({ zipFileStats });
     // TODO toastSuccess, toastError
   }
 
-  addZipFileStat(newStat) {
+  onZipFileStatAdd(newStat) {
     this.setState((prevState) => {
       return {
         zipFileStats: [...prevState.zipFileStats, newStat],
@@ -36,7 +36,9 @@ class ExportPage extends React.Component {
     });
   }
 
-  removeZipFileStat(fileName) {
+  async onZipFileStatRemove(fileName) {
+    await this.props.appContainer.apiRequest('delete', `/v3/export/${fileName}`, {});
+
     this.setState((prevState) => {
       return {
         zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== fileName),
@@ -52,11 +54,11 @@ class ExportPage extends React.Component {
         <h2>{t('export_management.export_as_zip')}</h2>
         <ExportZipForm
           zipFileStats={this.state.zipFileStats}
-          addZipFileStat={this.addZipFileStat}
+          onZipFileStatAdd={this.onZipFileStatAdd}
         />
         <ZipFileTable
           zipFileStats={this.state.zipFileStats}
-          removeZipFileStat={this.removeZipFileStat}
+          onZipFileStatRemove={this.onZipFileStatRemove}
         />
       </Fragment>
     );
