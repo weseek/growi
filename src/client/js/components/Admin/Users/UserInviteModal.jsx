@@ -33,7 +33,9 @@ class UserInviteModal extends React.Component {
     const { appContainer } = this.props;
 
     try {
-      await appContainer.apiPost('/admin/user/invite', { emailInputValue: this.state.emailInputValue, sendEmail: this.state.sendEmail });
+      // TODO GW-230 use emailList client side
+      // eslint-disable-next-line no-unused-vars
+      const emailList = await appContainer.apiPost('/admin/user/invite', { emailInputValue: this.state.emailInputValue, sendEmail: this.state.sendEmail });
       this.props.onToggleModal();
       toastSuccess('Inviting user success');
     }

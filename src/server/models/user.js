@@ -3,6 +3,7 @@
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
+const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate');
 
@@ -661,61 +662,53 @@ module.exports = function(crowi) {
       createdUserList.push(createdEmail);
     }));
 
-    return [existingEmailList, createdUserList];
+    return { existingEmailList, createdUserList };
+  };
+
+  userSchema.statics.sendEmailbyUserList = async function(userList) {
+    const mailer = crowi.getMailer();
+    const appTitle = crowi.appService.getAppTitle();
+
+    await Promise.all(userList.map(async(user) => {
+      if (user.password == null) {
+        return;
+      }
+
+      try {
+        return mailer.send({
+          to: user.email,
+          subject: `Invitation to ${appTitle}`,
+          template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+          vars: {
+            email: user.email,
+            password: user.password,
+            url: crowi.appService.getSiteUrl(),
+            appTitle,
+          },
+        });
+      }
+      catch (err) {
+        return debug('fail to send email: ', err);
+      }
+    }));
+
   };
 
   userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
     validateCrowi();
 
-    // TODO GW-206 move to anothor function
-    // const mailer = crowi.getMailer();
-
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
 
-    // TODO GW-230 use List in client side
-    // const afterWorkEmailList = await this.createUsersByEmailList(emailList);
+    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
+    if (toSendEmail) {
+      await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
+    }
+
+    return afterWorkEmailList;
   };
-
-  //  TODO GW-206 Independence as function
-  // if (toSendEmail) {
-  //   // TODO: メール送信部分のロジックをサービス化する
-  //   async.each(
-  //     createdUserList,
-  //     (user, next) => {
-  //       if (user.password === null) {
-  //         return next();
-  //       }
-
-  //       const appTitle = crowi.appService.getAppTitle();
-
-  //       mailer.send({
-  //         to: user.email,
-  //         subject: `Invitation to ${appTitle}`,
-  //         template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-  //         vars: {
-  //           email: user.email,
-  //           password: user.password,
-  //           url: crowi.appService.getSiteUrl(),
-  //           appTitle,
-  //         },
-  //       },
-  //       (err, s) => {
-  //         debug('completed to send email: ', err, s);
-  //         next();
-  //       });
-  //     },
-  //     (err) => {
-  //       debug('Sending invitation email completed.', err);
-  //     },
-  //   );
-  // }
-
-  //     debug('createdUserList!!! ', createdUserList);
-  //   },
-  // );
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
