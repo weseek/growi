@@ -28,6 +28,7 @@ class MarkdownSetting extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
+  // TODO Delete after component split
   handleInputChange(e) {
     const target = e.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
