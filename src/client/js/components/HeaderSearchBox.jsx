@@ -68,7 +68,7 @@ class HeaderSearchBox extends React.Component {
     return (
       <FormGroup>
         <InputGroup>
-          <InputGroup.Button className="btn-group-dropdown-scope">
+          <InputGroup.Button className="btn-group-dropdown-scope" data-toggle="dropdown">
             <DropdownButton id="dbScope" title={scopeLabel}>
               <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
               <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>

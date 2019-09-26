@@ -1,3 +1,5 @@
+@import 'layout_variable';
+
 .main-container {
   h1,
   h2,
@@ -174,5 +176,46 @@ $nav-main-left-tab-width: 95px;
       color: white;
       fill: white !important;
     }
+  }
+}
+
+// dropdown menu for search
+.dropdown-menu {
+  .btn-group-dropdown-scope & {
+    position: absolute;
+    top: 43px;
+    left: -112px;
+    width: 209px;
+    padding: 0.25em 0.25em 0.25em 1.75em;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 2.75;
+    background: $grw-white-green;
+    border-radius: 3px;
+    a {
+      color: #333;
+    }
+    li {
+      list-style-type: disc;
+    }
+  }
+}
+
+.dropdown-menu {
+  .search-typeahead & {
+    position: absolute !important;
+    top: 14px !important;
+    left: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+.grw-search-table {
+  caption {
+    display: table-header-group;
+  }
+  code {
+    padding: 0.25em;
+    background: aliceblue;
   }
 }
