@@ -737,7 +737,18 @@
   },
 
   "importer_management": {
+    "beta_warning": "This function is Beta.",
     "import_from": "Import from %s",
+    "import_form_growi": "Import from GROWI",
+    "growi_settings": {
+      "overwrite_documents": "Imported documents will overwrite existing documents",
+      "zip_file": "Zip File",
+      "uploaded_data": "Uploaded Data",
+      "extracted_file": "Extracted File",
+      "collection": "Collection",
+      "upload": "Upload",
+      "discard": "Discard Uploaded Data"
+    },
     "esa_settings": {
       "team_name": "Team name",
       "access_token": "Access token",
@@ -751,5 +762,22 @@
     "import": "Import",
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
     "Directory_hierarchy_tag": "Directory Hierarchy Tag"
+  },
+
+  "export_management": {
+    "beta_warning": "This function is Beta.",
+    "export_as_zip": "Export Data as Zip",
+    "export_collections": "Export Collections",
+    "check_all": "Check All",
+    "uncheck_all": "Uncheck All",
+    "export": "Export",
+    "cancel": "Cancel",
+    "file": "File",
+    "growi_version": "Growi Version",
+    "collections": "Collections",
+    "exported_at": "Exported At",
+    "export_menu": "Export Menu",
+    "download": "Download",
+    "delete": "Delete"
   }
 }
