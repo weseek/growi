@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import ExportZipForm from './ExportZipForm';
+import ExportZipFormModal from './ExportZipFormModal';
 import ZipFileTable from './ZipFileTable';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -14,21 +14,29 @@ class ExportPage extends React.Component {
     super(props);
 
     this.state = {
+      collections: [],
       zipFileStats: [],
+      isExportModalOpen: false,
     };
 
-    this.addZipFileStat = this.addZipFileStat.bind(this);
-    this.removeZipFileStat = this.removeZipFileStat.bind(this);
+    this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
+    this.onZipFileStatRemove = this.onZipFileStatRemove.bind(this);
+    this.openExportModal = this.openExportModal.bind(this);
+    this.closeExportModal = this.closeExportModal.bind(this);
   }
 
   async componentDidMount() {
-    // TODO: use apive.get
-    const { zipFileStats } = await this.props.appContainer.apiGet('/v3/export/status', {});
-    this.setState({ zipFileStats });
+    // TODO: use apiv3.get
+    const [{ collections }, { zipFileStats }] = await Promise.all([
+      this.props.appContainer.apiGet('/v3/mongo/collections', {}),
+      this.props.appContainer.apiGet('/v3/export/status', {}),
+    ]);
     // TODO toastSuccess, toastError
+
+    this.setState({ collections, zipFileStats });
   }
 
-  addZipFileStat(newStat) {
+  onZipFileStatAdd(newStat) {
     this.setState((prevState) => {
       return {
         zipFileStats: [...prevState.zipFileStats, newStat],
@@ -36,12 +44,22 @@ class ExportPage extends React.Component {
     });
   }
 
-  removeZipFileStat(fileName) {
+  async onZipFileStatRemove(fileName) {
+    await this.props.appContainer.apiRequest('delete', `/v3/export/${fileName}`, {});
+
     this.setState((prevState) => {
       return {
         zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== fileName),
       };
     });
+  }
+
+  openExportModal() {
+    this.setState({ isExportModalOpen: true });
+  }
+
+  closeExportModal() {
+    this.setState({ isExportModalOpen: false });
   }
 
   render() {
@@ -50,14 +68,24 @@ class ExportPage extends React.Component {
     return (
       <Fragment>
         <h2>{t('export_management.export_as_zip')}</h2>
-        <ExportZipForm
+        <div className="row my-5">
+          <div className="col-xs-offset-3 col-xs-6">
+            <button type="submit" className="btn btn-sm btn-primary" onClick={this.openExportModal}>{t('export_management.export')}</button>
+          </div>
+        </div>
+        <ExportZipFormModal
+          isOpen={this.state.isExportModalOpen}
+          onClose={this.closeExportModal}
+          collections={this.state.collections}
           zipFileStats={this.state.zipFileStats}
-          addZipFileStat={this.addZipFileStat}
+          onZipFileStatAdd={this.onZipFileStatAdd}
         />
-        <ZipFileTable
-          zipFileStats={this.state.zipFileStats}
-          removeZipFileStat={this.removeZipFileStat}
-        />
+        {this.state.zipFileStats.length > 0 && (
+          <ZipFileTable
+            zipFileStats={this.state.zipFileStats}
+            onZipFileStatRemove={this.onZipFileStatRemove}
+          />
+        )}
       </Fragment>
     );
   }

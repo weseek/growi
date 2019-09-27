@@ -746,9 +746,11 @@
 
   "export_management": {
     "export_as_zip": "Zipファイルでエクスポート",
+    "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
     "export": "エクスポート",
+    "cancel": "キャンセル",
     "file": "ファイル名",
     "growi_version": "Growi バージョン",
     "collections": "コレクション",

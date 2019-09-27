@@ -22,7 +22,7 @@ module.exports = (crowi) => {
    *  /export/status:
    *    get:
    *      tags: [Export]
-   *      description: get mongodb collections names and zip files for them
+   *      description: get properties of zip files for export
    *      produces:
    *        - application/json
    *      responses:
@@ -36,42 +36,6 @@ module.exports = (crowi) => {
 
     // TODO: use res.apiv3
     return res.json({ ok: true, zipFileStats });
-  });
-
-  /**
-   * @swagger
-   *
-   *  /export/download:
-   *    get:
-   *      tags: [Export]
-   *      description: download a zipped json for multiple collections
-   *      produces:
-   *        - application/json
-   *      parameters:
-   *        - name: fileName
-   *          in: path
-   *          description: file name of zip file
-   *          schema:
-   *            type: string
-   *      responses:
-   *        200:
-   *          description: a zip file
-   *          content:
-   *            application/zip:
-   */
-  router.get('/:fileName', async(req, res) => {
-    // TODO: add express validator
-    const { fileName } = req.params;
-
-    try {
-      const zipFile = exportService.getFile(fileName);
-      return res.download(zipFile);
-    }
-    catch (err) {
-      // TODO: use ApiV3Error
-      logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
-    }
   });
 
   /**

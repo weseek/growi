@@ -763,9 +763,11 @@
 
   "export_management": {
     "export_as_zip": "Export Data as Zip",
+    "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
     "export": "Export",
+    "cancel": "Cancel",
     "file": "File",
     "growi_version": "Growi Version",
     "collections": "Collections",

@@ -8,20 +8,6 @@ import AppContainer from '../../../services/AppContainer';
 
 class ExportTableMenu extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.deleteZipFile = this.deleteZipFile.bind(this);
-  }
-
-  async deleteZipFile(fileName) {
-    // TODO use appContainer.apiv3.delete
-    await this.props.appContainer.apiRequest('delete', `/v3/export/${fileName}`, {});
-
-    this.props.removeZipFileStat(fileName);
-    // TODO toastSuccess, toastError
-  }
-
   render() {
     const { t } = this.props;
 
@@ -33,11 +19,11 @@ class ExportTableMenu extends React.Component {
         <ul className="dropdown-menu" role="menu">
           <li className="dropdown-header">{t('export_management.export_menu')}</li>
           <li>
-            <a href={`/_api/v3/export/${this.props.fileName}`}>
+            <a href={`/admin/export/${this.props.fileName}`}>
               <i className="icon-cloud-download" /> {t('export_management.download')}
             </a>
           </li>
-          <li onClick={() => this.deleteZipFile(this.props.fileName)}>
+          <li onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
             <a>
               <span className="text-danger"><i className="icon-trash" /> {t('export_management.delete')}</span>
             </a>
@@ -53,7 +39,7 @@ ExportTableMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   fileName: PropTypes.string.isRequired,
-  removeZipFileStat: PropTypes.func.isRequired,
+  onZipFileStatRemove: PropTypes.func.isRequired,
 };
 
 /**

@@ -18,6 +18,7 @@ module.exports = function(crowi, app) {
     aclService,
     slackNotificationService,
     customizeService,
+    exportService,
   } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
@@ -872,6 +873,21 @@ module.exports = function(crowi, app) {
   actions.export = {};
   actions.export.index = (req, res) => {
     return res.render('admin/export');
+  };
+
+  actions.export.download = (req, res) => {
+    // TODO: add express validator
+    const { fileName } = req.params;
+
+    try {
+      const zipFile = exportService.getFile(fileName);
+      return res.download(zipFile);
+    }
+    catch (err) {
+      // TODO: use ApiV3Error
+      logger.error(err);
+      return res.json(ApiResponse.error());
+    }
   };
 
   actions.api = {};
