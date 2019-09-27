@@ -13,8 +13,6 @@ class ImportService {
     this.growiBridgeService = crowi.growiBridgeService;
     this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'imports');
-    this.metaFileName = 'meta.json';
-    this.encoding = 'utf-8';
     this.per = 100;
     this.keepOriginal = this.keepOriginal.bind(this);
 
@@ -79,7 +77,7 @@ class ImportService {
     let failedIds = [];
     let unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
 
-    const readStream = fs.createReadStream(jsonFile, { encoding: this.encoding });
+    const readStream = fs.createReadStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
     const jsonStream = readStream.pipe(JSONStream.parse('*'));
 
     jsonStream.on('data', async(document) => {
@@ -123,7 +121,7 @@ class ImportService {
     await streamToPromise(readStream);
 
     // clean up tmp directory
-    this.deleteZipFile(jsonFile);
+    fs.unlinkSync(jsonFile);
   }
 
   /**
@@ -141,13 +139,13 @@ class ImportService {
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
 
-      if (fileName === this.metaFileName) {
+      if (fileName === this.growiBridgeService.getMetaFileName()) {
         // skip meta.json
         entry.autodrain();
       }
       else {
         const jsonFile = path.join(this.baseDir, fileName);
-        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.encoding });
+        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
         entry.pipe(writeStream);
         files.push(jsonFile);
       }
@@ -235,16 +233,6 @@ class ImportService {
     }
 
     return document;
-  }
-
-  /**
-   * remove zip file from imports dir
-   *
-   * @memberOf ImportService
-   * @param {string} zipFile absolute path to zip file
-   */
-  deleteZipFile(zipFile) {
-    fs.unlinkSync(zipFile);
   }
 
   /**

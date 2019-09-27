@@ -13,8 +13,6 @@ class ExportService {
     this.growiBridgeService = crowi.growiBridgeService;
     this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
-    this.metaFileName = 'meta.json';
-    this.encoding = 'utf-8';
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
 
@@ -54,8 +52,8 @@ class ExportService {
    * @return {string} path to meta.json
    */
   async createMetaJson() {
-    const metaJson = path.join(this.baseDir, this.metaFileName);
-    const writeStream = fs.createWriteStream(metaJson, { encoding: this.encoding });
+    const metaJson = path.join(this.baseDir, this.growiBridgeService.getMetaFileName());
+    const writeStream = fs.createWriteStream(metaJson, { encoding: this.growiBridgeService.getEncoding() });
 
     const metaData = {
       version: this.crowi.version,
@@ -83,7 +81,7 @@ class ExportService {
    */
   async export(file, readStream, total) {
     let n = 0;
-    const ws = fs.createWriteStream(file, { encoding: this.encoding });
+    const ws = fs.createWriteStream(file, { encoding: this.growiBridgeService.getEncoding() });
 
     // open an array
     ws.write('[');
@@ -206,16 +204,6 @@ class ExportService {
     logger.debug(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
 
     return zipFile;
-  }
-
-  /**
-   * remove zip file from downloads dir
-   *
-   * @param {string} zipFile absolute path to zip file
-   * @memberOf ExportService
-   */
-  deleteZipFile(zipFile) {
-    fs.unlinkSync(zipFile);
   }
 
 }

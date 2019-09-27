@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:services:ImportService'); // eslint-disable-line no-unused-vars
+const logger = require('@alias/logger')('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
 const streamToPromise = require('stream-to-promise');
@@ -7,6 +7,7 @@ const unzipper = require('unzipper');
 class GrowiBridgeService {
 
   constructor(crowi) {
+    this.encoding = 'utf-8';
     this.metaFileName = 'meta.json';
 
     // { pages: Page, users: User, ... }
@@ -24,6 +25,26 @@ class GrowiBridgeService {
     for (const model of Object.values(models)) {
       this.collectionMap[model.collection.collectionName] = model;
     }
+  }
+
+  /**
+   * getter for encoding
+   *
+   * @memberOf GrowiBridgeService
+   * @return {string} encoding
+   */
+  getEncoding() {
+    return this.encoding;
+  }
+
+  /**
+   * getter for metaFileName
+   *
+   * @memberOf GrowiBridgeService
+   * @return {string} base name of meta file
+   */
+  getMetaFileName() {
+    return this.metaFileName;
   }
 
   /**
@@ -47,7 +68,7 @@ class GrowiBridgeService {
    * get the absolute path to a file
    * this method must must be bound to the caller (this.baseDir is undefined in this service)
    *
-   * @memberOf ImportService
+   * @memberOf GrowiBridgeService
    * @param {string} fileName base name of file
    * @return {string} absolute path to the file
    */
@@ -81,7 +102,7 @@ class GrowiBridgeService {
       const fileName = entry.path;
       const size = entry.vars.uncompressedSize; // There is also compressedSize;
 
-      if (fileName === this.metaFileName) {
+      if (fileName === this.getMetaFileName()) {
         meta = JSON.parse((await entry.buffer()).toString());
       }
       else {

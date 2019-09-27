@@ -2,6 +2,7 @@ const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const { ObjectId } = require('mongoose').Types;
 
@@ -212,7 +213,7 @@ module.exports = (crowi) => {
 
     try {
       const zipFile = importService.getFile(fileName);
-      importService.deleteZipFile(zipFile);
+      fs.unlinkSync(zipFile);
 
       // TODO: use res.apiv3
       return res.send({

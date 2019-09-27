@@ -2,6 +2,7 @@ const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:export'); // eslint-disable-line no-unused-vars
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 
@@ -114,7 +115,7 @@ module.exports = (crowi) => {
 
     try {
       const zipFile = exportService.getFile(fileName);
-      exportService.deleteZipFile(zipFile);
+      fs.unlinkSync(zipFile);
 
       // TODO: use res.apiv3
       return res.status(200).send({ ok: true });
