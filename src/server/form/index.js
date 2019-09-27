@@ -36,7 +36,6 @@ module.exports = {
     customlayout: require('./admin/customlayout'),
     customfeatures: require('./admin/customfeatures'),
     customhighlightJsStyle: require('./admin/customhighlightJsStyle'),
-    userInvite: require('./admin/userInvite'),
     slackIwhSetting: require('./admin/slackIwhSetting'),
     slackSetting: require('./admin/slackSetting'),
     userGroupCreate: require('./admin/userGroupCreate'),

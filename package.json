@@ -130,6 +130,7 @@
     "swig-templates": "^2.0.2",
     "uglifycss": "^0.0.29",
     "url-join": "^4.0.0",
+    "validator": "^11.1.0",
     "xss": "^1.0.6"
   },
   "devDependencies": {
