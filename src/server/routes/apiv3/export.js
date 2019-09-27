@@ -24,13 +24,18 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Export]
    *      description: get properties of zip files for export
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: export cache status
    *          content:
    *            application/json:
+   *              schema:
+   *                properties:
+   *                  zipFileStats:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      description: property of each file
    */
   router.get('/status', async(req, res) => {
     const zipFileStats = await exportService.getStatus();
@@ -46,13 +51,16 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Export]
    *      description: generate a zipped json for multiple collections
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: a zip file is generated
    *          content:
    *            application/json:
+   *              schema:
+   *                properties:
+   *                  zipFileStat:
+   *                    type: object
+   *                    description: property of each file
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
@@ -91,16 +99,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export:
+   *  /export/{fileName}:
    *    delete:
    *      tags: [Export]
    *      description: unlink all json and zip files for exports
-   *      produces:
-   *        - application/json
    *      parameters:
    *        - name: fileName
    *          in: path
    *          description: file name of zip file
+   *          required: true
    *          schema:
    *            type: string
    *      responses:
@@ -108,6 +115,8 @@ module.exports = (crowi) => {
    *          description: the json and zip file are deleted
    *          content:
    *            application/json:
+   *              schema:
+   *                type: object
    */
   router.delete('/:fileName', async(req, res) => {
     // TODO: add express validator

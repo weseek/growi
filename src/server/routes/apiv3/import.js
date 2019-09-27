@@ -86,13 +86,13 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Import]
    *      description: import a collection from a zipped json
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: data is successfully imported
    *          content:
    *            application/json:
+   *              schema:
+   *                type: object
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
@@ -142,8 +142,6 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Import]
    *      description: upload a zip file
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: file is uploaded
@@ -151,18 +149,17 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  properties:
-   *                    meta:
+   *                  meta:
+   *                    type: object
+   *                    description: meta data of the uploaded file
+   *                  fileName:
+   *                    type: string
+   *                    description: base name of the uploaded file
+   *                  fileStats:
+   *                    type: array
+   *                    items:
    *                      type: object
-   *                      description: meta data of the uploaded file
-   *                    fileName:
-   *                      type: string
-   *                      description: base name of the uploaded file
-   *                    fileStats:
-   *                      type: array
-   *                      items:
-   *                        type: object
-   *                        description: property of each extracted file
+   *                      description: property of each extracted file
    */
   router.post('/upload', uploads.single('file'), async(req, res) => {
     const { file } = req;
@@ -190,16 +187,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/upload:
+   *  /import/{fileName}:
    *    post:
    *      tags: [Import]
    *      description: delete a zip file
-   *      produces:
-   *        - application/json
    *      parameters:
    *        - name: fileName
    *          in: path
    *          description: file name of zip file
+   *          required: true
    *          schema:
    *            type: string
    *      responses:
@@ -207,6 +203,8 @@ module.exports = (crowi) => {
    *          description: file is deleted
    *          content:
    *            application/json:
+   *              schema:
+   *                type: object
    */
   router.delete('/:fileName', async(req, res) => {
     const { fileName } = req.params;

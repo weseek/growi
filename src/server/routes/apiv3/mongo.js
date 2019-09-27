@@ -20,8 +20,6 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Mongo]
    *      description: get mongodb collections names
-   *      produces:
-   *        - application/json
    *      responses:
    *        200:
    *          description: list of collections in mongoDB
