@@ -766,10 +766,11 @@
 
   "export_management": {
     "beta_warning": "This function is Beta.",
-    "export_as_zip": "Export Data as Zip",
+    "exported_data_list": "Exported Data List",
     "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
+    "create_new_exported_data": "Create New Exported Data",
     "export": "Export",
     "cancel": "Cancel",
     "file": "File",

@@ -94,15 +94,22 @@ class ExportPage extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('export_management.export_as_zip')}</h2>
         <div className="alert alert-warning">
           <i className="icon-exclamation"></i> { t('export_management.beta_warning') }
         </div>
-        <div className="row my-5">
-          <div className="col-xs-offset-3 col-xs-6">
-            <button type="submit" className="btn btn-sm btn-primary" onClick={this.openExportModal}>{t('export_management.export')}</button>
-          </div>
+
+        <h2>{t('Export Data')}</h2>
+
+        <button type="button" className="btn btn-default" onClick={this.openExportModal}>{t('export_management.create_new_exported_data')}</button>
+
+        <div className="mt-5">
+          <h3>{t('export_management.exported_data_list')}</h3>
+          <ZipFileTable
+            zipFileStats={this.state.zipFileStats}
+            onZipFileStatRemove={this.onZipFileStatRemove}
+          />
         </div>
+
         <ExportZipFormModal
           isOpen={this.state.isExportModalOpen}
           onClose={this.closeExportModal}
@@ -110,12 +117,6 @@ class ExportPage extends React.Component {
           zipFileStats={this.state.zipFileStats}
           onZipFileStatAdd={this.onZipFileStatAdd}
         />
-        {this.state.zipFileStats.length > 0 && (
-          <ZipFileTable
-            zipFileStats={this.state.zipFileStats}
-            onZipFileStatRemove={this.onZipFileStatRemove}
-          />
-        )}
       </Fragment>
     );
   }

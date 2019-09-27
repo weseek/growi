@@ -749,10 +749,11 @@
 
   "export_management": {
     "beta_warning": "この機能はベータ版です",
-    "export_as_zip": "Zipファイルでエクスポート",
+    "exported_data_list": "エクスポートデータリスト",
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
+    "create_new_exported_data": "エクスポートデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",
     "file": "ファイル名",

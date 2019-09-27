@@ -19,12 +19,12 @@ class ExportTableMenu extends React.Component {
         <ul className="dropdown-menu" role="menu">
           <li className="dropdown-header">{t('export_management.export_menu')}</li>
           <li>
-            <a href={`/admin/export/${this.props.fileName}`}>
+            <a type="button" href={`/admin/export/${this.props.fileName}`}>
               <i className="icon-cloud-download" /> {t('export_management.download')}
             </a>
           </li>
-          <li onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
-            <a>
+          <li>
+            <a type="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
               <span className="text-danger"><i className="icon-trash" /> {t('export_management.delete')}</span>
             </a>
           </li>
