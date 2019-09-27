@@ -40,7 +40,7 @@ import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserPage from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
-import Customize from './components/Admin/Customize/customize';
+import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
 
