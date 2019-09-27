@@ -188,6 +188,11 @@ class ExportService {
 
     logger.info(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
 
+    // delete json files
+    for (const { from } of configs) {
+      fs.unlinkSync(from);
+    }
+
     return zipFile;
   }
 
