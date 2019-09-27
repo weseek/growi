@@ -36,7 +36,7 @@ class GrowiZipImportSection extends React.Component {
   async discardData() {
     try {
       const { fileName } = this.state;
-      await this.props.appContainer.apiRequest('delete', `/v3/import/${this.state.fileName}`, {});
+      await this.props.appContainer.apiDelete(`/v3/import/${this.state.fileName}`, {});
       this.resetState();
 
       // TODO: toastSuccess, toastError

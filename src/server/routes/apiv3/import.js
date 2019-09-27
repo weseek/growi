@@ -1,9 +1,11 @@
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
+
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+
 const { ObjectId } = require('mongoose').Types;
 
 const express = require('express');
@@ -18,6 +20,11 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const { growiBridgeService, importService } = crowi;
+  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
+  const loginRequired = require('../../middleware/login-required')(crowi);
+  const adminRequired = require('../../middleware/admin-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
+
   const uploads = multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {
@@ -99,7 +106,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: collectionName, insertedIds, failedIds
    */
-  router.post('/', async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
 
     const { fileName, collections, schema } = req.body;
@@ -175,7 +182,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the property of each extracted file
    */
-  router.post('/upload', uploads.single('file'), async(req, res) => {
+  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
 
@@ -220,7 +227,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const { fileName } = req.params;
 
     try {

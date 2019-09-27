@@ -1,6 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:export'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:export');
 const path = require('path');
 const fs = require('fs');
 
@@ -15,6 +15,11 @@ const router = express.Router();
  */
 
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
+  const loginRequired = require('../../middleware/login-required')(crowi);
+  const adminRequired = require('../../middleware/admin-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
+
   const { growiBridgeService, exportService } = crowi;
 
   /**
@@ -37,7 +42,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the property of each file
    */
-  router.get('/status', async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const zipFileStats = await exportService.getStatus();
 
     // TODO: use res.apiv3
@@ -62,7 +67,7 @@ module.exports = (crowi) => {
    *                    type: object
    *                    description: the property of the zip file
    */
-  router.post('/', async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
@@ -118,7 +123,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 
