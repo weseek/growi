@@ -725,6 +725,7 @@
     "growi_settings": {
       "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
       "zip_file": "Zip ファイル",
+      "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",
       "upload": "アップロード"

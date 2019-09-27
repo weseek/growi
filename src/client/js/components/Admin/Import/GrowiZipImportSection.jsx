@@ -42,10 +42,13 @@ class GrowiZipImportSection extends React.Component {
           onUpload={this.handleUpload}
         />
         {this.state.fileName && (
+        <Fragment>
+          <div className="h4">{t('importer_management.growi_settings.uploaded_data')}</div>
           <GrowiZipImportForm
             fileName={this.state.fileName}
             fileStats={this.state.fileStats}
           />
+        </Fragment>
         )}
       </Fragment>
     );
