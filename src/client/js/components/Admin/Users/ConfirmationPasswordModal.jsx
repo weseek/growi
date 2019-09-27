@@ -9,14 +9,19 @@ import AppContainer from '../../../services/AppContainer';
 
 class ConfirmationPasswordModal extends React.Component {
   render() {
+    const { t } = this.props;
+
     return (
       <Modal show={this.props.show} onHide={this.props.onToggleModal}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
-            hello password modal
+            { t('user_management.invited') }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <p>{ t('user_management.temporary_password') }</p>
+          <p>{ t('user_management.send_new_password') }</p>
+          <p className="text-danger">{ t('user_management.send_temporary_password') }</p>
         </Modal.Body>
         <Modal.Footer className="d-flex">
         </Modal.Footer>
