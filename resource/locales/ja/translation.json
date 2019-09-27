@@ -728,7 +728,8 @@
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",
-      "upload": "アップロード"
+      "upload": "アップロード",
+      "discard": "アップロードしたデータを破棄する"
     },
     "esa_settings": {
       "team_name": "チーム名",

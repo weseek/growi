@@ -745,7 +745,8 @@
       "uploaded_data": "Uploaded Data",
       "extracted_file": "Extracted File",
       "collection": "Collection",
-      "upload": "Upload"
+      "upload": "Upload",
+      "discard": "Discard Uploaded Data"
     },
     "esa_settings": {
       "team_name": "Team name",

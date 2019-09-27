@@ -69,6 +69,7 @@ class GrowiImportForm extends React.Component {
       <form className="row" onSubmit={this.import}>
         <div className="col-xs-12">
           <table className="table table-bordered table-mapping">
+            <caption>{t('importer_management.growi_settings.uploaded_data')}</caption>
             <thead>
               <tr>
                 <th></th>
@@ -111,9 +112,12 @@ class GrowiImportForm extends React.Component {
             </tbody>
           </table>
         </div>
-        <div className="col-xs-offset-3 col-xs-6">
-          <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
+        <div className="col-xs-12 text-center">
+          <button type="submit" className="btn btn-primary mx-1" disabled={!this.validateForm()}>
             { t('importer_management.import') }
+          </button>
+          <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
+            { t('importer_management.growi_settings.discard') }
           </button>
         </div>
       </form>
@@ -125,8 +129,10 @@ class GrowiImportForm extends React.Component {
 GrowiImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   fileName: PropTypes.string,
   fileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onDiscard: PropTypes.func.isRequired,
 };
 
 /**

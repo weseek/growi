@@ -13,18 +13,26 @@ class GrowiZipImportSection extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.initialState = {
       fileName: '',
       fileStats: [],
     };
 
-    this.inputRef = React.createRef();
+    this.state = this.initialState;
 
     this.handleUpload = this.handleUpload.bind(this);
+    this.discardData = this.discardData.bind(this);
   }
 
   handleUpload({ meta, fileName, fileStats }) {
-    this.setState({ fileName, fileStats });
+    this.setState({
+      fileName,
+      fileStats,
+    });
+  }
+
+  discardData() {
+    this.setState(this.initialState);
   }
 
   render() {
@@ -38,17 +46,19 @@ class GrowiZipImportSection extends React.Component {
             <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
           </ul>
         </div>
-        <GrowiZipUploadForm
-          onUpload={this.handleUpload}
-        />
-        {this.state.fileName && (
-        <Fragment>
-          <div className="h4">{t('importer_management.growi_settings.uploaded_data')}</div>
-          <GrowiZipImportForm
-            fileName={this.state.fileName}
-            fileStats={this.state.fileStats}
+
+        {this.state.fileName ? (
+          <Fragment>
+            <GrowiZipImportForm
+              fileName={this.state.fileName}
+              fileStats={this.state.fileStats}
+              onDiscard={this.discardData}
+            />
+          </Fragment>
+        ) : (
+          <GrowiZipUploadForm
+            onUpload={this.handleUpload}
           />
-        </Fragment>
         )}
       </Fragment>
     );
