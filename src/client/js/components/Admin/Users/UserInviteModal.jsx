@@ -39,12 +39,12 @@ class UserInviteModal extends React.Component {
     try {
       // TODO GW-230 use emailList client side
       // eslint-disable-next-line no-unused-vars
-      const emailList = await appContainer.apiv3.post('/users/invite', {
+      const response = await appContainer.apiv3.post('/users/invite', {
         shapedEmailList,
         sendEmail: this.state.sendEmail,
       });
       this.props.onToggleModal();
-      this.props.showConfirmationPasswordModal(emailList);
+      this.props.showConfirmationPasswordModal(response.data.emailList);
       toastSuccess('Inviting user success');
     }
     catch (err) {
