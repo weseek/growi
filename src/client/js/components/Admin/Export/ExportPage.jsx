@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import * as toastr from 'toastr';
 
 import ExportZipFormModal from './ExportZipFormModal';
 import ZipFileTable from './ZipFileTable';
@@ -47,13 +48,37 @@ class ExportPage extends React.Component {
   }
 
   async onZipFileStatRemove(fileName) {
-    await this.props.appContainer.apiRequest('delete', `/v3/export/${fileName}`, {});
+    try {
+      await this.props.appContainer.apiRequest('delete', `/v3/export/${fileName}`, {});
 
-    this.setState((prevState) => {
-      return {
-        zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== fileName),
-      };
-    });
+      this.setState((prevState) => {
+        return {
+          zipFileStats: prevState.zipFileStats.filter(stat => stat.fileName !== fileName),
+        };
+      });
+
+      // TODO toastSuccess, toastError
+      toastr.success(undefined, `Deleted ${fileName}`, {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
+      });
+    }
+    catch (err) {
+      // TODO toastSuccess, toastError
+      toastr.error(err, 'Error', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    }
   }
 
   openExportModal() {
