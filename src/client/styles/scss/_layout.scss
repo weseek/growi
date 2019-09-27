@@ -1,3 +1,5 @@
+@import 'layout_variable';
+
 .main-container {
   h1,
   h2,
@@ -16,6 +18,9 @@
         font-weight: bold;
         cursor: default;
       }
+    }
+    @include media-breakpoint-down(md) {
+      font-size: 14px;
     }
   }
 

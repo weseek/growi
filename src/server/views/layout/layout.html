@@ -80,7 +80,7 @@
 
       <!--1 GROWI logo-->
       <a class="logo d-block top-left-part bg-grw-mos-green my-auto px-3" href="/">
-        <div class="logo-mark _white d-inline-block py-3">{% include '../widget/logo.html' %}</div>
+        <div class="logo-mark _white d-inline-block">{% include '../widget/logo.html' %}</div>
         <span class="logo-text mx-3 text-white">
           {% set appTitle = appService.getAppTitle() %}
           {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
@@ -101,7 +101,7 @@
       </a>
 
       <!--4 search nav-->
-      <ul class="nav navbar-top-links d-none d-md-block bg-grw-light-green my-auto">
+      <ul class="nav navbar-top-links d-none d-md-block bg-grw-light-green ml-3 my-auto text-nowrap">
         {#  disabled temporary -- 2019.05.13 Yuki Takei
         <li class="nav-item-admin">
           <a href="/tags">
@@ -119,7 +119,7 @@
       <!--5 user action-->
       <ul class="nav navbar-top-links flex-nowrap ml-auto my-auto">
         {% if user and user.admin %}
-        <li class="nav-item-admin mr-3">
+        <li class="nav-item-admin mr-2 mr-lg-3 my-auto">
           <a class="text-white" href="/admin">
             <i class="icon-settings mr-2"></i>
             <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
@@ -128,14 +128,14 @@
         {% endif %}
 
         {% if user %}
-        <li class="nav-item-create-page mr-3">
+        <li class="nav-item-create-page mr-2 mr-lg-3 my-auto">
           <a class="text-white" href="#" data-target="#create-page" data-toggle="modal">
             <i class="icon-pencil mr-2"></i>
             <span class="d-none d-md-inline-block">{{ t('New') }}</span>
           </a>
         </li>
-        <li class="dropdown mr-3">
-          <a class="dropdown-toggle waves-effect waves-light text-white" data-toggle="dropdown">
+        <li class="nav-item-user dropdown mr-3">
+          <a class="dropdown-toggle waves-effect waves-light d-inline-flex text-white" data-toggle="dropdown">
             <img src="{{ user|picture }}" class="picture rounded-circle" width="25" />
             <span class="user-name text-wrap ml-2">{{ user.name }}</span>
           </a>

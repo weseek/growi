@@ -1,8 +1,10 @@
 /* color variables */
 
+/* green */
 $grw-base-green: rgb(7, 146, 72);
 $grw-mos-green: rgb(5, 70, 35);
 $grw-light-green: rgb(204, 238, 220);
+$grw-white-green: #f8fffb;
 
 .bg-grw-green {
   background: $grw-base-green;
@@ -15,3 +17,6 @@ $grw-light-green: rgb(204, 238, 220);
 .bg-grw-light-green {
   background: $grw-light-green;
 }
+
+/* blue */
+$grw-alice-blue: aliceblue;

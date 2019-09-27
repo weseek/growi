@@ -1,5 +1,6 @@
 // import react-bootstrap-typeahead
 @import '~react-bootstrap-typeahead/css/Typeahead';
+@import 'layout_variable';
 
 .search-listpage-icon {
   font-size: 16px;
@@ -216,5 +217,16 @@
   .input-group-btn .btn {
     height: 34px;
     padding: 0px 10px;
+  }
+}
+
+// support for your search
+.grw-search-table {
+  caption {
+    display: table-header-group;
+  }
+  code {
+    padding: 0.25em;
+    background: $grw-alice-blue;
   }
 }
