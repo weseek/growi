@@ -21,7 +21,7 @@ class ConfirmationPasswordModal extends React.Component {
     return (
       <ul>
         {userList.map((user) => {
-          const copyText = `Email: ${user.email} Password: ${user.password} `;
+          const copyText = `Email:${user.email} Password:${user.password} `;
           return (
             <CopyToClipboard text={copyText} onCopy={this.showToaster}>
               <li key={user.email} className="btn">Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong></li>
