@@ -24,7 +24,7 @@ class ExportTableMenu extends React.Component {
             </a>
           </li>
           <li>
-            <a type="button" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
+            <a type="button" href="#" onClick={() => this.props.onZipFileStatRemove(this.props.fileName)}>
               <span className="text-danger"><i className="icon-trash" /> {t('export_management.delete')}</span>
             </a>
           </li>
