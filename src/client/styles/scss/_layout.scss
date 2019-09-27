@@ -191,7 +191,8 @@ $nav-main-left-tab-width: 95px;
   -moz-box-shadow: 0px !important;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
   li > a {
-    padding: 0.5em 1em;
+    display: block;
+    padding: 0.25em 0.75em;
     color: #333;
     text-decoration: none;
     white-space: nowrap;
@@ -214,5 +215,14 @@ $nav-main-left-tab-width: 95px;
   code {
     padding: 0.25em;
     background: aliceblue;
+  }
+}
+
+//TODO:SCSSの分離（user action 関連のスタイル）
+.nav-item-user {
+  .dropdown-toggle {
+    &::after {
+      margin: 0.75em 0 0 0.75em;
+    }
   }
 }
