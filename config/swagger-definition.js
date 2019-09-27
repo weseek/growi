@@ -8,7 +8,7 @@ module.exports = {
   },
   servers: [
     {
-      url: 'https://demo.growi.org/api/v3/',
+      url: 'https://demo.growi.org/_api/v3/',
     },
   ],
 };
