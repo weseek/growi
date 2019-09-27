@@ -1,3 +1,5 @@
+@import 'layout_variable';
+
 .bg-title {
   padding: 6px 0;
   margin-right: -15px;
@@ -162,7 +164,7 @@ button.btn.btn-link:hover {
     white-space: nowrap;
     &:focus,
     &:hover {
-      background: aliceblue;
+      background: $grw-alice-blue;
     }
   }
 
