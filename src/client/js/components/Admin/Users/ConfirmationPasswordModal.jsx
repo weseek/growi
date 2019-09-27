@@ -2,20 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 
+import { toastSuccess } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 class ConfirmationPasswordModal extends React.Component {
 
+  showToaster() {
+    toastSuccess('Copied Mail and Password');
+  }
+
   renderCreatedEmail(userList) {
     return (
       <ul>
         {userList.map((user) => {
+          const copyText = `Email: ${user.email} Password: ${user.password} `;
           return (
-            <li key={user.email}>Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong></li>
+            <CopyToClipboard text={copyText} onCopy={this.showToaster}>
+              <li key={user.email} className="btn">Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong></li>
+            </CopyToClipboard>
           );
         })}
       </ul>
