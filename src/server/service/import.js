@@ -10,6 +10,8 @@ class ImportService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.growiBridgeService = crowi.growiBridgeService;
+    this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'imports');
     this.metaFileName = 'meta.json';
     this.encoding = 'utf-8';
@@ -233,22 +235,6 @@ class ImportService {
     }
 
     return document;
-  }
-
-  /**
-   * get the absolute path to a file
-   *
-   * @memberOf ImportService
-   * @param {string} fileName base name of file
-   * @return {string} absolute path to the file
-   */
-  getFile(fileName) {
-    const jsonFile = path.join(this.baseDir, fileName);
-
-    // throws err if the file does not exist
-    fs.accessSync(jsonFile);
-
-    return jsonFile;
   }
 
   /**

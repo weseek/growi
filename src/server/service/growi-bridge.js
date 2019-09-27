@@ -44,6 +44,27 @@ class GrowiBridgeService {
   }
 
   /**
+   * get the absolute path to a file
+   * this method must must be bound to the caller (this.baseDir is undefined in this service)
+   *
+   * @memberOf ImportService
+   * @param {string} fileName base name of file
+   * @return {string} absolute path to the file
+   */
+  getFile(fileName) {
+    if (this.baseDir == null) {
+      throw new Error('baseDir is not defined');
+    }
+
+    const jsonFile = path.join(this.baseDir, fileName);
+
+    // throws err if the file does not exist
+    fs.accessSync(jsonFile);
+
+    return jsonFile;
+  }
+
+  /**
    * parse a zip file
    *
    * @memberOf GrowiBridgeService
