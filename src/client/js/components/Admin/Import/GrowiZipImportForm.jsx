@@ -49,7 +49,7 @@ class GrowiImportForm extends React.Component {
 
     try {
       // TODO use appContainer.apiv3.post
-      await this.props.appContainer.apiPost('/v3/import', {
+      const { results } = await this.props.appContainer.apiPost('/v3/import', {
         fileName: this.props.fileName,
         collections: Array.from(this.state.collections),
         schema: this.state.schema,
@@ -68,6 +68,17 @@ class GrowiImportForm extends React.Component {
         timeOut: '1200',
         extendedTimeOut: '150',
       });
+
+      for (const { collectionName, failedIds } of results) {
+        if (failedIds.length > 0) {
+          toastr.error(`failed to insert ${failedIds.join(', ')}`, collectionName, {
+            closeButton: true,
+            progressBar: true,
+            newestOnTop: false,
+            timeOut: '30000',
+          });
+        }
+      }
     }
     catch (err) {
       // TODO toastSuccess, toastError

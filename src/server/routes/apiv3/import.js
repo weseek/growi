@@ -93,7 +93,7 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  result:
+   *                  results:
    *                    type: array
    *                    items:
    *                      type: object
@@ -120,7 +120,7 @@ module.exports = (crowi) => {
       // validate with meta.json
       importService.validate(meta);
 
-      const result = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
+      const results = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 
@@ -140,7 +140,7 @@ module.exports = (crowi) => {
       }));
 
       // TODO: use res.apiv3
-      return res.send({ ok: true, result });
+      return res.send({ ok: true, results });
     }
     catch (err) {
       // TODO: use ApiV3Error
