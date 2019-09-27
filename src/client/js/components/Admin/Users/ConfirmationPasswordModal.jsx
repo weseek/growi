@@ -23,9 +23,11 @@ class ConfirmationPasswordModal extends React.Component {
   }
 
   renderExistingEmail(emailList) {
+    const { t } = this.props;
+
     return (
       <>
-        <p className="text-warning">以下のEmailはすでに存在しています</p>
+        <p className="text-warning">{ t('user_management.existing_email') }</p>
         <ul>
           {emailList.map((user) => {
             return (
