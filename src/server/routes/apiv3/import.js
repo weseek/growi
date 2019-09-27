@@ -92,7 +92,12 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
+   *                properties:
+   *                  result:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      description: collectionName, insertedIds, failedIds
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
@@ -115,7 +120,7 @@ module.exports = (crowi) => {
       // validate with meta.json
       importService.validate(meta);
 
-      const results = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
+      const result = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 
@@ -133,22 +138,6 @@ module.exports = (crowi) => {
           failedIds,
         };
       }));
-
-      // convert to
-      // {
-      //   [collectionName1]: {
-      //     insertedIds: [...],
-      //     failedIds: [...],
-      //   },
-      //   [collectionName2]: {
-      //     insertedIds: [...],
-      //     failedIds: [...],
-      //   },
-      // }
-      const result = {};
-      for (const { collectionName, insertedIds, failedIds } of results) {
-        result[collectionName] = { insertedIds, failedIds };
-      }
 
       // TODO: use res.apiv3
       return res.send({ ok: true, result });
