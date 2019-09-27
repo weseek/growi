@@ -19,6 +19,9 @@
         cursor: default;
       }
     }
+    @media screen and (max-width: 768px) {
+      font-size: 14px;
+    }
   }
 
   /*
@@ -176,12 +179,5 @@ $nav-main-left-tab-width: 95px;
       color: white;
       fill: white !important;
     }
-  }
-}
-
-// nav bar user name
-.user-name {
-  @media screen and (max-width: 380px) {
-    font-size: 14px;
   }
 }
