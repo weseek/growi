@@ -14,8 +14,8 @@
   }
 }
 
-.CodeMirror pre {
-  font-family: Osaka-Mono, "MS Gothic", Monaco, Menlo, Consolas, "Courier New", monospace;
+.CodeMirror pre.CodeMirror-line {
+  font-family: Osaka-Mono, 'MS Gothic', Monaco, Menlo, Consolas, 'Courier New', monospace;
   font-size: 14px;
   line-height: 20px;
 }

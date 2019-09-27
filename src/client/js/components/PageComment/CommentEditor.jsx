@@ -115,6 +115,7 @@ class CommentEditor extends React.Component {
           this.state.comment,
           this.state.isMarkdown,
           this.props.currentCommentId,
+          this.props.commentCreator,
         );
       }
       else {
@@ -335,6 +336,7 @@ CommentEditor.propTypes = {
   replyTo: PropTypes.string,
   currentCommentId: PropTypes.string,
   commentBody: PropTypes.string,
+  commentCreator: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 
