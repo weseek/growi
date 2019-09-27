@@ -1,6 +1,5 @@
 const loggerFactory = require('@alias/logger');
 
-// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:middleware:admin-required');
 
 module.exports = (crowi) => {
@@ -11,8 +10,14 @@ module.exports = (crowi) => {
         next();
         return;
       }
+
+      logger.warn('This user is not admin.');
+
       return res.redirect('/');
     }
+
+    logger.warn('This user has not logged in.');
+
     return res.redirect('/login');
   };
 
