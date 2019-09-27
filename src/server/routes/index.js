@@ -165,6 +165,7 @@ module.exports = function(crowi, app) {
 
   // export management for admin
   app.get('/admin/export' , loginRequired() , adminRequired ,admin.export.index);
+  app.get('/admin/export/:fileName' , loginRequired() , adminRequired ,admin.export.download);
 
   app.get('/me'                       , loginRequired() , me.index);
   app.get('/me/password'              , loginRequired() , me.password);

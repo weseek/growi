@@ -720,7 +720,18 @@
   },
 
   "importer_management": {
+    "beta_warning": "この機能はベータ版です",
     "import_from": "%s からインポート",
+    "import_form_growi": "GROWIからインポート",
+    "growi_settings": {
+      "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
+      "zip_file": "Zip ファイル",
+      "uploaded_data": "アップロードされたデータ",
+      "extracted_file": "展開されたファイル",
+      "collection": "コレクション",
+      "upload": "アップロード",
+      "discard": "アップロードしたデータを破棄する"
+    },
     "esa_settings": {
       "team_name": "チーム名",
       "access_token": "アクセストークン",
@@ -734,5 +745,23 @@
     "import": "インポート",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
+  },
+
+  "export_management": {
+    "beta_warning": "この機能はベータ版です",
+    "exported_data_list": "エクスポートデータリスト",
+    "export_collections": "コレクションのエクスポート",
+    "check_all": "全てにチェックを付ける",
+    "uncheck_all": "全てからチェックを外す",
+    "create_new_exported_data": "エクスポートデータの新規作成",
+    "export": "エクスポート",
+    "cancel": "キャンセル",
+    "file": "ファイル名",
+    "growi_version": "Growi バージョン",
+    "collections": "コレクション",
+    "exported_at": "エクスポートされた時間",
+    "export_menu": "エクスポートメニュー",
+    "download": "ダウンロード",
+    "delete": "削除"
   }
 }

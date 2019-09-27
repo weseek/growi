@@ -7,26 +7,14 @@
 #
 # require
 #   - $WERCKER_TOKEN
-#   - $GROWI_DOCKER_PIPELINE_ID
-#   - $RELEASE_VERSION
-#   - $RELEASE_GIT_COMMIT
+#   - $GROWI_DOCS_PIPELINE_ID
 #
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $WERCKER_TOKEN" \
   https://app.wercker.com/api/v3/runs -d '{ \
-    "pipelineId": "'$GROWI_DOCKER_PIPELINE_ID'", \
-    "branch": "master", \
-    "envVars": [ \
-      { \
-        "key": "RELEASE_VERSION", \
-        "value": "'$RELEASE_VERSION'" \
-      }, \
-      { \
-        "key": "GROWI_REPOS_GIT_COMMIT", \
-        "value": "'$RELEASE_GIT_COMMIT'" \
-      } \
-    ] \
+    "pipelineId": "'$GROWI_DOCS_PIPELINE_ID'", \
+    "branch": "master"
   }' \
 `
 
