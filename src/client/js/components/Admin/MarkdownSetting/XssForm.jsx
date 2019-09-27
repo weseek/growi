@@ -12,8 +12,7 @@ class XssForm extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
+    // const { appContainer } = this.props;
     this.state = {
       isEnabledXss: false,
     };
@@ -33,53 +32,57 @@ class XssForm extends React.Component {
     const { t } = this.props;
 
     return (
-      <fieldset class="form-group col-xs-12 my-3" id="xss-hide-when-disabled">
-        <div class="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption1" name="{{nameForXssOption}}" value="1" />
-          <label for="xssOption1">
-            <p class="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
-            <div class="m-t-15">
+      <fieldset className="form-group col-xs-12 my-3" id="xss-hide-when-disabled">
+        <div className="col-xs-4 radio radio-primary">
+          <input type="radio" id="xssOption1" name="XssOption" value="1" onChange={this.handleInputChange} />
+          <label htmlFor="xssOption1">
+            <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
+            <div className="m-t-15">
               { t('markdown_setting.Ignore all tags desc') }
             </div>
           </label>
         </div>
 
-        <div class="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption2" name="{{nameForXssOption}}" value="2" />
-          <label for="xssOption2">
-            <p class="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
-            <div class="m-t-15">
+        <div className="col-xs-4 radio radio-primary">
+          <input type="radio" id="xssOption2" name="XssOption" value="2" onChange={this.handleInputChange} />
+          <label htmlFor="xssOption2">
+            <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
+            <div className="m-t-15">
               { t('markdown_setting.Tag names') }
-              <textarea class="form-control xss-list" name="recommendedTags" rows="6" cols="40" readonly>recommendedWhitelist.tags</textarea>
+              {/* TODO fetch correct defaultValue */}
+              <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly defaultValue="recommendedWhitelist.tags" />
             </div>
-            <div class="m-t-15">
+            <div className="m-t-15">
               { t('markdown_setting.Tag attributes') }
-              <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readonly>recommendedWhitelist.attrs</textarea>
+              {/* TODO fetch correct defaultValue */}
+              <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly defaultValue="recommendedWhitelist.attrs" />
             </div>
           </label>
         </div>
 
-        <div class="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption3" name="{{nameForXssOption}}" value="3" />
-          <label for="xssOption3">
-            <p class="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <div class="m-t-15">
-              <div class="d-flex justify-content-between">
+        <div className="col-xs-4 radio radio-primary">
+          <input type="radio" id="xssOption3" name="XssOption" value="3" onChange={this.handleInputChange} />
+          <label htmlFor="xssOption3">
+            <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
                 { t('markdown_setting.Tag names') }
-                <p id="btn-import-tags" class="btn btn-xs btn-primary">
+                <p id="btn-import-tags" className="btn btn-xs btn-primary">
                   { t('markdown_setting.import_recommended', 'tags') }
                 </p>
               </div>
-              <textarea class="form-control xss-list" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="6" cols="40" placeholder="e.g. iframe, script, video...">markdownSetting['markdown:xss:tagWhiteList']</textarea>
+              {/* TODO fetch correct defaultValue */}
+              <textarea className="form-control xss-list" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="6" cols="40" placeholder="e.g. iframe, script, video..." defaultValue="markdownSetting['markdown:xss:tagWhiteList']" />
             </div>
-            <div class="m-t-15">
-              <div class="d-flex justify-content-between">
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
                 { t('markdown_setting.Tag attributes') }
-                <p id="btn-import-attrs" class="btn btn-xs btn-primary">
+                <p id="btn-import-attrs" className="btn btn-xs btn-primary">
                   { t('markdown_setting.import_recommended', 'attributes') }
                 </p>
               </div>
-              <textarea class="form-control xss-list" name="markdownSetting[markdown:xss:attrWhiteList]" rows="6" cols="40" placeholder="e.g. src, id, name...">markdownSetting['markdown:xss:attrWhiteList']</textarea>
+              {/* TODO fetch correct defaultValue */}
+              <textarea className="form-control xss-list" name="markdownSetting[markdown:xss:attrWhiteList]" rows="6" cols="40" placeholder="e.g. src, id, name..." defaultValue="markdownSetting['markdown:xss:attrWhiteList']" />
             </div>
           </label>
         </div>
