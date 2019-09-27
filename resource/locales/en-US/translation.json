@@ -737,6 +737,7 @@
   },
 
   "importer_management": {
+    "beta_warning": "This function is Beta.",
     "import_from": "Import from %s",
     "import_form_growi": "Import from GROWI",
     "growi_settings": {
@@ -764,6 +765,7 @@
   },
 
   "export_management": {
+    "beta_warning": "This function is Beta.",
     "export_as_zip": "Export Data as Zip",
     "export_collections": "Export Collections",
     "check_all": "Check All",

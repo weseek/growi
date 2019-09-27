@@ -95,6 +95,9 @@ class ExportPage extends React.Component {
     return (
       <Fragment>
         <h2>{t('export_management.export_as_zip')}</h2>
+        <div className="alert alert-warning">
+          <i className="icon-exclamation"></i> { t('export_management.beta_warning') }
+        </div>
         <div className="row my-5">
           <div className="col-xs-offset-3 col-xs-6">
             <button type="submit" className="btn btn-sm btn-primary" onClick={this.openExportModal}>{t('export_management.export')}</button>

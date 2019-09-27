@@ -73,6 +73,11 @@ class GrowiZipImportSection extends React.Component {
     return (
       <Fragment>
         <legend>{t('importer_management.import_form_growi')}</legend>
+
+        <div className="alert alert-warning">
+          <i className="icon-exclamation"></i> { t('importer_management.beta_warning') }
+        </div>
+
         <div className="well well-sm small">
           <ul>
             <li>{t('importer_management.growi_settings.overwrite_documents')}</li>

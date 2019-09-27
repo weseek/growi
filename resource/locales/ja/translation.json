@@ -720,6 +720,7 @@
   },
 
   "importer_management": {
+    "beta_warning": "この機能はベータ版です",
     "import_from": "%s からインポート",
     "import_form_growi": "GROWIからインポート",
     "growi_settings": {
@@ -747,6 +748,7 @@
   },
 
   "export_management": {
+    "beta_warning": "この機能はベータ版です",
     "export_as_zip": "Zipファイルでエクスポート",
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
