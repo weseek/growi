@@ -40,6 +40,7 @@ import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserPage from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
+import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
 
@@ -105,6 +106,7 @@ let componentMappings = {
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-user-page': <UserPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
+  'admin-customize': <Customize />,
 
   'staff-credit': <StaffCredit />,
   'admin-importer': <Importer />,

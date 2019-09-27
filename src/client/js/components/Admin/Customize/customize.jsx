@@ -1,0 +1,688 @@
+
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+
+import AppContainer from '../../../services/AppContainer';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+
+class Customize extends React.Component {
+
+  render() {
+    const { t } = this.props;
+
+    return (
+      <Fragment>
+        <fieldset>
+          <legend> {t('full_text_search_management.elasticsearch_management')} </legend>
+        </fieldset>
+      </Fragment>
+    );
+  }
+
+}
+
+const CustomizeWrapper = (props) => {
+  return createSubscribedElement(Customize, props, [AppContainer]);
+};
+
+Customize.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default withTranslation()(CustomizeWrapper);
+
+// {% extends '../layout/admin.html' %}
+
+// {% block html_title %}{{ customizeService.generateCustomTitle(t('Customize')) }} {% endblock %}
+
+// {% block theme_css_block %}
+//   {% set themeName = getConfig('crowi', 'customize:theme') %}
+//   {% if env === 'development' %}
+//     <script src="{{ webpack_asset('styles/theme-' + themeName + '.js') }}"></script>
+//   {% else %}
+//   <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + themeName + '.css') }}">
+//   {% endif %}
+// {% endblock %}
+
+// {% block html_additional_headers %}
+//   {% parent %}
+//   <!-- CodeMirror -->
+//   {{ cdnStyleTag('jquery-ui') }}
+//   <style>
+//     .CodeMirror {
+//       border: 1px solid #eee;
+//     }
+//   </style>
+// {% endblock %}
+
+// {% block content_header %}
+// <div class="header-wrap">
+//   <header id="page-header">
+//     <h1 id="admin-title" class="title">{{ t('Customize') }} </h1>
+//   </header>
+// </div>
+// {% endblock %}
+
+// {% block content_main %}
+// <div class="content-main admin-customize">
+//   {% set smessage = req.flash('successMessage') %}
+//   {% if smessage.length %}
+//   <div class="alert alert-success">
+//     {{ smessage }}
+//   </div>
+//   {% endif %}
+
+//   {% set emessage = req.flash('errorMessage') %}
+//   {% if emessage.length %}
+//   <div class="alert alert-danger">
+//     {{ emessage }}
+//   </div>
+//   {% endif %}
+
+//   <div class="row">
+//     <div class="col-md-3">
+//       {% include './widget/menu.html' with {current: 'customize'} %}
+//     </div>
+//     <div class="col-md-9">
+//       <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
+//       <fieldset>
+//         <legend>{{ t('customize_page.Layout') }}</legend>
+//         <div class="form-group">
+//           <div class="col-sm-4">
+//             <h4>
+//               <div class="radio radio-primary">
+//                 <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onclick="selectableTheme(event)"
+//                     {% if 'growi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+//                 <label for="radioLayoutGrowi">
+//                   GROWI Enhanced Layout <small class="text-success">(Recommended)</small>
+//                 </label>
+//               </div>
+//             </h4>
+//             <a href="/images/admin/customize/layout-crowi-plus.gif" class="ss-container">
+//               <img src="/images/admin/customize/layout-crowi-plus-thumb.gif" width="240px">
+//             </a>
+//             <h4>Simple and Clear</h4>
+//             <ul>
+//               <li>Full screen layout and thin margins/paddings</li>
+//               <li>Show and post comments at the bottom of the page</li>
+//               <li>Affix Table-of-contents</li>
+//             </ul>
+//           </div>
+//           <div class="col-sm-4">
+//             <h4>
+//               <div class="radio radio-primary">
+//                 <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onclick="selectableTheme(event)"
+//                     {% if 'kibela' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+//                 <label   for="radioLayoutKibela">
+//                   Kibela Like Layout
+//                 </label>
+//               </div>
+//             </h4>
+//             <a href="/images/admin/customize/layout-kibela.gif" class="ss-container">
+//               <img src="/images/admin/customize/layout-kibela-thumb.gif" width="240px">
+//             </a>
+//             <h4>Easy Viewing Structure</h4>
+//             <ul>
+//               <li>Center aligned contents</li>
+//               <li>Show and post comments at the bottom of the page</li>
+//               <li>Affix Table-of-contents</li>
+//             </ul>
+//           </div>
+//           <div class="col-sm-4">
+//             <h4>
+//               <div class="radio radio-primary">
+//                 <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onclick="selectableTheme(event)"
+//                     {% if 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+//                 <label for="radioLayoutCrowi">
+//                   Crowi Classic Layout
+//                 </label>
+//               </div>
+//             </h4>
+//             <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
+//               <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
+//             </a>
+//             <h4>Separated Functions</h4>
+//             <ul>
+//               <li>Collapsible Sidebar</li>
+//               <li>Show and post comments in Sidebar</li>
+//               <li>Collapsible Table-of-contents</li>
+//             </ul>
+//           </div>
+//         </div>
+//         <h2>{{ t('customize_page.Theme') }}</h2>
+//         {% if env === 'development' %}
+//           <div class="alert alert-warning">
+//             <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+//           </div>
+//         {% endif %}
+//         <div id="themeOptions" {% if 'kibela' == settingForm['customize:layout'] %}class="disabled"{% endif %}>
+//           {# Light Themes #}
+//           <div class="d-flex">
+//             {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'christmas',   bg: '#fffefb', topbar: '#b3000c', theme: '#017e20'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'antarctic',   bg: '#ffffff', topbar: '#000080', theme: '#99cccc'} %}
+//           </div>
+//           {# Dark Themes #}
+//           <div class="d-flex mt-3">
+//             {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8'} %}
+//             {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b'} %}
+//           </div>
+//         </div>
+//         <div class="form-group">
+//           <div class="col-xs-offset-5 col-xs-6">
+//             <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
+//             <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//             <button type="submit"  class="btn btn-primary">{{ t('Update') }}</button>
+//           </div>
+//         </div>
+
+//       </fieldset>
+//       </form>
+
+//       <form action="/_api/admin/customize/behavior" method="post" class="form-horizontal" id="custombehaviorSettingForm" role="form">
+//         <fieldset>
+//           <legend>{{ t('customize_page.Behavior') }}</legend>
+
+//           {% set isBehaviorGrowi = 'growi' === settingForm['customize:behavior'] || 'crowi-plus' === settingForm['customize:behavior'] %}
+//           <div class="form-group">
+//             <div class="col-xs-6">
+//               <h4>
+//                 <div class="radio radio-primary">
+//                   <input type="radio" id="radioBehaviorGrowi" name="settingForm[customize:behavior]" value="growi"
+//                       {% if isBehaviorGrowi %}checked="checked"{% endif %}>
+//                   <label for="radioBehaviorGrowi">
+//                     GROWI Simplified Behavior <small class="text-success">(Recommended)</small>
+//                   </label>
+//               </div>
+//               </h4>
+//               <ul>
+//                 <li>Both of <code>/page</code> and <code>/page/</code> shows the same page</li>
+//                 <li><code>/nonexistent_page</code> shows editing form</li>
+//                 <li>All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b></li>
+//               </ul>
+//             </div>
+//             <div class="col-xs-6">
+//               <h4>
+//                 <div class="radio radio-primary">
+//                   <input type="radio" id="radioBehaviorCrowi" name="settingForm[customize:behavior]" value="crowi"
+//                       {% if !isBehaviorGrowi %}checked="checked"{% endif %}>
+//                   <label for="radioBehaviorCrowi">
+//                     Crowi Classic Behavior
+//                   </label>
+//                 </div>
+//               </h4>
+//               <ul>
+//                 <li><code>/page</code> shows the page</li>
+//                 <li><code>/page/</code> shows the list of sub pages</li>
+//                 <ul>
+//                   <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
+//                 </ul>
+//                 <li><code>/nonexistent_page</code> shows editing form</li>
+//                 <li><code>/nonexistent_page/</code> the list of sub pages</li>
+//               </ul>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <div class="col-xs-offset-5 col-xs-6">
+//               <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//               <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+//             </div>
+//           </div>
+
+//         </fieldset>
+//       </form>
+
+//       <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
+//         <fieldset>
+//         <legend>{{ t('customize_page.Function') }}</legend>
+//           <p class="well">{{ t("customize_page.function_choose") }}</p>
+
+//           <div class="form-group">
+//             <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">{{ t('customize_page.Timeline function') }}</label>
+//             <div class="col-xs-9">
+//               <div class="btn-group btn-toggle" data-toggle="buttons">
+//                 <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
+//                   <input name="settingForm[customize:isEnabledTimeline]" value="true" type="radio"
+//                       {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> ON
+//                 </label>
+//                 <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="default">
+//                   <input name="settingForm[customize:isEnabledTimeline]" value="false" type="radio"
+//                       {% if !settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> OFF
+//                 </label>
+//               </div>
+
+//               <p class="help-block">
+//                 {{ t("customize_page.subpage_display") }}
+//               </p>
+//               <p class="help-block">
+//                 {{ t("customize_page.performance_decrease") }}<br>
+//                 {{ t("customize_page.list_page_display") }}
+//               </p>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">{{ t("customize_page.tab_switch") }}</label>
+//             <div class="col-xs-9">
+//               <div class="btn-group btn-toggle" data-toggle="buttons">
+//                 <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+//                   <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
+//                       {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> ON
+//                 </label>
+//                 <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="default">
+//                   <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
+//                       {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> OFF
+//                 </label>
+//               </div>
+
+//               <p class="help-block">
+//                 {{ t("customize_page.save_edit") }}<br>
+//                 {{ t("customize_page.by_invalidating") }}
+//               </p>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <label for="settingForm[customize:isEnabledAttachTitleHeader]" class="col-xs-3 control-label">{{ t("customize_page.attach_title_header") }}</label>
+//             <div class="col-xs-9">
+//               <div class="btn-group btn-toggle" data-toggle="buttons">
+//                 <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledAttachTitleHeader'] %}active{% endif %}" data-active-class="primary">
+//                   <input name="settingForm[customize:isEnabledAttachTitleHeader]" value="true" type="radio" {% if true===settingForm['customize:isEnabledAttachTitleHeader'] %}checked{% endif %}> ON
+//                 </label>
+//                 <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledAttachTitleHeader'] %}active{% endif %}" data-active-class="default">
+//                   <input name="settingForm[customize:isEnabledAttachTitleHeader]" value="false" type="radio" {% if !settingForm['customize:isEnabledAttachTitleHeader'] %}checked{% endif %}> OFF
+//                 </label>
+//               </div>
+
+//               <p class="help-block">
+//                 {{ t("customize_page.attach_title_header_desc") }}
+//               </p>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <label for="settingForm[customize:showRecentCreatedNumber]" class="col-xs-3 control-label">{{ t("customize_page.recent_created__n_draft_num_desc") }}</label>
+//             <div class="col-xs-5">
+//               <select class="form-control selectpicker" name="settingForm[customize:showRecentCreatedNumber]" value="{{ settingForm['customize:showRecentCreatedNumber'] }}">
+//                 <option value="10" {% if 10 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>10</option>
+//                 <option value="30" {% if 30 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>30</option>
+//                 <option value="50" {% if 50 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>50</option>
+//               </select>
+
+//               <p class="help-block">
+//                 {{ t("customize_page.recently_created_n_draft_num_desc") }}
+//               </p>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <div class="col-xs-offset-3 col-xs-6">
+//               <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//               <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+//             </div>
+//           </div>
+
+//         </fieldset>
+//       </form>
+
+//       <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="customhighlightJsStyleSettingForm" role="form">
+//         <fieldset>
+//           <legend>{{ t('customize_page.Code Highlight') }}</legend>
+//           <div class="form-group">
+//             <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
+//             <div class="col-xs-9">
+//               <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)" {% if noCdn() %}disabled{% endif %}>
+//                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
+//                   <option value={{key}} {% if key == getConfig('crowi', 'customize:highlightJsStyle') %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
+//                 {% endfor %}
+//               </select>
+//               <p class="help-block text-warning">{{ t('customize_page.nocdn_desc') }}</p>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">Border</label>
+//             <div class="col-xs-9">
+//               <div class="btn-group btn-toggle" data-toggle="buttons">
+//                 <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary" onclick="selectBorderOn()">
+//                   <input name="settingForm[customize:highlightJsStyleBorder]" value="true" type="radio"
+//                       {% if true === settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> ON
+//                 </label>
+//                 <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default" onclick="selectBorderOff()">
+//                   <input name="settingForm[customize:highlightJsStyleBorder]" value="false" type="radio"
+//                       {% if !settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> OFF
+//                 </label>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div id="highlightJsCssContainer">
+//             {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
+//           </div>
+
+//           <p class="help-block">
+//             Examples:
+//             <div class="wiki">
+//               <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}hljs-no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
+//   try {
+//     if (cls.search(/\bno\-highlight\b/) != -1)
+//       return process(block, true, 0x0F) +
+//               ` class="${cls}"`;
+//   } catch (e) {
+//     /* handle exception */
+//   }
+//   for (var i = 0 / 2; i < classes.length; i++) {
+//     if (checkCondition(classes[i]) === undefined)
+//       console.log('undefined');
+//   }
+// }
+
+// export  $initHighlight;</code></pre>
+//             </div>
+//           </p>
+
+//           <div class="form-group">
+//             <div class="col-xs-offset-5 col-xs-6">
+//               <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//               <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+//             </div>
+//           </div>
+
+//         </fieldset>
+//       </form>
+
+//       <form action="/_api/admin/customize/title" method="post" class="form-horizontal" id="customtitleSettingForm" role="form">
+//         <fieldset>
+//           <legend>{{ t('customize_page.custom_title') }}</legend>
+
+//           <p class="well">
+//             {{ t('customize_page.custom_title_detail', '&lt;title&gt;', '&#123;&#123;sitename&#125;&#125;', '&#123;&#123;page&#125;&#125;') }}
+//           </p>
+
+//           <p class="help-block">
+//             Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
+//             <br>
+//             Default Output: <pre><code class="xml">&lt;title&gt;/Sandbox - {{ appTitle }}&lt;&#047;title&gt;</code></pre>
+//           </p>
+
+//           <div class="form-group">
+//             <div class="col-xs-12">
+//               <input class="form-control" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] | default('') }}"></input>
+//             </div>
+//           </div>
+
+//           <div class="form-group">
+//             <div class="col-xs-offset-5 col-xs-6">
+//               <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//               <button type="submit" class="btn btn-primary">更新</button>
+//             </div>
+//           </div>
+
+//         </fieldset>
+//       </form>
+
+//       <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="customheaderSettingForm" role="form">
+//       <fieldset>
+//         <legend>{{ t('customize_page.custom_header') }}</legend>
+
+//         <p class="well">
+//           {{ t('customize_page.custom_header_detail', '&lt;header&gt;', '&lt;script&gt;') }}
+//         </p>
+
+//         <p class="help-block">
+//           {{ t('Example') }}:
+//           <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
+//         </p>
+
+//         <div class="form-group">
+//           <div class="col-xs-12">
+//             <div id="custom-header-editor"></div>
+//             <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] | default('') }}">
+//           </div>
+//           <div class="col-xs-12">
+//             <p class="help-block text-right">
+//               <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+//               {{ t("customize_page.ctrl_space") }}
+//             </p>
+//           </div>
+//         </div>
+
+//         <div class="form-group">
+//           <div class="col-xs-offset-5 col-xs-6">
+//             <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//             <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+//           </div>
+//         </div>
+
+//       </fieldset>
+//       </form>
+
+//       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="customcssSettingForm" role="form">
+//       <fieldset>
+//         <legend>{{ t('customize_page.Custom CSS') }}</legend>
+
+//         <p class="well">
+//           {{ t("customize_page.write_CSS") }}<br>
+//           {{ t("customize_page.reflect_change") }}
+//         </p>
+
+//         <div class="form-group">
+//           <div class="col-xs-12">
+//             <div id="custom-css-editor"></div>
+//             <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] | default('') }}">
+//           </div>
+//           <div class="col-xs-12">
+//             <p class="help-block text-right">
+//               <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+//               {{ t("customize_page.ctrl_space") }}
+//             </p>
+//           </div>
+//         </div>
+
+//         <div class="form-group">
+//           <div class="col-xs-offset-5 col-xs-6">
+//             <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//             <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+//           </div>
+//         </div>
+
+//       </fieldset>
+//       </form>
+
+
+//       <form action="/_api/admin/customize/script" method="post" class="form-horizontal" id="customscriptSettingForm" role="form">
+//       <fieldset>
+//         <legend>{{ t('customize_page.Custom script') }}</legend>
+
+//         <p class="well">
+//           {{ t("customize_page.write_java") }}<br>
+//           {{ t("customize_page.reflect_change") }}
+//         </p>
+
+//         <p class="help-block">
+//           Placeholders:<br>
+//           (Available after <code>load</code> event)
+//           <dl class="dl-horizontal">
+//             <dt><code>$</code></dt>
+//             <dd>jQuery instance</dd>
+//             <dt><code>appContainer</code></dt>
+//             <dd>GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
+//             <dt><code>growiRenderer</code></dt>
+//             <dd>GROWI Renderer origin instance</dd>
+//             <dt><code>growiPlugin</code></dt>
+//             <dd>GROWI Plugin Manager instance</dd>
+//             <dt><code>Crowi</code></dt>
+//             <dd>Crowi legacy instance (jQuery based)</dd>
+//           </dl>
+//         </p>
+//         <p class="help-block">
+//           Examples:
+// <pre class="hljs"><code>console.log($('.main-container'));
+
+// window.addEventListener('load', (event) => {
+//   console.log('config: ', appContainer.config);
+// });</code></pre>
+//         </p>
+
+//         <div class="form-group">
+//           <div class="col-xs-12">
+//             <div id="custom-script-editor"></div>
+//             <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] | default('') }}">
+//           </div>
+//           <div class="col-xs-12">
+//             <p class="help-block text-right">
+//               <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+//               {{ t("customize_page.ctrl_space") }}
+//             </p>
+//           </div>
+//         </div>
+
+//         <div class="form-group">
+//           <div class="col-xs-offset-5 col-xs-6">
+//             <input type="hidden" name="_csrf" value="{{ csrf() }}">
+//             <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+//           </div>
+//         </div>
+
+//       </fieldset>
+//       </form>
+
+//     </div>
+//   </div>
+// {% endblock content_main %}
+
+// {% block body_end %}
+//   {% parent %}
+//   <script>
+//     $(`#customlayoutSettingForm, #custombehaviorSettingForm, #customhighlightJsStyleSettingForm,
+//        #customfeaturesSettingForm, #customheaderSettingForm, #customcssSettingForm, #customscriptSettingForm, #customtitleSettingForm`
+//     ).each(function() {
+//       $(this).submit(function()
+//       {
+//         function showMessage(formId, msg, status) {
+//           $('#' + formId + ' #alert-results').remove();
+
+//           if (!status) {
+//             status = 'success';
+//           }
+//           var $message = $('<p id="alert-results" class="alert"></p>');
+//           $message.addClass('alert-' + status);
+//           $message.html(msg.replace(/\n/g, '<br>'));
+//           $message.insertAfter('#' + formId + ' legend');
+
+//           if (status == 'success') {
+//             setTimeout(function()
+//             {
+//               $message.fadeOut({
+//                 complete: function() {
+//                   $message.remove();
+//                 }
+//               });
+//             }, 5000);
+//           }
+//         }
+
+//         var $form = $(this);
+//         var $id = $form.attr('id');
+//         var $button = $('button', this);
+//         $button.attr('disabled', 'disabled');
+//         var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
+//           {
+//             if (data.status) {
+//               showMessage($id, '更新しました');
+//             } else {
+//               showMessage($id, data.message, 'danger');
+//             }
+//           })
+//           .fail(function() {
+//             showMessage($id, 'エラーが発生しました', 'danger');
+//           })
+//           .always(function() {
+//             $button.prop('disabled', false);
+//         });
+//         return false;
+//       });
+//     });
+
+//     /*
+//      * highlight.js style switcher
+//      */
+//     hljs.initHighlightingOnLoad()
+//     hljs.initLineNumbersOnLoad()
+
+//     function selectHighlightJsStyle(event) {
+//       var highlightJsCssDOM = $("#highlightJsCssContainer link")[0]
+//       // selected value
+//       var val = event.target.value
+//       // replace css url
+//       // see https://regex101.com/r/gBNZYu/4
+//       highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+\.css$/, `${val}.css`);
+//     }
+
+//     function selectableTheme(event) {
+//       var val = event.target.value;
+//       var themeButtons = document.getElementsByClassName('theme-button');
+
+//       if(val == 'kibela') {
+//         $('#themeOptions').addClass("disabled");
+//         var i=0;
+//         while(i < themeButtons.length) {
+//           themeButtons[i].removeAttribute("onclick");
+//           i++;
+//         }
+//       }
+//       else {
+//         $('#themeOptions').removeClass("disabled")
+//         var i=0;
+//         while(i < themeButtons.length) {
+//           var name = themeButtons[i].getAttribute("id");
+//           themeButtons[i].setAttribute("onclick",`selectTheme('${name}')`);
+//           i++;
+//         }
+//       }
+//     }
+//     /*
+//      * Theme Selector
+//      */
+//     options = {
+//       hasPreview: false,
+//       fullPath: '',
+//       cookie: {
+//         isManagingLoad: false
+//       }
+//     };
+//     $(document).ready(function() {
+//       $('#themeOptions').styleSwitcher(options);
+//     });
+
+//     function selectTheme(theme) {
+//       // update hidden
+//       $('#hiddenInputTheme').val(theme);
+//       // update .active class
+//       $('#themeOptions .active').removeClass('active');
+//       $(`#themeOptions #theme-option-${theme}`).addClass('active');
+//     }
+
+//     function selectBorderOn(){
+//       $('.hljs-no-border').removeClass('hljs-no-border');
+//     }
+//     function selectBorderOff(){
+//       $('#customhighlightJsStyleSettingForm .hljs').addClass('hljs-no-border')
+//     }
+//   </script>
+
+// </div>
+// {% endblock %}
+
+// {% block content_footer %}
+// {% endblock content_footer %}
