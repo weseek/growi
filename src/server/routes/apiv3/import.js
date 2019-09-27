@@ -115,7 +115,7 @@ module.exports = (crowi) => {
       // validate with meta.json
       importService.validate(meta);
 
-      await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
+      const results = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 
@@ -125,11 +125,33 @@ module.exports = (crowi) => {
           overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
         }
 
-        await importService.import(Model, jsonFile, overwriteParams);
+        const { insertedIds, failedIds } = await importService.import(Model, jsonFile, overwriteParams);
+
+        return {
+          collectionName,
+          insertedIds,
+          failedIds,
+        };
       }));
 
+      // convert to
+      // {
+      //   [collectionName1]: {
+      //     insertedIds: [...],
+      //     failedIds: [...],
+      //   },
+      //   [collectionName2]: {
+      //     insertedIds: [...],
+      //     failedIds: [...],
+      //   },
+      // }
+      const result = {};
+      for (const { collectionName, insertedIds, failedIds } of results) {
+        result[collectionName] = { insertedIds, failedIds };
+      }
+
       // TODO: use res.apiv3
-      return res.send({ ok: true });
+      return res.send({ ok: true, result });
     }
     catch (err) {
       // TODO: use ApiV3Error
