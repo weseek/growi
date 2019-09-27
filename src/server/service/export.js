@@ -12,7 +12,6 @@ class ExportService {
     this.appService = crowi.appService;
     this.growiBridgeService = crowi.growiBridgeService;
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
-    this.zipFileName = 'GROWI.zip';
     this.metaFileName = 'meta.json';
     this.encoding = 'utf-8';
     this.per = 100;
@@ -185,7 +184,9 @@ class ExportService {
    */
   async zipFiles(_configs) {
     const configs = toArrayIfNot(_configs);
-    const zipFile = path.join(this.baseDir, this.zipFileName);
+    const appTitle = this.appService.getAppTitle();
+    const timeStamp = (new Date()).getTime();
+    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.zip`);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });
@@ -236,21 +237,6 @@ class ExportService {
     fs.accessSync(jsonFile);
 
     return jsonFile;
-  }
-
-  /**
-   * get the absolute path to the zip file
-   *
-   * @memberOf ExportService
-   * @return {string} absolute path to the zip file
-   */
-  getZipFile() {
-    const zipFile = path.join(this.baseDir, this.zipFileName);
-
-    // throws err if the file does not exist
-    fs.accessSync(zipFile);
-
-    return zipFile;
   }
 
   /**
