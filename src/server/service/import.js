@@ -137,7 +137,7 @@ class ImportService {
     await streamToPromise(readStream);
 
     // clean up tmp directory
-    fs.unlinkSync(jsonFile);
+    this.deleteZipFile(jsonFile);
   }
 
   /**
@@ -282,6 +282,16 @@ class ImportService {
     fs.accessSync(jsonFile);
 
     return jsonFile;
+  }
+
+  /**
+   * remove zip file from imports dir
+   *
+   * @memberOf ImportService
+   * @param {string} zipFile absolute path to zip file
+   */
+  deleteZipFile(zipFile) {
+    fs.unlinkSync(zipFile);
   }
 
   /**

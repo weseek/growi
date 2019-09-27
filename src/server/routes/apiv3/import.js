@@ -134,6 +134,35 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  /import/upload:
+   *    post:
+   *      tags: [Import]
+   *      description: upload a zip file
+   *      produces:
+   *        - application/json
+   *      responses:
+   *        200:
+   *          description: file is uploaded
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  properties:
+   *                    meta:
+   *                      type: object
+   *                      description: meta data of the uploaded file
+   *                    fileName:
+   *                      type: string
+   *                      description: base name of the uploaded file
+   *                    fileStats:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                        description: property of each extracted file
+   */
   router.post('/upload', uploads.single('file'), async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
@@ -148,6 +177,46 @@ module.exports = (crowi) => {
       return res.send({
         ok: true,
         data,
+      });
+    }
+    catch (err) {
+      // TODO: use ApiV3Error
+      logger.error(err);
+      return res.status(500).send({ status: 'ERROR' });
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  /import/upload:
+   *    post:
+   *      tags: [Import]
+   *      description: delete a zip file
+   *      produces:
+   *        - application/json
+   *      parameters:
+   *        - name: fileName
+   *          in: path
+   *          description: file name of zip file
+   *          schema:
+   *            type: string
+   *      responses:
+   *        200:
+   *          description: file is deleted
+   *          content:
+   *            application/json:
+   */
+  router.delete('/:fileName', async(req, res) => {
+    const { fileName } = req.params;
+
+    try {
+      const zipFile = importService.getFile(fileName);
+      importService.deleteZipFile(zipFile);
+
+      // TODO: use res.apiv3
+      return res.send({
+        ok: true,
       });
     }
     catch (err) {

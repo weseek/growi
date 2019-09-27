@@ -39,7 +39,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import ExportPage from './components/Admin/Export/ExportPage';
-import GrowiImportForm from './components/Admin/Import/GrowiImportForm';
+import GrowiZipImportSection from './components/Admin/Import/GrowiZipImportSection';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import AppContainer from './services/AppContainer';
@@ -209,7 +209,7 @@ if (growiImportElem != null) {
   ReactDOM.render(
     <Provider inject={[]}>
       <I18nextProvider i18n={i18n}>
-        <GrowiImportForm />
+        <GrowiZipImportSection />
       </I18nextProvider>
     </Provider>,
     growiImportElem,
