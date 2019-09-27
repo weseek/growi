@@ -23,10 +23,10 @@ module.exports = (crowi) => {
    *  /export/status:
    *    get:
    *      tags: [Export]
-   *      description: get properties of zip files for export
+   *      description: get properties of stored zip files for export
    *      responses:
    *        200:
-   *          description: export cache status
+   *          description: the zip file statuses
    *          content:
    *            application/json:
    *              schema:
@@ -35,7 +35,7 @@ module.exports = (crowi) => {
    *                    type: array
    *                    items:
    *                      type: object
-   *                      description: property of each file
+   *                      description: the property of each file
    */
   router.get('/status', async(req, res) => {
     const zipFileStats = await exportService.getStatus();
@@ -50,7 +50,7 @@ module.exports = (crowi) => {
    *  /export:
    *    post:
    *      tags: [Export]
-   *      description: generate a zipped json for multiple collections
+   *      description: generate zipped jsons for collections
    *      responses:
    *        200:
    *          description: a zip file is generated
@@ -60,7 +60,7 @@ module.exports = (crowi) => {
    *                properties:
    *                  zipFileStat:
    *                    type: object
-   *                    description: property of each file
+   *                    description: the property of the zip file
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
@@ -102,17 +102,17 @@ module.exports = (crowi) => {
    *  /export/{fileName}:
    *    delete:
    *      tags: [Export]
-   *      description: unlink all json and zip files for exports
+   *      description: delete the file
    *      parameters:
    *        - name: fileName
    *          in: path
-   *          description: file name of zip file
+   *          description: the file name of zip file
    *          required: true
    *          schema:
    *            type: string
    *      responses:
    *        200:
-   *          description: the json and zip file are deleted
+   *          description: the file is deleted
    *          content:
    *            application/json:
    *              schema:

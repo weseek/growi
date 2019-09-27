@@ -88,7 +88,7 @@ module.exports = (crowi) => {
    *      description: import a collection from a zipped json
    *      responses:
    *        200:
-   *          description: data is successfully imported
+   *          description: the data is successfully imported
    *          content:
    *            application/json:
    *              schema:
@@ -144,22 +144,22 @@ module.exports = (crowi) => {
    *      description: upload a zip file
    *      responses:
    *        200:
-   *          description: file is uploaded
+   *          description: the file is uploaded
    *          content:
    *            application/json:
    *              schema:
    *                properties:
    *                  meta:
    *                    type: object
-   *                    description: meta data of the uploaded file
+   *                    description: the meta data of the uploaded file
    *                  fileName:
    *                    type: string
-   *                    description: base name of the uploaded file
+   *                    description: the base name of the uploaded file
    *                  fileStats:
    *                    type: array
    *                    items:
    *                      type: object
-   *                      description: property of each extracted file
+   *                      description: the property of each extracted file
    */
   router.post('/upload', uploads.single('file'), async(req, res) => {
     const { file } = req;
@@ -194,13 +194,13 @@ module.exports = (crowi) => {
    *      parameters:
    *        - name: fileName
    *          in: path
-   *          description: file name of zip file
+   *          description: the file name of zip file
    *          required: true
    *          schema:
    *            type: string
    *      responses:
    *        200:
-   *          description: file is deleted
+   *          description: the file is deleted
    *          content:
    *            application/json:
    *              schema:
