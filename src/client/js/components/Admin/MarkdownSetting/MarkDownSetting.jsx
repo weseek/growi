@@ -22,8 +22,6 @@ class MarkdownSetting extends React.Component {
       pageBreakOption: 1,
       // TODO GW-258 get correct custom regular expression
       customRegularExpression: '',
-      // TODO GW-221 get correct Xss value
-      isEnabledXss: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
