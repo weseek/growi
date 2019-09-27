@@ -8,12 +8,45 @@ class GrowiBridgeService {
 
   constructor(crowi) {
     this.metaFileName = 'meta.json';
+
+    // { pages: Page, users: User, ... }
+    this.collectionMap = {};
+    this.initCollectionMap(crowi.models);
+  }
+
+  /**
+   * initialize collection map
+   *
+   * @memberOf GrowiBridgeService
+   * @param {object} models from models/index.js
+   */
+  initCollectionMap(models) {
+    for (const model of Object.values(models)) {
+      this.collectionMap[model.collection.collectionName] = model;
+    }
+  }
+
+  /**
+   * get a model from collection name
+   *
+   * @memberOf GrowiBridgeService
+   * @param {string} collectionName collection name
+   * @return {object} instance of mongoose model
+   */
+  getModelFromCollectionName(collectionName) {
+    const Model = this.collectionMap[collectionName];
+
+    if (Model == null) {
+      throw new Error(`cannot find a model for collection name "${collectionName}"`);
+    }
+
+    return Model;
   }
 
   /**
    * parse a zip file
    *
-   * @memberOf ImportService
+   * @memberOf GrowiBridgeService
    * @param {string} zipFile path to zip file
    * @return {object} meta{object} and files{Array.<object>}
    */

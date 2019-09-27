@@ -112,7 +112,7 @@ module.exports = (crowi) => {
       importService.validate(meta);
 
       await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
-        const Model = importService.getModelFromCollectionName(collectionName);
+        const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 
         let overwriteParams;

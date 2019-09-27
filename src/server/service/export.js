@@ -17,10 +17,6 @@ class ExportService {
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
 
-    // { pages: Page, users: User, ... }
-    this.collectionMap = {};
-    this.initCollectionMap(crowi.models);
-
     // this.files = {
     //   configs: path.join(this.baseDir, 'configs.json'),
     //   pages: path.join(this.baseDir, 'pages.json'),
@@ -32,18 +28,6 @@ class ExportService {
       const name = m.collection.collectionName;
       this.files[name] = path.join(this.baseDir, `${name}.json`);
     });
-  }
-
-  /**
-   * initialize collection map
-   *
-   * @memberOf ExportService
-   * @param {object} models from models/index.js
-   */
-  initCollectionMap(models) {
-    for (const model of Object.values(models)) {
-      this.collectionMap[model.collection.collectionName] = model;
-    }
   }
 
   /**
@@ -237,23 +221,6 @@ class ExportService {
     fs.accessSync(jsonFile);
 
     return jsonFile;
-  }
-
-  /**
-   * get a model from collection name
-   *
-   * @memberOf ExportService
-   * @param {string} collectionName collection name
-   * @return {object} instance of mongoose model
-   */
-  getModelFromCollectionName(collectionName) {
-    const Model = this.collectionMap[collectionName];
-
-    if (Model == null) {
-      throw new Error(`cannot find a model for collection name "${collectionName}"`);
-    }
-
-    return Model;
   }
 
   /**

@@ -58,7 +58,7 @@ module.exports = (crowi) => {
     try {
       const { collections } = req.body;
       // get model for collection
-      const models = collections.map(collectionName => exportService.getModelFromCollectionName(collectionName));
+      const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
       const [metaJson, jsonFiles] = await Promise.all([
         exportService.createMetaJson(),

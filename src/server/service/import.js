@@ -16,25 +16,9 @@ class ImportService {
     this.per = 100;
     this.keepOriginal = this.keepOriginal.bind(this);
 
-    // { pages: Page, users: User, ... }
-    this.collectionMap = {};
-    this.initCollectionMap(crowi.models);
-
     // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
     this.convertMap = {};
     this.initConvertMap(crowi.models);
-  }
-
-  /**
-   * initialize collection map
-   *
-   * @memberOf ImportService
-   * @param {object} models from models/index.js
-   */
-  initCollectionMap(models) {
-    for (const model of Object.values(models)) {
-      this.collectionMap[model.collection.collectionName] = model;
-    }
   }
 
   /**
@@ -249,23 +233,6 @@ class ImportService {
     }
 
     return document;
-  }
-
-  /**
-   * get a model from collection name
-   *
-   * @memberOf ImportService
-   * @param {string} collectionName collection name
-   * @return {object} instance of mongoose model
-   */
-  getModelFromCollectionName(collectionName) {
-    const Model = this.collectionMap[collectionName];
-
-    if (Model == null) {
-      throw new Error(`cannot find a model for collection name "${collectionName}"`);
-    }
-
-    return Model;
   }
 
   /**
