@@ -2,6 +2,7 @@ const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:export'); // eslint-disable-line no-unused-vars
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 
@@ -22,14 +23,19 @@ module.exports = (crowi) => {
    *  /export/status:
    *    get:
    *      tags: [Export]
-   *      description: get properties of zip files for export
-   *      produces:
-   *        - application/json
+   *      description: get properties of stored zip files for export
    *      responses:
    *        200:
-   *          description: export cache status
+   *          description: the zip file statuses
    *          content:
    *            application/json:
+   *              schema:
+   *                properties:
+   *                  zipFileStats:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      description: the property of each file
    */
   router.get('/status', async(req, res) => {
     const zipFileStats = await exportService.getStatus();
@@ -44,21 +50,24 @@ module.exports = (crowi) => {
    *  /export:
    *    post:
    *      tags: [Export]
-   *      description: generate a zipped json for multiple collections
-   *      produces:
-   *        - application/json
+   *      description: generate zipped jsons for collections
    *      responses:
    *        200:
    *          description: a zip file is generated
    *          content:
    *            application/json:
+   *              schema:
+   *                properties:
+   *                  zipFileStat:
+   *                    type: object
+   *                    description: the property of the zip file
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
       // get model for collection
-      const models = collections.map(collectionName => exportService.getModelFromCollectionName(collectionName));
+      const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
       const [metaJson, jsonFiles] = await Promise.all([
         exportService.createMetaJson(),
@@ -90,23 +99,24 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export:
+   *  /export/{fileName}:
    *    delete:
    *      tags: [Export]
-   *      description: unlink all json and zip files for exports
-   *      produces:
-   *        - application/json
+   *      description: delete the file
    *      parameters:
    *        - name: fileName
    *          in: path
-   *          description: file name of zip file
+   *          description: the file name of zip file
+   *          required: true
    *          schema:
    *            type: string
    *      responses:
    *        200:
-   *          description: the json and zip file are deleted
+   *          description: the file is deleted
    *          content:
    *            application/json:
+   *              schema:
+   *                type: object
    */
   router.delete('/:fileName', async(req, res) => {
     // TODO: add express validator
@@ -114,7 +124,7 @@ module.exports = (crowi) => {
 
     try {
       const zipFile = exportService.getFile(fileName);
-      exportService.deleteZipFile(zipFile);
+      fs.unlinkSync(zipFile);
 
       // TODO: use res.apiv3
       return res.status(200).send({ ok: true });

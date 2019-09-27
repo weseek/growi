@@ -11,15 +11,10 @@ class ExportService {
     this.crowi = crowi;
     this.appService = crowi.appService;
     this.growiBridgeService = crowi.growiBridgeService;
+    this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
-    this.metaFileName = 'meta.json';
-    this.encoding = 'utf-8';
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
-
-    // { pages: Page, users: User, ... }
-    this.collectionMap = {};
-    this.initCollectionMap(crowi.models);
 
     // this.files = {
     //   configs: path.join(this.baseDir, 'configs.json'),
@@ -32,18 +27,6 @@ class ExportService {
       const name = m.collection.collectionName;
       this.files[name] = path.join(this.baseDir, `${name}.json`);
     });
-  }
-
-  /**
-   * initialize collection map
-   *
-   * @memberOf ExportService
-   * @param {object} models from models/index.js
-   */
-  initCollectionMap(models) {
-    for (const model of Object.values(models)) {
-      this.collectionMap[model.collection.collectionName] = model;
-    }
   }
 
   /**
@@ -69,8 +52,8 @@ class ExportService {
    * @return {string} path to meta.json
    */
   async createMetaJson() {
-    const metaJson = path.join(this.baseDir, this.metaFileName);
-    const writeStream = fs.createWriteStream(metaJson, { encoding: this.encoding });
+    const metaJson = path.join(this.baseDir, this.growiBridgeService.getMetaFileName());
+    const writeStream = fs.createWriteStream(metaJson, { encoding: this.growiBridgeService.getEncoding() });
 
     const metaData = {
       version: this.crowi.version,
@@ -98,7 +81,7 @@ class ExportService {
    */
   async export(file, readStream, total) {
     let n = 0;
-    const ws = fs.createWriteStream(file, { encoding: this.encoding });
+    const ws = fs.createWriteStream(file, { encoding: this.growiBridgeService.getEncoding() });
 
     // open an array
     ws.write('[');
@@ -221,49 +204,6 @@ class ExportService {
     logger.debug(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
 
     return zipFile;
-  }
-
-  /**
-   * get the absolute path to a file
-   *
-   * @memberOf ExportService
-   * @param {string} fileName base name of file
-   * @return {string} absolute path to the file
-   */
-  getFile(fileName) {
-    const jsonFile = path.join(this.baseDir, fileName);
-
-    // throws err if the file does not exist
-    fs.accessSync(jsonFile);
-
-    return jsonFile;
-  }
-
-  /**
-   * get a model from collection name
-   *
-   * @memberOf ExportService
-   * @param {string} collectionName collection name
-   * @return {object} instance of mongoose model
-   */
-  getModelFromCollectionName(collectionName) {
-    const Model = this.collectionMap[collectionName];
-
-    if (Model == null) {
-      throw new Error(`cannot find a model for collection name "${collectionName}"`);
-    }
-
-    return Model;
-  }
-
-  /**
-   * remove zip file from downloads dir
-   *
-   * @param {string} zipFile absolute path to zip file
-   * @memberOf ExportService
-   */
-  deleteZipFile(zipFile) {
-    fs.unlinkSync(zipFile);
   }
 
 }

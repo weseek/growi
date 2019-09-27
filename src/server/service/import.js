@@ -10,31 +10,15 @@ class ImportService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.growiBridgeService = crowi.growiBridgeService;
+    this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'imports');
-    this.metaFileName = 'meta.json';
-    this.encoding = 'utf-8';
     this.per = 100;
     this.keepOriginal = this.keepOriginal.bind(this);
-
-    // { pages: Page, users: User, ... }
-    this.collectionMap = {};
-    this.initCollectionMap(crowi.models);
 
     // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
     this.convertMap = {};
     this.initConvertMap(crowi.models);
-  }
-
-  /**
-   * initialize collection map
-   *
-   * @memberOf ImportService
-   * @param {object} models from models/index.js
-   */
-  initCollectionMap(models) {
-    for (const model of Object.values(models)) {
-      this.collectionMap[model.collection.collectionName] = model;
-    }
   }
 
   /**
@@ -93,7 +77,7 @@ class ImportService {
     let failedIds = [];
     let unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
 
-    const readStream = fs.createReadStream(jsonFile, { encoding: this.encoding });
+    const readStream = fs.createReadStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
     const jsonStream = readStream.pipe(JSONStream.parse('*'));
 
     jsonStream.on('data', async(document) => {
@@ -137,7 +121,7 @@ class ImportService {
     await streamToPromise(readStream);
 
     // clean up tmp directory
-    this.deleteZipFile(jsonFile);
+    fs.unlinkSync(jsonFile);
   }
 
   /**
@@ -155,13 +139,13 @@ class ImportService {
     unzipStream.on('entry', (entry) => {
       const fileName = entry.path;
 
-      if (fileName === this.metaFileName) {
+      if (fileName === this.growiBridgeService.getMetaFileName()) {
         // skip meta.json
         entry.autodrain();
       }
       else {
         const jsonFile = path.join(this.baseDir, fileName);
-        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.encoding });
+        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
         entry.pipe(writeStream);
         files.push(jsonFile);
       }
@@ -249,49 +233,6 @@ class ImportService {
     }
 
     return document;
-  }
-
-  /**
-   * get a model from collection name
-   *
-   * @memberOf ImportService
-   * @param {string} collectionName collection name
-   * @return {object} instance of mongoose model
-   */
-  getModelFromCollectionName(collectionName) {
-    const Model = this.collectionMap[collectionName];
-
-    if (Model == null) {
-      throw new Error(`cannot find a model for collection name "${collectionName}"`);
-    }
-
-    return Model;
-  }
-
-  /**
-   * get the absolute path to a file
-   *
-   * @memberOf ImportService
-   * @param {string} fileName base name of file
-   * @return {string} absolute path to the file
-   */
-  getFile(fileName) {
-    const jsonFile = path.join(this.baseDir, fileName);
-
-    // throws err if the file does not exist
-    fs.accessSync(jsonFile);
-
-    return jsonFile;
-  }
-
-  /**
-   * remove zip file from imports dir
-   *
-   * @memberOf ImportService
-   * @param {string} zipFile absolute path to zip file
-   */
-  deleteZipFile(zipFile) {
-    fs.unlinkSync(zipFile);
   }
 
   /**
