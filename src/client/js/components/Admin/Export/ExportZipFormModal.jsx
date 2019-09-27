@@ -83,10 +83,10 @@ class ExportZipFormModal extends React.Component {
                 </button>
               </div>
             </div>
-            <div className="row checkbox checkbox-info">
+            <div className="checkbox checkbox-info">
               {this.props.collections.map((collectionName) => {
                 return (
-                  <div className="col-md-6 my-1" key={collectionName}>
+                  <div className="my-1" key={collectionName}>
                     <input
                       type="checkbox"
                       id={collectionName}
