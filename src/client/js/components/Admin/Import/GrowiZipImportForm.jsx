@@ -22,8 +22,6 @@ class GrowiImportForm extends React.Component {
 
     this.state = this.initialState;
 
-    this.inputRef = React.createRef();
-
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.import = this.import.bind(this);
     this.validateForm = this.validateForm.bind(this);

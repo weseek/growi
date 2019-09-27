@@ -31,7 +31,8 @@ class GrowiZipImportSection extends React.Component {
     });
   }
 
-  discardData() {
+  async discardData() {
+    await this.props.appContainer.apiRequest('delete', `/v3/import/${this.state.fileName}`, {});
     this.setState(this.initialState);
   }
 
