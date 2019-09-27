@@ -29,12 +29,18 @@ class XssForm extends React.Component {
     this.setState({ [name]: value });
   }
 
+  xssOptions() {
+    return (
+      <p>hello</p>
+    )
+  }
+
   render() {
     const { t } = this.props;
 
     return (
       <React.Fragment>
-        <fieldset className="row">
+        <form className="row">
           <div className="form-group">
             <label className="col-xs-4 control-label text-right">
               { t('markdown_setting.Enable XSS prevention') }
@@ -43,14 +49,13 @@ class XssForm extends React.Component {
               <input type="checkbox" name="isEnabledXss" checked={this.state.isEnabledXss} onChange={this.handleInputChange} />
             </div>
           </div>
-
+          {this.state.isEnabledXss && this.xssOptions()}
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
               <button type="submit" className="btn btn-primary">{ t('Update') }</button>
             </div>
           </div>
-
-        </fieldset>
+        </form>
       </React.Fragment>
     );
   }
