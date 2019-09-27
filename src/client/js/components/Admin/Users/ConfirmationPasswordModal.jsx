@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import Modal from 'react-bootstrap/es/Modal';
+import Button from 'react-bootstrap/es/Button';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -49,6 +50,13 @@ class ConfirmationPasswordModal extends React.Component {
           {existingEmailList && this.renderExistingEmail(existingEmailList)}
         </Modal.Body>
         <Modal.Footer className="d-flex">
+          <Button
+            bsStyle="primary"
+            className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+            onClick={this.props.closeConfirmationPasswordModal}
+          >
+            Close
+          </Button>
         </Modal.Footer>
       </Modal>
     );
@@ -69,6 +77,7 @@ ConfirmationPasswordModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   show: PropTypes.bool.isRequired,
+  closeConfirmationPasswordModal: PropTypes.func.isRequired,
   invitedEmailList: PropTypes.object,
 };
 
