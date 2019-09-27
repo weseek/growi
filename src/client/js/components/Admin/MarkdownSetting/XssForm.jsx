@@ -13,8 +13,13 @@ class XssForm extends React.Component {
     super(props);
 
     // const { appContainer } = this.props;
+
     this.state = {
+      // TODO fetch correct value
       isEnabledXss: false,
+      XssOption: 1,
+      tagWhiteList: '',
+      attrWhiteList: '',
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -72,7 +77,7 @@ class XssForm extends React.Component {
                 </p>
               </div>
               {/* TODO fetch correct defaultValue */}
-              <textarea className="form-control xss-list" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="6" cols="40" placeholder="e.g. iframe, script, video..." defaultValue="markdownSetting['markdown:xss:tagWhiteList']" />
+              <textarea className="form-control xss-list" type="text" name="tagWhiteList" rows="6" cols="40" placeholder="e.g. iframe, script, video..." defaultValue="markdownSetting['markdown:xss:tagWhiteList']" onChange={this.handleInputChange}　/>
             </div>
             <div className="m-t-15">
               <div className="d-flex justify-content-between">
@@ -82,7 +87,7 @@ class XssForm extends React.Component {
                 </p>
               </div>
               {/* TODO fetch correct defaultValue */}
-              <textarea className="form-control xss-list" name="markdownSetting[markdown:xss:attrWhiteList]" rows="6" cols="40" placeholder="e.g. src, id, name..." defaultValue="markdownSetting['markdown:xss:attrWhiteList']" />
+              <textarea className="form-control xss-list" name="attrWhiteList" rows="6" cols="40" placeholder="e.g. src, id, name..." defaultValue="markdownSetting['markdown:xss:attrWhiteList']" onChange={this.handleInputChange}　/>
             </div>
           </label>
         </div>
@@ -107,7 +112,7 @@ class XssForm extends React.Component {
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
-              <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+              <div className="btn btn-primary">{ t('Update') }</div>
             </div>
           </div>
         </form>
