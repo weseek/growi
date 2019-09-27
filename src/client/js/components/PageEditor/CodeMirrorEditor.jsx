@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
@@ -12,7 +11,7 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
-import Cheatsheet from './Cheatsheet';
+
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
@@ -511,6 +510,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.setState({ isSimpleCheatsheetShown });
   }
 
+  markdownHelpButtonClickedHandler() {
+    if (this.props.onMarkdownHelpButtonClicked != null) {
+      this.props.onMarkdownHelpButtonClicked();
+    }
+  }
+
   renderLoadingKeymapOverlay() {
     // centering
     const style = {
@@ -531,30 +536,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
-  renderCheatsheetModal() {
-    const hideCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: false });
-    };
-
-    return (
-      <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
-        <Modal.Header closeButton>
-          <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="pt-1">
-          <Cheatsheet />
-        </Modal.Body>
-      </Modal>
-    );
-  }
-
   renderCheatsheetModalButton() {
-    const showCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: true });
-    };
-
     return (
-      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { showCheatsheetModal() }}>
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
         <i className="icon-question" /> Markdown
       </button>
     );
@@ -825,7 +809,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
-        { this.renderCheatsheetModal() }
 
         <HandsontableModal
           ref={(c) => { this.handsontableModal = c }}
@@ -842,6 +825,7 @@ CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
+  onMarkdownHelpButtonClicked: PropTypes.func,
 }, AbstractEditor.propTypes);
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
