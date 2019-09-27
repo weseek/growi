@@ -43,6 +43,7 @@ class UserInviteModal extends React.Component {
         shapedEmailList,
         sendEmail: this.state.sendEmail,
       });
+      this.setState({ emailInputValue: '' });
       this.props.onToggleModal();
       this.props.showConfirmationPasswordModal(response.data.emailList);
       toastSuccess('Inviting user success');
