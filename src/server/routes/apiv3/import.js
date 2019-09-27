@@ -92,7 +92,12 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
+   *                properties:
+   *                  results:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      description: collectionName, insertedIds, failedIds
    */
   router.post('/', async(req, res) => {
     // TODO: add express validator
@@ -105,6 +110,9 @@ module.exports = (crowi) => {
     // eslint-disable-next-line no-unused-vars
     const { meta, fileStats } = await growiBridgeService.parseZipFile(zipFile);
 
+    // delete zip file after unzipping and parsing it
+    fs.unlinkSync(zipFile);
+
     // filter fileStats
     const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
 
@@ -112,7 +120,7 @@ module.exports = (crowi) => {
       // validate with meta.json
       importService.validate(meta);
 
-      await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
+      const results = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 
@@ -122,11 +130,17 @@ module.exports = (crowi) => {
           overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
         }
 
-        await importService.import(Model, jsonFile, overwriteParams);
+        const { insertedIds, failedIds } = await importService.import(Model, jsonFile, overwriteParams);
+
+        return {
+          collectionName,
+          insertedIds,
+          failedIds,
+        };
       }));
 
       // TODO: use res.apiv3
-      return res.send({ ok: true });
+      return res.send({ ok: true, results });
     }
     catch (err) {
       // TODO: use ApiV3Error

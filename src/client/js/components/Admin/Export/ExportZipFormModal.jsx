@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap/es/Modal';
+import * as toastr from 'toastr';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -51,11 +52,35 @@ class ExportZipFormModal extends React.Component {
   async export(e) {
     e.preventDefault();
 
-    // TODO use appContainer.apiv3.post
-    const { zipFileStat } = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
-    // TODO toastSuccess, toastError
-    this.props.onZipFileStatAdd(zipFileStat);
-    this.props.onClose();
+    try {
+      // TODO: use appContainer.apiv3.post
+      const { zipFileStat } = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
+      // TODO: toastSuccess, toastError
+      this.props.onZipFileStatAdd(zipFileStat);
+      this.props.onClose();
+
+      // TODO: toastSuccess, toastError
+      toastr.success(undefined, `Generated ${zipFileStat.fileName}`, {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
+      });
+    }
+    catch (err) {
+      // TODO: toastSuccess, toastError
+      toastr.error(err, 'Error', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    }
   }
 
   validateForm() {

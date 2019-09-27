@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import * as toastr from 'toastr';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -46,14 +47,50 @@ class GrowiImportForm extends React.Component {
   async import(e) {
     e.preventDefault();
 
-    // TODO use appContainer.apiv3.post
-    await this.props.appContainer.apiPost('/v3/import', {
-      fileName: this.props.fileName,
-      collections: Array.from(this.state.collections),
-      schema: this.state.schema,
-    });
-    // TODO toastSuccess, toastError
-    this.setState(this.initialState);
+    try {
+      // TODO: use appContainer.apiv3.post
+      const { results } = await this.props.appContainer.apiPost('/v3/import', {
+        fileName: this.props.fileName,
+        collections: Array.from(this.state.collections),
+        schema: this.state.schema,
+      });
+
+      this.setState(this.initialState);
+      this.props.onPostImport();
+
+      // TODO: toastSuccess, toastError
+      toastr.success(undefined, 'Imported documents', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
+      });
+
+      for (const { collectionName, failedIds } of results) {
+        if (failedIds.length > 0) {
+          toastr.error(`failed to insert ${failedIds.join(', ')}`, collectionName, {
+            closeButton: true,
+            progressBar: true,
+            newestOnTop: false,
+            timeOut: '30000',
+          });
+        }
+      }
+    }
+    catch (err) {
+      // TODO: toastSuccess, toastError
+      toastr.error(err, 'Error', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    }
   }
 
   validateForm() {
@@ -131,6 +168,7 @@ GrowiImportForm.propTypes = {
   fileName: PropTypes.string,
   fileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onDiscard: PropTypes.func.isRequired,
+  onPostImport: PropTypes.func.isRequired,
 };
 
 /**

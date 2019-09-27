@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import * as toastr from 'toastr';
 
 import GrowiZipUploadForm from './GrowiZipUploadForm';
 import GrowiZipImportForm from './GrowiZipImportForm';
@@ -22,6 +23,7 @@ class GrowiZipImportSection extends React.Component {
 
     this.handleUpload = this.handleUpload.bind(this);
     this.discardData = this.discardData.bind(this);
+    this.resetState = this.resetState.bind(this);
   }
 
   handleUpload({ meta, fileName, fileStats }) {
@@ -32,7 +34,36 @@ class GrowiZipImportSection extends React.Component {
   }
 
   async discardData() {
-    await this.props.appContainer.apiRequest('delete', `/v3/import/${this.state.fileName}`, {});
+    try {
+      const { fileName } = this.state;
+      await this.props.appContainer.apiRequest('delete', `/v3/import/${this.state.fileName}`, {});
+      this.resetState();
+
+      // TODO: toastSuccess, toastError
+      toastr.success(undefined, `Deleted ${fileName}`, {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
+      });
+    }
+    catch (err) {
+      // TODO: toastSuccess, toastError
+      toastr.error(err, 'Error', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    }
+  }
+
+  resetState() {
     this.setState(this.initialState);
   }
 
@@ -54,6 +85,7 @@ class GrowiZipImportSection extends React.Component {
               fileName={this.state.fileName}
               fileStats={this.state.fileStats}
               onDiscard={this.discardData}
+              onPostImport={this.resetState}
             />
           </Fragment>
         ) : (
