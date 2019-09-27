@@ -54,6 +54,7 @@ class GrowiImportForm extends React.Component {
     });
     // TODO toastSuccess, toastError
     this.setState(this.initialState);
+    this.props.onPostImport();
   }
 
   validateForm() {
@@ -131,6 +132,7 @@ GrowiImportForm.propTypes = {
   fileName: PropTypes.string,
   fileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onDiscard: PropTypes.func.isRequired,
+  onPostImport: PropTypes.func.isRequired,
 };
 
 /**

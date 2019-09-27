@@ -105,6 +105,9 @@ module.exports = (crowi) => {
     // eslint-disable-next-line no-unused-vars
     const { meta, fileStats } = await growiBridgeService.parseZipFile(zipFile);
 
+    // delete zip file after unzipping and parsing it
+    fs.unlinkSync(zipFile);
+
     // filter fileStats
     const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
 

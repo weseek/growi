@@ -174,8 +174,9 @@ class ImportService {
       nInserted = log.result.nInserted;
     }
     catch (err) {
+      const collectionName = unorderedBulkOp.s.namespace;
       for (const error of err.result.result.writeErrors) {
-        logger.error(error.errmsg);
+        logger.error(`${collectionName}: ${error.errmsg}`);
         failed.push(error.err.op._id);
       }
 

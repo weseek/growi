@@ -22,6 +22,7 @@ class GrowiZipImportSection extends React.Component {
 
     this.handleUpload = this.handleUpload.bind(this);
     this.discardData = this.discardData.bind(this);
+    this.resetState = this.resetState.bind(this);
   }
 
   handleUpload({ meta, fileName, fileStats }) {
@@ -33,6 +34,10 @@ class GrowiZipImportSection extends React.Component {
 
   async discardData() {
     await this.props.appContainer.apiRequest('delete', `/v3/import/${this.state.fileName}`, {});
+    this.resetState();
+  }
+
+  resetState() {
     this.setState(this.initialState);
   }
 
@@ -54,6 +59,7 @@ class GrowiZipImportSection extends React.Component {
               fileName={this.state.fileName}
               fileStats={this.state.fileStats}
               onDiscard={this.discardData}
+              onPostImport={this.resetState}
             />
           </Fragment>
         ) : (
