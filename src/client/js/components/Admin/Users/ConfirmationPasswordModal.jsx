@@ -43,7 +43,7 @@ class ConfirmationPasswordModal extends React.Component {
 
     return (
       <Modal show={this.props.show}>
-        <Modal.Header className="modal-header" closeButton>
+        <Modal.Header className="modal-header">
           <Modal.Title>
             { t('user_management.invited') }
           </Modal.Title>
