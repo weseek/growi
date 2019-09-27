@@ -48,7 +48,7 @@ class GrowiImportForm extends React.Component {
     e.preventDefault();
 
     try {
-      // TODO use appContainer.apiv3.post
+      // TODO: use appContainer.apiv3.post
       const { results } = await this.props.appContainer.apiPost('/v3/import', {
         fileName: this.props.fileName,
         collections: Array.from(this.state.collections),
@@ -58,7 +58,7 @@ class GrowiImportForm extends React.Component {
       this.setState(this.initialState);
       this.props.onPostImport();
 
-      // TODO toastSuccess, toastError
+      // TODO: toastSuccess, toastError
       toastr.success(undefined, 'Imported documents', {
         closeButton: true,
         progressBar: true,
@@ -81,7 +81,7 @@ class GrowiImportForm extends React.Component {
       }
     }
     catch (err) {
-      // TODO toastSuccess, toastError
+      // TODO: toastSuccess, toastError
       toastr.error(err, 'Error', {
         closeButton: true,
         progressBar: true,

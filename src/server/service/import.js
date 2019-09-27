@@ -70,6 +70,7 @@ class ImportService {
    * @return {insertedIds: Array.<string>, failedIds: Array.<string>}
    */
   async import(Model, jsonFile, overwriteParams = {}) {
+    // streamToPromise(jsonStream) throws an error, use new Promise instead
     return new Promise((resolve, reject) => {
       const { collectionName } = Model.collection;
 

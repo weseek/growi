@@ -39,7 +39,7 @@ class GrowiZipImportSection extends React.Component {
       await this.props.appContainer.apiRequest('delete', `/v3/import/${this.state.fileName}`, {});
       this.resetState();
 
-      // TODO toastSuccess, toastError
+      // TODO: toastSuccess, toastError
       toastr.success(undefined, `Deleted ${fileName}`, {
         closeButton: true,
         progressBar: true,
@@ -51,7 +51,7 @@ class GrowiZipImportSection extends React.Component {
       });
     }
     catch (err) {
-      // TODO toastSuccess, toastError
+      // TODO: toastSuccess, toastError
       toastr.error(err, 'Error', {
         closeButton: true,
         progressBar: true,

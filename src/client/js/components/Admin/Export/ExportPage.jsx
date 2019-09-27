@@ -27,15 +27,15 @@ class ExportPage extends React.Component {
   }
 
   async componentDidMount() {
-    // TODO: use apiv3.get
+    // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
     const [{ collections }, { zipFileStats }] = await Promise.all([
       this.props.appContainer.apiGet('/v3/mongo/collections', {}),
       this.props.appContainer.apiGet('/v3/export/status', {}),
     ]);
-    // TODO toastSuccess, toastError
+    // TODO: toastSuccess, toastError
 
-    this.setState({ collections: ['pages', 'revisions'], zipFileStats }); // FIXME
+    this.setState({ collections: ['pages', 'revisions'], zipFileStats }); // FIXME: delete this line and uncomment the line below
     // this.setState({ collections, zipFileStats });
   }
 
@@ -57,7 +57,7 @@ class ExportPage extends React.Component {
         };
       });
 
-      // TODO toastSuccess, toastError
+      // TODO: toastSuccess, toastError
       toastr.success(undefined, `Deleted ${fileName}`, {
         closeButton: true,
         progressBar: true,
@@ -69,7 +69,7 @@ class ExportPage extends React.Component {
       });
     }
     catch (err) {
-      // TODO toastSuccess, toastError
+      // TODO: toastSuccess, toastError
       toastr.error(err, 'Error', {
         closeButton: true,
         progressBar: true,
