@@ -21,7 +21,7 @@ class ConfirmationPasswordModal extends React.Component {
     };
 
     return (
-      <Modal show={this.props.show} onHide={this.props.onToggleModal}>
+      <Modal show={this.props.show}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
             { t('user_management.invited') }
@@ -73,7 +73,7 @@ ConfirmationPasswordModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   show: PropTypes.bool.isRequired,
-  onToggleModal: PropTypes.func.isRequired,
+  invitedEmailList: PropTypes.string,
 };
 
 export default withTranslation()(ConfirmationPasswordModalWrapper);
