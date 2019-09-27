@@ -14,8 +14,9 @@ class Customize extends React.Component {
 
     return (
       <Fragment>
+        {/* fieldset + legend ではなく、row + header + フォームコンポーネントに書き換える(GC244着手時に対応) */}
         <fieldset>
-          <legend> {t('customize_page.Layout')}</legend>
+          <legend>{t('customize_page.Layout')}</legend>
           {/* レイアウトフォームの react componentをここで呼ぶ(GW-244) */}
           <legend>{t('customize_page.Theme')}</legend>
           {/* テーマフォームの react componentをここで呼ぶ(GW-245) */}
