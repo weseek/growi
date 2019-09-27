@@ -76,10 +76,11 @@ class ExportService {
    * @memberOf ExportService
    * @param {string} file path to json file to be written
    * @param {readStream} readStream  read stream
-   * @param {number} [total] number of target items (optional)
+   * @param {number} total number of target items (optional)
+   * @param {function} [getLogText] (n, total) => { ... }
    * @return {string} path to the exported json file
    */
-  async export(file, readStream, total) {
+  async export(file, readStream, total, getLogText) {
     let n = 0;
     const ws = fs.createWriteStream(file, { encoding: this.growiBridgeService.getEncoding() });
 
@@ -90,7 +91,7 @@ class ExportService {
       if (n !== 0) ws.write(',');
       ws.write(JSON.stringify(chunk));
       n++;
-      this.logProgress(n, total);
+      this.logProgress(n, total, getLogText);
     });
 
     readStream.on('end', () => {
@@ -114,10 +115,11 @@ class ExportService {
   async exportCollectionToJson(Model) {
     const { collectionName } = Model.collection;
     const targetFile = this.files[collectionName];
-    const total = await Model.countDocuments();
     const readStream = Model.find().cursor();
+    const total = await Model.countDocuments();
+    const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
 
-    const file = await this.export(targetFile, readStream, total);
+    const file = await this.export(targetFile, readStream, total, getLogText);
 
     return file;
   }
@@ -140,16 +142,11 @@ class ExportService {
    *
    * @memberOf ExportService
    * @param {number} n number of items exported
-   * @param {number} [total] number of target items (optional)
+   * @param {number} total number of target items (optional)
+   * @param {function} [getLogText] (n, total) => { ... }
    */
-  logProgress(n, total) {
-    let output;
-    if (total) {
-      output = `${n}/${total} written`;
-    }
-    else {
-      output = `${n} items written`;
-    }
+  logProgress(n, total, getLogText) {
+    const output = getLogText ? getLogText(n, total) : `${n}/${total} items written`;
 
     // output every this.per items
     if (n % this.per === 0) logger.debug(output);
