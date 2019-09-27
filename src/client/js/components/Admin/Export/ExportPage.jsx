@@ -27,13 +27,15 @@ class ExportPage extends React.Component {
 
   async componentDidMount() {
     // TODO: use apiv3.get
+    // eslint-disable-next-line no-unused-vars
     const [{ collections }, { zipFileStats }] = await Promise.all([
       this.props.appContainer.apiGet('/v3/mongo/collections', {}),
       this.props.appContainer.apiGet('/v3/export/status', {}),
     ]);
     // TODO toastSuccess, toastError
 
-    this.setState({ collections, zipFileStats });
+    this.setState({ collections: ['pages', 'revisions'], zipFileStats }); // FIXME
+    // this.setState({ collections, zipFileStats });
   }
 
   onZipFileStatAdd(newStat) {
