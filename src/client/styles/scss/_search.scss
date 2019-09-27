@@ -218,3 +218,14 @@
     padding: 0px 10px;
   }
 }
+
+// support for your search
+.grw-search-table {
+  caption {
+    display: table-header-group;
+  }
+  code {
+    padding: 0.25em;
+    background: aliceblue;
+  }
+}

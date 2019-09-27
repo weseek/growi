@@ -146,6 +146,40 @@ button.btn.btn-link:hover {
   }
 }
 
+// dropdown menu for search
+// inherited from elite.admin.scss
+.dropdown-menu {
+  $grw-dropdown-margin-top: 0.5em;
+  margin-top: $grw-dropdown-margin-top;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  li > a {
+    display: block;
+    padding: 0.25em 0.75em;
+    color: #333;
+    text-decoration: none;
+    white-space: nowrap;
+    &:focus,
+    &:hover {
+      background: aliceblue;
+    }
+  }
+
+  .search-typeahead & {
+    margin-top: $grw-dropdown-margin-top !important;
+  }
+}
+
+.nav-item-user {
+  .dropdown-toggle {
+    &::after {
+      //caret position
+      margin: 0.75em 0 0 0.75em;
+    }
+  }
+}
+
 /*
  * Modal
  */
@@ -190,8 +224,10 @@ button.btn.btn-link:hover {
   }
 }
 
+/*
 .panel.panel-primary .panel-heading {
 }
+*/
 
 /*
  * Label

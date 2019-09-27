@@ -179,50 +179,9 @@ $nav-main-left-tab-width: 95px;
   }
 }
 
-// dropdown menu for search
-// inherited from elite.admin.scss //TODO:SCSSの分離
-.dropdown-menu {
-  $grw-dropdown-margin-top: 0.5em;
-  padding-bottom: 8px;
-  margin-top: $grw-dropdown-margin-top;
-  border: 1px solid $border;
-  border-radius: $radius;
-  -webkit-box-shadow: 0px !important;
-  -moz-box-shadow: 0px !important;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
-  li > a {
-    display: block;
-    padding: 0.25em 0.75em;
-    color: #333;
-    text-decoration: none;
-    white-space: nowrap;
-    &:focus,
-    &:hover {
-      background: aliceblue;
-    }
-  }
-
-  .search-typeahead & {
-    margin-top: $grw-dropdown-margin-top !important;
-  }
-}
-
-//TODO:SCSSの分離（search 関連のスタイル）
-.grw-search-table {
-  caption {
-    display: table-header-group;
-  }
-  code {
-    padding: 0.25em;
-    background: aliceblue;
-  }
-}
-
-//TODO:SCSSの分離（user action 関連のスタイル）
-.nav-item-user {
-  .dropdown-toggle {
-    &::after {
-      margin: 0.75em 0 0 0.75em;
-    }
+// nav bar user name
+.user-name {
+  @media screen and (max-width: 380px) {
+    font-size: 14px;
   }
 }
