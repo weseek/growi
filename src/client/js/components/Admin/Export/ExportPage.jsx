@@ -49,7 +49,7 @@ class ExportPage extends React.Component {
 
   async onZipFileStatRemove(fileName) {
     try {
-      await this.props.appContainer.apiRequest('delete', `/v3/export/${fileName}`, {});
+      await this.props.appContainer.apiDelete(`/v3/export/${fileName}`, {});
 
       this.setState((prevState) => {
         return {
