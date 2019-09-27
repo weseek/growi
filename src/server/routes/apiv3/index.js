@@ -13,6 +13,8 @@ module.exports = (crowi) => {
 
   router.use('/healthcheck', require('./healthcheck')(crowi));
 
+  router.use('/users', require('./users')(crowi));
+
   router.use('/user-groups', require('./user-group')(crowi));
 
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
