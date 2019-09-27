@@ -32,10 +32,17 @@ class UserInviteModal extends React.Component {
   async handleSubmit() {
     const { appContainer } = this.props;
 
+    const array = this.state.emailInputValue.split('\n');
+    const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
+    const shapedEmailList = emailList.map((email) => { return email.trim() });
+
     try {
       // TODO GW-230 use emailList client side
       // eslint-disable-next-line no-unused-vars
-      const emailList = await appContainer.apiPost('/admin/user/invite', { emailInputValue: this.state.emailInputValue, sendEmail: this.state.sendEmail });
+      const emailList = await appContainer.apiv3.post('/users/invite', {
+        shapedEmailList,
+        sendEmail: this.state.sendEmail,
+      });
       this.props.onToggleModal();
       this.props.showConfirmationPasswordModal(emailList);
       toastSuccess('Inviting user success');
