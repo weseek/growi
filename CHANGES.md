@@ -1,7 +1,10 @@
 # CHANGES
 
+## 3.5.15-RC
 
-## 3.5.14-RC
+* 
+
+## 3.5.14
 
 * Feature: Import/Export Page data
 * Fix: The link to Sandbox on Markdown Help Modal doesn't work
