@@ -52,6 +52,7 @@ class ZipFileTable extends React.Component {
 ZipFileTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   zipFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onZipFileStatRemove: PropTypes.func.isRequired,
 };

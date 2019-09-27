@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import ExportZipForm from './ExportZipForm';
+import ExportZipFormModal from './ExportZipFormModal';
 import ZipFileTable from './ZipFileTable';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -16,10 +16,13 @@ class ExportPage extends React.Component {
     this.state = {
       collections: [],
       zipFileStats: [],
+      isExportModalOpen: false,
     };
 
     this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
     this.onZipFileStatRemove = this.onZipFileStatRemove.bind(this);
+    this.openExportModal = this.openExportModal.bind(this);
+    this.closeExportModal = this.closeExportModal.bind(this);
   }
 
   async componentDidMount() {
@@ -51,21 +54,38 @@ class ExportPage extends React.Component {
     });
   }
 
+  openExportModal() {
+    this.setState({ isExportModalOpen: true });
+  }
+
+  closeExportModal() {
+    this.setState({ isExportModalOpen: false });
+  }
+
   render() {
     const { t } = this.props;
 
     return (
       <Fragment>
         <h2>{t('export_management.export_as_zip')}</h2>
-        <ExportZipForm
+        <div className="row my-5">
+          <div className="col-xs-offset-3 col-xs-6">
+            <button type="submit" className="btn btn-sm btn-primary" onClick={this.openExportModal}>{t('export_management.export')}</button>
+          </div>
+        </div>
+        <ExportZipFormModal
+          isOpen={this.state.isExportModalOpen}
+          onClose={this.closeExportModal}
           collections={this.state.collections}
           zipFileStats={this.state.zipFileStats}
           onZipFileStatAdd={this.onZipFileStatAdd}
         />
-        <ZipFileTable
-          zipFileStats={this.state.zipFileStats}
-          onZipFileStatRemove={this.onZipFileStatRemove}
-        />
+        {this.state.zipFileStats.length > 0 && (
+          <ZipFileTable
+            zipFileStats={this.state.zipFileStats}
+            onZipFileStatRemove={this.onZipFileStatRemove}
+          />
+        )}
       </Fragment>
     );
   }
