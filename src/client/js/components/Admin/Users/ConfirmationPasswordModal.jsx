@@ -11,24 +11,30 @@ import AppContainer from '../../../services/AppContainer';
 class ConfirmationPasswordModal extends React.Component {
 
   renderCreatedEmail(userList) {
-    return userList.map((user) => {
-      return (
-        <tr key={user.email}>
-          <td>
-            <strong>{user.email}</strong>
-          </td>
-          <td>{user.password}</td>
-        </tr>
-      );
-    });
+    return (
+      <ul>
+        {userList.map((user) => {
+          return (
+            <li key={user.email}>Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong></li>
+          );
+        })}
+      </ul>
+    );
   }
 
   renderExistingEmail(emailList) {
-    return emailList.map((user) => {
-      return (
-        <p key={user}><strong>{user}</strong></p>
-      );
-    });
+    return (
+      <>
+        <p className="text-warning">以下のEmailはすでに存在しています</p>
+        <ul>
+          {emailList.map((user) => {
+            return (
+              <li key={user}><strong>{user}</strong></li>
+            );
+          })}
+        </ul>
+      </>
+    );
   }
 
   render() {
@@ -49,7 +55,7 @@ class ConfirmationPasswordModal extends React.Component {
           {createdUserList && this.renderCreatedEmail(createdUserList)}
           {existingEmailList && this.renderExistingEmail(existingEmailList)}
         </Modal.Body>
-        <Modal.Footer className="d-flex">
+        <Modal.Footer>
           <Button
             bsStyle="primary"
             className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
