@@ -2,6 +2,7 @@
 
 ## 3.5.14-RC
 
+* Fix: The link to Sandbox on Markdown Help Modal doesn't work
 * Support: Upgrade libs
     * codemirror
 
