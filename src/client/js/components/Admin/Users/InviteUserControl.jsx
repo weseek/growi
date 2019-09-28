@@ -20,7 +20,7 @@ class InviteUserControl extends React.Component {
 
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
     this.showConfirmPasswordModal = this.showConfirmPasswordModal.bind(this);
-    this.onCloseConfirmPasswordModal = this.oCloseConfirmPasswordModal.bind(this);
+    this.onCloseConfirmPasswordModal = this.onCloseConfirmPasswordModal.bind(this);
   }
 
   /**
