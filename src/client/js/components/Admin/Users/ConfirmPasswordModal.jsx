@@ -51,32 +51,35 @@ class ConfirmPasswordModal extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { createdUserList, existingEmailList } = this.props.invitedEmailList;
+    const { invitedEmailList } = this.props;
 
     return (
-      <Modal show={this.props.show}>
-        <Modal.Header className="modal-header">
-          <Modal.Title>
-            { t('user_management.invited') }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{ t('user_management.temporary_password') }</p>
-          <p>{ t('user_management.send_new_password') }</p>
-          <p className="text-danger">{ t('user_management.send_temporary_password') }</p>
-          {createdUserList && this.renderCreatedEmail(createdUserList)}
-          {existingEmailList && this.renderExistingEmail(existingEmailList)}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            bsStyle="primary"
-            className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
-            onClick={this.props.onCloseConfirmPasswordModal}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <>
+        {invitedEmailList != null &&
+          <Modal show={this.props.show}>
+            <Modal.Header className="modal-header">
+              <Modal.Title>
+                {t('user_management.invited')}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>{t('user_management.temporary_password')}</p>
+              <p>{t('user_management.send_new_password')}</p>
+              <p className="text-danger">{t('user_management.send_temporary_password')}</p>
+              {invitedEmailList.createdUserList && this.renderCreatedEmail(invitedEmailList.createdUserList)}
+              {invitedEmailList.existingEmailList && this.renderExistingEmail(invitedEmailList.existingEmailList)}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                bsStyle="primary"
+                className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+                onClick={this.props.onCloseConfirmPasswordModal}
+              >
+                Close
+            </Button>
+            </Modal.Footer>
+          </Modal>}
+      </>
     );
   }
 

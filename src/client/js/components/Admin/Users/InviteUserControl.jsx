@@ -15,7 +15,7 @@ class InviteUserControl extends React.Component {
     this.state = {
       isUserInviteModalShown: false,
       isConfirmPassWordModalShown: false,
-      invitedEmailList: '',
+      invitedEmailList: null,
     };
 
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
