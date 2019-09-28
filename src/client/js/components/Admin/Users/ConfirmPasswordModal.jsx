@@ -55,7 +55,8 @@ class ConfirmPasswordModal extends React.Component {
 
     return (
       <>
-        {invitedEmailList != null &&
+        {invitedEmailList != null
+          && (
           <Modal show={this.props.show}>
             <Modal.Header className="modal-header">
               <Modal.Title>
@@ -76,9 +77,10 @@ class ConfirmPasswordModal extends React.Component {
                 onClick={this.props.onCloseConfirmPasswordModal}
               >
                 Close
-            </Button>
+              </Button>
             </Modal.Footer>
-          </Modal>}
+          </Modal>
+          )}
       </>
     );
   }
