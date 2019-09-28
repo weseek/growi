@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserInviteModal from './UserInviteModal';
-import ConfirmationPasswordModal from './ConfirmationPasswordModal';
+import ConfirmPasswordModal from './ConfirmPasswordModal';
 
 class InviteUserControl extends React.Component {
 
@@ -14,12 +14,12 @@ class InviteUserControl extends React.Component {
 
     this.state = {
       isUserInviteModalShown: false,
-      isConfirmationPassWordModalShown: false,
+      isConfirmPassWordModalShown: false,
       invitedEmailList: '',
     };
 
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
-    this.showConfirmationPasswordModal = this.showConfirmationPasswordModal.bind(this);
+    this.showConfirmPasswordModal = this.showConfirmPasswordModal.bind(this);
     this.onCloseConfirmPasswordModal = this.oCloseConfirmPasswordModal.bind(this);
   }
 
@@ -30,13 +30,13 @@ class InviteUserControl extends React.Component {
     this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
   }
 
-  showConfirmationPasswordModal(emailList) {
+  showConfirmPasswordModal(emailList) {
     this.setState({ invitedEmailList: emailList });
-    this.setState({ isConfirmationPassWordModalShown: true });
+    this.setState({ isConfirmPassWordModalShown: true });
   }
 
   onCloseConfirmPasswordModal() {
-    this.setState({ isConfirmationPassWordModalShown: false });
+    this.setState({ isConfirmPassWordModalShown: false });
   }
 
   render() {
@@ -50,10 +50,10 @@ class InviteUserControl extends React.Component {
         <UserInviteModal
           show={this.state.isUserInviteModalShown}
           onToggleModal={this.toggleUserInviteModal}
-          showConfirmationPasswordModal={this.showConfirmationPasswordModal}
+          showConfirmPasswordModal={this.showConfirmPasswordModal}
         />
-        <ConfirmationPasswordModal
-          show={this.state.isConfirmationPassWordModalShown}
+        <ConfirmPasswordModal
+          show={this.state.isConfirmPassWordModalShown}
           invitedEmailList={this.state.invitedEmailList}
           onCloseConfirmPasswordModal={this.onCloseConfirmPasswordModal}
         />

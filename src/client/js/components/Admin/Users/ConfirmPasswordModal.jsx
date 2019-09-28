@@ -11,7 +11,7 @@ import { toastSuccess } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class ConfirmationPasswordModal extends React.Component {
+class ConfirmPasswordModal extends React.Component {
 
   showToaster() {
     toastSuccess('Copied Mail and Password');
@@ -85,12 +85,12 @@ class ConfirmationPasswordModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ConfirmationPasswordModalWrapper = (props) => {
-  return createSubscribedElement(ConfirmationPasswordModal, props, [AppContainer]);
+const ConfirmPasswordModalWrapper = (props) => {
+  return createSubscribedElement(ConfirmPasswordModal, props, [AppContainer]);
 };
 
 
-ConfirmationPasswordModal.propTypes = {
+ConfirmPasswordModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
@@ -99,4 +99,4 @@ ConfirmationPasswordModal.propTypes = {
   invitedEmailList: PropTypes.object,
 };
 
-export default withTranslation()(ConfirmationPasswordModalWrapper);
+export default withTranslation()(ConfirmPasswordModalWrapper);

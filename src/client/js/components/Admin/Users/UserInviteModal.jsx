@@ -45,7 +45,7 @@ class UserInviteModal extends React.Component {
       });
       this.setState({ emailInputValue: '' });
       this.props.onToggleModal();
-      this.props.showConfirmationPasswordModal(response.data.emailList);
+      this.props.showConfirmPasswordModal(response.data.emailList);
       toastSuccess('Inviting user success');
     }
     catch (err) {
@@ -125,7 +125,7 @@ UserInviteModal.propTypes = {
 
   show: PropTypes.bool.isRequired,
   onToggleModal: PropTypes.func.isRequired,
-  showConfirmationPasswordModal: PropTypes.func.isRequired,
+  showConfirmPasswordModal: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserInviteModalWrapper);
