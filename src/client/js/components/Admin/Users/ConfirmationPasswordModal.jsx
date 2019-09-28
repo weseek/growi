@@ -71,7 +71,7 @@ class ConfirmationPasswordModal extends React.Component {
           <Button
             bsStyle="primary"
             className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
-            onClick={this.props.closeConfirmationPasswordModal}
+            onClick={this.props.onCloseConfirmPasswordModal}
           >
             Close
           </Button>
@@ -95,7 +95,7 @@ ConfirmationPasswordModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   show: PropTypes.bool.isRequired,
-  closeConfirmationPasswordModal: PropTypes.func.isRequired,
+  onCloseConfirmPasswordModal: PropTypes.func.isRequired,
   invitedEmailList: PropTypes.object,
 };
 
