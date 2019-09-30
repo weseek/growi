@@ -19,8 +19,6 @@ class MarkdownSetting extends React.Component {
     this.state = {
       isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
-      //isEnabledLinebreaks: false,
-      //isEnabledLinebreaksInComments: false,
       // TODO GW-220 get correct BreakOption value
       pageBreakOption: 1,
       // TODO GW-258 get correct custom regular expression
@@ -42,12 +40,15 @@ class MarkdownSetting extends React.Component {
     this.setState({ [name]: value });
   }
 
-  changeLineBreakSetting () {
+  async changeLineBreakSetting () {
+    const { appContainer } = this.props;
+    const params = {
+      isEnabledLinebreaks: this.state.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
+    };
     try {
-      this.props.appContainer.apiPost('/admin/markdown/lineBreaksSetting', { isEnabledLinebreaks: this.state.isEnabledLinebreaks });
+      await appContainer.apiPost('/admin/markdown/lineBreaksSetting', { params });
       toastSuccess('Success change line braek setting');
-      this.props.appContainer.apiPost('/admin/markdown/lineBreaksSetting', { isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments });
-      toastSuccess('Success change line braek setting in comments');
     }
     catch (err) {
       toastError(err);
