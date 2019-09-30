@@ -680,7 +680,6 @@ module.exports = function(crowi, app) {
   };
 
   api.validators = {};
-
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
