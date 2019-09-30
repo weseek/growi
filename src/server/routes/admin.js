@@ -679,10 +679,10 @@ module.exports = function(crowi, app) {
     return res.render('admin/user-group-detail', { userGroup });
   };
 
-  api.validators = {};
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
+  api.validators = {};
   api.validators.importer = {};
 
   actions.importer.index = function(req, res) {
