@@ -172,7 +172,7 @@ class UserInviteModal extends React.Component {
                 className="fcbtn btn btn-primary btn-outline btn-rounded"
                 onClick={this.onToggleModal}
               >
-              Close
+                Close
               </Button>
             </>
           )}
