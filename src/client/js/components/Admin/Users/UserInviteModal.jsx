@@ -187,7 +187,6 @@ UserInviteModal.propTypes = {
 
   show: PropTypes.bool.isRequired,
   onToggleModal: PropTypes.func.isRequired,
-  showConfirmPasswordModal: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserInviteModalWrapper);
