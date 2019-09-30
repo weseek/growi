@@ -112,6 +112,8 @@ a {
     }
   }
   &.alert-danger {
+    $danger: #ff0a54 !default;
+    background: $danger;
     a:not(.btn) {
       &:hover,
       &:focus {
