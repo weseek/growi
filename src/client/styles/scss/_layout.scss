@@ -182,9 +182,7 @@ $nav-main-left-tab-width: 95px;
   }
 }
 
-// header widget area // TODO SCSS MOVE?
-.alert-danger {
-  background: $danger;
-  border: none;
-  border-radius: initial;
+// header widget area
+.grw-title-bar {
+  background: $grw-floral-white;
 }
