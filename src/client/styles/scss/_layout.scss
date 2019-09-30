@@ -116,16 +116,16 @@ $nav-main-left-tab-width: 95px;
       padding-left: 0;
     }
     &.active {
+      // TODO：Active class must be switching by user control.
       border: $active-tab-border-width solid $grw-line-light-gray;
       border-bottom: initial;
     }
+    // border for tab is hidden as inner width white border, and then become unevenness.
     &.active::before {
-      // TODO：Active class must be switching by user control.
       position: absolute;
       top: 100%;
       left: 0;
       display: block;
-      // border for tab is hidden as inner width white border, and then become unevenness.
       width: $nav-main-left-tab-width - $active-tab-border-width * 2;
       content: '';
       border-bottom: 3px solid white;
