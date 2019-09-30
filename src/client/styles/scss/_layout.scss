@@ -107,6 +107,7 @@ $nav-main-left-tab-width: 95px;
 
 .nav.nav-tabs {
   .nav-main-left-tab {
+    $active-tab-border-width: 1px;
     position: relative;
     min-width: $nav-main-left-tab-width;
     text-align: center;
@@ -115,17 +116,17 @@ $nav-main-left-tab-width: 95px;
       padding-left: 0;
     }
     &.active {
-      border-top: 1px solid $grw-line-light-gray;
-      border-right: 1px solid $grw-line-light-gray;
-      border-left: 1px solid $grw-line-light-gray;
+      border: $active-tab-border-width solid $grw-line-light-gray;
+      border-bottom: initial;
     }
     &.active::before {
-      // TODO activeを移動できるようにするべき
+      // TODO：Active class must be switching by user control.
       position: absolute;
-      top: 40px;
+      top: 100%;
       left: 0;
       display: block;
-      width: $nav-main-left-tab-width - 2px;
+      // border for tab is hidden as inner width white border, and then become unevenness.
+      width: $nav-main-left-tab-width - $active-tab-border-width * 2;
       content: '';
       border-bottom: 3px solid white;
     }
