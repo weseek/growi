@@ -37,8 +37,6 @@ class UserInviteModal extends React.Component {
     const shapedEmailList = emailList.map((email) => { return email.trim() });
 
     try {
-      // TODO GW-230 use emailList client side
-      // eslint-disable-next-line no-unused-vars
       const response = await appContainer.apiv3.post('/users/invite', {
         shapedEmailList,
         sendEmail: this.state.sendEmail,
