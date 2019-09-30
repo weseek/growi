@@ -4,7 +4,8 @@
   }
 
   .liker-and-seenusers {
-    height: 42px; // .nav height
+    // adjusting position with negative margin
+    margin-top: -7px;
     border-bottom: 1px solid $border;
 
     .liker-user-count,
