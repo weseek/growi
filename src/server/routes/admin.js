@@ -438,34 +438,6 @@ module.exports = function(crowi, app) {
       isUserCountExceedsUpperLimit,
     });
   };
-  api.validators = {};
-  actions.user.api = api;
-
-  api.validators.inviteEmail = [
-    // isEmail prevents line breaks, so use isString
-    check('emailInputValue').isString(/.+@.+\..+/).withMessage('Error. Valid email address is required'),
-  ];
-
-  actions.user.invite = async function(req, res) {
-
-    const { validationResult } = require('express-validator');
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.json(ApiResponse.error('Valid email address is required'));
-    }
-
-    const array = req.body.emailInputValue.split('\n');
-    const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
-    const shapedEmailList = emailList.map((email) => { return email.trim() });
-
-    try {
-      const emailList = await User.createUsersByInvitation(shapedEmailList, req.body.sendEmail);
-      return res.json(ApiResponse.success(emailList));
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-  };
 
   actions.user.makeAdmin = function(req, res) {
     const id = req.params.id;
@@ -706,6 +678,8 @@ module.exports = function(crowi, app) {
 
     return res.render('admin/user-group-detail', { userGroup });
   };
+
+  api.validators = {};
 
   // Importer management
   actions.importer = {};
