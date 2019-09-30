@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import LineBreakSetting from './LineBreakSetting';
@@ -28,7 +27,6 @@ class MarkdownSetting extends React.Component {
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.changeLineBreakSetting = this.changeLineBreakSetting.bind(this);
   }
 
   // TODO Delete after component split
@@ -40,20 +38,6 @@ class MarkdownSetting extends React.Component {
     this.setState({ [name]: value });
   }
 
-  async changeLineBreakSetting () {
-    const { appContainer } = this.props;
-    const params = {
-      isEnabledLinebreaks: this.state.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
-    };
-    try {
-      await appContainer.apiPost('/admin/markdown/lineBreaksSetting', { params });
-      toastSuccess('Success change line braek setting');
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
 
   render() {
     const { t } = this.props;

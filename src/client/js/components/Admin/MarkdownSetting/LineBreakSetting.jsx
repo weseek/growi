@@ -19,7 +19,17 @@ class LineBreakSetting extends React.Component {
         isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
         isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       };
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.changeLineBreakSetting = this.changeLineBreakSetting.bind(this);
+  }
 
+
+  handleInputChange(e) {
+    const target = e.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({ [name]: value });
   }
 
   async changeLineBreakSetting () {
