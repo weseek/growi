@@ -76,7 +76,7 @@ class XssForm extends React.Component {
                   { t('markdown_setting.import_recommended', 'tags') }
                 </p>
               </div>
-              <textarea className="form-control xss-list" type="text" name="tagWhiteList" rows="6" cols="40" placeholder="e.g. iframe, script, video..." defaultValue={this.state.tagWhiteList} onChange={this.handleInputChange}　/>
+              <textarea className="form-control xss-list" type="text" name="tagWhiteList" rows="6" cols="40" placeholder="e.g. iframe, script, video..." defaultValue={this.state.tagWhiteList} onChange={this.handleInputChange} />
             </div>
             <div className="m-t-15">
               <div className="d-flex justify-content-between">
@@ -85,7 +85,7 @@ class XssForm extends React.Component {
                   { t('markdown_setting.import_recommended', 'attributes') }
                 </p>
               </div>
-              <textarea className="form-control xss-list" name="attrWhiteList" rows="6" cols="40" placeholder="e.g. src, id, name..." defaultValue={this.state.attrWhiteList} onChange={this.handleInputChange}　/>
+              <textarea className="form-control xss-list" name="attrWhiteList" rows="6" cols="40" placeholder="e.g. src, id, name..." defaultValue={this.state.attrWhiteList} onChange={this.handleInputChange} />
             </div>
           </label>
         </div>
