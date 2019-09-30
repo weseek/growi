@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
@@ -12,7 +11,7 @@ import InterceptorManager from '@commons/service/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
-import Cheatsheet from './Cheatsheet';
+
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
@@ -62,7 +61,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
-      isCheatsheetModalButtonShown: this.props.isGfmMode && this.props.value.length > 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
     };
@@ -507,10 +505,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const isGfmMode = isGfmModeTmp || this.state.isGfmMode;
     const value = valueTmp || this.getCodeMirror().getDoc().getValue();
 
-    // update isSimpleCheatsheetShown, isCheatsheetModalButtonShown
+    // update isSimpleCheatsheetShown
     const isSimpleCheatsheetShown = isGfmMode && value.length === 0;
-    const isCheatsheetModalButtonShown = isGfmMode && value.length > 0;
-    this.setState({ isSimpleCheatsheetShown, isCheatsheetModalButtonShown });
+    this.setState({ isSimpleCheatsheetShown });
+  }
+
+  markdownHelpButtonClickedHandler() {
+    if (this.props.onMarkdownHelpButtonClicked != null) {
+      this.props.onMarkdownHelpButtonClicked();
+    }
   }
 
   renderLoadingKeymapOverlay() {
@@ -533,38 +536,35 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
-  renderSimpleCheatsheet() {
-    return <SimpleCheatsheet />;
-  }
-
-  renderCheatsheetModalBody() {
-    return <Cheatsheet />;
-  }
-
   renderCheatsheetModalButton() {
-    const showCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: true });
-    };
+    return (
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+        <i className="icon-question" /> Markdown
+      </button>
+    );
+  }
 
-    const hideCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: false });
-    };
+  renderCheatsheetOverlay() {
+    const cheatsheetModalButton = this.renderCheatsheetModalButton();
 
     return (
-      <React.Fragment>
-        <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
-          <Modal.Header closeButton>
-            <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="pt-1">
-            { this.renderCheatsheetModalBody() }
-          </Modal.Body>
-        </Modal>
-
-        <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small mr-3" onClick={() => { showCheatsheetModal() }}>
-          <i className="icon-question" /> Markdown
-        </button>
-      </React.Fragment>
+      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
+        { this.state.isSimpleCheatsheetShown
+          ? (
+            <div className="text-right">
+              {cheatsheetModalButton}
+              <div className="mt-2">
+                <SimpleCheatsheet />
+              </div>
+            </div>
+          )
+          : (
+            <div className="mr-4">
+              {cheatsheetModalButton}
+            </div>
+          )
+        }
+      </div>
     );
   }
 
@@ -808,15 +808,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderLoadingKeymapOverlay() }
 
-        <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
-          { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
-          { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
-        </div>
+        { this.renderCheatsheetOverlay() }
 
         <HandsontableModal
           ref={(c) => { this.handsontableModal = c }}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
         />
+
       </React.Fragment>
     );
   }
@@ -827,6 +825,7 @@ CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
+  onMarkdownHelpButtonClicked: PropTypes.func,
 }, AbstractEditor.propTypes);
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,

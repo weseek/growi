@@ -9,7 +9,11 @@ const router = express.Router();
 module.exports = (crowi) => {
   router.use('/healthcheck', require('./healthcheck')(crowi));
 
+  router.use('/mongo', require('./mongo')(crowi));
+
   router.use('/export', require('./export')(crowi));
+
+  router.use('/import', require('./import')(crowi));
 
   return router;
 };
