@@ -67,8 +67,8 @@ class ConfirmPasswordModal extends React.Component {
               <p>{t('user_management.temporary_password')}</p>
               <p>{t('user_management.send_new_password')}</p>
               <p className="text-danger">{t('user_management.send_temporary_password')}</p>
-              {invitedEmailList.createdUserList && this.renderCreatedEmail(invitedEmailList.createdUserList)}
-              {invitedEmailList.existingEmailList && this.renderExistingEmail(invitedEmailList.existingEmailList)}
+              {invitedEmailList.createdUserList.length > 0 && this.renderCreatedEmail(invitedEmailList.createdUserList)}
+              {invitedEmailList.existingEmailList.length > 0 && this.renderExistingEmail(invitedEmailList.existingEmailList)}
             </Modal.Body>
             <Modal.Footer>
               <Button
