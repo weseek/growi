@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import ReactCrop from 'react-image-crop';
 import AppContainer from '../services/AppContainer';
 import { createSubscribedElement } from './UnstatedUtils';
+import 'react-image-crop/dist/ReactCrop.css';
 
 
-class ProfileImageUploader extends React.Component {
+class ProfileImageUploader extends PureComponent {
 
   state = {
     src: null,
