@@ -40,7 +40,7 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import ExportPage from './components/Admin/Export/ExportPage';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
-import ProfileImageForm from './components/ProfileImageForm';
+import ProfileImageUploader from './components/ProfileImageUploader';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -97,7 +97,7 @@ let componentMappings = {
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
 
-  'profile-image-form': <ProfileImageForm />,
+  'profile-image-uploader': <ProfileImageUploader />,
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,

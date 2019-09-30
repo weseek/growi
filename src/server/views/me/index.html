@@ -120,9 +120,7 @@
     <fieldset>
 
       <legend>{{ t('Set Profile Image') }}</legend>
-
-      <div id="profile-image-form"></div>
-<!--      <div class="form-group col-md-2 col-sm-offset-1 col-sm-4">
+      <div class="form-group col-md-2 col-sm-offset-1 col-sm-4">
         <h4>
           <div class="radio radio-primary">
             <input type="radio" id="radioGravatar" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
@@ -174,7 +172,7 @@
             {% if fileUploadService.getIsUploadable() %}
             <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <input type="file" name="profileImage" accept="image/*">
+              <div id="profile-image-uploader"></div>
               <div id="pictureUploadFormProgress" class="d-flex align-items-center">
               </div>
             </form>
@@ -191,7 +189,7 @@
         <div class="col-sm-offset-4 col-sm-6">
           <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
         </div>
-      </div> -->
+      </div>
 
     </fieldset>
   </div><!-- /.form-box -->
