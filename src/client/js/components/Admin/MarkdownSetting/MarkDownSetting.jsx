@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import LineBreakSettings from './LineBreakSettings';
+import LineBreakSetting from './LineBreakSetting';
 
 class MarkdownSetting extends React.Component {
 
@@ -60,38 +60,8 @@ class MarkdownSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row my-3">
-          <div className="form-group">
-            <legend>{ t('markdown_setting.line_break_setting') }</legend>
-            <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
-            <fieldset className="row">
-              <div className="form-group">
-                <label className="col-xs-4 control-label text-right">
-                  { t('markdown_setting.Enable Line Break') }
-                </label>
-                <div className="col-xs-5">
-                  <input type="checkbox" name="isEnabledLinebreaks" checked={this.state.isEnabledLinebreaks} onChange={this.handleInputChange} />
-                  <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
-                </div>
-              </div>
-            </fieldset>
-            <fieldset className="row">
-              <div className="form-group my-3">
-                <label className="col-xs-4 control-label text-right">
-                  { t('markdown_setting.Enable Line Break for comment') }
-                </label>
-                <div className="col-xs-5">
-                  <input type="checkbox" name="isEnabledLinebreaksInComments" checked={this.state.isEnabledLinebreaksInComments} onChange={this.handleInputChange} />
-                  <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-          <div className="form-group my-3">
-            <div className="col-xs-offset-4 col-xs-5">
-              <button type="submit" className="btn btn-primary" onClick={this.changeLineBreakSetting}>{ t('Update') }</button>
-            </div>
-          </div>
+        <div>
+        <LineBreakSetting/>
         </div>
 
         <div className="row my-3">
