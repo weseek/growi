@@ -26,6 +26,16 @@ class UserInviteModal extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.handleCheckBox = this.handleCheckBox.bind(this);
+    this.onToggleModal = this.onToggleModal.bind(this);
+  }
+
+  onToggleModal() {
+    this.props.onToggleModal();
+    this.setState({ invitedEmailList: null });
+  }
+
+  showToaster() {
+    toastSuccess('Copied Mail and Password');
   }
 
   renderCreatedEmail(userList) {
@@ -98,7 +108,7 @@ class UserInviteModal extends React.Component {
     const { invitedEmailList } = this.state;
 
     return (
-      <Modal show={this.props.show} onHide={this.props.onToggleModal}>
+      <Modal show={this.props.show} onHide={this.onToggleModal}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
             { t('user_management.invite_users') }
@@ -139,7 +149,7 @@ class UserInviteModal extends React.Component {
                 <span className="ml-2">{ t('user_management.invite_thru_email') }</span>
               </label>
               <div>
-                <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.props.onToggleModal}>
+                <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
                   Cancel
                 </Button>
                 <Button
@@ -160,7 +170,7 @@ class UserInviteModal extends React.Component {
               <Button
                 bsStyle="primary"
                 className="fcbtn btn btn-primary btn-outline btn-rounded"
-                onClick={this.props.onToggleModal}
+                onClick={this.onToggleModal}
               >
               Close
               </Button>
