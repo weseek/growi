@@ -58,3 +58,23 @@ $input-bg-disabled:              $btn-default-bgcolor;
 
 //** `<input>` border color
 $input-border:                   $border;
+
+//** alert
+$alert-bar: (
+  'primary': #337ab7,
+  'success': #3c763d,
+  'info': #31708f,
+  'warning': #8a6d3b,
+  'danger': #ff0a54
+);
+@each $alert, $color in $alert-bar {
+  .alert.alert-#{$alert} {
+    background: $color;
+    a:not(.btn) {
+      &:hover,
+      &:focus {
+        color: lighten($color, 30%);
+      }
+    }
+  }
+}

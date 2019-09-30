@@ -111,16 +111,14 @@ a {
       }
     }
   }
-  &.alert-danger {
-    $danger: #ff0a54 !default;
-    background: $danger;
+  /*&.alert-danger {
     a:not(.btn) {
       &:hover,
       &:focus {
         color: lighten($danger, 30%);
       }
     }
-  }
+  }*/
 }
 
 /*
