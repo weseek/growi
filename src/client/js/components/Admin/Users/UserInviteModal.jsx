@@ -38,6 +38,87 @@ class UserInviteModal extends React.Component {
     toastSuccess('Copied Mail and Password');
   }
 
+  renderModalBody() {
+    const { t } = this.props;
+
+    return (
+      <>
+        <label> { t('user_management.emails') }</label>
+        <textarea
+          className="form-control"
+          placeholder="e.g. user@growi.org"
+          style={{ height: '200px' }}
+          value={this.state.emailInputValue}
+          onChange={this.handleInput}
+        />
+        {!this.validEmail() && <p className="m-2 text-danger">{ t('user_management.valid_email') }</p>}
+      </>
+    );
+  }
+
+  renderCreatedModalBody() {
+    const { t } = this.props;
+    const { invitedEmailList } = this.state;
+
+    return (
+      <>
+        <p>{t('user_management.temporary_password')}</p>
+        <p>{t('user_management.send_new_password')}</p>
+        {invitedEmailList.createdUserList.length > 0 && this.renderCreatedEmail(invitedEmailList.createdUserList)}
+        {invitedEmailList.existingEmailList.length > 0 && this.renderExistingEmail(invitedEmailList.existingEmailList)}
+      </>
+    );
+  }
+
+  renderModalFooter() {
+    const { t } = this.props;
+
+    return (
+      <>
+        <label className="mr-3 text-left" style={{ flex: 1 }}>
+          <input
+            type="checkbox"
+            defaultChecked={this.state.sendEmail}
+            onChange={this.handleCheckBox}
+          />
+          <span className="ml-2">{ t('user_management.invite_thru_email') }</span>
+        </label>
+        <div>
+          <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
+          Cancel
+          </Button>
+          <Button
+            bsStyle="primary"
+            className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+            onClick={this.handleSubmit}
+            disabled={!this.validEmail()}
+          >
+          Done
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  renderCreatedModalFooter() {
+    const { t } = this.props;
+
+    return (
+      <>
+        <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
+          {t('user_management.send_temporary_password')}
+        </label>
+        <Button
+          bsStyle="primary"
+          className="fcbtn btn btn-primary btn-outline btn-rounded"
+          onClick={this.onToggleModal}
+        >
+          Close
+        </Button>
+      </>
+    );
+  }
+
   renderCreatedEmail(userList) {
     return (
       <ul>
@@ -115,67 +196,12 @@ class UserInviteModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {invitedEmailList == null ? (
-            <>
-              <label> { t('user_management.emails') }</label>
-              <textarea
-                className="form-control"
-                placeholder="e.g. user@growi.org"
-                style={{ height: '200px' }}
-                value={this.state.emailInputValue}
-                onChange={this.handleInput}
-              />
-              {!this.validEmail() && <p className="m-2 text-danger">{ t('user_management.valid_email') }</p>}
-            </>
-            ) : (
-              <>
-                <p>{t('user_management.temporary_password')}</p>
-                <p>{t('user_management.send_new_password')}</p>
-                {invitedEmailList.createdUserList.length > 0 && this.renderCreatedEmail(invitedEmailList.createdUserList)}
-                {invitedEmailList.existingEmailList.length > 0 && this.renderExistingEmail(invitedEmailList.existingEmailList)}
-              </>
-            )
-          }
+          {invitedEmailList == null ? this.renderModalBody()
+           : this.renderCreatedModalBody()}
         </Modal.Body>
         <Modal.Footer className="d-flex">
-          {invitedEmailList == null ? (
-            <>
-              <label className="mr-3 text-left" style={{ flex: 1 }}>
-                <input
-                  type="checkbox"
-                  defaultChecked={this.state.sendEmail}
-                  onChange={this.handleCheckBox}
-                />
-                <span className="ml-2">{ t('user_management.invite_thru_email') }</span>
-              </label>
-              <div>
-                <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
-                  Cancel
-                </Button>
-                <Button
-                  bsStyle="primary"
-                  className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
-                  onClick={this.handleSubmit}
-                  disabled={!this.validEmail()}
-                >
-                  Done
-                </Button>
-              </div>
-            </>
-          ) : (
-            <>
-              <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
-                {t('user_management.send_temporary_password')}
-              </label>
-              <Button
-                bsStyle="primary"
-                className="fcbtn btn btn-primary btn-outline btn-rounded"
-                onClick={this.onToggleModal}
-              >
-                Close
-              </Button>
-            </>
-          )}
+          {invitedEmailList == null ? this.renderModalFooter()
+           : this.renderCreatedModalFooter()}
         </Modal.Footer>
       </Modal>
     );
