@@ -108,6 +108,7 @@ $nav-main-left-tab-width: 95px;
 .nav.nav-tabs {
   .nav-main-left-tab {
     $active-tab-border-width: 1px;
+    $active-tab-border-bg: white;
     position: relative;
     min-width: $nav-main-left-tab-width;
     text-align: center;
@@ -128,7 +129,7 @@ $nav-main-left-tab-width: 95px;
       display: block;
       width: $nav-main-left-tab-width - $active-tab-border-width * 2;
       content: '';
-      border-bottom: 3px solid white;
+      border-bottom: 3px solid $active-tab-border-bg;
     }
   }
 }
