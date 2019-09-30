@@ -5,6 +5,7 @@ $grw-base-green: rgb(7, 146, 72);
 $grw-mos-green: rgb(5, 70, 35);
 $grw-light-green: rgb(204, 238, 220);
 $grw-white-green: #f8fffb;
+$grw-sea-green: seagreen;
 
 .bg-grw-green {
   background: $grw-base-green;
@@ -20,3 +21,6 @@ $grw-white-green: #f8fffb;
 
 /* blue */
 $grw-alice-blue: aliceblue;
+
+/* gray */
+$grw-line-light-gray: #ddd;

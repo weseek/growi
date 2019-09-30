@@ -29,7 +29,7 @@
     Right Tabs
   #}
 
-  <li class="nav-main-right-tab ml-auto px-3 py-2">
+  <li class="nav-main-right-tab ml-md-auto px-3 py-2">
     <a href="#revision-history" data-toggle="tab">
       <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
     </a>
@@ -53,7 +53,7 @@
       </ul>
     </li>
     {% else %}
-    <li class="nav-main-right-tab dropdown ml-auto px-3 py-2">
+    <li class="nav-main-right-tab dropdown px-3 py-2">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
       </a>

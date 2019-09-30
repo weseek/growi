@@ -107,11 +107,27 @@ $nav-main-left-tab-width: 95px;
 
 .nav.nav-tabs {
   .nav-main-left-tab {
-    width: $nav-main-left-tab-width;
+    position: relative;
+    min-width: $nav-main-left-tab-width;
     text-align: center;
     a {
       padding-right: 0;
       padding-left: 0;
+    }
+    &.active {
+      border-top: 1px solid $grw-line-light-gray;
+      border-right: 1px solid $grw-line-light-gray;
+      border-left: 1px solid $grw-line-light-gray;
+    }
+    &.active::before {
+      // TODO activeを移動できるようにするべき
+      position: absolute;
+      top: 40px;
+      left: 0;
+      display: block;
+      width: $nav-main-left-tab-width - 2px;
+      content: '';
+      border-bottom: 3px solid white;
     }
   }
 }
@@ -180,9 +196,4 @@ $nav-main-left-tab-width: 95px;
       fill: white !important;
     }
   }
-}
-
-// tab style
-.nav.nav-tabs .nav-main-left-tab {
-  width: 120px;
 }
