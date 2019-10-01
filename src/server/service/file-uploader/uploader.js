@@ -21,7 +21,7 @@ class Uploader {
       return false;
     }
     // When method is gcs and gcs:api Key JsonPath or gcs:bucket is set is false
-    if (method === 'gsc' && (
+    if (method === 'gcs' && (
       !this.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath')
         || !this.configManager.getConfig('crowi', 'gcs:bucket'))
     ) {
