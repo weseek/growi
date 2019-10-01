@@ -10,7 +10,7 @@ module.exports = function(crowi) {
   const lib = new Uploader(configManager);
 
   function getGcsBucket() {
-    return configManager.getConfig('crowi', 'gsc:bucket');
+    return configManager.getConfig('crowi', 'gcs:bucket');
   }
 
   function GCSFactory(isUploadable) {

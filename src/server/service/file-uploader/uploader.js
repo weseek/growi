@@ -8,7 +8,7 @@ class Uploader {
   }
 
   getIsUploadable() {
-    // TODO エイリアスに対応
+    // TODO Add alias support
     const method = process.env.FILE_UPLOAD || 'aws';
 
     if (method === 'aws' && (
@@ -20,10 +20,10 @@ class Uploader {
         || !this.configManager.getConfig('crowi', 'aws:bucket'))) {
       return false;
     }
-    // method が gcp かつ、gsc:config と gcp:bucket のどちらかが設定されていなければ false
-    if (method === 'gcp' && (
-      !this.configManager.getConfig('crowi', 'gcp:config')
-        || !this.configManager.getConfig('crowi', 'gcp:bucket'))
+    // method が gcs かつ、gcs:apiKeyJsonPath と gcs:bucket のどちらかが設定されていなければ false
+    if (method === 'gsc' && (
+      !this.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath')
+        || !this.configManager.getConfig('crowi', 'gcs:bucket'))
     ) {
       return false;
     }

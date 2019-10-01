@@ -220,15 +220,15 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  GOOGLE_APPLICATION_CREDENTIALS: {
+  GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
-    key:     'gcp:config',
+    key:     'gcs:apiKeyJsonPath',
     type:    TYPES.STRING,
     default: null,
   },
-  GCP_BUCKET: {
+  GCS_BUCKET: {
     ns:      'crowi',
-    key:     'gcp:bucket',
+    key:     'gcs:bucket',
     type:    TYPES.STRING,
     default: null,
   },
