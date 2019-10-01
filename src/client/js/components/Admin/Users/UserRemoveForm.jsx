@@ -20,9 +20,7 @@ class UserRemoveForm extends React.Component {
   async onClickDeleteBtn() {
     const { appContainer, user } = this.props;
 
-    await appContainer.apiv3.delete('/users/delete', {
-      userId: user._id,
-    });
+    await appContainer.apiv3.delete(`/users/${user._id}/remove`, {});
   }
 
   render() {
