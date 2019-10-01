@@ -511,6 +511,7 @@ module.exports = function(crowi, app) {
     });
   };
 
+  // TODO delete api after create V3
   actions.user.remove = function(req, res) {
     const id = req.params.id;
     let username = '';
