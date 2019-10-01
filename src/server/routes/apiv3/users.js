@@ -92,8 +92,10 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      const userData = await User.findById(id)
-      console.log(userData)
+      const userData = await User.findById(id);
+      await userData.statusDelete();
+
+      return res.apiv3({ userData });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3(err));

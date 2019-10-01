@@ -332,7 +332,7 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.statusDelete = function(callback) {
+  userSchema.methods.statusDelete = function() {
     debug('Delete User', this);
 
     const now = new Date();
@@ -346,9 +346,7 @@ module.exports = function(crowi) {
     this.googleId = null;
     this.isGravatarEnabled = false;
     this.image = null;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
