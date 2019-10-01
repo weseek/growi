@@ -59,8 +59,12 @@ module.exports = function(crowi) {
 
     const gcs = GCSFactory(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
+    const filePath = getFilePathOnStorage(attachment);
+    const options = {
+      destination: filePath,
+    };
 
-    return myBucket.upload(fileStream.path);
+    return myBucket.upload(fileStream.path, options);
   };
 
   /**
@@ -70,17 +74,13 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const s3 = GCSFactory(this.getIsUploadable());
-    const awsConfig = getGcsConfig();
+    const gcs = GCSFactory(this.getIsUploadable());
+    const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
 
     let stream;
     try {
-      const params = {
-        Bucket: awsConfig.bucket,
-        Key: filePath,
-      };
-      stream = s3.getObject(params).createReadStream();
+      stream = myBucket.file(filePath).createReadStream();
     }
     catch (err) {
       logger.error(err);
