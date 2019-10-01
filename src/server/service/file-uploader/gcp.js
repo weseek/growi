@@ -57,19 +57,10 @@ module.exports = function(crowi) {
   lib.uploadFile = function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const s3 = GCSFactory(this.getIsUploadable());
-    const awsConfig = getGcsConfig();
+    const gcs = GCSFactory(this.getIsUploadable());
+    const myBucket = gcs.bucket(getGcsBucket());
 
-    const filePath = getFilePathOnStorage(attachment);
-    const params = {
-      Bucket: awsConfig.bucket,
-      ContentType: attachment.fileFormat,
-      Key: filePath,
-      Body: fileStream,
-      ACL: 'public-read',
-    };
-
-    return s3.upload(params).promise();
+    return myBucket.upload(fileStream.path);
   };
 
   /**
