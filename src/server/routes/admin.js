@@ -511,44 +511,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  // TODO delete api after create V3
-  actions.user.remove = function(req, res) {
-    const id = req.params.id;
-    let username = '';
-
-    return new Promise((resolve, reject) => {
-      User.findById(id, (err, userData) => {
-        username = userData.username;
-        return resolve(userData);
-      });
-    })
-      .then((userData) => {
-        return new Promise((resolve, reject) => {
-          userData.statusDelete((err, userData) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(userData);
-          });
-        });
-      })
-      .then((userData) => {
-      // remove all External Accounts
-        return ExternalAccount.remove({ user: userData }).then(() => { return userData });
-      })
-      .then((userData) => {
-        return Page.removeByPath(`/user/${username}`).then(() => { return userData });
-      })
-      .then((userData) => {
-        req.flash('successMessage', `${username} さんのアカウントを削除しました`);
-        return res.redirect('/admin/users');
-      })
-      .catch((err) => {
-        req.flash('errorMessage', '削除に失敗しました。');
-        return res.redirect('/admin/users');
-      });
-  };
-
   // これやったときの relation の挙動未確認
   actions.user.removeCompletely = function(req, res) {
     // ユーザーの物理削除
