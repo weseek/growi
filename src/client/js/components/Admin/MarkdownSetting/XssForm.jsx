@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import WhiteListInput from './WhiteListInput';
 
 class XssForm extends React.Component {
 
@@ -53,7 +54,7 @@ class XssForm extends React.Component {
     const { t } = this.props;
 
     return (
-      <fieldset className="form-group col-xs-12 my-3" id="xss-hide-when-disabled">
+      <fieldset className="form-group col-xs-12 my-3">
         <div className="col-xs-4 radio radio-primary">
           <input type="radio" id="xssOption1" name="XssOption" onChange={() => { this.onChangeXssOption(1) }} />
           <label htmlFor="xssOption1">
@@ -68,16 +69,7 @@ class XssForm extends React.Component {
           <input type="radio" id="xssOption2" name="XssOption" onChange={() => { this.onChangeXssOption(2) }} />
           <label htmlFor="xssOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
-            <div className="m-t-15">
-              { t('markdown_setting.Tag names') }
-              {/* TODO GW-304 fetch correct defaultValue */}
-              <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly defaultValue="recommendedWhitelist.tags" />
-            </div>
-            <div className="m-t-15">
-              { t('markdown_setting.Tag attributes') }
-              {/* TODO GW-304 fetch correct defaultValue */}
-              <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly defaultValue="recommendedWhitelist.attrs" />
-            </div>
+            <WhiteListInput customizable />
           </label>
         </div>
 
@@ -85,24 +77,7 @@ class XssForm extends React.Component {
           <input type="radio" id="xssOption3" name="XssOption" onChange={() => { this.onChangeXssOption(3) }} />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <div className="m-t-15">
-              <div className="d-flex justify-content-between">
-                { t('markdown_setting.Tag names') }
-                <p id="btn-import-tags" className="btn btn-xs btn-primary">
-                  { t('markdown_setting.import_recommended', 'tags') }
-                </p>
-              </div>
-              <textarea className="form-control xss-list" type="text" name="tagWhiteList" rows="6" cols="40" placeholder="e.g. iframe, script, video..." defaultValue={this.state.tagWhiteList} onChange={this.handleInputChange} />
-            </div>
-            <div className="m-t-15">
-              <div className="d-flex justify-content-between">
-                { t('markdown_setting.Tag attributes') }
-                <p id="btn-import-attrs" className="btn btn-xs btn-primary">
-                  { t('markdown_setting.import_recommended', 'attributes') }
-                </p>
-              </div>
-              <textarea className="form-control xss-list" name="attrWhiteList" rows="6" cols="40" placeholder="e.g. src, id, name..." defaultValue={this.state.attrWhiteList} onChange={this.handleInputChange} />
-            </div>
+            <WhiteListInput customizable={false} />
           </label>
         </div>
       </fieldset>
