@@ -24,12 +24,18 @@ class XssForm extends React.Component {
     };
 
     this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
+    this.onChangeXssOption = this.onChangeXssOption.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   onChangeEnableXss() {
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
+  }
+
+  onChangeXssOption(value) {
+    // eslint-disable-next-line react/no-unused-state
+    this.setState({ XssOption: value });
   }
 
   handleInputChange(e) {
@@ -58,7 +64,7 @@ class XssForm extends React.Component {
     return (
       <fieldset className="form-group col-xs-12 my-3" id="xss-hide-when-disabled">
         <div className="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption1" name="XssOption" value="1" onChange={this.handleInputChange} />
+          <input type="radio" id="xssOption1" name="XssOption" onChange={() => { this.onChangeXssOption(1) }} />
           <label htmlFor="xssOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
             <div className="m-t-15">
@@ -68,7 +74,7 @@ class XssForm extends React.Component {
         </div>
 
         <div className="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption2" name="XssOption" value="2" onChange={this.handleInputChange} />
+          <input type="radio" id="xssOption2" name="XssOption" onChange={() => { this.onChangeXssOption(2) }} />
           <label htmlFor="xssOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
             <div className="m-t-15">
@@ -85,7 +91,7 @@ class XssForm extends React.Component {
         </div>
 
         <div className="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption3" name="XssOption" value="3" onChange={this.handleInputChange} />
+          <input type="radio" id="xssOption3" name="XssOption" onChange={() => { this.onChangeXssOption(3) }} />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
             <div className="m-t-15">
