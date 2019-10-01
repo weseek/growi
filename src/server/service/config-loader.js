@@ -226,7 +226,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  GCS_BUCKET: {
+  GCP_BUCKET: {
     ns:      'crowi',
     key:     'gcp:bucket',
     type:    TYPES.STRING,

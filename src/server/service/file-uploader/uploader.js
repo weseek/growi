@@ -8,6 +8,7 @@ class Uploader {
   }
 
   getIsUploadable() {
+    // TODO エイリアスに対応
     const method = process.env.FILE_UPLOAD || 'aws';
 
     if (method === 'aws' && (
