@@ -41,17 +41,12 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const s3 = GCSFactory(this.getIsUploadable());
-    const awsConfig = getGcsConfig();
-
-    const params = {
-      Bucket: awsConfig.bucket,
-      Key: filePath,
-    };
+    const gcs = GCSFactory(this.getIsUploadable());
+    const myBucket = gcs.bucket(getGcsBucket());
 
     // TODO: ensure not to throw error even when the file does not exist
 
-    return s3.deleteObject(params).promise();
+    return myBucket.file(filePath).delete();
   };
 
   lib.uploadFile = function(fileStream, attachment) {
