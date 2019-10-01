@@ -15,7 +15,7 @@ class XssForm extends React.Component {
     const { appContainer } = this.props;
 
     this.state = {
-      // TODO fetch correct value
+      // TODO GW-304 fetch correct value
       isEnabledXss: false,
       // eslint-disable-next-line react/no-unused-state
       XssOption: 1,
@@ -28,7 +28,7 @@ class XssForm extends React.Component {
   }
 
   onClickSubmit() {
-    // TODO create apiV3 of update setting
+    // TODO GW-303 create apiV3 of update setting
   }
 
   handleInputChange(e) {
@@ -60,12 +60,12 @@ class XssForm extends React.Component {
             <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
             <div className="m-t-15">
               { t('markdown_setting.Tag names') }
-              {/* TODO fetch correct defaultValue */}
+              {/* TODO GW-304 fetch correct defaultValue */}
               <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly defaultValue="recommendedWhitelist.tags" />
             </div>
             <div className="m-t-15">
               { t('markdown_setting.Tag attributes') }
-              {/* TODO fetch correct defaultValue */}
+              {/* TODO GW-304 fetch correct defaultValue */}
               <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly defaultValue="recommendedWhitelist.attrs" />
             </div>
           </label>
