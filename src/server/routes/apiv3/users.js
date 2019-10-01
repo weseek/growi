@@ -90,7 +90,14 @@ module.exports = (crowi) => {
 
   router.delete('/:id/remove', loginRequired(), adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
-    console.log(id);
+
+    try {
+      const userData = await User.findById(id)
+      console.log(userData)
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3(err));
+    }
   });
 
   return router;
