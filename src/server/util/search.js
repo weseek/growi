@@ -264,7 +264,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
 
   const command = {
     index: {
-      _index: this.aliasName,
+      _index: this.indexName,
       _type: 'pages',
       _id: page._id.toString(),
     },
