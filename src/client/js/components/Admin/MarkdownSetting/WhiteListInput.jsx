@@ -38,6 +38,7 @@ WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
+  customizable: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(WhiteListWrapper);
