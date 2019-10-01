@@ -100,7 +100,7 @@ class XssForm extends React.Component {
       <React.Fragment>
         <form className="row">
           <div className="form-group">
-            <div className="col-xs-8 text-center">
+            <div className="col-xs-4 text-right">
               <div className="checkbox checkbox-success" onChange={this.onChangeEnableXss}>
                 <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={this.state.isEnabledXss} />
                 <label htmlFor="XssEnable">
