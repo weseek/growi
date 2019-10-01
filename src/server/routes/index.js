@@ -154,6 +154,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, admin.api.testQiitaAPI);
 
+  // export management for admin
+  app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
+  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
+
   app.get('/me'                       , loginRequiredStrictly , me.index);
   app.get('/me/password'              , loginRequiredStrictly , me.password);
   app.get('/me/apiToken'              , loginRequiredStrictly , me.apiToken);
