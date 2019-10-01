@@ -17,6 +17,7 @@ class XssForm extends React.Component {
     this.state = {
       // TODO fetch correct value
       isEnabledXss: false,
+      // eslint-disable-next-line react/no-unused-state
       XssOption: 1,
       tagWhiteList: appContainer.config.tagWhiteList,
       attrWhiteList: '',
