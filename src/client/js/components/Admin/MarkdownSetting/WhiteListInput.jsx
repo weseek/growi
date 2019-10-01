@@ -21,7 +21,7 @@ class WhiteListInput extends React.Component {
 
   render() {
     const { t, customizable } = this.props;
-
+    const { onChangeTagWhiteList, onChangeAttrWhiteList } = this.props;
 
     return (
       <>
@@ -31,7 +31,7 @@ class WhiteListInput extends React.Component {
             {customizable && this.renderRecommendBtn()}
           </div>
           {/* TODO GW-304 fetch correct defaultValue */}
-          <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly={!customizable} defaultValue="recommendedWhitelist.tags" />
+          <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly={!customizable} defaultValue="recommendedWhitelist.tags" onChange={(e) => { onChangeTagWhiteList(e.target.value) }} />
         </div>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
@@ -39,7 +39,7 @@ class WhiteListInput extends React.Component {
             {customizable && this.renderRecommendBtn()}
           </div>
           {/* TODO GW-304 fetch correct defaultValue */}
-          <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly={!customizable} defaultValue="recommendedWhitelist.attrs" />
+          <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly={!customizable} defaultValue="recommendedWhitelist.attrs" onChange={(e) => { onChangeAttrWhiteList(e.target.value) }} />
         </div>
       </>
     );
@@ -56,6 +56,8 @@ WhiteListInput.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   customizable: PropTypes.bool.isRequired,
+  onChangeTagWhiteList: PropTypes.func,
+  onChangeAttrWhiteList: PropTypes.func,
 };
 
 export default withTranslation()(WhiteListWrapper);

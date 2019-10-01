@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -18,7 +19,6 @@ class XssForm extends React.Component {
     this.state = {
       // TODO GW-304 fetch correct value
       isEnabledXss: false,
-      // eslint-disable-next-line react/no-unused-state
       XssOption: 1,
       tagWhiteList: appContainer.config.tagWhiteList,
       attrWhiteList: '',
@@ -26,6 +26,8 @@ class XssForm extends React.Component {
 
     this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
     this.onChangeXssOption = this.onChangeXssOption.bind(this);
+    this.onChangeTagWhiteList = this.onChangeTagWhiteList.bind(this);
+    this.onChangeAttrWhiteList = this.onChangeAttrWhiteList.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
@@ -34,8 +36,15 @@ class XssForm extends React.Component {
   }
 
   onChangeXssOption(value) {
-    // eslint-disable-next-line react/no-unused-state
     this.setState({ XssOption: value });
+  }
+
+  onChangeTagWhiteList(value) {
+    this.setState({ tagWhiteList: value });
+  }
+
+  onChangeAttrWhiteList(value) {
+    this.setState({ attrWhiteList: value });
   }
 
   async componentDidMount() {
@@ -77,7 +86,7 @@ class XssForm extends React.Component {
           <input type="radio" id="xssOption3" name="XssOption" onChange={() => { this.onChangeXssOption(3) }} />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <WhiteListInput customizable />
+            <WhiteListInput customizable onChangeTagWhiteList={this.onChangeTagWhiteList} onChangeAttrWhiteList={this.onChangeAttrWhiteList} />
           </label>
         </div>
       </fieldset>
