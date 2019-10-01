@@ -4,7 +4,6 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:admin');
 
   const models = crowi.models;
-  const Page = models.Page;
   const User = models.User;
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
