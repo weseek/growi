@@ -220,6 +220,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  GCS_BUCKET: {
+    ns:      'crowi',
+    key:     'gsc:bucket',
+    type:    TYPES.STRING,
+    default: null,
+  },
 };
 
 class ConfigLoader {
