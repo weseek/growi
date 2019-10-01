@@ -47,7 +47,6 @@ import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
 import ExportPage from './components/Admin/Export/ExportPage';
 import GrowiZipImportSection from './components/Admin/Import/GrowiZipImportSection';
-import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';

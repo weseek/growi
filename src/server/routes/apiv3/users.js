@@ -7,24 +7,21 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
-
 const { isEmail } = require('validator');
 
 const validator = {};
 
 module.exports = (crowi) => {
+  const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
+  const adminRequired = require('../../middleware/admin-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
+
   const {
     ErrorV3,
     User,
   } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
-
-  const {
-    loginRequired,
-    adminRequired,
-    csrfVerify: csrf,
-  } = require('../../util/middlewares')(crowi);
 
   validator.inviteEmail = [
     // isEmail prevents line breaks, so use isString
@@ -78,7 +75,7 @@ module.exports = (crowi) => {
    *                        type: string
    *                      description: Users email that already exists
    */
-  router.post('/invite', loginRequired(), adminRequired, csrf, validator.inviteEmail, ApiV3FormValidator, async(req, res) => {
+  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, ApiV3FormValidator, async(req, res) => {
     try {
       const emailList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
       return res.apiv3({ emailList });
