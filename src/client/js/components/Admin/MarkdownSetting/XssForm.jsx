@@ -25,7 +25,6 @@ class XssForm extends React.Component {
 
     this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
     this.onChangeXssOption = this.onChangeXssOption.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
@@ -36,14 +35,6 @@ class XssForm extends React.Component {
   onChangeXssOption(value) {
     // eslint-disable-next-line react/no-unused-state
     this.setState({ XssOption: value });
-  }
-
-  handleInputChange(e) {
-    const target = e.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({ [name]: value });
   }
 
   async componentDidMount() {
