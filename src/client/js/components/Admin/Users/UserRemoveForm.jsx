@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
@@ -20,7 +22,14 @@ class UserRemoveForm extends React.Component {
   async onClickDeleteBtn() {
     const { appContainer, user } = this.props;
 
-    await appContainer.apiv3.delete(`/users/${user._id}/remove`, {});
+    try {
+      const response = await appContainer.apiv3.delete(`/users/${user._id}/remove`);
+      const { username } = response.data.userData;
+      toastSuccess(`Delete ${username} success`);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {

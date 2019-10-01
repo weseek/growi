@@ -16,6 +16,8 @@ module.exports = (crowi) => {
   const {
     ErrorV3,
     User,
+    Page,
+    ExternalAccount,
   } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
@@ -94,6 +96,8 @@ module.exports = (crowi) => {
     try {
       const userData = await User.findById(id);
       await userData.statusDelete();
+      await ExternalAccount.remove({ user: userData });
+      await Page.removeByPath(`/user/${userData.username}`);
 
       return res.apiv3({ userData });
     }
