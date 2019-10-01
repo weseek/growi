@@ -267,27 +267,25 @@ body.on-edit {
       border: none;
     }
 
+    .hackmd-error {
+      top: 0;
+      background-color: rgba($gray-dark, 0.8);
+    }
+
     .hackmd-status-label {
       font-size: 3em;
       color: $muted;
     }
 
-    .hackmd-start-button-container,
-    .hackmd-resume-button-container {
-      .btn-lg .btn-label {
-        padding-top: 6px; // for SplitButton
-        padding-bottom: 6px; // for SplitButton
+    .hackmd-resume-button-container,
+    .hackmd-discard-button-container {
+      .btn-text {
+        display: inline-block;
+        min-width: 230px;
       }
     }
 
-    .hackmd-resume-button-container {
-      .dropdown-menu {
-        right: 0;
-        left: unset;
-      }
-    }
-
-    .hackmd-discard-button {
+    .btn-view-outdated-draft {
       text-decoration: underline;
       vertical-align: unset;
     }
@@ -306,7 +304,7 @@ body.on-edit {
 }
 
 // overwrite .CodeMirror pre
-.CodeMirror pre {
+.CodeMirror pre.CodeMirror-line {
   font-family: $font-family-monospace;
 }
 

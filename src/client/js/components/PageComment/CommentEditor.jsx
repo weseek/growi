@@ -36,8 +36,7 @@ class CommentEditor extends React.Component {
     const isUploadableFile = config.upload.file;
 
     this.state = {
-      isLayoutTypeGrowi: false,
-      comment: '',
+      comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
       key: 1,
@@ -58,15 +57,6 @@ class CommentEditor extends React.Component {
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
     this.toggleEditor = this.toggleEditor.bind(this);
-  }
-
-  componentWillMount() {
-    this.init();
-  }
-
-  init() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   updateState(value) {
@@ -94,42 +84,55 @@ class CommentEditor extends React.Component {
   }
 
   toggleEditor() {
-    this.props.commentButtonClickedHandler(this.props.replyTo);
+    const targetId = this.props.replyTo || this.props.currentCommentId;
+    this.props.commentButtonClickedHandler(targetId);
+  }
+
+  initializeEditor() {
+    this.setState({
+      comment: '',
+      isMarkdown: true,
+      html: '',
+      key: 1,
+      errorMessage: undefined,
+    });
+    // reset value
+    this.editor.setValue('');
+    this.toggleEditor();
   }
 
   /**
    * Post comment with CommentContainer and update state
    */
-  postHandler(event) {
+  async postHandler(event) {
     if (event != null) {
       event.preventDefault();
     }
 
-    const { commentContainer } = this.props;
-
-    this.props.commentContainer.postComment(
-      this.state.comment,
-      this.state.isMarkdown,
-      this.props.replyTo,
-      commentContainer.state.isSlackEnabled,
-      commentContainer.state.slackChannels,
-    )
-      .then((res) => {
-        this.setState({
-          comment: '',
-          isMarkdown: true,
-          html: '',
-          key: 1,
-          errorMessage: undefined,
-        });
-        // reset value
-        this.editor.setValue('');
-        this.toggleEditor();
-      })
-      .catch((err) => {
-        const errorMessage = err.message || 'An unknown error occured when posting comment';
-        this.setState({ errorMessage });
-      });
+    try {
+      if (this.props.currentCommentId != null) {
+        await this.props.commentContainer.putComment(
+          this.state.comment,
+          this.state.isMarkdown,
+          this.props.currentCommentId,
+          this.props.commentCreator,
+        );
+      }
+      else {
+        await this.props.commentContainer.postComment(
+          this.state.comment,
+          this.state.isMarkdown,
+          this.props.replyTo,
+          this.props.commentContainer.state.isSlackEnabled,
+          this.props.commentContainer.state.slackChannels,
+        );
+      }
+      this.initializeEditor();
+    }
+    catch (err) {
+      const errorMessage = err.message || 'An unknown error occured when posting comment';
+      this.setState({ errorMessage });
+    }
   }
 
   uploadHandler(file) {
@@ -214,7 +217,8 @@ class CommentEditor extends React.Component {
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
     const emojiStrategy = appContainer.getEmojiStrategy();
 
-    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const submitButton = (
@@ -229,98 +233,86 @@ class CommentEditor extends React.Component {
 
     return (
       <div className="form page-comment-form">
-
-        { username
-          && (
-          <div className="comment-form">
-            { isLayoutTypeGrowi
-              && (
-              <div className="comment-form-user">
-                <UserPicture user={user} />
-              </div>
-              )
-            }
-            <div className="comment-form-main">
-              <div className="comment-write">
-                <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                  <Tab eventKey={1} title="Write">
-                    <Editor
-                      ref={(c) => { this.editor = c }}
-                      value={this.state.comment}
-                      isGfmMode={this.state.isMarkdown}
-                      lineNumbers={false}
-                      isMobile={appContainer.isMobile}
-                      isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
-                      isUploadableFile={this.state.isUploadableFile}
-                      emojiStrategy={emojiStrategy}
-                      onChange={this.updateState}
-                      onUpload={this.uploadHandler}
-                      onCtrlEnter={this.postHandler}
-                    />
-                  </Tab>
-                  { this.state.isMarkdown
-                    && (
-                    <Tab eventKey={2} title="Preview">
-                      <div className="comment-form-preview">
-                        {commentPreview}
-                      </div>
-                    </Tab>
-                    )
-                  }
-                </Tabs>
-              </div>
-              <div className="comment-submit">
-                <div className="d-flex">
-                  <label style={{ flex: 1 }}>
-                    { isLayoutTypeGrowi && this.state.key === 1
-                      && (
-                      <span>
-                        <input
-                          type="checkbox"
-                          id="comment-form-is-markdown"
-                          name="isMarkdown"
-                          checked={this.state.isMarkdown}
-                          value="1"
-                          onChange={this.updateStateCheckbox}
-                        />
-                        <span className="ml-2">Markdown</span>
-                      </span>
-                      )
-                  }
-                  </label>
-                  <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
-                  { this.state.hasSlackConfig
-                    && (
-                    <div className="form-inline align-self-center mr-md-2">
-                      <SlackNotification
-                        isSlackEnabled={commentContainer.state.isSlackEnabled}
-                        slackChannels={commentContainer.state.slackChannels}
-                        onEnabledFlagChange={this.onSlackEnabledFlagChange}
-                        onChannelChange={this.onSlackChannelsChange}
-                      />
+        <div className="comment-form">
+          { isBaloonStyle && (
+            <div className="comment-form-user">
+              <UserPicture user={user} />
+            </div>
+          ) }
+          <div className="comment-form-main">
+            <div className="comment-write">
+              <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                <Tab eventKey={1} title="Write">
+                  <Editor
+                    ref={(c) => { this.editor = c }}
+                    value={this.state.comment}
+                    isGfmMode={this.state.isMarkdown}
+                    lineNumbers={false}
+                    isMobile={appContainer.isMobile}
+                    isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
+                    isUploadableFile={this.state.isUploadableFile}
+                    emojiStrategy={emojiStrategy}
+                    onChange={this.updateState}
+                    onUpload={this.uploadHandler}
+                    onCtrlEnter={this.postHandler}
+                  />
+                </Tab>
+                { this.state.isMarkdown && (
+                  <Tab eventKey={2} title="Preview">
+                    <div className="comment-form-preview">
+                      {commentPreview}
                     </div>
-                    )
-                  }
-                  <div>
-                    <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.toggleEditor}>
-                      Cancel
-                    </Button>
+                  </Tab>
+                ) }
+              </Tabs>
+            </div>
+            <div className="comment-submit">
+              <div className="d-flex">
+                <label style={{ flex: 1 }}>
+                  { isBaloonStyle && this.state.key === 1 && (
+                    <span>
+                      <input
+                        type="checkbox"
+                        id="comment-form-is-markdown"
+                        name="isMarkdown"
+                        checked={this.state.isMarkdown}
+                        value="1"
+                        onChange={this.updateStateCheckbox}
+                      />
+                      <span className="ml-2">Markdown</span>
+                    </span>
+                  ) }
+                </label>
+                <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                { this.state.hasSlackConfig
+                  && (
+                  <div className="form-inline align-self-center mr-md-2">
+                    <SlackNotification
+                      isSlackEnabled={commentContainer.state.isSlackEnabled}
+                      slackChannels={commentContainer.state.slackChannels}
+                      onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                      onChannelChange={this.onSlackChannelsChange}
+                    />
                   </div>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <div className="hidden-xs">{submitButton}</div>
+                  )
+                }
+                <div>
+                  <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.toggleEditor}>
+                    Cancel
+                  </Button>
                 </div>
-                <div className="visible-xs mt-2">
-                  <div className="d-flex justify-content-end">
-                    { this.state.errorMessage && errorMessage }
-                    <div>{submitButton}</div>
-                  </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <div className="hidden-xs">{submitButton}</div>
+              </div>
+              <div className="visible-xs mt-2">
+                <div className="d-flex justify-content-end">
+                  { this.state.errorMessage && errorMessage }
+                  <div>{submitButton}</div>
                 </div>
               </div>
             </div>
           </div>
-          )
-        }
-
+        </div>
       </div>
     );
   }
@@ -342,6 +334,9 @@ CommentEditor.propTypes = {
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   replyTo: PropTypes.string,
+  currentCommentId: PropTypes.string,
+  commentBody: PropTypes.string,
+  commentCreator: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 

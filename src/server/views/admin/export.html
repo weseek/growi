@@ -1,0 +1,31 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}{{ customizeService.generateCustomTitle(t('Export Data')) }}{% endblock %}
+
+{% block content_header %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 id="admin-title" class="title">{{ t('Export Data') }}</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main admin-export">
+
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'export'} %}
+    </div>
+    <div
+      id="admin-export-page"
+      class="col-md-9"
+    >
+    </div>
+  </div>
+</div>
+
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}

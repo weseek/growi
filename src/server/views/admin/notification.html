@@ -37,15 +37,19 @@
       {% endif %}
 
       <ul class="nav nav-tabs" role="tablist">
-        <li class="active">
+        <li role="tab" class="active">
+          <a href="#slack-configuration" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack Configuration</a>
+        </li>
+        <li role="tab">
           <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i class="icon-settings"></i> User Trigger Notification</a>
         </li>
         <li role="tab">
           <a href="#global-notification" data-toggle="tab" role="tab"><i class="icon-settings"></i> Global Notification</a>
         </li>
       </ul>
+
       <div class="tab-content m-t-15">
-        <div id="user-trigger-notification" class="tab-pane active" role="tabpanel">
+        <div id="slack-configuration" class="tab-pane active" role="tabpanel">
 
           <select class="selectpicker" id="selectSlackOption" data-width="auto">
             <option value="1">Slack Incoming Webhooks</option>
@@ -53,6 +57,7 @@
           </select><!-- /.select-tab -->
 
           <div class="tab-content m-t-15">
+
             <div id="slack-incoming-webhooks" class="tab-pane active" role="tabpanel">
 
               <form action="/admin/notification/slackIwhSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
@@ -198,7 +203,9 @@
             </div><!-- /#slack-app -->
 
           </div><!-- /.tab-content -->
-          <hr>
+        </div>
+
+        <div id="user-trigger-notification" class="tab-pane" role="tabpanel">
           <h4>Default Notification Settings for Patterns</h4>
 
           <table class="table table-bordered">

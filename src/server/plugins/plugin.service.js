@@ -10,7 +10,33 @@ class PluginService {
   }
 
   autoDetectAndLoadPlugins() {
-    this.loadPlugins(this.pluginUtils.listPluginNames(this.crowi.rootDir));
+    const isEnabledPlugins = this.crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
+
+    // import plugins
+    if (isEnabledPlugins) {
+      logger.debug('Plugins are enabled');
+      this.loadPlugins(this.pluginUtils.listPluginNames(this.crowi.rootDir));
+
+      // when dev
+      if (this.crowi.node_env === 'development') {
+        this.autoDetectAndLoadPluginsForDev();
+      }
+    }
+
+  }
+
+  autoDetectAndLoadPluginsForDev() {
+    if (process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
+      && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
+
+      const pluginNames = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
+      logger.debug('[development] loading Plugins', pluginNames);
+
+      // merge and remove duplicates
+      if (pluginNames.length > 0) {
+        this.crowi.pluginService.loadPlugins(pluginNames);
+      }
+    }
   }
 
   /**

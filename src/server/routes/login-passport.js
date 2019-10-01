@@ -199,6 +199,12 @@ module.exports = function(crowi, app) {
    * @param {*} next
    */
   const loginWithLocal = (req, res, next) => {
+    if (!passportService.isLocalStrategySetup) {
+      debug('LocalStrategy has not been set up');
+      req.flash('warningMessage', 'LocalStrategy has not been set up');
+      return next();
+    }
+
     if (!req.form.isValid) {
       return res.render('login', {
       });
@@ -476,10 +482,7 @@ module.exports = function(crowi, app) {
       userId = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      // display prompt in browser
-      res.setHeader('WWW-Authenticate', 'Basic realm="Users"');
-      res.sendStatus(401).end();
-      return;
+      return loginFailure(req, res);
     }
 
     const userInfo = {

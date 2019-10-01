@@ -20,7 +20,9 @@ export default class Attachment extends React.Component {
   }
 
   _onAttachmentDeleteClicked(event) {
-    this.props.onAttachmentDeleteClicked(this.props.attachment);
+    if (this.props.onAttachmentDeleteClicked != null) {
+      this.props.onAttachmentDeleteClicked(this.props.attachment);
+    }
   }
 
   render() {
@@ -73,10 +75,12 @@ export default class Attachment extends React.Component {
 
 Attachment.propTypes = {
   attachment: PropTypes.object.isRequired,
-  inUse: PropTypes.bool.isRequired,
-  onAttachmentDeleteClicked: PropTypes.func.isRequired,
-  isUserLoggedIn: PropTypes.bool.isRequired,
+  inUse: PropTypes.bool,
+  onAttachmentDeleteClicked: PropTypes.func,
+  isUserLoggedIn: PropTypes.bool,
 };
 
 Attachment.defaultProps = {
+  inUse: false,
+  isUserLoggedIn: false,
 };

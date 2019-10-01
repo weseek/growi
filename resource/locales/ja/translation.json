@@ -8,6 +8,7 @@
   "Click to copy": "クリックでコピー",
   "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
+  "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
   "Seen by": "見た人",
@@ -112,6 +113,7 @@
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
+  "Export Data": "データエクスポート",
   "Basic Settings": "基本設定",
   "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
@@ -242,13 +244,14 @@
   },
 
   "page_page": {
-      "notice": {
-          "version": "これは現在の版ではありません。",
-          "moved": "このページは <code>%s</code> から移動しました。",
-          "duplicated": "このページは <code>%s</code> から複製されました。",
-          "unlinked": "このページへのリダイレクトは削除されました。",
-          "restricted": "このページの閲覧は制限されています"
-      }
+    "notice": {
+      "version": "これは現在の版ではありません。",
+      "moved": "このページは <code>%s</code> から移動しました。",
+      "redirected": "リダイレクト元 >> <code>%s</code>",
+      "duplicated": "このページは <code>%s</code> から複製されました。",
+      "unlinked": "このページへのリダイレクトは削除されました。",
+      "restricted": "このページの閲覧は制限されています"
+    }
   },
 
   "page_edit": {
@@ -339,7 +342,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
-      "Create template under": "<code>%s</code> にテンプレートページを作成"
+      "Create template under": "<code><small>%s</small></code><br />にテンプレートページを作成"
     },
     "option_label": {
       "select": "テンプレートタイプを選択してください",
@@ -427,6 +430,8 @@
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket name": "バケット名",
+    "custom endpoint": "カスタムエンドポイント",
+    "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
     "Plugin settings": "プラグイン設定",
     "Enable plugin loading": "プラグインの読み込みを有効にします。",
     "Load plugins": "プラグインを読み込む",
@@ -483,6 +488,9 @@
     "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
     "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
+    "Local": {
+      "name": "ID/Password"
+    },
     "ldap": {
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
@@ -522,6 +530,11 @@
       "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
       "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
+    },
+    "Basic": {
+      "name": "Basic 認証",
+      "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
+      "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
     },
     "OAuth": {
       "register": "%sに登録",
@@ -715,6 +728,18 @@
   "importer_management": {
     "import_form_esa": "esa.ioからインポート",
     "import_form_qiita": "Qiita:Teamからインポート",
+    "beta_warning": "この機能はベータ版です",
+    "import_from": "%s からインポート",
+    "import_form_growi": "GROWIからインポート",
+    "growi_settings": {
+      "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
+      "zip_file": "Zip ファイル",
+      "uploaded_data": "アップロードされたデータ",
+      "extracted_file": "展開されたファイル",
+      "collection": "コレクション",
+      "upload": "アップロード",
+      "discard": "アップロードしたデータを破棄する"
+    },
     "esa_settings": {
       "team_name": "チーム名",
       "access_token": "アクセストークン",
@@ -736,5 +761,22 @@
     "rebuild_description_1":"Build Now ボタンを押すと全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2":"この作業には数秒かかります。",
     "rebuild_description_3":""
+  },
+  "export_management": {
+    "beta_warning": "この機能はベータ版です",
+    "exported_data_list": "エクスポートデータリスト",
+    "export_collections": "コレクションのエクスポート",
+    "check_all": "全てにチェックを付ける",
+    "uncheck_all": "全てからチェックを外す",
+    "create_new_exported_data": "エクスポートデータの新規作成",
+    "export": "エクスポート",
+    "cancel": "キャンセル",
+    "file": "ファイル名",
+    "growi_version": "Growi バージョン",
+    "collections": "コレクション",
+    "exported_at": "エクスポートされた時間",
+    "export_menu": "エクスポートメニュー",
+    "download": "ダウンロード",
+    "delete": "削除"
   }
 }

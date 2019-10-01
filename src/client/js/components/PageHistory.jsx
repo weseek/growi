@@ -1,15 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
+
 import { withTranslation } from 'react-i18next';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
 
+const logger = loggerFactory('growi:PageHistory');
 class PageHistory extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      isLoaded: false,
+      isLoading: false,
+      errorMessage: null,
       revisions: [],
       diffOpened: {},
     };
@@ -18,52 +24,60 @@ class PageHistory extends React.Component {
     this.onDiffOpenClicked = this.onDiffOpenClicked.bind(this);
   }
 
-  componentDidMount() {
+  async componentWillMount() {
     const pageId = this.props.pageId;
 
     if (!pageId) {
       return;
     }
 
-    this.props.crowi.apiGet('/revisions.ids', { page_id: pageId })
-      .then((res) => {
+    let res;
+    try {
+      this.setState({ isLoading: true });
+      res = await this.props.crowi.apiGet('/revisions.ids', { page_id: pageId });
+    }
+    catch (err) {
+      logger.error(err);
+      this.setState({ errorMessage: err });
+      return;
+    }
+    finally {
+      this.setState({ isLoading: false });
+    }
 
-        const rev = res.revisions;
-        const diffOpened = {};
-        const lastId = rev.length - 1;
-        res.revisions.forEach((revision, i) => {
-          const user = this.props.crowi.findUserById(revision.author);
-          if (user) {
-            rev[i].author = user;
-          }
+    const rev = res.revisions;
+    const diffOpened = {};
+    const lastId = rev.length - 1;
+    res.revisions.forEach((revision, i) => {
+      const user = this.props.crowi.findUserById(revision.author);
+      if (user) {
+        rev[i].author = user;
+      }
 
-          if (i === 0 || i === lastId) {
-            diffOpened[revision._id] = true;
-          }
-          else {
-            diffOpened[revision._id] = false;
-          }
-        });
+      if (i === 0 || i === lastId) {
+        diffOpened[revision._id] = true;
+      }
+      else {
+        diffOpened[revision._id] = false;
+      }
+    });
 
-        this.setState({
-          revisions: rev,
-          diffOpened,
-        });
+    this.setState({
+      isLoaded: true,
+      revisions: rev,
+      diffOpened,
+    });
 
-        // load 0, and last default
-        if (rev[0]) {
-          this.fetchPageRevisionBody(rev[0]);
-        }
-        if (rev[1]) {
-          this.fetchPageRevisionBody(rev[1]);
-        }
-        if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
-          this.fetchPageRevisionBody(rev[lastId]);
-        }
-      })
-      .catch((err) => {
-      // do nothing
-      });
+    // load 0, and last default
+    if (rev[0]) {
+      this.fetchPageRevisionBody(rev[0]);
+    }
+    if (rev[1]) {
+      this.fetchPageRevisionBody(rev[1]);
+    }
+    if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
+      this.fetchPageRevisionBody(rev[lastId]);
+    }
   }
 
   getPreviousRevision(currentRevision) {
@@ -124,15 +138,27 @@ class PageHistory extends React.Component {
 
   render() {
     return (
-      <div>
-        <PageRevisionList
-          t={this.props.t}
-          revisions={this.state.revisions}
-          diffOpened={this.state.diffOpened}
-          getPreviousRevision={this.getPreviousRevision}
-          onDiffOpenClicked={this.onDiffOpenClicked}
-        />
-      </div>
+      <React.Fragment>
+        { this.state.isLoading && (
+          <div className="my-5 text-center">
+            <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+          </div>
+        ) }
+        { this.state.errorMessage && (
+          <div className="my-5">
+            <div className="text-danger">{this.state.errorMessage}</div>
+          </div>
+        ) }
+        { this.state.isLoaded && (
+          <PageRevisionList
+            t={this.props.t}
+            revisions={this.state.revisions}
+            diffOpened={this.state.diffOpened}
+            getPreviousRevision={this.getPreviousRevision}
+            onDiffOpenClicked={this.onDiffOpenClicked}
+          />
+        ) }
+      </React.Fragment>
     );
   }
 

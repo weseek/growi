@@ -19,6 +19,7 @@ import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
+import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -31,6 +32,7 @@ import RecentCreated from './components/RecentCreated/RecentCreated';
 import StaffCredit from './components/StaffCredit/StaffCredit';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
+import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import CustomCssEditor from './components/Admin/CustomCssEditor';
@@ -43,6 +45,9 @@ import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
+import ExportPage from './components/Admin/Export/ExportPage';
+import GrowiZipImportSection from './components/Admin/Import/GrowiZipImportSection';
+import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -118,7 +123,9 @@ if (pageContainer.state.pageId != null) {
     'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
+    'page-timeline':  <PageTimeline />,
     'page-comment-write':  <CommentEditorLazyRenderer />,
+    'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
@@ -211,6 +218,33 @@ if (adminUserGroupPageElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupPageElem,
+  );
+}
+
+const adminExportPageElem = document.getElementById('admin-export-page');
+if (adminExportPageElem != null) {
+  ReactDOM.render(
+    <Provider inject={[]}>
+      <I18nextProvider i18n={i18n}>
+        <ExportPage
+          crowi={appContainer}
+        />
+      </I18nextProvider>
+    </Provider>,
+    adminExportPageElem,
+  );
+}
+
+// TODO: move to /imponents/Admin/Importer.jsx
+const growiImportElem = document.getElementById('growi-import');
+if (growiImportElem != null) {
+  ReactDOM.render(
+    <Provider inject={[]}>
+      <I18nextProvider i18n={i18n}>
+        <GrowiZipImportSection />
+      </I18nextProvider>
+    </Provider>,
+    growiImportElem,
   );
 }
 

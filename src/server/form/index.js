@@ -17,6 +17,7 @@ module.exports = {
     aws: require('./admin/aws'),
     plugin: require('./admin/plugin'),
     securityGeneral: require('./admin/securityGeneral'),
+    securityPassportLocal: require('./admin/securityPassportLocal'),
     securityPassportLdap: require('./admin/securityPassportLdap'),
     securityPassportSaml: require('./admin/securityPassportSaml'),
     securityPassportBasic: require('./admin/securityPassportBasic'),

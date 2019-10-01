@@ -1,6 +1,5 @@
 const logger = require('@alias/logger')('growi:service:fileUploaderAws');
 
-const axios = require('axios');
 const urljoin = require('url-join');
 const aws = require('aws-sdk');
 
@@ -15,6 +14,7 @@ module.exports = function(crowi) {
       secretAccessKey: configManager.getConfig('crowi', 'aws:secretAccessKey'),
       region: configManager.getConfig('crowi', 'aws:region'),
       bucket: configManager.getConfig('crowi', 'aws:bucket'),
+      customEndpoint: configManager.getConfig('crowi', 'aws:customEndpoint'),
     };
   }
 
@@ -29,9 +29,11 @@ module.exports = function(crowi) {
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey,
       region: awsConfig.region,
+      s3ForcePathStyle: awsConfig.customEndpoint ? true : undefined,
     });
 
-    return new aws.S3();
+    // undefined & null & '' => default endpoint (genuine S3)
+    return new aws.S3({ endpoint: awsConfig.customEndpoint || undefined });
   }
 
   function getFilePathOnStorage(attachment) {
@@ -61,6 +63,8 @@ module.exports = function(crowi) {
       Key: filePath,
     };
 
+    // TODO: ensure not to throw error even when the file does not exist
+
     return s3.deleteObject(params).promise();
   };
 
@@ -89,14 +93,17 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    // construct url
+    const s3 = S3Factory(this.getIsUploadable());
     const awsConfig = getAwsConfig();
-    const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
-    const url = urljoin(baseUrl, getFilePathOnStorage(attachment));
+    const filePath = getFilePathOnStorage(attachment);
 
-    let response;
+    let stream;
     try {
-      response = await axios.get(url, { responseType: 'stream' });
+      const params = {
+        Bucket: awsConfig.bucket,
+        Key: filePath,
+      };
+      stream = s3.getObject(params).createReadStream();
     }
     catch (err) {
       logger.error(err);
@@ -104,7 +111,7 @@ module.exports = function(crowi) {
     }
 
     // return stream.Readable
-    return response.data;
+    return stream;
   };
 
   /**

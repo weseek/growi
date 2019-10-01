@@ -12,9 +12,10 @@ module.exports = function(crowi) {
     revision: { type: ObjectId, ref: 'Revision', index: true },
     comment: { type: String, required: true },
     commentPosition: { type: Number, default: -1 },
-    createdAt: { type: Date, default: Date.now },
     isMarkdown: { type: Boolean, default: false },
     replyTo: { type: ObjectId },
+  }, {
+    timestamps: true,
   });
 
   commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
@@ -62,6 +63,16 @@ module.exports = function(crowi) {
         return resolve(data);
       });
     }));
+  };
+
+  commentSchema.statics.updateCommentsByPageId = function(comment, isMarkdown, commentId) {
+    const Comment = this;
+
+    return Comment.findOneAndUpdate(
+      { _id: commentId },
+      { $set: { comment, isMarkdown } },
+    );
+
   };
 
   commentSchema.statics.removeCommentsByPageId = function(pageId) {

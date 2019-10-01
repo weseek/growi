@@ -332,6 +332,7 @@ module.exports = function(crowi, app) {
       await Attachment.removeWithSubstanceById(id);
     }
     catch (err) {
+      logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting file'));
     }
 
