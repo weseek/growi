@@ -9,24 +9,17 @@ module.exports = function(crowi) {
   const { configManager } = crowi;
   const lib = new Uploader(configManager);
 
-  function getGcsConfig() {
-    return {
-      projectId: configManager.getConfig('crowi', 'gcs:projectId'),
-      credentials: {
-        client_email: configManager.getConfig('crowi', 'gcs:clientEmail'),
-        private_key: configManager.getConfig('crowi', 'gcs:privateKey'),
-      },
-    };
+  function getGcsBucket() {
+    return process.env.GCS_BUCKET;
   }
 
   function GCSFactory(isUploadable) {
-    const gcsConfig = getGcsConfig();
 
     if (!isUploadable) {
       throw new Error('GCP is not configured.');
     }
 
-    return new Storage(gcsConfig);
+    return new Storage();
   }
 
   function getFilePathOnStorage(attachment) {
