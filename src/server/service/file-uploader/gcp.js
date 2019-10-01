@@ -13,20 +13,17 @@ module.exports = function(crowi) {
     return configManager.getConfig('crowi', 'gcs:bucket');
   }
 
-  function GCSFactory(isUploadable) {
-
+  function getGcsInstance(isUploadable) {
     if (!isUploadable) {
       throw new Error('GCP is not configured.');
     }
-
-    return new Storage();
+    if (this.gcsInstance == null) {
+      this.gcsInstance = new Storage();
+    }
+    return this.gcsInstance;
   }
 
   function getFilePathOnStorage(attachment) {
-    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-      return attachment.filePath;
-    }
-
     const dirName = (attachment.page != null)
       ? 'attachment'
       : 'user';
@@ -41,7 +38,7 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
-    const gcs = GCSFactory(this.getIsUploadable());
+    const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
 
     // TODO: ensure not to throw error even when the file does not exist
@@ -52,7 +49,7 @@ module.exports = function(crowi) {
   lib.uploadFile = function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    const gcs = GCSFactory(this.getIsUploadable());
+    const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const options = {
@@ -69,7 +66,7 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const gcs = GCSFactory(this.getIsUploadable());
+    const gcs = getGcsInstance(this.getIsUploadable());
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
 

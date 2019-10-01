@@ -20,7 +20,7 @@ class Uploader {
         || !this.configManager.getConfig('crowi', 'aws:bucket'))) {
       return false;
     }
-    // method が gcs かつ、gcs:apiKeyJsonPath と gcs:bucket のどちらかが設定されていなければ false
+    // When method is gcs and gcs:api Key JsonPath or gcs:bucket is set is false
     if (method === 'gsc' && (
       !this.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath')
         || !this.configManager.getConfig('crowi', 'gcs:bucket'))
