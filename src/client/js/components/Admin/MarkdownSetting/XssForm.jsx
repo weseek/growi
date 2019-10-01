@@ -23,6 +23,11 @@ class XssForm extends React.Component {
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  onClickSubmit() {
+    console.log(this.state);
   }
 
   handleInputChange(e) {
@@ -110,7 +115,7 @@ class XssForm extends React.Component {
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
-              <div className="btn btn-primary">{ t('Update') }</div>
+              <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
             </div>
           </div>
         </form>
