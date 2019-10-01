@@ -33,6 +33,7 @@ module.exports = (crowi) => {
    *                      type: string
    */
   router.get('/collections', async(req, res) => {
+    // FIXME: deprecated
     const collections = Object.values(crowi.models).map(model => model.collection.collectionName);
 
     // TODO: use res.apiv3

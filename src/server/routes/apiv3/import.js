@@ -53,6 +53,7 @@ module.exports = (crowi) => {
    * @return {object} document to be persisted
    */
   const overwriteParamsFn = async(Model, schema, req) => {
+    // FIXME: deprecated
     const { collectionName } = Model.collection;
 
     /* eslint-disable no-case-declarations */

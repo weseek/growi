@@ -100,6 +100,7 @@ class ExportService {
    * @return {string} path to zip file
    */
   async exportCollectionToJson(Model) {
+    // FIXME: deprecated
     const { collectionName } = Model.collection;
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
