@@ -69,7 +69,7 @@ class XssForm extends React.Component {
           <input type="radio" id="xssOption2" name="XssOption" onChange={() => { this.onChangeXssOption(2) }} />
           <label htmlFor="xssOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
-            <WhiteListInput customizable />
+            <WhiteListInput customizable={false} />
           </label>
         </div>
 
@@ -77,7 +77,7 @@ class XssForm extends React.Component {
           <input type="radio" id="xssOption3" name="XssOption" onChange={() => { this.onChangeXssOption(3) }} />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <WhiteListInput customizable={false} />
+            <WhiteListInput customizable />
           </label>
         </div>
       </fieldset>
