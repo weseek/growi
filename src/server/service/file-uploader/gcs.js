@@ -15,10 +15,11 @@ module.exports = function(crowi) {
 
   function getGcsInstance(isUploadable) {
     if (!isUploadable) {
-      throw new Error('GCP is not configured.');
+      throw new Error('GCS is not configured.');
     }
     if (this.gcsInstance == null) {
-      this.gcsInstance = new Storage();
+      const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
+      this.gcsInstance = new Storage({ keyFilename });
     }
     return this.gcsInstance;
   }
