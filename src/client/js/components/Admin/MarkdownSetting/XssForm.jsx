@@ -27,20 +27,20 @@ class XssForm extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  async componentDidMount() {
-    await this.syncXssSettings();
-  }
-
-  onClickSubmit() {
-    // TODO GW-303 create apiV3 of update setting
-  }
-
   handleInputChange(e) {
     const target = e.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
     this.setState({ [name]: value });
+  }
+
+  async componentDidMount() {
+    await this.syncXssSettings();
+  }
+
+  async onClickSubmit() {
+    // TODO GW-303 create apiV3 of update setting
   }
 
   async syncXssSettings() {
