@@ -19,10 +19,9 @@ class Uploader {
         || !this.configManager.getConfig('crowi', 'aws:bucket'))) {
       return false;
     }
-    // method が gcp かつ、
-    // TODO 環境変数の取得方法をもう一度確認して gcp: ってところ修正する
+    // method が gcp かつ、gsc:config と gcp:bucket のどちらかが設定されていなければ false
     if (method === 'gcp' && (
-      !this.configManager.getConfig('crowi', 'gcp:bucket')
+      !this.configManager.getConfig('crowi', 'gcp:config')
         || !this.configManager.getConfig('crowi', 'gcp:bucket'))
     ) {
       return false;
