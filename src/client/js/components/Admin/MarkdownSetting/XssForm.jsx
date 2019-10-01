@@ -28,7 +28,7 @@ class XssForm extends React.Component {
   }
 
   onClickSubmit() {
-    console.log(this.state);
+    // TODO create apiV3 of update setting
   }
 
   handleInputChange(e) {
