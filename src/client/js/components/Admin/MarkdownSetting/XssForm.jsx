@@ -27,6 +27,10 @@ class XssForm extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
+  async componentDidMount() {
+    await this.syncXssSettings();
+  }
+
   onClickSubmit() {
     // TODO GW-303 create apiV3 of update setting
   }
@@ -37,6 +41,10 @@ class XssForm extends React.Component {
     const name = target.name;
 
     this.setState({ [name]: value });
+  }
+
+  async syncXssSettings() {
+    // TODO GW-304 createApiV3
   }
 
   xssOptions() {
