@@ -100,11 +100,13 @@ class XssForm extends React.Component {
       <React.Fragment>
         <form className="row">
           <div className="form-group">
-            <label className="col-xs-4 control-label text-right">
-              { t('markdown_setting.Enable XSS prevention') }
-            </label>
-            <div className="col-xs-5">
-              <input type="checkbox" name="isEnabledXss" checked={this.state.isEnabledXss} onChange={this.onChangeEnableXss} />
+            <div className="col-xs-8 text-center">
+              <div className="checkbox checkbox-success" onChange={this.onChangeEnableXss}>
+                <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={this.state.isEnabledXss} />
+                <label htmlFor="XssEnable">
+                  { t('markdown_setting.Enable XSS prevention') }
+                </label>
+              </div>
             </div>
             {this.state.isEnabledXss && this.xssOptions()}
           </div>
