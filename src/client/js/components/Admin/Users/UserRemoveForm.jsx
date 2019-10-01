@@ -14,22 +14,25 @@ class UserRemoveForm extends React.Component {
 
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onClickDeleteBtn = this.onClickDeleteBtn.bind(this);
   }
 
-  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  handleSubmit(event) {
-    $(event.currentTarget).parent().submit();
+  async onClickDeleteBtn() {
+    const { appContainer, user } = this.props;
+
+    await appContainer.apiv3.delete('/users/delete', {
+      userId: user._id,
+    });
   }
 
   render() {
-    const { t, appContainer, user } = this.props;
+    const { t, appContainer } = this.props;
 
     return (
       <a className="px-4">
-        <form action={`/admin/user/${user._id}/remove`} method="post">
+        <form onClick={this.onClickDeleteBtn}>
           <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-          <span onClick={this.handleSubmit}>
+          <span>
             <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
           </span>
         </form>
