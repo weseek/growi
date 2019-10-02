@@ -7,6 +7,7 @@
 }
 @each $theme-color, $color in $theme-colors {
   .alert.alert-#{$theme-color} {
+    color: white;
     background: $color;
     border: initial;
     border-radius: initial;
