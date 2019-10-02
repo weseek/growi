@@ -1,3 +1,5 @@
+@import 'layout';
+
 .growi.main-container {
   .content-main {
     padding: 0;
@@ -5,7 +7,8 @@
 
   .liker-and-seenusers {
     // adjusting position with negative margin
-    margin-top: -7px;
+    height: $nav-main-tab-height;
+    line-height: 1.25;
     border-bottom: 1px solid $border;
 
     .liker-user-count,
