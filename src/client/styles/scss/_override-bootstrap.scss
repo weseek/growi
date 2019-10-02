@@ -1,0 +1,20 @@
+@import 'override-bootstrap-variables';
+//** alert with custom color
+.alert {
+  a:not(.btn) {
+    color: white;
+  }
+}
+@each $theme-color, $color in $theme-colors {
+  .alert.alert-#{$theme-color} {
+    background: $color;
+    border: initial;
+    border-radius: initial;
+    a:not(.btn) {
+      &:hover,
+      &:focus {
+        color: lighten($color, 30%);
+      }
+    }
+  }
+}
