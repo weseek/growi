@@ -46,7 +46,6 @@ import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
 import ExportPage from './components/Admin/Export/ExportPage';
-import GrowiZipImportSection from './components/Admin/Import/GrowiZipImportSection';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -231,19 +230,6 @@ if (adminExportPageElem != null) {
       </I18nextProvider>
     </Provider>,
     adminExportPageElem,
-  );
-}
-
-// TODO: move to /imponents/Admin/Importer.jsx
-const growiImportElem = document.getElementById('growi-import');
-if (growiImportElem != null) {
-  ReactDOM.render(
-    <Provider inject={[]}>
-      <I18nextProvider i18n={i18n}>
-        <GrowiZipImportSection />
-      </I18nextProvider>
-    </Provider>,
-    growiImportElem,
   );
 }
 
