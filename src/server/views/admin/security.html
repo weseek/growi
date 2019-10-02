@@ -60,27 +60,6 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
-            <div class="col-xs-6">
-              <select class="form-control selectpicker" name="settingForm[security:registrationMode]" value="{{ getConfig('crowi', 'security:registrationMode') }}">
-                {% for modeValue, modeLabel in consts.registrationMode %}
-                <option value="{{ t(modeValue) }}" {% if modeValue == getConfig('crowi', 'security:registrationMode') %}selected{% endif %} >{{ t(modeLabel) }}</option>
-                {% endfor %}
-              </select>
-              <p class="help-block small">{{ t('security_setting.Register limitation desc') }}</p>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
-            <div class="col-xs-8">
-              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @growi.org">{{ getConfig('crowi', 'security:registrationWhiteList') | join('&#13') | raw }}</textarea>
-              <p class="help-block small">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
-              {{ t("security_setting.insert_single") }}</p>
-            </div>
-          </div>
-
-          <div class="form-group">
             {% set configName = 'settingForm[security:list-policy:hideRestrictedByOwner]' %}
             {% set configValue = getConfig('crowi', 'security:list-policy:hideRestrictedByOwner') %}
             {% set isEnabled = !configValue %}
@@ -170,10 +149,19 @@
         <div class="passport-settings">
           <ul class="nav nav-tabs" role="tablist">
             <li class="active">
+              <a href="#passport-local" data-toggle="tab" role="tab"><i class="fa fa-users"></i> ID/Pass</a>
+            </li>
+            <li>
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
             <li>
               <a href="#passport-saml" data-toggle="tab" role="tab"><i class="fa fa-key"></i> SAML</a>
+            </li>
+            <li>
+              <a href="#passport-oidc" data-toggle="tab" role="tab"><i class="fa fa-openid"></i> OIDC</a>
+            </li>
+            <li>
+              <a href="#passport-basic" data-toggle="tab" role="tab"><i class="fa fa-lock"></i> Basic</a>
             </li>
             <li>
               <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google</a>
@@ -184,24 +172,30 @@
             <li>
               <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
             </li>
-            <li>
-              <a href="#passport-oidc" data-toggle="tab" role="tab"><i class="fa fa-openid"></i> OIDC</a>
-            </li>
-            <li>
-              <a href="#passport-basic" data-toggle="tab" role="tab"><i class="fa fa-sign-in"></i> Basic</a>
-            </li>
             <li class="tbd">
               <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
             </li>
           </ul>
 
           <div class="tab-content p-t-10">
-            <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
+            <div id="passport-local" class="tab-pane active" role="tabpanel" >
+              {% include './widget/passport/local.html' %}
+            </div>
+
+            <div id="passport-ldap" class="tab-pane" role="tabpanel" >
               {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
             </div>
 
             <div id="passport-saml" class="tab-pane" role="tabpanel" >
               {% include './widget/passport/saml.html' %}
+            </div>
+
+            <div id="passport-oidc" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/oidc.html' %}
+            </div>
+
+            <div id="passport-basic" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/basic.html' %}
             </div>
 
             <div id="passport-google-oauth" class="tab-pane" role="tabpanel">
@@ -216,16 +210,8 @@
               {% include './widget/passport/twitter.html' %}
             </div>
 
-            <div id="passport-oidc" class="tab-pane" role="tabpanel">
-              {% include './widget/passport/oidc.html' %}
-            </div>
-
             <div id="passport-github" class="tab-pane" role="tabpanel">
               {% include './widget/passport/github.html' %}
-            </div>
-
-            <div id="passport-basic" class="tab-pane" role="tabpanel">
-              {% include './widget/passport/basic.html' %}
             </div>
 
           </div><!-- /.tab-content -->
@@ -236,7 +222,7 @@
   </div>
 
   <script>
-    $('#generalSetting, #samlSetting, #googleSetting, #mechanismSetting, #githubSetting, #twitterSetting, #oidcSetting').each(function() {
+    $('#generalSetting, #localSetting, #samlSetting, #basicSetting, #googleSetting, #githubSetting, #twitterSetting, #oidcSetting').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {

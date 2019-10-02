@@ -1,3 +1,5 @@
+{% set templateParentPath = parentPath(page.path | preventXss | escape) %}
+
 <div class="modal create-template" id="create-template">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -8,7 +10,7 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label class="mb-4">{{ t('template.modal_label.Create template under', page.path ) }}</label>
+          <label class="mb-4">{{ t('template.modal_label.Create template under', templateParentPath ) }}</label>
           <div class="row">
             <div class="col-sm-6">
               <div class="panel panel-default panel-select-template">
@@ -18,7 +20,7 @@
                   <p class="help-block text-center"><small>{{ t('template.children.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
-                  <a href="{% if page.path.endsWith('/') %}{{ page.path }}{% else %}{{ page.path}}/{% endif %}_template#edit"
+                  <a href="{{templateParentPath}}_template#edit"
                       class="btn btn-sm btn-primary" id="template-button-children">
                       {{ t("Edit") }}
                   </a>
@@ -33,7 +35,7 @@
                   <p class="help-block text-center"><small>{{ t('template.decendants.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
-                  <a href="{% if page.path.endsWith('/') %}{{ page.path }}{% else %}{{ page.path }}/{% endif %}__template#edit"
+                  <a href="{{templateParentPath}}__template#edit"
                       class="btn btn-sm btn-primary" id="template-button-decendants">
                       {{ t("Edit") }}
                   </a>

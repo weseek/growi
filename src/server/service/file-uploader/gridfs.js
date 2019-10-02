@@ -20,6 +20,7 @@ module.exports = function(crowi) {
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
+  AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
   lib.deleteFile = async function(attachment) {
     let filenameValue = attachment.fileName;
@@ -30,11 +31,12 @@ module.exports = function(crowi) {
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
-    AttachmentFile.unlink({ _id: attachmentFile._id }, (error, unlinkedFile) => {
-      if (error) {
-        throw new Error(error);
-      }
-    });
+    if (attachmentFile == null) {
+      logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
+      return;
+    }
+
+    return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
   };
 
   /**

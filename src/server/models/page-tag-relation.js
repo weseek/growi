@@ -31,12 +31,6 @@ schema.plugin(mongoosePaginate);
  */
 class PageTagRelation {
 
-  static async createIfNotExist(pageId, tagId) {
-    if (!await this.findOne({ relatedPage: pageId, relatedTag: tagId })) {
-      await this.create({ relatedPage: pageId, relatedTag: tagId });
-    }
-  }
-
   static async createTagListWithCount(option) {
     const Tag = mongoose.model('Tag');
     const opt = option || {};
@@ -56,35 +50,54 @@ class PageTagRelation {
     return { list, totalCount };
   }
 
-  static async listTagsByPage(pageId) {
-    const tags = await this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
-    return tags.filter((tag) => { return tag.relatedTag !== null });
+  static async findByPageId(pageId) {
+    const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('-_id relatedTag');
+    return relations.filter((relation) => { return relation.relatedTag !== null });
   }
 
   static async listTagNamesByPage(pageId) {
-    const tags = await this.listTagsByPage(pageId);
-    return tags.map((tag) => { return tag.relatedTag.name });
+    const relations = await this.findByPageId(pageId);
+    return relations.map((relation) => { return relation.relatedTag.name });
   }
 
   static async updatePageTags(pageId, tags) {
+    if (pageId == null || tags == null) {
+      throw new Error('args \'pageId\' and \'tags\' are required.');
+    }
+
+    // filter empty string
+    // eslint-disable-next-line no-param-reassign
+    tags = tags.filter((tag) => { return tag !== '' });
+
     const Tag = mongoose.model('Tag');
 
-    // get tags relate this page
-    const relatedTags = await this.listTagsByPage(pageId);
+    // get relations for this page
+    const relations = await this.findByPageId(pageId);
 
     // unlink relations
-    const unlinkTagRelations = relatedTags.filter((tag) => { return !tags.includes(tag.relatedTag.name) });
-    await this.deleteMany({
+    const unlinkTagRelations = relations.filter((relation) => { return !tags.includes(relation.relatedTag.name) });
+    const bulkDeletePromise = this.deleteMany({
       relatedPage: pageId,
       relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
     });
 
-    // create tag and relations
-    /* eslint-disable no-await-in-loop */
-    for (const tag of tags) {
-      const setTag = await Tag.findOrCreate(tag);
-      await this.createIfNotExist(pageId, setTag._id);
-    }
+    // filter tags to create
+    const relatedTagNames = relations.map((relation) => { return relation.relatedTag.name });
+    // find or create tags
+    const tagsToCreate = tags.filter((tag) => { return !relatedTagNames.includes(tag) });
+    const tagEntities = await Tag.findOrCreateMany(tagsToCreate);
+
+    // create relations
+    const bulkCreatePromise = this.insertMany(
+      tagEntities.map((relatedTag) => {
+        return {
+          relatedPage: pageId,
+          relatedTag,
+        };
+      }),
+    );
+
+    return Promise.all([bulkDeletePromise, bulkCreatePromise]);
   }
 
 }

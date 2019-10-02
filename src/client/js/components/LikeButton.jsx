@@ -37,7 +37,7 @@ class LikeButton extends React.Component {
   }
 
   isUserLoggedIn() {
-    return this.props.appContainer.me !== '';
+    return this.props.appContainer.me != null;
   }
 
   render() {

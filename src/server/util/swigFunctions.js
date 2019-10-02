@@ -1,6 +1,10 @@
 module.exports = function(crowi, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
+  const entities = require('entities');
+
+  const { pathUtils } = require('growi-commons');
+
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const {
@@ -62,15 +66,17 @@ module.exports = function(crowi, req, locals) {
   locals.getConfigFromEnvVars = configManager.getConfigFromEnvVars.bind(configManager);
 
   /**
-   * pass service class to swig
+   * pass service/utils instances to swig
    */
   locals.appService = appService;
   locals.aclService = aclService;
   locals.fileUploadService = fileUploadService;
   locals.customizeService = customizeService;
+  locals.passportService = passportService;
+  locals.pathUtils = pathUtils;
 
   locals.noCdn = function() {
-    return cdnResourcesService.noCdn();
+    return cdnResourcesService.noCdn;
   };
 
   locals.cdnScriptTag = function(name) {
@@ -92,16 +98,6 @@ module.exports = function(crowi, req, locals) {
 
   locals.cdnHighlightJsStyleTag = function(styleName) {
     return cdnResourcesService.getHighlightJsStyleTag(styleName);
-  };
-
-  /**
-   * return true if enabled and strategy has been setup successfully
-   */
-  locals.isLdapSetup = function() {
-    return (
-      configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')
-      && passportService.isLdapStrategySetup
-    );
   };
 
   /**
@@ -179,6 +175,16 @@ module.exports = function(crowi, req, locals) {
       return '';
     }
     return `/user/${user.username}`;
+  };
+
+  locals.pagesDataForTimeline = function(pages) {
+    return pages.map((page) => {
+      return {
+        id: page.id,
+        path: entities.encodeHTML(page.path),
+        revision: page.revision,
+      };
+    });
   };
 
   locals.css = {

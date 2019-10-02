@@ -3,6 +3,7 @@ module.exports = function(crowi, app) {
   const Comment = crowi.model('Comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { body } = require('express-validator/check');
@@ -105,10 +106,19 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo)
-      .catch((err) => {
-        return res.json(ApiResponse.error(err));
-      });
+    let createdComment;
+    try {
+      createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
+
+      await Comment.populate(createdComment, [
+        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
+      ]);
+
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err));
+    }
 
     // update page
     const page = await Page.findOneAndUpdate({ _id: pageId }, {
@@ -121,28 +131,77 @@ module.exports = function(crowi, app) {
     const path = page.path;
 
     // global notification
-    globalNotificationService.notifyComment(createdComment, path);
+    globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, path, req.user, {
+      comment: createdComment,
+    });
 
     // slack notification
     if (slackNotificationForm.isSlackEnabled) {
       const user = await User.findUserByUsername(req.user.username);
-      const channels = slackNotificationForm.slackChannels;
+      const channelsStr = slackNotificationForm.slackChannels || null;
 
-      if (channels) {
-        page.updateSlackChannel(channels).catch((err) => {
-          logger.error('Error occured in updating slack channels: ', err);
+      page.updateSlackChannel(channelsStr).catch((err) => {
+        logger.error('Error occured in updating slack channels: ', err);
+      });
+
+      const channels = channelsStr != null ? channelsStr.split(',') : [null];
+
+      const promises = channels.map((chan) => {
+        return crowi.slack.postComment(createdComment, user, chan, path);
+      });
+
+      Promise.all(promises)
+        .catch((err) => {
+          logger.error('Error occured in sending slack notification: ', err);
         });
-
-        const promises = channels.split(',').map((chan) => {
-          return crowi.slack.postComment(createdComment, user, chan, path);
-        });
-
-        Promise.all(promises)
-          .catch((err) => {
-            logger.error('Error occured in sending slack notification: ', err);
-          });
-      }
     }
+  };
+
+  /**
+   * @api {post} /comments.update Update comment dody
+   * @apiName UpdateComment
+   * @apiGroup Comment
+   */
+  api.update = async function(req, res) {
+    const { commentForm } = req.body;
+
+    const pageId = commentForm.page_id;
+    const revisionId = commentForm.revision_id;
+    const comment = commentForm.comment;
+    const isMarkdown = commentForm.is_markdown;
+    const commentId = commentForm.comment_id;
+    const author = commentForm.author;
+
+    if (comment === '') {
+      return res.json(ApiResponse.error('Comment text is required'));
+    }
+
+    if (commentId == null) {
+      return res.json(ApiResponse.error('\'comment_id\' is undefined'));
+    }
+
+    if (author !== req.user.username) {
+      return res.json(ApiResponse.error('Only the author can edit'));
+    }
+
+    // check whether accessible
+    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user._id, revisionId, comment, isMarkdown, req.user);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
+
+    let updatedComment;
+    try {
+      updatedComment = await Comment.updateCommentsByPageId(comment, isMarkdown, commentId);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    res.json(ApiResponse.success({ comment: updatedComment }));
+
+    // process notification if needed
   };
 
   /**

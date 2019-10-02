@@ -19,6 +19,7 @@
     }
 
     ul.authors {
+      padding-left: 1.5em;
       margin: 0;
 
       li {
@@ -30,6 +31,11 @@
         width: 22px;
         height: 22px;
         border: 1px solid #ccc;
+
+        &.picture-xs {
+          width: 14px;
+          height: 14px;
+        }
       }
     }
   }
@@ -37,7 +43,16 @@
   /*
    * affix header
    */
+  header:not(.affix) {
+    .only-affix {
+      display: none !important;
+    }
+  }
   header.affix {
+    .not-affix {
+      display: none !important;
+    }
+
     // show logo link
     div.title-logo-container {
       display: unset;
@@ -46,7 +61,7 @@
     }
     // hide authors in affix
     .authors {
-      display: none !important;
+      padding-left: 0.5em;
     }
   }
 }

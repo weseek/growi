@@ -3,9 +3,12 @@ import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import AppContainer from '../../services/AppContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '../../util/apiNotification';
+
+import AppContainer from '../../services/AppContainer';
+
+import GrowiZipImportSection from './Import/GrowiZipImportSection';
 
 const logger = loggerFactory('growi:importer');
 
@@ -131,6 +134,8 @@ class Importer extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
+        <GrowiZipImportSection />
+
         <form
           className="form-horizontal"
           id="importerSettingFormEsa"

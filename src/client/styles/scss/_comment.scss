@@ -23,34 +23,31 @@
 
 .main-container {
   .page-comments {
-    .page-comments-list-toggle-newer,
     .page-comments-list-toggle-older {
-      display: block;
-      margin: 8px;
+      display: inline-block;
       font-size: 0.9em;
-      text-align: center;
     }
 
-    // older comments
-    .page-comments-list-older .page-comment {
-    }
-    // newer comments
-    .page-comments-list-newer .page-comment {
-      opacity: 0.7;
+    .page-comment {
+      // older comments
+      &.page-comment-older {
+      }
+      // newer comments
+      &.page-comment-newer {
+        opacity: 0.7;
 
-      &:hover {
-        opacity: 1;
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .page-comment-meta {
+        display: flex;
+        justify-content: flex-end;
+
+        font-size: 0.9em;
+        color: #999;
       }
     }
   }
-}
-
-.btn-xxs {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 10px;
-  font-size: 11px;
-  border-radius: 1px;
 }

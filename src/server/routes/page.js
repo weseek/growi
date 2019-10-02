@@ -11,6 +11,7 @@ module.exports = function(crowi, app) {
   const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -99,14 +100,25 @@ module.exports = function(crowi, app) {
 
   // user notification
   // TODO create '/service/user-notification' module
-  async function notifyToSlackByUser(page, user, slackChannels, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannels)
+  /**
+   *
+   * @param {Page} page
+   * @param {User} user
+   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
+   * @param {boolean} updateOrCreate
+   * @param {string} previousRevision
+   */
+  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
+    await page.updateSlackChannel(slackChannelsStr)
       .catch((err) => {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
+
     if (slackNotificationService.hasSlackConfig()) {
-      const promises = slackChannels.split(',').map((chan) => {
+      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
+
+      const promises = slackChannels.map((chan) => {
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
 
@@ -169,6 +181,10 @@ module.exports = function(crowi, app) {
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
+    if (req.user == null) {
+      return '';
+    }
+
     const definitions = {
       pagepath: getPathFromRequest(req),
       username: req.user.name,
@@ -427,13 +443,14 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/not_found';
 
       // retrieve templates
-      const template = await Page.findTemplate(path);
-
-      if (template.templateBody) {
-        const body = replacePlaceholdersOfTemplate(template.templateBody, req);
-        const tags = template.templateTags;
-        renderVars.template = body;
-        renderVars.templateTags = tags;
+      if (req.user != null) {
+        const template = await Page.findTemplate(path);
+        if (template.templateBody) {
+          const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+          const tags = template.templateTags;
+          renderVars.template = body;
+          renderVars.templateTags = tags;
+        }
       }
 
       // add scope variables by ancestor page
@@ -602,14 +619,14 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.notifyPageCreate(createdPage);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage.path, req.user);
     }
     catch (err) {
       logger.error(err);
     }
 
     // user notification
-    if (isSlackEnabled && slackChannels != null) {
+    if (isSlackEnabled) {
       await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
     }
   };
@@ -689,14 +706,14 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.notifyPageEdit(page);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page.path, req.user);
     }
     catch (err) {
       logger.error(err);
     }
 
     // user notification
-    if (isSlackEnabled && slackChannels != null) {
+    if (isSlackEnabled) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
   };
@@ -857,7 +874,7 @@ module.exports = function(crowi, app) {
 
     try {
       // global notification
-      globalNotificationService.notifyPageLike(page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page.path, req.user);
     }
     catch (err) {
       logger.error('Like failed', err);
@@ -994,7 +1011,7 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success(result));
 
     // global notification
-    return globalNotificationService.notifyPageDelete(page);
+    await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page.path, req.user);
   };
 
   /**
@@ -1099,7 +1116,9 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success(result));
 
     // global notification
-    globalNotificationService.notifyPageMove(page, req.body.path, req.user);
+    globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page.path, req.user, {
+      oldPath: req.body.path,
+    });
 
     return page;
   };

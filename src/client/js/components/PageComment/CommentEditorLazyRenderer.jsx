@@ -14,21 +14,11 @@ class CommentEditorLazyRenderer extends React.Component {
 
     this.state = {
       isEditorShown: false,
-      isLayoutTypeGrowi: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
     this.showCommentFormBtnClickHandler = this.showCommentFormBtnClickHandler.bind(this);
-  }
-
-  componentWillMount() {
-    this.init();
-  }
-
-  init() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   showCommentFormBtnClickHandler() {
@@ -38,48 +28,51 @@ class CommentEditorLazyRenderer extends React.Component {
   render() {
     const { appContainer } = this.props;
     const username = appContainer.me;
+    const isLoggedIn = username != null;
     const user = appContainer.findUser(username);
-    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+
+    const layoutType = this.props.appContainer.getConfig().layoutType;
+    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
+
+    if (!isLoggedIn) {
+      return <React.Fragment></React.Fragment>;
+    }
+
     return (
       <React.Fragment>
-        { !this.state.isEditorShown
-          && (
+
+        { !this.state.isEditorShown && (
           <div className="form page-comment-form">
-            { username
-              && (
-                <div className="comment-form">
-                  { isLayoutTypeGrowi
-                  && (
-                    <div className="comment-form-user">
-                      <UserPicture user={user} />
-                    </div>
-                  )
-                  }
-                  <div className="comment-form-main">
-                    <button
-                      type="button"
-                      className={`btn btn-lg ${this.state.isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
-                      onClick={this.showCommentFormBtnClickHandler}
-                    >
-                      <i className="icon-bubble"></i> Add Comment
-                    </button>
-                  </div>
+            <div className="comment-form">
+              { isBaloonStyle && (
+                <div className="comment-form-user">
+                  <UserPicture user={user} />
                 </div>
-              )
-            }
+              ) }
+              <div className="comment-form-main">
+                { !this.state.isEditorShown && (
+                  <button
+                    type="button"
+                    className={`btn btn-lg ${isBaloonStyle ? 'btn-link' : 'btn-primary'} center-block`}
+                    onClick={this.showCommentFormBtnClickHandler}
+                  >
+                    <i className="icon-bubble"></i> Add Comment
+                  </button>
+                ) }
+              </div>
+            </div>
           </div>
-          )
-        }
-        { this.state.isEditorShown
-          && (
+        ) }
+
+        { this.state.isEditorShown && (
           <CommentEditor
             growiRenderer={this.growiRenderer}
             replyTo={undefined}
             commentButtonClickedHandler={this.showCommentFormBtnClickHandler}
           >
           </CommentEditor>
-)
-        }
+        ) }
+
       </React.Fragment>
     );
   }

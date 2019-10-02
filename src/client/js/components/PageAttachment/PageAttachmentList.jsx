@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Attachment from './Attachment';
 
@@ -35,3 +35,14 @@ export default class PageAttachmentList extends React.Component {
   }
 
 }
+
+PageAttachmentList.propTypes = {
+  attachments: PropTypes.arrayOf(PropTypes.object),
+  inUse: PropTypes.objectOf(PropTypes.bool),
+  onAttachmentDeleteClicked: PropTypes.func,
+  isUserLoggedIn: PropTypes.bool,
+};
+PageAttachmentList.defaultProps = {
+  attachments: [],
+  inUse: {},
+};
