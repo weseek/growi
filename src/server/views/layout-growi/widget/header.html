@@ -1,68 +1,70 @@
 <div class="header-wrap">
-  <header id="page-header" class="d-flex align-items-center">
+  <header id="page-header">
 
-    <div class="title-logo-container hidden-xs hidden-sm">
-      <a class="logo" href="/">
-        <div class="logo-mark">{% include '../../widget/logo.html' %}</div>
-      </a>
-    </div><!-- /.title-logo-container -->
+    <div class="d-flex align-items-center">
+      <div class="title-logo-container hidden-xs hidden-sm">
+        <a class="logo" href="/">
+          <div class="logo-mark">{% include '../../widget/logo.html' %}</div>
+        </a>
+      </div><!-- /.title-logo-container -->
 
-    <div class="title-container">
-      <h1 class="title" id="revision-path"></h1>
-      {% if not forbidden and not isTrashPage() %}
-        <div id="tag-label"></div>
+      <div class="title-container">
+        <h1 class="title" id="revision-path"></h1>
+        {% if not forbidden and not isTrashPage() %}
+          <div id="tag-label"></div>
+        {% endif %}
+      </div><!-- /.title-container -->
+      {% if page %}
+      {% include '../../widget/header-buttons.html' %}
+
+      <ul class="authors hidden-sm hidden-xs text-nowrap">
+        <li>
+          <div class="d-flex align-items-center not-affix">
+            <a class="mr-2" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
+              <img src="{{ page.creator|default(author)|picture }}" class="picture rounded-circle">
+            </a>
+            <div>
+              <div>Created by <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a></div>
+              <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center only-affix">
+            <a class="mr-2" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
+              <img src="{{ page.creator|default(author)|picture }}" class="picture picture-xs rounded-circle">
+            </a>
+            <div class="ml-auto">
+              <div>Created in <span class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</span></div>
+            </div>
+          </div>
+        </li>
+        <li class="mt-2">
+          <div class="d-flex align-items-center not-affix">
+            <a class="mr-2" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
+              <img src="{{ author|picture }}" class="picture rounded-circle">
+            </a>
+            <div>
+              <div>Updated by <a href="{{ userPageRoot(page.revision.author) }}">{{ author.name }}</a></div>
+              <div class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center only-affix">
+            <a class="mr-2" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
+              <img src="{{ author|picture }}" class="picture picture-xs rounded-circle">
+            </a>
+            <div class="ml-auto">
+              <div>Updated in <span class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</span></div>
+            </div>
+          </div>
+        </li>
+      </ul><!-- /.authors -->
       {% endif %}
-    </div><!-- /.title-container -->
-    {% if page %}
-    {% include '../../widget/header-buttons.html' %}
 
-    <ul class="authors hidden-sm hidden-xs text-nowrap">
-      <li>
-        <div class="d-flex align-items-center not-affix">
-          <a class="mr-2" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
-            <img src="{{ page.creator|default(author)|picture }}" class="picture rounded-circle">
-          </a>
-          <div>
-            <div>Created by <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a></div>
-            <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center only-affix">
-          <a class="mr-2" href="{{ userPageRoot(page.creator) }}" data-toggle="tooltip" data-placement="bottom" title="{{ page.creator.name|default(author.name) }}">
-            <img src="{{ page.creator|default(author)|picture }}" class="picture picture-xs rounded-circle">
-          </a>
-          <div class="ml-auto">
-            <div>Created in <span class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</span></div>
-          </div>
-        </div>
-      </li>
-      <li class="mt-2">
-        <div class="d-flex align-items-center not-affix">
-          <a class="mr-2" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
-            <img src="{{ author|picture }}" class="picture rounded-circle">
-          </a>
-          <div>
-            <div>Updated by <a href="{{ userPageRoot(page.revision.author) }}">{{ author.name }}</a></div>
-            <div class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center only-affix">
-          <a class="mr-2" href="{{ userPageRoot(author) }}" data-toggle="tooltip" data-placement="bottom" title="{{ author.name }}">
-            <img src="{{ author|picture }}" class="picture picture-xs rounded-circle">
-          </a>
-          <div class="ml-auto">
-            <div>Updated in <span class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</span></div>
-          </div>
-        </div>
-      </li>
-    </ul><!-- /.authors -->
-    {% endif %}
-
-    {% if not page and not forbidden and ('/' === path or 'crowi' === getConfig('crowi', 'customize:behavior')) and not isUserPageList(path) and !isTrashPage() %}
-      {% if '/' === path.slice(-1) %}
-        {% include '../../widget/create_portal.html' %}
+      {% if not page and not forbidden and ('/' === path or 'crowi' === getConfig('crowi', 'customize:behavior')) and not isUserPageList(path) and !isTrashPage() %}
+        {% if '/' === path.slice(-1) %}
+          {% include '../../widget/create_portal.html' %}
+        {% endif %}
       {% endif %}
-    {% endif %}
+    </div>
 
   </header>
 </div><!-- / .header-wrap -->

@@ -82,6 +82,7 @@ a {
 /*
  * Alert
  */
+/*
 .alert {
   a:not(.btn) {
     color: white;
@@ -111,15 +112,16 @@ a {
       }
     }
   }
-  /*&.alert-danger {
+  &.alert-danger {
     a:not(.btn) {
       &:hover,
       &:focus {
         color: lighten($danger, 30%);
       }
     }
-  }*/
+  }
 }
+*/
 
 /*
  * Form

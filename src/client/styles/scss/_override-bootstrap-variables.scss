@@ -59,11 +59,31 @@ $input-bg-disabled:              $btn-default-bgcolor;
 //** `<input>` border color
 $input-border:                   $border;
 
-//** alert
+//** override bootstrap theme colors
 $theme-colors: (
   'primary': #337ab7,
   'success': #3c763d,
   'info': #31708f,
   'warning': #8a6d3b,
   'danger': #ff0a54
-)
+);
+
+//** alert with custom color
+.alert {
+  a:not(.btn) {
+    color: white;
+  }
+}
+@each $theme-color, $color in $theme-colors {
+  .alert.alert-#{$theme-color} {
+    background: $color;
+    border: initial;
+    border-radius: initial;
+    a:not(.btn) {
+      &:hover,
+      &:focus {
+        color: lighten($color, 30%);
+      }
+    }
+  }
+}
