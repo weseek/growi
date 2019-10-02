@@ -186,3 +186,11 @@ $nav-main-left-tab-width: 95px;
 .grw-title-bar {
   background: $grw-floral-white;
 }
+
+// bg-title for .row
+.bg-title {
+  padding: 6px 0;
+  margin-right: -15px;
+  margin-left: -15px;
+  overflow: unset;
+}
