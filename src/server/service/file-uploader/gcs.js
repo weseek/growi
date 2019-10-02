@@ -3,6 +3,8 @@ const logger = require('@alias/logger')('growi:service:fileUploaderAws');
 const urljoin = require('url-join');
 const { Storage } = require('@google-cloud/storage');
 
+let _instance;
+
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
@@ -17,11 +19,12 @@ module.exports = function(crowi) {
     if (!isUploadable) {
       throw new Error('GCS is not configured.');
     }
-    if (this.gcsInstance == null) {
+    if (_instance == null) {
       const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
-      this.gcsInstance = new Storage({ keyFilename });
+      // see https://googleapis.dev/nodejs/storage/latest/Storage.html
+      _instance = new Storage({ keyFilename });
     }
-    return this.gcsInstance;
+    return _instance;
   }
 
   function getFilePathOnStorage(attachment) {
