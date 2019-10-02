@@ -220,6 +220,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  GCS_API_KEY_JSON_PATH: {
+    ns:      'crowi',
+    key:     'gcs:apiKeyJsonPath',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  GCS_BUCKET: {
+    ns:      'crowi',
+    key:     'gcs:bucket',
+    type:    TYPES.STRING,
+    default: null,
+  },
 };
 
 class ConfigLoader {
