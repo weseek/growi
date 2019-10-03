@@ -99,7 +99,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu user={user} onPasswordResetClicked={this.props.onPasswordResetClicked} />
+                    <UserMenu user={user} onPasswordResetClicked={this.props.onPasswordResetClicked} removeUser={this.props.removeUser} />
                   </td>
                 </tr>
               );
@@ -121,6 +121,7 @@ UserTable.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   users: PropTypes.array.isRequired,
+  removeUser: PropTypes.func.isRequired,
   onPasswordResetClicked: PropTypes.func.isRequired,
 };
 

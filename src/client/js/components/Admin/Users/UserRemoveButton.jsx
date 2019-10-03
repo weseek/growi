@@ -14,14 +14,14 @@ class UserRemoveButton extends React.Component {
   }
 
   onClickDeleteBtn() {
-    this.props.removeUser();
+    this.props.removeUser(this.props.user);
   }
 
   render() {
     const { t } = this.props;
 
     return (
-      <a className="px-4" onClick={this.onClickDeleteBtn}>
+      <a className="px-4" onClick={() => { this.onClickDeleteBtn() }}>
         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
       </a>
     );
