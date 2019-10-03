@@ -127,15 +127,15 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}:
+   *    /_api/v3/user-groups/{id}:
    *      delete:
    *        tags: [UserGroup]
    *        description: Deletes userGroup
    *        parameters:
-   *          - name: deleteGroupId
-   *            in: query
-   *            description: id of userGroup
+   *          - name: id
+   *            in: path
    *            required: true
+   *            description: id of userGroup
    *            schema:
    *              type: object
    *          - name: actionName
@@ -187,7 +187,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}:
+   *    /_api/v3/user-groups/{id}:
    *      put:
    *        tags: [UserGroup]
    *        description: Update userGroup
@@ -242,13 +242,14 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}/users:
+   *    /_api/v3/user-groups/{id}/users:
    *      get:
    *        tags: [UserGroup]
    *        description: Get users related to the userGroup
    *        parameters:
    *          - name: id
    *            in: path
+   *            required: true
    *            description: id of userGroup
    *            schema:
    *              type: object
@@ -289,13 +290,14 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}/unrelated-users:
+   *    /_api/v3/user-groups/{id}/unrelated-users:
    *      get:
    *        tags: [UserGroup]
    *        description: Get users unrelated to the userGroup
    *        parameters:
    *          - name: id
    *            in: path
+   *            required: true
    *            description: id of userGroup
    *            schema:
    *              type: object
@@ -337,21 +339,17 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}/users:
+   *    /_api/v3/user-groups/{id}/users:
    *      post:
    *        tags: [UserGroup]
    *        description: Add a user to the userGroup
    *        parameters:
    *          - name: id
    *            in: path
+   *            required: true
    *            description: id of userGroup
    *            schema:
    *              type: object
-   *          - name: username
-   *            in: path
-   *            description: id of user
-   *            schema:
-   *              type: string
    *        responses:
    *          200:
    *            description: a user is added
@@ -400,21 +398,17 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}/users:
+   *    /_api/v3/user-groups/{id}/users:
    *      delete:
    *        tags: [UserGroup]
    *        description: remove a user from the userGroup
    *        parameters:
    *          - name: id
    *            in: path
+   *            required: true
    *            description: id of userGroup
    *            schema:
    *              type: object
-   *          - name: username
-   *            in: path
-   *            description: id of user
-   *            schema:
-   *              type: string
    *        responses:
    *          200:
    *            description: a user was removed
@@ -464,13 +458,14 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}/user-group-relations:
+   *    /_api/v3/user-groups/{id}/user-group-relations:
    *      get:
    *        tags: [UserGroup]
    *        description: Get the user group relations for the userGroup
    *        parameters:
    *          - name: id
    *            in: path
+   *            required: true
    *            description: id of userGroup
    *            schema:
    *              type: object
@@ -515,13 +510,14 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{:id}/pages:
+   *    /_api/v3/user-groups/{id}/pages:
    *      get:
    *        tags: [UserGroup]
    *        description: Get closed pages for the userGroup
    *        parameters:
    *          - name: id
    *            in: path
+   *            required: true
    *            description: id of userGroup
    *            schema:
    *              type: object

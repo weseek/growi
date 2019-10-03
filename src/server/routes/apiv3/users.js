@@ -49,7 +49,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: Invitation emailList
    *            schema:
-   *              type: array
+   *              type: object
    *          - name: sendEmail
    *            in: query
    *            description: Whether to send mail
@@ -63,16 +63,10 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    createdUserList:
-   *                      type: array
-   *                      email:
-   *                        type: string
-   *                      password:
-   *                        type: string
+   *                      type: object
    *                      description: Users successfully created
    *                    existingEmailList:
-   *                      type: array
-   *                      email:
-   *                        type: string
+   *                      type: object
    *                      description: Users email that already exists
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, ApiV3FormValidator, async(req, res) => {
