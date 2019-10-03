@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 import StatusActivateForm from './StatusActivateForm';
 import StatusSuspendedForm from './StatusSuspendedForm';
 import RemoveUserButton from './UserRemoveButton';
@@ -27,6 +29,19 @@ class UserMenu extends React.Component {
     this.props.onPasswordResetClicked(this.props.user);
   }
 
+  async removeUser() {
+    const { appContainer, user } = this.props;
+
+    try {
+      const response = await appContainer.apiv3.delete(`/users/${user._id}/remove`);
+      const { username } = response.data.userData;
+      toastSuccess(`Delete ${username} success`);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
   render() {
     const { t, user } = this.props;
 
@@ -48,7 +63,7 @@ class UserMenu extends React.Component {
             <li>
               {(user.status === 1 || user.status === 3) && <StatusActivateForm user={user} />}
               {user.status === 2 && <StatusSuspendedForm user={user} />}
-              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
+              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} removeUser={() => { this.removeUser() }} />}
             </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>

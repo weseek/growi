@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
@@ -12,24 +10,11 @@ class UserRemoveButton extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-
-    };
-
     this.onClickDeleteBtn = this.onClickDeleteBtn.bind(this);
   }
 
-  async onClickDeleteBtn() {
-    const { appContainer, user } = this.props;
-
-    try {
-      const response = await appContainer.apiv3.delete(`/users/${user._id}/remove`);
-      const { username } = response.data.userData;
-      toastSuccess(`Delete ${username} success`);
-    }
-    catch (err) {
-      toastError(err);
-    }
+  onClickDeleteBtn() {
+    this.props.removeUser();
   }
 
   render() {
@@ -56,6 +41,7 @@ UserRemoveButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
+  removeUser: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserRemoveButtonWrapper);
