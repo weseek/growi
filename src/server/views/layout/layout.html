@@ -78,7 +78,7 @@
   <nav class="navbar navbar-default bg-grw-green mb-0 p-0">
     <div class="navbar-header d-flex w-100">
 
-      <!--1 GROWI logo-->
+      <!-- 1 GROWI logo -->
       <a class="logo d-block top-left-part bg-grw-mos-green my-auto px-3" href="/">
         <div class="logo-mark _white d-inline-block">{% include '../widget/logo.html' %}</div>
         <span class="logo-text mx-3 text-white">
@@ -90,17 +90,17 @@
         </span>
       </a>
 
-      <!--2 side nav open-->
+      <!-- 2 side nav open -->
       <a class="open-close d-none d-md-block mx-3 my-auto waves-effect waves-light">
         <i class="ti-menu text-white"></i>
       </a>
 
-      <!--3 mobile menu touch icon-->
+      <!-- 3 mobile menu touch icon -->
       <a class="navbar-toggle d-md-none my-auto mx-3" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
         <i class="ti-menu text-white"></i>
       </a>
 
-      <!--4 search nav-->
+      <!-- 4 search nav -->
       <ul class="nav navbar-top-links d-none d-md-block bg-grw-light-green ml-3 my-auto text-nowrap">
         {#  disabled temporary -- 2019.05.13 Yuki Takei
         <li class="nav-item-admin">
@@ -116,7 +116,7 @@
         </li>
       </ul>
 
-      <!--5 user action-->
+      <!-- 5 user action -->
       <ul class="nav navbar-top-links flex-nowrap ml-auto my-auto">
         {% if user and user.admin %}
         <li class="nav-item-admin mr-2 mr-lg-3 my-auto">
@@ -163,6 +163,7 @@
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
 
+  <!-- 6 header widget area -->
   {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
@@ -170,7 +171,7 @@
   <!-- Left navbar-header -->
   <div class="navbar-default sidebar d-print-none" role="navigation">
 
-    <!--6 mobile drop down area-->
+    <!-- 7 mobile drop down area-->
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
       <ul class="nav" id="side-menu">
         <li class="sidebar-search hidden-sm hidden-md hidden-lg">
@@ -183,12 +184,11 @@
       </ul>
     </div>
 
-
   </div>
   <!-- Left navbar-header end -->
   {% endblock %}
 
-  <!-- Page Content -->
+  <!-- 8 Page Content -->
   <div id="page-wrapper">
     {% block layout_main %}
     {% endblock %} {# layout_main #}
