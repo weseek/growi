@@ -332,7 +332,7 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.statusDelete = function() {
+  userSchema.methods.statusDelete = async function() {
     debug('Delete User', this);
 
     const now = new Date();
