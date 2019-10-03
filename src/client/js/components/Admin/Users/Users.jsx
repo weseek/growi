@@ -80,10 +80,9 @@ class UserPage extends React.Component {
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage}
-          totalItemsCount={this.state.totalUsers}
+          totalItemsCount={this.state.users.length} // TODO GW-314 props.userTotalCount
           pagingLimit={this.state.pagingLimit}
-        >
-        </PaginationWrapper>
+        />
       </Fragment>
     );
   }
