@@ -87,7 +87,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.delete('/:id/remove', loginRequired(), adminRequired, csrf, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
     try {
