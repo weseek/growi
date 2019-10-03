@@ -137,7 +137,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *          - name: actionName
    *            in: query
    *            description: name of action
@@ -147,7 +147,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: userGroup id that will be transferred to
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: userGroup is removed
@@ -197,7 +197,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: userGroup is updated
@@ -252,7 +252,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: users are fetched
@@ -300,7 +300,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: users are fetched
@@ -349,7 +349,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: a user is added
@@ -408,7 +408,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: a user was removed
@@ -468,7 +468,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: user group relations are fetched
@@ -520,7 +520,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: pages are fetched

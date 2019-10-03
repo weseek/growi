@@ -1,6 +1,3 @@
-const loggerFactory = require('@alias/logger');
-
-const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 
@@ -10,6 +7,13 @@ const { body } = require('express-validator/check');
 const { isEmail } = require('validator');
 
 const validator = {};
+
+/**
+ * @swagger
+ *  tags:
+ *    name: Users
+ */
+
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -78,7 +82,32 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
-
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/{id}/remove:
+   *      delete:
+   *        tags: [Users]
+   *        description: Delete user
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of delete user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Deleting user success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of delete user
+   */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
