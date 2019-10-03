@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 import PasswordResetModal from './PasswordResetModal';
 import PaginationWrapper from '../../PaginationWrapper';
 import InviteUserControl from './InviteUserControl';
@@ -23,6 +25,7 @@ class UserPage extends React.Component {
       isPasswordResetModalShown: false,
     };
 
+    this.removeUser = this.removeUser.bind(this);
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
   }
@@ -35,6 +38,20 @@ class UserPage extends React.Component {
     this.setState({
       users,
     });
+  }
+
+  async removeUser(user) {
+
+    const { appContainer } = this.props;
+
+    try {
+      const response = await appContainer.apiv3.delete(`/users/${user._id}/remove`);
+      const { username } = response.data.userData;
+      toastSuccess(`Delete ${username} success`);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
@@ -76,14 +93,14 @@ class UserPage extends React.Component {
         <UserTable
           users={this.state.users}
           onPasswordResetClicked={this.showPasswordResetModal}
+          removeUser={this.removeUser}
         />
         <PaginationWrapper
           activePage={this.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={this.state.totalUsers}
+          changePage={this.handlePage} // / TODO GW-314 create function
+          totalItemsCount={this.state.users.length} // TODO GW-314 props.userTotalCount
           pagingLimit={this.state.pagingLimit}
-        >
-        </PaginationWrapper>
+        />
       </Fragment>
     );
   }
