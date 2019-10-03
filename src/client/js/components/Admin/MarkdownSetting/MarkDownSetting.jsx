@@ -43,6 +43,7 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         <div>
+          {/*Line Break Setting*/}
           <LineBreakSetting />
         </div>
 

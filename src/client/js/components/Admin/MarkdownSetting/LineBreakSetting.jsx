@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
+const logger = loggerFactory('growi:importer');
 
 class LineBreakSetting extends React.Component {
 
@@ -20,16 +22,17 @@ class LineBreakSetting extends React.Component {
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
     };
     this.onChangeEnableLineBreaks = this.onChangeEnableLineBreaks.bind(this);
+    this.onChangeEnableLineBreaksInComments = this.onChangeEnableLineBreaksInComments.bind(this);
     this.changeLineBreakSettings = this.changeLineBreakSettings.bind(this);
   }
 
 
-  onChangeEnableLineBreaks(e) {
-    const target = e.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
+  onChangeEnableLineBreaks() {
+    this.setState({ isEnabledLinebreaks: !this.state.isEnabledLinebreaks });
+  }
 
-    this.setState({ [name]: value });
+  onChangeEnableLineBreaksInComments() {
+    this.setState({ isEnabledLinebreaksInComments: !this.state.isEnabledLinebreaksInComments });
   }
 
   async changeLineBreakSettings() {
@@ -44,6 +47,7 @@ class LineBreakSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
+      logger.error(err);
     }
   }
 
@@ -73,7 +77,7 @@ class LineBreakSetting extends React.Component {
             <fieldset className="row">
               <div className="form-group my-3">
                 <div className="col-xs-4 text-right">
-                  <div className="checkbox checkbox-success" onChange={this.onChangeEnableLineBreaks}>
+                  <div className="checkbox checkbox-success" onChange={this.onChangeEnableLineBreaksInComments}>
                     <input type="checkbox" name="isEnabledLinebreaksInComments" checked={this.state.isEnabledLinebreaksInComments} />
                     <label>
                       { t('markdown_setting.Enable Line Break for comment') }
