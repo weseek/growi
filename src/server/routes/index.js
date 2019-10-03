@@ -113,27 +113,26 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/search/build'  , loginRequiredStrictly , adminRequired , csrf, admin.api.searchBuildIndex);
 
   // notification admin
-  app.get('/admin/notification'              , loginRequired() , adminRequired , admin.notification.index);
-  app.post('/admin/notification/slackIwhSetting', loginRequired() , adminRequired , csrf, form.admin.slackIwhSetting, admin.notification.slackIwhSetting);
-  app.post('/admin/notification/slackSetting', loginRequired() , adminRequired , csrf, form.admin.slackSetting, admin.notification.slackSetting);
-  app.get('/admin/notification/slackAuth'    , loginRequired() , adminRequired , admin.notification.slackAuth);
-  app.get('/admin/notification/slackSetting/disconnect', loginRequired() , adminRequired , admin.notification.disconnectFromSlack);
-  app.post('/_api/admin/notification.add'    , loginRequired() , adminRequired , csrf, admin.api.notificationAdd);
-  app.post('/_api/admin/notification.remove' , loginRequired() , adminRequired , csrf, admin.api.notificationRemove);
-  app.get('/_api/admin/users.search'         , loginRequired() , adminRequired , admin.api.usersSearch);
-  app.get('/admin/global-notification/new'   , loginRequired() , adminRequired , admin.globalNotification.detail);
-  app.get('/admin/global-notification/:id'   , loginRequired() , adminRequired , admin.globalNotification.detail);
-  app.post('/admin/global-notification/new'  , loginRequired() , adminRequired , form.admin.notificationGlobal, admin.globalNotification.create);
-  app.post('/_api/admin/global-notification/toggleIsEnabled', loginRequired() , adminRequired , admin.api.toggleIsEnabledForGlobalNotification);
-  app.post('/admin/global-notification/:id/update', loginRequired() , adminRequired , form.admin.notificationGlobal, admin.globalNotification.update);
-  app.post('/admin/global-notification/:id/remove', loginRequired() , adminRequired , admin.globalNotification.remove);
+  app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
+  app.post('/admin/notification/slackIwhSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.slackIwhSetting, admin.notification.slackIwhSetting);
+  app.post('/admin/notification/slackSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.slackSetting, admin.notification.slackSetting);
+  app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
+  app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
+  app.post('/_api/admin/notification.add'    , loginRequiredStrictly , adminRequired , csrf, admin.api.notificationAdd);
+  app.post('/_api/admin/notification.remove' , loginRequiredStrictly , adminRequired , csrf, admin.api.notificationRemove);
+  app.get('/_api/admin/users.search'         , loginRequiredStrictly , adminRequired , admin.api.usersSearch);
+  app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  app.post('/admin/global-notification/new'  , loginRequiredStrictly , adminRequired , form.admin.notificationGlobal, admin.globalNotification.create);
+  app.post('/_api/admin/global-notification/toggleIsEnabled', loginRequiredStrictly , adminRequired , admin.api.toggleIsEnabledForGlobalNotification);
+  app.post('/admin/global-notification/:id/update', loginRequiredStrictly , adminRequired , form.admin.notificationGlobal, admin.globalNotification.update);
+  app.post('/admin/global-notification/:id/remove', loginRequiredStrictly , adminRequired , admin.globalNotification.remove);
 
-  app.get('/admin/users'                , loginRequired() , adminRequired , admin.user.index);
-  app.post('/admin/user/:id/makeAdmin'  , loginRequired() , adminRequired , csrf, admin.user.makeAdmin);
-  app.post('/admin/user/:id/removeFromAdmin', loginRequired() , adminRequired , admin.user.removeFromAdmin);
-  app.post('/admin/user/:id/activate'   , loginRequired() , adminRequired , csrf, admin.user.activate);
-  app.post('/admin/user/:id/suspend'    , loginRequired() , adminRequired , csrf, admin.user.suspend);
-  app.post('/admin/user/:id/removeCompletely' , loginRequired() , adminRequired , csrf, admin.user.removeCompletely);
+  app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
+  app.post('/admin/user/:id/makeAdmin'  , loginRequiredStrictly , adminRequired , csrf, admin.user.makeAdmin);
+  app.post('/admin/user/:id/removeFromAdmin', loginRequiredStrictly , adminRequired , admin.user.removeFromAdmin);
+  app.post('/admin/user/:id/activate'   , loginRequiredStrictly , adminRequired , csrf, admin.user.activate);
+  app.post('/admin/user/:id/suspend'    , loginRequiredStrictly , adminRequired , csrf, admin.user.suspend);
   // new route patterns from here:
   app.post('/_api/admin/users.resetPassword'  , loginRequiredStrictly , adminRequired , csrf, admin.user.resetPassword);
 
