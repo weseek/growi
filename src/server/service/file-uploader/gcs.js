@@ -36,6 +36,10 @@ module.exports = function(crowi) {
     return filePath;
   }
 
+  lib.getIsUploadable = function() {
+    return this.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null && this.configManager.getConfig('crowi', 'gcs:bucket') != null;
+  };
+
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
