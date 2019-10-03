@@ -1,4 +1,6 @@
 @import 'override-bootstrap-variables';
+@import 'layout_variable';
+
 //** alert with custom color
 .alert {
   a:not(.btn) {
@@ -17,5 +19,36 @@
         color: lighten($color, 30%);
       }
     }
+  }
+}
+
+//** override bootstrap nav nav-tabs nav-item
+.nav.nav-tabs > .nav-item {
+  position: relative;
+  min-width: $nav-main-left-tab-width;
+  padding: auto;
+  text-align: center;
+  $active-tab-border-width: 1px;
+  $active-tab-border-bg: white;
+  a {
+    display: block;
+    height: $nav-main-tab-height;
+    padding: ($nav-main-tab-height - $nav-main-tab-font-size)/2 0;
+    font-size: $nav-main-tab-font-size;
+  }
+  &.active {
+    // TODO：Active class must be switching by user control.
+    border: $active-tab-border-width solid $grw-line-light-gray;
+    border-bottom: initial;
+  }
+  // border for tab is hidden as inner width white border, and then become unevenness.
+  &.active::before {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: $nav-main-left-tab-width - $active-tab-border-width * 2;
+    content: '';
+    border-bottom: $active-tab-border-width solid $active-tab-border-bg;
   }
 }
