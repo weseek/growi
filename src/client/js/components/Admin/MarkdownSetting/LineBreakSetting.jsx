@@ -63,7 +63,7 @@ class LineBreakSetting extends React.Component {
                   <div className="checkbox checkbox-success" onChange={this.onChangeEnableLineBreaks}>
                     <input type="checkbox" name="isEnabledLinebreaks" checked={this.state.isEnabledLinebreaks} />
                     <label>
-                    { t('markdown_setting.Enable Line Break') }
+                      { t('markdown_setting.Enable Line Break') }
                     </label>
                     <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
                   </div>
@@ -93,6 +93,7 @@ class LineBreakSetting extends React.Component {
       </React.Fragment>
     );
   }
+
 }
 
 /**

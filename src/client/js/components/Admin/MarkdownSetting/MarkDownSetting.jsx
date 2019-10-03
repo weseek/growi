@@ -41,7 +41,7 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         <div>
-        <LineBreakSetting/>
+          <LineBreakSetting />
         </div>
         <div className="row my-3">
           <div className="form-group">
@@ -96,7 +96,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
           </fieldset>
-          </div>
+        </div>
 
         <div className="row my-3">
           <div className="form-group">
