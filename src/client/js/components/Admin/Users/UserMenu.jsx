@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import StatusActivateForm from './StatusActivateForm';
 import StatusSuspendedForm from './StatusSuspendedForm';
-import RemoveUserForm from './UserRemoveForm';
+import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminForm from './RemoveAdminForm';
 import GiveAdminForm from './GiveAdminForm';
 
@@ -48,7 +48,7 @@ class UserMenu extends React.Component {
             <li>
               {(user.status === 1 || user.status === 3) && <StatusActivateForm user={user} />}
               {user.status === 2 && <StatusSuspendedForm user={user} />}
-              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserForm user={user} />}
+              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
             </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>

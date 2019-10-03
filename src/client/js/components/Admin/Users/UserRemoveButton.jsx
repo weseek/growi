@@ -7,7 +7,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class UserRemoveForm extends React.Component {
+class UserRemoveButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -47,15 +47,15 @@ class UserRemoveForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserRemoveFormWrapper = (props) => {
-  return createSubscribedElement(UserRemoveForm, props, [AppContainer]);
+const UserRemoveButtonWrapper = (props) => {
+  return createSubscribedElement(UserRemoveButton, props, [AppContainer]);
 };
 
-UserRemoveForm.propTypes = {
+UserRemoveButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(UserRemoveFormWrapper);
+export default withTranslation()(UserRemoveButtonWrapper);
