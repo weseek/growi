@@ -25,6 +25,10 @@ module.exports = function(crowi) {
     return filePath;
   }
 
+  lib.getIsUploadable = function() {
+    return true;
+  };
+
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);

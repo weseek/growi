@@ -5,6 +5,10 @@ module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const lib = new Uploader(crowi.configManager);
 
+  lib.getIsUploadable = function() {
+    return false;
+  };
+
   lib.deleteFile = function(filePath) {
     debug(`File deletion: ${filePath}`);
     throw new Error('not implemented');

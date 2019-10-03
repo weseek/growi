@@ -49,6 +49,17 @@ module.exports = function(crowi) {
     return filePath;
   }
 
+  lib.getIsUploadable = function() {
+    return this.configManager.getConfig('crowi', 'aws:accessKeyId') != null
+      && this.configManager.getConfig('crowi', 'aws:secretAccessKey') != null
+      && (
+        this.configManager.getConfig('crowi', 'aws:region') != null
+          || this.configManager.getConfig('crowi', 'aws:customEndpoint') != null
+      )
+      && this.configManager.getConfig('crowi', 'aws:bucket') != null;
+  };
+
+
   lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
