@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import LineBreakSetting from'./LineBreakSetting';
+import LineBreakSetting from './LineBreakSetting';
 import XssForm from './XssForm';
 
 class MarkdownSetting extends React.Component {
@@ -14,11 +14,7 @@ class MarkdownSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
     this.state = {
-      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       // TODO GW-220 get correct BreakOption value
       pageBreakOption: 1,
       // TODO GW-258 get correct custom regular expression
@@ -43,7 +39,7 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         <div>
-          {/*Line Break Setting*/}
+          {/* Line Break Setting */}
           <LineBreakSetting />
         </div>
 
