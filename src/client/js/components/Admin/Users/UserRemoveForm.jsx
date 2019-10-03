@@ -33,16 +33,11 @@ class UserRemoveForm extends React.Component {
   }
 
   render() {
-    const { t, appContainer } = this.props;
+    const { t } = this.props;
 
     return (
-      <a className="px-4">
-        <form onClick={this.onClickDeleteBtn}>
-          <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-          <span>
-            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
-          </span>
-        </form>
+      <a className="px-4" onClick={this.onClickDeleteBtn}>
+        <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
       </a>
     );
   }
