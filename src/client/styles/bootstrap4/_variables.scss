@@ -7,17 +7,17 @@
 // // Color system
 // //
 
-// $white:    #fff !default;
-// $gray-100: #f8f9fa !default;
-// $gray-200: #e9ecef !default;
-// $gray-300: #dee2e6 !default;
-// $gray-400: #ced4da !default;
-// $gray-500: #adb5bd !default;
-// $gray-600: #6c757d !default;
-// $gray-700: #495057 !default;
-// $gray-800: #343a40 !default;
-// $gray-900: #212529 !default;
-// $black:    #000 !default;
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
 
 // $grays: () !default;
 // // stylelint-disable-next-line scss/dollar-variable-default
@@ -74,27 +74,27 @@
 // $info:          $cyan !default;
 // $warning:       $yellow !default;
 // $danger:        $red !default;
-// $light:         $gray-100 !default;
-// $dark:          $gray-800 !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
 
-// $theme-colors: () !default;
-// // stylelint-disable-next-line scss/dollar-variable-default
-// $theme-colors: map-merge(
-//   (
-//     "primary":    $primary,
-//     "secondary":  $secondary,
-//     "success":    $success,
-//     "info":       $info,
-//     "warning":    $warning,
-//     "danger":     $danger,
-//     "light":      $light,
-//     "dark":       $dark
-//   ),
-//   $theme-colors
-// );
+$theme-colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$theme-colors: map-merge(
+  (
+    'primary':    $primary,
+    // 'secondary':  $secondary,
+    'success':    $success,
+    'info':       $info,
+    'warning':    $warning,
+    'danger':     $danger,
+    'light':      $light,
+    'dark':       $dark
+  ),
+  $theme-colors
+);
 
-// // Set a specific jump point for requesting color jumps
-// $theme-color-interval:      8% !default;
+// Set a specific jump point for requesting color jumps
+$theme-color-interval:      8% !default;
 
 // // The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
 // $yiq-contrasted-threshold:  150 !default;
@@ -103,18 +103,18 @@
 // $yiq-text-dark:             $gray-900 !default;
 // $yiq-text-light:            $white !default;
 
-// // Options
-// //
-// // Quickly modify global styling by enabling or disabling optional features.
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
 
-// $enable-caret:              true !default;
-// $enable-rounded:            true !default;
-// $enable-shadows:            false !default;
-// $enable-gradients:          false !default;
-// $enable-transitions:        true !default;
-// $enable-hover-media-query:  false !default; // Deprecated, no longer affects any compiled CSS
-// $enable-grid-classes:       true !default;
-// $enable-print-styles:       true !default;
+$enable-caret:              true !default;
+$enable-rounded:            true !default;
+$enable-shadows:            false !default;
+$enable-gradients:          false !default;
+$enable-transitions:        true !default;
+$enable-hover-media-query:  false !default; // Deprecated, no longer affects any compiled CSS
+$enable-grid-classes:       true !default;
+$enable-print-styles:       true !default;
 
 // Spacing
 //
@@ -145,19 +145,19 @@ $spacers: map-merge(
   $spacers
 );
 
-// // This variable affects the `.h-*` and `.w-*` classes.
-// $sizes: () !default;
-// // stylelint-disable-next-line scss/dollar-variable-default
-// $sizes: map-merge(
-//   (
-//     25: 25%,
-//     50: 50%,
-//     75: 75%,
-//     100: 100%,
-//     auto: auto
-//   ),
-//   $sizes
-// );
+// This variable affects the `.h-*` and `.w-*` classes.
+$sizes: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$sizes: map-merge(
+  (
+    25: 25%,
+    50: 50%,
+    75: 75%,
+    100: 100%,
+    auto: auto
+  ),
+  $sizes
+);
 
 // // Body
 // //
@@ -224,12 +224,12 @@ $grid-breakpoints: (
 // $line-height-lg:              1.5 !default;
 // $line-height-sm:              1.5 !default;
 
-// $border-width:                1px !default;
-// $border-color:                $gray-300 !default;
+$border-width:                1px !default;
+$border-color:                $gray-300 !default;
 
-// $border-radius:               .25rem !default;
-// $border-radius-lg:            .3rem !default;
-// $border-radius-sm:            .2rem !default;
+$border-radius:               .25rem !default;
+$border-radius-lg:            .3rem !default;
+$border-radius-sm:            .2rem !default;
 
 // $box-shadow-sm:               0 .125rem .25rem rgba($black, .075) !default;
 // $box-shadow:                  0 .5rem 1rem rgba($black, .15) !default;
@@ -606,8 +606,8 @@ $font-weight-bold: 700 !default;
 // // of components dependent on the z-axis and are designed to all work together.
 
 // $zindex-dropdown:                   1000 !default;
-// $zindex-sticky:                     1020 !default;
-// $zindex-fixed:                      1030 !default;
+$zindex-sticky:                     1020 !default;
+$zindex-fixed:                      1030 !default;
 // $zindex-modal-backdrop:             1040 !default;
 // $zindex-modal:                      1050 !default;
 // $zindex-popover:                    1060 !default;
@@ -859,17 +859,17 @@ $font-weight-bold: 700 !default;
 
 // // Image thumbnails
 
-// $thumbnail-padding:                 .25rem !default;
-// $thumbnail-bg:                      $body-bg !default;
-// $thumbnail-border-width:            $border-width !default;
-// $thumbnail-border-color:            $gray-300 !default;
-// $thumbnail-border-radius:           $border-radius !default;
-// $thumbnail-box-shadow:              0 1px 2px rgba($black, .075) !default;
+$thumbnail-padding:                 .25rem !default;
+$thumbnail-bg:                      $body-bg !default;
+$thumbnail-border-width:            $border-width !default;
+$thumbnail-border-color:            $gray-300 !default;
+$thumbnail-border-radius:           $border-radius !default;
+$thumbnail-box-shadow:              0 1px 2px rgba($black, .075) !default;
 
-// // Figures
+// Figures
 
-// $figure-caption-font-size:          90% !default;
-// $figure-caption-color:              $gray-600 !default;
+$figure-caption-font-size:          90% !default;
+$figure-caption-color:              $gray-600 !default;
 
 // // Breadcrumbs
 

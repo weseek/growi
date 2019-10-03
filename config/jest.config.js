@@ -6,6 +6,8 @@ module.exports = {
   verbose: true,
 
   rootDir: '../',
+  globalSetup: '<rootDir>/src/test/global-setup.js',
+  globalTeardown: '<rootDir>/src/test/global-teardown.js',
 
   projects: [
     {

@@ -4,7 +4,7 @@
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
   {% set isGoogleEnabled = getConfig('crowi', 'security:passport-google:isEnabled') | default('') %}
   {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
-  {% set callbackUrl = siteUrl + '/passport/google/callback' %}
+  {% set callbackUrl = pathUtils.removeTrailingSlash(siteUrl) + '/passport/google/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Google.name") }}</label>
@@ -21,6 +21,20 @@
       </div>
     </div>
   </div>
+
+  <div class="form-group">
+    <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+    <div class="col-xs-6">
+        <input class="form-control" type="text" value="{{ callbackUrl }}" readonly>
+      <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'OAuth') }}</p>
+      {% if !getConfig('crowi', 'app:siteUrl') %}
+      <div class="alert alert-danger">
+        <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
   <fieldset id="passport-google-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
@@ -44,19 +58,6 @@
             {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_SECRET") }}
           </small>
         </p>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
-      <div class="col-xs-6">
-          <input class="form-control" type="text" value="{{ callbackUrl }}" readonly>
-        <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'OAuth') }}</p>
-        {% if !getConfig('crowi', 'app:siteUrl') %}
-        <div class="alert alert-danger">
-          <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
-        </div>
-        {% endif %}
       </div>
     </div>
 

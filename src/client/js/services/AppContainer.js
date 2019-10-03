@@ -31,7 +31,7 @@ export default class AppContainer extends Container {
 
     const body = document.querySelector('body');
 
-    this.me = body.dataset.currentUsername;
+    this.me = body.dataset.currentUsername || null; // will be initialized with null when data is empty string
     this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
@@ -69,6 +69,7 @@ export default class AppContainer extends Container {
     this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
+    this.apiDelete = this.apiDelete.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
 
     this.apiv3Root = '/_api/v3';
@@ -288,11 +289,11 @@ export default class AppContainer extends Container {
     targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
   }
 
-  apiGet(path, params) {
+  async apiGet(path, params) {
     return this.apiRequest('get', path, { params });
   }
 
-  apiPost(path, params) {
+  async apiPost(path, params) {
     if (!params._csrf) {
       params._csrf = this.csrfToken;
     }
@@ -300,21 +301,20 @@ export default class AppContainer extends Container {
     return this.apiRequest('post', path, params);
   }
 
-  apiRequest(method, path, params) {
-    return new Promise((resolve, reject) => {
-      axios[method](`/_api${path}`, params)
-        .then((res) => {
-          if (res.data.ok) {
-            resolve(res.data);
-          }
-          else {
-            reject(new Error(res.data.error));
-          }
-        })
-        .catch((res) => {
-          reject(res);
-        });
-    });
+  async apiDelete(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiRequest('delete', path, { data: params });
+  }
+
+  async apiRequest(method, path, params) {
+    const res = await axios[method](`/_api${path}`, params);
+    if (res.data.ok) {
+      return res.data;
+    }
+    throw new Error(res.data.error);
   }
 
   async apiv3Request(method, path, params) {

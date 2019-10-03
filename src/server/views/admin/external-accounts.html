@@ -100,7 +100,7 @@
                   <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">{{ t('user_management.Edit_menu') }}</li>
+                  <li class="dropdown-header">{{ t('user_management.edit_menu') }}</li>
                   <form id="form_remove_{{ loop.index }}" action="/admin/users/external-accounts/{{ account._id.toString() }}/remove" method="post">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                   </form>

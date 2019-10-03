@@ -20,7 +20,7 @@ module.exports = {
   // 'growi:service:GlobalNotification': 'debug',
   // 'growi:lib:importer': 'debug',
   // 'growi:routes:page': 'debug',
-  // 'growi-plugin:*': 'debug',
+  'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
 
   // email

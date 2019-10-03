@@ -142,6 +142,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: undefined,
   },
+  LOCAL_STRATEGY_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-local:isEnabled',
+    type:    TYPES.BOOLEAN,
+    default: true,
+  },
+  LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
+    ns:      'crowi',
+    key:     'security:passport-local:useOnlyEnvVarsForSomeOptions',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',

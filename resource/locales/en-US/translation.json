@@ -8,6 +8,7 @@
   "Click to copy": "Click to copy",
   "Move/Rename": "Move/Rename",
   "Moved": "Moved",
+  "Redirected": "Redirected",
   "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
@@ -112,6 +113,7 @@
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
+  "Export Data": "Export Data",
   "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
   "Register limitation": "Register limitation",
@@ -243,13 +245,14 @@
   },
 
   "page_page": {
-      "notice": {
-          "version": "This is not the current version.",
-          "moved": "This page was moved from <code>%s</code>",
-          "duplicated": "This page was duplicated from <code>%s</code>",
-          "unlinked": "Redirect pages to this page have been deleted.",
-          "restricted": "Access to this page is restricted"
-      }
+    "notice": {
+      "version": "This is not the current version.",
+      "moved": "This page was moved from <code>%s</code>",
+      "redirected": "You are redirected from <code>%s</code>",
+      "duplicated": "This page was duplicated from <code>%s</code>",
+      "unlinked": "Redirect pages to this page have been deleted.",
+      "restricted": "Access to this page is restricted"
+    }
   },
 
   "page_edit": {
@@ -340,7 +343,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit Template Page",
-      "Create template under": "Create template page under: <code>%s</code>"
+      "Create template under": "Create template page under:<br /><code><small>%s</small></code>"
     },
     "option_label": {
       "create/edit": "Create/Edit Template page..",
@@ -428,6 +431,8 @@
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
     "bucket name": "Bucket name",
+    "custom endpoint": "Custom endpoint",
+    "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
     "Plugin settings": "Plugin settings",
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
@@ -475,7 +480,7 @@
       "readonly": "Accept (Guests can read only)"
     },
     "registration_mode": {
-      "open": "Open (Anyone can registre)",
+      "open": "Open (Anyone can register)",
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
@@ -488,6 +493,9 @@
     "Use env var if empty": "Use env var <code>%s</code> if empty",
     "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
+    "Local": {
+      "name": "ID/Password"
+    },
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -528,6 +536,11 @@
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
+    "Basic": {
+      "name": "Basic Authentication",
+      "desc_1": "Login with <code>username</code> in Authorization header.",
+      "desc_2": "User will be automatically generated if not exist."
+    },
     "OAuth": {
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
@@ -536,7 +549,7 @@
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Create Project if no projects exist",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "Facebook": {
@@ -547,13 +560,13 @@
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Sign in Twitter",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "GitHub": {
         "name": "GitHub OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
-        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "OIDC": {
@@ -563,7 +576,7 @@
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
         "mapping_detail": "Specification of mappings for %s when creating new users",
         "register_1": "Contant to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "how_to": {
@@ -700,7 +713,8 @@
     "cannot_remove":"You cannot remove yourself from administrator",
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
     "current_users": "Current users:",
-    "valid_email": "Valid email address is required"
+    "valid_email": "Valid email address is required",
+    "existing_email": "The following emails already exist"
   },
 
   "user_group_management": {
@@ -729,6 +743,18 @@
   "importer_management": {
     "import_form_esa": "Import from esa.io",
     "import_form_qiita": "import_from Qiita:Team",
+    "beta_warning": "This function is Beta.",
+    "import_from": "Import from %s",
+    "import_form_growi": "Import from GROWI",
+    "growi_settings": {
+      "overwrite_documents": "Imported documents will overwrite existing documents",
+      "zip_file": "Zip File",
+      "uploaded_data": "Uploaded Data",
+      "extracted_file": "Extracted File",
+      "collection": "Collection",
+      "upload": "Upload",
+      "discard": "Discard Uploaded Data"
+    },
     "esa_settings": {
       "team_name": "Team name",
       "access_token": "Access token",
@@ -750,5 +776,22 @@
     "rebuild_description_1":"Force rebuild index.",
     "rebuild_description_2":"Click 'Build Now' to delete and create mapping file and add all pages.",
     "rebuild_description_3":"This may take a while."
+  },
+  "export_management": {
+    "beta_warning": "This function is Beta.",
+    "exported_data_list": "Exported Data List",
+    "export_collections": "Export Collections",
+    "check_all": "Check All",
+    "uncheck_all": "Uncheck All",
+    "create_new_exported_data": "Create New Exported Data",
+    "export": "Export",
+    "cancel": "Cancel",
+    "file": "File",
+    "growi_version": "Growi Version",
+    "collections": "Collections",
+    "exported_at": "Exported At",
+    "export_menu": "Export Menu",
+    "download": "Download",
+    "delete": "Delete"
   }
 }

@@ -36,18 +36,19 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path: mainContent.getAttribute('data-path'),
+      tocHtml: '',
       isLiked: false,
       seenUserIds: [],
       likerUserIds: [],
 
       tags: [],
-      templateTagData: mainContent.getAttribute('data-template-tags'),
+      templateTagData: mainContent.getAttribute('data-template-tags') || null,
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
-      revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
+      revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null,
       lastUpdateUsername: undefined,
-      pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd'),
+      pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
     };
@@ -55,6 +56,7 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.initStateOthers();
 
+    this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
@@ -110,6 +112,11 @@ export default class PageContainer extends Container {
     });
   }
 
+  setTocHtml(tocHtml) {
+    if (this.state.tocHtml !== tocHtml) {
+      this.setState({ tocHtml });
+    }
+  }
 
   /**
    * save success handler

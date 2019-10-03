@@ -4,7 +4,7 @@
   {% set nameForIsOIDCEnabled = "settingForm[security:passport-oidc:isEnabled]" %}
   {% set isOidcEnabled = getConfig('crowi', 'security:passport-oidc:isEnabled') %}
   {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
-  {% set callbackUrl = siteUrl + '/passport/oidc/callback' %}
+  {% set callbackUrl = pathUtils.removeTrailingSlash(siteUrl) + '/passport/oidc/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsOIDCEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.OIDC.name") }}</label>
@@ -21,6 +21,20 @@
       </div>
     </div>
   </div>
+
+  <div class="form-group">
+    <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+    <div class="col-xs-6">
+      <input class="form-control" type="text" value="{{ callbackUrl }}" readonly>
+      <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'OAuth') }}</p>
+      {% if !getConfig('crowi', 'app:siteUrl') %}
+      <div class="alert alert-danger">
+        <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
   <fieldset id="passport-oidc-hide-when-disabled" {%if !isOidcEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">

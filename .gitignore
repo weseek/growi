@@ -19,6 +19,7 @@ package-lock.json
 # Dist #
 /report/
 /public/*.chunk.js
+/public/*.chunk.js.LICENSE
 /public/*.bundle.js
 /public/manifest.json
 /public/dll
