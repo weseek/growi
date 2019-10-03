@@ -23,7 +23,7 @@
 }
 
 //** override bootstrap nav nav-tabs nav-item
-.nav.nav-tabs > .nav-item {
+@mixin grw-nav-tab-set($nav-main-left-tab-width: 95px) {
   position: relative;
   min-width: $nav-main-left-tab-width;
   padding: auto;
@@ -51,4 +51,12 @@
     content: '';
     border-bottom: $active-tab-border-width solid $active-tab-border-bg;
   }
+}
+
+.nav.nav-tabs > .nav-item {
+  @include grw-nav-tab-set;
+}
+
+.nav.nav-tabs.grw-nav-tabs-wide > .nav-item {
+  @include grw-nav-tab-set($nav-main-left-tab-width: 145px);
 }
