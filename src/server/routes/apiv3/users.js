@@ -1,3 +1,6 @@
+const loggerFactory = require('@alias/logger');
+
+const logger = loggerFactory('growi:routes:apiv3:user-group');
 
 const express = require('express');
 
@@ -79,6 +82,7 @@ module.exports = (crowi) => {
       return res.apiv3({ emailList });
     }
     catch (err) {
+      logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -120,6 +124,7 @@ module.exports = (crowi) => {
       return res.apiv3({ userData });
     }
     catch (err) {
+      logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(err));
     }
   });
