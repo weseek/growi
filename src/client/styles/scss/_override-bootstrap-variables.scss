@@ -58,3 +58,12 @@ $input-bg-disabled:              $btn-default-bgcolor;
 
 //** `<input>` border color
 $input-border:                   $border;
+
+//** override bootstrap theme colors
+$theme-colors: (
+  'primary': #337ab7,
+  'success': #2cce90,
+  'info': #31708f,
+  'warning': #8a6d3b,
+  'danger': #ff0a54
+);

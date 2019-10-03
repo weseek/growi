@@ -101,22 +101,6 @@
   }
 } // }}}
 
-// fix tab width to 95 pixels
-// see also '_on-edit.scss'
-$nav-main-left-tab-width: 95px;
-$nav-main-tab-height: 44px;
-
-.nav.nav-tabs {
-  .nav-main-left-tab {
-    width: $nav-main-left-tab-width;
-    text-align: center;
-    a {
-      padding-right: 0;
-      padding-left: 0;
-    }
-  }
-}
-
 // printable style
 @media print {
   .main-container {
@@ -181,4 +165,17 @@ $nav-main-tab-height: 44px;
       fill: white !important;
     }
   }
+}
+
+// header widget area
+.grw-title-bar {
+  background: $grw-floral-white;
+}
+
+// bg-title for .row
+.bg-title {
+  padding: 6px 0;
+  margin-right: -15px;
+  margin-left: -15px;
+  overflow: unset;
 }

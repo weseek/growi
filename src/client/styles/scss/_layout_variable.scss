@@ -5,6 +5,7 @@ $grw-base-green: rgb(7, 146, 72);
 $grw-mos-green: rgb(5, 70, 35);
 $grw-light-green: rgb(204, 238, 220);
 $grw-white-green: #f8fffb;
+$grw-sea-green: seagreen;
 
 .bg-grw-green {
   background: $grw-base-green;
@@ -23,3 +24,13 @@ $grw-alice-blue: aliceblue;
 
 /* gray */
 $grw-line-gray: #dee2e6;
+$grw-line-light-gray: #ddd;
+
+/* white */
+$grw-floral-white: floralwhite;
+
+// fix tab width to 95 pixels
+// see also '_on-edit.scss'
+$nav-main-left-tab-width: 95px;
+$nav-main-tab-height: 44px;
+$nav-main-tab-font-size: 16px;
