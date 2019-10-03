@@ -4,13 +4,15 @@ import each from 'jest-each';
 
 const { getInstance } = require('../setup-crowi');
 
-describe('middlewares.loginRequired', () => {
+describe('loginRequired', () => {
   let crowi;
-  let middlewares;
+  let loginRequiredStrictly;
+  let loginRequired;
 
   beforeEach(async(done) => {
     crowi = await getInstance();
-    middlewares = require('@server/util/middlewares')(crowi, null);
+    loginRequiredStrictly = require('@server/middleware/login-required')(crowi);
+    loginRequired = require('@server/middleware/login-required')(crowi, true);
     done();
   });
 
@@ -29,13 +31,6 @@ describe('middlewares.loginRequired', () => {
       redirect: jest.fn().mockReturnValue('redirect'),
     };
     const next = jest.fn().mockReturnValue('next');
-
-    let loginRequired;
-
-    beforeEach(async(done) => {
-      loginRequired = middlewares.loginRequired(false);
-      done();
-    });
 
     test('pass guest user when aclService.isGuestAllowedToRead() returns true', () => {
       // prepare spy for AclService.isGuestAllowedToRead
@@ -79,11 +74,9 @@ describe('middlewares.loginRequired', () => {
     };
     const next = jest.fn().mockReturnValue('next');
 
-    let loginRequired;
     let isGuestAllowedToReadSpy;
 
     beforeEach(async(done) => {
-      loginRequired = middlewares.loginRequired();
       // reset session object
       req.session = {};
       // spy for AclService.isGuestAllowedToRead
@@ -94,7 +87,7 @@ describe('middlewares.loginRequired', () => {
     test('send status 403 when \'req.path\' starts with \'_api\'', () => {
       req.path = '/_api/someapi';
 
-      const result = loginRequired(req, res, next);
+      const result = loginRequiredStrictly(req, res, next);
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
@@ -107,7 +100,7 @@ describe('middlewares.loginRequired', () => {
     test('redirect to \'/login\' when the user does not loggedin', () => {
       req.path = '/path/that/requires/loggedin';
 
-      const result = loginRequired(req, res, next);
+      const result = loginRequiredStrictly(req, res, next);
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();
@@ -126,7 +119,7 @@ describe('middlewares.loginRequired', () => {
         status: User.STATUS_ACTIVE,
       };
 
-      const result = loginRequired(req, res, next);
+      const result = loginRequiredStrictly(req, res, next);
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
@@ -150,7 +143,7 @@ describe('middlewares.loginRequired', () => {
           status: userStatus,
         };
 
-        const result = loginRequired(req, res, next);
+        const result = loginRequiredStrictly(req, res, next);
 
         expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
         expect(next).not.toHaveBeenCalled();
@@ -170,7 +163,7 @@ describe('middlewares.loginRequired', () => {
         status: User.STATUS_DELETED,
       };
 
-      const result = loginRequired(req, res, next);
+      const result = loginRequiredStrictly(req, res, next);
 
       expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
       expect(next).not.toHaveBeenCalled();

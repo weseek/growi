@@ -62,7 +62,7 @@ class InstallerForm extends React.Component {
               value="en-US"
               checked={checkedBtn === 'en-US'}
               inline
-              onClick={() => { return this.changeLanguage('en-US') }}
+              onChange={(e) => { if (e.target.checked) { this.changeLanguage('en-US') } }}
             >
               English
             </Radio>
@@ -71,7 +71,7 @@ class InstallerForm extends React.Component {
               value="ja"
               checked={checkedBtn === 'ja'}
               inline
-              onClick={() => { return this.changeLanguage('ja') }}
+              onChange={(e) => { if (e.target.checked) { this.changeLanguage('ja') } }}
             >
               日本語
             </Radio>

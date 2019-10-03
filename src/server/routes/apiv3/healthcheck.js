@@ -22,8 +22,6 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Healthcheck]
    *      description: Check whether the server is healthy or not
-   *      produces:
-   *        - application/json
    *      parameters:
    *        - name: connectToMiddlewares
    *          in: query

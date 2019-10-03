@@ -1,8 +1,97 @@
 # CHANGES
 
-## 3.5.5-RC
+## 3.5.16-RC
 
+* Fix: Full Text Search doesn't work after when building indices
+    * Introduced by 3.5.12
+
+## 3.5.15
+
+* Feature: Import/Export Page data
+* Fix: The link to Sandbox on Markdown Help Modal doesn't work
+* Support: Upgrade libs
+    * codemirror
+
+## 3.5.14 (Missing number)
+
+## 3.5.13
+
+* Feature: Re-edit comments
+* Support: [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs)
+* Support: Upgrade libs
+    * entities
+    * markdown-it
+
+## 3.5.12
+
+* Improvement: Use Elasticsearch Alias
+* Improvement: Connect to HTTPS PlantUML URL in default
+* Fix: Global Notification doesn't work after updating Webhook URL
+* Fix: User Trigger Notification is not be sent when channel is not specified
+* Support: Upgrade libs
+    * terser-webpack-plugin
+
+## 3.5.11
+
+* Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
+    * Introduced by 3.5.8
+* Fix: Timeline doesn't work
+    * Introduced by 3.5.1
+* Fix: Last Login field does not shown in /admin/user
+* Support: Upgrade libs
+    * env-cmd
+    * sass-loader
+    * webpack
+    * webpack-cli
+    * webpack-merge
+
+## 3.5.10
+
+* Feature: Send Global Notification with Slack
+* Improvement: Show loading spinner when fetching page history data
+* Improvement: Hierarchical page link when the page is in /Trash
+* Fix: Code Highlight Theme does not change
+    * Introduced by 3.5.2
+* Support: Upgrade libs
+    * date-fns
+    * eslint-config-weseek
+
+## 3.5.9
+
+* Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
+* Fix: Plugins are not initialized when first launching
+    * Introduced by 3.5.0
+* Support: Upgrade libs
+    * entities
+    * growi-commons
+    * openid-client
+    * rimraf
+    * style-loader
+
+## 3.5.8
+
+* Improvement: Controls when HackMD/CodiMD has unsaved draft
+* Improvement: Show hints if HackMD/CodiMD integration is not working
+* Improvement: GROWI server obtains HackMD/CodiMD page id from the 302 response header
+* Improvement: Comment Thread Layout
+* Improvement: Show commented date with date distance format
+
+## 3.5.7 (Missing number)
+
+## 3.5.6
+
+* Fix: Saving new page is failed when empty string tag is set
+* Fix: Link of Create template page button in New Page Modal is broken
+* Fix: Global Notification dows not work when creating/moving/deleting/like/comment
+
+## 3.5.5
+
+* Feature: Support S3-compatible object storage (e.g. MinIO)
+* Feature: Enable/Disable ID/Password Authentication
+* Improvement: Login Mechanism with HTTP Basic Authentication header
+* Improvement: Reactify Table Of Contents
 * Fix: Profile images are broken in User Management
+* Fix: Template page under root page doesn't work
 * Support: Upgrade libs
     * csv-to-markdown-table
     * express-validator

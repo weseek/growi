@@ -1,8 +1,8 @@
 export default class TocAndAnchorConfigurer {
 
-  constructor(crowi, renderToc) {
+  constructor(crowi, setHtml) {
     this.crowi = crowi;
-    this.renderToc = renderToc;
+    this.setHtml = setHtml;
   }
 
   configure(md) {
@@ -15,10 +15,10 @@ export default class TocAndAnchorConfigurer {
     });
 
     // set toc render function
-    if (this.renderToc != null) {
+    if (this.setHtml != null) {
       md.set({
         tocCallback: (tocMarkdown, tocArray, tocHtml) => {
-          this.renderToc(tocHtml);
+          this.setHtml(tocHtml);
         },
       });
     }

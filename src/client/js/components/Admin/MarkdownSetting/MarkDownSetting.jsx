@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import XssForm from './XssForm';
 
 class MarkdownSetting extends React.Component {
 
@@ -21,8 +22,6 @@ class MarkdownSetting extends React.Component {
       pageBreakOption: 1,
       // TODO GW-258 get correct custom regular expression
       customRegularExpression: '',
-      // TODO GW-221 get correct Xss value
-      isEnabledXss: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -130,29 +129,13 @@ class MarkdownSetting extends React.Component {
 
           </fieldset>
         </div>
-
+        {/* XSS Setting */}
         <div className="row my-3">
           <div className="form-group">
             <legend>{ t('markdown_setting.XSS_setting') }</legend>
             <p className="well">{ t('markdown_setting.XSS_setting_desc') }</p>
           </div>
-          <fieldset className="row">
-            <div className="form-group">
-              <label className="col-xs-4 control-label text-right">
-                { t('markdown_setting.Enable XSS prevention') }
-              </label>
-              <div className="col-xs-5">
-                <input type="checkbox" name="isEnabledXss" checked={this.state.isEnabledXss} onChange={this.handleInputChange} />
-              </div>
-            </div>
-
-            <div className="form-group my-3">
-              <div className="col-xs-offset-4 col-xs-5">
-                <button type="submit" className="btn btn-primary">{ t('Update') }</button>
-              </div>
-            </div>
-
-          </fieldset>
+          <XssForm />
         </div>
       </React.Fragment>
     );

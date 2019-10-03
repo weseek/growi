@@ -1,16 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import { Provider } from 'unstated';
-
-import { debounce } from 'throttle-debounce';
-
 import { pathUtils } from 'growi-commons';
-
-import GrowiRenderer from '../util/GrowiRenderer';
-import RevisionLoader from '../components/Page/RevisionLoader';
 
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -25,14 +15,6 @@ if (!window) {
   window = {};
 }
 window.Crowi = Crowi;
-
-/**
- * render Table Of Contents
- * @param {string} tocHtml
- */
-Crowi.renderTocContent = (tocHtml) => {
-  $('#revision-toc-content').html(tocHtml);
-};
 
 /**
  * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
@@ -155,60 +137,6 @@ Crowi.initAffix = () => {
     });
     $affixContentContainer.css({ 'min-height': containerHeight });
   }
-};
-
-Crowi.initSlimScrollForRevisionToc = () => {
-  const revisionTocElem = document.querySelector('.growi .revision-toc');
-  const tocContentElem = document.querySelector('.growi .revision-toc .markdownIt-TOC');
-
-  // growi layout only
-  if (revisionTocElem == null || tocContentElem == null) {
-    return;
-  }
-
-  function getCurrentRevisionTocTop() {
-    // calculate absolute top of '#revision-toc' element
-    return revisionTocElem.getBoundingClientRect().top;
-  }
-
-  function resetScrollbar(revisionTocTop) {
-    // window height - revisionTocTop - .system-version height
-    let h = window.innerHeight - revisionTocTop - 20;
-
-    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
-
-    h = Math.min(h, tocContentHeight);
-
-    $('#revision-toc-content').slimScroll({
-      railVisible: true,
-      position: 'right',
-      height: h,
-    });
-  }
-
-  const resetScrollbarDebounced = debounce(100, resetScrollbar);
-
-  // initialize
-  const revisionTocTop = getCurrentRevisionTocTop();
-  resetScrollbar(revisionTocTop);
-
-  /*
-   * set event listener
-   */
-  // resize
-  window.addEventListener('resize', (event) => {
-    resetScrollbarDebounced(getCurrentRevisionTocTop());
-  });
-  // affix on
-  $('#revision-toc').on('affixed.bs.affix', () => {
-    resetScrollbar(getCurrentRevisionTocTop());
-  });
-  // affix off
-  $('#revision-toc').on('affixed-top.bs.affix', () => {
-    // calculate sum of height (.navbar-header + .bg-title) + margin-top of .main
-    const sum = 138;
-    resetScrollbar(sum);
-  });
 };
 
 Crowi.initClassesByOS = function() {
@@ -551,44 +479,6 @@ $(() => {
     $link.html(path.replace(new RegExp(pattern), `<strong>${shortPath}$1</strong>`));
   });
 
-  // for list page
-  let growiRendererForTimeline = null;
-  $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', () => {
-    const isShown = $('#view-timeline').data('shown');
-
-    if (growiRendererForTimeline == null) {
-      growiRendererForTimeline = GrowiRenderer.generate('timeline');
-    }
-
-    if (isShown === 0) {
-      $('#view-timeline .timeline-body').each(function() {
-        const id = $(this).attr('id');
-        const revisionBody = `#${id} .revision-body`;
-        const revisionBodyElem = document.querySelector(revisionBody);
-        const revisionPath = `#${id} .revision-path`; // eslint-disable-line no-unused-vars
-        const timelineElm = document.getElementById(id);
-        const pageId = timelineElm.getAttribute('data-page-id');
-        const pagePath = timelineElm.getAttribute('data-page-path');
-        const revisionId = timelineElm.getAttribute('data-revision');
-
-        ReactDOM.render(
-          <Provider inject={[appContainer]}>
-            <RevisionLoader
-              lazy
-              growiRenderer={growiRendererForTimeline}
-              pageId={pageId}
-              pagePath={pagePath}
-              revisionId={revisionId}
-            />
-          </Provider>,
-          revisionBodyElem,
-        );
-      });
-
-      $('#view-timeline').data('shown', 1);
-    }
-  });
-
   if (pageId) {
     // for Crowi Template LangProcessor
     $('.template-create-button', $('#revision-body')).on('click', function() {
@@ -769,7 +659,6 @@ window.addEventListener('load', (e) => {
 
   Crowi.highlightSelectedSection(window.location.hash);
   Crowi.modifyScrollTop();
-  Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
   Crowi.initClassesByOS();
 });

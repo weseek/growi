@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import SplitButton from 'react-bootstrap/es/SplitButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
-
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -20,9 +17,12 @@ class PageEditorByHackmd extends React.Component {
     super(props);
 
     this.state = {
-      markdown: this.props.pageContainer.state.markdown,
       isInitialized: false,
       isInitializing: false,
+      // for error
+      hasError: false,
+      errorMessage: '',
+      errorReason: '',
     };
 
     this.getHackmdUri = this.getHackmdUri.bind(this);
@@ -30,6 +30,7 @@ class PageEditorByHackmd extends React.Component {
     this.resumeToEdit = this.resumeToEdit.bind(this);
     this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
+    this.penpalErrorOccuredHandler = this.penpalErrorOccuredHandler.bind(this);
   }
 
   componentWillMount() {
@@ -45,11 +46,7 @@ class PageEditorByHackmd extends React.Component {
       return Promise.reject(new Error('HackmdEditor component has not initialized'));
     }
 
-    return this.hackmdEditor.getValue()
-      .then((document) => {
-        this.setState({ markdown: document });
-        return document;
-      });
+    return this.hackmdEditor.getValue();
   }
 
   /**
@@ -67,7 +64,7 @@ class PageEditorByHackmd extends React.Component {
   /**
    * Start integration with HackMD
    */
-  startToEdit() {
+  async startToEdit() {
     const { pageContainer } = this.props;
     const hackmdUri = this.getHackmdUri();
 
@@ -84,26 +81,33 @@ class PageEditorByHackmd extends React.Component {
     const params = {
       pageId: pageContainer.state.pageId,
     };
-    this.props.appContainer.apiPost('/hackmd.integrate', params)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(res.error);
-        }
 
-        this.setState({
-          isInitialized: true,
-        });
-        pageContainer.setState({
-          pageIdOnHackmd: res.pageIdOnHackmd,
-          revisionIdHackmdSynced: res.revisionIdHackmdSynced,
-        });
-      })
-      .catch((err) => {
-        pageContainer.showErrorToastr(err);
-      })
-      .then(() => {
-        this.setState({ isInitializing: false });
+    try {
+      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      await pageContainer.setState({
+        pageIdOnHackmd: res.pageIdOnHackmd,
+        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
       });
+    }
+    catch (err) {
+      pageContainer.showErrorToastr(err);
+
+      this.setState({
+        hasError: true,
+        errorMessage: 'GROWI server failed to connect to HackMD.',
+        errorReason: err.toString(),
+      });
+    }
+
+    this.setState({
+      isInitialized: true,
+      isInitializing: false,
+    });
   }
 
   /**
@@ -116,8 +120,27 @@ class PageEditorByHackmd extends React.Component {
   /**
    * Reset draft
    */
-  discardChanges() {
-    this.props.pageContainer.setState({ hasDraftOnHackmd: false });
+  async discardChanges() {
+    const { pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    try {
+      const res = await this.props.appContainer.apiPost('/hackmd.discard', { pageId });
+
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+
+      this.props.pageContainer.setState({
+        hasDraftOnHackmd: false,
+        pageIdOnHackmd: res.pageIdOnHackmd,
+        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      pageContainer.showErrorToastr(err);
+    }
   }
 
   /**
@@ -160,7 +183,7 @@ class PageEditorByHackmd extends React.Component {
     }
 
     // do nothing if contents are same
-    if (this.state.markdown === body) {
+    if (pageContainer.state.markdown === body) {
       return;
     }
 
@@ -178,7 +201,19 @@ class PageEditorByHackmd extends React.Component {
     }
   }
 
-  render() {
+  penpalErrorOccuredHandler(error) {
+    const { pageContainer } = this.props;
+
+    pageContainer.showErrorToastr(error);
+
+    this.setState({
+      hasError: true,
+      errorMessage: 'GROWI client failed to connect to GROWI agent for HackMD.',
+      errorReason: error.toString(),
+    });
+  }
+
+  renderPreInitContent() {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer } = this.props;
     const {
@@ -188,26 +223,8 @@ class PageEditorByHackmd extends React.Component {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
     const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
-    if (this.state.isInitialized) {
-      return (
-        <HackmdEditor
-          ref={(c) => { this.hackmdEditor = c }}
-          hackmdUri={hackmdUri}
-          pageIdOnHackmd={pageIdOnHackmd}
-          initializationMarkdown={isResume ? null : this.state.markdown}
-          onChange={this.hackmdEditorChangeHandler}
-          onSaveWithShortcut={(document) => {
-            this.onSaveWithShortcut(document);
-          }}
-        >
-        </HackmdEditor>
-      );
-    }
-
-    const isRevisionOutdated = revisionId !== remoteRevisionId;
-    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
-
     let content;
+
     /*
      * HackMD is not setup
      */
@@ -222,58 +239,59 @@ class PageEditorByHackmd extends React.Component {
      * Resume to edit or discard changes
      */
     else if (isResume) {
-      const title = (
-        <React.Fragment>
-          <span className="btn-label"><i className="icon-control-end"></i></span>
-          Resume to edit with HackMD
-        </React.Fragment>
-      );
+      const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <div className="text-center hackmd-resume-button-container mb-3">
-            <SplitButton
-              id="split-button-resume-hackmd"
-              title={title}
-              bsStyle="success"
-              bsSize="large"
-              className="btn-resume waves-effect waves-light"
-              onClick={() => { return this.resumeToEdit() }}
-            >
-              <MenuItem className="text-center" onClick={() => { return this.discardChanges() }}>
-                <i className="icon-control-rewind"></i> Discard changes
-              </MenuItem>
-            </SplitButton>
-          </div>
-          <p className="text-center">
-            Click to edit from the previous continuation<br />
-            or
-            <button
-              type="button"
-              className="btn btn-link text-danger p-0 hackmd-discard-button"
-              onClick={() => { return this.discardChanges() }}
-            >
-              Discard changes
-            </button>.
-          </p>
-          { isHackmdDocumentOutdated
-            && (
-            <div className="panel panel-warning mt-5">
+          <p className="text-center"><strong>HackMD has unsaved draft.</strong></p>
+
+          { isHackmdDocumentOutdated && (
+            <div className="panel panel-warning">
               <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
               <div className="panel-body text-center">
                 The current draft on HackMD is based on&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.<br />
-                <button
-                  type="button"
-                  className="btn btn-link text-danger p-0 hackmd-discard-button"
-                  onClick={() => { return this.discardChanges() }}
-                >
-                  Discard it
-                </button> to start to edit with current revision.
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.
+
+                <div className="text-center mt-3">
+                  <button
+                    className="btn btn-link btn-view-outdated-draft p-0"
+                    type="button"
+                    disabled={this.state.isInitializing}
+                    onClick={() => { return this.resumeToEdit() }}
+                  >
+                    View the outdated draft on HackMD
+                  </button>
+                </div>
               </div>
             </div>
-            )
-          }
+          ) }
+
+          { !isHackmdDocumentOutdated && (
+            <div className="text-center hackmd-resume-button-container mb-3">
+              <button
+                className="btn btn-success btn-lg waves-effect waves-light"
+                type="button"
+                disabled={this.state.isInitializing}
+                onClick={() => { return this.resumeToEdit() }}
+              >
+                <span className="btn-label"><i className="icon-control-end"></i></span>
+                <span className="btn-text">Resume to edit with HackMD</span>
+              </button>
+            </div>
+          ) }
+
+          <div className="text-center hackmd-discard-button-container mb-3">
+            <button
+              className="btn btn-default btn-lg waves-effect waves-light"
+              type="button"
+              onClick={() => { return this.discardChanges() }}
+            >
+              <span className="btn-label"><i className="icon-control-start"></i></span>
+              <span className="btn-text">Discard changes of HackMD</span>
+            </button>
+          </div>
+
         </div>
       );
     }
@@ -281,6 +299,8 @@ class PageEditorByHackmd extends React.Component {
      * Start to edit
      */
     else {
+      const isRevisionOutdated = revisionId !== remoteRevisionId;
+
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
@@ -303,6 +323,63 @@ class PageEditorByHackmd extends React.Component {
     return (
       <div className="hackmd-preinit d-flex justify-content-center align-items-center">
         {content}
+      </div>
+    );
+  }
+
+  render() {
+    const hackmdUri = this.getHackmdUri();
+    const { pageContainer } = this.props;
+    const {
+      markdown, pageIdOnHackmd, hasDraftOnHackmd,
+    } = pageContainer.state;
+
+    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
+    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
+
+    let content;
+
+    if (this.state.isInitialized) {
+      content = (
+        <HackmdEditor
+          ref={(c) => { this.hackmdEditor = c }}
+          hackmdUri={hackmdUri}
+          pageIdOnHackmd={pageIdOnHackmd}
+          initializationMarkdown={isResume ? null : markdown}
+          onChange={this.hackmdEditorChangeHandler}
+          onSaveWithShortcut={(document) => {
+            this.onSaveWithShortcut(document);
+          }}
+          onPenpalErrorOccured={this.penpalErrorOccuredHandler}
+        >
+        </HackmdEditor>
+      );
+    }
+    else {
+      content = this.renderPreInitContent();
+    }
+
+
+    return (
+      <div className="position-relative">
+
+        {content}
+
+        { this.state.hasError && (
+          <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
+            <div className="white-box text-center">
+              <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> HackMD Integration failed</h2>
+              <h4>{this.state.errorMessage}</h4>
+              <p className="well well-sm text-danger">
+                {this.state.errorReason}
+              </p>
+              <p>
+                Check your configuration following <a href="https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html">the manual</a>.
+              </p>
+            </div>
+          </div>
+        ) }
+
       </div>
     );
   }

@@ -5,7 +5,7 @@
   {% set isSamlEnabled  = getConfig('crowi', 'security:passport-saml:isEnabled') %}
   {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions') %}
   {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
-  {% set callbackUrl = siteUrl + '/passport/saml/callback' %}
+  {% set callbackUrl = pathUtils.removeTrailingSlash(siteUrl) + '/passport/saml/callback' %}
 
   {% if useOnlyEnvVars %}
     <p class="alert alert-info">

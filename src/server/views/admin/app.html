@@ -253,6 +253,19 @@
         </div>
 
         <div class="form-group">
+          <label for="settingForm[aws:customEndpoint]" class="col-xs-3 control-label">{{ t('app_setting.custom endpoint') }}</label>
+          <div class="col-xs-6">
+            <input class="form-control"
+                   id="settingForm[aws:customEndpoint]"
+                   type="text"
+                   name="settingForm[aws:customEndpoint]"
+                   placeholder="例: http://localhost:9000"
+                   value="{{ getConfig('crowi', 'aws:customEndpoint') | default('') }}">
+                   <p class="help-block">{{ t("app_setting.custom_endpoint_change") }}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="settingForm[aws:bucket]" class="col-xs-3 control-label">{{ t('app_setting.bucket name') }}</label>
           <div class="col-xs-6">
             <input class="form-control"

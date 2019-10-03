@@ -22,6 +22,10 @@ const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/
  */
 
 module.exports = (crowi) => {
+  const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
+  const adminRequired = require('../../middleware/admin-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
+
   const {
     ErrorV3,
     UserGroup,
@@ -30,12 +34,6 @@ module.exports = (crowi) => {
     Page,
   } = crowi.models;
   const { ApiV3FormValidator } = crowi.middlewares;
-
-  const {
-    loginRequired,
-    adminRequired,
-    csrfVerify: csrf,
-  } = require('../../util/middlewares')(crowi);
 
   /**
    * @swagger
@@ -58,7 +56,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequired(), adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     // TODO: filter with querystring
     try {
       const page = parseInt(req.query.page) || 1;
@@ -107,7 +105,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequired(), adminRequired, csrf, validator.create, ApiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, ApiV3FormValidator, async(req, res) => {
     const { name } = req.body;
 
     try {
@@ -166,7 +164,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.removeCompletelyById`
    */
-  router.delete('/:id', loginRequired(), adminRequired, csrf, validator.delete, ApiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequiredStrictly, adminRequired, csrf, validator.delete, ApiV3FormValidator, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
@@ -218,7 +216,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  router.put('/:id', loginRequired(), adminRequired, csrf, validator.update, ApiV3FormValidator, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, ApiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const { name } = req.body;
 
@@ -276,7 +274,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: user objects
    */
-  router.get('/:id/users', loginRequired(), adminRequired, async(req, res) => {
+  router.get('/:id/users', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -325,7 +323,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: user objects
    */
-  router.get('/:id/unrelated-users', loginRequired(), adminRequired, async(req, res) => {
+  router.get('/:id/unrelated-users', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -385,7 +383,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the associative entity between user and userGroup
    */
-  router.post('/:id/users/:username', loginRequired(), adminRequired, validator.users.post, ApiV3FormValidator, async(req, res) => {
+  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, ApiV3FormValidator, async(req, res) => {
     const { id, username } = req.params;
 
     try {
@@ -450,7 +448,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the associative entity between user and userGroup
    */
-  router.delete('/:id/users/:username', loginRequired(), adminRequired, validator.users.delete, ApiV3FormValidator, async(req, res) => {
+  router.delete('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.delete, ApiV3FormValidator, async(req, res) => {
     const { id, username } = req.params;
 
     try {
@@ -506,7 +504,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroupRelation objects
    */
-  router.get('/:id/user-group-relations', loginRequired(), adminRequired, async(req, res) => {
+  router.get('/:id/user-group-relations', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -559,7 +557,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: page objects
    */
-  router.get('/:id/pages', loginRequired(), adminRequired, validator.pages.get, ApiV3FormValidator, async(req, res) => {
+  router.get('/:id/pages', loginRequiredStrictly, adminRequired, validator.pages.get, ApiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const { limit, offset } = req.query;
 

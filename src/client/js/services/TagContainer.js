@@ -49,7 +49,9 @@ export default class TagContainer extends Container {
     }
     // when the page not exist
     else if (templateTagData != null) {
-      tags = templateTagData.split(',');
+      tags = templateTagData.split(',').filter((str) => {
+        return str !== ''; // filter empty values
+      });
     }
 
     logger.debug('tags data has been initialized');

@@ -9,7 +9,7 @@
 #   - $WERCKER_TOKEN
 #   - $GROWI_DOCKER_PIPELINE_ID
 #   - $RELEASE_VERSION
-#   - $WERCKER_GIT_COMMIT
+#   - $RELEASE_GIT_COMMIT
 #
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \

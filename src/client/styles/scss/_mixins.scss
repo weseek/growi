@@ -73,6 +73,7 @@
       #page-editor-with-hackmd {
         &,
         .hackmd-preinit,
+        .hackmd-error,
         #iframe-hackmd-container > iframe {
           width: 100vw;
           height: calc(100vh - #{$header-plus-footer});

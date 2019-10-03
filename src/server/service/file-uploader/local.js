@@ -31,6 +31,14 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFileByFilePath = async function(filePath) {
+    // check file exists
+    try {
+      fs.statSync(filePath);
+    }
+    catch (err) {
+      logger.warn(`Any AttachmentFile which path is '${filePath}' does not exist in local fs`);
+    }
+
     return fs.unlinkSync(filePath);
   };
 

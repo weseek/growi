@@ -19,13 +19,13 @@ class CdnResourcesService {
     this.loadManifests();
   }
 
+  get noCdn() {
+    return envUtils.toBoolean(process.env.NO_CDN);
+  }
+
   loadManifests() {
     this.cdnManifests = require('@root/resource/cdn-manifests');
     this.logger.debug('manifest data loaded : ', this.cdnManifests);
-  }
-
-  noCdn() {
-    return envUtils.toBoolean(process.env.NO_CDN);
   }
 
   getScriptManifestByName(name) {
@@ -91,7 +91,7 @@ class CdnResourcesService {
 
     // TODO process integrity
 
-    const url = this.noCdn()
+    const url = this.noCdn
       ? `${urljoin(cdnLocalScriptWebRoot, manifest.name)}.js`
       : manifest.url;
     return `<script src="${url}" ${attrs.join(' ')}></script>`;
@@ -130,7 +130,7 @@ class CdnResourcesService {
 
     // TODO process integrity
 
-    const url = this.noCdn()
+    const url = this.noCdn
       ? `${urljoin(cdnLocalStyleWebRoot, manifest.name)}.css`
       : manifest.url;
 

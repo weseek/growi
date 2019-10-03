@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import connectToChild from 'penpal/lib/connectToChild';
 
 const DEBUG_PENPAL = false;
 
+const logger = loggerFactory('growi:HackmdEditor');
+
 export default class HackmdEditor extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-    };
 
     this.hackmd = null;
 
@@ -26,7 +26,7 @@ export default class HackmdEditor extends React.PureComponent {
     this.initHackmdWithPenpal();
   }
 
-  initHackmdWithPenpal() {
+  async initHackmdWithPenpal() {
     const _this = this; // for in methods scope
 
     const iframe = document.createElement('iframe');
@@ -43,14 +43,24 @@ export default class HackmdEditor extends React.PureComponent {
           _this.saveWithShortcutHandler(document);
         },
       },
+      timeout: 15000,
       debug: DEBUG_PENPAL,
     });
-    connection.promise.then((child) => {
+
+    try {
+      const child = await connection.promise;
       this.hackmd = child;
       if (this.props.initializationMarkdown != null) {
         child.setValueOnInit(this.props.initializationMarkdown);
       }
-    });
+    }
+    catch (err) {
+      logger.error(err);
+
+      if (this.props.onPenpalErrorOccured != null) {
+        this.props.onPenpalErrorOccured(err);
+      }
+    }
   }
 
   /**
@@ -93,4 +103,5 @@ HackmdEditor.propTypes = {
   initializationMarkdown: PropTypes.string,
   onChange: PropTypes.func,
   onSaveWithShortcut: PropTypes.func,
+  onPenpalErrorOccured: PropTypes.func,
 };

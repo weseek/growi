@@ -3,18 +3,19 @@
   %comment-section {
     position: relative;
     padding: 1em;
-    margin-bottom: 1em; // screen-xs
     margin-left: 4.5em;
+
     @media (max-width: $screen-xs) {
       margin-left: 3.5em;
-    } // speech balloon
+    }
+
+    // speech balloon
     &:before {
       position: absolute;
       top: 1.5em;
       left: -1em;
       display: block;
       width: 0;
-      width: 0; // screen-xs
       height: 0;
       content: '';
       border-top: 20px solid transparent;
@@ -22,11 +23,13 @@
       border-bottom: 20px solid transparent;
       border-left: 20px solid transparent;
       border-left-width: 0;
+
       @media (max-width: $screen-xs) {
         top: 1em;
       }
     }
   }
+
   %picture {
     float: left;
     width: 3em;
@@ -37,55 +40,91 @@
       height: 2em;
     }
   }
+
   .page-comments-row {
     margin: 10px 0px;
   }
+
   .page-comments {
     h4 {
       margin-bottom: 1em;
     }
   }
   .page-comment {
-    position: relative; // ユーザー名
+    position: relative;
+
+    // ユーザー名
     .page-comment-creator {
       margin-top: -0.5em;
       margin-bottom: 0.5em;
       font-weight: bold;
-    } // ユーザーアイコン
+    }
+
+    // ユーザーアイコン
     .picture {
       @extend %picture;
-    } // コメントセクション
+    }
+
+    // コメントセクション
     .page-comment-main {
       @extend %comment-section;
       background: #e6e9ec;
       border-radius: 0.35em;
-    } // コメント本文
+    }
+
+    // コメント本文
     .page-comment-body {
       margin-bottom: 0.5em;
       word-wrap: break-word;
     }
-    .page-comment-meta {
-      font-size: 0.9em;
-      color: #e5ecf1;
-      text-align: right;
-      * {
-        vertical-align: 25%;
-      }
-    }
-  } // show when hover
+  }
+
+  /*
+   * reply
+   */
+  .page-comment-reply {
+    margin-top: 1em;
+  }
+  // remove margin after hidden replies
+  .page-comments-hidden-replies + .page-comment-reply {
+    margin-top: 0;
+  }
+  .page-comment-reply,
+  .page-comment-reply-form {
+    margin-right: 15px;
+    margin-left: 6em;
+  }
+  // reply button
+  .btn.btn-comment-reply {
+    width: 120px;
+    margin-top: 0.5em;
+    margin-right: 15px;
+
+    border-top: none;
+    border-right: none;
+    border-left: none;
+  }
+
+  // show when hover
   .page-comment-main:hover > .page-comment-control {
     display: block;
-  } // display cheatsheet for comment form only
+  }
+
+  // display cheatsheet for comment form only
   .comment-form {
-    position: relative;
-    margin-top: 2em; // user icon
-    border: none;
     .editor-cheatsheet {
       display: none;
     }
+
+    position: relative;
+    margin-top: 1em;
+
+    // user icon
     .picture {
       @extend %picture;
-    } // seciton
+    }
+
+    // seciton
     .comment-form-main {
       @extend %comment-section;
       background: #e6e9ec;
@@ -93,7 +132,9 @@
       .CodeMirror {
         border: 0px;
       }
-    } // textarea
+    }
+
+    // textarea
     .comment-write {
       margin-bottom: 0.5em;
     }

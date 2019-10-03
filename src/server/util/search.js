@@ -44,6 +44,7 @@ function SearchClient(crowi, esUri) {
   const uri = this.parseUri(this.esUri);
   this.host = uri.host;
   this.indexName = uri.indexName;
+  this.aliasName = `${this.indexName}-alias`;
 
   this.client = new elasticsearch.Client({
     host: this.host,
@@ -117,17 +118,86 @@ SearchClient.prototype.parseUri = function(uri) {
   };
 };
 
-SearchClient.prototype.buildIndex = function(uri) {
-  return this.client.indices.create({
-    index: this.indexName,
-    body: require(this.mappingFile),
-  });
+SearchClient.prototype.initIndices = async function() {
+  await this.checkESVersion();
+
+  const { client, indexName, aliasName } = this;
+
+  const tmpIndexName = `${indexName}-tmp`;
+
+  // remove tmp index
+  const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
+  if (isExistsTmpIndex) {
+    await client.indices.delete({ index: tmpIndexName });
+  }
+
+  // create index
+  const isExistsIndex = await client.indices.exists({ index: indexName });
+  if (!isExistsIndex) {
+    await this.createIndex(indexName);
+  }
+
+  // create alias
+  const isExistsAlias = await client.indices.existsAlias({ name: aliasName, index: indexName });
+  if (!isExistsAlias) {
+    await client.indices.putAlias({
+      name: aliasName,
+      index: indexName,
+    });
+  }
 };
 
-SearchClient.prototype.deleteIndex = function(uri) {
-  return this.client.indices.delete({
-    index: this.indexName,
+SearchClient.prototype.createIndex = async function(index) {
+  const body = require(this.mappingFile);
+  return this.client.indices.create({ index, body });
+};
+
+SearchClient.prototype.buildIndex = async function(uri) {
+  await this.initIndices();
+
+  const { client, indexName } = this;
+
+  const aliasName = `${indexName}-alias`;
+  const tmpIndexName = `${indexName}-tmp`;
+
+  // reindex to tmp index
+  await this.createIndex(tmpIndexName);
+  await client.reindex({
+    body: {
+      source: { index: indexName },
+      dest: { index: tmpIndexName },
+    },
   });
+
+  // update alias
+  await client.indices.updateAliases({
+    body: {
+      actions: [
+        { add: { alias: aliasName, index: tmpIndexName } },
+        { remove: { alias: aliasName, index: indexName } },
+      ],
+    },
+  });
+
+  // flush index
+  await client.indices.delete({
+    index: indexName,
+  });
+  await this.createIndex(indexName);
+  await this.addAllPages();
+
+  // update alias
+  await client.indices.updateAliases({
+    body: {
+      actions: [
+        { add: { alias: aliasName, index: indexName } },
+        { remove: { alias: aliasName, index: tmpIndexName } },
+      ],
+    },
+  });
+
+  // remove tmp index
+  await client.indices.delete({ index: tmpIndexName });
 };
 
 /**
@@ -162,7 +232,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
 
   const command = {
     update: {
-      _index: this.indexName,
+      _index: this.aliasName,
       _type: 'pages',
       _id: page._id.toString(),
     },
@@ -226,7 +296,7 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
   const command = {
     delete: {
-      _index: this.indexName,
+      _index: this.aliasName,
       _type: 'pages',
       _id: page._id.toString(),
     },
@@ -399,7 +469,7 @@ SearchClient.prototype.createSearchQuerySortedByUpdatedAt = function(option) {
 
   // default is only id field, sorted by updated_at
   const query = {
-    index: this.indexName,
+    index: this.aliasName,
     type: 'pages',
     body: {
       sort: [{ updated_at: { order: 'desc' } }],
@@ -420,7 +490,7 @@ SearchClient.prototype.createSearchQuerySortedByScore = function(option) {
 
   // sort by score
   const query = {
-    index: this.indexName,
+    index: this.aliasName,
     type: 'pages',
     body: {
       sort: [{ _score: { order: 'desc' } }],
