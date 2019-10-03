@@ -403,8 +403,6 @@ module.exports = (crowi) => {
    *      delete:
    *        tags: [UserGroup]
    *        description: remove a user from the userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
@@ -469,8 +467,6 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroup]
    *        description: Get the user group relations for the userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
@@ -522,8 +518,6 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroup]
    *        description: Get closed pages for the userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
