@@ -23,16 +23,14 @@
 }
 
 //** override bootstrap nav nav-tabs nav-item
-@mixin grw-nav-tab-set($min-width: initial, $padding-x: 1em) {
+@mixin grw-nav-tab-set {
   position: relative;
-  min-width: $min-width;
   text-align: center;
   $active-tab-border-width: 1px;
   $active-tab-border-bg: white;
   a {
     display: block;
-    height: $nav-main-tab-height;
-    padding: ($nav-main-tab-height - $nav-main-tab-font-size)/2 $padding-x;
+    padding: 10px 15px;
     font-size: $nav-main-tab-font-size;
   }
   &.active {
@@ -54,4 +52,12 @@
 
 .nav.nav-tabs > .nav-item {
   @include grw-nav-tab-set;
+}
+
+.nav.nav-tabs.grw-nab-tabs-left-top > .nav-item {
+  @include grw-nav-tab-set;
+  a {
+    min-width: 95px;
+    padding: 10px 0;
+  }
 }
