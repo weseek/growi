@@ -25,8 +25,6 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroupRelation]
    *        description: Gets the user group relations
-   *        produces:
-   *          - application/json
    *        responses:
    *          200:
    *            description: user group relations are fetched
