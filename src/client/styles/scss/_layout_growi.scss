@@ -1,11 +1,16 @@
+@import 'layout_variable';
+@import 'layout';
+
 .growi.main-container {
   .content-main {
     padding: 0;
   }
 
   .liker-and-seenusers {
-    height: 42px; // .nav height
-    border-bottom: 1px solid $border;
+    // adjusting position with negative margin
+    height: $nav-main-tab-height;
+    line-height: 1.25;
+    border-bottom: 1px solid $grw-line-gray;
 
     .liker-user-count,
     .seen-user-count {
