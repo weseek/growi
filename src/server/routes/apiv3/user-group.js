@@ -133,11 +133,11 @@ module.exports = (crowi) => {
    *        description: Deletes userGroup
    *        parameters:
    *          - name: deleteGroupId
-   *            in: path
+   *            in: query
    *            description: id of userGroup
    *            required: true
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *          - name: actionName
    *            in: query
    *            description: name of action
@@ -147,7 +147,7 @@ module.exports = (crowi) => {
    *            in: query
    *            description: userGroup id that will be transferred to
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *        responses:
    *          200:
    *            description: userGroup is removed
@@ -197,7 +197,7 @@ module.exports = (crowi) => {
    *            required: true
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *        responses:
    *          200:
    *            description: userGroup is updated
@@ -251,7 +251,7 @@ module.exports = (crowi) => {
    *            in: path
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *        responses:
    *          200:
    *            description: users are fetched
@@ -298,7 +298,7 @@ module.exports = (crowi) => {
    *            in: path
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *        responses:
    *          200:
    *            description: users are fetched
@@ -346,7 +346,7 @@ module.exports = (crowi) => {
    *            in: path
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *          - name: username
    *            in: path
    *            description: id of user
@@ -409,7 +409,7 @@ module.exports = (crowi) => {
    *            in: path
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *          - name: username
    *            in: path
    *            description: id of user
@@ -473,7 +473,7 @@ module.exports = (crowi) => {
    *            in: path
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *        responses:
    *          200:
    *            description: user group relations are fetched
@@ -524,7 +524,7 @@ module.exports = (crowi) => {
    *            in: path
    *            description: id of userGroup
    *            schema:
-   *              type: ObjectId
+   *              type: object
    *        responses:
    *          200:
    *            description: pages are fetched
