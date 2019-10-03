@@ -13,11 +13,7 @@ class MarkdownSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
     this.state = {
-      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       // TODO GW-220 get correct BreakOption value
       pageBreakOption: 1,
       // TODO GW-258 get correct custom regular expression
@@ -47,7 +43,6 @@ class MarkdownSetting extends React.Component {
         <div>
         <LineBreakSetting/>
         </div>
-
         <div className="row my-3">
           <div className="form-group">
             <legend>{ t('markdown_setting.presentation_setting') }</legend>
@@ -101,7 +96,7 @@ class MarkdownSetting extends React.Component {
             </div>
 
           </fieldset>
-        </div>
+          </div>
 
         <div className="row my-3">
           <div className="form-group">
