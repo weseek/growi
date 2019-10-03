@@ -44,8 +44,6 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [Users]
    *        description: Create new users and send Emails
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: shapedEmailList
    *            in: query

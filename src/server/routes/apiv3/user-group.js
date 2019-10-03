@@ -43,8 +43,6 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroup]
    *        description: Get usergroups
-   *        produces:
-   *          - application/json
    *        responses:
    *          200:
    *            description: usergroups are fetched
@@ -83,8 +81,6 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [UserGroup]
    *        description: Adds userGroup
-   *        produces:
-   *          - application/json
    *        requestBody:
    *          required: true
    *          content:
@@ -135,8 +131,6 @@ module.exports = (crowi) => {
    *      delete:
    *        tags: [UserGroup]
    *        description: Deletes userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: deleteGroupId
    *            in: path
@@ -196,8 +190,6 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [UserGroup]
    *        description: Update userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
@@ -253,8 +245,6 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroup]
    *        description: Get users related to the userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
@@ -302,8 +292,6 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [UserGroup]
    *        description: Get users unrelated to the userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
@@ -352,8 +340,6 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [UserGroup]
    *        description: Add a user to the userGroup
-   *        produces:
-   *          - application/json
    *        parameters:
    *          - name: id
    *            in: path
