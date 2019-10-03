@@ -131,17 +131,17 @@ module.exports = function(crowi, app) {
 
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
   actions.markdown.lineBreaksSetting = async function(req, res) {
-    const markdownSetting = req.form.markdownSetting;
 
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
-      req.flash('successMessage', ['Successfully updated!']);
+    const array = req.body.params;
+
+    try {
+      await configManager.updateConfigsInTheSameNamespace('markdown', array);
+      return res.json(ApiResponse.success());
     }
-    else {
-      req.flash('errorMessage', req.form.errors);
+    catch (err) {
+      return res.json(ApiResponse.error(err));
     }
 
-    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
