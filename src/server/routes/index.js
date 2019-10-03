@@ -133,6 +133,7 @@ module.exports = function(crowi, app) {
   app.post('/admin/user/:id/removeFromAdmin', loginRequiredStrictly , adminRequired , admin.user.removeFromAdmin);
   app.post('/admin/user/:id/activate'   , loginRequiredStrictly , adminRequired , csrf, admin.user.activate);
   app.post('/admin/user/:id/suspend'    , loginRequiredStrictly , adminRequired , csrf, admin.user.suspend);
+  app.post('/admin/user/:id/removeCompletely' , loginRequiredStrictly , adminRequired , csrf, admin.user.removeCompletely);
   // new route patterns from here:
   app.post('/_api/admin/users.resetPassword'  , loginRequiredStrictly , adminRequired , csrf, admin.user.resetPassword);
 
