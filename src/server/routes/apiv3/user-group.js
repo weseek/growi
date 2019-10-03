@@ -135,6 +135,7 @@ module.exports = (crowi) => {
    *          - name: deleteGroupId
    *            in: path
    *            description: id of userGroup
+   *            required: true
    *            schema:
    *              type: ObjectId
    *          - name: actionName
