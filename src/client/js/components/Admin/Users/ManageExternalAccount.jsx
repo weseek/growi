@@ -81,7 +81,7 @@ class ManageExternalAccount extends React.Component {
 }
 
 const ManageExternalAccountWrapper = (props) => {
-  return createSubscribedElement(FullTextSearchManagement, props, [AppContainer]);
+  return createSubscribedElement(ManageExternalAccount, props, [AppContainer]);
 };
 
 ManageExternalAccount.propTypes = {
