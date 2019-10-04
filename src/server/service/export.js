@@ -1,6 +1,7 @@
 const logger = require('@alias/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
+const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
@@ -62,8 +63,8 @@ class ExportService {
    * dump a collection into json
    *
    * @memberOf ExportService
-   * @param {string} file path to json file to be written
-   * @param {readStream} readStream  read stream
+   * @param {WritableStream} writeStream write stream
+   * @param {ReadableStream} readStream read stream (chunks should be stringified)
    * @param {number} total number of target items (optional)
    * @param {function} [getLogText] (n, total) => { ... }
    * @return {string} path to the exported json file
@@ -71,21 +72,35 @@ class ExportService {
   async export(writeStream, readStream, total, getLogText) {
     let n = 0;
 
-    // open an array
-    writeStream.write('[');
+    const logProgress = this.logProgress.bind(this);
+    const transformStream = new Transform({
+      transform(chunk, encoding, callback) {
+        // write beginning brace
+        if (n === 0) {
+          this.push('[');
+        }
+        // write separator
+        else {
+          this.push(',');
+        }
 
-    readStream.on('data', (chunk) => {
-      if (n !== 0) writeStream.write(',');
-      writeStream.write(JSON.stringify(chunk));
-      n++;
-      this.logProgress(n, total, getLogText);
+        this.push(chunk);
+
+        n++;
+        logProgress(n, total, getLogText);
+
+        callback();
+      },
+      flush(callback) {
+        // write ending brace
+        this.push(']');
+        callback();
+      },
     });
 
-    readStream.on('end', () => {
-      // close the array
-      writeStream.write(']');
-      writeStream.close();
-    });
+    readStream
+      .pipe(transformStream)
+      .pipe(writeStream);
 
     await streamToPromise(readStream);
 
@@ -103,9 +118,10 @@ class ExportService {
     const { collectionName } = Model.collection;
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
-    const readStream = Model.find().cursor();
+    const readStream = Model.find().stream({ transform: JSON.stringify });
     const total = await Model.countDocuments();
-    const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
+    // const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
+    const getLogText = undefined;
 
     const jsonFileWritten = await this.export(writeStream, readStream, total, getLogText);
 
