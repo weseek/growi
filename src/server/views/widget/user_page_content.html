@@ -10,8 +10,8 @@
       <a class="nav-link" href="#user-draft-list" role="tab" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
-    <li class="nav-item" role="tab">
-      <a class="nav-link" href="/me"><i class="icon-wrench"></i> Settings</a>
+    <li class="nav-item">
+      <a class="nav-link" href="/me" role="tab"><i class="icon-wrench"></i> Settings</a>
     </li>
     {% endif %}
   </ul>
