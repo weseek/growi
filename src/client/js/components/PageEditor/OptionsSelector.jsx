@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-// TODO: GW-333
-// import FormGroup from 'react-bootstrap/es/FormGroup';
-// import FormControl from 'react-bootstrap/es/FormControl';
-// import ControlLabel from 'react-bootstrap/es/ControlLabel';
-// import Dropdown from 'react-bootstrap/es/Dropdown';
-// import MenuItem from 'react-bootstrap/es/MenuItem';
+import {
+  FormGroup, Label, Input,
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import EditorContainer from '../../services/EditorContainer';
@@ -104,9 +102,6 @@ class OptionsSelector extends React.Component {
   onClickRenderMathJaxInRealtime(event) {
     const { editorContainer } = this.props;
 
-    // keep dropdown opened
-    this._cddForceOpen = true;
-
     const newValue = !editorContainer.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(editorContainer.state.previewOptions, { renderMathJaxInRealtime: newValue });
     editorContainer.setState({ previewOptions: newOpts });
@@ -115,17 +110,8 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
-  /*
-   * see: https://github.com/react-bootstrap/react-bootstrap/issues/1490#issuecomment-207445759
-   */
   onToggleConfigurationDropdown(newValue) {
-    if (this._cddForceOpen) {
-      this.setState({ isCddMenuOpened: true });
-      this._cddForceOpen = false;
-    }
-    else {
-      this.setState({ isCddMenuOpened: newValue });
-    }
+    this.setState({ isCddMenuOpened: !this.state.isCddMenuOpened });
   }
 
   renderThemeSelector() {
@@ -133,24 +119,23 @@ class OptionsSelector extends React.Component {
       return <option key={theme} value={theme}>{theme}</option>;
     });
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
-
     return (
-      <FormGroup controlId="formControlsSelect" className="my-0">
-        <ControlLabel>Theme:</ControlLabel>
-        <FormControl
-          componentClass="select"
+      <FormGroup className="my-0">
+        <Label>Theme:</Label>
+        <Input
+          type="select"
+          bsSize="sm"
           placeholder="select"
-          bsClass={bsClassName}
-          className="btn-group-sm selectpicker"
+          className="selectpicker"
+          cssModule={{ width: 'unset' }}
           onChange={this.onChangeTheme}
           // eslint-disable-next-line no-return-assign
-          inputRef={(el) => { return this.themeSelectorInputEl = el }}
+          innerRef={(el) => { return this.themeSelectorInputEl = el }}
         >
 
           {optionElems}
 
-        </FormControl>
+        </Input>
       </FormGroup>
     );
   }
@@ -168,49 +153,47 @@ class OptionsSelector extends React.Component {
       );
     }
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
-
     return (
-      <FormGroup controlId="formControlsSelect" className="my-0">
-        <ControlLabel>Keymap:</ControlLabel>
-        <FormControl
-          componentClass="select"
+      <FormGroup className="my-0">
+        <Label>Keymap:</Label>
+        <Input
+          type="select"
+          bsSize="sm"
           placeholder="select"
-          bsClass={bsClassName}
-          className="btn-group-sm selectpicker"
+          className="selectpicker"
           onChange={this.onChangeKeymapMode}
           // eslint-disable-next-line no-return-assign
-          inputRef={(el) => { return this.keymapModeSelectorInputEl = el }}
+          innerRef={(el) => { return this.keymapModeSelectorInputEl = el }}
         >
 
           {optionElems}
 
-        </FormControl>
+        </Input>
       </FormGroup>
     );
   }
 
   renderConfigurationDropdown() {
     return (
-      <FormGroup controlId="formControlsSelect" className="my-0">
+      <FormGroup className="my-0">
 
         <Dropdown
-          dropup
-          id="configurationDropdown"
+          direction="up"
+          bsSize="sm"
           className="configuration-dropdown"
-          open={this.state.isCddMenuOpened}
-          onToggle={this.onToggleConfigurationDropdown}
+          isOpen={this.state.isCddMenuOpened}
+          toggle={this.onToggleConfigurationDropdown}
         >
 
-          <Dropdown.Toggle bsSize="sm">
+          <DropdownToggle caret>
             <i className="icon-settings"></i>
-          </Dropdown.Toggle>
+          </DropdownToggle>
 
-          <Dropdown.Menu>
+          <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
-            {/* <MenuItem divider /> */}
-          </Dropdown.Menu>
+            {/* <DropdownItem divider /> */}
+          </DropdownMenu>
 
         </Dropdown>
 
@@ -229,11 +212,11 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <MenuItem onClick={this.onClickStyleActiveLine}>
+      <DropdownItem toggle={false} onClick={this.onClickStyleActiveLine}>
         <span className="icon-container"></span>
         <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
         <span className="icon-container"><i className={iconClassName}></i></span>
-      </MenuItem>
+      </DropdownItem>
     );
   }
 
@@ -254,11 +237,11 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <MenuItem onClick={this.onClickRenderMathJaxInRealtime}>
+      <DropdownItem toggle={false} onClick={this.onClickRenderMathJaxInRealtime}>
         <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
         <span className="menuitem-label">MathJax Rendering</span>
         <i className={iconClassName}></i>
-      </MenuItem>
+      </DropdownItem>
     );
   }
 

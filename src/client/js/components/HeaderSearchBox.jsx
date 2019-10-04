@@ -2,14 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-// TODO: GW-333
-// import FormGroup from 'react-bootstrap/es/FormGroup';
-// import DropdownButton from 'react-bootstrap/es/DropdownButton';
-// import MenuItem from 'react-bootstrap/es/MenuItem';
-// import InputGroup from 'react-bootstrap/es/InputGroup';
-
 import {
   Button,
+  InputGroup, InputGroupButtonDropdown, InputGroupAddon,
+  DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import SearchForm from './SearchForm';
@@ -21,10 +17,12 @@ class HeaderSearchBox extends React.Component {
     super(props);
 
     this.state = {
+      dropdownOpen: false,
       text: '',
       isScopeChildren: false,
     };
 
+    this.toggle = this.toggle.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onClickAllPages = this.onClickAllPages.bind(this);
     this.onClickChildren = this.onClickChildren.bind(this);
@@ -35,6 +33,10 @@ class HeaderSearchBox extends React.Component {
   }
 
   componentWillUnmount() {
+  }
+
+  toggle() {
+    this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
   onInputChange(text) {
@@ -70,14 +72,15 @@ class HeaderSearchBox extends React.Component {
       : 'All pages';
 
     return (
-      <FormGroup>
+      <>
         <InputGroup className="flex-nowrap">
-          <InputGroup.Button className="btn-group-dropdown-scope" data-toggle="dropdown">
-            <DropdownButton id="dbScope" className="pl-3 py-0" title={scopeLabel}>
-              <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
-              <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
-            </DropdownButton>
-          </InputGroup.Button>
+          <InputGroupButtonDropdown addonType="append" isOpen={this.state.dropdownOpen} toggle={this.toggle} className="btn-group-dropdown-scope">
+            <DropdownToggle caret>{scopeLabel}</DropdownToggle>
+            <DropdownMenu className="pl-3 py-0" title={scopeLabel}>
+              <DropdownItem onClick={this.onClickAllPages}>All pages</DropdownItem>
+              <DropdownItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</DropdownItem>
+            </DropdownMenu>
+          </InputGroupButtonDropdown>
           <SearchForm
             t={this.props.t}
             crowi={this.props.crowi}
@@ -85,13 +88,13 @@ class HeaderSearchBox extends React.Component {
             onSubmit={this.search}
             placeholder="Search ..."
           />
-          <InputGroup.Button className="btn-group-submit-search">
+          <InputGroupAddon addonType="append" className="btn-group-submit-search">
             <Button color="link" onClick={this.search}>
               <i className="icon-magnifier"></i>
             </Button>
-          </InputGroup.Button>
+          </InputGroupAddon>
         </InputGroup>
-      </FormGroup>
+      </>
     );
   }
 
