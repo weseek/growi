@@ -1,12 +1,5 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:services:UserGroupDetailContainer');
-
-
 /**
  * Service container for admin markdown setting page (MarkDownSetting.jsx)
  * @extends {Container} unstated Container

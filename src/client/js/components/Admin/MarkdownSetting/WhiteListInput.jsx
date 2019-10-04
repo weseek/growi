@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
 import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
@@ -27,7 +28,7 @@ class WhiteListInput extends React.Component {
       return markDownSettingContainer.state.tagWhiteList;
     }
 
-    return 'recommendedWhitelist.attrs';
+    return tags;
   }
 
   renderAttrValue() {
@@ -37,7 +38,7 @@ class WhiteListInput extends React.Component {
       return markDownSettingContainer.state.attrWhiteList;
     }
 
-    return 'recommendedWhitelist.attrs';
+    return attrs;
   }
 
   render() {
