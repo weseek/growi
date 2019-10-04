@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import InputGroup from 'react-bootstrap/es/InputGroup';
+// TODO: GW-333
+// import FormGroup from 'react-bootstrap/es/FormGroup';
+// import InputGroup from 'react-bootstrap/es/InputGroup';
 
 import {
   Button,

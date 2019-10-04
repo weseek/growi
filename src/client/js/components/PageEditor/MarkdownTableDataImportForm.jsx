@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import ControlLabel from 'react-bootstrap/es/ControlLabel';
-import FormControl from 'react-bootstrap/es/FormControl';
-import Collapse from 'react-bootstrap/es/Collapse';
+// TODO: GW-333
+// import FormGroup from 'react-bootstrap/es/FormGroup';
+// import ControlLabel from 'react-bootstrap/es/ControlLabel';
+// import FormControl from 'react-bootstrap/es/FormControl';
+// import Collapse from 'react-bootstrap/es/Collapse';
 
 import {
   Button,

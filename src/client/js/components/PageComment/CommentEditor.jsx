@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Tab from 'react-bootstrap/es/Tab';
-import Tabs from 'react-bootstrap/es/Tabs';
+// TODO: GW-333
+// import Tab from 'react-bootstrap/es/Tab';
+// import Tabs from 'react-bootstrap/es/Tabs';
 
 import {
   Button,

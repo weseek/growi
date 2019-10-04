@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Radio from 'react-bootstrap/es/Radio';
+// TODO: GW-333
+// import FormGroup from 'react-bootstrap/es/FormGroup';
+// import Radio from 'react-bootstrap/es/Radio';
 
 class InstallerForm extends React.Component {
 

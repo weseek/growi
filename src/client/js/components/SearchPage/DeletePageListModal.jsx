@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Checkbox from 'react-bootstrap/es/Checkbox';
+// TODO: GW-333
+// import Checkbox from 'react-bootstrap/es/Checkbox';
 
 import {
   Button,

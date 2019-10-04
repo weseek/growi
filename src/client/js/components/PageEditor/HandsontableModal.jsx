@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-import Collapse from 'react-bootstrap/es/Collapse';
+// TODO: GW-333
+// import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
+// import Collapse from 'react-bootstrap/es/Collapse';
 
 import {
   Button,

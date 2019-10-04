@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import FormControl from 'react-bootstrap/es/FormControl';
-import ListGroup from 'react-bootstrap/es/ListGroup';
-import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
+// TODO: GW-333
+// import FormGroup from 'react-bootstrap/es/FormGroup';
+// import FormControl from 'react-bootstrap/es/FormControl';
+// import ListGroup from 'react-bootstrap/es/ListGroup';
+// import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
+
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';

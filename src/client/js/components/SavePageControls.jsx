@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
-import SplitButton from 'react-bootstrap/es/SplitButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
+// TODO: GW-333
+// import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
+// import SplitButton from 'react-bootstrap/es/SplitButton';
+// import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';

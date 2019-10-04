@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import DropdownButton from 'react-bootstrap/es/DropdownButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
-import InputGroup from 'react-bootstrap/es/InputGroup';
+// TODO: GW-333
+// import FormGroup from 'react-bootstrap/es/FormGroup';
+// import DropdownButton from 'react-bootstrap/es/DropdownButton';
+// import MenuItem from 'react-bootstrap/es/MenuItem';
+// import InputGroup from 'react-bootstrap/es/InputGroup';
 
 import {
   Button,

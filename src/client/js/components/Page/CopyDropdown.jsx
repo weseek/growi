@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Dropdown from 'react-bootstrap/es/Dropdown';
-import MenuItem from 'react-bootstrap/es/MenuItem';
+// TODO: GW-333
+// import Dropdown from 'react-bootstrap/es/Dropdown';
+// import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 

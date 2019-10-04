@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import Panel from 'react-bootstrap/es/Panel';
-import Tooltip from 'react-bootstrap/es/Tooltip';
-import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+// TODO: GW-333
+// import Panel from 'react-bootstrap/es/Panel';
+// import Tooltip from 'react-bootstrap/es/Tooltip';
+// import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
