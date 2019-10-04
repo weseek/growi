@@ -19,12 +19,13 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      isEnabledXss: appContainer.config.xssOption || false,
+      isEnabledXss: (appContainer.config.xssOption != null),
       xssOption: appContainer.config.xssOption,
       tagWhiteList: appContainer.config.tagWhiteList,
       attrWhiteList: '',
     };
 
+    this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
     this.onChangeXssOption = this.onChangeXssOption.bind(this);
   }
 
@@ -33,6 +34,13 @@ export default class MarkDownSettingContainer extends Container {
    */
   static getClassName() {
     return 'MarkDownSettingContainer';
+  }
+
+  /**
+   * switch enableXss
+   */
+  onChangeEnableXss() {
+    this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
   /**

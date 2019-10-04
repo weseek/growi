@@ -16,14 +16,9 @@ class XssForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
     this.onChangeTagWhiteList = this.onChangeTagWhiteList.bind(this);
     this.onChangeAttrWhiteList = this.onChangeAttrWhiteList.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  onChangeEnableXss() {
-    this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
   onChangeTagWhiteList(value) {
@@ -80,7 +75,7 @@ class XssForm extends React.Component {
         <form className="row">
           <div className="form-group">
             <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={this.onChangeEnableXss}>
+              <div className="checkbox checkbox-success" onChange={markDownSettingContainer.onChangeEnableXss}>
                 <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={markDownSettingContainer.state.isEnabledXss} />
                 <label htmlFor="XssEnable">
                   { t('markdown_setting.Enable XSS prevention') }
