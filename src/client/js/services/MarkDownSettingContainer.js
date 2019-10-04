@@ -13,9 +13,16 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      hoge: 'huga',
+      hoge: 'huga', // TODO delete
     };
 
+  }
+
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'MarkDownSettingContainer';
   }
 
 }

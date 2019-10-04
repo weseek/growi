@@ -54,7 +54,7 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import WebsocketContainer from './services/WebsocketContainer';
-import MarkDownSettingContainer from './services/MarkdownSettingContainer';
+import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
 const logger = loggerFactory('growi:app');
 

@@ -7,6 +7,8 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
+
 import WhiteListInput from './WhiteListInput';
 
 class XssForm extends React.Component {
@@ -105,6 +107,7 @@ class XssForm extends React.Component {
                 <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={this.state.isEnabledXss} />
                 <label htmlFor="XssEnable">
                   { t('markdown_setting.Enable XSS prevention') }
+                  {this.props.markDownSettingContainer.state.hoge}
                 </label>
               </div>
             </div>
@@ -123,13 +126,13 @@ class XssForm extends React.Component {
 }
 
 const XssFormWrapper = (props) => {
-  return createSubscribedElement(XssForm, props, [AppContainer]);
+  return createSubscribedElement(XssForm, props, [AppContainer, MarkDownSettingContainer]);
 };
 
 XssForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
+  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
 };
 
 export default withTranslation()(XssFormWrapper);
