@@ -2,7 +2,8 @@
 import React from 'react';
 
 import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+  Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import UserPicture from '../User/UserPicture';
@@ -83,8 +84,8 @@ export default class DeleteAttachmentModal extends React.Component {
             {deletingIndicator}
           </div>
           <Button
+            color="danger"
             onClick={this._onDeleteConfirm}
-            bsStyle="danger"
             disabled={this.props.deleting}
           >Delete!
           </Button>

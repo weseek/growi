@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 import Collapse from 'react-bootstrap/es/Collapse';
 
 import {
+  Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
@@ -456,10 +456,10 @@ export default class HandsontableModal extends React.PureComponent {
         </ModalBody>
         <ModalFooter>
           <div className="d-flex justify-content-between">
-            <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
+            <Button color="danger" onClick={this.reset}>Reset</Button>
             <div className="d-flex">
-              <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.save}>Done</Button>
+              <Button color="secondary" onClick={this.cancel}>Cancel</Button>
+              <Button color="primary" onClick={this.save}>Done</Button>
             </div>
           </div>
         </ModalFooter>

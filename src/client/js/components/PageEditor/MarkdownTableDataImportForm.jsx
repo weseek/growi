@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import FormControl from 'react-bootstrap/es/FormControl';
-import Button from 'react-bootstrap/es/Button';
 import Collapse from 'react-bootstrap/es/Collapse';
+
+import {
+  Button,
+} from 'reactstrap';
+
 import MarkdownTable from '../../models/MarkdownTable';
 
 export default class MarkdownTableDataImportForm extends React.Component {
@@ -80,8 +85,8 @@ export default class MarkdownTableDataImportForm extends React.Component {
           </FormGroup>
         </Collapse>
         <div className="d-flex justify-content-end">
-          <Button bsStyle="default" onClick={this.props.onCancel}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.importButtonHandler}>Import</Button>
+          <Button color="secondary" onClick={this.props.onCancel}>Cancel</Button>
+          <Button color="primary" onClick={this.importButtonHandler}>Import</Button>
         </div>
       </form>
     );

@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
-import Button from 'react-bootstrap/es/Button';
 import InputGroup from 'react-bootstrap/es/InputGroup';
+
+import {
+  Button,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -46,7 +49,7 @@ class SearchPageForm extends React.Component {
             onInputChange={this.onInputChange}
           />
           <InputGroup.Button className="">
-            <Button onClick={this.search}>
+            <Button color="secondary" onClick={this.search}>
               <i className="icon-magnifier"></i>
             </Button>
           </InputGroup.Button>

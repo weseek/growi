@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
+
+import {
+  Button,
+} from 'reactstrap';
+
 import * as toastr from 'toastr';
 
 import AppContainer from '../../services/AppContainer';
@@ -222,8 +226,9 @@ class CommentEditor extends React.Component {
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const submitButton = (
       <Button
-        bsStyle="primary"
-        className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+        outline
+        color="primary"
+        className="fcbtn btn-rounded btn-1b"
         onClick={this.postHandler}
       >
         Comment
@@ -296,7 +301,7 @@ class CommentEditor extends React.Component {
                   )
                 }
                 <div>
-                  <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.toggleEditor}>
+                  <Button outline color="danger" size="xs" className="fcbtn btn-rounded" onClick={this.toggleEditor}>
                     Cancel
                   </Button>
                 </div>

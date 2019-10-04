@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
 import Checkbox from 'react-bootstrap/es/Checkbox';
 
 import {
+  Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
@@ -45,7 +45,7 @@ export default class DeletePageListModal extends React.Component {
             <span className="d-flex align-items-center">
               <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline>Delete completely</Checkbox>
               <span className="m-l-10">
-                <Button onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
+                <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
               </span>
             </span>
           </div>
