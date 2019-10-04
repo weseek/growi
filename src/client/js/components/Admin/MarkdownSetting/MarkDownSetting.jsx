@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import LineBreakSetting from './LineBreakSetting';
 import XssForm from './XssForm';
 
 class MarkdownSetting extends React.Component {
@@ -13,11 +14,7 @@ class MarkdownSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
     this.state = {
-      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       // TODO GW-220 get correct BreakOption value
       pageBreakOption: 1,
       // TODO GW-258 get correct custom regular expression
@@ -41,38 +38,9 @@ class MarkdownSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row my-3">
-          <div className="form-group">
-            <legend>{ t('markdown_setting.line_break_setting') }</legend>
-            <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
-            <fieldset className="row">
-              <div className="form-group">
-                <label className="col-xs-4 control-label text-right">
-                  { t('markdown_setting.Enable Line Break') }
-                </label>
-                <div className="col-xs-5">
-                  <input type="checkbox" name="isEnabledLinebreaks" checked={this.state.isEnabledLinebreaks} onChange={this.handleInputChange} />
-                  <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
-                </div>
-              </div>
-            </fieldset>
-            <fieldset className="row">
-              <div className="form-group my-3">
-                <label className="col-xs-4 control-label text-right">
-                  { t('markdown_setting.Enable Line Break for comment') }
-                </label>
-                <div className="col-xs-5">
-                  <input type="checkbox" name="isEnabledLinebreaksInComments" checked={this.state.isEnabledLinebreaksInComments} onChange={this.handleInputChange} />
-                  <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-          <div className="form-group my-3">
-            <div className="col-xs-offset-4 col-xs-5">
-              <button type="submit" className="btn btn-primary">{ t('Update') }</button>
-            </div>
-          </div>
+        <div>
+          {/* Line Break Setting */}
+          <LineBreakSetting />
         </div>
 
         <div className="row my-3">

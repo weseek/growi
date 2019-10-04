@@ -4,7 +4,6 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:admin');
 
   const models = crowi.models;
-  const Page = models.Page;
   const User = models.User;
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
@@ -132,17 +131,17 @@ module.exports = function(crowi, app) {
 
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
   actions.markdown.lineBreaksSetting = async function(req, res) {
-    const markdownSetting = req.form.markdownSetting;
 
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
-      req.flash('successMessage', ['Successfully updated!']);
+    const array = req.body.params;
+
+    try {
+      await configManager.updateConfigsInTheSameNamespace('markdown', array);
+      return res.json(ApiResponse.success());
     }
-    else {
-      req.flash('errorMessage', req.form.errors);
+    catch (err) {
+      return res.json(ApiResponse.error(err));
     }
 
-    return res.redirect('/admin/markdown');
   };
 
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
@@ -530,43 +529,6 @@ module.exports = function(crowi, app) {
         return res.redirect('/admin/users');
       });
     });
-  };
-
-  actions.user.remove = function(req, res) {
-    const id = req.params.id;
-    let username = '';
-
-    return new Promise((resolve, reject) => {
-      User.findById(id, (err, userData) => {
-        username = userData.username;
-        return resolve(userData);
-      });
-    })
-      .then((userData) => {
-        return new Promise((resolve, reject) => {
-          userData.statusDelete((err, userData) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(userData);
-          });
-        });
-      })
-      .then((userData) => {
-      // remove all External Accounts
-        return ExternalAccount.remove({ user: userData }).then(() => { return userData });
-      })
-      .then((userData) => {
-        return Page.removeByPath(`/user/${username}`).then(() => { return userData });
-      })
-      .then((userData) => {
-        req.flash('successMessage', `${username} さんのアカウントを削除しました`);
-        return res.redirect('/admin/users');
-      })
-      .catch((err) => {
-        req.flash('errorMessage', '削除に失敗しました。');
-        return res.redirect('/admin/users');
-      });
   };
 
   // これやったときの relation の挙動未確認

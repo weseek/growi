@@ -92,7 +92,7 @@ module.exports = function(crowi, app) {
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
-  app.post('/admin/markdown/lineBreaksSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); // change form name
+  app.post('/_api/admin/markdown/lineBreaksSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); // change form name
   app.post('/admin/markdown/xss-setting'      , loginRequiredStrictly , adminRequired , csrf, form.admin.markdownXss, admin.markdown.xssSetting);
   app.post('/admin/markdown/presentationSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.markdownPresentation, admin.markdown.presentationSetting);
 
@@ -133,7 +133,6 @@ module.exports = function(crowi, app) {
   app.post('/admin/user/:id/removeFromAdmin', loginRequiredStrictly , adminRequired , admin.user.removeFromAdmin);
   app.post('/admin/user/:id/activate'   , loginRequiredStrictly , adminRequired , csrf, admin.user.activate);
   app.post('/admin/user/:id/suspend'    , loginRequiredStrictly , adminRequired , csrf, admin.user.suspend);
-  app.post('/admin/user/:id/remove'     , loginRequiredStrictly , adminRequired , csrf, admin.user.remove);
   app.post('/admin/user/:id/removeCompletely' , loginRequiredStrictly , adminRequired , csrf, admin.user.removeCompletely);
   // new route patterns from here:
   app.post('/_api/admin/users.resetPassword'  , loginRequiredStrictly , adminRequired , csrf, admin.user.resetPassword);

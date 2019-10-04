@@ -73,7 +73,7 @@ class UserGroupEditForm extends React.Component {
               <input
                 type="text"
                 className="form-control"
-                value={dateFnsFormat(new Date(userGroupDetailContainer.state.userGroup.createdAt), 'YYYY-MM-DD')}
+                value={dateFnsFormat(new Date(userGroupDetailContainer.state.userGroup.createdAt), 'yyyy-MM-dd')}
                 disabled
               />
             </div>
