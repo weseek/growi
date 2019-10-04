@@ -1,5 +1,11 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+const logger = loggerFactory('growi:services:UserGroupDetailContainer');
+
 
 /**
  * Service container for admin markdown setting page (MarkDownSetting.jsx)
@@ -16,6 +22,8 @@ export default class MarkDownSettingContainer extends Container {
       hoge: 'huga', // TODO delete
     };
 
+    this.init();
+
   }
 
   /**
@@ -23,6 +31,20 @@ export default class MarkDownSettingContainer extends Container {
    */
   static getClassName() {
     return 'MarkDownSettingContainer';
+  }
+
+  /**
+   * retrieve markdown setting data
+   */
+  async init() {
+    try {
+      // TODO try Api
+      this.setState({ hoge: 'apiは叩かれた' });
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
   }
 
 }
