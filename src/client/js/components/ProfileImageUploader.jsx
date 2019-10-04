@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -7,40 +7,50 @@ import AppContainer from '../services/AppContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 import 'react-image-crop/dist/ReactCrop.css';
 
+class ProfileImageUploader extends React.Component {
 
-class ProfileImageUploader extends PureComponent {
+  constructor(props) {
+    super();
 
-  state = {
-    src: null,
-    crop: {
-      unit: '%',
-      width: 30,
-      aspect: 16 / 9,
-    },
-  };
+    this.state = {
+      src: null,
+      crop: {
+        unit: '%',
+        width: 30,
+        aspect: 1,
+      },
+    };
 
-  onSelectFile = (e) => {
+    this.onSelectFile = this.onSelectFile.bind(this);
+    this.onImageLoaded = this.onImageLoaded.bind(this);
+    this.onCropComplete = this.onCropComplete.bind(this);
+    this.onCropChange = this.onCropChange.bind(this);
+    this.makeClientCrop = this.makeClientCrop.bind(this);
+    this.getCroppedImg = this.getCroppedImg.bind(this);
+  }
+
+  onSelectFile(e) {
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
       reader.addEventListener('load', () => this.setState({ src: reader.result }));
       reader.readAsDataURL(e.target.files[0]);
     }
-  };
+  }
 
   // If you setState the crop in here you should return false.
-  onImageLoaded = (image) => {
+  onImageLoaded(image) {
     this.imageRef = image;
-  };
+  }
 
-  onCropComplete = (crop) => {
+  onCropComplete(crop) {
     this.makeClientCrop(crop);
-  };
+  }
 
-  onCropChange = (crop, percentCrop) => {
+  onCropChange(crop, percentCrop) {
     // You could also use percentCrop:
     // this.setState({ crop: percentCrop });
     this.setState({ crop });
-  };
+  }
 
   async makeClientCrop(crop) {
     if (this.imageRef && crop.width && crop.height) {
@@ -62,8 +72,7 @@ class ProfileImageUploader extends PureComponent {
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (!blob) {
-          // reject(new Error('Canvas is empty'));
-          console.error('Canvas is empty');
+          reject(new Error('Canvas is empty'));
           return;
         }
         blob.name = fileName;
@@ -79,16 +88,23 @@ class ProfileImageUploader extends PureComponent {
 
     return (
       <div className="App">
-        <div>
-          <input type="file" onChange={this.onSelectFile} name="profileImage" accept="image/*" />
-        </div>
-        {src && <ReactCrop src={src} crop={crop} onImageLoaded={this.onImageLoaded} onComplete={this.onCropComplete} onChange={this.onCropChange} />}
-        {croppedImageUrl && <img alt="Crop" style={{ maxWidth: '100%' }} src={croppedImageUrl} />}
+        <input type="file" onChange={this.onSelectFile} name="profileImage" accept="image/*" />
+        {src
+        && (
+        <ReactCrop
+          src={src}
+          crop={crop}
+          onImageLoaded={this.onImageLoaded}
+          onComplete={this.onCropComplete}
+          onChange={this.onCropChange}
+        />
+        )}
       </div>
     );
   }
 
 }
+
 /**
  * Wrapper component for using unstated
  */
