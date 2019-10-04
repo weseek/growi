@@ -25,6 +25,7 @@ export default class MarkDownSettingContainer extends Container {
       attrWhiteList: '',
     };
 
+    this.onChangeXssOption = this.onChangeXssOption.bind(this);
   }
 
   /**
@@ -32,6 +33,14 @@ export default class MarkDownSettingContainer extends Container {
    */
   static getClassName() {
     return 'MarkDownSettingContainer';
+  }
+
+  /**
+   * switch xssOption
+   * @param {value} int
+   */
+  onChangeXssOption(value) {
+    this.setState({ XssOption: value });
   }
 
 }
