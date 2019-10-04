@@ -20,6 +20,9 @@ export default class MarkDownSettingContainer extends Container {
 
     this.state = {
       isEnabledXss: appContainer.config.xssOption || false,
+      xssOption: appContainer.config.xssOption,
+      tagWhiteList: appContainer.config.tagWhiteList,
+      attrWhiteList: '',
     };
 
   }

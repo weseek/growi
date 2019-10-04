@@ -16,14 +16,6 @@ class XssForm extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
-    this.state = {
-      xssOption: appContainer.config.xssOption,
-      tagWhiteList: appContainer.config.tagWhiteList,
-      attrWhiteList: '',
-    };
-
     this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
     this.onChangeXssOption = this.onChangeXssOption.bind(this);
     this.onChangeTagWhiteList = this.onChangeTagWhiteList.bind(this);
@@ -47,16 +39,8 @@ class XssForm extends React.Component {
     this.setState({ attrWhiteList: value });
   }
 
-  async componentDidMount() {
-    await this.syncXssSettings();
-  }
-
   async onClickSubmit() {
     // TODO GW-303 create apiV3 of update setting
-  }
-
-  async syncXssSettings() {
-    // TODO GW-304 createApiV3
   }
 
   xssOptions() {
@@ -108,7 +92,7 @@ class XssForm extends React.Component {
                 </label>
               </div>
             </div>
-            {this.state.isEnabledXss && this.xssOptions()}
+            {markDownSettingContainer.state.isEnabledXss && this.xssOptions()}
           </div>
           <div className="form-group my-3">
             <div className="col-xs-offset-4 col-xs-5">
