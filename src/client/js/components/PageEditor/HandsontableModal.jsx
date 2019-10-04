@@ -1,12 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'react-bootstrap/es/Modal';
+
 import Button from 'react-bootstrap/es/Button';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 import Collapse from 'react-bootstrap/es/Collapse';
+
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
+
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 import { debounce } from 'throttle-debounce';
+
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
@@ -412,12 +418,12 @@ export default class HandsontableModal extends React.PureComponent {
     const dialogClassName = dialogClassNames.join(' ');
 
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName}>
-        <Modal.Header closeButton>
+      <Modal isOpen={this.state.show} toggle={this.cancel} bsSize="large" dialogClassName={dialogClassName}>
+        <ModalHeader toggle={this.cancel}>
           { this.renderExpandOrContractButton() }
-          <Modal.Title>Edit Table</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0 d-flex flex-column">
+          Edit Table
+        </ModalHeader>
+        <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar">
             <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
               Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
@@ -447,8 +453,8 @@ export default class HandsontableModal extends React.PureComponent {
               afterColumnMove={this.afterColumnMoveHandler}
             />
           </div>
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <div className="d-flex justify-content-between">
             <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
             <div className="d-flex">
@@ -456,7 +462,7 @@ export default class HandsontableModal extends React.PureComponent {
               <Button bsStyle="primary" onClick={this.save}>Done</Button>
             </div>
           </div>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
