@@ -100,10 +100,8 @@ class MarkdownSetting extends React.Component {
         </div>
         {/* XSS Setting */}
         <div className="row my-3">
-          <div className="form-group">
-            <legend>{ t('markdown_setting.XSS_setting') }</legend>
-            <p className="well">{ t('markdown_setting.XSS_setting_desc') }</p>
-          </div>
+          <h2>{ t('markdown_setting.XSS_setting') }</h2>
+          <p className="well">{ t('markdown_setting.XSS_setting_desc') }</p>
           <XssForm />
         </div>
       </React.Fragment>
