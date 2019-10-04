@@ -19,9 +19,7 @@ class XssForm extends React.Component {
     const { appContainer } = this.props;
 
     this.state = {
-      // TODO GW-304 fetch correct value
-      isEnabledXss: false,
-      XssOption: 1,
+      xssOption: appContainer.config.xssOption,
       tagWhiteList: appContainer.config.tagWhiteList,
       attrWhiteList: '',
     };
@@ -96,7 +94,7 @@ class XssForm extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, markDownSettingContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -104,10 +102,9 @@ class XssForm extends React.Component {
           <div className="form-group">
             <div className="col-xs-4 text-right">
               <div className="checkbox checkbox-success" onChange={this.onChangeEnableXss}>
-                <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={this.state.isEnabledXss} />
+                <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={markDownSettingContainer.state.isEnabledXss} />
                 <label htmlFor="XssEnable">
                   { t('markdown_setting.Enable XSS prevention') }
-                  {this.props.markDownSettingContainer.state.hoge}
                 </label>
               </div>
             </div>

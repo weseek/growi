@@ -19,10 +19,8 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      hoge: 'huga', // TODO delete
+      isEnabledXss: appContainer.config.xssOption || false,
     };
-
-    this.init();
 
   }
 
