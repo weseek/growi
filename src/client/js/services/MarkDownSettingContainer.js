@@ -37,14 +37,14 @@ export default class MarkDownSettingContainer extends Container {
   }
 
   /**
-   * switch enableXss
+   * Switch enableXss
    */
   onChangeEnableXss() {
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
   /**
-   * switch xssOption
+   * Switch xssOption
    * @param {value} int
    */
   onChangeXssOption(value) {
