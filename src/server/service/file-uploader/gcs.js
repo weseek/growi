@@ -101,7 +101,23 @@ module.exports = function(crowi) {
    */
   lib.checkLimit = async(uploadFileSize) => {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    return { isUploadable: uploadFileSize <= maxFileSize, errorMessage: 'File size exceeds the size limit per file' };
+    if (uploadFileSize > maxFileSize) {
+      return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
+    }
+
+    const gcs = getGcsInstance(lib.getIsUploadable());
+    const myBucket = gcs.bucket(getGcsBucket());
+
+    const files = await myBucket.getFiles();
+    const usingFilesSize = files[0].map(f => Number(f.metadata.size)).reduce((prev, current) => prev + current);
+
+    // TODO gridfs:totalLimit を共通化するか GCS 用にする
+    const gcsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit');
+    if (usingFilesSize + uploadFileSize > gcsTotalLimit) {
+      return { isUploadable: false, errorMessage: 'GCS for uploading files reaches limit' };
+    }
+
+    return { isUploadable: true };
   };
 
   return lib;
