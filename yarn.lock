@@ -2032,11 +2032,10 @@ boom@5.x.x:
   dependencies:
     hoek "4.x.x"
 
-bootstrap-select@^1.12.4:
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.12.4.tgz#7f15d3c0ce978868d9c09c70f96624f55fa02ee1"
-  dependencies:
-    jquery ">=1.8"
+bootstrap-select@^1.13.11:
+  version "1.13.11"
+  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.11.tgz#d364ccc67cd6c1f9158689087f1d2d029df82c29"
+  integrity sha512-WPpx2DYL9jVilNoqy4Pjcfa/Q0LOq8V0+xws/pmnRDn/deS7OYjo1njvD1Cv0s9/1ZUXt77UypxuloimEnkYsA==
 
 bootstrap@^4.3.1:
   version "4.3.1"
@@ -6811,7 +6810,7 @@ jquery.cookie@~1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/jquery.cookie/-/jquery.cookie-1.4.1.tgz#d63dce209eab691fe63316db08ca9e47e0f9385b"
 
-"jquery@>= 1.7", jquery@>=1.8:
+"jquery@>= 1.7":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
