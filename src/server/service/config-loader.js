@@ -232,6 +232,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  GCS_UPLOAD_NAMESPACE: {
+    ns:      'crowi',
+    key:     'gcs:uploadNamespace',
+    type:    TYPES.STRING,
+    default: null,
+  },
 };
 
 class ConfigLoader {
