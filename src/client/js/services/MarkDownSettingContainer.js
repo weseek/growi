@@ -33,18 +33,4 @@ export default class MarkDownSettingContainer extends Container {
     return 'MarkDownSettingContainer';
   }
 
-  /**
-   * retrieve markdown setting data
-   */
-  async init() {
-    try {
-      // TODO try Api
-      this.setState({ hoge: 'apiは叩かれた' });
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
-  }
-
 }
