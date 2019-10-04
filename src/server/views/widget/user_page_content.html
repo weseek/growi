@@ -1,24 +1,24 @@
 <div class="user-page-content">
-  <ul class="nav nav-tabs user-page-content-menu">
-    <li class="active">
-      <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
+  <ul class="nav nav-tabs user-page-content-menu" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" href="#user-bookmark-list" role="tab" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
     </li>
-    <li>
-      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recently Created</a>
+    <li class="nav-item">
+      <a class="nav-link" href="#user-created-list" role="tab" data-toggle="tab"><i class="icon-clock"></i> Recently Created</a>
     </li>
-    <li>
-      <a href="#user-draft-list" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
+    <li class="nav-item">
+      <a class="nav-link" href="#user-draft-list" role="tab" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
-    <li>
-      <a href="/me"><i class="icon-wrench"></i> Settings</a>
+    <li class="nav-item" role="tab">
+      <a class="nav-link" href="/me"><i class="icon-wrench"></i> Settings</a>
     </li>
     {% endif %}
   </ul>
 
   <div class="m-t-10 user-page-content-tab tab-content">
 
-    <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
+    <div class="tab-pane user-bookmark-list page-list py-4 active" id="user-bookmark-list">
       {% if bookmarkList.length == 0 %}
         No bookmarks yet.
       {% else %}

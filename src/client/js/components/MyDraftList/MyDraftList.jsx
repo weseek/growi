@@ -233,7 +233,7 @@ class MyDraftList extends React.Component {
     paginationItems.push(nextLastItems);
 
     return (
-      <div className="page-list-container-create">
+      <div className="page-list-container-create py-4">
 
         { totalCount === 0
           && <span>No drafts yet.</span>
