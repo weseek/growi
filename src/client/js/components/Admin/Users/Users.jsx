@@ -11,6 +11,7 @@ import UserTable from './UserTable';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import UsersContainer from '../../../services/UsersContainer';
 
 class UserPage extends React.Component {
 
@@ -108,12 +109,13 @@ class UserPage extends React.Component {
 }
 
 const UserPageWrapper = (props) => {
-  return createSubscribedElement(UserPage, props, [AppContainer]);
+  return createSubscribedElement(UserPage, props, [AppContainer, UsersContainer]);
 };
 
 UserPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
 
 };
 
