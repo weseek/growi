@@ -16,17 +16,7 @@ class XssForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onChangeTagWhiteList = this.onChangeTagWhiteList.bind(this);
-    this.onChangeAttrWhiteList = this.onChangeAttrWhiteList.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  onChangeTagWhiteList(value) {
-    this.setState({ tagWhiteList: value });
-  }
-
-  onChangeAttrWhiteList(value) {
-    this.setState({ attrWhiteList: value });
   }
 
   async onClickSubmit() {
@@ -60,7 +50,7 @@ class XssForm extends React.Component {
           <input type="radio" id="xssOption3" name="XssOption" onChange={() => { markDownSettingContainer.onChangeXssOption(3) }} />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <WhiteListInput customizable onChangeTagWhiteList={this.onChangeTagWhiteList} onChangeAttrWhiteList={this.onChangeAttrWhiteList} />
+            <WhiteListInput customizable />
           </label>
         </div>
       </fieldset>
