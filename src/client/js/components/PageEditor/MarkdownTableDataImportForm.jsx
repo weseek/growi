@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 // import FormGroup from 'react-bootstrap/es/FormGroup';
 // import ControlLabel from 'react-bootstrap/es/ControlLabel';
 // import FormControl from 'react-bootstrap/es/FormControl';
-// import Collapse from 'react-bootstrap/es/Collapse';
 
 import {
   Button,
+  Collapse,
 } from 'reactstrap';
 
 import MarkdownTable from '../../models/MarkdownTable';
@@ -79,7 +79,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
             onChange={(e) => { return this.setState({ data: e.target.value }) }}
           />
         </FormGroup>
-        <Collapse in={this.state.parserErrorMessage != null}>
+        <Collapse isOpen={this.state.parserErrorMessage != null}>
           <FormGroup>
             <ControlLabel>Parse Error</ControlLabel>
             <FormControl componentClass="textarea" style={{ height: 100 }} value={this.state.parserErrorMessage || ''} readOnly />

@@ -6,10 +6,10 @@ import { format, formatDistanceStrict } from 'date-fns';
 // TODO: GW-333
 // import Tooltip from 'react-bootstrap/es/Tooltip';
 // import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
-// import Collapse from 'react-bootstrap/es/Collapse';
 
 import {
   Button,
+  Collapse,
 } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
@@ -229,7 +229,7 @@ class Comment extends React.Component {
       <React.Fragment>
         { areThereHiddenReplies && (
           <div className="page-comments-hidden-replies">
-            <Collapse in={this.state.isOlderRepliesShown}>
+            <Collapse isOpen={this.state.isOlderRepliesShown}>
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">{toggleButton}</div>

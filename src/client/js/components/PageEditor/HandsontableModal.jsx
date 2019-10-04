@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO: GW-333
-// import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-// import Collapse from 'react-bootstrap/es/Collapse';
-
 import {
-  Button,
+  Button, ButtonGroup,
+  Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
@@ -434,7 +431,7 @@ export default class HandsontableModal extends React.PureComponent {
               <Button onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></Button>
               <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
-            <Collapse in={this.state.isDataImportAreaExpanded}>
+            <Collapse isOpen={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
