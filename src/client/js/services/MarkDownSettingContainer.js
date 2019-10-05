@@ -19,7 +19,6 @@ export default class MarkDownSettingContainer extends Container {
     };
 
     this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
-    this.onChangeXssOption = this.onChangeXssOption.bind(this);
   }
 
   /**
@@ -34,14 +33,6 @@ export default class MarkDownSettingContainer extends Container {
    */
   onChangeEnableXss() {
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
-  }
-
-  /**
-   * Switch xssOption
-   * @param {value} int
-   */
-  onChangeXssOption(value) {
-    this.setState({ XssOption: value });
   }
 
   /**

@@ -29,7 +29,7 @@ class XssForm extends React.Component {
     return (
       <fieldset className="form-group col-xs-12 my-3">
         <div className="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption1" name="XssOption" onChange={() => { markDownSettingContainer.onChangeXssOption(1) }} />
+          <input type="radio" id="xssOption1" name="XssOption" onChange={() => { markDownSettingContainer.setState({ xssOption: 1 }) }} />
           <label htmlFor="xssOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
             <div className="m-t-15">
@@ -39,7 +39,7 @@ class XssForm extends React.Component {
         </div>
 
         <div className="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption2" name="XssOption" onChange={() => { markDownSettingContainer.onChangeXssOption(2) }} />
+          <input type="radio" id="xssOption2" name="XssOption" onChange={() => { markDownSettingContainer.setState({ xssOption: 2 }) }} />
           <label htmlFor="xssOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
             <WhiteListInput customizable={false} />
@@ -47,7 +47,7 @@ class XssForm extends React.Component {
         </div>
 
         <div className="col-xs-4 radio radio-primary">
-          <input type="radio" id="xssOption3" name="XssOption" onChange={() => { markDownSettingContainer.onChangeXssOption(3) }} />
+          <input type="radio" id="xssOption3" name="XssOption" onChange={() => { markDownSettingContainer.setState({ xssOption: 3 }) }} />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
             <WhiteListInput customizable />
