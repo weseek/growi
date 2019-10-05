@@ -18,7 +18,7 @@ export default class MarkDownSettingContainer extends Container {
       attrWhiteList: appContainer.config.attrWhiteList || '',
     };
 
-    this.onChangeEnableXss = this.onChangeEnableXss.bind(this);
+    this.switchEnableXss = this.switchEnableXss.bind(this);
   }
 
   /**
@@ -31,7 +31,10 @@ export default class MarkDownSettingContainer extends Container {
   /**
    * Switch enableXss
    */
-  onChangeEnableXss() {
+  switchEnableXss() {
+    if (this.state.isEnabledXss) {
+      this.setState({ xssOption: null });
+    }
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 

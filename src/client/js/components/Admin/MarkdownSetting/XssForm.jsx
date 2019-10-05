@@ -65,7 +65,7 @@ class XssForm extends React.Component {
         <form className="row">
           <div className="form-group">
             <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={markDownSettingContainer.onChangeEnableXss}>
+              <div className="checkbox checkbox-success" onChange={markDownSettingContainer.switchEnableXss}>
                 <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={markDownSettingContainer.state.isEnabledXss} />
                 <label htmlFor="XssEnable">
                   { t('markdown_setting.Enable XSS prevention') }
