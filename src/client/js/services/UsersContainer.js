@@ -36,25 +36,30 @@ export default class UsersContainer extends Container {
   }
 
   /**
-   * passwordリセットモーダルが開き、userが渡される
+   * open reset password modal, and props user
+   * @memberOf UsersContainer
    * @param {object} user
    */
-  showPasswordResetModal(user) {
-    this.setState({
+  async showPasswordResetModal(user) {
+    await this.setState({
       isPasswordResetModalShown: true,
       userForPasswordResetModal: user,
     });
   }
 
-  hidePasswordResetModal() {
-    this.setState({ isPasswordResetModalShown: false });
+  /**
+   * close reset password modal
+   * @memberOf UsersContainer
+   */
+  async hidePasswordResetModal() {
+    await this.setState({ isPasswordResetModalShown: false });
   }
 
   /**
-   * user招待モーダルを開閉する TODO i18n
+   * toggle user invite modal
    */
-  toggleUserInviteModal() {
-    this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
+  async toggleUserInviteModal() {
+    await this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
   }
 
 }
