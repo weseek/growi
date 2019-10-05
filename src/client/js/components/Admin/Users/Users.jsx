@@ -20,7 +20,6 @@ class UserPage extends React.Component {
 
     this.state = {
       userForPasswordResetModal: null,
-      users: [],
       activePage: 1,
       pagingLimit: Infinity,
       isPasswordResetModalShown: false,
@@ -29,16 +28,6 @@ class UserPage extends React.Component {
     this.removeUser = this.removeUser.bind(this);
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
-  }
-
-  // TODO unstatedContainerを作ってそこにリファクタすべき
-  componentDidMount() {
-    const data = document.getElementById('admin-user-page');
-    const users = JSON.parse(data.getAttribute('users'));
-
-    this.setState({
-      users,
-    });
   }
 
   async removeUser(user) {
@@ -73,7 +62,7 @@ class UserPage extends React.Component {
 
 
   render() {
-    const { t } = this.props;
+    const { t, usersContainer } = this.props;
 
     return (
       <Fragment>
@@ -92,14 +81,14 @@ class UserPage extends React.Component {
           </a>
         </p>
         <UserTable
-          users={this.state.users}
+          users={usersContainer.state.users}
           onPasswordResetClicked={this.showPasswordResetModal}
           removeUser={this.removeUser}
         />
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage} // / TODO GW-314 create function
-          totalItemsCount={this.state.users.length} // TODO GW-314 props.userTotalCount
+          totalItemsCount={usersContainer.state.users.length}
           pagingLimit={this.state.pagingLimit}
         />
       </Fragment>

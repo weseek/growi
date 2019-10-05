@@ -17,7 +17,7 @@ export default class UsersContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      hoge: 'huga',
+      users: JSON.parse(document.getElementById('admin-user-page').getAttribute('users')) || [],
     };
   }
 
