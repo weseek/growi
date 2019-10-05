@@ -19,8 +19,6 @@ class PasswordResetModal extends React.Component {
       isPasswordResetDone: false,
     };
 
-    this.returnModalBody = this.returnModalBody.bind(this);
-    this.returnModalFooter = this.returnModalFooter.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
   }
 
@@ -37,51 +35,48 @@ class PasswordResetModal extends React.Component {
     }
   }
 
-  returnModalBody() {
+  renderModalBodyBeforeReset() {
     const { t, usersContainer } = this.props;
     const user = usersContainer.state.userForPasswordResetModal;
 
     return (
-      this.state.isPasswordResetDone
-        ? (
-          <div>
-            <p className="alert alert-danger">{ t('user_management.password_reset_message') }</p>
-            <p>
-              { t('user_management.target_user') }: <code>{ user.email }</code>
-            </p>
-            <p>
-              { t('user_management.new_password') }: <code>{ this.state.temporaryPassword }</code>
-            </p>
-          </div>
-        )
-        : (
-          <div>
-            <p>
-              { t('user_management.password_never_seen') }<br />
-              <span className="text-danger">{ t('user_management.send_new_password') }</span>
-            </p>
-            <p>
-              { t('user_management.target_user') }: <code>{ user.email }</code>
-            </p>
-            <button type="submit" className="btn btn-primary" onClick={this.resetPassword}>
-              { t('user_management.reset_password')}
-            </button>
-          </div>
-        )
+      <div>
+        <p className="alert alert-danger">{ t('user_management.password_reset_message') }</p>
+        <p>
+          { t('user_management.target_user') }: <code>{ user.email }</code>
+        </p>
+        <p>
+          { t('user_management.new_password') }: <code>{ this.state.temporaryPassword }</code>
+        </p>
+      </div>
+    );
+  }
+
+  returnModalBodyAfterReset() {
+    const { t, usersContainer } = this.props;
+    const user = usersContainer.state.userForPasswordResetModal;
+
+    return (
+      <div>
+        <p>
+          { t('user_management.password_never_seen') }<br />
+          <span className="text-danger">{ t('user_management.send_new_password') }</span>
+        </p>
+        <p>
+          { t('user_management.target_user') }: <code>{ user.email }</code>
+        </p>
+        <button type="submit" className="btn btn-primary" onClick={this.resetPassword}>
+          { t('user_management.reset_password')}
+        </button>
+      </div>
     );
   }
 
   returnModalFooter() {
     return (
-      this.state.isPasswordResetDone
-        ? (
-          <div>
-            <button type="submit" className="btn btn-primary" onClick={this.props.usersContainer.hidePasswordResetModal}>OK</button>
-          </div>
-        )
-        : (
-          ''
-        )
+      <div>
+        <button type="submit" className="btn btn-primary" onClick={this.props.usersContainer.hidePasswordResetModal}>OK</button>
+      </div>
     );
   }
 
@@ -97,13 +92,12 @@ class PasswordResetModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {this.returnModalBody()}
+          {this.state.isPasswordResetDone ? this.renderModalBodyBeforeReset() : this.returnModalBodyAfterReset()}
         </Modal.Body>
         <Modal.Footer>
-          {this.returnModalFooter()}
+          {this.state.isPasswordResetDone && this.returnModalFooter()}
         </Modal.Footer>
       </Modal>
-
     );
   }
 
