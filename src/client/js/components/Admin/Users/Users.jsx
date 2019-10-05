@@ -2,8 +2,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
-
 import PasswordResetModal from './PasswordResetModal';
 import PaginationWrapper from '../../PaginationWrapper';
 import InviteUserControl from './InviteUserControl';
@@ -23,21 +21,6 @@ class UserPage extends React.Component {
       pagingLimit: Infinity,
     };
 
-    this.removeUser = this.removeUser.bind(this);
-  }
-
-  async removeUser(user) {
-
-    const { appContainer } = this.props;
-
-    try {
-      const response = await appContainer.apiv3.delete(`/users/${user._id}/remove`);
-      const { username } = response.data.userData;
-      toastSuccess(`Delete ${username} success`);
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
   render() {
@@ -53,10 +36,7 @@ class UserPage extends React.Component {
             { t('user_management.external_account') }
           </a>
         </p>
-        <UserTable
-          users={usersContainer.state.users}
-          removeUser={this.removeUser}
-        />
+        <UserTable />
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage} // / TODO GW-314 create function

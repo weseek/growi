@@ -57,9 +57,22 @@ export default class UsersContainer extends Container {
 
   /**
    * toggle user invite modal
+   * @memberOf UsersContainer
    */
   async toggleUserInviteModal() {
     await this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
+  }
+
+  /**
+   * remove user
+   * @memberOf UsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async removeUser(userId) {
+    const response = await this.appContainer.apiv3.delete(`/users/${userId}/remove`);
+    const { username } = response.data.userData;
+    return username;
   }
 
 }

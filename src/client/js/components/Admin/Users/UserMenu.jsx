@@ -49,7 +49,7 @@ class UserMenu extends React.Component {
             <li>
               {(user.status === 1 || user.status === 3) && <StatusActivateForm user={user} />}
               {user.status === 2 && <StatusSuspendedForm user={user} />}
-              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} removeUser={this.props.removeUser} />}
+              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
             </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
@@ -75,7 +75,6 @@ UserMenu.propTypes = {
   usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,
-  removeUser: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserMenuWrapper);

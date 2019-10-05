@@ -62,7 +62,7 @@ class UserTable extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, usersContainer } = this.props;
 
     return (
       <Fragment>
@@ -82,7 +82,7 @@ class UserTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.users.map((user) => {
+            {usersContainer.state.users.map((user) => {
               return (
                 <tr key={user._id}>
                   <td>
@@ -100,7 +100,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu user={user} removeUser={this.props.removeUser} />
+                    <UserMenu user={user} />
                   </td>
                 </tr>
               );
@@ -122,8 +122,6 @@ UserTable.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
 
-  users: PropTypes.array.isRequired,
-  removeUser: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserTableWrapper);
