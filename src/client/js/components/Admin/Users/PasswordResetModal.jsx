@@ -7,6 +7,7 @@ import Modal from 'react-bootstrap/es/Modal';
 import { toastError } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import UsersContainer from '../../../services/UsersContainer';
 
 class PasswordResetModal extends React.Component {
 
@@ -24,7 +25,8 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { appContainer, user } = this.props;
+    const { appContainer, usersContainer } = this.props;
+    const user = usersContainer.state.userForPasswordResetModal;
 
     const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
     if (res.ok) {
@@ -36,7 +38,9 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalBody() {
-    const { t, user } = this.props;
+    const { t, usersContainer } = this.props;
+    const user = usersContainer.state.userForPasswordResetModal;
+
     return (
       this.state.isPasswordResetDone
         ? (
@@ -72,7 +76,7 @@ class PasswordResetModal extends React.Component {
       this.state.isPasswordResetDone
         ? (
           <div>
-            <button type="submit" className="btn btn-primary" onClick={this.props.onHideModal}>OK</button>
+            <button type="submit" className="btn btn-primary" onClick={this.props.usersContainer.hidePasswordResetModal}>OK</button>
           </div>
         )
         : (
@@ -83,10 +87,10 @@ class PasswordResetModal extends React.Component {
 
 
   render() {
-    const { t } = this.props;
+    const { t, usersContainer } = this.props;
 
     return (
-      <Modal show={this.props.show} onHide={this.props.onHideModal}>
+      <Modal show={usersContainer.state.isPasswordResetModalShown} onHide={usersContainer.hidePasswordResetModal}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
             { t('user_management.reset_password') }
@@ -109,16 +113,13 @@ class PasswordResetModal extends React.Component {
  * Wrapper component for using unstated
  */
 const PasswordResetModalWrapper = (props) => {
-  return createSubscribedElement(PasswordResetModal, props, [AppContainer]);
+  return createSubscribedElement(PasswordResetModal, props, [AppContainer, UsersContainer]);
 };
 
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  user: PropTypes.object.isRequired,
-  show: PropTypes.bool.isRequired,
-  onHideModal: PropTypes.func.isRequired,
+  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
 };
 
 export default withTranslation()(PasswordResetModalWrapper);

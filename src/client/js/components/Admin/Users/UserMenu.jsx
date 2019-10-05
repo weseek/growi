@@ -10,6 +10,7 @@ import GiveAdminForm from './GiveAdminForm';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import UsersContainer from '../../../services/UsersContainer';
 
 class UserMenu extends React.Component {
 
@@ -24,7 +25,7 @@ class UserMenu extends React.Component {
   }
 
   onPasswordResetClicked() {
-    this.props.onPasswordResetClicked(this.props.user);
+    this.props.usersContainer.showPasswordResetModal(this.props.user);
   }
 
   render() {
@@ -65,16 +66,16 @@ class UserMenu extends React.Component {
 }
 
 const UserMenuWrapper = (props) => {
-  return createSubscribedElement(UserMenu, props, [AppContainer]);
+  return createSubscribedElement(UserMenu, props, [AppContainer, UsersContainer]);
 };
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,
   removeUser: PropTypes.func.isRequired,
-  onPasswordResetClicked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserMenuWrapper);

@@ -8,6 +8,7 @@ import UserMenu from './UserMenu';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import UsersContainer from '../../../services/UsersContainer';
 
 class UserTable extends React.Component {
 
@@ -99,7 +100,7 @@ class UserTable extends React.Component {
                     { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span> }
                   </td>
                   <td>
-                    <UserMenu user={user} onPasswordResetClicked={this.props.onPasswordResetClicked} removeUser={this.props.removeUser} />
+                    <UserMenu user={user} removeUser={this.props.removeUser} />
                   </td>
                 </tr>
               );
@@ -113,16 +114,16 @@ class UserTable extends React.Component {
 }
 
 const UserTableWrapper = (props) => {
-  return createSubscribedElement(UserTable, props, [AppContainer]);
+  return createSubscribedElement(UserTable, props, [AppContainer, UsersContainer]);
 };
 
 UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
 
   users: PropTypes.array.isRequired,
   removeUser: PropTypes.func.isRequired,
-  onPasswordResetClicked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserTableWrapper);

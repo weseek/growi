@@ -19,15 +19,11 @@ class UserPage extends React.Component {
     super();
 
     this.state = {
-      userForPasswordResetModal: null,
       activePage: 1,
       pagingLimit: Infinity,
-      isPasswordResetModalShown: false,
     };
 
     this.removeUser = this.removeUser.bind(this);
-    this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
-    this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
   }
 
   async removeUser(user) {
@@ -44,35 +40,12 @@ class UserPage extends React.Component {
     }
   }
 
-  /**
-   * passwordリセットモーダルが開き、userが渡される
-   * @param {object} user
-   *
-   */
-  showPasswordResetModal(user) {
-    this.setState({
-      isPasswordResetModalShown: true,
-      userForPasswordResetModal: user,
-    });
-  }
-
-  hidePasswordResetModal() {
-    this.setState({ isPasswordResetModalShown: false });
-  }
-
-
   render() {
     const { t, usersContainer } = this.props;
 
     return (
       <Fragment>
-        { this.state.userForPasswordResetModal && (
-          <PasswordResetModal
-            user={this.state.userForPasswordResetModal}
-            show={this.state.isPasswordResetModalShown}
-            onHideModal={this.hidePasswordResetModal}
-          />
-        ) }
+        {usersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
         <p>
           <InviteUserControl />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
@@ -82,7 +55,6 @@ class UserPage extends React.Component {
         </p>
         <UserTable
           users={usersContainer.state.users}
-          onPasswordResetClicked={this.showPasswordResetModal}
           removeUser={this.removeUser}
         />
         <PaginationWrapper

@@ -18,7 +18,12 @@ export default class UsersContainer extends Container {
 
     this.state = {
       users: JSON.parse(document.getElementById('admin-user-page').getAttribute('users')) || [],
+      isPasswordResetModalShown: false,
+      userForPasswordResetModal: null,
     };
+
+    this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
+    this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
   }
 
   /**
@@ -26,6 +31,21 @@ export default class UsersContainer extends Container {
    */
   static getClassName() {
     return 'UsersContainer';
+  }
+
+  /**
+   * passwordリセットモーダルが開き、userが渡される
+   * @param {object} user
+   */
+  showPasswordResetModal(user) {
+    this.setState({
+      isPasswordResetModalShown: true,
+      userForPasswordResetModal: user,
+    });
+  }
+
+  hidePasswordResetModal() {
+    this.setState({ isPasswordResetModalShown: false });
   }
 
 }
