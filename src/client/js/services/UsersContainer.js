@@ -6,7 +6,7 @@ import loggerFactory from '@alias/logger';
 const logger = loggerFactory('growi:services:UserGroupDetailContainer');
 
 /**
- * Service container for admin user group detail page (UserGroupDetailPage.jsx)
+ * Service container for admin users page (Users.jsx)
  * @extends {Container} unstated Container
  */
 export default class UsersContainer extends Container {
