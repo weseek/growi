@@ -19,11 +19,13 @@ export default class UsersContainer extends Container {
     this.state = {
       users: JSON.parse(document.getElementById('admin-user-page').getAttribute('users')) || [],
       isPasswordResetModalShown: false,
+      isUserInviteModalShown: false,
       userForPasswordResetModal: null,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
+    this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
   }
 
   /**
@@ -46,6 +48,13 @@ export default class UsersContainer extends Container {
 
   hidePasswordResetModal() {
     this.setState({ isPasswordResetModalShown: false });
+  }
+
+  /**
+   * user招待モーダルを開閉する TODO i18n
+   */
+  toggleUserInviteModal() {
+    this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
   }
 
 }
