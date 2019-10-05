@@ -176,7 +176,7 @@ const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting
 if (adminMarkDownSettingElem != null) {
   const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
   ReactDOM.render(
-    <Provider inject={[markDownSettingContainer]}>
+    <Provider inject={[injectableContainers, markDownSettingContainer]}>
       <I18nextProvider i18n={i18n}>
         <MarkdownSetting />
       </I18nextProvider>
