@@ -163,7 +163,7 @@ const adminUsersElem = document.getElementById('admin-user-page');
 if (adminUsersElem != null) {
   const usersContainer = new UsersContainer(appContainer);
   ReactDOM.render(
-    <Provider inject={[usersContainer]}>
+    <Provider inject={[injectableContainers, usersContainer]}>
       <I18nextProvider i18n={i18n}>
         <Users />
       </I18nextProvider>
