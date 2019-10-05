@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -51,14 +50,30 @@ class WhiteListInput extends React.Component {
             { t('markdown_setting.Tag names') }
             {customizable && this.renderRecommendBtn()}
           </div>
-          <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly={!customizable} value={this.renderTagValue()} onChange={(e) => { markDownSettingContainer.onChangeTagWhiteList(e.target.value) }} />
+          <textarea
+            className="form-control xss-list"
+            name="recommendedTags"
+            rows="6"
+            cols="40"
+            readOnly={!customizable}
+            value={this.renderTagValue()}
+            onChange={(e) => { markDownSettingContainer.setState({ tagWhiteList: e.target.value }) }}
+          />
         </div>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag attributes') }
             {customizable && this.renderRecommendBtn()}
           </div>
-          <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly={!customizable} value={this.renderAttrValue()} onChange={(e) => { markDownSettingContainer.onChangeAttrWhiteList(e.target.value) }} />
+          <textarea
+            className="form-control xss-list"
+            name="recommendedAttrs"
+            rows="6"
+            cols="40"
+            readOnly={!customizable}
+            value={this.renderAttrValue()}
+            onChange={(e) => { markDownSettingContainer.setState({ attrWhiteList: e.target.value }) }}
+          />
         </div>
       </>
     );

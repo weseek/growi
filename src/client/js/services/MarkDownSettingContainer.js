@@ -38,21 +38,4 @@ export default class MarkDownSettingContainer extends Container {
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
-  /**
-   * Change whiteListValue
-   * @param {value} string
-   */
-  onChangeTagWhiteList(value) {
-    this.setState({ tagWhiteList: value });
-  }
-
-  /**
-   * Change whiteListValue
-   * @param {value} string
-   */
-  onChangeAttrWhiteList(value) {
-    this.setState({ attrWhiteList: value });
-  }
-
-
 }
