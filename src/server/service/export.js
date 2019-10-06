@@ -118,7 +118,7 @@ class ExportService {
     const { collectionName } = Model.collection;
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
-    const readStream = Model.find().stream({ transform: JSON.stringify });
+    const readStream = Model.find().snapshot().stream({ transform: JSON.stringify });
     const total = await Model.countDocuments();
     // const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
     const getLogText = undefined;
