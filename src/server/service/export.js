@@ -60,25 +60,41 @@ class ExportService {
   }
 
   /**
-   * dump a collection into json
    *
-   * @memberOf ExportService
-   * @param {WritableStream} writeStream write stream
-   * @param {ReadableStream} readStream read stream (chunks should be stringified)
    * @param {number} total number of target items (optional)
    * @param {function} [getLogText] (n, total) => { ... }
-   * @return {string} path to the exported json file
    */
-  generateTransformStream(total, getLogText) {
-    let n = 0;
-
+  generateLogStream(total, getLogText) {
     const logProgress = this.logProgress.bind(this);
+
+    let count = 0;
+
     return new Transform({
-      // highWaterMark: 16 * 1024 * 1024,
+      transform(chunk, encoding, callback) {
+        count++;
+        logProgress(count, total, getLogText);
+
+        this.push(chunk);
+        callback();
+      },
+    });
+  }
+
+  /**
+   * insert beginning/ending brackets and comma separator for Json Array
+   *
+   * @memberOf ExportService
+   * @return {TransformStream}
+   */
+  generateTransformStream() {
+    let isFirst = true;
+
+    const transformStream = new Transform({
       transform(chunk, encoding, callback) {
         // write beginning brace
-        if (n === 0) {
+        if (isFirst) {
           this.push('[');
+          isFirst = false;
         }
         // write separator
         else {
@@ -86,10 +102,6 @@ class ExportService {
         }
 
         this.push(chunk);
-
-        n++;
-        logProgress(n, total, getLogText);
-
         callback();
       },
       final(callback) {
@@ -98,6 +110,8 @@ class ExportService {
         callback();
       },
     });
+
+    return transformStream;
   }
 
   /**
@@ -108,29 +122,29 @@ class ExportService {
    * @return {string} path to zip file
    */
   async exportCollectionToJson(Model) {
-    const { collectionName } = Model.collection;
+    const collectionName = Model.collection.name;
 
     // get native Cursor instance
     //  cz: Mongoose cursor might cause memory leak
     const nativeCursor = Model.collection.find();
     const readStream = nativeCursor
       .snapshot()
-      // .batchSize(10)
-      .stream({
-        // highWaterMark: 16 * 1024 * 1024,
-        transform: JSON.stringify,
-      });
+      .stream({ transform: JSON.stringify });
 
     // get TransformStream
+    const transformStream = this.generateTransformStream();
+
+    // log configuration
     const total = await Model.countDocuments();
     const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
-    const transformStream = this.generateTransformStream(total, getLogText);
+    const logStream = this.generateLogStream(total, getLogText);
 
     // create WritableStream
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
 
     readStream
+      .pipe(logStream)
       .pipe(transformStream)
       .pipe(writeStream);
 
