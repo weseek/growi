@@ -52,10 +52,7 @@
     </div>
     <div class="col-md-9">
 
-      <div id="admin-customize"></div>
-
-      <!-- 以下、念の為削除せずコメントアウト。GW-176終了時には消す -->
-      <!-- <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
+      <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
         <div class="form-group">
@@ -523,13 +520,13 @@ window.addEventListener('load', (event) => {
         </div>
 
       </fieldset>
-      </form> -->
+      </form>
 
     </div>
   </div>
 {% endblock content_main %}
 
-<!-- {% block body_end %}
+{% block body_end %}
   {% parent %}
   <script>
     $(`#customlayoutSettingForm, #custombehaviorSettingForm, #customhighlightJsStyleSettingForm,
@@ -650,7 +647,7 @@ window.addEventListener('load', (event) => {
   </script>
 
 </div>
-{% endblock %} -->
+{% endblock %}
 
 {% block content_footer %}
 {% endblock content_footer %}
