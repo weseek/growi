@@ -21,6 +21,8 @@ module.exports = (crowi) => {
 
   const { growiBridgeService, exportService } = crowi;
 
+  this.adminEvent = crowi.event('admin');
+
   /**
    * @swagger
    *
@@ -74,6 +76,14 @@ module.exports = (crowi) => {
       const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
       exportService.exportCollectionsToZippedJson(models);
+
+      // setup event
+      this.adminEvent.on('onProgressForExport', (total, current) => {
+        crowi.getIo().sockets.emit('admin:onProgressForExport', { total, current });
+      });
+      this.adminEvent.on('onTerminateForExport', (total, current) => {
+        crowi.getIo().sockets.emit('admin:onTerminateForExport', { total, current });
+      });
 
       // TODO: use res.apiv3
       return res.status(200).json({

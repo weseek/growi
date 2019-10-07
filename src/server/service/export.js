@@ -6,6 +6,48 @@ const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
+
+class ExportingProgress {
+
+  constructor(Model, totalCount) {
+    this.Model = Model;
+    this.count = 0;
+    this.totalCount = totalCount;
+  }
+
+}
+
+class ExportStatus {
+
+  constructor() {
+    this.totalCount = 0;
+
+    this.progressList = null;
+    this.progressMap = {};
+  }
+
+  async init(models) {
+    this.progressList = await Promise.all(models.map(Model => async() => {
+      const totalCount = await Model.countDocuments();
+      return new ExportingProgress(Model, totalCount);
+    }));
+
+    this.progressList.forEach((p) => {
+      this.progressMap[p.Model] = p;
+      this.totalCount += p.totalCount;
+    });
+  }
+
+  get currentCount() {
+    return this.progressList.reduce(
+      (acc, crr) => acc + crr,
+      0,
+    );
+  }
+
+}
+
+
 class ExportService {
 
   constructor(crowi) {
@@ -16,6 +58,8 @@ class ExportService {
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
+
+    this.adminEvent = crowi.event('admin');
   }
 
   /**
@@ -64,7 +108,7 @@ class ExportService {
    * @param {number} total number of target items (optional)
    * @param {function} [getLogText] (n, total) => { ... }
    */
-  generateLogStream(total, getLogText) {
+  generateLogStream(exportProgress) {
     const logProgress = this.logProgress.bind(this);
 
     let count = 0;
@@ -72,9 +116,10 @@ class ExportService {
     return new Transform({
       transform(chunk, encoding, callback) {
         count++;
-        logProgress(count, total, getLogText);
+        logProgress(exportProgress, count);
 
         this.push(chunk);
+
         callback();
       },
     });
@@ -118,10 +163,11 @@ class ExportService {
    * dump a mongodb collection into json
    *
    * @memberOf ExportService
+   * @param {ExportStatus} exportStatus
    * @param {object} Model instance of mongoose model
    * @return {string} path to zip file
    */
-  async exportCollectionToJson(Model) {
+  async exportCollectionToJson(exportStatus, Model) {
     const collectionName = Model.collection.name;
 
     // get native Cursor instance
@@ -135,9 +181,8 @@ class ExportService {
     const transformStream = this.generateTransformStream();
 
     // log configuration
-    const total = await Model.countDocuments();
-    const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
-    const logStream = this.generateLogStream(total, getLogText);
+    const exportProgress = exportStatus.progressMap[Model];
+    const logStream = this.generateLogStream(exportStatus, exportProgress);
 
     // create WritableStream
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
@@ -163,7 +208,10 @@ class ExportService {
   async exportCollectionsToZippedJson(models) {
     const metaJson = await this.createMetaJson();
 
-    const promisesForModels = models.map(Model => this.exportCollectionToJson(Model));
+    const exportStatus = new ExportStatus();
+    await exportStatus.init(models);
+
+    const promisesForModels = models.map(Model => this.exportCollectionToJson(exportStatus, Model));
     const jsonFiles = await Promise.all(promisesForModels);
 
     // zip json
@@ -181,17 +229,38 @@ class ExportService {
    * log export progress
    *
    * @memberOf ExportService
-   * @param {number} n number of items exported
-   * @param {number} total number of target items (optional)
-   * @param {function} [getLogText] (n, total) => { ... }
+   *
+   * @param {ExportStatus} exportStatus
+   * @param {ExportProgress} exportProgress
+   * @param {number} currentCount number of items exported
    */
-  logProgress(n, total, getLogText) {
-    const output = getLogText ? getLogText(n, total) : `${n}/${total} items written`;
+  logProgress(exportStatus, exportProgress, currentCount) {
+    const collectionName = exportProgress.Model.collection.name;
+    const output = `${collectionName}: ${currentCount}/${exportProgress.totalCount} written`;
+
+    const globalTotalCount = exportStatus.totalCount;
 
     // output every this.per items
-    if (n % this.per === 0) logger.debug(output);
+    if (currentCount % this.per === 0) {
+      logger.debug(output);
+
+      // send event
+      this.adminEvent.emit('onProgressForExport', globalTotalCount, exportStatus.currentCount);
+    }
     // output last item
-    else if (n === total) logger.info(output);
+    else if (currentCount === exportProgress.totalCount) {
+      logger.info(output);
+
+      const globalCurrentCount = exportStatus.currentCount;
+
+      // send event (in progress in global)
+      if (globalCurrentCount !== globalTotalCount) {
+        this.adminEvent.emit('onProgressForExport', globalTotalCount, globalCurrentCount);
+      }
+      else {
+        this.adminEvent.emit('onTerminateForExport');
+      }
+    }
   }
 
   /**
