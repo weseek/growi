@@ -83,7 +83,9 @@ module.exports = function(crowi) {
       return { isUploadable: false, errorMessage: err.errmsg };
     }
 
-    const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit');
+    // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimitd is null)
+    const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit')
+      || crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     if (usingFilesSize + uploadFileSize > gridfsTotalLimit) {
       return { isUploadable: false, errorMessage: 'MongoDB for uploading files reaches limit' };
     }
