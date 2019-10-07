@@ -55,6 +55,7 @@ import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import UsersContainer from './services/UsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
+import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -107,7 +108,6 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
-  'admin-markdown-setting': <MarkdownSetting />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
 
@@ -184,6 +184,20 @@ if (adminUserGroupDetailElem != null) {
     adminUserGroupDetailElem,
   );
 }
+
+const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting');
+if (adminMarkDownSettingElem != null) {
+  const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, markDownSettingContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <MarkdownSetting />
+      </I18nextProvider>
+    </Provider>,
+    adminMarkDownSettingElem,
+  );
+}
+
 const customCssEditorElem = document.getElementById('custom-css-editor');
 if (customCssEditorElem != null) {
   // get input[type=hidden] element
