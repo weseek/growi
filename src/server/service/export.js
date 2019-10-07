@@ -69,11 +69,12 @@ class ExportService {
    * @param {function} [getLogText] (n, total) => { ... }
    * @return {string} path to the exported json file
    */
-  async export(writeStream, readStream, total, getLogText) {
+  generateTransformStream(total, getLogText) {
     let n = 0;
 
     const logProgress = this.logProgress.bind(this);
-    const transformStream = new Transform({
+    return new Transform({
+      // highWaterMark: 16 * 1024 * 1024,
       transform(chunk, encoding, callback) {
         // write beginning brace
         if (n === 0) {
@@ -91,20 +92,12 @@ class ExportService {
 
         callback();
       },
-      flush(callback) {
+      final(callback) {
         // write ending brace
         this.push(']');
         callback();
       },
     });
-
-    readStream
-      .pipe(transformStream)
-      .pipe(writeStream);
-
-    await streamToPromise(readStream);
-
-    return writeStream.path;
   }
 
   /**
@@ -116,29 +109,58 @@ class ExportService {
    */
   async exportCollectionToJson(Model) {
     const { collectionName } = Model.collection;
+
+    // get native Cursor instance
+    //  cz: Mongoose cursor might cause memory leak
+    const nativeCursor = Model.collection.find();
+    const readStream = nativeCursor
+      .snapshot()
+      // .batchSize(10)
+      .stream({
+        // highWaterMark: 16 * 1024 * 1024,
+        transform: JSON.stringify,
+      });
+
+    // get TransformStream
+    const total = await Model.countDocuments();
+    const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
+    const transformStream = this.generateTransformStream(total, getLogText);
+
+    // create WritableStream
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
-    const readStream = Model.find().snapshot().stream({ transform: JSON.stringify });
-    const total = await Model.countDocuments();
-    // const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
-    const getLogText = undefined;
 
-    const jsonFileWritten = await this.export(writeStream, readStream, total, getLogText);
+    readStream
+      .pipe(transformStream)
+      .pipe(writeStream);
 
-    return jsonFileWritten;
+    await streamToPromise(readStream);
+
+    return writeStream.path;
   }
 
   /**
-   * export multiple collections
+   * export multiple Collections into json and Zip
    *
    * @memberOf ExportService
    * @param {Array.<object>} models array of instances of mongoose model
    * @return {Array.<string>} paths to json files created
    */
-  async exportMultipleCollectionsToJsons(models) {
-    const jsonFiles = await Promise.all(models.map(Model => this.exportCollectionToJson(Model)));
+  async exportCollectionsToZippedJson(models) {
+    const metaJson = await this.createMetaJson();
 
-    return jsonFiles;
+    const promisesForModels = models.map(Model => this.exportCollectionToJson(Model));
+    const jsonFiles = await Promise.all(promisesForModels);
+
+    // zip json
+    const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
+    // add meta.json in zip
+    configs.push({ from: metaJson, as: path.basename(metaJson) });
+    // exec zip
+    const zipFile = await this.zipFiles(configs);
+
+    // get stats for the zip file
+    return this.growiBridgeService.parseZipFile(zipFile);
   }
 
   /**

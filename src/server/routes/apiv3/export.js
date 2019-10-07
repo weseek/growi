@@ -1,7 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:export');
-const path = require('path');
 const fs = require('fs');
 
 const express = require('express');
@@ -74,24 +73,11 @@ module.exports = (crowi) => {
       // get model for collection
       const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
-      const [metaJson, jsonFiles] = await Promise.all([
-        exportService.createMetaJson(),
-        exportService.exportMultipleCollectionsToJsons(models),
-      ]);
-
-      // zip json
-      const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
-      // add meta.json in zip
-      configs.push({ from: metaJson, as: path.basename(metaJson) });
-      // exec zip
-      const zipFile = await exportService.zipFiles(configs);
-      // get stats for the zip file
-      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      exportService.exportCollectionsToZippedJson(models);
 
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        zipFileStat,
       });
     }
     catch (err) {

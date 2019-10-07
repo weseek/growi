@@ -54,13 +54,15 @@ class ExportZipFormModal extends React.Component {
 
     try {
       // TODO: use appContainer.apiv3.post
-      const { zipFileStat } = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
+      const result = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
       // TODO: toastSuccess, toastError
-      this.props.onZipFileStatAdd(zipFileStat);
-      this.props.onClose();
+
+      if (!result.ok) {
+        throw new Error('Error occured.');
+      }
 
       // TODO: toastSuccess, toastError
-      toastr.success(undefined, `Generated ${zipFileStat.fileName}`, {
+      toastr.success(undefined, 'Export process has requested.', {
         closeButton: true,
         progressBar: true,
         newestOnTop: false,
@@ -69,6 +71,8 @@ class ExportZipFormModal extends React.Component {
         timeOut: '1200',
         extendedTimeOut: '150',
       });
+      this.props.onClose();
+
     }
     catch (err) {
       // TODO: toastSuccess, toastError
