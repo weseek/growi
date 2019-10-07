@@ -1,6 +1,11 @@
 # CHANGES
 
-## 3.5.16-RC
+## 3.5.17-RC
+
+* Fix: Use HTTP PlantUML URL in default
+    * Introduced by 3.5.12
+
+## 3.5.16
 
 * Fix: Full Text Search doesn't work after when building indices
     * Introduced by 3.5.12
