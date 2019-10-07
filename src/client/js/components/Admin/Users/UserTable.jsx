@@ -8,7 +8,7 @@ import UserMenu from './UserMenu';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UsersContainer from '../../../services/UsersContainer';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class UserTable extends React.Component {
 
@@ -62,7 +62,7 @@ class UserTable extends React.Component {
   }
 
   render() {
-    const { t, usersContainer } = this.props;
+    const { t, adminUsersContainer } = this.props;
 
     return (
       <Fragment>
@@ -82,7 +82,7 @@ class UserTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {usersContainer.state.users.map((user) => {
+            {adminUsersContainer.state.users.map((user) => {
               return (
                 <tr key={user._id}>
                   <td>
@@ -114,13 +114,13 @@ class UserTable extends React.Component {
 }
 
 const UserTableWrapper = (props) => {
-  return createSubscribedElement(UserTable, props, [AppContainer, UsersContainer]);
+  return createSubscribedElement(UserTable, props, [AppContainer, AdminUsersContainer]);
 };
 
 UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
 };
 

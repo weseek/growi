@@ -9,7 +9,7 @@ import UserTable from './UserTable';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UsersContainer from '../../../services/UsersContainer';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class UserPage extends React.Component {
 
@@ -24,11 +24,11 @@ class UserPage extends React.Component {
   }
 
   render() {
-    const { t, usersContainer } = this.props;
+    const { t, adminUsersContainer } = this.props;
 
     return (
       <Fragment>
-        {usersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
+        {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
         <p>
           <InviteUserControl />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
@@ -40,7 +40,7 @@ class UserPage extends React.Component {
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePage} // / TODO GW-314 create function
-          totalItemsCount={usersContainer.state.users.length}
+          totalItemsCount={adminUsersContainer.state.users.length}
           pagingLimit={this.state.pagingLimit}
         />
       </Fragment>
@@ -50,13 +50,13 @@ class UserPage extends React.Component {
 }
 
 const UserPageWrapper = (props) => {
-  return createSubscribedElement(UserPage, props, [AppContainer, UsersContainer]);
+  return createSubscribedElement(UserPage, props, [AppContainer, AdminUsersContainer]);
 };
 
 UserPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
 };
 

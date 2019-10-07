@@ -11,7 +11,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UsersContainer from '../../../services/UsersContainer';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class UserInviteModal extends React.Component {
 
@@ -31,7 +31,7 @@ class UserInviteModal extends React.Component {
   }
 
   onToggleModal() {
-    this.props.usersContainer.toggleUserInviteModal();
+    this.props.adminUsersContainer.toggleUserInviteModal();
     this.setState({ invitedEmailList: null });
   }
 
@@ -186,11 +186,11 @@ class UserInviteModal extends React.Component {
   }
 
   render() {
-    const { t, usersContainer } = this.props;
+    const { t, adminUsersContainer } = this.props;
     const { invitedEmailList } = this.state;
 
     return (
-      <Modal show={usersContainer.state.isUserInviteModalShown} onHide={this.onToggleModal}>
+      <Modal show={adminUsersContainer.state.isUserInviteModalShown} onHide={this.onToggleModal}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
             { t('user_management.invite_users') }
@@ -214,14 +214,14 @@ class UserInviteModal extends React.Component {
  * Wrapper component for using unstated
  */
 const UserInviteModalWrapper = (props) => {
-  return createSubscribedElement(UserInviteModal, props, [AppContainer, UsersContainer]);
+  return createSubscribedElement(UserInviteModal, props, [AppContainer, AdminUsersContainer]);
 };
 
 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
 export default withTranslation()(UserInviteModalWrapper);

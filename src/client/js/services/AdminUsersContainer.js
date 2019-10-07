@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:services:UserGroupDetailContainer');
  * Service container for admin users page (Users.jsx)
  * @extends {Container} unstated Container
  */
-export default class UsersContainer extends Container {
+export default class AdminUsersContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -32,12 +32,12 @@ export default class UsersContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'UsersContainer';
+    return 'AdminUsersContainer';
   }
 
   /**
    * open reset password modal, and props user
-   * @memberOf UsersContainer
+   * @memberOf AdminUsersContainer
    * @param {object} user
    */
   async showPasswordResetModal(user) {
@@ -49,7 +49,7 @@ export default class UsersContainer extends Container {
 
   /**
    * close reset password modal
-   * @memberOf UsersContainer
+   * @memberOf AdminUsersContainer
    */
   async hidePasswordResetModal() {
     await this.setState({ isPasswordResetModalShown: false });
@@ -57,7 +57,7 @@ export default class UsersContainer extends Container {
 
   /**
    * toggle user invite modal
-   * @memberOf UsersContainer
+   * @memberOf AdminUsersContainer
    */
   async toggleUserInviteModal() {
     await this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
@@ -65,7 +65,7 @@ export default class UsersContainer extends Container {
 
   /**
    * remove user
-   * @memberOf UsersContainer
+   * @memberOf AdminUsersContainer
    * @param {string} userId
    * @return {string} username
    */

@@ -53,7 +53,7 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
-import UsersContainer from './services/UsersContainer';
+import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
@@ -161,9 +161,9 @@ Object.keys(componentMappings).forEach((key) => {
 // render for admin
 const adminUsersElem = document.getElementById('admin-user-page');
 if (adminUsersElem != null) {
-  const usersContainer = new UsersContainer(appContainer);
+  const adminUsersContainer = new AdminUsersContainer(appContainer);
   ReactDOM.render(
-    <Provider inject={[injectableContainers, usersContainer]}>
+    <Provider inject={[injectableContainers, adminUsersContainer]}>
       <I18nextProvider i18n={i18n}>
         <Users />
       </I18nextProvider>

@@ -7,7 +7,7 @@ import Modal from 'react-bootstrap/es/Modal';
 import { toastError } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UsersContainer from '../../../services/UsersContainer';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class PasswordResetModal extends React.Component {
 
@@ -23,8 +23,8 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { appContainer, usersContainer } = this.props;
-    const user = usersContainer.state.userForPasswordResetModal;
+    const { appContainer, adminUsersContainer } = this.props;
+    const user = adminUsersContainer.state.userForPasswordResetModal;
 
     const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
     if (res.ok) {
@@ -36,8 +36,8 @@ class PasswordResetModal extends React.Component {
   }
 
   renderModalBodyBeforeReset() {
-    const { t, usersContainer } = this.props;
-    const user = usersContainer.state.userForPasswordResetModal;
+    const { t, adminUsersContainer } = this.props;
+    const user = adminUsersContainer.state.userForPasswordResetModal;
 
     return (
       <div>
@@ -53,8 +53,8 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalBodyAfterReset() {
-    const { t, usersContainer } = this.props;
-    const user = usersContainer.state.userForPasswordResetModal;
+    const { t, adminUsersContainer } = this.props;
+    const user = adminUsersContainer.state.userForPasswordResetModal;
 
     return (
       <div>
@@ -75,17 +75,17 @@ class PasswordResetModal extends React.Component {
   returnModalFooter() {
     return (
       <div>
-        <button type="submit" className="btn btn-primary" onClick={this.props.usersContainer.hidePasswordResetModal}>OK</button>
+        <button type="submit" className="btn btn-primary" onClick={this.props.adminUsersContainer.hidePasswordResetModal}>OK</button>
       </div>
     );
   }
 
 
   render() {
-    const { t, usersContainer } = this.props;
+    const { t, adminUsersContainer } = this.props;
 
     return (
-      <Modal show={usersContainer.state.isPasswordResetModalShown} onHide={usersContainer.hidePasswordResetModal}>
+      <Modal show={adminUsersContainer.state.isPasswordResetModalShown} onHide={adminUsersContainer.hidePasswordResetModal}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
             { t('user_management.reset_password') }
@@ -107,13 +107,13 @@ class PasswordResetModal extends React.Component {
  * Wrapper component for using unstated
  */
 const PasswordResetModalWrapper = (props) => {
-  return createSubscribedElement(PasswordResetModal, props, [AppContainer, UsersContainer]);
+  return createSubscribedElement(PasswordResetModal, props, [AppContainer, AdminUsersContainer]);
 };
 
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  usersContainer: PropTypes.instanceOf(UsersContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
 export default withTranslation()(PasswordResetModalWrapper);
