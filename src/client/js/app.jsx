@@ -40,7 +40,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
-import UserPage from './components/Admin/Users/Users';
+import Users from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
@@ -53,6 +53,7 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
+import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
@@ -107,7 +108,6 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
-  'admin-user-page': <UserPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
 
@@ -159,6 +159,19 @@ Object.keys(componentMappings).forEach((key) => {
 });
 
 // render for admin
+const adminUsersElem = document.getElementById('admin-user-page');
+if (adminUsersElem != null) {
+  const adminUsersContainer = new AdminUsersContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminUsersContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <Users />
+      </I18nextProvider>
+    </Provider>,
+    adminUsersElem,
+  );
+}
+
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
   const userGroupDetailContainer = new UserGroupDetailContainer(appContainer);
