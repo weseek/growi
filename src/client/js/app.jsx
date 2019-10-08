@@ -40,9 +40,8 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
-import UserPage from './components/Admin/Users/Users';
+import Users from './components/Admin/Users/Users';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
-import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
 import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
@@ -54,7 +53,9 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
+import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
+import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -107,9 +108,6 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
-  'admin-markdown-setting': <MarkdownSetting />,
-  'admin-user-page': <UserPage />,
-  'admin-external-account-setting': <ManageExternalAccount />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
 
@@ -161,6 +159,19 @@ Object.keys(componentMappings).forEach((key) => {
 });
 
 // render for admin
+const adminUsersElem = document.getElementById('admin-user-page');
+if (adminUsersElem != null) {
+  const adminUsersContainer = new AdminUsersContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminUsersContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <Users />
+      </I18nextProvider>
+    </Provider>,
+    adminUsersElem,
+  );
+}
+
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
   const userGroupDetailContainer = new UserGroupDetailContainer(appContainer);
@@ -173,6 +184,20 @@ if (adminUserGroupDetailElem != null) {
     adminUserGroupDetailElem,
   );
 }
+
+const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting');
+if (adminMarkDownSettingElem != null) {
+  const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, markDownSettingContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <MarkdownSetting />
+      </I18nextProvider>
+    </Provider>,
+    adminMarkDownSettingElem,
+  );
+}
+
 const customCssEditorElem = document.getElementById('custom-css-editor');
 if (customCssEditorElem != null) {
   // get input[type=hidden] element

@@ -10,6 +10,7 @@ import GiveAdminForm from './GiveAdminForm';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class UserMenu extends React.Component {
 
@@ -24,7 +25,7 @@ class UserMenu extends React.Component {
   }
 
   onPasswordResetClicked() {
-    this.props.onPasswordResetClicked(this.props.user);
+    this.props.adminUsersContainer.showPasswordResetModal(this.props.user);
   }
 
   render() {
@@ -48,7 +49,7 @@ class UserMenu extends React.Component {
             <li>
               {(user.status === 1 || user.status === 3) && <StatusActivateForm user={user} />}
               {user.status === 2 && <StatusSuspendedForm user={user} />}
-              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} removeUser={this.props.removeUser} />}
+              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
             </li>
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
@@ -65,16 +66,15 @@ class UserMenu extends React.Component {
 }
 
 const UserMenuWrapper = (props) => {
-  return createSubscribedElement(UserMenu, props, [AppContainer]);
+  return createSubscribedElement(UserMenu, props, [AppContainer, AdminUsersContainer]);
 };
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,
-  removeUser: PropTypes.func.isRequired,
-  onPasswordResetClicked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserMenuWrapper);
