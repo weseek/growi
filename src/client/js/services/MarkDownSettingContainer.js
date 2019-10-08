@@ -44,10 +44,10 @@ export default class MarkDownSettingContainer extends Container {
   async updateXssSetting() {
 
     const response = await this.appContainer.apiv3.put('/markdown-setting/xss', {
-      'markdown:xss:isEnabledPrevention': this.state.isEnabledXss,
-      'markdown:xss:option': this.state.xssOption,
-      'markdown:xss:tagWhiteList': this.state.tagWhiteList,
-      'markdown:xss:attrWhiteList': this.state.attrWhiteList,
+      isEnabledXss: this.state.isEnabledXss,
+      xssOption: this.state.xssOption,
+      tagWhiteList: this.state.tagWhiteList,
+      attrWhiteList: this.state.attrWhiteList,
     });
 
     return response;
