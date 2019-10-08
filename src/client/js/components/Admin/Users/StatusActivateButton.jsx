@@ -12,18 +12,13 @@ class StatusActivateButton extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-
-    };
-
     this.onClickAcceptBtn = this.onClickAcceptBtn.bind(this);
   }
 
   async onClickAcceptBtn() {
     try {
-      // const username = await this.props.adminUsersContainer.removeUser(this.props.user._id);
-      const username = 'gest';
-      toastSuccess(`Accept ${username} success`);
+      const username = await this.props.adminUsersContainer.activateUser(this.props.user._id);
+      toastSuccess(`Activate ${username} success`);
     }
     catch (err) {
       toastError(err);

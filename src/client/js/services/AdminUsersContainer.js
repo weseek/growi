@@ -90,6 +90,19 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * Activate user
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async activateUser(userId) {
+    // const response = await this.appContainer.apiv3.delete(`/users/${userId}/remove`);
+    // const { username } = response.data.userData;
+    const username = 'gest';
+    return username;
+  }
+
+  /**
    * remove user
    * @memberOf AdminUsersContainer
    * @param {string} userId
