@@ -22,5 +22,21 @@ module.exports = (crowi) => {
     Config,
   } = crowi.models;
 
+  // TODO swagger
+  router.put('/xss', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const array = req.body;
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', array);
+      return res.apiv3({ array });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating xss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-xss-failed'));
+    }
+
+  });
+
   return router;
 };
