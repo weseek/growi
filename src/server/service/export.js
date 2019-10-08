@@ -9,9 +9,9 @@ const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
 class ExportingProgress {
 
-  constructor(Model, totalCount) {
-    this.Model = Model;
-    this.count = 0;
+  constructor(collectionName, totalCount) {
+    this.collectionName = collectionName;
+    this.currentCount = 0;
     this.totalCount = totalCount;
   }
 
@@ -27,20 +27,23 @@ class ExportStatus {
   }
 
   async init(models) {
-    this.progressList = await Promise.all(models.map(Model => async() => {
+    const promisesForCreatingInstance = models.map(async(Model) => {
+      const collectionName = Model.collection.name;
       const totalCount = await Model.countDocuments();
-      return new ExportingProgress(Model, totalCount);
-    }));
+      return new ExportingProgress(collectionName, totalCount);
+    });
+    this.progressList = await Promise.all(promisesForCreatingInstance);
 
+    // collection name to instance mapping
     this.progressList.forEach((p) => {
-      this.progressMap[p.Model] = p;
+      this.progressMap[p.collectionName] = p;
       this.totalCount += p.totalCount;
     });
   }
 
   get currentCount() {
     return this.progressList.reduce(
-      (acc, crr) => acc + crr,
+      (acc, crr) => acc + crr.currentCount,
       0,
     );
   }
@@ -105,10 +108,11 @@ class ExportService {
 
   /**
    *
-   * @param {number} total number of target items (optional)
-   * @param {function} [getLogText] (n, total) => { ... }
+   * @param {ExportStatus} exportStatus
+   * @param {ExportProguress} exportProgress
+   * @return {Transform}
    */
-  generateLogStream(exportProgress) {
+  generateLogStream(exportStatus, exportProgress) {
     const logProgress = this.logProgress.bind(this);
 
     let count = 0;
@@ -116,7 +120,7 @@ class ExportService {
     return new Transform({
       transform(chunk, encoding, callback) {
         count++;
-        logProgress(exportProgress, count);
+        logProgress(exportStatus, exportProgress, count);
 
         this.push(chunk);
 
@@ -181,7 +185,7 @@ class ExportService {
     const transformStream = this.generateTransformStream();
 
     // log configuration
-    const exportProgress = exportStatus.progressMap[Model];
+    const exportProgress = exportStatus.progressMap[collectionName];
     const logStream = this.generateLogStream(exportStatus, exportProgress);
 
     // create WritableStream
@@ -235,31 +239,39 @@ class ExportService {
    * @param {number} currentCount number of items exported
    */
   logProgress(exportStatus, exportProgress, currentCount) {
-    const collectionName = exportProgress.Model.collection.name;
-    const output = `${collectionName}: ${currentCount}/${exportProgress.totalCount} written`;
+    const output = `${exportProgress.collectionName}: ${currentCount}/${exportProgress.totalCount} written`;
 
-    const globalTotalCount = exportStatus.totalCount;
+    // update exportProgress.currentCount
+    exportProgress.currentCount = currentCount;
 
     // output every this.per items
     if (currentCount % this.per === 0) {
       logger.debug(output);
-
-      // send event
-      this.adminEvent.emit('onProgressForExport', globalTotalCount, exportStatus.currentCount);
+      this.emitProgressEvent(exportStatus, exportProgress);
     }
     // output last item
     else if (currentCount === exportProgress.totalCount) {
       logger.info(output);
+      this.emitProgressEvent(exportStatus, exportProgress);
+    }
+  }
 
-      const globalCurrentCount = exportStatus.currentCount;
+  /**
+   * emit progress event
+   * @param {ExportStatus} exportStatus
+   * @param {ExportProgress} exportProgress
+   */
+  emitProgressEvent(exportStatus, exportProgress) {
+    const globalCurrentCount = exportStatus.currentCount;
 
-      // send event (in progress in global)
-      if (globalCurrentCount !== globalTotalCount) {
-        this.adminEvent.emit('onProgressForExport', globalTotalCount, globalCurrentCount);
-      }
-      else {
-        this.adminEvent.emit('onTerminateForExport');
-      }
+    const globalTotalCount = exportStatus.totalCount;
+
+    // send event (in progress in global)
+    if (globalCurrentCount !== globalTotalCount) {
+      this.adminEvent.emit('onProgressForExport', globalTotalCount, globalCurrentCount);
+    }
+    else {
+      this.adminEvent.emit('onTerminateForExport');
     }
   }
 
