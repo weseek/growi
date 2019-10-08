@@ -17,7 +17,6 @@ export default class AdminExternalAccountContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      exteranalAccounts: JSON.parse(document.getElementById('admin-external-account-setting').getAttribute('external-account')) || [],
     };
 
   }
