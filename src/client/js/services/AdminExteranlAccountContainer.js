@@ -28,6 +28,6 @@ export default class AdminUsersContainer extends Container {
   static getClassName() {
     return 'AdminExternalAccountContainer';
   }
-  //TODO GW-328 create function for Delete External Account
+  // TODO GW-328 create function for Delete External Account
 
 }
