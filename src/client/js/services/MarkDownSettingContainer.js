@@ -38,4 +38,11 @@ export default class MarkDownSettingContainer extends Container {
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
+  /**
+   * Update Xss Setting
+   */
+  async updateXssSetting() {
+    console.log('ここはContainer');
+  }
+
 }
