@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class StatusActivateButton extends React.Component {
 
@@ -18,8 +19,15 @@ class StatusActivateButton extends React.Component {
     this.onClickAcceptBtn = this.onClickAcceptBtn.bind(this);
   }
 
-  onClickAcceptBtn() {
-    console.log('hello');
+  async onClickAcceptBtn() {
+    try {
+      // const username = await this.props.adminUsersContainer.removeUser(this.props.user._id);
+      const username = 'gest';
+      toastSuccess(`Accept ${username} success`);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
