@@ -42,8 +42,8 @@ class LineBreakSetting extends React.Component {
       isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
     };
     try {
-      await appContainer.apiPost('/admin/markdown/lineBreaksSetting', { params });
-      toastSuccess('Success change line braek setting');
+      await appContainer.apiPost('/admin/markdown/lineBreaksSetting', params);
+      toastSuccess('Success update line braek setting');
     }
     catch (err) {
       toastError(err);
