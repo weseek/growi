@@ -23,7 +23,7 @@ class UserPage extends React.Component {
 
   async handlePage(selectedPage) {
     try {
-      await this.props.adminUsersContainer.syncUsers(selectedPage);
+      await this.props.adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
     }
     catch (err) {
       toastError(err);

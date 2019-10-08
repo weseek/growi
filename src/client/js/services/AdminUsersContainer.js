@@ -43,7 +43,7 @@ export default class AdminUsersContainer extends Container {
    * @memberOf AdminUsersContainer
    * @param {number} selectedPage
    */
-  async syncUsers(selectedPage) {
+  async retrieveUsersByPagingNum(selectedPage) {
 
     const params = { page: selectedPage };
     const response = await this.appContainer.apiv3.get('/users', params);
