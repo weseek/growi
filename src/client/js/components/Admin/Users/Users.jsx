@@ -8,6 +8,8 @@ import InviteUserControl from './InviteUserControl';
 import UserTable from './UserTable';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
+
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -21,6 +23,40 @@ class UserPage extends React.Component {
       pagingLimit: Infinity,
     };
 
+    this.handlePage = this.handlePage.bind(this);
+  }
+
+  async handlePage(selectedPage) {
+    await this.setState({ activePage: selectedPage });
+    await this.syncUserGroupAndRelations();
+  }
+
+  async syncUserGroupAndRelations() {
+    // let userGroups = [];
+    // let userGroupRelations = {};
+    // let totalUserGroups = 0;
+    // let pagingLimit = Infinity;
+
+    try {
+      const params = { page: this.state.activePage };
+      const response = await this.props.appContainer.apiv3.get('/users', params);
+
+      // const [userGroupsRes, userGroupRelationsRes] = responses;
+      // userGroups = userGroupsRes.data.userGroups;
+      // totalUserGroups = userGroupsRes.data.totalUserGroups;
+      // pagingLimit = userGroupsRes.data.pagingLimit;
+      // userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
+
+      // this.setState({
+      //   userGroups,
+      //   userGroupRelations,
+      //   totalUserGroups,
+      //   pagingLimit,
+      // });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {

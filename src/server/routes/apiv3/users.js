@@ -32,6 +32,21 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  // TODO writte swagger
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const result = await User.findUserGroupsWithPagination({ page });
+      const { docs: userGroups, total: totalUserGroups, limit: pagingLimit } = result;
+      return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching user group list';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'));
+    }
+  });
+
   validator.inviteEmail = [
     // isEmail prevents line breaks, so use isString
     body('shapedEmailList').custom((value) => {
