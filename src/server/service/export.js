@@ -78,7 +78,10 @@ class ExportService {
       return this.growiBridgeService.parseZipFile(zipFile);
     }));
 
-    return zipFileStats;
+    // filter null object (broken zip)
+    const filtered = zipFileStats.filter(element => element != null);
+
+    return filtered;
   }
 
   /**
@@ -227,6 +230,8 @@ class ExportService {
 
     // get stats for the zip file
     return this.growiBridgeService.parseZipFile(zipFile);
+
+    // TODO: remove broken zip file
   }
 
   /**
