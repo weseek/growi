@@ -28,6 +28,24 @@ module.exports = (crowi) => {
   const User = models.User;
   const util = require('util');
 
+  /**
+   * @swagger
+   *
+   *  /statistics/user:
+   *    get:
+   *      tags: [Statistics]
+   *      description: Get statistics for user
+   *      responses:
+   *        200:
+   *          description: Statistics for user
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  data:
+   *                    type: object
+   *                    description: Statistics for all user
+   */
   router.get('/user', helmet.noCache(), async(req, res) => {
     const userCountGroupByStatus = await User.aggregate().group({
       _id: '$status',
@@ -48,10 +66,13 @@ module.exports = (crowi) => {
     });
     const activeUserCount = userCountResults.active;
 
+    // Use userCountResults for inactive users, so delete unnecessary active
     delete userCountResults.active;
 
+    // Calculate the total number of inactive users
     userCountResults.total = userCountResults.invited + userCountResults.deleted + userCountResults.suspended + userCountResults.registered;
 
+    // Get admin users
     const findAdmins = util.promisify(User.findAdmins).bind(User);
     const adminUsers = await findAdmins();
 
