@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import StatusActivateForm from './StatusActivateForm';
+import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedForm from './StatusSuspendedForm';
 import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminForm from './RemoveAdminForm';
@@ -47,7 +47,7 @@ class UserMenu extends React.Component {
             <li className="divider"></li>
             <li className="dropdown-header">{ t('status') }</li>
             <li>
-              {(user.status === 1 || user.status === 3) && <StatusActivateForm user={user} />}
+              {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
               {user.status === 2 && <StatusSuspendedForm user={user} />}
               {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
             </li>

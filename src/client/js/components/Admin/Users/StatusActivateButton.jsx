@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class StatusActivateForm extends React.Component {
+class StatusActivateButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -37,10 +37,10 @@ class StatusActivateForm extends React.Component {
  * Wrapper component for using unstated
  */
 const StatusActivateFormWrapper = (props) => {
-  return createSubscribedElement(StatusActivateForm, props, [AppContainer]);
+  return createSubscribedElement(StatusActivateButton, props, [AppContainer]);
 };
 
-StatusActivateForm.propTypes = {
+StatusActivateButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
