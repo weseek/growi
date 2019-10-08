@@ -10,8 +10,8 @@
       <div class="modal-body">
 
         <form class="row form-horizontal" id="create-page-today" role="form">
-          <fieldset class="col-xs-12">
-            <legend>{{ t("Create today's") }}</legend>
+          <fieldset class="col-12 mb-5">
+            <legend class="h5 text-center">{{ t("Create today's") }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
@@ -26,9 +26,9 @@
           </fieldset>
         </form>
 
-        <form class="row form-horizontal m-t-15" id="create-page-under-tree" role="form">
-          <fieldset class="col-xs-12">
-            <legend>{{ t('Create under') }}</legend>
+        <form class="row form-horizontal" id="create-page-under-tree" role="form">
+          <fieldset class="col-12 mb-5">
+            <legend class="h5 text-center">{{ t('Create under') }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 {% if searchConfigured() %}
@@ -45,9 +45,9 @@
         </form>
 
         {% set templateParentPath = parentPath(path | preventXss | escape) %}
-        <div id="template-form" class="row form-horizontal m-t-15">
-          <fieldset class="col-xs-12">
-            <legend>{{ t('template.modal_label.Create template under', templateParentPath) }}</legend>
+        <div id="template-form" class="row form-horizontal">
+          <fieldset class="col-12 mb-5">
+            <legend class="h5 text-center">{{ t('template.modal_label.Create template under', templateParentPath) }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
@@ -55,7 +55,7 @@
                   <option value="decentants" data-subtext="- {{ t('template.decendants.desc') }}">{{ t('template.decendants.label') }}(__template)</option>
                 </select>
               </div>
-              <div class="create-page-button-container">
+              <div class="create-page-button-container my-auto">
                 <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b disabled">
                   <i class="icon-fw icon-doc"></i>
                   <span id="create-template-button-link">{{ t('Edit') }}</span>

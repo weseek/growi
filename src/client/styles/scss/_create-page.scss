@@ -2,11 +2,14 @@
   // more than tablet size
   @include media-breakpoint-up(sm) {
     .modal-dialog {
-      width: 750px;
+      width: 45%;
+      max-width: initial;
     }
   }
 
   .modal-body {
+    padding: 3em;
+
     legend {
       margin-bottom: 10px;
     }
