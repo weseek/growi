@@ -18,7 +18,7 @@ class ManageExternalAccount extends React.Component {
 
   render() {
     const { t } = this.props;
-    // TODO GW-328
+
     return (
       <Fragment>
         <p>
@@ -58,21 +58,7 @@ class ManageExternalAccount extends React.Component {
               <th width="70px"></th>
             </tr>
           </thead>
-          <tbody>
-            <td>
-              <div className="btn-group admin-user-menu">
-                <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  <i clasNames="icon-settings"></i> <span className="caret"></span>
-                </button>
-                <ul className="dropdown-menu" role="menu">
-                  <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
-                  <form id="form_remove_{{ loop.index }}" action="/admin/users/external-accounts/{{ account._id.toString() }}/remove" method="post">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                  </form>
-                </ul>
-              </div>
-            </td>
-          </tbody>
+          {/* TODO GW-328 */}
         </table>
       </Fragment>
     );
