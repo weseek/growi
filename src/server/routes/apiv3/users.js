@@ -120,7 +120,7 @@ module.exports = (crowi) => {
     }
   });
   // TODO writte swagger
-  router.delete('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const username = 'gest';
     return res.apiv3({ username });
   });
