@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import ExportZipFormModal from './ExportZipFormModal';
-import ZipFileTable from './ZipFileTable';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import WebsocketContainer from '../../../services/WebsocketContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+import ExportZipFormModal from './ExportZipFormModal';
+import ZipFileTable from './ZipFileTable';
 
 class ExportPage extends React.Component {
 
@@ -18,6 +21,7 @@ class ExportPage extends React.Component {
       collections: [],
       zipFileStats: [],
       isExportModalOpen: false,
+      isExporting: false,
     };
 
     this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
@@ -26,17 +30,35 @@ class ExportPage extends React.Component {
     this.closeExportModal = this.closeExportModal.bind(this);
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
-    const [{ collections }, { zipFileStats }] = await Promise.all([
+    const [{ collections }, { zipFileStats, isExporting }] = await Promise.all([
       this.props.appContainer.apiGet('/v3/mongo/collections', {}),
       this.props.appContainer.apiGet('/v3/export/status', {}),
     ]);
     // TODO: toastSuccess, toastError
 
-    this.setState({ collections: ['pages', 'revisions'], zipFileStats }); // FIXME: delete this line and uncomment the line below
-    // this.setState({ collections, zipFileStats });
+    this.setState({
+      collections: ['pages', 'revisions'],
+      zipFileStats,
+      isExporting,
+    }); // FIXME: delete this line and uncomment the line below
+    // this.setState({ collections, zipFileStats, isExporting });
+
+    this.setupWebsocketEventHandler();
+  }
+
+  setupWebsocketEventHandler() {
+    const socket = this.props.websocketContainer.getWebSocket();
+
+    socket.on('admin:onProgressForExport', (data) => {
+      console.log(data);
+    });
+
+    socket.on('admin:onTerminateForExport', (data) => {
+      console.log(data);
+    });
   }
 
   onZipFileStatAdd(newStat) {
@@ -110,6 +132,14 @@ class ExportPage extends React.Component {
           />
         </div>
 
+        <div className="mt-5">
+          <h3>{t('export_management.exported_data_list')}</h3>
+          <ZipFileTable
+            zipFileStats={this.state.zipFileStats}
+            onZipFileStatRemove={this.onZipFileStatRemove}
+          />
+        </div>
+
         <ExportZipFormModal
           isOpen={this.state.isExportModalOpen}
           onClose={this.closeExportModal}
@@ -126,13 +156,14 @@ class ExportPage extends React.Component {
 ExportPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
 const ExportPageFormWrapper = (props) => {
-  return createSubscribedElement(ExportPage, props, [AppContainer]);
+  return createSubscribedElement(ExportPage, props, [AppContainer, WebsocketContainer]);
 };
 
 export default withTranslation()(ExportPageFormWrapper);

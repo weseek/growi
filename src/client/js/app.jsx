@@ -192,7 +192,7 @@ if (adminGrantSelectorElem != null) {
 const adminExportPageElem = document.getElementById('admin-export-page');
 if (adminExportPageElem != null) {
   ReactDOM.render(
-    <Provider inject={[]}>
+    <Provider inject={[websocketContainer]}>
       <I18nextProvider i18n={i18n}>
         <ExportPage
           crowi={appContainer}
