@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
 
 import WhiteListInput from './WhiteListInput';
+
+const logger = loggerFactory('growi:importer');
 
 class XssForm extends React.Component {
 
@@ -18,7 +22,13 @@ class XssForm extends React.Component {
   }
 
   async onClickSubmit() {
-    // TODO GW-303 create apiV3 of update setting
+    try {
+      toastSuccess('Success update Xss setting');
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   }
 
   xssOptions() {

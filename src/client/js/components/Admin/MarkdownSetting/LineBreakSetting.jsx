@@ -43,7 +43,7 @@ class LineBreakSetting extends React.Component {
     };
     try {
       await appContainer.apiPost('/admin/markdown/lineBreaksSetting', { params });
-      toastSuccess('Success change line braek setting');
+      toastSuccess('Success update line braek setting');
     }
     catch (err) {
       toastError(err);
