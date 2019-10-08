@@ -32,7 +32,25 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TODO writte swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users:
+   *      get:
+   *        tags: [Users]
+   *        description: Get users
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    users:
+   *                      type: object
+   *                      description: a result of `Users.find`
+   */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
