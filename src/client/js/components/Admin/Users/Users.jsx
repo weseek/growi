@@ -8,6 +8,8 @@ import InviteUserControl from './InviteUserControl';
 import UserTable from './UserTable';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
+
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -16,11 +18,16 @@ class UserPage extends React.Component {
   constructor(props) {
     super();
 
-    this.state = {
-      activePage: 1,
-      pagingLimit: Infinity,
-    };
+    this.handlePage = this.handlePage.bind(this);
+  }
 
+  async handlePage(selectedPage) {
+    try {
+      await this.props.adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
@@ -38,10 +45,10 @@ class UserPage extends React.Component {
         </p>
         <UserTable />
         <PaginationWrapper
-          activePage={this.state.activePage}
-          changePage={this.handlePage} // / TODO GW-314 create function
-          totalItemsCount={adminUsersContainer.state.users.length}
-          pagingLimit={this.state.pagingLimit}
+          activePage={adminUsersContainer.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={adminUsersContainer.state.totalUsers}
+          pagingLimit={adminUsersContainer.state.pagingLimit}
         />
       </Fragment>
     );
