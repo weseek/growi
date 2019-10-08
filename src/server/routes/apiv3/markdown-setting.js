@@ -31,7 +31,6 @@ module.exports = (crowi) => {
 
   validator.xssSetting = [
     body('isEnabledXss').isBoolean(),
-    body('xssOption').isInt(),
     body('tagWhiteList').isArray(),
     body('attrWhiteList').isArray(),
   ];
@@ -83,6 +82,10 @@ module.exports = (crowi) => {
    *                      description: new xss params
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
+    if (req.body.isEnabledXss && req.body.xssOption == null) {
+      return res.apiv3Err(new ErrorV3('xss option is required'));
+    }
+
     const xssParams = {
       'markdown:xss:isEnabledPrevention': req.body.isEnabledXss,
       'markdown:xss:option': req.body.xssOption,
