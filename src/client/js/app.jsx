@@ -174,10 +174,7 @@ if (adminUsersElem != null) {
   );
 }
 
-const adminExternalAccountsElem = document.getElementById('admin-external-account-setting');
-if (adminExternalAccountsElem != null) {
-  // TODO GW-328
-}
+
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
   const userGroupDetailContainer = new UserGroupDetailContainer(appContainer);
