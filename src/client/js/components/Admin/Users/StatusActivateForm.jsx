@@ -14,42 +14,20 @@ class StatusActivateForm extends React.Component {
 
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onClickAcceptBtn = this.onClickAcceptBtn.bind(this);
   }
 
-  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  handleSubmit(event) {
-    $(event.currentTarget).parent().submit();
+  onClickAcceptBtn() {
+    console.log('hello');
   }
 
   render() {
-    const { t, user, appContainer } = this.props;
+    const { t } = this.props;
 
     return (
-      <Fragment>
-        {user.status === 1
-          ? (
-            <a>
-              <form action={`/admin/user/${user._id}/activate`} method="post">
-                <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
-                <span onClick={this.handleSubmit}>
-                  <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-                </span>
-              </form>
-            </a>
-          )
-          : (
-            <a className="px-4">
-              <form action={`/admin/user/${user._id}/activate`} method="post">
-                <input type="hidden" />
-                <span onClick={this.handleSubmit}>
-                  <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
-                </span>
-              </form>
-            </a>
-          )
-        }
-      </Fragment>
+      <a className="px-4" onClick={() => { this.onClickAcceptBtn() }}>
+        <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+      </a>
     );
   }
 
