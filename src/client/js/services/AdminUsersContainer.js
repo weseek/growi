@@ -21,6 +21,9 @@ export default class AdminUsersContainer extends Container {
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
+      totalUsers: 0,
+      activePage: 1,
+      pagingLimit: Infinity,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -33,6 +36,29 @@ export default class AdminUsersContainer extends Container {
    */
   static getClassName() {
     return 'AdminUsersContainer';
+  }
+
+  /**
+   * syncUsers of selectedPage
+   * @memberOf AdminUsersContainer
+   * @param {number} selectedPage
+   */
+  async syncUsers(selectedPage) {
+
+    const params = { page: selectedPage };
+    const response = await this.appContainer.apiv3.get('/users', params);
+
+    const users = response.data.users;
+    const totalUsers = response.data.totalUsers;
+    const pagingLimit = response.data.pagingLimit;
+
+    this.setState({
+      users,
+      totalUsers,
+      pagingLimit,
+      activePage: selectedPage,
+    });
+
   }
 
   /**
