@@ -8,6 +8,8 @@ const router = express.Router();
 
 const helmet = require('helmet');
 
+const util = require('util');
+
 const USER_STATUS_MASTER = {
   1: 'registered',
   2: 'active',
@@ -26,7 +28,6 @@ module.exports = (crowi) => {
 
   const models = crowi.models;
   const User = models.User;
-  const util = require('util');
 
   /**
    * @swagger
@@ -52,13 +53,11 @@ module.exports = (crowi) => {
       totalCount: { $sum: 1 },
     });
 
-    const userCountResults = {
-      active: 0,
-      invited: 0,
-      deleted: 0,
-      suspended: 0,
-      registered: 0,
-    };
+    const userCountResults = {};
+    Object.values(USER_STATUS_MASTER).forEach((status) => {
+      userCountResults[status] = 0;
+    });
+
 
     userCountGroupByStatus.forEach((userCount) => {
       const key = USER_STATUS_MASTER[userCount._id];
@@ -70,7 +69,7 @@ module.exports = (crowi) => {
     delete userCountResults.active;
 
     // Calculate the total number of inactive users
-    userCountResults.total = userCountResults.invited + userCountResults.deleted + userCountResults.suspended + userCountResults.registered;
+    const inactiveUserTotal = userCountResults.invited + userCountResults.deleted + userCountResults.suspended + userCountResults.registered;
 
     // Get admin users
     const findAdmins = util.promisify(User.findAdmins).bind(User);
@@ -82,7 +81,10 @@ module.exports = (crowi) => {
         total: activeUserCount,
         admin: adminUsers.length,
       },
-      inactive: userCountResults,
+      inactive: {
+        total: inactiveUserTotal,
+        ...userCountResults,
+      },
     };
     res.status(200).send({ data });
   });
