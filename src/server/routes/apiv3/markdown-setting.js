@@ -22,13 +22,58 @@ module.exports = (crowi) => {
     Config,
   } = crowi.models;
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/markdown-setting/xss:
+   *      put:
+   *        tags: [Users]
+   *        description: Update xss
+   *        parameters:
+   *          - name: markdown:xss:isEnabledPrevention
+   *            in: query
+   *            description: enable xss
+   *            schema:
+   *              type: boolean
+   *          - name: markdown:xss:option
+   *            in: query
+   *            description: xss option
+   *            schema:
+   *              type: number
+   *          - name: markdown:xss:tagWhiteList
+   *            in: query
+   *            description: custom tag whitelist
+   *            schema:
+   *              type: array
+   *              items:
+   *                type: string
+   *                description: tag whitelist
+   *          - name: markdown:xss:attrWhiteList
+   *            in: query
+   *            description: custom attr whitelist
+   *            schema:
+   *              type: array
+   *              items:
+   *                type: string
+   *                description: tag whitelist
+   *        responses:
+   *          200:
+   *            description: Updating xss success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    xssParams:
+   *                      type: object
+   *                      description: new xss params
+   */
   router.put('/xss', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const array = req.body;
+    const xssParams = req.body;
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', array);
-      return res.apiv3({ array });
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', xssParams);
+      return res.apiv3({ xssParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating xss';
