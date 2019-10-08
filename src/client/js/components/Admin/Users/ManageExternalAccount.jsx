@@ -18,7 +18,7 @@ class ManageExternalAccount extends React.Component {
 
   render() {
     const { t } = this.props;
-
+    // TODO GW-328
     return (
       <Fragment>
         <p>
@@ -38,7 +38,8 @@ class ManageExternalAccount extends React.Component {
               <th>{ t('user_management.related_username', 'username') }</th>
               <th>
                 { t('user_management.password_setting') }
-                <div className="text-muted"
+                <div
+                  className="text-muted"
                   data-toggle="popover"
                   data-placement="top"
                   data-trigger="hover focus"
