@@ -119,6 +119,11 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+  // TODO writte swagger
+  router.delete('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const username = 'gest';
+    return res.apiv3({ username });
+  });
   /**
    * @swagger
    *
