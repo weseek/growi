@@ -63,13 +63,15 @@ class ExportService {
     this.zlibLevel = 9; // 0(min) - 9(max)
 
     this.adminEvent = crowi.event('admin');
+
+    this.currentExportStatus = null;
   }
 
   /**
    * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {Array.<object>} info for zip files
+   * @return {object} info for zip files and whether currentExportStatus exists
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
@@ -81,7 +83,12 @@ class ExportService {
     // filter null object (broken zip)
     const filtered = zipFileStats.filter(element => element != null);
 
-    return filtered;
+    const isExporting = this.currentExportStatus != null;
+
+    return {
+      zipFileStats: filtered,
+      isExporting,
+    };
   }
 
   /**
@@ -111,11 +118,10 @@ class ExportService {
 
   /**
    *
-   * @param {ExportStatus} exportStatus
    * @param {ExportProguress} exportProgress
    * @return {Transform}
    */
-  generateLogStream(exportStatus, exportProgress) {
+  generateLogStream(exportProgress) {
     const logProgress = this.logProgress.bind(this);
 
     let count = 0;
@@ -123,7 +129,7 @@ class ExportService {
     return new Transform({
       transform(chunk, encoding, callback) {
         count++;
-        logProgress(exportStatus, exportProgress, count);
+        logProgress(exportProgress, count);
 
         this.push(chunk);
 
@@ -170,11 +176,10 @@ class ExportService {
    * dump a mongodb collection into json
    *
    * @memberOf ExportService
-   * @param {ExportStatus} exportStatus
    * @param {object} Model instance of mongoose model
    * @return {string} path to zip file
    */
-  async exportCollectionToJson(exportStatus, Model) {
+  async exportCollectionToJson(Model) {
     const collectionName = Model.collection.name;
 
     // get native Cursor instance
@@ -188,8 +193,8 @@ class ExportService {
     const transformStream = this.generateTransformStream();
 
     // log configuration
-    const exportProgress = exportStatus.progressMap[collectionName];
-    const logStream = this.generateLogStream(exportStatus, exportProgress);
+    const exportProgress = this.currentExportStatus.progressMap[collectionName];
+    const logStream = this.generateLogStream(exportProgress);
 
     // create WritableStream
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
@@ -215,10 +220,7 @@ class ExportService {
   async exportCollectionsToZippedJson(models) {
     const metaJson = await this.createMetaJson();
 
-    const exportStatus = new ExportStatus();
-    await exportStatus.init(models);
-
-    const promisesForModels = models.map(Model => this.exportCollectionToJson(exportStatus, Model));
+    const promisesForModels = models.map(Model => this.exportCollectionToJson(Model));
     const jsonFiles = await Promise.all(promisesForModels);
 
     // zip json
@@ -234,16 +236,32 @@ class ExportService {
     // TODO: remove broken zip file
   }
 
+  async export(models) {
+    if (this.currentExportStatus != null) {
+      throw new Error('There is an exporting process running.');
+    }
+
+    this.currentExportStatus = new ExportStatus();
+    await this.currentExportStatus.init(models);
+
+    try {
+      await this.exportCollectionsToZippedJson(models);
+    }
+    finally {
+      this.currentExportStatus = null;
+    }
+
+  }
+
   /**
    * log export progress
    *
    * @memberOf ExportService
    *
-   * @param {ExportStatus} exportStatus
    * @param {ExportProgress} exportProgress
    * @param {number} currentCount number of items exported
    */
-  logProgress(exportStatus, exportProgress, currentCount) {
+  logProgress(exportProgress, currentCount) {
     const output = `${exportProgress.collectionName}: ${currentCount}/${exportProgress.totalCount} written`;
 
     // update exportProgress.currentCount
@@ -252,28 +270,29 @@ class ExportService {
     // output every this.per items
     if (currentCount % this.per === 0) {
       logger.debug(output);
-      this.emitProgressEvent(exportStatus, exportProgress);
+      this.emitProgressEvent();
     }
     // output last item
     else if (currentCount === exportProgress.totalCount) {
       logger.info(output);
-      this.emitProgressEvent(exportStatus, exportProgress);
+      this.emitProgressEvent();
     }
   }
 
   /**
    * emit progress event
-   * @param {ExportStatus} exportStatus
    * @param {ExportProgress} exportProgress
    */
-  emitProgressEvent(exportStatus, exportProgress) {
-    const globalCurrentCount = exportStatus.currentCount;
-
-    const globalTotalCount = exportStatus.totalCount;
+  emitProgressEvent(exportProgress) {
+    const { currentCount, totalCount, progressList } = this.currentExportStatus;
 
     // send event (in progress in global)
-    if (globalCurrentCount !== globalTotalCount) {
-      this.adminEvent.emit('onProgressForExport', globalTotalCount, globalCurrentCount);
+    if (currentCount !== totalCount) {
+      this.adminEvent.emit('onProgressForExport', {
+        currentCount,
+        totalCount,
+        progressList,
+      });
     }
     else {
       this.adminEvent.emit('onTerminateForExport');

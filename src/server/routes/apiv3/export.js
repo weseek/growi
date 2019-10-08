@@ -51,12 +51,19 @@ module.exports = (crowi) => {
    *                    items:
    *                      type: object
    *                      description: the property of each file
+   *                  isExporting:
+   *                    type: boolean
+   *                    description: whether the current exporting job exists or not
    */
   router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    const zipFileStats = await exportService.getStatus();
+    const { zipFileStats, isExporting } = await exportService.getStatus();
 
     // TODO: use res.apiv3
-    return res.json({ ok: true, zipFileStats });
+    return res.json({
+      ok: true,
+      zipFileStats,
+      isExporting,
+    });
   });
 
   /**
@@ -81,7 +88,7 @@ module.exports = (crowi) => {
       // get model for collection
       const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
-      exportService.exportCollectionsToZippedJson(models);
+      exportService.export(models);
 
       // TODO: use res.apiv3
       return res.status(200).json({
