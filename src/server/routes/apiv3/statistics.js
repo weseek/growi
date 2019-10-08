@@ -53,11 +53,11 @@ module.exports = (crowi) => {
       totalCount: { $sum: 1 },
     });
 
+    // Initialize userCountResults with 0
     const userCountResults = {};
     Object.values(USER_STATUS_MASTER).forEach((status) => {
       userCountResults[status] = 0;
     });
-
 
     userCountGroupByStatus.forEach((userCount) => {
       const key = USER_STATUS_MASTER[userCount._id];
