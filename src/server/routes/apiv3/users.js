@@ -119,7 +119,32 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
-  // TODO writte swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/{id}/activate:
+   *      put:
+   *        tags: [Users]
+   *        description: Activate user
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of activate user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Activationg user success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of activate user
+   */
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     // check user upper limit
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
