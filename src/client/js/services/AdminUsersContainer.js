@@ -18,7 +18,6 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: JSON.parse(document.getElementById('admin-user-page').getAttribute('users')) || [],
-      exteranalAccounts: JSON.parse(document.getElementById('admin-external-account').getAttribute('external-account')) || [],
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,

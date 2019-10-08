@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import AdminExternalAccountContainer from '../../../services/AdminExteranlAccountContainer';
 
 
 class ManageExternalAccount extends React.Component {
@@ -17,7 +18,7 @@ class ManageExternalAccount extends React.Component {
 
 
   render() {
-    const { t } = this.props;
+    const { t, adminExternalAccountContainer} = this.props;
 
     return (
       <Fragment>
