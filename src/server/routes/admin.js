@@ -159,6 +159,29 @@ module.exports = function(crowi, app) {
     return res.redirect('/admin/markdown');
   };
 
+  // app.post('/admin/markdown/xss-setting' , admin.markdown.xssSetting);
+  actions.markdown.xssSetting = async function(req, res) {
+    const xssSetting = req.form.markdownSetting;
+
+    xssSetting['markdown:xss:tagWhiteList'] = csvToArray(xssSetting['markdown:xss:tagWhiteList']);
+    xssSetting['markdown:xss:attrWhiteList'] = csvToArray(xssSetting['markdown:xss:attrWhiteList']);
+
+    if (req.form.isValid) {
+      await configManager.updateConfigsInTheSameNamespace('markdown', xssSetting);
+      req.flash('successMessage', ['Successfully updated!']);
+    }
+    else {
+      req.flash('errorMessage', req.form.errors);
+    }
+
+    return res.redirect('/admin/markdown');
+  };
+
+  const csvToArray = (string) => {
+    const array = string.split(',');
+    return array.map((item) => { return item.trim() });
+  };
+
   // app.get('/admin/customize' , admin.customize.index);
   actions.customize = {};
   actions.customize.index = function(req, res) {
