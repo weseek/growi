@@ -71,6 +71,7 @@ class ExportZipFormModal extends React.Component {
         timeOut: '1200',
         extendedTimeOut: '150',
       });
+      this.props.onExportingRequested();
       this.props.onClose();
 
     }
@@ -150,10 +151,9 @@ ExportZipFormModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
+  onExportingRequested: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   collections: PropTypes.arrayOf(PropTypes.string).isRequired,
-  zipFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onZipFileStatAdd: PropTypes.func.isRequired,
 };
 
 /**

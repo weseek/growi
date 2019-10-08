@@ -766,6 +766,7 @@
 
   "export_management": {
     "beta_warning": "This function is Beta.",
+    "exporting_data_list": "Exporting Data List",
     "exported_data_list": "Exported Data List",
     "export_collections": "Export Collections",
     "check_all": "Check All",

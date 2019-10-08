@@ -28,6 +28,7 @@ class ExportPage extends React.Component {
     this.onZipFileStatRemove = this.onZipFileStatRemove.bind(this);
     this.openExportModal = this.openExportModal.bind(this);
     this.closeExportModal = this.closeExportModal.bind(this);
+    this.exportingRequestedHandler = this.exportingRequestedHandler.bind(this);
   }
 
   async componentWillMount() {
@@ -111,6 +112,11 @@ class ExportPage extends React.Component {
     this.setState({ isExportModalOpen: false });
   }
 
+  exportingRequestedHandler() {
+    // TODO: implement
+    this.setState({ isExporting: true });
+  }
+
   render() {
     const { t } = this.props;
 
@@ -124,13 +130,11 @@ class ExportPage extends React.Component {
 
         <button type="button" className="btn btn-default" onClick={this.openExportModal}>{t('export_management.create_new_exported_data')}</button>
 
-        <div className="mt-5">
-          <h3>{t('export_management.exported_data_list')}</h3>
-          <ZipFileTable
-            zipFileStats={this.state.zipFileStats}
-            onZipFileStatRemove={this.onZipFileStatRemove}
-          />
-        </div>
+        { this.state.isExporting && (
+          <div className="mt-5">
+            <h3>{t('export_management.exporting_data_list')}</h3>
+          </div>
+        ) }
 
         <div className="mt-5">
           <h3>{t('export_management.exported_data_list')}</h3>
@@ -142,10 +146,9 @@ class ExportPage extends React.Component {
 
         <ExportZipFormModal
           isOpen={this.state.isExportModalOpen}
+          onExportingRequested={this.exportingRequestedHandler}
           onClose={this.closeExportModal}
           collections={this.state.collections}
-          zipFileStats={this.state.zipFileStats}
-          onZipFileStatAdd={this.onZipFileStatAdd}
         />
       </Fragment>
     );
