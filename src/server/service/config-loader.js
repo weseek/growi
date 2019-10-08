@@ -130,11 +130,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
+  FILE_UPLOAD_TOTAL_LIMIT: {
+    ns:      'crowi',
+    key:     'app:fileUploadTotalLimit',
+    type:    TYPES.NUMBER,
+    default: Infinity,
+  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',
     type:    TYPES.NUMBER,
-    default: Infinity,
+    default: null,
   },
   FORCE_WIKI_MODE: {
     ns:      'crowi',
