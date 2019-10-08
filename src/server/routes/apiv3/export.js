@@ -23,6 +23,15 @@ module.exports = (crowi) => {
 
   this.adminEvent = crowi.event('admin');
 
+  // setup event
+  this.adminEvent.on('onProgressForExport', (data) => {
+    crowi.getIo().sockets.emit('admin:onProgressForExport', data);
+  });
+  this.adminEvent.on('onTerminateForExport', () => {
+    crowi.getIo().sockets.emit('admin:onTerminateForExport');
+  });
+
+
   /**
    * @swagger
    *
@@ -63,10 +72,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                properties:
-   *                  zipFileStat:
-   *                    type: object
-   *                    description: the property of the zip file
+   *                type: object
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
@@ -76,14 +82,6 @@ module.exports = (crowi) => {
       const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
       exportService.exportCollectionsToZippedJson(models);
-
-      // setup event
-      this.adminEvent.on('onProgressForExport', (total, current) => {
-        crowi.getIo().sockets.emit('admin:onProgressForExport', { total, current });
-      });
-      this.adminEvent.on('onTerminateForExport', (total, current) => {
-        crowi.getIo().sockets.emit('admin:onTerminateForExport', { total, current });
-      });
 
       // TODO: use res.apiv3
       return res.status(200).json({
