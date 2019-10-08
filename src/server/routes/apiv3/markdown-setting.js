@@ -7,6 +7,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const { body } = require('express-validator/check');
+
 const validator = {};
 
 /**
@@ -28,7 +30,10 @@ module.exports = (crowi) => {
   const { ApiV3FormValidator } = crowi.middlewares;
 
   validator.xssSetting = [
-
+    body('isEnabledXss').isBoolean(),
+    body('xssOption').isInt(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
   ];
 
   /**
@@ -78,7 +83,12 @@ module.exports = (crowi) => {
    *                      description: new xss params
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
-    const xssParams = req.body;
+    const xssParams = {
+      'markdown:xss:isEnabledPrevention': req.body.isEnabledXss,
+      'markdown:xss:option': req.body.xssOption,
+      'markdown:xss:tagWhiteList': req.body.tagWhiteList,
+      'markdown:xss:attrWhiteList': req.body.attrWhiteList,
+    }
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('markdown', xssParams);
