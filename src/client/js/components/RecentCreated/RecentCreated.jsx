@@ -179,7 +179,7 @@ class RecentCreated extends React.Component {
     paginationItems.push(nextLastItems);
 
     return (
-      <div className="page-list-container-create py-4">
+      <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat">
           {pageList}
         </ul>
