@@ -18,7 +18,8 @@ class ManageExternalAccount extends React.Component {
 
 
   render() {
-    const { t, adminExternalAccountContainer} = this.props;
+    // TODO GW-328 add props for API
+    const { t } = this.props;
 
     return (
       <Fragment>
@@ -68,12 +69,13 @@ class ManageExternalAccount extends React.Component {
 }
 
 const ManageExternalAccountWrapper = (props) => {
-  return createSubscribedElement(ManageExternalAccount, props, [AppContainer]);
+  return createSubscribedElement(ManageExternalAccount, props, [AppContainer, AdminExternalAccountContainer]);
 };
 
 ManageExternalAccount.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminExternalAccountContainer: PropTypes.instanceOf(AdminExternalAccountContainer).isRequired,
 };
 
 export default withTranslation()(ManageExternalAccountWrapper);
