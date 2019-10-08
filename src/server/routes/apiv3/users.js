@@ -121,8 +121,17 @@ module.exports = (crowi) => {
   });
   // TODO writte swagger
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const username = 'gest';
-    return res.apiv3({ username });
+    const { id } = req.params;
+
+    try {
+      const userData = await User.findById(id);
+
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
   });
   /**
    * @swagger
