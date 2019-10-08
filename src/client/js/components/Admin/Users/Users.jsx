@@ -19,6 +19,7 @@ class UserPage extends React.Component {
     super();
 
     this.state = {
+      totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
     };
@@ -32,27 +33,21 @@ class UserPage extends React.Component {
   }
 
   async syncUserGroupAndRelations() {
-    // let userGroups = [];
-    // let userGroupRelations = {};
-    // let totalUserGroups = 0;
-    // let pagingLimit = Infinity;
 
     try {
       const params = { page: this.state.activePage };
       const response = await this.props.appContainer.apiv3.get('/users', params);
 
-      // const [userGroupsRes, userGroupRelationsRes] = responses;
-      // userGroups = userGroupsRes.data.userGroups;
-      // totalUserGroups = userGroupsRes.data.totalUserGroups;
-      // pagingLimit = userGroupsRes.data.pagingLimit;
-      // userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
+      const users = response.data.users;
+      const totalUsers = response.data.totalUsers;
+      const pagingLimit = response.data.pagingLimit;
 
-      // this.setState({
-      //   userGroups,
-      //   userGroupRelations,
-      //   totalUserGroups,
-      //   pagingLimit,
-      // });
+      this.props.adminUsersContainer.setState({ users });
+
+      this.setState({
+        totalUsers,
+        pagingLimit,
+      });
     }
     catch (err) {
       toastError(err);
@@ -75,8 +70,8 @@ class UserPage extends React.Component {
         <UserTable />
         <PaginationWrapper
           activePage={this.state.activePage}
-          changePage={this.handlePage} // / TODO GW-314 create function
-          totalItemsCount={adminUsersContainer.state.users.length}
+          changePage={this.handlePage}
+          totalItemsCount={this.state.totalUsers}
           pagingLimit={this.state.pagingLimit}
         />
       </Fragment>
