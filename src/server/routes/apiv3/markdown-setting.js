@@ -88,7 +88,7 @@ module.exports = (crowi) => {
       'markdown:xss:option': req.body.xssOption,
       'markdown:xss:tagWhiteList': req.body.tagWhiteList,
       'markdown:xss:attrWhiteList': req.body.attrWhiteList,
-    }
+    };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('markdown', xssParams);
