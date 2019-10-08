@@ -7,6 +7,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const validator = {};
+
 /**
  * @swagger
  *  tags:
@@ -16,11 +18,18 @@ const router = express.Router();
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
 
   const {
     ErrorV3,
     Config,
   } = crowi.models;
+
+  const { ApiV3FormValidator } = crowi.middlewares;
+
+  validator.xssSetting = [
+
+  ];
 
   /**
    * @swagger
@@ -68,7 +77,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: new xss params
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
     const xssParams = req.body;
 
     try {
