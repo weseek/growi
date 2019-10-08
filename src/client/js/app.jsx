@@ -41,6 +41,7 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import Users from './components/Admin/Users/Users';
+import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
@@ -110,6 +111,7 @@ let componentMappings = {
 
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
+  'admin-external-account-setting': <ManageExternalAccount />,
 
   'staff-credit': <StaffCredit />,
   'admin-importer': <Importer />,
