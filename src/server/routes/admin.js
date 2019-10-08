@@ -132,7 +132,10 @@ module.exports = function(crowi, app) {
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
   actions.markdown.lineBreaksSetting = async function(req, res) {
 
-    const array = req.body.params;
+    const array = {
+      'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
+      'markdown:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
+    };
 
     try {
       await configManager.updateConfigsInTheSameNamespace('markdown', array);
