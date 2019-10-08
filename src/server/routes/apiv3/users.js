@@ -133,7 +133,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
-
+      await userData.statusActivate();
       return res.apiv3({ userData });
     }
     catch (err) {
