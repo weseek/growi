@@ -38,8 +38,8 @@ class LineBreakSetting extends React.Component {
   async changeLineBreakSettings() {
     const { appContainer } = this.props;
     const params = {
-      isEnabledLinebreaks: this.state.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
+      "markdown:isEnabledLinebreaks": this.state.isEnabledLinebreaks,
+      "markdown:isEnabledLinebreaksInComments": this.state.isEnabledLinebreaksInComments,
     };
     try {
       await appContainer.apiPost('/admin/markdown/lineBreaksSetting', { params });
