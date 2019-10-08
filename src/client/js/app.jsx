@@ -55,7 +55,6 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
-import AdminExternalAccountContainer from './services/AdminExteranlAccountContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
@@ -177,15 +176,7 @@ if (adminUsersElem != null) {
 
 const adminExternalAccountsElem = document.getElementById('admin-external-account-setting');
 if (adminExternalAccountsElem != null) {
-  const adminExternalAccountContainer = new AdminExternalAccountContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, adminExternalAccountContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <ManageExternalAccount />
-      </I18nextProvider>
-    </Provider>,
-    adminExternalAccountsElem,
-  );
+  // TODO GW-328
 }
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
