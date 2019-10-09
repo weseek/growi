@@ -13,38 +13,44 @@ class RemoveAdminForm extends React.Component {
     this.state = {
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onClickRemoveAdminBtn = this.onClickRemoveAdminBtn.bind(this);
   }
 
   // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  handleSubmit(event) {
+  onClickRemoveAdminBtn(event) {
     $(event.currentTarget).parent().submit();
   }
 
+
+  renderRemoveAdminBtn() {
+    const { t } = this.props;
+
+    return (
+      <a className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
+        <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+      </a>
+    );
+  }
+
+  renderRemoveAdminAlert() {
+    const { t } = this.props;
+
+    return (
+      <div className="px-4">
+        <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
+        <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
+      </div>
+    );
+  }
+
   render() {
-    const { t, user } = this.props;
+    const { user } = this.props;
     const me = this.props.appContainer.me;
 
     return (
       <Fragment>
-        {user.username !== me
-          ? (
-            <a>
-              <form action={`/admin/user/${user._id}/removeFromAdmin`} method="post">
-                <input type="hidden" />
-                <span onClick={this.handleSubmit}>
-                  <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
-                </span>
-              </form>
-            </a>
-          )
-          : (
-            <div className="px-4">
-              <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
-              <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
-            </div>
-          )
-        }
+        {user.username !== me ? this.renderRemoveAdminBtn()
+          : this.renderRemoveAdminAlert()}
       </Fragment>
     );
   }
