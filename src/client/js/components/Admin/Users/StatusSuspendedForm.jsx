@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class StatusSuspendedForm extends React.Component {
 
@@ -14,8 +15,15 @@ class StatusSuspendedForm extends React.Component {
   }
 
   // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  onClickDeactiveBtn(event) {
-    $(event.currentTarget).parent().submit();
+  onClickDeactiveBtn() {
+    const { t } = this.props;
+
+    try {
+      toastSuccess(t('user_management.activate_user_success'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   renderSuspendedBtn() {
