@@ -309,7 +309,8 @@ module.exports = function(crowi) {
   userSchema.methods.statusActivate = async function() {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
-    return this.save();
+    const userData = await this.save();
+    return userEvent.emit('activated', userData);
   };
 
   userSchema.methods.statusSuspend = function(callback) {
