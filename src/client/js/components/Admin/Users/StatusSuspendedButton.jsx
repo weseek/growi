@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class StatusSuspendedButton extends React.Component {
 
@@ -14,11 +15,11 @@ class StatusSuspendedButton extends React.Component {
     this.onClickDeactiveBtn = this.onClickDeactiveBtn.bind(this);
   }
 
-  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  onClickDeactiveBtn() {
+  async onClickDeactiveBtn() {
     const { t } = this.props;
 
     try {
+      await this.props.adminUsersContainer.deactivateUser(this.props.user._id);
       toastSuccess(t('user_management.deactivate_user_success'));
     }
     catch (err) {
@@ -65,12 +66,13 @@ class StatusSuspendedButton extends React.Component {
  * Wrapper component for using unstated
  */
 const StatusSuspendedFormWrapper = (props) => {
-  return createSubscribedElement(StatusSuspendedButton, props, [AppContainer]);
+  return createSubscribedElement(StatusSuspendedButton, props, [AppContainer, AdminUsersContainer]);
 };
 
 StatusSuspendedButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
 };
