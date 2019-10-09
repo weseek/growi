@@ -19,7 +19,7 @@ class StatusSuspendedForm extends React.Component {
     const { t } = this.props;
 
     try {
-      toastSuccess(t('user_management.activate_user_success'));
+      toastSuccess(t('user_management.deactivate_user_success'));
     }
     catch (err) {
       toastError(err);
