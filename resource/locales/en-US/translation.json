@@ -715,6 +715,7 @@
     "current_users": "Current users:",
     "valid_email": "Valid email address is required",
     "existing_email": "The following emails already exist",
+    "give_user_admin": "Give {{username}} admin success",
     "activate_user_success": "Activating {{username}} success",
     "deactivate_user_success": "Deactivating {{username}} success",
     "remove_user_success": "Removing {{username}} success"

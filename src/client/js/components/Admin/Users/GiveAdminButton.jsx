@@ -15,9 +15,11 @@ class GiveAdminButton extends React.Component {
   }
 
   onClickGiveAdminBtn() {
+    const { t } = this.props;
 
     try {
-      toastSuccess('success!');
+      const username = 'gest';
+      toastSuccess(t('user_management.give_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
