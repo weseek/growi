@@ -182,7 +182,7 @@ module.exports = (crowi) => {
    *                  properties:
    *                    userData:
    *                      type: object
-   *                      description: data of removed user
+   *                      description: data of removed admin user
    */
   router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
