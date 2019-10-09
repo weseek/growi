@@ -459,6 +459,7 @@ module.exports = function(crowi, app) {
     });
   };
 
+  // TODO delete
   actions.user.removeFromAdmin = function(req, res) {
     const id = req.params.id;
     User.findById(id, (err, userData) => {

@@ -164,7 +164,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
-      // await userData.makeAdmin();
+      await userData.removeFromAdmin();
       return res.apiv3({ userData });
     }
     catch (err) {
