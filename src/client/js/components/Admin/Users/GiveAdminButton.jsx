@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class GiveAdminButton extends React.Component {
 
@@ -13,9 +14,14 @@ class GiveAdminButton extends React.Component {
     this.onClickGiveAdminBtn = this.onClickGiveAdminBtn.bind(this);
   }
 
-  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  onClickGiveAdminBtn(event) {
-    $(event.currentTarget).parent().submit();
+  onClickGiveAdminBtn() {
+
+    try {
+      toastSuccess('success!');
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
