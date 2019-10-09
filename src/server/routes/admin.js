@@ -491,6 +491,7 @@ module.exports = function(crowi, app) {
     });
   };
 
+  // TODO delete
   actions.user.suspend = function(req, res) {
     const id = req.params.id;
 

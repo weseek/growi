@@ -313,7 +313,7 @@ module.exports = function(crowi) {
     return userEvent.emit('activated', userData);
   };
 
-  userSchema.methods.statusSuspend = function(callback) {
+  userSchema.methods.statusSuspend = async function() {
     debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
@@ -325,9 +325,7 @@ module.exports = function(crowi) {
     if (this.username === undefined || this.usename === null) { // migrate old data
       this.username = '-';
     }
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.statusDelete = async function() {
