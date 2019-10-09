@@ -90,6 +90,17 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * Give user admin
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async giveUserAdmin(userId) {
+    const username = 'gest';
+    return username;
+  }
+
+  /**
    * Activate user
    * @memberOf AdminUsersContainer
    * @param {string} userId

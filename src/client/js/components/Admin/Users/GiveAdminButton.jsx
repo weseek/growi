@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class GiveAdminButton extends React.Component {
 
@@ -14,11 +15,11 @@ class GiveAdminButton extends React.Component {
     this.onClickGiveAdminBtn = this.onClickGiveAdminBtn.bind(this);
   }
 
-  onClickGiveAdminBtn() {
+  async onClickGiveAdminBtn() {
     const { t } = this.props;
 
     try {
-      const username = 'gest';
+      const username = await this.props.adminUsersContainer.giveUserAdmin(this.props.user._id);
       toastSuccess(t('user_management.give_user_admin', { username }));
     }
     catch (err) {
@@ -42,12 +43,13 @@ class GiveAdminButton extends React.Component {
  * Wrapper component for using unstated
  */
 const GiveAdminButtonWrapper = (props) => {
-  return createSubscribedElement(GiveAdminButton, props, [AppContainer]);
+  return createSubscribedElement(GiveAdminButton, props, [AppContainer, AdminUsersContainer]);
 };
 
 GiveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
 };
