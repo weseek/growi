@@ -6,7 +6,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-class StatusSuspendedForm extends React.Component {
+class StatusSuspendedButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -65,10 +65,10 @@ class StatusSuspendedForm extends React.Component {
  * Wrapper component for using unstated
  */
 const StatusSuspendedFormWrapper = (props) => {
-  return createSubscribedElement(StatusSuspendedForm, props, [AppContainer]);
+  return createSubscribedElement(StatusSuspendedButton, props, [AppContainer]);
 };
 
-StatusSuspendedForm.propTypes = {
+StatusSuspendedButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
