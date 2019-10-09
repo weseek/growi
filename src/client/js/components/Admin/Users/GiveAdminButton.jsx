@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class AdminMenuForm extends React.Component {
+class GiveAdminButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,7 +22,6 @@ class AdminMenuForm extends React.Component {
     const { t } = this.props;
 
     return (
-
       <a className="px-4" onClick={() => { this.onClickGiveAdminBtn() }}>
         <i className="icon-fw icon-user-following"></i> { t('user_management.give_admin_access') }
       </a>
@@ -34,15 +33,15 @@ class AdminMenuForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const AdminMenuFormWrapper = (props) => {
-  return createSubscribedElement(AdminMenuForm, props, [AppContainer]);
+const GiveAdminButtonWrapper = (props) => {
+  return createSubscribedElement(GiveAdminButton, props, [AppContainer]);
 };
 
-AdminMenuForm.propTypes = {
+GiveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(AdminMenuFormWrapper);
+export default withTranslation()(GiveAdminButtonWrapper);

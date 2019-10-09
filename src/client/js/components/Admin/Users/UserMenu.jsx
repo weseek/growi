@@ -6,7 +6,7 @@ import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedButton from './StatusSuspendedButton';
 import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminForm from './RemoveAdminForm';
-import GiveAdminForm from './GiveAdminForm';
+import GiveAdminButton from './GiveAdminButton';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -55,7 +55,7 @@ class UserMenu extends React.Component {
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
             <li>
               {user.status === 2 && user.admin === true && <RemoveAdminForm user={user} />}
-              {user.status === 2 && user.admin === false && <GiveAdminForm user={user} />}
+              {user.status === 2 && user.admin === false && <GiveAdminButton user={user} />}
             </li>
           </ul>
         </div>
