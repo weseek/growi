@@ -716,7 +716,8 @@
     "valid_email": "Valid email address is required",
     "existing_email": "The following emails already exist",
     "activate_user_success": "Activating {{username}} success",
-    "deactivate_user_success": "Deactivating {{username}} success"
+    "deactivate_user_success": "Deactivating {{username}} success",
+    "remove_user_success": "Removing {{username}} success"
   },
 
   "user_group_management": {
