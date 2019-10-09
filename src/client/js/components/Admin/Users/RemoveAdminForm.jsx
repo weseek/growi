@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class RemoveAdminForm extends React.Component {
 
@@ -16,9 +17,14 @@ class RemoveAdminForm extends React.Component {
     this.onClickRemoveAdminBtn = this.onClickRemoveAdminBtn.bind(this);
   }
 
-  // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  onClickRemoveAdminBtn(event) {
-    $(event.currentTarget).parent().submit();
+  onClickRemoveAdminBtn() {
+    try {
+      const username = 'gest';
+      toastSuccess(username);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
 
