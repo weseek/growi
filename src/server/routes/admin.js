@@ -491,29 +491,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.activate = async function(req, res) {
-    // check user upper limit
-    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
-    if (isUserCountExceedsUpperLimit) {
-      req.flash('errorMessage', 'ユーザーが上限に達したため有効化できません。');
-      return res.redirect('/admin/users');
-    }
-
-    const id = req.params.id;
-    User.findById(id, (err, userData) => {
-      userData.statusActivate((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを有効化しました`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
   actions.user.suspend = function(req, res) {
     const id = req.params.id;
 

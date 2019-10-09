@@ -306,13 +306,11 @@ module.exports = function(crowi) {
     return this.save();
   };
 
-  userSchema.methods.statusActivate = function(callback) {
+  userSchema.methods.statusActivate = async function() {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
-    this.save((err, userData) => {
-      userEvent.emit('activated', userData);
-      return callback(err, userData);
-    });
+    const userData = await this.save();
+    return userEvent.emit('activated', userData);
   };
 
   userSchema.methods.statusSuspend = function(callback) {
