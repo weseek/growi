@@ -166,7 +166,32 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/{id}/deactivate:
+   *      put:
+   *        tags: [Users]
+   *        description: Deactivate user
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of deactivate user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Deactivationg user success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of deactivate user
+   */
   router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
