@@ -119,7 +119,32 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/{id}/giveAdmin:
+   *      put:
+   *        tags: [Users]
+   *        description: Give user admin
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user for admin
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Give user admin success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of admin user
+   */
   router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
