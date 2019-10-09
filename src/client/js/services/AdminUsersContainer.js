@@ -96,7 +96,8 @@ export default class AdminUsersContainer extends Container {
    * @return {string} username
    */
   async giveUserAdmin(userId) {
-    const username = 'gest';
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/giveAdmin`);
+    const { username } = response.data.userData;
     return username;
   }
 

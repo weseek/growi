@@ -119,6 +119,13 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+  // TODO swagger
+  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    const userData = await User.findById(id);
+    return res.apiv3({ userData });
+  });
   /**
    * @swagger
    *
