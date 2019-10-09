@@ -700,6 +700,7 @@
     "valid_email": "メールアドレスを入力してください。",
     "existing_email": "以下のEmailはすでに存在しています。",
     "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました"

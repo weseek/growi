@@ -18,9 +18,11 @@ class RemoveAdminForm extends React.Component {
   }
 
   onClickRemoveAdminBtn() {
+    const { t } = this.props;
+
     try {
       const username = 'gest';
-      toastSuccess(username);
+      toastSuccess(t('user_management.remove_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
