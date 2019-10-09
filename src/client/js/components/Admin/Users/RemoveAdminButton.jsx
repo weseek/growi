@@ -7,7 +7,7 @@ import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
-class RemoveAdminForm extends React.Component {
+class RemoveAdminButton extends React.Component {
 
   constructor(props) {
     super(props);
@@ -66,11 +66,11 @@ class RemoveAdminForm extends React.Component {
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminFormWrapper = (props) => {
-  return createSubscribedElement(RemoveAdminForm, props, [AppContainer, AdminUsersContainer]);
+const RemoveAdminButtonWrapper = (props) => {
+  return createSubscribedElement(RemoveAdminButton, props, [AppContainer, AdminUsersContainer]);
 };
 
-RemoveAdminForm.propTypes = {
+RemoveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -78,4 +78,4 @@ RemoveAdminForm.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(RemoveAdminFormWrapper);
+export default withTranslation()(RemoveAdminButtonWrapper);
