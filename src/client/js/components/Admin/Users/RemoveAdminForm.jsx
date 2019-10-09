@@ -5,23 +5,21 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class RemoveAdminForm extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-    };
-
     this.onClickRemoveAdminBtn = this.onClickRemoveAdminBtn.bind(this);
   }
 
-  onClickRemoveAdminBtn() {
+  async onClickRemoveAdminBtn() {
     const { t } = this.props;
 
     try {
-      const username = 'gest';
+      const username = await this.props.adminUsersContainer.removeUserAdmin(this.props.user._id);
       toastSuccess(t('user_management.remove_user_admin', { username }));
     }
     catch (err) {
@@ -69,12 +67,13 @@ class RemoveAdminForm extends React.Component {
 * Wrapper component for using unstated
 */
 const RemoveAdminFormWrapper = (props) => {
-  return createSubscribedElement(RemoveAdminForm, props, [AppContainer]);
+  return createSubscribedElement(RemoveAdminForm, props, [AppContainer, AdminUsersContainer]);
 };
 
 RemoveAdminForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminUsersContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   user: PropTypes.object.isRequired,
 };
