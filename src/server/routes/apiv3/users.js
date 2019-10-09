@@ -158,6 +158,20 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+  // TODO swagger
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userData = await User.findById(id);
+      // await userData.makeAdmin();
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
   /**
    * @swagger
    *

@@ -108,9 +108,8 @@ export default class AdminUsersContainer extends Container {
    * @return {string} username
    */
   async removeUserAdmin(userId) {
-    // const response = await this.appContainer.apiv3.put(`/users/${userId}/giveAdmin`);
-    // const { username } = response.data.userData;
-    const username = 'ゲスト';
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/removeAdmin`);
+    const { username } = response.data.userData;
     return username;
   }
 
