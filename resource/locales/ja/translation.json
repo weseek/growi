@@ -698,7 +698,8 @@
     "cannot_invite_maximum_users": "ユーザーが上限に達したため招待できません。",
     "current_users": "現在のユーザー数：",
     "valid_email": "メールアドレスを入力してください。",
-    "existing_email": "以下のEmailはすでに存在しています。"
+    "existing_email": "以下のEmailはすでに存在しています。",
+    "activate_user_success": "ユーザーを有効化しました"
   },
 
   "user_group_management": {

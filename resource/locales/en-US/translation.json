@@ -714,7 +714,8 @@
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
     "current_users": "Current users:",
     "valid_email": "Valid email address is required",
-    "existing_email": "The following emails already exist"
+    "existing_email": "The following emails already exist",
+    "activate_user_success": "Activating user success"
   },
 
   "user_group_management": {
