@@ -158,7 +158,32 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/{id}/removeAdmin:
+   *      put:
+   *        tags: [Users]
+   *        description: Remove user admin
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user for removing admin
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Remove user admin success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of removed user
+   */
   router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
