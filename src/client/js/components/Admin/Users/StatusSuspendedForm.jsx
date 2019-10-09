@@ -10,42 +10,43 @@ class StatusSuspendedForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-
-    };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onClickDeactiveBtn = this.onClickDeactiveBtn.bind(this);
   }
 
   // これは将来的にapiにするので。あとボタンにするとデザインがよくなかったので。
-  handleSubmit(event) {
+  onClickDeactiveBtn(event) {
     $(event.currentTarget).parent().submit();
   }
 
+  renderSuspendedBtn() {
+    const { t } = this.props;
+
+    return (
+      <a className="px-4" onClick={() => { this.onClickDeactiveBtn() }}>
+        <i className="icon-fw icon-ban"></i> { t('user_management.deactivate_account') }
+      </a>
+    );
+  }
+
+  renderSuspendedAlert() {
+    const { t } = this.props;
+
+    return (
+      <div className="px-4">
+        <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
+        <p className="alert alert-danger">{ t('user_management.your_own') }</p>
+      </div>
+    );
+  }
+
   render() {
-    const { t, user } = this.props;
+    const { user } = this.props;
     const me = this.props.appContainer.me;
 
     return (
       <Fragment>
-        {user.username !== me
-          ? (
-            <a>
-              <form action={`/admin/user/${user._id}/suspend`} method="post">
-                <input type="hidden" name="_csrf" value={this.props.appContainer.csrfToken} />
-                <span onClick={this.handleSubmit}>
-                  <i className="icon-fw icon-ban"></i>{ t('user_management.deactivate_account') }
-                </span>
-              </form>
-            </a>
-          )
-          : (
-            <div className="px-4">
-              <i className="icon-fw icon-ban mb-2"></i>{ t('user_management.deactivate_account') }
-              <p className="alert alert-danger">{ t('user_management.your_own') }</p>
-            </div>
-          )
-        }
+        {user.username !== me ? this.renderSuspendedBtn()
+          : this.renderSuspendedAlert()}
       </Fragment>
     );
   }
