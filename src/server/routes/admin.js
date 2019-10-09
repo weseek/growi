@@ -459,6 +459,7 @@ module.exports = function(crowi, app) {
     });
   };
 
+  // TODO remove
   actions.user.makeAdmin = function(req, res) {
     const id = req.params.id;
     User.findById(id, (err, userData) => {

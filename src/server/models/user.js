@@ -293,12 +293,10 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.makeAdmin = function(callback) {
+  userSchema.methods.makeAdmin = async function() {
     debug('Admin', this);
     this.admin = 1;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.asyncMakeAdmin = async function(callback) {

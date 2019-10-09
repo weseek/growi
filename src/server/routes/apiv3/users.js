@@ -123,8 +123,15 @@ module.exports = (crowi) => {
   router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
-    const userData = await User.findById(id);
-    return res.apiv3({ userData });
+    try {
+      const userData = await User.findById(id);
+      await userData.makeAdmin();
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
   });
   /**
    * @swagger
