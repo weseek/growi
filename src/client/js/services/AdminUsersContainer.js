@@ -68,10 +68,12 @@ export default class AdminUsersContainer extends Container {
    * @param {bool} sendEmail
    */
   async createUserInvited(shapedEmailList, sendEmail) {
-    return this.appContainer.apiv3.post('/users/invite', {
+    const response = await this.appContainer.apiv3.post('/users/invite', {
       shapedEmailList,
       sendEmail,
     });
+    const { emailList } = response.data;
+    return emailList;
   }
 
   /**

@@ -162,9 +162,9 @@ class UserInviteModal extends React.Component {
     const shapedEmailList = emailList.map((email) => { return email.trim() });
 
     try {
-      const response = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
+      const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
       this.setState({ emailInputValue: '' });
-      this.setState({ invitedEmailList: response.data.emailList });
+      this.setState({ invitedEmailList: emailList });
       toastSuccess('Inviting user success');
     }
     catch (err) {
