@@ -15,4 +15,7 @@ module.exports = {
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),
+
+  // non-persistent models
+  ErrorV3: require('./ErrorV3'),
 };

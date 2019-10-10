@@ -130,11 +130,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
+  FILE_UPLOAD_TOTAL_LIMIT: {
+    ns:      'crowi',
+    key:     'app:fileUploadTotalLimit',
+    type:    TYPES.NUMBER,
+    default: Infinity,
+  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',
     type:    TYPES.NUMBER,
-    default: Infinity,
+    default: null,
   },
   FORCE_WIKI_MODE: {
     ns:      'crowi',
@@ -217,6 +223,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   SAML_CERT: {
     ns:      'crowi',
     key:     'security:passport-saml:cert',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  GCS_API_KEY_JSON_PATH: {
+    ns:      'crowi',
+    key:     'gcs:apiKeyJsonPath',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  GCS_BUCKET: {
+    ns:      'crowi',
+    key:     'gcs:bucket',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  GCS_UPLOAD_NAMESPACE: {
+    ns:      'crowi',
+    key:     'gcs:uploadNamespace',
     type:    TYPES.STRING,
     default: null,
   },

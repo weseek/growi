@@ -91,7 +91,7 @@ module.exports = function(crowi, app) {
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
 
   // markdown admin
-  app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
+  app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index); // TODO delete
   app.post('/admin/markdown/lineBreaksSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); // change form name
   app.post('/admin/markdown/xss-setting'      , loginRequiredStrictly , adminRequired , csrf, form.admin.markdownXss, admin.markdown.xssSetting);
   app.post('/admin/markdown/presentationSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.markdownPresentation, admin.markdown.presentationSetting);
@@ -129,12 +129,6 @@ module.exports = function(crowi, app) {
   app.post('/admin/global-notification/:id/remove', loginRequiredStrictly , adminRequired , admin.globalNotification.remove);
 
   app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
-  app.post('/admin/user/invite'         , form.admin.userInvite ,  loginRequiredStrictly , adminRequired , csrf, admin.user.invite);
-  app.post('/admin/user/:id/makeAdmin'  , loginRequiredStrictly , adminRequired , csrf, admin.user.makeAdmin);
-  app.post('/admin/user/:id/removeFromAdmin', loginRequiredStrictly , adminRequired , admin.user.removeFromAdmin);
-  app.post('/admin/user/:id/activate'   , loginRequiredStrictly , adminRequired , csrf, admin.user.activate);
-  app.post('/admin/user/:id/suspend'    , loginRequiredStrictly , adminRequired , csrf, admin.user.suspend);
-  app.post('/admin/user/:id/remove'     , loginRequiredStrictly , adminRequired , csrf, admin.user.remove);
   app.post('/admin/user/:id/removeCompletely' , loginRequiredStrictly , adminRequired , csrf, admin.user.removeCompletely);
   // new route patterns from here:
   app.post('/_api/admin/users.resetPassword'  , loginRequiredStrictly , adminRequired , csrf, admin.user.resetPassword);
@@ -144,28 +138,20 @@ module.exports = function(crowi, app) {
 
   // user-groups admin
   app.get('/admin/user-groups'             , loginRequiredStrictly, adminRequired, admin.userGroup.index);
-  app.get('/admin/user-group-detail/:id'          , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
-  app.post('/admin/user-group/create'      , form.admin.userGroupCreate, loginRequiredStrictly, adminRequired, csrf, admin.userGroup.create);
-  app.post('/admin/user-group/:userGroupId/update', loginRequiredStrictly, adminRequired, csrf, admin.userGroup.update);
-  app.post('/admin/user-group.remove' , loginRequiredStrictly, adminRequired, csrf, admin.userGroup.removeCompletely);
-  app.get('/_api/admin/user-groups', loginRequiredStrictly, adminRequired, admin.api.userGroups);
-
-  // user-group-relations admin
-  app.post('/admin/user-group-relation/create', loginRequiredStrictly, adminRequired, csrf, admin.userGroupRelation.create);
-  app.post('/admin/user-group-relation/:id/remove-relation/:relationId', loginRequiredStrictly, adminRequired, csrf, admin.userGroupRelation.remove);
+  app.get('/admin/user-group-detail/:id'   , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
 
   // importer management for admin
-  app.get('/admin/importer'                , loginRequiredStrictly , adminRequired , admin.importer.index);
-  app.post('/_api/admin/settings/importerEsa' , loginRequiredStrictly , adminRequired , csrf , form.admin.importerEsa , admin.api.importerSettingEsa);
-  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf , form.admin.importerQiita , admin.api.importerSettingQiita);
-  app.post('/_api/admin/import/esa'        , loginRequiredStrictly , adminRequired , admin.api.importDataFromEsa);
-  app.post('/_api/admin/import/testEsaAPI' , loginRequiredStrictly , adminRequired , csrf , form.admin.importerEsa , admin.api.testEsaAPI);
-  app.post('/_api/admin/import/qiita'        , loginRequiredStrictly , adminRequired , admin.api.importDataFromQiita);
-  app.post('/_api/admin/import/testQiitaAPI' , loginRequiredStrictly , adminRequired , csrf , form.admin.importerQiita , admin.api.testQiitaAPI);
+  app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
+  app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrf, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
+  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrf , admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
+  app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , admin.api.importDataFromEsa);
+  app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrf, admin.api.testEsaAPI);
+  app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , admin.api.importDataFromQiita);
+  app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrf, admin.api.testQiitaAPI);
 
   // export management for admin
-  app.get('/admin/export' , loginRequiredStrictly , adminRequired ,admin.export.index);
-  app.get('/admin/export/:fileName' , loginRequiredStrictly , adminRequired ,admin.export.download);
+  app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
+  app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
   app.get('/me/password'              , loginRequiredStrictly , me.password);

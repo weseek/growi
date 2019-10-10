@@ -34,20 +34,29 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
+import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
+import Users from './components/Admin/Users/Users';
+import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
+import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
+import Customize from './components/Admin/Customize/Customize';
+import Importer from './components/Admin/Importer';
+import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
 import ExportPage from './components/Admin/Export/ExportPage';
-import GrowiZipImportSection from './components/Admin/Import/GrowiZipImportSection';
-import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import UserGroupDetailContainer from './services/UserGroupDetailContainer';
+import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
+import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -100,7 +109,12 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
+  'admin-full-text-search-management': <FullTextSearchManagement />,
+  'admin-customize': <Customize />,
+  'admin-external-account-setting': <ManageExternalAccount />,
+
   'staff-credit': <StaffCredit />,
+  'admin-importer': <Importer />,
 };
 
 // additional definitions if data exists
@@ -147,6 +161,45 @@ Object.keys(componentMappings).forEach((key) => {
 });
 
 // render for admin
+const adminUsersElem = document.getElementById('admin-user-page');
+if (adminUsersElem != null) {
+  const adminUsersContainer = new AdminUsersContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminUsersContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <Users />
+      </I18nextProvider>
+    </Provider>,
+    adminUsersElem,
+  );
+}
+
+const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
+if (adminUserGroupDetailElem != null) {
+  const userGroupDetailContainer = new UserGroupDetailContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[userGroupDetailContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <UserGroupDetailPage />
+      </I18nextProvider>
+    </Provider>,
+    adminUserGroupDetailElem,
+  );
+}
+
+const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting');
+if (adminMarkDownSettingElem != null) {
+  const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, markDownSettingContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <MarkdownSetting />
+      </I18nextProvider>
+    </Provider>,
+    adminMarkDownSettingElem,
+  );
+}
+
 const customCssEditorElem = document.getElementById('custom-css-editor');
 if (customCssEditorElem != null) {
   // get input[type=hidden] element
@@ -177,22 +230,28 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem,
   );
 }
-const adminGrantSelectorElem = document.getElementById('admin-delete-user-group-modal');
-if (adminGrantSelectorElem != null) {
+
+const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
+if (adminUserGroupPageElem != null) {
+  const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
+
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <GroupDeleteModal
-        crowi={appContainer}
-      />
-    </I18nextProvider>,
-    adminGrantSelectorElem,
+    <Provider inject={[websocketContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <UserGroupPage
+          crowi={appContainer}
+          isAclEnabled={isAclEnabled}
+        />
+      </I18nextProvider>
+    </Provider>,
+    adminUserGroupPageElem,
   );
 }
 
 const adminExportPageElem = document.getElementById('admin-export-page');
 if (adminExportPageElem != null) {
   ReactDOM.render(
-    <Provider inject={[websocketContainer]}>
+    <Provider inject={[]}>
       <I18nextProvider i18n={i18n}>
         <ExportPage
           crowi={appContainer}
@@ -200,19 +259,6 @@ if (adminExportPageElem != null) {
       </I18nextProvider>
     </Provider>,
     adminExportPageElem,
-  );
-}
-
-// TODO: move to /imponents/Admin/Importer.jsx
-const growiImportElem = document.getElementById('growi-import');
-if (growiImportElem != null) {
-  ReactDOM.render(
-    <Provider inject={[]}>
-      <I18nextProvider i18n={i18n}>
-        <GrowiZipImportSection />
-      </I18nextProvider>
-    </Provider>,
-    growiImportElem,
   );
 }
 

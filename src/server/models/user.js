@@ -2,14 +2,13 @@
 
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
-const path = require('path');
 const mongoose = require('mongoose');
+const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
-const async = require('async');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
@@ -17,7 +16,7 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
-  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin';
+  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt lastLoginAt admin';
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
@@ -286,20 +285,16 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = function(callback) {
+  userSchema.methods.removeFromAdmin = async function() {
     debug('Remove from admin', this);
     this.admin = 0;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
-  userSchema.methods.makeAdmin = function(callback) {
+  userSchema.methods.makeAdmin = async function() {
     debug('Admin', this);
     this.admin = 1;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.asyncMakeAdmin = async function(callback) {
@@ -307,16 +302,14 @@ module.exports = function(crowi) {
     return this.save();
   };
 
-  userSchema.methods.statusActivate = function(callback) {
+  userSchema.methods.statusActivate = async function() {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
-    this.save((err, userData) => {
-      userEvent.emit('activated', userData);
-      return callback(err, userData);
-    });
+    const userData = await this.save();
+    return userEvent.emit('activated', userData);
   };
 
-  userSchema.methods.statusSuspend = function(callback) {
+  userSchema.methods.statusSuspend = async function() {
     debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
@@ -328,12 +321,10 @@ module.exports = function(crowi) {
     if (this.username === undefined || this.usename === null) { // migrate old data
       this.username = '-';
     }
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
-  userSchema.methods.statusDelete = function(callback) {
+  userSchema.methods.statusDelete = async function() {
     debug('Delete User', this);
 
     const now = new Date();
@@ -347,9 +338,7 @@ module.exports = function(crowi) {
     this.googleId = null;
     this.isGravatarEnabled = false;
     this.image = null;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
@@ -612,123 +601,103 @@ module.exports = function(crowi) {
     return newPassword;
   };
 
-  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
-    validateCrowi();
-
+  userSchema.statics.createUserByEmail = async function(email) {
     const configManager = crowi.configManager;
 
     const User = this;
+    const newUser = new User();
+
+    /* eslint-disable newline-per-chained-call */
+    const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
+    const password = Math.random().toString(36).slice(-16);
+    /* eslint-enable newline-per-chained-call */
+
+    newUser.username = tmpUsername;
+    newUser.email = email;
+    newUser.setPassword(password);
+    newUser.createdAt = Date.now();
+    newUser.status = STATUS_INVITED;
+
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    if (globalLang != null) {
+      newUser.lang = globalLang;
+    }
+
+    try {
+      const newUserData = await newUser.save();
+      return {
+        email,
+        password,
+        user: newUserData,
+      };
+    }
+    catch (err) {
+      return {
+        email,
+      };
+    }
+  };
+
+  userSchema.statics.createUsersByEmailList = async function(emailList) {
+    const User = this;
+
+    // check exists and get list of tyr to create
+    const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
+    const existingEmailList = existingUserList.map((user) => { return user.email });
+    const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
+
     const createdUserList = [];
+    await Promise.all(creationEmailList.map(async(email) => {
+      const createdEmail = await this.createUserByEmail(email);
+      createdUserList.push(createdEmail);
+    }));
+
+    return { existingEmailList, createdUserList };
+  };
+
+  userSchema.statics.sendEmailbyUserList = async function(userList) {
     const mailer = crowi.getMailer();
+    const appTitle = crowi.appService.getAppTitle();
+
+    await Promise.all(userList.map(async(user) => {
+      if (user.password == null) {
+        return;
+      }
+
+      try {
+        return mailer.send({
+          to: user.email,
+          subject: `Invitation to ${appTitle}`,
+          template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
+          vars: {
+            email: user.email,
+            password: user.password,
+            url: crowi.appService.getSiteUrl(),
+            appTitle,
+          },
+        });
+      }
+      catch (err) {
+        return debug('fail to send email: ', err);
+      }
+    }));
+
+  };
+
+  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
+    validateCrowi();
 
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
 
-    async.each(
-      emailList,
-      (email, next) => {
-        const newUser = new User();
-        let tmpUsername;
-        let password;
+    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
-        // eslint-disable-next-line no-param-reassign
-        email = email.trim();
+    if (toSendEmail) {
+      await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
+    }
 
-        // email check
-        // TODO: 削除済みはチェック対象から外そう〜
-        User.findOne({ email }, (err, userData) => {
-          // The user is exists
-          if (userData) {
-            createdUserList.push({
-              email,
-              password: null,
-              user: null,
-            });
-
-            return next();
-          }
-
-          /* eslint-disable newline-per-chained-call */
-          tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
-          password = Math.random().toString(36).slice(-16);
-          /* eslint-enable newline-per-chained-call */
-
-          newUser.username = tmpUsername;
-          newUser.email = email;
-          newUser.setPassword(password);
-          newUser.createdAt = Date.now();
-          newUser.status = STATUS_INVITED;
-
-          const globalLang = configManager.getConfig('crowi', 'app:globalLang');
-          if (globalLang != null) {
-            newUser.lang = globalLang;
-          }
-
-          newUser.save((err, userData) => {
-            if (err) {
-              createdUserList.push({
-                email,
-                password: null,
-                user: null,
-              });
-              debug('save failed!! ', err);
-            }
-            else {
-              createdUserList.push({
-                email,
-                password,
-                user: userData,
-              });
-              debug('saved!', email);
-            }
-
-            next();
-          });
-        });
-      },
-      (err) => {
-        if (err) {
-          debug('error occured while iterate email list');
-        }
-
-        if (toSendEmail) {
-          // TODO: メール送信部分のロジックをサービス化する
-          async.each(
-            createdUserList,
-            (user, next) => {
-              if (user.password === null) {
-                return next();
-              }
-
-              const appTitle = crowi.appService.getAppTitle();
-
-              mailer.send({
-                to: user.email,
-                subject: `Invitation to ${appTitle}`,
-                template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
-                vars: {
-                  email: user.email,
-                  password: user.password,
-                  url: crowi.appService.getSiteUrl(),
-                  appTitle,
-                },
-              },
-              (err, s) => {
-                debug('completed to send email: ', err, s);
-                next();
-              });
-            },
-            (err) => {
-              debug('Sending invitation email completed.', err);
-            },
-          );
-        }
-
-        debug('createdUserList!!! ', createdUserList);
-        return callback(null, createdUserList);
-      },
-    );
+    return afterWorkEmailList;
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {

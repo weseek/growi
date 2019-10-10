@@ -30,7 +30,11 @@ class ImportService {
   initConvertMap(models) {
     // by default, original value is used for imported documents
     for (const model of Object.values(models)) {
-      const { collectionName } = model.collection;
+      if (model.collection == null) {
+        continue;
+      }
+
+      const collectionName = model.collection.name;
       this.convertMap[collectionName] = {};
 
       for (const key of Object.keys(model.schema.paths)) {
@@ -72,7 +76,7 @@ class ImportService {
   async import(Model, jsonFile, overwriteParams = {}) {
     // streamToPromise(jsonStream) throws an error, use new Promise instead
     return new Promise((resolve, reject) => {
-      const { collectionName } = Model.collection;
+      const collectionName = Model.collection.name;
 
       let counter = 0;
       let insertedIds = [];
@@ -211,7 +215,7 @@ class ImportService {
    * @return {object} document to be persisted
    */
   convertDocuments(Model, _document, overwriteParams) {
-    const collectionName = Model.collection.collectionName;
+    const collectionName = Model.collection.name;
     const schema = Model.schema.paths;
     const convertMap = this.convertMap[collectionName];
 
