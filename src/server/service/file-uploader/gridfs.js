@@ -6,7 +6,7 @@ module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
-  const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
+  // const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
   // instantiate mongoose-gridfs
   const { createModel } = require('mongoose-gridfs');
