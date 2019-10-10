@@ -37,21 +37,20 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      <FormGroup>
-        <InputGroup>
-          <SearchForm
-            t={this.props.t}
-            onSubmit={this.search}
-            keyword={this.state.searchedKeyword}
-            onInputChange={this.onInputChange}
-          />
-          <InputGroup.Button className="">
-            <Button onClick={this.search}>
-              <i className="icon-magnifier"></i>
-            </Button>
-          </InputGroup.Button>
-        </InputGroup>
-      </FormGroup>
+      <div className="form-group d-flex">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search ..."
+          t={this.props.t}
+          onSubmit={this.search}
+          keyword={this.state.searchedKeyword}
+          onInputChange={this.onInputChange}
+        />
+        <button type="submit" className="btn btn-secondary" onClick={this.search}>
+          <i className="icon-magnifier"></i>
+        </button>
+      </div>
     );
   }
 
