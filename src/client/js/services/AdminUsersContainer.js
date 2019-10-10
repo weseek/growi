@@ -21,6 +21,9 @@ export default class AdminUsersContainer extends Container {
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
+      totalUsers: 0,
+      activePage: 1,
+      pagingLimit: Infinity,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -33,6 +36,44 @@ export default class AdminUsersContainer extends Container {
    */
   static getClassName() {
     return 'AdminUsersContainer';
+  }
+
+  /**
+   * syncUsers of selectedPage
+   * @memberOf AdminUsersContainer
+   * @param {number} selectedPage
+   */
+  async retrieveUsersByPagingNum(selectedPage) {
+
+    const params = { page: selectedPage };
+    const response = await this.appContainer.apiv3.get('/users', params);
+
+    const users = response.data.users;
+    const totalUsers = response.data.totalUsers;
+    const pagingLimit = response.data.pagingLimit;
+
+    this.setState({
+      users,
+      totalUsers,
+      pagingLimit,
+      activePage: selectedPage,
+    });
+
+  }
+
+  /**
+   * create user invited
+   * @memberOf AdminUsersContainer
+   * @param {object} shapedEmailList
+   * @param {bool} sendEmail
+   */
+  async createUserInvited(shapedEmailList, sendEmail) {
+    const response = await this.appContainer.apiv3.post('/users/invite', {
+      shapedEmailList,
+      sendEmail,
+    });
+    const { emailList } = response.data;
+    return emailList;
   }
 
   /**
@@ -61,6 +102,54 @@ export default class AdminUsersContainer extends Container {
    */
   async toggleUserInviteModal() {
     await this.setState({ isUserInviteModalShown: !this.state.isUserInviteModalShown });
+  }
+
+  /**
+   * Give user admin
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async giveUserAdmin(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/giveAdmin`);
+    const { username } = response.data.userData;
+    return username;
+  }
+
+  /**
+   * Remove user admin
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async removeUserAdmin(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/removeAdmin`);
+    const { username } = response.data.userData;
+    return username;
+  }
+
+  /**
+   * Activate user
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async activateUser(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/activate`);
+    const { username } = response.data.userData;
+    return username;
+  }
+
+  /**
+   * Deactivate user
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async deactivateUser(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/deactivate`);
+    const { username } = response.data.userData;
+    return username;
   }
 
   /**

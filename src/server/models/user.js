@@ -285,20 +285,16 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = function(callback) {
+  userSchema.methods.removeFromAdmin = async function() {
     debug('Remove from admin', this);
     this.admin = 0;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
-  userSchema.methods.makeAdmin = function(callback) {
+  userSchema.methods.makeAdmin = async function() {
     debug('Admin', this);
     this.admin = 1;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.asyncMakeAdmin = async function(callback) {
@@ -306,16 +302,14 @@ module.exports = function(crowi) {
     return this.save();
   };
 
-  userSchema.methods.statusActivate = function(callback) {
+  userSchema.methods.statusActivate = async function() {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
-    this.save((err, userData) => {
-      userEvent.emit('activated', userData);
-      return callback(err, userData);
-    });
+    const userData = await this.save();
+    return userEvent.emit('activated', userData);
   };
 
-  userSchema.methods.statusSuspend = function(callback) {
+  userSchema.methods.statusSuspend = async function() {
     debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
@@ -327,9 +321,7 @@ module.exports = function(crowi) {
     if (this.username === undefined || this.usename === null) { // migrate old data
       this.username = '-';
     }
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.statusDelete = async function() {

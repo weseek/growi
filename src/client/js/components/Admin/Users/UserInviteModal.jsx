@@ -76,14 +76,12 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left" style={{ flex: 1 }}>
-          <input
-            type="checkbox"
-            defaultChecked={this.state.sendEmail}
-            onChange={this.handleCheckBox}
-          />
-          <span className="ml-2">{ t('user_management.invite_thru_email') }</span>
-        </label>
+        <div className="checkbox checkbox-success text-left" onChange={this.handleCheckBox} style={{ flex: 1 }}>
+          <input type="checkbox" id="sendEmail" className="form-check-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
+          <label htmlFor="sendEmail">
+            { t('user_management.invite_thru_email') }
+          </label>
+        </div>
         <div>
           <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
           Cancel
@@ -126,7 +124,7 @@ class UserInviteModal extends React.Component {
         {userList.map((user) => {
           const copyText = `Email:${user.email} Password:${user.password} `;
           return (
-            <CopyToClipboard text={copyText} onCopy={this.showToaster}>
+            <CopyToClipboard key={user.email} text={copyText} onCopy={this.showToaster}>
               <li key={user.email} className="btn">Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong></li>
             </CopyToClipboard>
           );
@@ -157,19 +155,16 @@ class UserInviteModal extends React.Component {
   }
 
   async handleSubmit() {
-    const { appContainer } = this.props;
+    const { adminUsersContainer } = this.props;
 
     const array = this.state.emailInputValue.split('\n');
     const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
     const shapedEmailList = emailList.map((email) => { return email.trim() });
 
     try {
-      const response = await appContainer.apiv3.post('/users/invite', {
-        shapedEmailList,
-        sendEmail: this.state.sendEmail,
-      });
+      const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
       this.setState({ emailInputValue: '' });
-      this.setState({ invitedEmailList: response.data.emailList });
+      this.setState({ invitedEmailList: emailList });
       toastSuccess('Inviting user success');
     }
     catch (err) {

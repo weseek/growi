@@ -7,20 +7,20 @@ import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-class UserRemoveButton extends React.Component {
+class StatusActivateButton extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.onClickDeleteBtn = this.onClickDeleteBtn.bind(this);
+    this.onClickAcceptBtn = this.onClickAcceptBtn.bind(this);
   }
 
-  async onClickDeleteBtn() {
+  async onClickAcceptBtn() {
     const { t } = this.props;
 
     try {
-      const username = await this.props.adminUsersContainer.removeUser(this.props.user._id);
-      toastSuccess(t('user_management.remove_user_success', { username }));
+      const username = await this.props.adminUsersContainer.activateUser(this.props.user._id);
+      toastSuccess(t('user_management.activate_user_success', { username }));
     }
     catch (err) {
       toastError(err);
@@ -31,8 +31,8 @@ class UserRemoveButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="px-4" onClick={() => { this.onClickDeleteBtn() }}>
-        <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+      <a className="px-4" onClick={() => { this.onClickAcceptBtn() }}>
+        <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
       </a>
     );
   }
@@ -42,11 +42,11 @@ class UserRemoveButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserRemoveButtonWrapper = (props) => {
-  return createSubscribedElement(UserRemoveButton, props, [AppContainer, AdminUsersContainer]);
+const StatusActivateFormWrapper = (props) => {
+  return createSubscribedElement(StatusActivateButton, props, [AppContainer, AdminUsersContainer]);
 };
 
-UserRemoveButton.propTypes = {
+StatusActivateButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
@@ -54,4 +54,4 @@ UserRemoveButton.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(UserRemoveButtonWrapper);
+export default withTranslation()(StatusActivateFormWrapper);
