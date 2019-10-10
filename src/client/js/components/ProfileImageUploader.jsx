@@ -54,10 +54,11 @@ class ProfileImageUploader extends React.Component {
   }
 
   async makeClientCrop(crop) {
-    if (this.imageRef && crop.width && crop.height) {
-      const croppedImageUrl = await this.getCroppedImg(this.imageRef, crop, 'newFile.jpeg');
-      this.setState({ croppedImageUrl });
-    }
+    // GW-201 で crop済みの画像を state におくときにコメントを外す（未使用変数の lint エラーが生じるためコメントアウト)
+    // if (this.imageRef && crop.width && crop.height) {
+    //   const croppedImageUrl = await this.getCroppedImg(this.imageRef, crop, 'newFile.jpeg');
+    //   this.setState({ croppedImageUrl });
+    // }
   }
 
   getCroppedImg(image, crop, fileName) {
@@ -92,7 +93,7 @@ class ProfileImageUploader extends React.Component {
   }
 
   render() {
-    const { crop, croppedImageUrl, src } = this.state;
+    const { crop, src } = this.state;
 
     return (
       <div className="App">
