@@ -26,14 +26,14 @@ class PresentationForm extends React.Component {
             type="radio"
             id="pageBreakOption1"
             checked={pageBreakOption === 1}
-            // onChange={this.handleInputChange}
+            onChange={() => { markDownSettingContainer.setState({ pageBreakOption: 1 }) }}
           />
           <label htmlFor="pageBreakOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
-            <p className="mt-3">
+            <div className="mt-3">
               { t('markdown_setting.Preset one separator desc') }
               <pre><code>{ t('markdown_setting.Preset one separator value') }</code></pre>
-            </p>
+            </div>
           </label>
         </div>
 
@@ -42,14 +42,14 @@ class PresentationForm extends React.Component {
             type="radio"
             id="pageBreakOption2"
             checked={pageBreakOption === 2}
-            // onChange={this.handleInputChange}
+            onChange={() => { markDownSettingContainer.setState({ pageBreakOption: 2 }) }}
           />
           <label htmlFor="pageBreakOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
-            <p className="mt-3">
+            <div className="mt-3">
               { t('markdown_setting.Preset two separator desc') }
               <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
-            </p>
+            </div>
           </label>
         </div>
 
@@ -58,25 +58,24 @@ class PresentationForm extends React.Component {
             type="radio"
             id="pageBreakOption3"
             checked={pageBreakOption === 3}
-            // onChange={this.handleInputChange}
+            onChange={() => { markDownSettingContainer.setState({ pageBreakOption: 3 }) }}
           />
           <label htmlFor="pageBreakOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
-            <p className="mt-3">
+            <div className="mt-3">
               { t('markdown_setting.Custom separator desc') }
-              <div>
-                <input
-                  className="form-control"
-                  value={customRegularExpression}
-                  onChange={this.handleInputChange}
-                />
-              </div>
-            </p>
+              <input
+                className="form-control"
+                value={customRegularExpression}
+                onChange={(e) => { markDownSettingContainer.setState({ customRegularExpression: e.target.value }) }}
+              />
+            </div>
           </label>
         </div>
 
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
+            {/* TODO GW-220 create function */}
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
           </div>
         </div>
