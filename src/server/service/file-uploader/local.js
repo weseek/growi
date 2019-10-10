@@ -7,7 +7,7 @@ const streamToPromise = require('stream-to-promise');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
-  const lib = new Uploader(crowi.configManager);
+  const lib = new Uploader(crowi);
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {

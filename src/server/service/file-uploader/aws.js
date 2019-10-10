@@ -6,7 +6,7 @@ const aws = require('aws-sdk');
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const { configManager } = crowi;
-  const lib = new Uploader(configManager);
+  const lib = new Uploader(crowi);
 
   function getAwsConfig() {
     return {
