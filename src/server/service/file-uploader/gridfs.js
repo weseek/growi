@@ -16,7 +16,7 @@ module.exports = function(crowi) {
     connection: mongoose.connection,
   });
   // get Collection instance of chunk
-  const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
+  // const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);

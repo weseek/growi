@@ -20,6 +20,15 @@ class Uploader {
     return !!this.configManager.getConfig('crowi', 'app:fileUpload');
   }
 
+  /**
+   * Check files size limits for all uploaders
+   *
+   * @param {*} uploadFileSize
+   * @param {*} maxFileSize
+   * @param {*} totalLimit
+   * @returns
+   * @memberof Uploader
+   */
   async doCheckLimit(uploadFileSize, maxFileSize, totalLimit) {
     if (uploadFileSize > maxFileSize) {
       return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
