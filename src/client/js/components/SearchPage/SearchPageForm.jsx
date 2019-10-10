@@ -1,14 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Button from 'react-bootstrap/es/Button';
-import InputGroup from 'react-bootstrap/es/InputGroup';
-
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-
-import SearchForm from '../SearchForm';
 
 // Search.SearchForm
 class SearchPageForm extends React.Component {
