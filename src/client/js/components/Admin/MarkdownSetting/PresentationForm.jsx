@@ -10,6 +10,7 @@ import AppContainer from '../../../services/AppContainer';
 class PresentationForm extends React.Component {
 
   render() {
+    const { t } = this.props;
 
     return (
       <fieldset className="form-group row my-2">
@@ -29,39 +30,40 @@ class PresentationForm extends React.Component {
           </label>
         </div>
 
-      <div className="col-xs-3 radio radio-primary mt-3">
-        <input type="radio" id="pageBreakOption2" name="pageBreakOption" value="2" checked={this.state.pageBreakOption === 2} onChange={this.handleInputChange} />
-        <label htmlFor="pageBreakOption2">
-          <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
-          <p className="mt-3">
-            { t('markdown_setting.Preset two separator desc') }
-            <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
-          </p>
-        </label>
-      </div>
+        <div className="col-xs-3 radio radio-primary mt-3">
+          <input type="radio" id="pageBreakOption2" name="pageBreakOption" value="2" checked={this.state.pageBreakOption === 2} onChange={this.handleInputChange} />
+          <label htmlFor="pageBreakOption2">
+            <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
+            <p className="mt-3">
+              { t('markdown_setting.Preset two separator desc') }
+              <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
+            </p>
+          </label>
+        </div>
 
-      <div className="col-xs-3 radio radio-primary mt-3">
-        <input type="radio" id="pageBreakOption3" name="pageBreakOption" value="3" checked={this.state.pageBreakOption === 3} onChange={this.handleInputChange} />
-        <label htmlFor="pageBreakOption3">
-          <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
-          <p className="mt-3">
-            { t('markdown_setting.Custom separator desc') }
-            <div>
-              <input className="form-control" name="customRegularExpression" value={this.state.customRegularExpression} onChange={this.handleInputChange} />
-            </div>
-          </p>
-        </label>
-      </div>
+        <div className="col-xs-3 radio radio-primary mt-3">
+          <input type="radio" id="pageBreakOption3" name="pageBreakOption" value="3" checked={this.state.pageBreakOption === 3} onChange={this.handleInputChange} />
+          <label htmlFor="pageBreakOption3">
+            <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
+            <p className="mt-3">
+              { t('markdown_setting.Custom separator desc') }
+              <div>
+                <input className="form-control" name="customRegularExpression" value={this.state.customRegularExpression} onChange={this.handleInputChange} />
+              </div>
+            </p>
+          </label>
+        </div>
 
-    <div className="form-group my-3">
-      <div className="col-xs-offset-4 col-xs-5">
-        <button type="submit" className="btn btn-primary">{ t('Update') }</button>
-      </div>
-    </div>
+        <div className="form-group my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+          </div>
+        </div>
 
       </fieldset>
-  )
+    );
   }
+
 }
 
 const PresentationFormWrapper = (props) => {
