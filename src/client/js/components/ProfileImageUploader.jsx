@@ -27,6 +27,7 @@ class ProfileImageUploader extends React.Component {
     this.onCropChange = this.onCropChange.bind(this);
     this.makeClientCrop = this.makeClientCrop.bind(this);
     this.getCroppedImg = this.getCroppedImg.bind(this);
+    this.hanndleSubmit = this.handleSubmit.bind(this);
   }
 
   onSelectFile(e) {
@@ -83,6 +84,13 @@ class ProfileImageUploader extends React.Component {
     });
   }
 
+  handleSubmit() {
+    // GW-201 にて、crop された画像をサーバー側に送る処理を記述する
+    // me/index.html の 199~240行目の
+    // `$("#pictureUploadForm input[name=profileImage]").on('change', function(){...}`
+    // の処理を node で記述
+  }
+
   render() {
     const { crop, croppedImageUrl, src } = this.state;
 
@@ -91,13 +99,21 @@ class ProfileImageUploader extends React.Component {
         <input type="file" onChange={this.onSelectFile} name="profileImage" accept="image/*" />
         {src
         && (
-        <ReactCrop
-          src={src}
-          crop={crop}
-          onImageLoaded={this.onImageLoaded}
-          onComplete={this.onCropComplete}
-          onChange={this.onCropChange}
-        />
+        <div>
+          <ReactCrop
+            src={src}
+            crop={crop}
+            onImageLoaded={this.onImageLoaded}
+            onComplete={this.onCropComplete}
+            onChange={this.onCropChange}
+          />
+          <button
+            type="button"
+            onClick={this.handleSubmit}
+          >
+          完了
+          </button>
+        </div>
         )}
       </div>
     );
