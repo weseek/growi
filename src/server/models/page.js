@@ -7,6 +7,7 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const { pathUtils } = require('growi-commons');
@@ -67,6 +68,7 @@ const pageSchema = new mongoose.Schema({
   toObject: { getters: true },
 });
 // apply plugins
+pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
 
@@ -1281,7 +1283,7 @@ module.exports = function(crowi) {
     return pageData;
   };
 
-  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, selectedGroupId) {
+  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
     const Page = mongoose.model('Page');
 
     const pages = await this.find({ grantedGroup: deletedGroup });
@@ -1299,7 +1301,7 @@ module.exports = function(crowi) {
         break;
       case 'transfer':
         await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, selectedGroupId);
+          return Page.transferPageToGroup(page, transferToUserGroupId);
         }));
         break;
       default:
@@ -1313,17 +1315,17 @@ module.exports = function(crowi) {
     await page.save();
   };
 
-  pageSchema.statics.transferPageToGroup = async function(page, selectedGroupId) {
+  pageSchema.statics.transferPageToGroup = async function(page, transferToUserGroupId) {
     const UserGroup = mongoose.model('UserGroup');
 
     // check page existence
-    const isExist = await UserGroup.count({ _id: selectedGroupId }) > 0;
+    const isExist = await UserGroup.count({ _id: transferToUserGroupId }) > 0;
     if (isExist) {
-      page.grantedGroup = selectedGroupId;
+      page.grantedGroup = transferToUserGroupId;
       await page.save();
     }
     else {
-      throw new Error('Cannot find the group to which private pages belong to. _id: ', selectedGroupId);
+      throw new Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
     }
   };
 

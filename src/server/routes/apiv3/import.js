@@ -53,7 +53,7 @@ module.exports = (crowi) => {
    * @return {object} document to be persisted
    */
   const overwriteParamsFn = async(Model, schema, req) => {
-    const { collectionName } = Model.collection;
+    const collectionName = Model.collection.name;
 
     /* eslint-disable no-case-declarations */
     switch (Model.collection.collectionName) {

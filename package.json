@@ -137,6 +137,7 @@
     "uglifycss": "^0.0.29",
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
+    "validator": "^11.1.0",
     "xss": "^1.0.6"
   },
   "devDependencies": {

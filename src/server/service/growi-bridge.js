@@ -27,7 +27,9 @@ class GrowiBridgeService {
    */
   initCollectionMap(models) {
     for (const model of Object.values(models)) {
-      this.collectionMap[model.collection.collectionName] = model;
+      if (model.collection != null) {
+        this.collectionMap[model.collection.name] = model;
+      }
     }
   }
 
