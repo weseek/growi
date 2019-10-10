@@ -9,7 +9,7 @@ let _instance;
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const { configManager } = crowi;
-  const lib = new Uploader(crowi);
+  const lib = new Uploader(configManager);
 
   function getGcsBucket() {
     return configManager.getConfig('crowi', 'gcs:bucket');
@@ -101,8 +101,23 @@ module.exports = function(crowi) {
    */
   lib.checkLimit = async(uploadFileSize) => {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    if (uploadFileSize > maxFileSize) {
+      return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
+    }
+    const Attachment = crowi.model('Attachment');
+    // Get attachment total file size
+    const res = await Attachment.aggregate().group({
+      _id: null,
+      total: { $sum: '$fileSize' },
+    });
+    const usingFilesSize = res[0].total;
+
     const gcsTotalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
-    return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
+    if (usingFilesSize + uploadFileSize > gcsTotalLimit) {
+      return { isUploadable: false, errorMessage: 'GCS for uploading files reaches limit' };
+    }
+
+    return { isUploadable: true };
   };
 
   return lib;
