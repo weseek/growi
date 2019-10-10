@@ -3,24 +3,13 @@
 
 class Uploader {
 
-  constructor(configManager) {
-    this.configManager = configManager;
+  constructor(crowi) {
+    this.crowi = crowi;
+    this.configManager = crowi.configManager;
   }
 
   getIsUploadable() {
-    const method = process.env.FILE_UPLOAD || 'aws';
-
-    if (method === 'aws' && (
-      !this.configManager.getConfig('crowi', 'aws:accessKeyId')
-        || !this.configManager.getConfig('crowi', 'aws:secretAccessKey')
-        || (
-          !this.configManager.getConfig('crowi', 'aws:region')
-            && !this.configManager.getConfig('crowi', 'aws:customEndpoint'))
-        || !this.configManager.getConfig('crowi', 'aws:bucket'))) {
-      return false;
-    }
-
-    return method !== 'none';
+    throw new Error('Implement this');
   }
 
   getFileUploadEnabled() {
@@ -29,6 +18,36 @@ class Uploader {
     }
 
     return !!this.configManager.getConfig('crowi', 'app:fileUpload');
+  }
+
+  /**
+   * Check files size limits for all uploaders
+   *
+   * @param {*} uploadFileSize
+   * @param {*} maxFileSize
+   * @param {*} totalLimit
+   * @returns
+   * @memberof Uploader
+   */
+  async doCheckLimit(uploadFileSize, maxFileSize, totalLimit) {
+    if (uploadFileSize > maxFileSize) {
+      return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
+    }
+    const Attachment = this.crowi.model('Attachment');
+    // Get attachment total file size
+    const res = await Attachment.aggregate().group({
+      _id: null,
+      total: { $sum: '$fileSize' },
+    });
+    // Return res is [] if not using
+    const usingFilesSize = res.length === 0 ? 0 : res[0].total;
+
+    if (usingFilesSize + uploadFileSize > totalLimit) {
+      return { isUploadable: false, errorMessage: 'Uploading files reaches limit' };
+    }
+
+    return { isUploadable: true };
+
   }
 
 }
