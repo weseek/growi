@@ -131,10 +131,10 @@ class ExportPage extends React.Component {
   }
 
   renderProgressBars() {
-    return this.state.progressList.map((progressData) => {
+    const cols = this.state.progressList.map((progressData) => {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
-        <div className="px-3 w-50" key={collectionName}>
+        <div className="col-md-6" key={collectionName}>
           <ExportingProgressBar
             collectionName={collectionName}
             currentCount={currentCount}
@@ -143,6 +143,8 @@ class ExportPage extends React.Component {
         </div>
       );
     });
+
+    return <div className="row px-3">{cols}</div>;
   }
 
   render() {

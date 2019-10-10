@@ -19,7 +19,7 @@ class ExportingProgressBar extends React.Component {
         </h5>
         <div className="progress progress-sm">
           <div
-            className={`progress-bar progress-bar-success ${isActive ? 'progress-bar-striped active' : ''}`}
+            className={`progress-bar ${isActive ? 'progress-bar-info progress-bar-striped active' : 'progress-bar-success'}`}
             style={{ width: `${percentage}%` }}
           >
             <span className="sr-only">{percentage.toFixed(0)}% Complete</span>
