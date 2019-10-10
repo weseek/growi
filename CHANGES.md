@@ -2,7 +2,8 @@
 
 ## 3.5.17-RC
 
-* 
+* Fix: Use HTTP PlantUML URL in default
+    * Introduced by 3.5.12
 
 ## 3.5.16
 
