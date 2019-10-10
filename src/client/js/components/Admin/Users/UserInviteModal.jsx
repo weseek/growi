@@ -76,14 +76,12 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left" style={{ flex: 1 }}>
-          <input
-            type="checkbox"
-            defaultChecked={this.state.sendEmail}
-            onChange={this.handleCheckBox}
-          />
-          <span className="ml-2">{ t('user_management.invite_thru_email') }</span>
-        </label>
+        <div className="checkbox checkbox-success text-left" onChange={this.handleCheckBox} style={{ flex: 1 }}>
+          <input type="checkbox" id="sendEmail" className="form-check-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
+          <label htmlFor="sendEmail">
+            { t('user_management.invite_thru_email') }
+          </label>
+        </div>
         <div>
           <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
           Cancel
