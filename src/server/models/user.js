@@ -285,12 +285,10 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.removeFromAdmin = function(callback) {
+  userSchema.methods.removeFromAdmin = async function() {
     debug('Remove from admin', this);
     this.admin = 0;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    return this.save();
   };
 
   userSchema.methods.makeAdmin = async function() {
