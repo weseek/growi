@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import SearchForm from '../SearchForm';
 
 // Search.SearchForm
 class SearchPageForm extends React.Component {
@@ -32,10 +33,7 @@ class SearchPageForm extends React.Component {
   render() {
     return (
       <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search ..."
+        <SearchForm
           t={this.props.t}
           onSubmit={this.search}
           keyword={this.state.searchedKeyword}
