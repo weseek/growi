@@ -6,7 +6,7 @@ const aws = require('aws-sdk');
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const { configManager } = crowi;
-  const lib = new Uploader(configManager);
+  const lib = new Uploader(crowi);
 
   function getAwsConfig() {
     return {
@@ -133,7 +133,8 @@ module.exports = function(crowi) {
    */
   lib.checkLimit = async(uploadFileSize) => {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    return { isUploadable: uploadFileSize <= maxFileSize, errorMessage: 'File size exceeds the size limit per file' };
+    const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
   return lib;

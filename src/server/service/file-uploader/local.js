@@ -7,7 +7,7 @@ const streamToPromise = require('stream-to-promise');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
-  const lib = new Uploader(crowi.configManager);
+  const lib = new Uploader(crowi);
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
@@ -88,7 +88,8 @@ module.exports = function(crowi) {
    */
   lib.checkLimit = async(uploadFileSize) => {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    return { isUploadable: uploadFileSize <= maxFileSize, errorMessage: 'File size exceeds the size limit per file' };
+    const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
   return lib;
