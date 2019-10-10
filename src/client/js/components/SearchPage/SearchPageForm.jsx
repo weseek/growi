@@ -31,7 +31,7 @@ class SearchPageForm extends React.Component {
 
   render() {
     return (
-      <div className="form-group d-flex">
+      <div className="input-group mb-3">
         <input
           type="text"
           className="form-control"
@@ -41,9 +41,11 @@ class SearchPageForm extends React.Component {
           keyword={this.state.searchedKeyword}
           onInputChange={this.onInputChange}
         />
-        <button type="submit" className="btn btn-secondary" onClick={this.search}>
-          <i className="icon-magnifier"></i>
-        </button>
+        <div className="input-group-append">
+          <button className="btn btn-outline-secondary" type="button" id="button-addon2" onClick={this.search}>
+            <i className="icon-magnifier"></i>
+          </button>
+        </div>
       </div>
     );
   }
