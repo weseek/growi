@@ -293,12 +293,7 @@ class ExportService {
     };
 
     // send event (in progress in global)
-    if (currentCount !== totalCount) {
-      this.adminEvent.emit('onProgressForExport', data);
-    }
-    else {
-      this.adminEvent.emit('onTerminateForExport', data);
-    }
+    this.adminEvent.emit('onProgressForExport', data);
   }
 
   /**
@@ -346,6 +341,10 @@ class ExportService {
     await streamToPromise(archive);
 
     logger.info(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
+
+    // send terminate event
+    const { zipFileStats } = await this.getStatus();
+    this.adminEvent.emit('onTerminateForExport', { zipFileStats });
 
     // delete json files
     for (const { from } of configs) {

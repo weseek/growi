@@ -58,16 +58,29 @@ class ExportPage extends React.Component {
   setupWebsocketEventHandler() {
     const socket = this.props.websocketContainer.getWebSocket();
 
+    // websocket event
     socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
       const isExporting = currentCount !== totalCount;
       this.setState({ isExporting, progressList });
     });
 
-    socket.on('admin:onTerminateForExport', ({ currentCount, totalCount, progressList }) => {
+    // websocket event
+    socket.on('admin:onTerminateForExport', ({ zipFileStats }) => {
       this.setState({
         isExporting: false,
         isExported: true,
-        progressList,
+        zipFileStats,
+      });
+
+      // TODO: toastSuccess, toastError
+      toastr.success(undefined, 'New Exported Data is added', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
       });
     });
   }
@@ -154,10 +167,6 @@ class ExportPage extends React.Component {
 
     return (
       <Fragment>
-        <div className="alert alert-warning">
-          <i className="icon-exclamation"></i> { t('export_management.beta_warning') }
-        </div>
-
         <h2>{t('Export Data')}</h2>
 
         <button type="button" className="btn btn-default" onClick={this.openExportModal}>{t('export_management.create_new_exported_data')}</button>
