@@ -28,8 +28,54 @@ class UserMenu extends React.Component {
     this.props.adminUsersContainer.showPasswordResetModal(this.props.user);
   }
 
-  render() {
+  renderEditMenu() {
+    const { t } = this.props;
+
+    return (
+      <Fragment>
+        <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
+        <li onClick={this.onPasswordResetClicked}>
+          <a>
+            <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
+          </a>
+        </li>
+      </Fragment>
+    );
+  }
+
+  renderStatusMenu() {
     const { t, user } = this.props;
+
+    return (
+      <Fragment>
+        <li className="divider"></li>
+        <li className="dropdown-header">{ t('status') }</li>
+        <li>
+          {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
+          {user.status === 2 && <StatusSuspendedButton user={user} />}
+          {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
+        </li>
+      </Fragment>
+    );
+  }
+
+  renderAdminMenu() {
+    const { t, user } = this.props;
+
+    return (
+      <Fragment>
+        <li className="divider pl-0"></li>
+        <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
+        <li>
+          {user.admin === true && <RemoveAdminButton user={user} />}
+          {user.admin === false && <GiveAdminButton user={user} />}
+        </li>
+      </Fragment>
+    );
+  }
+
+  render() {
+    const { user } = this.props;
 
     return (
       <Fragment>
@@ -38,25 +84,9 @@ class UserMenu extends React.Component {
             <i className="icon-settings"></i> <span className="caret"></span>
           </button>
           <ul className="dropdown-menu" role="menu">
-            <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
-            <li onClick={this.onPasswordResetClicked}>
-              <a>
-                <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
-              </a>
-            </li>
-            <li className="divider"></li>
-            <li className="dropdown-header">{ t('status') }</li>
-            <li>
-              {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
-              {user.status === 2 && <StatusSuspendedButton user={user} />}
-              {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
-            </li>
-            <li className="divider pl-0"></li>
-            <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
-            <li>
-              {user.status === 2 && user.admin === true && <RemoveAdminButton user={user} />}
-              {user.status === 2 && user.admin === false && <GiveAdminButton user={user} />}
-            </li>
+            {this.renderEditMenu()}
+            {user.status !== 4 && this.renderStatusMenu()}
+            {user.status === 2 && this.renderAdminMenu()}
           </ul>
         </div>
       </Fragment>

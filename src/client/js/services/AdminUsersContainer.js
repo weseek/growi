@@ -62,6 +62,21 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * create user invited
+   * @memberOf AdminUsersContainer
+   * @param {object} shapedEmailList
+   * @param {bool} sendEmail
+   */
+  async createUserInvited(shapedEmailList, sendEmail) {
+    const response = await this.appContainer.apiv3.post('/users/invite', {
+      shapedEmailList,
+      sendEmail,
+    });
+    const { emailList } = response.data;
+    return emailList;
+  }
+
+  /**
    * open reset password modal, and props user
    * @memberOf AdminUsersContainer
    * @param {object} user
