@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import StatusActivateButton from './StatusActivateButton';
-import StatusSuspendedForm from './StatusSuspendedForm';
+import StatusSuspendedButton from './StatusSuspendedButton';
 import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminForm from './RemoveAdminForm';
 import GiveAdminForm from './GiveAdminForm';
@@ -48,7 +48,7 @@ class UserMenu extends React.Component {
             <li className="dropdown-header">{ t('status') }</li>
             <li>
               {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
-              {user.status === 2 && <StatusSuspendedForm user={user} />}
+              {user.status === 2 && <StatusSuspendedButton user={user} />}
               {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
             </li>
             <li className="divider pl-0"></li>

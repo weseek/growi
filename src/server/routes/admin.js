@@ -491,23 +491,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.suspend = function(req, res) {
-    const id = req.params.id;
-
-    User.findById(id, (err, userData) => {
-      userData.statusSuspend((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを利用停止にしました`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
   // これやったときの relation の挙動未確認
   actions.user.removeCompletely = function(req, res) {
     // ユーザーの物理削除

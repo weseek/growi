@@ -699,7 +699,9 @@
     "current_users": "現在のユーザー数：",
     "valid_email": "メールアドレスを入力してください。",
     "existing_email": "以下のEmailはすでに存在しています。",
-    "activate_user_success": "ユーザーを有効化しました"
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました"
   },
 
   "user_group_management": {

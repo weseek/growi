@@ -19,8 +19,8 @@ class StatusActivateButton extends React.Component {
     const { t } = this.props;
 
     try {
-      await this.props.adminUsersContainer.activateUser(this.props.user._id);
-      toastSuccess(t('user_management.activate_user_success'));
+      const username = await this.props.adminUsersContainer.activateUser(this.props.user._id);
+      toastSuccess(t('user_management.activate_user_success', { username }));
     }
     catch (err) {
       toastError(err);

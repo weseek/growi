@@ -102,6 +102,18 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * Deactivate user
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async deactivateUser(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/deactivate`);
+    const { username } = response.data.userData;
+    return username;
+  }
+
+  /**
    * remove user
    * @memberOf AdminUsersContainer
    * @param {string} userId
