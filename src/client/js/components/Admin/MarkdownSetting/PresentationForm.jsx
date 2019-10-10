@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
 
 class PresentationForm extends React.Component {
 
@@ -67,12 +68,13 @@ class PresentationForm extends React.Component {
 }
 
 const PresentationFormWrapper = (props) => {
-  return createSubscribedElement(PresentationForm, props, [AppContainer]);
+  return createSubscribedElement(PresentationForm, props, [AppContainer, MarkDownSettingContainer]);
 };
 
 PresentationForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
 
 };
 
