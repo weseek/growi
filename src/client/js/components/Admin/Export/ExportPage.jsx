@@ -45,12 +45,11 @@ class ExportPage extends React.Component {
 
     const { zipFileStats, isExporting, progressList } = status;
     this.setState({
-      collections: ['pages', 'revisions'],
+      collections,
       zipFileStats,
       isExporting,
       progressList,
-    }); // FIXME: delete this line and uncomment the line below
-    // this.setState({ collections, zipFileStats, isExporting });
+    });
 
     this.setupWebsocketEventHandler();
   }

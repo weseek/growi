@@ -771,6 +771,7 @@
     "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
+    "desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
     "create_new_exported_data": "Create New Exported Data",
     "export": "Export",
     "cancel": "Cancel",

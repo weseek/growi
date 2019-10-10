@@ -8,13 +8,25 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+
+const GROUPS_PAGE = [
+  'pages', 'revisions', 'tags', 'pagetagrelations',
+];
+const GROUPS_USER = [
+  'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
+];
+const GROUPS_CONFIG = [
+  'configs', 'updateposts', 'globalnotificationsettings',
+];
+const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
+
 class ExportZipFormModal extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      collections: new Set(),
+      selectedCollections: new Set(),
     };
 
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
@@ -29,24 +41,24 @@ class ExportZipFormModal extends React.Component {
     const { name, checked } = target;
 
     this.setState((prevState) => {
-      const collections = new Set(prevState.collections);
+      const selectedCollections = new Set(prevState.selectedCollections);
       if (checked) {
-        collections.add(name);
+        selectedCollections.add(name);
       }
       else {
-        collections.delete(name);
+        selectedCollections.delete(name);
       }
 
-      return { collections };
+      return { selectedCollections };
     });
   }
 
   checkAll() {
-    this.setState({ collections: new Set(this.props.collections) });
+    this.setState({ selectedCollections: new Set(this.props.collections) });
   }
 
   uncheckAll() {
-    this.setState({ collections: new Set() });
+    this.setState({ selectedCollections: new Set() });
   }
 
   async export(e) {
@@ -54,7 +66,7 @@ class ExportZipFormModal extends React.Component {
 
     try {
       // TODO: use appContainer.apiv3.post
-      const result = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.collections) });
+      const result = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.selectedCollections) });
       // TODO: toastSuccess, toastError
 
       if (!result.ok) {
@@ -90,7 +102,66 @@ class ExportZipFormModal extends React.Component {
   }
 
   validateForm() {
-    return this.state.collections.size > 0;
+    return this.state.selectedCollections.size > 0;
+  }
+
+  renderWarnForUser() {
+    // whether this.state.selectedCollections includes one of GROUPS_USER
+    const isUserRelatedDataSelected = GROUPS_USER.some((collectionName) => {
+      return this.state.selectedCollections.has(collectionName);
+    });
+
+    if (!isUserRelatedDataSelected) {
+      return <></>;
+    }
+
+    const html = this.props.t('export_management.desc_password_seed');
+
+    // eslint-disable-next-line react/no-danger
+    return <div className="well well-sm" dangerouslySetInnerHTML={{ __html: html }}></div>;
+  }
+
+  renderGroups(groupList, color) {
+    const collectionNames = groupList.filter((collectionName) => {
+      return this.props.collections.includes(collectionName);
+    });
+
+    return this.renderCheckboxes(collectionNames, color);
+  }
+
+  renderOthers() {
+    const collectionNames = this.props.collections.filter((collectionName) => {
+      return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
+    });
+
+    return this.renderCheckboxes(collectionNames);
+  }
+
+  renderCheckboxes(collectionNames, color) {
+    const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+
+    return (
+      <div className={`row checkbox ${checkboxColor}`}>
+        {collectionNames.map((collectionName) => {
+          return (
+            <div className="col-xs-6 my-1" key={collectionName}>
+              <input
+                type="checkbox"
+                id={collectionName}
+                name={collectionName}
+                className="form-check-input"
+                value={collectionName}
+                checked={this.state.selectedCollections.has(collectionName)}
+                onChange={this.toggleCheckbox}
+              />
+              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+                {collectionName}
+              </label>
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 
   render() {
@@ -114,25 +185,30 @@ class ExportZipFormModal extends React.Component {
                 </button>
               </div>
             </div>
-            <div className="checkbox checkbox-info">
-              {this.props.collections.map((collectionName) => {
-                return (
-                  <div className="my-1" key={collectionName}>
-                    <input
-                      type="checkbox"
-                      id={collectionName}
-                      name={collectionName}
-                      className="form-check-input"
-                      value={collectionName}
-                      checked={this.state.collections.has(collectionName)}
-                      onChange={this.toggleCheckbox}
-                    />
-                    <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
-                      {collectionName}
-                    </label>
-                  </div>
-                );
-              })}
+            <div className="row mt-4">
+              <div className="col-xs-12">
+                <legend>Page Collections</legend>
+                { this.renderGroups(GROUPS_PAGE) }
+              </div>
+            </div>
+            <div className="row mt-4">
+              <div className="col-xs-12">
+                <legend>User Collections</legend>
+                { this.renderGroups(GROUPS_USER, 'danger') }
+                { this.renderWarnForUser() }
+              </div>
+            </div>
+            <div className="row mt-4">
+              <div className="col-xs-12">
+                <legend>Config Collections</legend>
+                { this.renderGroups(GROUPS_CONFIG) }
+              </div>
+            </div>
+            <div className="row mt-4">
+              <div className="col-xs-12">
+                <legend>Other Collections</legend>
+                { this.renderOthers() }
+              </div>
             </div>
           </Modal.Body>
 
