@@ -459,38 +459,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.makeAdmin = function(req, res) {
-    const id = req.params.id;
-    User.findById(id, (err, userData) => {
-      userData.makeAdmin((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを管理者に設定しました。`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
-  actions.user.removeFromAdmin = function(req, res) {
-    const id = req.params.id;
-    User.findById(id, (err, userData) => {
-      userData.removeFromAdmin((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを管理者から外しました。`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
   // これやったときの relation の挙動未確認
   actions.user.removeCompletely = function(req, res) {
     // ユーザーの物理削除

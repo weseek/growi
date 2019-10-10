@@ -123,6 +123,84 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
+   *    /_api/v3/users/{id}/giveAdmin:
+   *      put:
+   *        tags: [Users]
+   *        description: Give user admin
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user for admin
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Give user admin success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of admin user
+   */
+  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userData = await User.findById(id);
+      await userData.makeAdmin();
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/{id}/removeAdmin:
+   *      put:
+   *        tags: [Users]
+   *        description: Remove user admin
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user for removing admin
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Remove user admin success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: data of removed admin user
+   */
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userData = await User.findById(id);
+      await userData.removeFromAdmin();
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+  /**
+   * @swagger
+   *
+   *  paths:
    *    /_api/v3/users/{id}/activate:
    *      put:
    *        tags: [Users]

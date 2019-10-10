@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedButton from './StatusSuspendedButton';
 import RemoveUserButton from './UserRemoveButton';
-import RemoveAdminForm from './RemoveAdminForm';
-import GiveAdminForm from './GiveAdminForm';
+import RemoveAdminButton from './RemoveAdminButton';
+import GiveAdminButton from './GiveAdminButton';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -54,8 +54,8 @@ class UserMenu extends React.Component {
             <li className="divider pl-0"></li>
             <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
             <li>
-              {user.status === 2 && user.admin === true && <RemoveAdminForm user={user} />}
-              {user.status === 2 && user.admin === false && <GiveAdminForm user={user} />}
+              {user.status === 2 && user.admin === true && <RemoveAdminButton user={user} />}
+              {user.status === 2 && user.admin === false && <GiveAdminButton user={user} />}
             </li>
           </ul>
         </div>

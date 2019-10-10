@@ -90,6 +90,30 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * Give user admin
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async giveUserAdmin(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/giveAdmin`);
+    const { username } = response.data.userData;
+    return username;
+  }
+
+  /**
+   * Remove user admin
+   * @memberOf AdminUsersContainer
+   * @param {string} userId
+   * @return {string} username
+   */
+  async removeUserAdmin(userId) {
+    const response = await this.appContainer.apiv3.put(`/users/${userId}/removeAdmin`);
+    const { username } = response.data.userData;
+    return username;
+  }
+
+  /**
    * Activate user
    * @memberOf AdminUsersContainer
    * @param {string} userId
