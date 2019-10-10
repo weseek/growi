@@ -11,6 +11,7 @@ import WebsocketContainer from '../../../services/WebsocketContainer';
 
 import ExportZipFormModal from './ExportZipFormModal';
 import ZipFileTable from './ZipFileTable';
+import ExportingProgressBar from './ExportingProgressBar';
 
 class ExportPage extends React.Component {
 
@@ -20,8 +21,10 @@ class ExportPage extends React.Component {
     this.state = {
       collections: [],
       zipFileStats: [],
+      progressList: [],
       isExportModalOpen: false,
       isExporting: false,
+      isExported: false,
     };
 
     this.onZipFileStatAdd = this.onZipFileStatAdd.bind(this);
@@ -34,16 +37,18 @@ class ExportPage extends React.Component {
   async componentWillMount() {
     // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
-    const [{ collections }, { zipFileStats, isExporting }] = await Promise.all([
+    const [{ collections }, { status }] = await Promise.all([
       this.props.appContainer.apiGet('/v3/mongo/collections', {}),
       this.props.appContainer.apiGet('/v3/export/status', {}),
     ]);
     // TODO: toastSuccess, toastError
 
+    const { zipFileStats, isExporting, progressList } = status;
     this.setState({
       collections: ['pages', 'revisions'],
       zipFileStats,
       isExporting,
+      progressList,
     }); // FIXME: delete this line and uncomment the line below
     // this.setState({ collections, zipFileStats, isExporting });
 
@@ -53,12 +58,17 @@ class ExportPage extends React.Component {
   setupWebsocketEventHandler() {
     const socket = this.props.websocketContainer.getWebSocket();
 
-    socket.on('admin:onProgressForExport', (data) => {
-      console.log(data);
+    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
+      const isExporting = currentCount !== totalCount;
+      this.setState({ isExporting, progressList });
     });
 
-    socket.on('admin:onTerminateForExport', (data) => {
-      console.log(data);
+    socket.on('admin:onTerminateForExport', ({ currentCount, totalCount, progressList }) => {
+      this.setState({
+        isExporting: false,
+        isExported: true,
+        progressList,
+      });
     });
   }
 
@@ -112,13 +122,33 @@ class ExportPage extends React.Component {
     this.setState({ isExportModalOpen: false });
   }
 
-  exportingRequestedHandler() {
-    // TODO: implement
-    this.setState({ isExporting: true });
+  /**
+   * @params {object} export status data
+   */
+  exportingRequestedHandler(status) {
+    const { zipFileStats, isExporting, progressList } = status;
+    this.setState({ zipFileStats, isExporting, progressList });
+  }
+
+  renderProgressBars() {
+    return this.state.progressList.map((progressData) => {
+      const { collectionName, currentCount, totalCount } = progressData;
+      return (
+        <div className="px-3 w-50" key={collectionName}>
+          <ExportingProgressBar
+            collectionName={collectionName}
+            currentCount={currentCount}
+            totalCount={totalCount}
+          />
+        </div>
+      );
+    });
   }
 
   render() {
     const { t } = this.props;
+
+    const showExportingData = (this.state.isExported || this.state.isExporting) && (this.state.progressList != null);
 
     return (
       <Fragment>
@@ -130,9 +160,10 @@ class ExportPage extends React.Component {
 
         <button type="button" className="btn btn-default" onClick={this.openExportModal}>{t('export_management.create_new_exported_data')}</button>
 
-        { this.state.isExporting && (
+        { showExportingData && (
           <div className="mt-5">
             <h3>{t('export_management.exporting_data_list')}</h3>
+            { this.renderProgressBars() }
           </div>
         ) }
 

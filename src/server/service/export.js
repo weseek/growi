@@ -17,7 +17,7 @@ class ExportingProgress {
 
 }
 
-class ExportStatus {
+class ExportingStatus {
 
   constructor() {
     this.totalCount = 0;
@@ -64,14 +64,14 @@ class ExportService {
 
     this.adminEvent = crowi.event('admin');
 
-    this.currentExportStatus = null;
+    this.currentExportingStatus = null;
   }
 
   /**
    * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {object} info for zip files and whether currentExportStatus exists
+   * @return {object} info for zip files and whether currentExportingStatus exists
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
@@ -83,11 +83,12 @@ class ExportService {
     // filter null object (broken zip)
     const filtered = zipFileStats.filter(element => element != null);
 
-    const isExporting = this.currentExportStatus != null;
+    const isExporting = this.currentExportingStatus != null;
 
     return {
       zipFileStats: filtered,
       isExporting,
+      progressList: isExporting ? this.currentExportingStatus.progressList : null,
     };
   }
 
@@ -193,7 +194,7 @@ class ExportService {
     const transformStream = this.generateTransformStream();
 
     // log configuration
-    const exportProgress = this.currentExportStatus.progressMap[collectionName];
+    const exportProgress = this.currentExportingStatus.progressMap[collectionName];
     const logStream = this.generateLogStream(exportProgress);
 
     // create WritableStream
@@ -237,18 +238,18 @@ class ExportService {
   }
 
   async export(models) {
-    if (this.currentExportStatus != null) {
+    if (this.currentExportingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
 
-    this.currentExportStatus = new ExportStatus();
-    await this.currentExportStatus.init(models);
+    this.currentExportingStatus = new ExportingStatus();
+    await this.currentExportingStatus.init(models);
 
     try {
       await this.exportCollectionsToZippedJson(models);
     }
     finally {
-      this.currentExportStatus = null;
+      this.currentExportingStatus = null;
     }
 
   }
@@ -284,18 +285,19 @@ class ExportService {
    * @param {ExportProgress} exportProgress
    */
   emitProgressEvent(exportProgress) {
-    const { currentCount, totalCount, progressList } = this.currentExportStatus;
+    const { currentCount, totalCount, progressList } = this.currentExportingStatus;
+    const data = {
+      currentCount,
+      totalCount,
+      progressList,
+    };
 
     // send event (in progress in global)
     if (currentCount !== totalCount) {
-      this.adminEvent.emit('onProgressForExport', {
-        currentCount,
-        totalCount,
-        progressList,
-      });
+      this.adminEvent.emit('onProgressForExport', data);
     }
     else {
-      this.adminEvent.emit('onTerminateForExport');
+      this.adminEvent.emit('onTerminateForExport', data);
     }
   }
 

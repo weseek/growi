@@ -11,6 +11,23 @@ const router = express.Router();
  * @swagger
  *  tags:
  *    name: Export
+ *
+ *  definitions:
+ *    ExportStatus:
+ *    properties:
+ *      zipFileStats:
+ *        type: array
+ *        items:
+ *          type: object
+ *          description: the property of each file
+ *      progressList:
+ *        type: array
+ *        items:
+ *          type: object
+ *          description: progress data for each exporting collections
+ *      isExporting:
+ *        type: boolean
+ *        description: whether the current exporting job exists or not
  */
 
 module.exports = (crowi) => {
@@ -27,8 +44,8 @@ module.exports = (crowi) => {
   this.adminEvent.on('onProgressForExport', (data) => {
     crowi.getIo().sockets.emit('admin:onProgressForExport', data);
   });
-  this.adminEvent.on('onTerminateForExport', () => {
-    crowi.getIo().sockets.emit('admin:onTerminateForExport');
+  this.adminEvent.on('onTerminateForExport', (data) => {
+    crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
   });
 
 
@@ -46,23 +63,16 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  zipFileStats:
-   *                    type: array
-   *                    items:
-   *                      type: object
-   *                      description: the property of each file
-   *                  isExporting:
-   *                    type: boolean
-   *                    description: whether the current exporting job exists or not
+   *                  status:
+   *                    type: ExportStatus
    */
   router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    const { zipFileStats, isExporting } = await exportService.getStatus();
+    const status = await exportService.getStatus();
 
     // TODO: use res.apiv3
     return res.json({
       ok: true,
-      zipFileStats,
-      isExporting,
+      status,
     });
   });
 
@@ -79,7 +89,9 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
+   *                properties:
+   *                  status:
+   *                    type: ExportStatus
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
@@ -90,9 +102,12 @@ module.exports = (crowi) => {
 
       exportService.export(models);
 
+      const status = await exportService.getStatus();
+
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
+        status,
       });
     }
     catch (err) {
