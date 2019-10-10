@@ -12,6 +12,8 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      pageBreakOption: appContainer.config.pageBreakOption,
+      customRegularExpression: appContainer.config.customRegularExpression || '',
       isEnabledXss: (appContainer.config.xssOption != null),
       xssOption: appContainer.config.xssOption,
       tagWhiteList: appContainer.config.tagWhiteList || '',

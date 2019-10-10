@@ -11,7 +11,8 @@ import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer
 class PresentationForm extends React.Component {
 
   render() {
-    const { t } = this.props;
+    const { t, markDownSettingContainer } = this.props;
+    const { pageBreakOption, customRegularExpression } = markDownSettingContainer.state;
 
     return (
       <fieldset className="form-group row my-2">
@@ -21,7 +22,12 @@ class PresentationForm extends React.Component {
         </label>
 
         <div className="col-xs-3 radio radio-primary">
-          <input type="radio" id="pageBreakOption1" name="pageBreakOption" value="1" checked={this.state.pageBreakOption === 1} onChange={this.handleInputChange} />
+          <input
+            type="radio"
+            id="pageBreakOption1"
+            checked={pageBreakOption === 1}
+            // onChange={this.handleInputChange}
+          />
           <label htmlFor="pageBreakOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
             <p className="mt-3">
@@ -32,7 +38,12 @@ class PresentationForm extends React.Component {
         </div>
 
         <div className="col-xs-3 radio radio-primary mt-3">
-          <input type="radio" id="pageBreakOption2" name="pageBreakOption" value="2" checked={this.state.pageBreakOption === 2} onChange={this.handleInputChange} />
+          <input
+            type="radio"
+            id="pageBreakOption2"
+            checked={pageBreakOption === 2}
+            // onChange={this.handleInputChange}
+          />
           <label htmlFor="pageBreakOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
             <p className="mt-3">
@@ -43,13 +54,22 @@ class PresentationForm extends React.Component {
         </div>
 
         <div className="col-xs-3 radio radio-primary mt-3">
-          <input type="radio" id="pageBreakOption3" name="pageBreakOption" value="3" checked={this.state.pageBreakOption === 3} onChange={this.handleInputChange} />
+          <input
+            type="radio"
+            id="pageBreakOption3"
+            checked={pageBreakOption === 3}
+            // onChange={this.handleInputChange}
+          />
           <label htmlFor="pageBreakOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
             <p className="mt-3">
               { t('markdown_setting.Custom separator desc') }
               <div>
-                <input className="form-control" name="customRegularExpression" value={this.state.customRegularExpression} onChange={this.handleInputChange} />
+                <input
+                  className="form-control"
+                  value={customRegularExpression}
+                  onChange={this.handleInputChange}
+                />
               </div>
             </p>
           </label>
