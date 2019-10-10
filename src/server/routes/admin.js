@@ -138,7 +138,7 @@ module.exports = function(crowi, app) {
       await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
       req.flash('successMessage', ['Successfully updated!']);
     }
-    else{
+    else {
       req.flash('errorMessage', req.form.errors);
     }
     return res.redirect('/admin/markdown');
