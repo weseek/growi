@@ -11,23 +11,29 @@ const router = express.Router();
  * @swagger
  *  tags:
  *    name: Export
+ */
+
+/**
+ * FIXME: get rid of linting errors
+ * @//swagger
  *
  *  definitions:
  *    ExportStatus:
- *    properties:
- *      zipFileStats:
- *        type: array
- *        items:
- *          type: object
- *          description: the property of each file
- *      progressList:
- *        type: array
- *        items:
- *          type: object
- *          description: progress data for each exporting collections
- *      isExporting:
- *        type: boolean
- *        description: whether the current exporting job exists or not
+ *      type: object
+ *      properties:
+ *        zipFileStats:
+ *          type: array
+ *          items:
+ *            type: object
+ *            description: the property of each file
+ *        progressList:
+ *          type: array
+ *          items:
+ *            type: object
+ *            description: progress data for each exporting collections
+ *        isExporting:
+ *          type: boolean
+ *          description: whether the current exporting job exists or not
  */
 
 module.exports = (crowi) => {
@@ -64,7 +70,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  status:
-   *                    type: ExportStatus
+   *                    $ref: 'ExportStatus'
    */
   router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const status = await exportService.getStatus();
@@ -91,7 +97,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  status:
-   *                    type: ExportStatus
+   *                    $ref: 'ExportStatus'
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
