@@ -232,7 +232,10 @@ class ExportService {
     const zipFile = await this.zipFiles(configs);
 
     // get stats for the zip file
-    return this.growiBridgeService.parseZipFile(zipFile);
+    const addedZipFileStat = await this.growiBridgeService.parseZipFile(zipFile);
+
+    // send terminate event
+    this.emitTerminateEvent(addedZipFileStat);
 
     // TODO: remove broken zip file
   }
@@ -297,6 +300,14 @@ class ExportService {
   }
 
   /**
+   * emit terminate event
+   * @param {object} zipFileStat added zip file status data
+   */
+  emitTerminateEvent(zipFileStat) {
+    this.adminEvent.emit('onTerminateForExport', { addedZipFileStat: zipFileStat });
+  }
+
+  /**
    * zip files into one zip file
    *
    * @memberOf ExportService
@@ -341,10 +352,6 @@ class ExportService {
     await streamToPromise(archive);
 
     logger.info(`zipped growi data into ${zipFile} (${archive.pointer()} bytes)`);
-
-    // send terminate event
-    const { zipFileStats } = await this.getStatus();
-    this.adminEvent.emit('onTerminateForExport', { zipFileStats });
 
     // delete json files
     for (const { from } of configs) {

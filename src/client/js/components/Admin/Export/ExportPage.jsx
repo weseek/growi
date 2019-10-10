@@ -65,7 +65,9 @@ class ExportPage extends React.Component {
     });
 
     // websocket event
-    socket.on('admin:onTerminateForExport', ({ zipFileStats }) => {
+    socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+      const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
+
       this.setState({
         isExporting: false,
         isExported: true,
@@ -73,7 +75,7 @@ class ExportPage extends React.Component {
       });
 
       // TODO: toastSuccess, toastError
-      toastr.success(undefined, 'New Exported Data is added', {
+      toastr.success(undefined, `New Exported Data '${addedZipFileStat.fileName}' is added`, {
         closeButton: true,
         progressBar: true,
         newestOnTop: false,
