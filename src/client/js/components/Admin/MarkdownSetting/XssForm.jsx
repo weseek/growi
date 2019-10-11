@@ -26,7 +26,6 @@ class XssForm extends React.Component {
 
     try {
       await this.props.markDownSettingContainer.updateXssSetting();
-      // TODO i18n
       toastSuccess(t('markdown_setting.updated_xss'));
     }
     catch (err) {
