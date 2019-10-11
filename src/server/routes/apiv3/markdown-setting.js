@@ -37,8 +37,8 @@ module.exports = (crowi) => {
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
     const lineBreakParams = {
-      'markdown:xss:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
-      'markdown:xss:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
+      'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
+      'markdown:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
     };
 
     try {

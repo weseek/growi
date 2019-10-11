@@ -34,7 +34,7 @@ class LineBreakForm extends React.Component {
 
   render() {
     const { t, markDownSettingContainer } = this.props;
-    const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = markDownSettingContainer;
+    const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = markDownSettingContainer.state;
 
     return (
       <React.Fragment>
