@@ -33,7 +33,36 @@ module.exports = (crowi) => {
     body('isEnabledLinebreaks').isBoolean(),
     body('isEnabledLinebreaksInComments').isBoolean(),
   ];
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/markdown-setting/lineBreak:
+   *      put:
+   *        tags: [MarkDownSetting]
+   *        description: Update lineBreak
+   *        parameters:
+   *          - name: isEnabledLinebreaks
+   *            in: query
+   *            description: enable lineBreak
+   *            schema:
+   *              type: boolean
+   *          - name: isEnabledLinebreaksInComments
+   *            in: query
+   *            description: enable lineBreak in comment
+   *            schema:
+   *              type: boolean
+   *        responses:
+   *          200:
+   *            description: Updating lineBreak success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    xssParams:
+   *                      type: object
+   *                      description: new lineBreak params
+   */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
     const lineBreakParams = {
@@ -65,20 +94,20 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/markdown-setting/xss:
    *      put:
-   *        tags: [Users]
+   *        tags: [MarkDownSetting]
    *        description: Update xss
    *        parameters:
-   *          - name: markdown:xss:isEnabledPrevention
+   *          - name: isEnabledPrevention
    *            in: query
    *            description: enable xss
    *            schema:
    *              type: boolean
-   *          - name: markdown:xss:option
+   *          - name: option
    *            in: query
    *            description: xss option
    *            schema:
    *              type: number
-   *          - name: markdown:xss:tagWhiteList
+   *          - name: tagWhiteList
    *            in: query
    *            description: custom tag whitelist
    *            schema:
@@ -86,7 +115,7 @@ module.exports = (crowi) => {
    *              items:
    *                type: string
    *                description: tag whitelist
-   *          - name: markdown:xss:attrWhiteList
+   *          - name: attrWhiteList
    *            in: query
    *            description: custom attr whitelist
    *            schema:
