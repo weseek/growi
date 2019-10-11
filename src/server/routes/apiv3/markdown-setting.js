@@ -29,6 +29,63 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  validator.presentationSetting = [
+    // body('').isBoolean(),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/markdown-setting/presentation:
+   *      put:
+   *        tags: [MarkDownSetting]
+   *        description: Update presentation
+   *        parameters:
+   *          - name: markdown:presentation:isEnabledPresentation
+   *            in: query
+   *            description: enable presentation
+   *            schema:
+   *              type: boolean
+   *          - name: markdown:presentation:option
+   *            in: query
+   *            description: presentation option
+   *            schema:
+   *              type: boolean
+   *        responses:
+   *          200:
+   *            description: Updating presentation success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    presentationParams:
+   *                      type: object
+   *                      description: new presentation params
+   */
+  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
+    if (req.body.isEnabledXss && req.body.presentationOption == null) {
+      return res.apiv3Err(new ErrorV3('presentation option is required'));
+    }
+
+    const presentationParams = {
+      'markdown:presentation:isEnabledPresentation': req.body.isEnabledPresentation,
+      'markdown:presentation:option': req.body.presentationOption,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', presentationParams);
+      return res.apiv3({ presentationParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating presentation';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
+    }
+
+  });
+
+
   validator.xssSetting = [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),

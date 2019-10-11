@@ -55,4 +55,16 @@ export default class MarkDownSettingContainer extends Container {
     return response;
   }
 
+  /**
+   * Update Presentation Setting
+   */
+  async updatePresentationSetting() {
+
+    const response = await this.appContainer.apiv3.put('/markdown-setting/presentation', {
+      pageBreakOption: this.state.pageBreakOption,
+    });
+
+    return response;
+  }
+
 }

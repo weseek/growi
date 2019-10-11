@@ -1,13 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
 
+const logger = loggerFactory('growi:importer');
+
 class PresentationForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    try {
+      await this.props.markDownSettingContainer.updatePresentationSetting();
+      toastSuccess('Success update Presentation setting');
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
 
   render() {
     const { t, markDownSettingContainer } = this.props;
@@ -75,7 +97,7 @@ class PresentationForm extends React.Component {
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             {/* TODO GW-220 create function */}
-            <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
         </div>
 
