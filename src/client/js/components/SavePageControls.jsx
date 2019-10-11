@@ -104,10 +104,14 @@ class SavePageControls extends React.Component {
             onClick={this.save}
           >
             <span className="mx-auto pr-2">{labelSubmitButton}</span>
-            <span className="sr-only">Toggle Dropdown</span>
+            <span className="sr-only">{labelSubmitButton}</span>
           </button>
-          <div className="dropdown-menu" eventKey="1">
-            {this.saveAndOverwriteScopesOfDescendants}>{labelOverwriteScopes}
+          <div
+            className="dropdown-menu"
+            // eventKey="1"
+            onClick={this.saveAndOverwriteScopesOfDescendants}
+          >
+            {labelOverwriteScopes}
           </div>
         </div>
       </div>
