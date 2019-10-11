@@ -14,26 +14,26 @@ const router = express.Router();
  */
 
 /**
- * FIXME: get rid of linting errors
- * @//swagger
+ * @swagger
  *
- *  definitions:
- *    ExportStatus:
- *      type: object
- *      properties:
- *        zipFileStats:
- *          type: array
- *          items:
- *            type: object
- *            description: the property of each file
- *        progressList:
- *          type: array
- *          items:
- *            type: object
- *            description: progress data for each exporting collections
- *        isExporting:
- *          type: boolean
- *          description: whether the current exporting job exists or not
+ *  components:
+ *    schemas:
+ *      ExportStatus:
+ *        type: object
+ *        properties:
+ *          zipFileStats:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: the property of each file
+ *          progressList:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: progress data for each exporting collections
+ *          isExporting:
+ *            type: boolean
+ *            description: whether the current exporting job exists or not
  */
 
 module.exports = (crowi) => {
@@ -70,7 +70,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  status:
-   *                    $ref: 'ExportStatus'
+   *                    $ref: '#/components/schemas/ExportStatus'
    */
   router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const status = await exportService.getStatus();
@@ -97,7 +97,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  status:
-   *                    $ref: 'ExportStatus'
+   *                    $ref: '#/components/schemas/ExportStatus'
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
