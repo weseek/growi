@@ -33,6 +33,7 @@ module.exports = (crowi) => {
     body('isEnabledLinebreaks').isBoolean(),
     body('isEnabledLinebreaksInComments').isBoolean(),
   ];
+
   /**
    * @swagger
    *
