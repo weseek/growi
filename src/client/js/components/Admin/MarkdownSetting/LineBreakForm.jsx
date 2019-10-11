@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -20,6 +21,7 @@ class LineBreakForm extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
+
   async onClickSubmit() {
     const { t } = this.props;
 
@@ -38,6 +40,9 @@ class LineBreakForm extends React.Component {
     const { t, markDownSettingContainer } = this.props;
     const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = markDownSettingContainer.state;
 
+    const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
+    const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
+
     return (
       // TODO GW-322 adjust layout
       <React.Fragment>
@@ -49,7 +54,7 @@ class LineBreakForm extends React.Component {
                 <label>
                   { t('markdown_setting.Enable Line Break') }
                 </label>
-                <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
+                <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
               </div>
             </div>
           </div>
@@ -62,7 +67,7 @@ class LineBreakForm extends React.Component {
                 <label>
                   { t('markdown_setting.Enable Line Break for comment') }
                 </label>
-                <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
+                <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
               </div>
             </div>
           </div>
