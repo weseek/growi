@@ -1,8 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 
-import FormControl from 'react-bootstrap/es/FormControl';
-
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
