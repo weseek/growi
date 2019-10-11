@@ -47,14 +47,10 @@ export default class MarkDownSettingContainer extends Container {
    */
   async updateLineBreakSetting() {
 
-    // const response = await this.appContainer.apiv3.put('/markdown-setting/xss', {
-    //   isEnabledXss: this.state.isEnabledXss,
-    //   xssOption: this.state.xssOption,
-    //   tagWhiteList: this.state.tagWhiteList,
-    //   attrWhiteList: this.state.attrWhiteList,
-    // });
-
-    const response = 'test';
+    const response = await this.appContainer.apiv3.put('/markdown-setting/lineBreak', {
+      isEnabledLinebreaks: this.state.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
+    });
 
     return response;
   }

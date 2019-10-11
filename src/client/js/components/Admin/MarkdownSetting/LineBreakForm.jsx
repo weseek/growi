@@ -66,7 +66,7 @@ class LineBreakForm extends React.Component {
         </fieldset>
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="submit" className="btn btn-primary" onClick={this.changeLineBreakSettings}>{ t('Update') }</button>
+            <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>
         </div>
       </React.Fragment>

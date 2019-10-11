@@ -29,6 +29,30 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  validator.lineBreak = [
+    body('isEnabledLinebreaks').isBoolean(),
+    body('isEnabledLinebreaksInComments').isBoolean(),
+  ];
+  // TODO swagger
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
+
+    const lineBreakParams = {
+      'markdown:xss:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
+      'markdown:xss:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', lineBreakParams);
+      return res.apiv3({ lineBreakParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating lineBreak';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-lineBreak-failed'));
+    }
+
+  });
+
   validator.xssSetting = [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
