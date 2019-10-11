@@ -17,11 +17,12 @@ class LineBreakForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.changeLineBreakSettings = this.changeLineBreakSettings.bind(this);
+    this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  async changeLineBreakSettings() {
+  async onClickSubmit() {
     try {
+      await this.props.markDownSettingContainer.updateLineBreakSetting();
       toastSuccess('Success update line braek setting');
     }
     catch (err) {

@@ -24,6 +24,7 @@ class XssForm extends React.Component {
   async onClickSubmit() {
     try {
       await this.props.markDownSettingContainer.updateXssSetting();
+      // TODO i18n
       toastSuccess('Success update Xss setting');
     }
     catch (err) {
