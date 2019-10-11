@@ -2,12 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Button from 'react-bootstrap/es/Button';
-import DropdownButton from 'react-bootstrap/es/DropdownButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
-import InputGroup from 'react-bootstrap/es/InputGroup';
-
 import SearchForm from './SearchForm';
 
 
