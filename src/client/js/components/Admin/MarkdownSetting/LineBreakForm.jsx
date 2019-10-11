@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -7,6 +8,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
 
 const logger = loggerFactory('growi:importer');
 
@@ -15,34 +17,11 @@ class LineBreakForm extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
-    this.state = {
-      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
-    };
-    this.onChangeEnableLineBreaks = this.onChangeEnableLineBreaks.bind(this);
-    this.onChangeEnableLineBreaksInComments = this.onChangeEnableLineBreaksInComments.bind(this);
     this.changeLineBreakSettings = this.changeLineBreakSettings.bind(this);
   }
 
-
-  onChangeEnableLineBreaks() {
-    this.setState({ isEnabledLinebreaks: !this.state.isEnabledLinebreaks });
-  }
-
-  onChangeEnableLineBreaksInComments() {
-    this.setState({ isEnabledLinebreaksInComments: !this.state.isEnabledLinebreaksInComments });
-  }
-
   async changeLineBreakSettings() {
-    const { appContainer } = this.props;
-    const params = {
-      isEnabledLinebreaks: this.state.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
-    };
     try {
-      await appContainer.apiPost('/admin/markdown/lineBreaksSetting', params);
       toastSuccess('Success update line braek setting');
     }
     catch (err) {
@@ -53,15 +32,16 @@ class LineBreakForm extends React.Component {
 
 
   render() {
-    const { t } = this.props;
+    const { t, markDownSettingContainer } = this.props;
+    const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = markDownSettingContainer;
 
     return (
       <React.Fragment>
         <fieldset className="row">
           <div className="form-group">
             <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={this.onChangeEnableLineBreaks}>
-                <input type="checkbox" name="isEnabledLinebreaks" checked={this.state.isEnabledLinebreaks} />
+              <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}>
+                <input type="checkbox" name="isEnabledLinebreaks" checked={isEnabledLinebreaks} />
                 <label>
                   { t('markdown_setting.Enable Line Break') }
                 </label>
@@ -73,8 +53,8 @@ class LineBreakForm extends React.Component {
         <fieldset className="row">
           <div className="form-group my-3">
             <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={this.onChangeEnableLineBreaksInComments}>
-                <input type="checkbox" name="isEnabledLinebreaksInComments" checked={this.state.isEnabledLinebreaksInComments} />
+              <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}>
+                <input type="checkbox" name="isEnabledLinebreaksInComments" checked={isEnabledLinebreaksInComments} />
                 <label>
                   { t('markdown_setting.Enable Line Break for comment') }
                 </label>
@@ -98,12 +78,13 @@ class LineBreakForm extends React.Component {
  * Wrapper component for using unstated
  */
 const LineBreakFormWrapper = (props) => {
-  return createSubscribedElement(LineBreakForm, props, [AppContainer]);
+  return createSubscribedElement(LineBreakForm, props, [AppContainer, MarkDownSettingContainer]);
 };
 
 LineBreakForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
 };
 
 export default withTranslation()(LineBreakFormWrapper);
