@@ -39,6 +39,7 @@ class LineBreakForm extends React.Component {
     const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = markDownSettingContainer.state;
 
     return (
+      // TODO GW-322 adjust layout
       <React.Fragment>
         <fieldset className="row">
           <div className="form-group">
