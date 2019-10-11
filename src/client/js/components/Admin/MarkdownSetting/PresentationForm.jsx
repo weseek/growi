@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -9,17 +9,12 @@ import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer
 
 class PresentationForm extends React.Component {
 
-  render() {
+  renderLineBreakOptions() {
     const { t, markDownSettingContainer } = this.props;
     const { pageBreakOption, customRegularExpression } = markDownSettingContainer.state;
 
     return (
-      <fieldset className="form-group row my-2">
-
-        <label className="col-xs-3 control-label text-right">
-          { t('markdown_setting.Page break setting') }
-        </label>
-
+      <Fragment>
         <div className="col-xs-3 radio radio-primary">
           <input
             type="radio"
@@ -71,7 +66,21 @@ class PresentationForm extends React.Component {
             </div>
           </label>
         </div>
+      </Fragment>
+    );
+  }
 
+  render() {
+    const { t } = this.props;
+
+    return (
+      <fieldset className="form-group row my-2">
+
+        <label className="col-xs-3 control-label text-right">
+          { t('markdown_setting.Page break setting') }
+        </label>
+        {/* create option as component if increase */}
+        {this.renderLineBreakOptions()}
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             {/* TODO GW-220 create function */}
