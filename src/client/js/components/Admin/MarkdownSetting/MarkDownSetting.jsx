@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import LineBreakSetting from './LineBreakSetting';
+import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
@@ -21,7 +21,7 @@ class MarkdownSetting extends React.Component {
         <div className="row my-3">
           <h2>{ t('markdown_setting.line_break_setting') }</h2>
           <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
-          <LineBreakSetting />
+          <LineBreakForm />
         </div>
 
         {/* Presentation Setting */}

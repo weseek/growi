@@ -10,7 +10,7 @@ import AppContainer from '../../../services/AppContainer';
 
 const logger = loggerFactory('growi:importer');
 
-class LineBreakSetting extends React.Component {
+class LineBreakForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -97,13 +97,13 @@ class LineBreakSetting extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LineBreakSettingWrapper = (props) => {
-  return createSubscribedElement(LineBreakSetting, props, [AppContainer]);
+const LineBreakFormWrapper = (props) => {
+  return createSubscribedElement(LineBreakForm, props, [AppContainer]);
 };
 
-LineBreakSetting.propTypes = {
+LineBreakForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(LineBreakSettingWrapper);
+export default withTranslation()(LineBreakFormWrapper);
