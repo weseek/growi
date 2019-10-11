@@ -17,8 +17,10 @@ class MarkdownSetting extends React.Component {
     return (
       // TODO GW-322 adjust layout
       <React.Fragment>
-        <div>
-          {/* Line Break Setting */}
+        {/* Line Break Setting */}
+        <div className="row my-3">
+          <h2>{ t('markdown_setting.line_break_setting') }</h2>
+          <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
           <LineBreakSetting />
         </div>
 
