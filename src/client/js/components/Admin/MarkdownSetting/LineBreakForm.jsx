@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -20,6 +21,7 @@ class LineBreakForm extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
+
   async onClickSubmit() {
     const { t } = this.props;
 
@@ -37,6 +39,8 @@ class LineBreakForm extends React.Component {
     const { t, markDownSettingContainer } = this.props;
     const { isEnabledLinebreaks } = markDownSettingContainer.state;
 
+    const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
+
     return (
       <div className="form-group row">
         <div className="col-xs-offset-4 col-xs-4 text-left">
@@ -46,7 +50,7 @@ class LineBreakForm extends React.Component {
               { t('markdown_setting.Enable Line Break') }
             </label>
           </div>
-          <p className="help-block">{ t('markdown_setting.Enable Line Break desc') }</p>
+          <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
         </div>
       </div>
     );
@@ -56,16 +60,18 @@ class LineBreakForm extends React.Component {
     const { t, markDownSettingContainer } = this.props;
     const { isEnabledLinebreaksInComments } = markDownSettingContainer.state;
 
+    const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
+
     return (
       <div className="form-group row">
         <div className="col-xs-offset-4 col-xs-4 text-left">
           <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}>
             <input type="checkbox" name="isEnabledLinebreaksInComments" checked={isEnabledLinebreaksInComments} />
             <label>
-              { t('markdown_setting.Enable Line Break for comment') }
+              { t('markdown_setting.Enable Line Break') }
             </label>
           </div>
-          <p className="help-block">{ t('markdown_setting.Enable Line Break for comment desc') }</p>
+          <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
         </div>
       </div>
     );
