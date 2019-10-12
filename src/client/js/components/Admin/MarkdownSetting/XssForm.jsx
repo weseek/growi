@@ -95,7 +95,7 @@ class XssForm extends React.Component {
       <React.Fragment>
         <form className="row">
           <div className="form-group">
-            <div className="col-xs-4 text-right">
+            <div className="col-xs-offset-4 col-xs-4 text-left">
               <div className="checkbox checkbox-success">
                 <input
                   type="checkbox"
