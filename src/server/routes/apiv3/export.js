@@ -1,7 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:export');
-const path = require('path');
 const fs = require('fs');
 
 const express = require('express');
@@ -14,6 +13,29 @@ const router = express.Router();
  *    name: Export
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ExportStatus:
+ *        type: object
+ *        properties:
+ *          zipFileStats:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: the property of each file
+ *          progressList:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: progress data for each exporting collections
+ *          isExporting:
+ *            type: boolean
+ *            description: whether the current exporting job exists or not
+ */
+
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
   const loginRequired = require('../../middleware/login-required')(crowi);
@@ -21,6 +43,17 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { growiBridgeService, exportService } = crowi;
+
+  this.adminEvent = crowi.event('admin');
+
+  // setup event
+  this.adminEvent.on('onProgressForExport', (data) => {
+    crowi.getIo().sockets.emit('admin:onProgressForExport', data);
+  });
+  this.adminEvent.on('onTerminateForExport', (data) => {
+    crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
+  });
+
 
   /**
    * @swagger
@@ -36,17 +69,17 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  zipFileStats:
-   *                    type: array
-   *                    items:
-   *                      type: object
-   *                      description: the property of each file
+   *                  status:
+   *                    $ref: '#/components/schemas/ExportStatus'
    */
   router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    const zipFileStats = await exportService.getStatus();
+    const status = await exportService.getStatus();
 
     // TODO: use res.apiv3
-    return res.json({ ok: true, zipFileStats });
+    return res.json({
+      ok: true,
+      status,
+    });
   });
 
   /**
@@ -63,9 +96,8 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  zipFileStat:
-   *                    type: object
-   *                    description: the property of the zip file
+   *                  status:
+   *                    $ref: '#/components/schemas/ExportStatus'
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
@@ -74,24 +106,14 @@ module.exports = (crowi) => {
       // get model for collection
       const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
-      const [metaJson, jsonFiles] = await Promise.all([
-        exportService.createMetaJson(),
-        exportService.exportMultipleCollectionsToJsons(models),
-      ]);
+      exportService.export(models);
 
-      // zip json
-      const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
-      // add meta.json in zip
-      configs.push({ from: metaJson, as: path.basename(metaJson) });
-      // exec zip
-      const zipFile = await exportService.zipFiles(configs);
-      // get stats for the zip file
-      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      const status = await exportService.getStatus();
 
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        zipFileStat,
+        status,
       });
     }
     catch (err) {

@@ -236,7 +236,7 @@ if (adminUserGroupPageElem != null) {
   const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
 
   ReactDOM.render(
-    <Provider inject={[]}>
+    <Provider inject={[websocketContainer]}>
       <I18nextProvider i18n={i18n}>
         <UserGroupPage
           crowi={appContainer}
