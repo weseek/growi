@@ -87,6 +87,8 @@ class ExportZipFormModal extends React.Component {
       this.props.onExportingRequested(result.status);
       this.props.onClose();
 
+      this.setState({ selectedCollections: new Set() });
+
     }
     catch (err) {
       // TODO: toastSuccess, toastError
