@@ -42,13 +42,16 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const { growiBridgeService, exportService } = crowi;
+  const { exportService } = crowi;
 
   this.adminEvent = crowi.event('admin');
 
   // setup event
   this.adminEvent.on('onProgressForExport', (data) => {
     crowi.getIo().sockets.emit('admin:onProgressForExport', data);
+  });
+  this.adminEvent.on('onStartZippingForExport', (data) => {
+    crowi.getIo().sockets.emit('admin:onStartZippingForExport', data);
   });
   this.adminEvent.on('onTerminateForExport', (data) => {
     crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
@@ -103,17 +106,12 @@ module.exports = (crowi) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
-      // get model for collection
-      const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
-      exportService.export(models);
-
-      const status = await exportService.getStatus();
+      exportService.export(collections);
 
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        status,
       });
     }
     catch (err) {

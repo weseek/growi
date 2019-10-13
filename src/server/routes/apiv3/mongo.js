@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:mongo'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const mongoose = require('mongoose');
 
 const router = express.Router();
 
@@ -33,12 +34,12 @@ module.exports = (crowi) => {
    *                      type: string
    */
   router.get('/collections', async(req, res) => {
-    const collections = Object.values(crowi.models).map(model => model.collection.name);
+    const collections = Object.keys(mongoose.connection.collections);
 
     // TODO: use res.apiv3
     return res.json({
       ok: true,
-      collections: [...new Set(collections)], // remove duplicates
+      collections,
     });
   });
 

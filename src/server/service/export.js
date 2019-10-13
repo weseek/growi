@@ -1,9 +1,13 @@
 const logger = require('@alias/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
+
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
+
+
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
 
@@ -26,10 +30,10 @@ class ExportingStatus {
     this.progressMap = {};
   }
 
-  async init(models) {
-    const promisesForCreatingInstance = models.map(async(Model) => {
-      const collectionName = Model.collection.name;
-      const totalCount = await Model.countDocuments();
+  async init(collections) {
+    const promisesForCreatingInstance = collections.map(async(collectionName) => {
+      const collection = mongoose.connection.collection(collectionName);
+      const totalCount = await collection.count();
       return new ExportingProgress(collectionName, totalCount);
     });
     this.progressList = await Promise.all(promisesForCreatingInstance);
@@ -177,15 +181,13 @@ class ExportService {
    * dump a mongodb collection into json
    *
    * @memberOf ExportService
-   * @param {object} Model instance of mongoose model
+   * @param {string} collectionName collection name
    * @return {string} path to zip file
    */
-  async exportCollectionToJson(Model) {
-    const collectionName = Model.collection.name;
+  async exportCollectionToJson(collectionName) {
+    const collection = mongoose.connection.collection(collectionName);
 
-    // get native Cursor instance
-    //  cz: Mongoose cursor might cause memory leak
-    const nativeCursor = Model.collection.find();
+    const nativeCursor = collection.find();
     const readStream = nativeCursor
       .snapshot()
       .stream({ transform: JSON.stringify });
@@ -215,14 +217,17 @@ class ExportService {
    * export multiple Collections into json and Zip
    *
    * @memberOf ExportService
-   * @param {Array.<object>} models array of instances of mongoose model
+   * @param {Array.<string>} collections array of collection name
    * @return {Array.<string>} paths to json files created
    */
-  async exportCollectionsToZippedJson(models) {
+  async exportCollectionsToZippedJson(collections) {
     const metaJson = await this.createMetaJson();
 
-    const promisesForModels = models.map(Model => this.exportCollectionToJson(Model));
-    const jsonFiles = await Promise.all(promisesForModels);
+    const promises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
+    const jsonFiles = await Promise.all(promises);
+
+    // send terminate event
+    this.emitStartZippingEvent();
 
     // zip json
     const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
@@ -240,16 +245,16 @@ class ExportService {
     // TODO: remove broken zip file
   }
 
-  async export(models) {
+  async export(collections) {
     if (this.currentExportingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
 
     this.currentExportingStatus = new ExportingStatus();
-    await this.currentExportingStatus.init(models);
+    await this.currentExportingStatus.init(collections);
 
     try {
-      await this.exportCollectionsToZippedJson(models);
+      await this.exportCollectionsToZippedJson(collections);
     }
     finally {
       this.currentExportingStatus = null;
@@ -297,6 +302,13 @@ class ExportService {
 
     // send event (in progress in global)
     this.adminEvent.emit('onProgressForExport', data);
+  }
+
+  /**
+   * emit start zipping event
+   */
+  emitStartZippingEvent() {
+    this.adminEvent.emit('onStartZippingForExport', {});
   }
 
   /**

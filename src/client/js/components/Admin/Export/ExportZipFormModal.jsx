@@ -84,8 +84,10 @@ class ExportZipFormModal extends React.Component {
         extendedTimeOut: '150',
       });
 
-      this.props.onExportingRequested(result.status);
+      this.props.onExportingRequested();
       this.props.onClose();
+
+      this.setState({ selectedCollections: new Set() });
 
     }
     catch (err) {
