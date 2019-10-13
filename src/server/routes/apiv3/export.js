@@ -109,12 +109,9 @@ module.exports = (crowi) => {
 
       exportService.export(collections);
 
-      const status = await exportService.getStatus();
-
       // TODO: use res.apiv3
       return res.status(200).json({
         ok: true,
-        status,
       });
     }
     catch (err) {

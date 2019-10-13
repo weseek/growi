@@ -148,17 +148,9 @@ class ExportPage extends React.Component {
   }
 
   /**
-   * @params {object} export status data
+   * event handler invoked when export process was requested successfully
    */
-  exportingRequestedHandler(status) {
-    const { zipFileStats, isExporting, progressList } = status;
-    this.setState({
-      zipFileStats,
-      isExporting,
-      isZipping: false,
-      isExported: !isExporting,
-      progressList,
-    });
+  exportingRequestedHandler() {
   }
 
   renderProgressBarsForCollections() {
