@@ -161,11 +161,8 @@ class ExportPage extends React.Component {
     });
   }
 
-  renderProgressBars() {
-    const { isZipping, isExported } = this.state;
-    const showZippingBar = isZipping || isExported;
-
-    const collectionCols = this.state.progressList.map((progressData) => {
+  renderProgressBarsForCollections() {
+    const cols = this.state.progressList.map((progressData) => {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
         <div className="col-md-6" key={collectionName}>
@@ -178,24 +175,28 @@ class ExportPage extends React.Component {
       );
     });
 
-    const zipCol = (
-      <div className="col-md-12" key="progressBarForZipping">
-        <ExportingProgressBar
-          header="Zip Files"
-          currentCount={1}
-          totalCount={1}
-          isInProgress={isZipping}
-        />
-      </div>
-    );
+    return <div className="row px-3">{cols}</div>;
+  }
+
+  renderProgressBarForZipping() {
+    const { isZipping, isExported } = this.state;
+    const showZippingBar = isZipping || isExported;
+
+    if (!showZippingBar) {
+      return <></>;
+    }
 
     return (
-      <>
-        <div className="row px-3">{collectionCols}</div>
-        { showZippingBar && (
-          <div className="row px-3">{zipCol}</div>
-        ) }
-      </>
+      <div className="row px-3">
+        <div className="col-md-12" key="progressBarForZipping">
+          <ExportingProgressBar
+            header="Zip Files"
+            currentCount={1}
+            totalCount={1}
+            isInProgress={isZipping}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -216,7 +217,8 @@ class ExportPage extends React.Component {
         { showExportingData && (
           <div className="mt-5">
             <h3>{t('export_management.exporting_data_list')}</h3>
-            { this.renderProgressBars() }
+            { this.renderProgressBarsForCollections() }
+            { this.renderProgressBarForZipping() }
           </div>
         ) }
 
