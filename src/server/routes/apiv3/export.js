@@ -42,7 +42,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const { growiBridgeService, exportService } = crowi;
+  const { exportService } = crowi;
 
   this.adminEvent = crowi.event('admin');
 
@@ -103,10 +103,8 @@ module.exports = (crowi) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
-      // get model for collection
-      const models = collections.map(collectionName => growiBridgeService.getModelFromCollectionName(collectionName));
 
-      exportService.export(models);
+      exportService.export(collections);
 
       const status = await exportService.getStatus();
 
