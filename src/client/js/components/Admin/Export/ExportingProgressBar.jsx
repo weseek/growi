@@ -12,8 +12,8 @@ class ExportingProgressBar extends React.Component {
 
     const percentage = currentCount / totalCount * 100;
     const isActive = (isInProgress != null)
-      ? isInProgress
-      : (currentCount !== totalCount);
+      ? isInProgress //                         apply props.isInProgress if set
+      : (currentCount !== totalCount); //       otherwise, set true when currentCount does not equal totalCount
 
     return (
       <>
