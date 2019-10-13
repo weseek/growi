@@ -24,6 +24,7 @@ class ExportPage extends React.Component {
       progressList: [],
       isExportModalOpen: false,
       isExporting: false,
+      isZipping: false,
       isExported: false,
     };
 
@@ -59,8 +60,17 @@ class ExportPage extends React.Component {
 
     // websocket event
     socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
-      const isExporting = currentCount !== totalCount;
-      this.setState({ isExporting, progressList });
+      this.setState({
+        isExporting: true,
+        progressList,
+      });
+    });
+
+    // websocket event
+    socket.on('admin:onStartZippingForExport', () => {
+      this.setState({
+        isZipping: true,
+      });
     });
 
     // websocket event
@@ -69,6 +79,7 @@ class ExportPage extends React.Component {
 
       this.setState({
         isExporting: false,
+        isZipping: false,
         isExported: true,
         zipFileStats,
       });
@@ -141,16 +152,24 @@ class ExportPage extends React.Component {
    */
   exportingRequestedHandler(status) {
     const { zipFileStats, isExporting, progressList } = status;
-    this.setState({ zipFileStats, isExporting, progressList });
+    this.setState({
+      zipFileStats,
+      isExporting,
+      isZipping: false,
+      progressList,
+    });
   }
 
   renderProgressBars() {
-    const cols = this.state.progressList.map((progressData) => {
+    const { isZipping, isExported } = this.state;
+    const showZippingBar = isZipping || isExported;
+
+    const collectionCols = this.state.progressList.map((progressData) => {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
         <div className="col-md-6" key={collectionName}>
           <ExportingProgressBar
-            collectionName={collectionName}
+            header={collectionName}
             currentCount={currentCount}
             totalCount={totalCount}
           />
@@ -158,7 +177,25 @@ class ExportPage extends React.Component {
       );
     });
 
-    return <div className="row px-3">{cols}</div>;
+    const zipCol = (
+      <div className="col-md-12" key="progressBarForZipping">
+        <ExportingProgressBar
+          header="Zip"
+          currentCount={1}
+          totalCount={1}
+          isInProgress={isZipping}
+        />
+      </div>
+    );
+
+    return (
+      <>
+        <div className="row px-3">{collectionCols}</div>
+        { showZippingBar && (
+          <div className="row px-3">{zipCol}</div>
+        ) }
+      </>
+    );
   }
 
   render() {

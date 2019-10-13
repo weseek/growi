@@ -50,6 +50,9 @@ module.exports = (crowi) => {
   this.adminEvent.on('onProgressForExport', (data) => {
     crowi.getIo().sockets.emit('admin:onProgressForExport', data);
   });
+  this.adminEvent.on('onStartZippingForExport', (data) => {
+    crowi.getIo().sockets.emit('admin:onStartZippingForExport', data);
+  });
   this.adminEvent.on('onTerminateForExport', (data) => {
     crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
   });

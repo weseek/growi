@@ -226,6 +226,9 @@ class ExportService {
     const promises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
     const jsonFiles = await Promise.all(promises);
 
+    // send terminate event
+    this.emitStartZippingEvent();
+
     // zip json
     const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
     // add meta.json in zip
@@ -299,6 +302,13 @@ class ExportService {
 
     // send event (in progress in global)
     this.adminEvent.emit('onProgressForExport', data);
+  }
+
+  /**
+   * emit start zipping event
+   */
+  emitStartZippingEvent() {
+    this.adminEvent.emit('onStartZippingForExport', {});
   }
 
   /**
