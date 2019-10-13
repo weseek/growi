@@ -156,6 +156,7 @@ class ExportPage extends React.Component {
       zipFileStats,
       isExporting,
       isZipping: false,
+      isExported: !isExporting,
       progressList,
     });
   }
@@ -180,7 +181,7 @@ class ExportPage extends React.Component {
     const zipCol = (
       <div className="col-md-12" key="progressBarForZipping">
         <ExportingProgressBar
-          header="Zip"
+          header="Zip Files"
           currentCount={1}
           totalCount={1}
           isInProgress={isZipping}
@@ -200,14 +201,17 @@ class ExportPage extends React.Component {
 
   render() {
     const { t } = this.props;
+    const { isExporting, isExported, progressList } = this.state;
 
-    const showExportingData = (this.state.isExported || this.state.isExporting) && (this.state.progressList != null);
+    const showExportingData = (isExported || isExporting) && (progressList != null);
 
     return (
       <Fragment>
         <h2>{t('Export Data')}</h2>
 
-        <button type="button" className="btn btn-default" onClick={this.openExportModal}>{t('export_management.create_new_exported_data')}</button>
+        <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
+          {t('export_management.create_new_exported_data')}
+        </button>
 
         { showExportingData && (
           <div className="mt-5">
