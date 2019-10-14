@@ -12,6 +12,8 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       pageBreakOption: appContainer.config.pageBreakOption,
       customRegularExpression: appContainer.config.customRegularExpression || '',
       isEnabledXss: (appContainer.config.xssOption != null),
@@ -38,6 +40,19 @@ export default class MarkDownSettingContainer extends Container {
       this.setState({ xssOption: null });
     }
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
+  }
+
+  /**
+   * Update LineBreak Setting
+   */
+  async updateLineBreakSetting() {
+
+    const response = await this.appContainer.apiv3.put('/markdown-setting/lineBreak', {
+      isEnabledLinebreaks: this.state.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
+    });
+
+    return response;
   }
 
   /**

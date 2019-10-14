@@ -609,7 +609,10 @@
     "Custom Whitelist": "カスタムホワイトリスト",
     "Tag names": "タグ名のホワイトリスト",
     "Tag attributes": "タグ属性のホワイトリスト",
-    "import_recommended": "おすすめをインポート"
+    "import_recommended": "おすすめをインポート",
+    "updated_lineBreak": "改行設定を更新しました",
+    "updated_presentation": "プレゼンテーション設定を更新しました",
+    "updated_xss": "XSS設定を更新しました"
   },
 
   "notification_setting": {

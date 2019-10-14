@@ -29,6 +29,60 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  validator.lineBreak = [
+    body('isEnabledLinebreaks').isBoolean(),
+    body('isEnabledLinebreaksInComments').isBoolean(),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/markdown-setting/lineBreak:
+   *      put:
+   *        tags: [MarkDownSetting]
+   *        description: Update lineBreak
+   *        parameters:
+   *          - name: isEnabledLinebreaks
+   *            in: query
+   *            description: enable lineBreak
+   *            schema:
+   *              type: boolean
+   *          - name: isEnabledLinebreaksInComments
+   *            in: query
+   *            description: enable lineBreak in comment
+   *            schema:
+   *              type: boolean
+   *        responses:
+   *          200:
+   *            description: Updating lineBreak success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    xssParams:
+   *                      type: object
+   *                      description: new lineBreak params
+   */
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
+
+    const lineBreakParams = {
+      'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
+      'markdown:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', lineBreakParams);
+      return res.apiv3({ lineBreakParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating lineBreak';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-lineBreak-failed'));
+    }
+
+  });
+
   validator.xssSetting = [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
@@ -41,20 +95,20 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/markdown-setting/xss:
    *      put:
-   *        tags: [Users]
+   *        tags: [MarkDownSetting]
    *        description: Update xss
    *        parameters:
-   *          - name: markdown:xss:isEnabledPrevention
+   *          - name: isEnabledPrevention
    *            in: query
    *            description: enable xss
    *            schema:
    *              type: boolean
-   *          - name: markdown:xss:option
+   *          - name: option
    *            in: query
    *            description: xss option
    *            schema:
    *              type: number
-   *          - name: markdown:xss:tagWhiteList
+   *          - name: tagWhiteList
    *            in: query
    *            description: custom tag whitelist
    *            schema:
@@ -62,7 +116,7 @@ module.exports = (crowi) => {
    *              items:
    *                type: string
    *                description: tag whitelist
-   *          - name: markdown:xss:attrWhiteList
+   *          - name: attrWhiteList
    *            in: query
    *            description: custom attr whitelist
    *            schema:
