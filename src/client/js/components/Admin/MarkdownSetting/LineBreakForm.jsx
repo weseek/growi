@@ -43,7 +43,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-4 text-left">
+        <div className="col-xs-offset-4 col-xs-6 text-left">
           <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}>
             <input type="checkbox" id="isEnabledLinebreaks" checked={isEnabledLinebreaks} />
             <label htmlFor="isEnabledLinebreaks">
@@ -64,7 +64,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-4 text-left">
+        <div className="col-xs-offset-4 col-xs-6 text-left">
           <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}>
             <input type="checkbox" id="isEnabledLinebreaksInComments" checked={isEnabledLinebreaksInComments} />
             <label htmlFor="isEnabledLinebreaksInComments">
