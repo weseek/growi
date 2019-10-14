@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+import ProgressBar from '../Common/ProgressBar';
 
 class RebuildIndex extends React.Component {
 
@@ -11,10 +16,13 @@ class RebuildIndex extends React.Component {
 
     this.state = {
       isCompleted: false,
+
       total: 0,
       current: 0,
       skip: 0,
     };
+
+    this.buildIndex = this.buildIndex.bind(this);
   }
 
   componentDidMount() {
@@ -31,38 +39,64 @@ class RebuildIndex extends React.Component {
     });
   }
 
-  render() {
+  async buildIndex() {
+
+    const { appContainer } = this.props;
+    const pageId = this.pageId;
+
+    try {
+      const res = await appContainer.apiPost('/admin/search/build', { page_id: pageId });
+      if (!res.ok) {
+        throw new Error(res.message);
+      }
+      else {
+        toastSuccess('Rebuilding is requested');
+      }
+    }
+    catch (e) {
+      toastError(e, (new Error('エラーが発生しました')));
+    }
+  }
+
+  renderProgressBar() {
     const {
       total, current, skip, isCompleted,
     } = this.state;
+
     if (total === 0) {
       return null;
     }
 
-    const progressBarLabel = isCompleted ? 'Completed' : `Processing.. ${current}/${total} (${skip} skips)`;
-    const progressBarWidth = isCompleted ? '100%' : `${(current / total) * 100}%`;
-    const progressBarClassNames = isCompleted
-      ? 'progress-bar progress-bar-success'
-      : 'progress-bar progress-bar-striped progress-bar-animated active';
+    const header = isCompleted ? 'Completed' : `Processing.. ${current}/${total} (${skip} skips)`;
 
     return (
-      <div>
-        <h5>
-          {progressBarLabel}
-          <span className="pull-right">{progressBarWidth}</span>
-        </h5>
-        <div className="progress progress-sm">
-          <div
-            className={progressBarClassNames}
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuenow={current}
-            aria-valuemax={total}
-            style={{ width: progressBarWidth }}
-          >
+      <ProgressBar
+        header={header}
+        currentCount={current}
+        totalCount={total}
+      />
+    );
+  }
+
+  render() {
+    const { t } = this.props;
+
+    return (
+      <>
+        <div className="row">
+          <div className="col-xs-3 control-label"></div>
+          <div className="col-xs-9">
+            { this.renderProgressBar() }
+
+            <button type="submit" className="btn btn-inverse" onClick={this.buildIndex}>{ t('full_text_search_management.build_button') }</button>
+            <p className="help-block">
+              { t('full_text_search_management.rebuild_description_1') }<br />
+              { t('full_text_search_management.rebuild_description_2') }<br />
+              { t('full_text_search_management.rebuild_description_3') }<br />
+            </p>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -72,11 +106,13 @@ class RebuildIndex extends React.Component {
  * Wrapper component for using unstated
  */
 const RebuildIndexWrapper = (props) => {
-  return createSubscribedElement(RebuildIndex, props, [WebsocketContainer]);
+  return createSubscribedElement(RebuildIndex, props, [AppContainer, WebsocketContainer]);
 };
 
 RebuildIndex.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
-export default RebuildIndexWrapper;
+export default withTranslation()(RebuildIndexWrapper);
