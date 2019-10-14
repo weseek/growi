@@ -15,6 +15,7 @@ class RebuildIndex extends React.Component {
     super(props);
 
     this.state = {
+      isProcessing: false,
       isCompleted: false,
 
       total: 0,
@@ -29,13 +30,18 @@ class RebuildIndex extends React.Component {
     const socket = this.props.websocketContainer.getWebSocket();
 
     socket.on('admin:addPageProgress', (data) => {
-      const newStates = Object.assign(data, { isCompleted: false });
-      this.setState(newStates);
+      this.setState({
+        isProcessing: true,
+        ...data,
+      });
     });
 
     socket.on('admin:finishAddPage', (data) => {
-      const newStates = Object.assign(data, { isCompleted: true });
-      this.setState(newStates);
+      this.setState({
+        isProcessing: false,
+        isCompleted: true,
+        ...data,
+      });
     });
   }
 
@@ -49,25 +55,26 @@ class RebuildIndex extends React.Component {
       if (!res.ok) {
         throw new Error(res.message);
       }
-      else {
-        toastSuccess('Rebuilding is requested');
-      }
+
+      this.setState({ isProcessing: true });
+      toastSuccess('Rebuilding is requested');
     }
     catch (e) {
-      toastError(e, (new Error('エラーが発生しました')));
+      toastError(e);
     }
   }
 
   renderProgressBar() {
     const {
-      total, current, skip, isCompleted,
+      total, current, skip, isProcessing, isCompleted,
     } = this.state;
+    const showProgressBar = isProcessing || isCompleted;
 
-    if (total === 0) {
+    if (!showProgressBar) {
       return null;
     }
 
-    const header = isCompleted ? 'Completed' : `Processing.. ${current}/${total} (${skip} skips)`;
+    const header = isCompleted ? 'Completed' : `Processing.. (${skip} skips)`;
 
     return (
       <ProgressBar
@@ -88,7 +95,15 @@ class RebuildIndex extends React.Component {
           <div className="col-xs-9">
             { this.renderProgressBar() }
 
-            <button type="submit" className="btn btn-inverse" onClick={this.buildIndex}>{ t('full_text_search_management.build_button') }</button>
+            <button
+              type="submit"
+              className="btn btn-inverse"
+              onClick={this.buildIndex}
+              disabled={this.state.isProcessing}
+            >
+              { t('full_text_search_management.build_button') }
+            </button>
+
             <p className="help-block">
               { t('full_text_search_management.rebuild_description_1') }<br />
               { t('full_text_search_management.rebuild_description_2') }<br />
