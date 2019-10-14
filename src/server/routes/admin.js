@@ -1153,7 +1153,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await search.buildIndex();
+      search.buildIndex();
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
