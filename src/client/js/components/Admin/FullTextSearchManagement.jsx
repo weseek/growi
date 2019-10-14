@@ -7,7 +7,7 @@ import AppContainer from '../../services/AppContainer';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
-import AdminRebuildSearch from './AdminRebuildSearch';
+import RebuildIndex from './FullTextSearchManagement/RebuildIndex';
 
 
 class FullTextSearchManagement extends React.Component {
@@ -57,7 +57,7 @@ class FullTextSearchManagement extends React.Component {
           </div>
         </fieldset>
 
-        <AdminRebuildSearch />
+        <RebuildIndex />
       </Fragment>
     );
   }

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { createSubscribedElement } from '../UnstatedUtils';
-import WebsocketContainer from '../../services/WebsocketContainer';
+import { createSubscribedElement } from '../../UnstatedUtils';
+import WebsocketContainer from '../../../services/WebsocketContainer';
 
-class AdminRebuildSearch extends React.Component {
+class RebuildIndex extends React.Component {
 
   constructor(props) {
     super(props);
@@ -71,12 +71,12 @@ class AdminRebuildSearch extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const AdminRebuildSearchWrapper = (props) => {
-  return createSubscribedElement(AdminRebuildSearch, props, [WebsocketContainer]);
+const RebuildIndexWrapper = (props) => {
+  return createSubscribedElement(RebuildIndex, props, [WebsocketContainer]);
 };
 
-AdminRebuildSearch.propTypes = {
+RebuildIndex.propTypes = {
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
-export default AdminRebuildSearchWrapper;
+export default RebuildIndexWrapper;
