@@ -45,7 +45,7 @@ import ManageExternalAccount from './components/Admin/Users/ManageExternalAccoun
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import Importer from './components/Admin/Importer';
-import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
+import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
 import ExportPage from './components/Admin/Export/ExportPage';
 
 import AppContainer from './services/AppContainer';

@@ -2,11 +2,12 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import AdminRebuildSearch from '../AdminRebuildSearch';
-import AppContainer from '../../../services/AppContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../util/apiNotification';
+
+import AdminRebuildSearch from './AdminRebuildSearch';
 
 
 class FullTextSearchManagement extends React.Component {
