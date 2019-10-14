@@ -165,6 +165,7 @@ SearchClient.prototype.buildIndex = async function(uri) {
   // reindex to tmp index
   await this.createIndex(tmpIndexName);
   await client.reindex({
+    waitForCompletion: false,
     body: {
       source: { index: indexName },
       dest: { index: tmpIndexName },
