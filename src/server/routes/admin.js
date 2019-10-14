@@ -1152,7 +1152,12 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
     }
 
-    await search.buildIndex();
+    try {
+      await search.buildIndex();
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
 
     return res.json(ApiResponse.success());
   };
