@@ -626,9 +626,9 @@
     "Tag names":"Tag names",
     "Tag attributes":"Tag attributes",
     "import_recommended": "Import recommended %s",
-    "updated_lineBreak": "Success update line braek setting",
-    "updated_presentation": "Success update presentation setting",
-    "updated_xss": "Success update XSS setting"
+    "updated_lineBreak": "Succeeded to update line braek setting",
+    "updated_presentation": "Succeeded to update presentation setting",
+    "updated_xss": "Succeeded to update XSS setting"
   },
 
   "notification_setting": {
