@@ -1,5 +1,4 @@
 /* eslint-disable react/no-danger */
-/* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
