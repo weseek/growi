@@ -44,8 +44,13 @@ class LineBreakForm extends React.Component {
     return (
       <div className="form-group row">
         <div className="col-xs-offset-4 col-xs-6 text-left">
-          <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}>
-            <input type="checkbox" id="isEnabledLinebreaks" checked={isEnabledLinebreaks} />
+          <div className="checkbox checkbox-success">
+            <input
+              type="checkbox"
+              id="isEnabledLinebreaks"
+              checked={isEnabledLinebreaks}
+              onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
+            />
             <label htmlFor="isEnabledLinebreaks">
               { t('markdown_setting.Enable Line Break') }
             </label>
@@ -65,8 +70,13 @@ class LineBreakForm extends React.Component {
     return (
       <div className="form-group row">
         <div className="col-xs-offset-4 col-xs-6 text-left">
-          <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}>
-            <input type="checkbox" id="isEnabledLinebreaksInComments" checked={isEnabledLinebreaksInComments} />
+          <div className="checkbox checkbox-success">
+            <input
+              type="checkbox"
+              id="isEnabledLinebreaksInComments"
+              checked={isEnabledLinebreaksInComments}
+              onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
+            />
             <label htmlFor="isEnabledLinebreaksInComments">
               { t('markdown_setting.Enable Line Break') }
             </label>
