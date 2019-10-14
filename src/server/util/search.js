@@ -6,6 +6,8 @@ const elasticsearch = require('elasticsearch');
 const debug = require('debug')('growi:lib:search');
 const logger = require('@alias/logger')('growi:lib:search');
 
+const BULK_REINDEX_SIZE = 100;
+
 function SearchClient(crowi, esUri) {
   this.DEFAULT_OFFSET = 0;
   this.DEFAULT_LIMIT = 50;
@@ -399,8 +401,8 @@ SearchClient.prototype.addAllPages = async function() {
         const page = { ...doc, bookmarkCount, tagNames: tagRelations.map((relation) => { return relation.relatedTag.name }) };
         self.prepareBodyForCreate(body, page);
 
-        if (body.length >= 4000) {
-          // send each 2000 docs. (body has 2 elements for each data)
+        // send each `BULK_REINDEX_SIZE` docs. (body has 2 elements for each data)
+        if (body.length >= BULK_REINDEX_SIZE * 2) {
           sent++;
           logger.debug('Sending request (seq, total, skipped)', sent, total, skipped);
           bulkSend(body);
