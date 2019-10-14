@@ -15,7 +15,6 @@ class MarkdownSetting extends React.Component {
     const { t } = this.props;
 
     return (
-      // TODO GW-322 adjust layout
       <React.Fragment>
         {/* Line Break Setting */}
         <div className="row my-3">
