@@ -60,6 +60,42 @@ class PageTagRelation {
     return relations.map((relation) => { return relation.relatedTag.name });
   }
 
+  /**
+   * @return {object} key: Page._id, value: array of tag names
+   */
+  static async getIdToTagNamesMap(pageIds) {
+    // see https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pivot-data
+    const results = await this.aggregate()
+      .match({ relatedPage: { $in: pageIds } })
+      .group({ _id: '$relatedPage', tagIds: { $push: '$relatedTag' } });
+
+    if (results.length === 0) {
+      return {};
+    }
+
+    console.log(results);
+    console.log(results.map(result => result.tagIds));
+
+    // extract distinct tag ids
+    const allTagIds = await results
+      .map(result => result.tagIds) //  [[tagId1, tagId2, ...], [tagId1, tagId3, ...] ... ]
+      .flat(); //                       [tagId1, tagId2, tagId1, tagId3, ...]
+    const distinctTagIds = Array.from(new Set(allTagIds));
+
+    // retrieve tag documents
+    const Tag = mongoose.model('Tag');
+    const tagIdToNameMap = Tag.getIdToNameMap(distinctTagIds);
+
+    // convert to map
+    const idToTagNamesMap = {};
+    results.forEach((result) => {
+      const tagNames = result.tagsIds.map(tagId => tagIdToNameMap[tagId]);
+      idToTagNamesMap[result._id] = tagNames;
+    });
+
+    return idToTagNamesMap;
+  }
+
   static async updatePageTags(pageId, tags) {
     if (pageId == null || tags == null) {
       throw new Error('args \'pageId\' and \'tags\' are required.');

@@ -446,15 +446,26 @@ SearchClient.prototype.addAllPages = async function() {
     },
   });
 
-  // const appendTagNamesStream = new Transform({
-  //   objectMode: true,
-  //   async transform(chunk, encoding, callback) {
-  //     const tagRelations = await PageTagRelation.find({ relatedPage: chunk._id }).populate('relatedTag');
-  //     const tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
-  //     this.push({ ...chunk, tagNames });
-  //     callback();
-  //   },
-  // });
+  const appendTagNamesStream = new Transform({
+    objectMode: true,
+    async transform(chunk, encoding, callback) {
+      const pageIds = chunk.map(doc => doc._id);
+
+      const idToTagNamesMap = await PageTagRelation.getIdToTagNamesMap(pageIds);
+      const idsHavingTagNames = Object.keys(idToTagNamesMap);
+
+      // append count
+      chunk
+        .filter(doc => idsHavingTagNames.includes(doc._id.toString()))
+        .forEach((doc) => {
+          // append tagName from idToTagNamesMap
+          doc.bookmarkCount = idToTagNamesMap[doc._id.toString()];
+        });
+
+      this.push(chunk);
+      callback();
+    },
+  });
 
   let count = 0;
   const writeStream = new Writable({
@@ -491,7 +502,7 @@ SearchClient.prototype.addAllPages = async function() {
     .pipe(thinOutStream)
     .pipe(batchingStream)
     .pipe(appendBookmarkCountStream)
-    // .pipe(appendTagNamesStream)
+    .pipe(appendTagNamesStream)
     .pipe(writeStream);
 
   return streamToPromise(readStream);

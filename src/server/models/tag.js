@@ -23,6 +23,17 @@ schema.plugin(mongoosePaginate);
  */
 class Tag {
 
+  static async getIdToNameMap(tagIds) {
+    const tags = this.find({ _id: { $in: tagIds } });
+
+    const idToNameMap = {};
+    tags.forEach((tag) => {
+      idToNameMap[tag._id.toString()] = tag.name;
+    });
+
+    return idToNameMap;
+  }
+
   static async findOrCreate(tagName) {
     const tag = await this.findOne({ name: tagName });
     if (!tag) {
