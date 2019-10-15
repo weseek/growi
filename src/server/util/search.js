@@ -429,7 +429,7 @@ SearchClient.prototype.addAllPages = async function() {
       prepareBodyForCreate(batchBuffer, chunk);
 
       // send each `BULK_REINDEX_SIZE` docs. (body has 2 elements for each data)
-      if (batchBuffer.length >= BULK_REINDEX_SIZE * 2) {
+      if (batchBuffer.length / 2 >= BULK_REINDEX_SIZE) {
         this.push(batchBuffer);
         batchBuffer = [];
       }
@@ -456,7 +456,7 @@ SearchClient.prototype.addAllPages = async function() {
 
         count += (res.items || []).length;
 
-        logger.info('addAllPages add anyway (items, errors, took): ', `(${count}, ${res.errors}, ${res.took}ms)`);
+        logger.info(`addAllPages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
         searchEvent.emit('addPageProgress', totalCount, count, skipped);
       }
       catch (err) {
@@ -466,6 +466,7 @@ SearchClient.prototype.addAllPages = async function() {
       callback();
     },
     final(callback) {
+      logger.info(`addAllPages has terminated: (totalCount=${totalCount}, skipped=${skipped})`);
       searchEvent.emit('finishAddPage', totalCount, count, skipped);
       callback();
     },
