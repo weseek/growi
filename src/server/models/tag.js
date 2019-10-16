@@ -24,7 +24,7 @@ schema.plugin(mongoosePaginate);
 class Tag {
 
   static async getIdToNameMap(tagIds) {
-    const tags = this.find({ _id: { $in: tagIds } });
+    const tags = await this.find({ _id: { $in: tagIds } });
 
     const idToNameMap = {};
     tags.forEach((tag) => {

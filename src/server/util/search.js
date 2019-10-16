@@ -454,12 +454,12 @@ SearchClient.prototype.addAllPages = async function() {
       const idToTagNamesMap = await PageTagRelation.getIdToTagNamesMap(pageIds);
       const idsHavingTagNames = Object.keys(idToTagNamesMap);
 
-      // append count
+      // append tagNames
       chunk
         .filter(doc => idsHavingTagNames.includes(doc._id.toString()))
         .forEach((doc) => {
           // append tagName from idToTagNamesMap
-          doc.bookmarkCount = idToTagNamesMap[doc._id.toString()];
+          doc.tagNames = idToTagNamesMap[doc._id.toString()];
         });
 
       this.push(chunk);
