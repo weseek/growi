@@ -5,8 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import { toastSuccess, toastError } from '../../util/apiNotification';
-
 import RebuildIndex from './FullTextSearchManagement/RebuildIndex';
 
 
