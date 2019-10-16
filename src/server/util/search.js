@@ -385,7 +385,6 @@ SearchClient.prototype.addAllPages = async function() {
       { path: 'creator', model: 'User', select: 'username' },
       { path: 'revision', model: 'Revision', select: 'body' },
     ])
-    .limit(500) // FIXME: remove debug code
     .snapshot()
     .lean()
     .cursor();
