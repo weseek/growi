@@ -1,5 +1,4 @@
 /* eslint-disable react/no-danger */
-/* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -35,42 +34,66 @@ class LineBreakForm extends React.Component {
     }
   }
 
-
-  render() {
+  renderLineBreakOption() {
     const { t, markDownSettingContainer } = this.props;
-    const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = markDownSettingContainer.state;
+    const { isEnabledLinebreaks } = markDownSettingContainer.state;
 
     const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
+
+    return (
+      <div className="form-group row">
+        <div className="col-xs-offset-4 col-xs-6 text-left">
+          <div className="checkbox checkbox-success">
+            <input
+              type="checkbox"
+              id="isEnabledLinebreaks"
+              checked={isEnabledLinebreaks}
+              onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
+            />
+            <label htmlFor="isEnabledLinebreaks">
+              { t('markdown_setting.Enable Line Break') }
+            </label>
+          </div>
+          <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
+        </div>
+      </div>
+    );
+  }
+
+  renderLineBreakInCommentOption() {
+    const { t, markDownSettingContainer } = this.props;
+    const { isEnabledLinebreaksInComments } = markDownSettingContainer.state;
+
     const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
 
     return (
-      // TODO GW-322 adjust layout
+      <div className="form-group row">
+        <div className="col-xs-offset-4 col-xs-6 text-left">
+          <div className="checkbox checkbox-success">
+            <input
+              type="checkbox"
+              id="isEnabledLinebreaksInComments"
+              checked={isEnabledLinebreaksInComments}
+              onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
+            />
+            <label htmlFor="isEnabledLinebreaksInComments">
+              { t('markdown_setting.Enable Line Break') }
+            </label>
+          </div>
+          <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { t } = this.props;
+
+    return (
       <React.Fragment>
         <fieldset className="row">
-          <div className="form-group">
-            <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}>
-                <input type="checkbox" name="isEnabledLinebreaks" checked={isEnabledLinebreaks} />
-                <label>
-                  { t('markdown_setting.Enable Line Break') }
-                </label>
-                <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
-              </div>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset className="row">
-          <div className="form-group my-3">
-            <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}>
-                <input type="checkbox" name="isEnabledLinebreaksInComments" checked={isEnabledLinebreaksInComments} />
-                <label>
-                  { t('markdown_setting.Enable Line Break for comment') }
-                </label>
-                <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
-              </div>
-            </div>
-          </div>
+          {this.renderLineBreakOption()}
+          {this.renderLineBreakInCommentOption()}
         </fieldset>
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
