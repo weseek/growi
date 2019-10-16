@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import Pagination from 'react-bootstrap/lib/Pagination';
+// TODO: GW-333
+// import Pagination from 'react-bootstrap/lib/Pagination';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';

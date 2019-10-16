@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
+import {
+  Button,
+} from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 
@@ -146,8 +148,10 @@ class PageComments extends React.Component {
         { !showEditor && isLoggedIn && (
           <div className="text-right">
             <Button
-              bsStyle="default"
-              className="btn btn-outline btn-default btn-sm btn-comment-reply"
+              outline
+              color="secondary"
+              size="sm"
+              className="btn-comment-reply"
               onClick={() => { return this.replyButtonClickedHandler(commentId) }}
             >
               <i className="icon-fw icon-action-redo"></i> Reply

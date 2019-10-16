@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
 
-import Radio from 'react-bootstrap/es/Radio';
+// FIXME: use native Bootstrap 4 or reactstrap
+// import Radio from 'react-bootstrap/es/Radio';
 
 class InstallerForm extends React.Component {
 

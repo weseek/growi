@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Modal from 'react-bootstrap/es/Modal';
-import Button from 'react-bootstrap/es/Button';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
+
+import {
+  Button, Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
@@ -551,20 +553,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
 
     return (
-      <React.Fragment>
-        <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
-          <Modal.Header closeButton>
-            <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="pt-1">
+      <>
+        <Modal className="modal-gfm-cheatsheet" isOpen={this.state.isCheatsheetModalShown} toggle={() => { hideCheatsheetModal() }}>
+          <ModalHeader toggle={() => { hideCheatsheetModal() }}>
+            <i className="icon-fw icon-question" />Markdown Help
+          </ModalHeader>
+          <ModalBody className="pt-1">
             { this.renderCheatsheetModalBody() }
-          </Modal.Body>
+          </ModalBody>
         </Modal>
 
         <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small mr-3" onClick={() => { showCheatsheetModal() }}>
           <i className="icon-question" /> Markdown
         </button>
-      </React.Fragment>
+      </>
     );
   }
 

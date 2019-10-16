@@ -23,7 +23,7 @@ module.exports = {
       'lodash', 'pako',
       'markdown-it', 'csv-to-markdown-table',
       'react', 'react-dom',
-      'react-bootstrap', 'react-bootstrap-typeahead',
+      'reactstrap', 'react-bootstrap-typeahead',
       'react-i18next', 'react-dropzone', 'react-hotkeys', 'react-copy-to-clipboard', 'react-waypoint',
       'socket.io-client',
       'toastr',
