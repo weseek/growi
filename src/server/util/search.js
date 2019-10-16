@@ -91,9 +91,8 @@ SearchClient.prototype.checkESVersion = async function() {
 
 SearchClient.prototype.registerUpdateEvent = function() {
   const pageEvent = this.crowi.event('page');
-  pageEvent.on('create', this.syncPageCreated.bind(this));
+  pageEvent.on('create', this.syncPageUpdated.bind(this));
   pageEvent.on('update', this.syncPageUpdated.bind(this));
-  pageEvent.on('updateTag', this.syncPageUpdated.bind(this));
   pageEvent.on('delete', this.syncPageDeleted.bind(this));
 
   const bookmarkEvent = this.crowi.event('bookmark');
@@ -233,38 +232,6 @@ function generateDocContentsRelatedToRestriction(page) {
   };
 }
 
-SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
-  if (!Array.isArray(body)) {
-    throw new Error('Body must be an array.');
-  }
-
-  const command = {
-    update: {
-      _index: this.aliasName,
-      _type: 'pages',
-      _id: page._id.toString(),
-    },
-  };
-
-  let document = {
-    path: page.path,
-    body: page.revision.body,
-    comment_count: page.commentCount,
-    bookmark_count: page.bookmarkCount || 0,
-    like_count: page.liker.length || 0,
-    updated_at: page.updatedAt,
-    tag_names: page.tagNames,
-  };
-
-  document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
-
-  body.push(command);
-  body.push({
-    doc: document,
-    doc_as_upsert: true,
-  });
-};
-
 SearchClient.prototype.prepareBodyForCreate = function(body, page) {
   if (!Array.isArray(body)) {
     throw new Error('Body must be an array.');
@@ -304,7 +271,7 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
   const command = {
     delete: {
-      _index: this.aliasName,
+      _index: this.indexName,
       _type: 'pages',
       _id: page._id.toString(),
     },
@@ -313,61 +280,20 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
   body.push(command);
 };
 
-SearchClient.prototype.addPages = async function(pages) {
-  const Bookmark = this.crowi.model('Bookmark');
-  const PageTagRelation = this.crowi.model('PageTagRelation');
-  const body = [];
-
-  /* eslint-disable no-await-in-loop */
-  for (const page of pages) {
-    page.bookmarkCount = await Bookmark.countByPageId(page._id);
-    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
-    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
-    this.prepareBodyForCreate(body, page);
-  }
-  /* eslint-enable no-await-in-loop */
-
-  logger.debug('addPages(): Sending Request to ES', body);
-  return this.client.bulk({
-    body,
-  });
-};
-
-SearchClient.prototype.updatePages = async function(pages) {
-  const self = this;
-  const PageTagRelation = this.crowi.model('PageTagRelation');
-  const body = [];
-
-  /* eslint-disable no-await-in-loop */
-  for (const page of pages) {
-    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
-    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
-    self.prepareBodyForUpdate(body, page);
-  }
-
-  logger.debug('updatePages(): Sending Request to ES', body);
-  return this.client.bulk({
-    body,
-  });
-};
-
-SearchClient.prototype.deletePages = function(pages) {
-  const self = this;
-  const body = [];
-
-  pages.map((page) => {
-    self.prepareBodyForDelete(body, page);
-    return;
-  });
-
-  logger.debug('deletePages(): Sending Request to ES', body);
-  return this.client.bulk({
-    body,
-  });
-};
-
 SearchClient.prototype.addAllPages = async function() {
   const Page = this.crowi.model('Page');
+  return this.updateOrInsertPages(() => Page.find());
+};
+
+SearchClient.prototype.updateOrInsertPageById = async function(pageId) {
+  const Page = this.crowi.model('Page');
+  return this.updateOrInsertPages(() => Page.findById(pageId));
+};
+
+/**
+ * @param {function} queryFactory factory method to generate a Mongoose Query instance
+ */
+SearchClient.prototype.updateOrInsertPages = async function(queryFactory) {
   const Bookmark = this.crowi.model('Bookmark');
   const PageTagRelation = this.crowi.model('PageTagRelation');
 
@@ -376,10 +302,12 @@ SearchClient.prototype.addAllPages = async function() {
   const shouldIndexed = this.shouldIndexed.bind(this);
   const bulkWrite = this.client.bulk.bind(this.client);
 
-  const criteria = { redirectTo: null };
-  const totalCount = await Page.count(criteria);
+  const findQuery = queryFactory().and({ redirectTo: null });
+  const countQuery = queryFactory().and({ redirectTo: null });
 
-  const readStream = Page.find(criteria)
+  const totalCount = await countQuery.count();
+
+  const readStream = findQuery
     // populate data which will be referenced by prepareBodyForCreate()
     .populate([
       { path: 'creator', model: 'User', select: 'username' },
@@ -506,6 +434,21 @@ SearchClient.prototype.addAllPages = async function() {
 
   return streamToPromise(readStream);
 
+};
+
+SearchClient.prototype.deletePages = function(pages) {
+  const self = this;
+  const body = [];
+
+  pages.map((page) => {
+    self.prepareBodyForDelete(body, page);
+    return;
+  });
+
+  logger.debug('deletePages(): Sending Request to ES', body);
+  return this.client.bulk({
+    body,
+  });
 };
 
 /**
@@ -939,76 +882,44 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   };
 };
 
-SearchClient.prototype.syncPageCreated = function(page, user, bookmarkCount = 0) {
-  debug('SearchClient.syncPageCreated', page.path);
+SearchClient.prototype.syncPageUpdated = async function(page, user) {
+  logger.debug('SearchClient.syncPageUpdated', page.path);
 
+  // delete if page should not indexed
   if (!this.shouldIndexed(page)) {
+    try {
+      await this.deletePages([page]);
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
     return;
   }
 
-  page.bookmarkCount = bookmarkCount;
-  this.addPages([page])
-    .then((res) => {
-      debug('ES Response', res);
-    })
-    .catch((err) => {
-      logger.error('ES Error', err);
-    });
+  return this.updateOrInsertPageById(page._id);
 };
 
-SearchClient.prototype.syncPageUpdated = function(page, user, bookmarkCount = 0) {
-  debug('SearchClient.syncPageUpdated', page.path);
-  // TODO delete
-  if (!this.shouldIndexed(page)) {
-    this.deletePages([page])
-      .then((res) => {
-        debug('deletePages: ES Response', res);
-      })
-      .catch((err) => {
-        logger.error('deletePages:ES Error', err);
-      });
-
-    return;
-  }
-
-  page.bookmarkCount = bookmarkCount;
-  this.updatePages([page])
-    .then((res) => {
-      debug('ES Response', res);
-    })
-    .catch((err) => {
-      logger.error('ES Error', err);
-    });
-};
-
-SearchClient.prototype.syncPageDeleted = function(page, user) {
+SearchClient.prototype.syncPageDeleted = async function(page, user) {
   debug('SearchClient.syncPageDeleted', page.path);
 
-  this.deletePages([page])
-    .then((res) => {
-      debug('deletePages: ES Response', res);
-    })
-    .catch((err) => {
-      logger.error('deletePages:ES Error', err);
-    });
+  try {
+    return await this.deletePages([page]);
+  }
+  catch (err) {
+    logger.error('deletePages:ES Error', err);
+  }
 };
 
 SearchClient.prototype.syncBookmarkChanged = async function(pageId) {
-  const Page = this.crowi.model('Page');
-  const Bookmark = this.crowi.model('Bookmark');
-  const page = await Page.findById(pageId);
-  const bookmarkCount = await Bookmark.countByPageId(pageId);
+  logger.debug('SearchClient.syncBookmarkChanged', pageId);
 
-  page.bookmarkCount = bookmarkCount;
-  this.updatePages([page])
-    .then((res) => { return debug('ES Response', res) })
-    .catch((err) => { return logger.error('ES Error', err) });
+  return this.updateOrInsertPageById(pageId);
 };
 
 SearchClient.prototype.syncTagChanged = async function(page) {
-  this.updatePages([page])
-    .then((res) => { return debug('ES Response', res) })
-    .catch((err) => { return logger.error('ES Error', err) });
+  logger.debug('SearchClient.syncTagChanged', page.path);
+
+  return this.updateOrInsertPageById(page._id);
 };
 
 
