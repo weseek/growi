@@ -282,7 +282,7 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
 SearchClient.prototype.addAllPages = async function() {
   const Page = this.crowi.model('Page');
-  return this.updateOrInsertPages(() => Page.find());
+  return this.updateOrInsertPages(() => Page.find(), true);
 };
 
 SearchClient.prototype.updateOrInsertPageById = async function(pageId) {
@@ -293,11 +293,12 @@ SearchClient.prototype.updateOrInsertPageById = async function(pageId) {
 /**
  * @param {function} queryFactory factory method to generate a Mongoose Query instance
  */
-SearchClient.prototype.updateOrInsertPages = async function(queryFactory) {
+SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmittingProgressEvent = false) {
   const Bookmark = this.crowi.model('Bookmark');
   const PageTagRelation = this.crowi.model('PageTagRelation');
 
   const searchEvent = this.searchEvent;
+
   const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
   const shouldIndexed = this.shouldIndexed.bind(this);
   const bulkWrite = this.client.bulk.bind(this.client);
@@ -409,8 +410,11 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory) {
 
         count += (res.items || []).length;
 
-        logger.info(`addAllPages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
-        searchEvent.emit('addPageProgress', totalCount, count, skipped);
+        logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
+
+        if (isEmittingProgressEvent) {
+          searchEvent.emit('addPageProgress', totalCount, count, skipped);
+        }
       }
       catch (err) {
         logger.error('addAllPages error on add anyway: ', err);
@@ -419,8 +423,11 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory) {
       callback();
     },
     final(callback) {
-      logger.info(`addAllPages has terminated: (totalCount=${totalCount}, skipped=${skipped})`);
-      searchEvent.emit('finishAddPage', totalCount, count, skipped);
+      logger.info(`Adding pages has terminated: (totalCount=${totalCount}, skipped=${skipped})`);
+
+      if (isEmittingProgressEvent) {
+        searchEvent.emit('finishAddPage', totalCount, count, skipped);
+      }
       callback();
     },
   });
