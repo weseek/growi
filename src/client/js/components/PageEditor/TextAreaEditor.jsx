@@ -244,7 +244,7 @@ export default class TextAreaEditor extends AbstractEditor {
       <React.Fragment>
         <input
           componentClass="textarea"
-          className="form-control"
+          className="textarea-editor"
           inputRef={(ref) => { this.textarea = ref }}
           defaultValue={this.state.value}
           onChange={(e) => {
