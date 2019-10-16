@@ -139,12 +139,12 @@ module.exports = function(crowi) {
     }
   };
 
-  bookmarkSchema.statics.removeBookmark = async function(page, user) {
+  bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
     const Bookmark = this;
 
     try {
-      const data = await Bookmark.findOneAndRemove({ page, user });
-      bookmarkEvent.emit('delete', page);
+      const data = await Bookmark.findOneAndRemove({ page: pageId, user });
+      bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
