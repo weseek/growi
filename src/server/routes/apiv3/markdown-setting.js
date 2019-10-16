@@ -30,7 +30,7 @@ module.exports = (crowi) => {
   const { ApiV3FormValidator } = crowi.middlewares;
 
   validator.presentationSetting = [
-    // body('').isBoolean(),
+    body('pageBreakOption').isInt().not().isEmpty(),
   ];
 
   /**
@@ -39,10 +39,10 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/markdown-setting/presentation:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [Users]
    *        description: Update presentation
    *        parameters:
-   *          - name: markdown:presentation:isEnabledPresentation
+   *          - name: markdown:presentation:isEnabledPrevention
    *            in: query
    *            description: enable presentation
    *            schema:
@@ -64,13 +64,12 @@ module.exports = (crowi) => {
    *                      description: new presentation params
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
-    if (req.body.isEnabledXss && req.body.presentationOption == null) {
-      return res.apiv3Err(new ErrorV3('presentation option is required'));
+    if (req.body.pageBreakOption === 3 && req.body.customRegularExpression === '') {
+      return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
 
     const presentationParams = {
-      'markdown:presentation:isEnabledPresentation': req.body.isEnabledPresentation,
-      'markdown:presentation:option': req.body.presentationOption,
+      'markdown:presentation:pageBreakOption': req.body.pageBreakOption,
     };
 
     try {

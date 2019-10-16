@@ -62,6 +62,7 @@ export default class MarkDownSettingContainer extends Container {
 
     const response = await this.appContainer.apiv3.put('/markdown-setting/presentation', {
       pageBreakOption: this.state.pageBreakOption,
+      customRegularExpression: this.state.customRegularExpression,
     });
 
     return response;
