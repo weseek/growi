@@ -24,7 +24,9 @@ body.on-edit {
 
       > .col-lg-10,
       > .col-md-9 {
+        flex: initial;
         width: 100%;
+        max-width: initial;
         padding: 0;
       }
     }
@@ -102,6 +104,7 @@ body.on-edit {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
+      background: initial !important; //override background color
     }
 
     h1#revision-path {
