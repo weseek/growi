@@ -13,11 +13,19 @@
 {% block content_main %}
 <div class="content-main">
 
-  <ul class="nav nav-tabs">
-    <li class="active"><a href="/me"><i class="icon-user"></i> {{ t('User Information') }}</a></li>
-    <li><a href="/me/external-accounts"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a></li>
-    <li><a href="/me/password"><i class="icon-lock"></i> {{ t('Password Settings') }}</a></li>
-    <li><a href="/me/apiToken"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a></li>
+  <ul class="nav nav-tabs user-page-content-menu mb-4" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" href="/me" role="tab" data-toggle="tab"><i class="icon-user"></i> {{ t('User Information') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/me/external-accounts" role="tab" data-toggle="tab"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/me/password" role="tab" data-toggle="tab"><i class="icon-lock"></i> {{ t('Password Settings') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/me/apiToken" role="tab" data-toggle="tab"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a>
+    </li>
   </ul>
 
   <div class="tab-content">
