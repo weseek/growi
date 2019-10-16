@@ -2,16 +2,16 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header d-flex bg-success">
-        <div class="modal-title h4 mr-auto">{{ t('New Page') }}</div>
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <div class="modal-header bg-primary">
+        <div class="modal-title text-white">{{ t('New Page') }}</div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
 
       <div class="modal-body">
 
         <form class="row form-horizontal" id="create-page-today" role="form">
           <fieldset class="col-12 mb-5">
-            <legend class="h5 text-center">{{ t("Create today's") }}</legend>
+            <h3 class="grw-modal-head pb-2">{{ t("Create today's") }}</h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
@@ -20,7 +20,7 @@
                 <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
               </div>
               <div class="create-page-button-container">
-                <button type="submit" class="fcbtn btn btn-outline btn-rounded btn-success btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
               </div>
             </div>
           </fieldset>
@@ -28,7 +28,7 @@
 
         <form class="row form-horizontal" id="create-page-under-tree" role="form">
           <fieldset class="col-12 mb-5">
-            <legend class="h5 text-center">{{ t('Create under') }}</legend>
+            <h3 class="grw-modal-head pb-2">{{ t('Create under') }}</h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 {% if searchConfigured() %}
@@ -38,7 +38,7 @@
                 {% endif %}
               </div>
               <div class="create-page-button-container">
-                <button type="submit" class="fcbtn btn btn-outline btn-rounded btn-success btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
               </div>
             </div>
           </fieldset>
@@ -47,16 +47,17 @@
         {% set templateParentPath = parentPath(path | preventXss | escape) %}
         <div id="template-form" class="row form-horizontal">
           <fieldset class="col-12">
-            <legend class="h5 text-center">{{ t('template.modal_label.Create template under', templateParentPath) }}</legend>
+            <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under', templateParentPath) }}</h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
+                  <!-- TODO:select box refactor -->
                   <option value="children" data-subtext="- {{ t('template.children.desc') }}">{{ t('template.children.label') }}(_template)</option>
                   <option value="decentants" data-subtext="- {{ t('template.decendants.desc') }}">{{ t('template.decendants.label') }}(__template)</option>
                 </select>
               </div>
               <div class="create-page-button-container my-auto">
-                <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline btn-rounded btn-success btn-1b disabled">
+                <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline-primary rounded-pill btn-1b disabled">
                   <i class="icon-fw icon-doc"></i>
                   <span id="create-template-button-link">{{ t('Edit') }}</span>
                 </a>
