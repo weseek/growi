@@ -96,6 +96,7 @@ class SavePageControls extends React.Component {
         }
 
         <div className="btn-group dropup">
+          <button type="button" className="btn btn-primary px-5">{labelSubmitButton}</button>
           <button
             type="button"
             id="spl-btn-submit"
@@ -103,7 +104,6 @@ class SavePageControls extends React.Component {
             data-toggle="dropdown"
             onClick={this.save}
           >
-            <span className="mx-auto pr-2">{labelSubmitButton}</span>
             <span className="sr-only">{labelSubmitButton}</span>
           </button>
           <div
