@@ -79,7 +79,7 @@
     <div class="navbar-header d-flex w-100">
 
       <!-- 1 GROWI logo -->
-      <a class="logo d-block top-left-part bg-grw-mos-green my-auto px-3" href="/">
+      <a class="logo d-block top-left-part bg-grw-mos-green my-auto" href="/">
         <div class="logo-mark _white d-inline-block">{% include '../widget/logo.html' %}</div>
         <span class="logo-text mx-3 text-white">
           {% set appTitle = appService.getAppTitle() %}
@@ -117,7 +117,7 @@
       </ul>
 
       <!-- 5 user action -->
-      <ul class="nav navbar-top-links flex-nowrap ml-auto my-auto">
+      <ul class="nav navbar-top-links flex-nowrap ml-auto mr-2 my-auto">
         {% if user and user.admin %}
         <li class="nav-item-admin mr-2 mr-lg-3 my-auto">
           <a class="text-white" href="/admin">

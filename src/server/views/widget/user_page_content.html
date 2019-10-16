@@ -1,17 +1,17 @@
-<div class="user-page-content">
-  <ul class="nav nav-tabs user-page-content-menu">
-    <li class="active">
-      <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
+<div class="user-page-content mb-4">
+  <ul class="nav nav-tabs user-page-content-menu mb-4" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" href="#user-bookmark-list" role="tab" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
     </li>
-    <li>
-      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recently Created</a>
+    <li class="nav-item">
+      <a class="nav-link" href="#user-created-list" role="tab" data-toggle="tab"><i class="icon-clock"></i> Recently Created</a>
     </li>
-    <li>
-      <a href="#user-draft-list" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
+    <li class="nav-item">
+      <a class="nav-link" href="#user-draft-list" role="tab" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
-    <li>
-      <a href="/me"><i class="icon-wrench"></i> Settings</a>
+    <li class="nav-item">
+      <a class="nav-link" href="/me" role="tab"><i class="icon-wrench"></i> Settings</a>
     </li>
     {% endif %}
   </ul>
