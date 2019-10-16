@@ -278,7 +278,8 @@ class GrantSelector extends React.Component {
   render() {
     return (
       <React.Fragment>
-        { this.renderGrantSelector() }
+        {/* FIXME: activate in GW-412 */}
+        {/* { this.renderGrantSelector() } */}
         { !this.props.disabled && this.renderSelectGroupModal() }
       </React.Fragment>
     );
