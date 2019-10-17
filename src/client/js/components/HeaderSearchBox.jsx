@@ -2,12 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Button from 'react-bootstrap/es/Button';
-import DropdownButton from 'react-bootstrap/es/DropdownButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
-import InputGroup from 'react-bootstrap/es/InputGroup';
-
 import SearchForm from './SearchForm';
 
 
@@ -66,14 +60,17 @@ class HeaderSearchBox extends React.Component {
       : 'All pages';
 
     return (
-      <FormGroup>
-        <InputGroup className="flex-nowrap">
-          <InputGroup.Button className="btn-group-dropdown-scope" data-toggle="dropdown">
-            <DropdownButton id="dbScope" className="pl-3 py-0" title={scopeLabel}>
-              <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
-              <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
-            </DropdownButton>
-          </InputGroup.Button>
+      <div className="form-group">
+        <div className="input-group flex-nowrap">
+          <div className="dropdown my-auto">
+            <span className="btn-group-dropdown-scope d-block dropdown-toggle pl-3 pr-2" id="dbScope" data-toggle="dropdown">
+              {scopeLabel}
+            </span>
+            <div className="dropdown-menu" aria-labelledby="dbScope">
+              <a className="dropdown-item" onClick={this.onClickAllPages}>All pages</a>
+              <a className="dropdown-item" onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</a>
+            </div>
+          </div>
           <SearchForm
             t={this.props.t}
             crowi={this.props.crowi}
@@ -81,13 +78,13 @@ class HeaderSearchBox extends React.Component {
             onSubmit={this.search}
             placeholder="Search ..."
           />
-          <InputGroup.Button className="btn-group-submit-search">
-            <Button bsStyle="link" onClick={this.search}>
+          <div className="btn-group-submit-search mr-2 my-1">
+            <span bsStyle="link" onClick={this.search}>
               <i className="icon-magnifier"></i>
-            </Button>
-          </InputGroup.Button>
-        </InputGroup>
-      </FormGroup>
+            </span>
+          </div>
+        </div>
+      </div>
     );
   }
 

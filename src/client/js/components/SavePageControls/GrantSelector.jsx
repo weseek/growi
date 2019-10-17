@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import FormControl from 'react-bootstrap/es/FormControl';
-import ListGroup from 'react-bootstrap/es/ListGroup';
-import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
-import Modal from 'react-bootstrap/es/Modal';
+// TODO: GW-333
+// import FormGroup from 'react-bootstrap/es/FormGroup';
+// import FormControl from 'react-bootstrap/es/FormControl';
+// import ListGroup from 'react-bootstrap/es/ListGroup';
+// import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
+
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 
@@ -258,17 +262,15 @@ class GrantSelector extends React.Component {
       <Modal
         className="select-grant-group"
         container={this}
-        show={this.state.isSelectGroupModalShown}
-        onHide={this.hideSelectGroupModal}
+        isOpen={this.state.isSelectGroupModalShown}
+        toggle={this.hideSelectGroupModal}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>
-              Select a Group
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader toggle={this.hideSelectGroupModal}>
+          Select a Group
+        </ModalHeader>
+        <ModalBody>
           {content}
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }
@@ -276,7 +278,8 @@ class GrantSelector extends React.Component {
   render() {
     return (
       <React.Fragment>
-        { this.renderGrantSelector() }
+        {/* FIXME: activate in GW-412 */}
+        {/* { this.renderGrantSelector() } */}
         { !this.props.disabled && this.renderSelectGroupModal() }
       </React.Fragment>
     );

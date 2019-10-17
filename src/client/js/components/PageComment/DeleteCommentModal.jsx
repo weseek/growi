@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { format } from 'date-fns';
 
@@ -35,25 +36,25 @@ export default class DeleteCommentModal extends React.Component {
     commentBody = <span style={{ whiteSpace: 'pre-wrap' }}>{commentBody}</span>;
 
     return (
-      <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-comment-delete-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>
+      <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-comment-delete-modal">
+        <ModalHeader toggle={this.props.cancel}>
+          <span>
             <i className="icon-fw icon-fire text-danger"></i>
             Delete comment?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+          </span>
+        </ModalHeader>
+        <ModalBody>
           <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
           <p className="well well-sm comment-body m-t-5">{commentBody}</p>
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <span className="text-danger">{this.props.errorMessage}</span>&nbsp;
           <Button onClick={this.props.cancel} bsClass="btn btn-sm">Cancel</Button>
           <Button onClick={this.props.confirmedToDelete} bsClass="btn btn-sm btn-danger">
             <i className="icon icon-fire"></i>
             Delete
           </Button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
