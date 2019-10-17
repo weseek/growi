@@ -169,7 +169,9 @@ Environment Variables
       * `local` : Server's Local file system (Setting-less)
       * `none` : Disable file uploading
     * MAX_FILE_SIZE: The maximum file size limit for uploads (bytes). default: `Infinity`
+    * FILE_UPLOAD_TOTAL_LIMIT: Total capacity limit for uploads (bytes). default: `Infinity`
     * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
+      * MONGO_GRIDFS_TOTAL_LIMIT setting  takes precedence over FILE_UPLOAD_TOTAL_LIMIT.
     * SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: If `true`, the system uses only the value of the environment variable as the value of the SAML option that can be set via the environment variable.
     * PUBLISH_OPEN_API: Publish GROWI OpenAPI resources with [ReDoc](https://github.com/Rebilly/ReDoc). Visit `/api-docs`.
     * FORCE_WIKI_MODE: Forces wiki mode. default: undefined
