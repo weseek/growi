@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO: GW-333
-// import Pagination from 'react-bootstrap/lib/Pagination';
+import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -102,20 +101,23 @@ class RecentCreated extends React.Component {
     const paginationItems = [];
     if (activePage !== 1) {
       paginationItems.push(
-        <Pagination.First key="first" onClick={() => { return this.getRecentCreatedList(1) }} />,
-      );
-      paginationItems.push(
-        <Pagination.Prev key="prev" onClick={() => { return this.getRecentCreatedList(this.state.activePage - 1) }} />,
+        <PaginationItem>
+          <PaginationLink first onClick={() => { return this.getRecentCreatedList(1) }} />
+        </PaginationItem>,
+        <PaginationItem>
+          <PaginationLink previous onClick={() => { return this.getRecentCreatedList(this.state.activePage - 1) }} />
+        </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.First key="first" disabled />,
+        <PaginationItem disabled>
+          <PaginationLink first />
+        </PaginationItem>,
+        <PaginationItem disabled>
+          <PaginationLink previous />
+        </PaginationItem>,
       );
-      paginationItems.push(
-        <Pagination.Prev key="prev" disabled />,
-      );
-
     }
     return paginationItems;
   }
@@ -129,7 +131,9 @@ class RecentCreated extends React.Component {
     const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
-        <Pagination.Item key={number} active={number === activePage} onClick={() => { return this.getRecentCreatedList(number) }}>{number}</Pagination.Item>,
+        <PaginationItem active={number === activePage}>
+          <PaginationLink key={number} onClick={() => { return this.getRecentCreatedList(number) }}>{number}</PaginationLink>
+        </PaginationItem>,
       );
     }
     return paginationItems;
@@ -144,20 +148,23 @@ class RecentCreated extends React.Component {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
-        <Pagination.Next key="next" onClick={() => { return this.getRecentCreatedList(this.state.activePage + 1) }} />,
-      );
-      paginationItems.push(
-        <Pagination.Last key="last" onClick={() => { return this.getRecentCreatedList(totalPage) }} />,
+        <PaginationItem>
+          <PaginationLink next onClick={() => { return this.getRecentCreatedList(this.state.activePage + 1) }} />
+        </PaginationItem>,
+        <PaginationItem>
+          <PaginationLink last onClick={() => { return this.getRecentCreatedList(totalPage) }} />
+        </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.Next key="next" disabled />,
+        <PaginationItem disabled>
+          <PaginationLink next />
+        </PaginationItem>,
+        <PaginationItem disabled>
+          <PaginationLink last />
+        </PaginationItem>,
       );
-      paginationItems.push(
-        <Pagination.Last key="last" disabled />,
-      );
-
     }
     return paginationItems;
 
@@ -173,18 +180,18 @@ class RecentCreated extends React.Component {
     const paginationStart = this.state.paginationNumbers.paginationStart;
     const maxViewPageNum = this.state.paginationNumbers.maxViewPageNum;
     const firstPrevItems = this.generateFirstPrev(activePage);
-    paginationItems.push(firstPrevItems);
+    paginationItems.push(...firstPrevItems);
     const paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
-    paginationItems.push(paginations);
+    paginationItems.push(...paginations);
     const nextLastItems = this.generateNextLast(activePage, totalPage);
-    paginationItems.push(nextLastItems);
+    paginationItems.push(...nextLastItems);
 
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat">
           {pageList}
         </ul>
-        <Pagination bsSize="small">{paginationItems}</Pagination>
+        <Pagination size="sm">{paginationItems}</Pagination>
       </div>
     );
   }
