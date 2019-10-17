@@ -57,6 +57,7 @@ import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
+import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer'
 
 const logger = loggerFactory('growi:app');
 
@@ -171,6 +172,19 @@ if (adminUsersElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUsersElem,
+  );
+}
+
+const adminExternalAccountsElem = document.getElementById('admin-external-account');
+if (adminExtenralAccountsElem != null) {
+  const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminExternalAccountsContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <ManageExternalAccount />
+      </I18nextProvider>
+    </Provider>,
+    adminExternalAccountsElem,
   );
 }
 

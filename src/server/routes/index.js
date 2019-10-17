@@ -134,7 +134,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/users.resetPassword'  , loginRequiredStrictly , adminRequired , csrf, admin.user.resetPassword);
 
   app.get('/admin/users/external-accounts'               , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
-  app.post('/admin/users/external-accounts/:id/remove'   , loginRequiredStrictly , adminRequired , admin.externalAccount.remove);
+  app.post('/_api/admin/users/external-accounts/:id/remove'   , loginRequiredStrictly , adminRequired , admin.externalAccount.remove);
 
   // user-groups admin
   app.get('/admin/user-groups'             , loginRequiredStrictly, adminRequired, admin.userGroup.index);

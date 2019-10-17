@@ -11,6 +11,8 @@ class ManageExternalAccount extends React.Component {
   constructor(props) {
     super(props);
 
+    const { appContainer } = this.props;
+    
     this.state = {
     };
   }
