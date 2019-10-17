@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import GrowiZipUploadForm from './GrowiZipUploadForm';
-import GrowiZipImportForm from './GrowiZipImportForm';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+import GrowiZipUploadForm from './GrowiZipUploadForm';
+import GrowiZipImportForm from './GrowiZipImportForm';
 
 class GrowiZipImportSection extends React.Component {
 
@@ -72,17 +73,7 @@ class GrowiZipImportSection extends React.Component {
 
     return (
       <Fragment>
-        <legend>{t('importer_management.import_form_growi')}</legend>
-
-        <div className="alert alert-warning">
-          <i className="icon-exclamation"></i> { t('importer_management.beta_warning') }
-        </div>
-
-        <div className="well well-sm small">
-          <ul>
-            <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
-          </ul>
-        </div>
+        <h2>{t('importer_management.import_form_growi')}</h2>
 
         {this.state.fileName ? (
           <Fragment>

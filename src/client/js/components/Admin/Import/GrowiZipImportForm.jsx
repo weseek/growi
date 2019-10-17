@@ -145,15 +145,22 @@ class GrowiImportForm extends React.Component {
                   );
                 })}
             </tbody>
-          </table>
+
+        <div className="row">
+          <div className="col-xs-12 text-center">
+            <div className="well well-sm small">
+              <ul>
+                <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
+              </ul>
         </div>
-        <div className="col-xs-12 text-center">
+
           <button type="submit" className="btn btn-primary mx-1" disabled={!this.validateForm()}>
             { t('importer_management.import') }
           </button>
           <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
             { t('importer_management.growi_settings.discard') }
           </button>
+        </div>
         </div>
       </form>
     );
