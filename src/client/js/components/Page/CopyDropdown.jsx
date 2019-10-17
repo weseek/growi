@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Dropdown from 'react-bootstrap/es/Dropdown';
-import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -57,49 +56,49 @@ export default class CopyDropdown extends React.Component {
 
         <Dropdown.Menu>
           <h5 className="ml-3 my-0 text-muted">{ t('copy_to_clipboard.Copy to clipboard') }</h5>
-          <MenuItem divider></MenuItem>
+          <span className="divider"></span>
 
           {/* Page path */}
           <CopyToClipboard text={this.props.pagePath} onCopy={this.showToolTip}>
-            <MenuItem>
+            <a role="menuitem" tabIndex="-1" href="#">
               <div className="d-inline-flex flex-column">
                 <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Page path') }</strong></h6>
                 <span className="small">{safePagePath}</span>
               </div>
-            </MenuItem>
+            </a>
           </CopyToClipboard>
           {/* Parmanent Link */}
           { this.props.pageId && (
             <CopyToClipboard text={url} onCopy={this.showToolTip}>
-              <MenuItem>
+              <a role="menuitem" tabIndex="-1" href="#">
                 <div className="d-inline-flex flex-column">
                   <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Parmanent link') }</strong></h6>
                   <span className="small">{url}</span>
                 </div>
-              </MenuItem>
+              </a>
             </CopyToClipboard>
           )}
           {/* Page path + Parmanent Link */}
           { this.props.pageId && (
             <CopyToClipboard text={`${this.props.pagePath}\n${url}`} onCopy={this.showToolTip}>
-              <MenuItem>
+              <a role="menuitem" tabIndex="-1" href="#">
                 <div className="d-inline-flex flex-column">
                   <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Page path and parmanent link') }</strong></h6>
                   <span className="small mb-1">{safePagePath}</span><br></br>
                   <span className="small">{url}</span>
                 </div>
-              </MenuItem>
+              </a>
             </CopyToClipboard>
           )}
           {/* Markdown Link */}
           { this.props.pageId && (
             <CopyToClipboard text={`[${this.props.pagePath}](${url})`} onCopy={this.showToolTip}>
-              <MenuItem>
+              <a role="menuitem" tabIndex="-1" href="#">
                 <div className="d-inline-flex flex-column">
                   <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Markdown link') }</strong></h6>
                   <span className="small">{`[${safePagePath}](${url})`}</span>
                 </div>
-              </MenuItem>
+              </a>
             </CopyToClipboard>
           )}
         </Dropdown.Menu>
