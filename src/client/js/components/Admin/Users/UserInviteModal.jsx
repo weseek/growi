@@ -4,8 +4,8 @@ import { withTranslation } from 'react-i18next';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
+// import Button from 'react-bootstrap/es/Button';
+// import Modal from 'react-bootstrap/es/Modal';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
