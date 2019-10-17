@@ -743,7 +743,12 @@
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",
       "upload": "アップロード",
-      "discard": "アップロードしたデータを破棄する"
+      "discard": "アップロードしたデータを破棄する",
+      "errors": {
+        "at_least_one": "コレクションが選択されていません",
+        "page_and_revision": "'Pages' と 'Revisions' はセットでインポートする必要があります",
+        "depends": "'{{condition}}' をインポートする場合は、'{{target}}' を一緒に選択する必要があります"
+      }
     },
     "esa_settings": {
       "team_name": "チーム名",

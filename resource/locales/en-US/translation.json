@@ -758,7 +758,12 @@
       "extracted_file": "Extracted File",
       "collection": "Collection",
       "upload": "Upload",
-      "discard": "Discard Uploaded Data"
+      "discard": "Discard Uploaded Data",
+      "errors": {
+        "at_least_one": "Select one or more collections.",
+        "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
+        "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
+      }
     },
     "esa_settings": {
       "team_name": "Team name",

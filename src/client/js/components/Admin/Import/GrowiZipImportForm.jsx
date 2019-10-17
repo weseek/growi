@@ -113,16 +113,18 @@ class GrowiImportForm extends React.Component {
   }
 
   async validateCollectionSize(validationErrors) {
+    const { t } = this.props;
     const { errorsForOtherGroups, selectedCollections } = this.state;
 
     if (selectedCollections.size === 0) {
-      errorsForOtherGroups.push('select collections at least one');
+      errorsForOtherGroups.push(t('importer_management.growi_settings.errors.at_least_one'));
     }
 
     this.setState({ errorsForOtherGroups });
   }
 
   async validatePagesCollectionPairs() {
+    const { t } = this.props;
     const { errorsForPageGroups, selectedCollections } = this.state;
 
     const pageRelatedCollectionsLength = ['pages', 'revisions'].filter((collectionName) => {
@@ -131,19 +133,20 @@ class GrowiImportForm extends React.Component {
 
     // MUST be included both or neither when importing
     if (pageRelatedCollectionsLength !== 0 && pageRelatedCollectionsLength !== 2) {
-      errorsForPageGroups.push('pages and revisions must be paried');
+      errorsForPageGroups.push(t('importer_management.growi_settings.errors.page_and_revision'));
     }
 
     this.setState({ errorsForPageGroups });
   }
 
   async validateExternalAccounts() {
+    const { t } = this.props;
     const { errorsForUserGroups, selectedCollections } = this.state;
 
     // MUST include also 'users' if 'externalaccounts' is selected
     if (selectedCollections.has('externalaccounts')) {
       if (!selectedCollections.has('users')) {
-        errorsForUserGroups.push('must include users when including externalaccounts');
+        errorsForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Users', condition: 'Externalaccounts' }));
       }
     }
 
@@ -151,12 +154,13 @@ class GrowiImportForm extends React.Component {
   }
 
   async validateUserGroups() {
+    const { t } = this.props;
     const { errorsForUserGroups, selectedCollections } = this.state;
 
     // MUST include also 'users' if 'usergroups' is selected
     if (selectedCollections.has('usergroups')) {
       if (!selectedCollections.has('users')) {
-        errorsForUserGroups.push('must include users when including usergroups');
+        errorsForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Users', condition: 'Usergroups' }));
       }
     }
 
@@ -164,12 +168,13 @@ class GrowiImportForm extends React.Component {
   }
 
   async validateUserGroupRelations() {
+    const { t } = this.props;
     const { errorsForUserGroups, selectedCollections } = this.state;
 
     // MUST include also 'usergroups' if 'usergrouprelations' is selected
     if (selectedCollections.has('usergrouprelations')) {
       if (!selectedCollections.has('usergroups')) {
-        errorsForUserGroups.push('must include usergroups when including usergrouprelations');
+        errorsForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Usergroups', condition: 'Usergrouprelations' }));
       }
     }
 
@@ -329,11 +334,11 @@ class GrowiImportForm extends React.Component {
         </div>
 
         <div className="mt-5 text-center">
-          <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!this.state.canImport}>
-            { t('importer_management.import') }
-          </button>
           <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
             { t('importer_management.growi_settings.discard') }
+          </button>
+          <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!this.state.canImport}>
+            { t('importer_management.import') }
           </button>
         </div>
       </>
