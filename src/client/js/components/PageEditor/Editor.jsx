@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 
 import { Subscribe } from 'unstated';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
+
 import Dropzone from 'react-dropzone';
 
 import EditorContainer from '../../services/EditorContainer';
@@ -256,13 +259,13 @@ export default class Editor extends AbstractEditor {
     };
 
     return (
-      <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
-        <Modal.Header closeButton>
-          <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="pt-1">
+      <Modal isOpen={this.state.isCheatsheetModalShown} toggle={hideCheatsheetModal} className="modal modal-gfm-cheatsheet">
+        <ModalHeader closeButton className="bg-primary">
+          <span className="text-white"><i className="icon-fw icon-question" />Markdown Help</span>
+        </ModalHeader>
+        <ModalBody>
           <Cheatsheet />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }
