@@ -6,8 +6,8 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
-const { isEmail } = require('validator');
+const { param } = require('express-validator/check');
+
 
 const validator = {};
 
@@ -23,17 +23,18 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const { ErrorV3, ExternalAccount, } = crowi.models;
+  const { ErrorV3, ExternalAccount } = crowi.models;
 
   validator.delete = [
     param('id').trim().exists({ checkFalsy: true }),
   ];
+  const { ApiV3FormValidator } = crowi.middlewares;
 
-    /**
+  /**
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}:
+   *    /_api/v3/users/external-accounts/{id}/remove:
    *      delete:
    *        tags: [ExternalAccount]
    *        description: Delete ExternalAccount
@@ -51,11 +52,11 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    externalAccounts:
+   *                    externalAccount:
    *                      type: object
    *                      description: A result of `ExtenralAccount.findByIdAndRemove`
    */
-  router.delete('/:id.remove', loginRequiredStrictly, adminRequired, csrf, validator.delete, ApiV3FormValidator, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, validator.delete, ApiV3FormValidator, async(req, res) => {
     const { id: deleteExtenralAccountId } = req.params;
 
     try {
@@ -71,4 +72,4 @@ module.exports = (crowi) => {
   });
 
 
-}
+};

@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
-import { isThisSecond } from 'date-fns/esm';
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:UserGroupDetailContainer');
@@ -18,7 +18,7 @@ export default class AdminExternalAccountContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-        exteranalAccounts: JSON.parse(document.getElementById('admin-external-account-setting').getAttribute('external-account')) || [],
+      exteranalAccounts: JSON.parse(document.getElementById('admin-external-account-setting').getAttribute('external-account')) || [],
     };
 
   }
@@ -27,7 +27,19 @@ export default class AdminExternalAccountContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'AdminExternalAccountContainer';
+    return 'AdminExternalAccountsContainer';
+  }
+
+  /**
+   * remove external account
+   *
+   * @memberOf AdminExternalAccountsContainer
+   * @param {string} externalAccountId id of the External Account to be removed
+   */
+  async removeExternal(externalAccountId) {
+    const res = await this.appContainer.apiv3.delete(`/users/external-accounts/${externalAccountId}/remove`);
+    const externalAccountData = res.data.exteranalAccount;
+    return externalAccountData;
   }
 
 }
