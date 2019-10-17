@@ -753,7 +753,7 @@
     "import_form_growi": "Import from GROWI",
     "growi_settings": {
       "overwrite_documents": "Imported documents will overwrite existing documents",
-      "zip_file": "Zip File",
+      "zip_file": "Exported Zip File",
       "uploaded_data": "Uploaded Data",
       "extracted_file": "Extracted File",
       "collection": "Collection",
