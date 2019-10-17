@@ -2,8 +2,13 @@
 
 ## 3.5.17-RC
 
+* Feature: Upload to GCS (Google Cloud Storage)
+* Feature: Statistics API
+* Improvement: Export progress bar
+* Improvement: Reactify admin pages
 * Fix: Use HTTP PlantUML URL in default
     * Introduced by 3.5.12
+* Support: REPL with `console` npm scripts
 
 ## 3.5.16
 
