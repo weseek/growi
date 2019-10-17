@@ -294,6 +294,8 @@ SearchClient.prototype.updateOrInsertPageById = async function(pageId) {
  * @param {function} queryFactory factory method to generate a Mongoose Query instance
  */
 SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmittingProgressEvent = false) {
+  const Page = this.crowi.model('Page');
+  const { PageQueryBuilder } = Page;
   const Bookmark = this.crowi.model('Bookmark');
   const PageTagRelation = this.crowi.model('PageTagRelation');
 
@@ -303,8 +305,8 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmit
   const shouldIndexed = this.shouldIndexed.bind(this);
   const bulkWrite = this.client.bulk.bind(this.client);
 
-  const findQuery = queryFactory().and({ redirectTo: null });
-  const countQuery = queryFactory().and({ redirectTo: null });
+  const findQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
+  const countQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
 
   const totalCount = await countQuery.count();
 
