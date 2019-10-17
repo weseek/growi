@@ -255,7 +255,7 @@ class MyDraftList extends React.Component {
             <div className="tab-pane m-t-30 accordion" id="draft-list">
               {draftList}
             </div>
-            <Pagination bsSize="small">{paginationItems}</Pagination>
+            <Pagination className="btn-sm">{paginationItems}</Pagination>
           </React.Fragment>
         ) }
 

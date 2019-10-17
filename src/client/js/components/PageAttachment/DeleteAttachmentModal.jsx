@@ -72,7 +72,7 @@ export default class DeleteAttachmentModal extends React.Component {
     const renderAttachment = this.renderByFileFormat(attachment);
 
     return (
-      <Modal {...props} className="attachment-delete-modal" bsSize="large" aria-labelledby="contained-modal-title-lg">
+      <Modal {...props} className="attachment-delete-modal btn-lg" aria-labelledby="contained-modal-title-lg">
         <ModalHeader closeButton>
           <span id="contained-modal-title-lg">Delete attachment?</span>
         </ModalHeader>
