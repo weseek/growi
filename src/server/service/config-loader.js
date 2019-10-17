@@ -259,10 +259,12 @@ class ConfigLoader {
     const configFromDB = await this.loadFromDB();
     const configFromEnvVars = this.loadFromEnvVars();
 
-    // merge defaults
-    let mergedConfigFromDB = Object.assign({ crowi: this.configModel.getDefaultCrowiConfigsObject() }, configFromDB);
-    mergedConfigFromDB = Object.assign({ markdown: this.configModel.getDefaultMarkdownConfigsObject() }, mergedConfigFromDB);
-    mergedConfigFromDB = Object.assign({ notification: this.configModel.getDefaultNotificationConfigsObject() }, mergedConfigFromDB);
+    // merge defaults per ns
+    const mergedConfigFromDB = {
+      crowi: Object.assign(this.configModel.getDefaultCrowiConfigsObject(), configFromDB.crowi),
+      markdown: Object.assign(this.configModel.getDefaultMarkdownConfigsObject(), configFromDB.markdown),
+      notification: Object.assign(this.configModel.getDefaultNotificationConfigsObject(), configFromDB.notification),
+    };
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
     // So, if a value loaded from the database is emtpy,
