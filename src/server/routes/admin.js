@@ -91,6 +91,14 @@ module.exports = function(crowi, app) {
     return pager;
   }
 
+  // setup websocket event for rebuild index
+  searchEvent.on('addPageProgress', (total, current, skip) => {
+    crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
+  });
+  searchEvent.on('finishAddPage', (total, current, skip) => {
+    crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
+  });
+
   actions.index = function(req, res) {
     return res.render('admin/index', {
       plugins: pluginUtils.listPlugins(crowi.rootDir),
@@ -1144,14 +1152,12 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
     }
 
-    searchEvent.on('addPageProgress', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
-    });
-    searchEvent.on('finishAddPage', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
-    });
-
-    await search.buildIndex();
+    try {
+      search.buildIndex();
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
 
     return res.json(ApiResponse.success());
   };

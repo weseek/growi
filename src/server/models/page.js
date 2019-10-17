@@ -923,21 +923,6 @@ module.exports = function(crowi) {
     return { templateBody, templateTags };
   };
 
-  /**
-   * Bulk get (for internal only)
-   */
-  pageSchema.statics.getStreamOfFindAll = function(options) {
-    const criteria = { redirectTo: null };
-
-    return this.find(criteria)
-      .populate([
-        { path: 'creator', model: 'User' },
-        { path: 'revision', model: 'Revision' },
-      ])
-      .lean()
-      .cursor();
-  };
-
   async function pushRevision(pageData, newRevision, user) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
@@ -1382,10 +1367,6 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.addSlashOfEnd = function(path) {
     return addSlashOfEnd(path);
-  };
-
-  pageSchema.statics.allPageCount = function() {
-    return this.count({ redirectTo: null });
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;

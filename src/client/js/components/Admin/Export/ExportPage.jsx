@@ -9,9 +9,10 @@ import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+import ProgressBar from '../Common/ProgressBar';
+
 import ExportZipFormModal from './ExportZipFormModal';
 import ZipFileTable from './ZipFileTable';
-import ExportingProgressBar from './ExportingProgressBar';
 
 class ExportPage extends React.Component {
 
@@ -158,7 +159,7 @@ class ExportPage extends React.Component {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
         <div className="col-md-6" key={collectionName}>
-          <ExportingProgressBar
+          <ProgressBar
             header={collectionName}
             currentCount={currentCount}
             totalCount={totalCount}
@@ -181,7 +182,7 @@ class ExportPage extends React.Component {
     return (
       <div className="row px-3">
         <div className="col-md-12" key="progressBarForZipping">
-          <ExportingProgressBar
+          <ProgressBar
             header="Zip Files"
             currentCount={1}
             totalCount={1}
