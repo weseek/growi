@@ -769,10 +769,12 @@
   },
   "export_management": {
     "beta_warning": "この機能はベータ版です",
+    "exporting_data_list": "エクスポート中のデータ",
     "exported_data_list": "エクスポートデータリスト",
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
+    "desc_password_seed": "ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。",
     "create_new_exported_data": "エクスポートデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",

@@ -70,6 +70,7 @@ function Crowi(rootdir) {
     search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
     tag: new (require(`${self.eventsDir}tag`))(this),
+    admin: new (require(`${self.eventsDir}admin`))(this),
   };
 }
 
