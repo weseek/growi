@@ -24,9 +24,7 @@ body.on-edit {
 
       > .col-lg-10,
       > .col-md-9 {
-        flex: initial;
         width: 100%;
-        max-width: initial;
         padding: 0;
       }
     }
@@ -87,43 +85,8 @@ body.on-edit {
     padding-bottom: 0;
   }
 
-  .row.bg-title {
-    $left-margin: $nav-main-left-tab-width * 2 + 25px; // width of .nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px + 46px; //                width of all of nav-main-right-tab
-
-    position: absolute;
-    left: $left-margin;
-    z-index: 7; // forward than .CodeMirror-vscrollbar
-    width: calc(100% - #{$left-margin} - #{$right-margin});
-    padding-top: 3px;
-    pointer-events: none; // disable pointer-events because it becomes an obstacle
-
-    background: none;
-
-    > .header-container {
-      width: 100%; //   for crowi layout
-      padding: 0; //    for crowi layout
-      pointer-events: initial; // enable pointer-events
-      background: initial !important; //override background color
-    }
-
-    h1#revision-path {
-      @include variable-font-size(20px);
-      line-height: 1em;
-
-      // nowrap even if the path is too long
-      .d-flex {
-        flex-wrap: nowrap;
-      }
-
-      .path-segment {
-        white-space: nowrap;
-      }
-    }
-
-    .tag-viewer.new-page {
-      display: block;
-    }
+  .bg-title {
+    display: none;
   }
 
   .page-editor-footer {
