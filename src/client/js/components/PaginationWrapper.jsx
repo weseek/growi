@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import Pagination from 'react-bootstrap/lib/Pagination';
+import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
@@ -71,20 +72,23 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     if (activePage !== 1) {
       paginationItems.push(
-        <Pagination.First key="first" onClick={() => { return this.props.changePage(1) }} />,
-      );
-      paginationItems.push(
-        <Pagination.Prev key="prev" onClick={() => { return this.props.changePage(activePage - 1) }} />,
+        <PaginationItem>
+          <PaginationLink first onClick={() => { return this.props.changePage(1) }} />,
+        </PaginationItem>,
+        <PaginationItem>
+          <PaginationLink previous onClick={() => { return this.props.changePage(activePage - 1) }} />,
+        </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.First key="first" disabled />,
+        <PaginationItem disabled>
+          <PaginationLink first />,
+        </PaginationItem>,
+        <PaginationItem disabled>
+          <PaginationLink previous />,
+        </PaginationItem>,
       );
-      paginationItems.push(
-        <Pagination.Prev key="prev" disabled />,
-      );
-
     }
     return paginationItems;
   }
@@ -98,7 +102,9 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
-        <Pagination.Item key={number} active={number === activePage} onClick={() => { return this.props.changePage(number) }}>{number}</Pagination.Item>,
+        <PaginationItem active={number === activePage}>
+          <PaginationLink onClick={() => { return this.props.changePage(number) }}>{number}</PaginationLink>
+        </PaginationItem>,
       );
     }
     return paginationItems;
@@ -113,20 +119,23 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
-        <Pagination.Next key="next" onClick={() => { return this.props.changePage(activePage + 1) }} />,
-      );
-      paginationItems.push(
-        <Pagination.Last key="last" onClick={() => { return this.props.changePage(totalPage) }} />,
+        <PaginationItem>
+          <PaginationLink next onClick={() => { return this.props.changePage(activePage + 1) }} />,
+        </PaginationItem>,
+        <PaginationItem>
+          <PaginationLink last onClick={() => { return this.props.changePage(totalPage) }} />,
+        </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.Next key="next" disabled />,
+        <PaginationItem disabled>
+          <PaginationLink next />,
+        </PaginationItem>,
+        <PaginationItem disabled>
+          <PaginationLink last />,
+        </PaginationItem>,
       );
-      paginationItems.push(
-        <Pagination.Last key="last" disabled />,
-      );
-
     }
     return paginationItems;
 
@@ -149,7 +158,7 @@ class PaginationWrapper extends React.Component {
     return (
       <React.Fragment>
         <div>
-          <Pagination bsSize="small">{paginationItems}</Pagination>
+          <Pagination size="sm">{paginationItems}</Pagination>
         </div>
       </React.Fragment>
     );
