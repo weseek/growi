@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 
 import { format, formatDistanceStrict } from 'date-fns';
 
-import Button from 'react-bootstrap/es/Button';
-import Tooltip from 'react-bootstrap/es/Tooltip';
-import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
-import Collapse from 'react-bootstrap/es/Collapse';
+// TODO: GW-333
+// import Tooltip from 'react-bootstrap/es/Tooltip';
+// import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+
+import {
+  Button,
+  Collapse,
+} from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -202,7 +206,7 @@ class Comment extends React.Component {
     const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
     const toggleButton = (
       <Button
-        bsStyle="link"
+        color="link"
         className="page-comments-list-toggle-older"
         onClick={() => { this.setState({ isOlderRepliesShown: !isOlderRepliesShown }) }}
       >
@@ -225,7 +229,7 @@ class Comment extends React.Component {
       <React.Fragment>
         { areThereHiddenReplies && (
           <div className="page-comments-hidden-replies">
-            <Collapse in={this.state.isOlderRepliesShown}>
+            <Collapse isOpen={this.state.isOlderRepliesShown}>
               <div>{hiddenElements}</div>
             </Collapse>
             <div className="text-center">{toggleButton}</div>

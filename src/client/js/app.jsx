@@ -112,8 +112,9 @@ if (pageContainer.state.pageId != null) {
     'page-comment-write':  <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
-    'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
-    'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
+    // TODO: GW-333
+    // 'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
+    // 'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
     'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,

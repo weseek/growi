@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Pagination from 'react-bootstrap/lib/Pagination';
+// TODO: GW-333
+// import Pagination from 'react-bootstrap/lib/Pagination';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';

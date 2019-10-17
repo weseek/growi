@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
+
+import {
+  Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
@@ -70,23 +73,23 @@ export default class DeleteAttachmentModal extends React.Component {
 
     return (
       <Modal {...props} className="attachment-delete-modal" bsSize="large" aria-labelledby="contained-modal-title-lg">
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-lg">Delete attachment?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader closeButton>
+          <span id="contained-modal-title-lg">Delete attachment?</span>
+        </ModalHeader>
+        <ModalBody>
           {renderAttachment}
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <div className="mr-3 d-inline-block">
             {deletingIndicator}
           </div>
           <Button
+            color="danger"
             onClick={this._onDeleteConfirm}
-            bsStyle="danger"
             disabled={this.props.deleting}
           >Delete!
           </Button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

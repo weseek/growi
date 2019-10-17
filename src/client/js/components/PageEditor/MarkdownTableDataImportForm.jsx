@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/es/Button';
-import Collapse from 'react-bootstrap/es/Collapse';
+import {
+  Button,
+  Collapse,
+} from 'reactstrap';
+
 import MarkdownTable from '../../models/MarkdownTable';
 
 export default class MarkdownTableDataImportForm extends React.Component {
@@ -73,7 +76,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
             onChange={(e) => { return this.setState({ data: e.target.value }) }}
           />
         </div>
-        <Collapse in={this.state.parserErrorMessage != null}>
+        <Collapse isOpen={this.state.parserErrorMessage != null}>
           <div className="form-group">
             <label htmlFor="data-import-form-type-textarea-alert">Parse Error</label>
             <textarea
@@ -86,8 +89,8 @@ export default class MarkdownTableDataImportForm extends React.Component {
           </div>
         </Collapse>
         <div className="d-flex justify-content-end">
-          <Button bsStyle="default" onClick={this.props.onCancel}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.importButtonHandler}>Import</Button>
+          <Button color="secondary" onClick={this.props.onCancel}>Cancel</Button>
+          <Button color="primary" onClick={this.importButtonHandler}>Import</Button>
         </div>
       </form>
     );

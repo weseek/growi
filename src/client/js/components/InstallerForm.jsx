@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import i18next from 'i18next';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Radio from 'react-bootstrap/es/Radio';
+// FIXME: use native Bootstrap 4 or reactstrap
+// import Radio from 'react-bootstrap/es/Radio';
 
 class InstallerForm extends React.Component {
 
@@ -49,14 +49,14 @@ class InstallerForm extends React.Component {
     const checkedBtn = this.state.checkedBtn;
 
     return (
-      <div className={`login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4${hasErrorClass}`}>
+      <div className={`login-dialog py-3 col-sm-offset-4 col-sm-4${hasErrorClass}`}>
         <p className="alert alert-success">
           <strong>{ this.props.t('installer.create_initial_account') }</strong><br />
           <small>{ this.props.t('installer.initial_account_will_be_administrator_automatically') }</small>
         </p>
 
         <form role="form" action="/installer" method="post" id="register-form">
-          <FormGroup className="text-center">
+          <div className="form-group text-center">
             <Radio
               name="registerForm[app:globalLang]"
               value="en-US"
@@ -75,7 +75,7 @@ class InstallerForm extends React.Component {
             >
               日本語
             </Radio>
-          </FormGroup>
+          </div>
 
           <div className={`input-group${hasErrorClass}`}>
             <span className="input-group-addon"><i className="icon-user" /></span>
@@ -128,14 +128,14 @@ class InstallerForm extends React.Component {
 
           <input type="hidden" name="_csrf" value={this.props.csrf} />
 
-          <div className="input-group m-t-30 m-b-20 d-flex justify-content-center">
+          <div className="input-group mt-4 mb-3 d-flex justify-content-center">
             <button type="submit" className="fcbtn btn btn-success btn-1b btn-register">
               <span className="btn-label"><i className="icon-user-follow" /></span>
               <span className="btn-label-text">{ this.props.t('Create') }</span>
             </button>
           </div>
 
-          <div className="input-group m-t-30 d-flex justify-content-center">
+          <div className="input-group mt-4 d-flex justify-content-center">
             <a href="https://growi.org" className="link-growi-org">
               <span className="growi">GROWI</span>.<span className="org">ORG</span>
             </a>

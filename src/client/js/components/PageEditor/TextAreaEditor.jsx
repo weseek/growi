@@ -1,8 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 
-import FormControl from 'react-bootstrap/es/FormControl';
-
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
@@ -244,7 +242,7 @@ export default class TextAreaEditor extends AbstractEditor {
   render() {
     return (
       <React.Fragment>
-        <FormControl
+        <input
           componentClass="textarea"
           className="textarea-editor"
           inputRef={(ref) => { this.textarea = ref }}

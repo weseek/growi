@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import Pagination from 'react-bootstrap/lib/Pagination';
+
+// TODO: GW-333
+// import Pagination from 'react-bootstrap/lib/Pagination';
 
 class TagsList extends React.Component {
 
