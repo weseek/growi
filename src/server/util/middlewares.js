@@ -1,11 +1,14 @@
-const debug = require('debug')('growi:lib:middlewares');
+// don't add any more middlewares to this file.
+// all new middlewares should be an independent file under /server/routes/middlewares
+// eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:lib:middlewares');
+
 const { formatDistanceStrict } = require('date-fns');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 
-module.exports = (crowi, app) => {
+module.exports = (crowi) => {
   const { configManager, appService } = crowi;
 
   const middlewares = {};
@@ -27,28 +30,9 @@ module.exports = (crowi, app) => {
     next();
   };
 
-  middlewares.csrfVerify = function(req, res, next) {
-    const token = req.body._csrf || req.query._csrf || null;
-    const csrfKey = (req.session && req.session.id) || 'anon';
-
-    debug('req.skipCsrfVerify', req.skipCsrfVerify);
-    if (req.skipCsrfVerify) {
-      debug('csrf verify skipped');
-      return next();
-    }
-
-    if (crowi.getTokens().verify(csrfKey, token)) {
-      debug('csrf successfully verified');
-      return next();
-    }
-
-    logger.warn('csrf verification failed. return 403', csrfKey, token);
-    return res.sendStatus(403);
-  };
-
   middlewares.swigFunctions = function() {
     return function(req, res, next) {
-      require('../util/swigFunctions')(crowi, app, req, res.locals);
+      require('../util/swigFunctions')(crowi, req, res.locals);
       next();
     };
   };
@@ -117,7 +101,7 @@ module.exports = (crowi, app) => {
       swig.setFilter('datetz', (input, format) => {
         // timezone
         const swigFilters = require('swig-templates/lib/filters');
-        return swigFilters.date(input, format, app.get('tzoffset'));
+        return swigFilters.date(input, format, crowi.appService.getTzoffset());
       });
 
       swig.setFilter('dateDistance', (input) => {
@@ -172,87 +156,6 @@ module.exports = (crowi, app) => {
 
       next();
     };
-  };
-
-  middlewares.adminRequired = function(req, res, next) {
-    if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
-      if (req.user.admin) {
-        next();
-        return;
-      }
-      return res.redirect('/');
-    }
-    return res.redirect('/login');
-  };
-
-  /**
-   * require login handler
-   *
-   * @param {boolean} isStrictly whethere strictly restricted (default true)
-   */
-  middlewares.loginRequired = function(isStrictly = true) {
-    return function(req, res, next) {
-
-      // when the route is not strictly restricted
-      if (!isStrictly) {
-        // when allowed to read
-        if (crowi.aclService.isGuestAllowedToRead()) {
-          logger.debug('Allowed to read: ', req.path);
-          return next();
-        }
-      }
-
-      const User = crowi.model('User');
-
-      // check the user logged in
-      if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
-        if (req.user.status === User.STATUS_ACTIVE) {
-          // Active の人だけ先に進める
-          return next();
-        }
-        if (req.user.status === User.STATUS_REGISTERED) {
-          return res.redirect('/login/error/registered');
-        }
-        if (req.user.status === User.STATUS_SUSPENDED) {
-          return res.redirect('/login/error/suspended');
-        }
-        if (req.user.status === User.STATUS_INVITED) {
-          return res.redirect('/login/invited');
-        }
-      }
-
-      // is api path
-      const path = req.path || '';
-      if (path.match(/^\/_api\/.+$/)) {
-        return res.sendStatus(403);
-      }
-
-      req.session.jumpTo = req.originalUrl;
-      return res.redirect('/login');
-    };
-  };
-
-  middlewares.accessTokenParser = function(req, res, next) {
-    // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
-    const accessToken = req.query.access_token || req.body.access_token || null;
-    if (!accessToken) {
-      return next();
-    }
-
-    const User = crowi.model('User');
-
-    debug('accessToken is', accessToken);
-    User.findUserByApiToken(accessToken)
-      .then((userData) => {
-        req.user = userData;
-        req.skipCsrfVerify = true;
-        debug('Access token parsed: skipCsrfVerify');
-
-        next();
-      })
-      .catch((err) => {
-        next();
-      });
   };
 
   // this is for Installer

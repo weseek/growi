@@ -291,7 +291,7 @@ body.on-edit {
 }
 
 // overwrite .CodeMirror pre
-.CodeMirror pre {
+.CodeMirror pre.CodeMirror-line {
   font-family: $font-family-monospace;
 }
 

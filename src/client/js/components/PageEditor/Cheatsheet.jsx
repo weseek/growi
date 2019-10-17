@@ -28,7 +28,7 @@ class Cheatsheet extends React.Component {
           <h4>{t('sandbox.line_break')}</h4>
           <p className="mb-1"><code>[ ][ ]</code> {t('sandbox.line_break_detail')}</p>
           <ul className="hljs">
-            <li>text</li>
+            <li>text&nbsp;&nbsp;</li>
             <li>text</li>
           </ul>
           <h4>{t('sandbox.typography')}</h4>
@@ -76,12 +76,12 @@ class Cheatsheet extends React.Component {
             <li>&gt;&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
           </ul>
           <h4>{t('sandbox.table')}</h4>
-          <ul className="hljs text-center">
-            <li>|Left&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Mid&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right|</li>
-            <li>|:----------|:---------:|----------:|</li>
-            <li>|col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|</li>
-            <li>|col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|</li>
-          </ul>
+          <pre className="border-0">
+            |Left&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Mid&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right|<br />
+            |:----------|:---------:|----------:|<br />
+            |col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|<br />
+            |col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|<br />
+          </pre>
           <h4>{t('sandbox.image')}</h4>
           <p className="mb-1"><code> ![{t('sandbox.alt_text')}](URL)</code> {t('sandbox.insert_image')}</p>
           <ul className="hljs">
