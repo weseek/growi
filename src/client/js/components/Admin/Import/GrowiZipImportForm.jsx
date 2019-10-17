@@ -7,51 +7,181 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+const GROUPS_PAGE = [
+  'pages', 'revisions', 'tags', 'pagetagrelations',
+];
+const GROUPS_USER = [
+  'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
+];
+const GROUPS_CONFIG = [
+  'configs', 'updateposts', 'globalnotificationsettings',
+];
+const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
+
+
 class GrowiImportForm extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.initialState = {
-      collections: new Set(),
+      collectionNameToFileNameMap: {},
+      selectedCollections: new Set(),
       schema: {
         pages: {},
         revisions: {},
         // ...
       },
+
+      canImport: false,
+      errorsForPageGroups: [],
+      errorsForUserGroups: [],
+      errorsForConfigGroups: [],
+      errorsForOtherGroups: [],
     };
+
+    this.props.fileStats.forEach((fileStat) => {
+      const { fileName, collectionName } = fileStat;
+      this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
+    });
 
     this.state = this.initialState;
 
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
+    this.checkAll = this.checkAll.bind(this);
+    this.uncheckAll = this.uncheckAll.bind(this);
+    this.validate = this.validate.bind(this);
     this.import = this.import.bind(this);
-    this.validateForm = this.validateForm.bind(this);
   }
 
-  toggleCheckbox(e) {
+  get allCollectionNames() {
+    return Object.keys(this.state.collectionNameToFileNameMap);
+  }
+
+  async toggleCheckbox(e) {
     const { target } = e;
     const { name, checked } = target;
 
-    this.setState((prevState) => {
-      const collections = new Set(prevState.collections);
+    await this.setState((prevState) => {
+      const selectedCollections = new Set(prevState.selectedCollections);
       if (checked) {
-        collections.add(name);
+        selectedCollections.add(name);
       }
       else {
-        collections.delete(name);
+        selectedCollections.delete(name);
       }
-      return { collections };
+      return { selectedCollections };
     });
+
+    this.validate();
   }
 
-  async import(e) {
-    e.preventDefault();
+  async checkAll() {
+    await this.setState({ selectedCollections: new Set(this.allCollectionNames) });
+    this.validate();
+  }
 
+  async uncheckAll() {
+    await this.setState({ selectedCollections: new Set() });
+    this.validate();
+  }
+
+  async validate() {
+    // init errors
+    await this.setState({
+      errorsForPageGroups: [],
+      errorsForUserGroups: [],
+      errorsForConfigGroups: [],
+      errorsForOtherGroups: [],
+    });
+
+    await this.validateCollectionSize();
+    await this.validatePagesCollectionPairs();
+    await this.validateExternalAccounts();
+    await this.validateUserGroups();
+    await this.validateUserGroupRelations();
+
+    const errors = [
+      ...this.state.errorsForPageGroups,
+      ...this.state.errorsForUserGroups,
+      ...this.state.errorsForConfigGroups,
+      ...this.state.errorsForOtherGroups,
+    ];
+    const canImport = errors.length === 0;
+
+    this.setState({ canImport });
+  }
+
+  async validateCollectionSize(validationErrors) {
+    const { errorsForOtherGroups, selectedCollections } = this.state;
+
+    if (selectedCollections.size === 0) {
+      errorsForOtherGroups.push('select collections at least one');
+    }
+
+    this.setState({ errorsForOtherGroups });
+  }
+
+  async validatePagesCollectionPairs() {
+    const { errorsForPageGroups, selectedCollections } = this.state;
+
+    const pageRelatedCollectionsLength = ['pages', 'revisions'].filter((collectionName) => {
+      return selectedCollections.has(collectionName);
+    }).length;
+
+    // MUST be included both or neither when importing
+    if (pageRelatedCollectionsLength !== 0 && pageRelatedCollectionsLength !== 2) {
+      errorsForPageGroups.push('pages and revisions must be paried');
+    }
+
+    this.setState({ errorsForPageGroups });
+  }
+
+  async validateExternalAccounts() {
+    const { errorsForUserGroups, selectedCollections } = this.state;
+
+    // MUST include also 'users' if 'externalaccounts' is selected
+    if (selectedCollections.has('externalaccounts')) {
+      if (!selectedCollections.has('users')) {
+        errorsForUserGroups.push('must include users when including externalaccounts');
+      }
+    }
+
+    this.setState({ errorsForUserGroups });
+  }
+
+  async validateUserGroups() {
+    const { errorsForUserGroups, selectedCollections } = this.state;
+
+    // MUST include also 'users' if 'usergroups' is selected
+    if (selectedCollections.has('usergroups')) {
+      if (!selectedCollections.has('users')) {
+        errorsForUserGroups.push('must include users when including usergroups');
+      }
+    }
+
+    this.setState({ errorsForUserGroups });
+  }
+
+  async validateUserGroupRelations() {
+    const { errorsForUserGroups, selectedCollections } = this.state;
+
+    // MUST include also 'usergroups' if 'usergrouprelations' is selected
+    if (selectedCollections.has('usergrouprelations')) {
+      if (!selectedCollections.has('usergroups')) {
+        errorsForUserGroups.push('must include usergroups when including usergrouprelations');
+      }
+    }
+
+    this.setState({ errorsForUserGroups });
+  }
+
+  async import() {
     try {
       // TODO: use appContainer.apiv3.post
       const { results } = await this.props.appContainer.apiPost('/v3/import', {
         fileName: this.props.fileName,
-        collections: Array.from(this.state.collections),
+        collections: Array.from(this.state.selectedCollections),
         schema: this.state.schema,
       });
 
@@ -93,76 +223,120 @@ class GrowiImportForm extends React.Component {
     }
   }
 
-  validateForm() {
-    return this.state.collections.size > 0;
+  renderWarnForGroups(errors, key) {
+    if (errors.length === 0) {
+      return null;
+    }
+
+    return (
+      <div key={key} className="alert alert-warning">
+        <ul>
+          { errors.map((error, index) => {
+            // eslint-disable-next-line react/no-array-index-key
+            return <li key={`${key}-${index}`}>{error}</li>;
+          }) }
+        </ul>
+      </div>
+    );
   }
+
+  renderGroups(groupList, color) {
+    const collectionNames = groupList.filter((collectionName) => {
+      return this.allCollectionNames.includes(collectionName);
+    });
+
+    return this.renderCheckboxes(collectionNames, color);
+  }
+
+  renderOthers() {
+    const collectionNames = this.allCollectionNames.filter((collectionName) => {
+      return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
+    });
+
+    return this.renderCheckboxes(collectionNames);
+  }
+
+  renderCheckboxes(collectionNames, color) {
+    const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+
+    return (
+      <div className={`row checkbox ${checkboxColor}`}>
+        {collectionNames.map((collectionName) => {
+          return (
+            <div className="col-xs-6 my-1" key={collectionName}>
+              <input
+                type="checkbox"
+                id={collectionName}
+                name={collectionName}
+                className="form-check-input"
+                value={collectionName}
+                checked={this.state.selectedCollections.has(collectionName)}
+                onChange={this.toggleCheckbox}
+              />
+              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+                {collectionName}
+              </label>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
 
   render() {
     const { t } = this.props;
 
     return (
-      <form className="row" onSubmit={this.import}>
-        <div className="col-xs-12">
-          <table className="table table-bordered table-mapping">
-            <caption>{t('importer_management.growi_settings.uploaded_data')}</caption>
-            <thead>
-              <tr>
-                <th></th>
-                <th>{t('importer_management.growi_settings.extracted_file')}</th>
-                <th>{t('importer_management.growi_settings.collection')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.props.fileStats.map((fileStat) => {
-                  const { fileName, collectionName } = fileStat;
-                  const checked = this.state.collections.has(collectionName);
-                  return (
-                    <Fragment key={collectionName}>
-                      <tr>
-                        <td>
-                          <input
-                            type="checkbox"
-                            id={collectionName}
-                            name={collectionName}
-                            className="form-check-input"
-                            value={collectionName}
-                            checked={checked}
-                            onChange={this.toggleCheckbox}
-                          />
-                        </td>
-                        <td>{fileName}</td>
-                        <td className="text-capitalize">{collectionName}</td>
-                      </tr>
-                      {checked && (
-                        <tr>
-                          <td className="text-muted" colSpan="3">
-                            TBD: define how {collectionName} are imported
-                            {/* TODO: create a component for each collection to modify this.state.schema */}
-                          </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  );
-                })}
-            </tbody>
+      <>
+        <form className="form-inline">
+          <div className="form-group">
+            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+              <i className="fa fa-check-square-o"></i> {t('export_management.check_all')}
+            </button>
+          </div>
+          <div className="form-group">
+            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+              <i className="fa fa-square-o"></i> {t('export_management.uncheck_all')}
+            </button>
+          </div>
+        </form>
 
-        <div className="row">
-          <div className="col-xs-12 text-center">
-            <div className="well well-sm small">
-              <ul>
-                <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
-              </ul>
+        <div className="mt-4">
+          <legend>Page Collections</legend>
+          <div className="well well-sm small">
+            <ul>
+              <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
+            </ul>
+          </div>
+          { this.renderGroups(GROUPS_PAGE) }
+          { this.renderWarnForGroups(this.state.errorsForPageGroups, 'warnPageGroups') }
+        </div>
+        <div className="mt-4">
+          <legend>User Collections</legend>
+          { this.renderGroups(GROUPS_USER) }
+          { this.renderWarnForGroups(this.state.errorsForUserGroups, 'warnUserGroups') }
+        </div>
+        <div className="mt-4">
+          <legend>Config Collections</legend>
+          { this.renderGroups(GROUPS_CONFIG) }
+          { this.renderWarnForGroups(this.state.errorsForConfigGroups, 'warnConfigGroups') }
+        </div>
+        <div className="mt-4">
+          <legend>Other Collections</legend>
+          { this.renderOthers() }
+          { this.renderWarnForGroups(this.state.errorsForOtherGroups, 'warnOtherGroups') }
         </div>
 
-          <button type="submit" className="btn btn-primary mx-1" disabled={!this.validateForm()}>
+        <div className="mt-5 text-center">
+          <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!this.state.canImport}>
             { t('importer_management.import') }
           </button>
           <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
             { t('importer_management.growi_settings.discard') }
           </button>
         </div>
-        </div>
-      </form>
+      </>
     );
   }
 
