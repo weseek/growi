@@ -184,7 +184,7 @@ class RecentCreated extends React.Component {
         <ul className="page-list-ul page-list-ul-flat">
           {pageList}
         </ul>
-        <Pagination className="btn-sm">{paginationItems}</Pagination>
+        <Pagination bsSize="small">{paginationItems}</Pagination>
       </div>
     );
   }

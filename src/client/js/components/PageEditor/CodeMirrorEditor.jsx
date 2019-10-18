@@ -645,7 +645,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return [
       <Button
         key="nav-item-bold"
-        className="btn-sm"
+        bsSize="small"
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
       >
@@ -653,7 +653,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-italic"
-        className="btn-sm"
+        bsSize="small"
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
       >
@@ -661,7 +661,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-strikethrough"
-        className="btn-sm"
+        bsSize="small"
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
       >
@@ -669,7 +669,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-header"
-        className="btn-sm"
+        bsSize="small"
         title="Heading"
         onClick={this.makeHeaderHandler}
       >
@@ -677,7 +677,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-code"
-        className="btn-sm"
+        bsSize="small"
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
       >
@@ -685,7 +685,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-quote"
-        className="btn-sm"
+        bsSize="small"
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
       >
@@ -693,7 +693,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ul"
-        className="btn-sm"
+        bsSize="small"
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
       >
@@ -701,7 +701,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ol"
-        className="btn-sm"
+        bsSize="small"
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
       >
@@ -709,7 +709,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-checkbox"
-        className="btn-sm"
+        bsSize="small"
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
       >
@@ -717,7 +717,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-link"
-        className="btn-sm"
+        bsSize="small"
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
       >
@@ -725,7 +725,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-image"
-        className="btn-sm"
+        bsSize="small"
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
       >
@@ -733,7 +733,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-table"
-        className="btn-sm"
+        bsSize="small"
         title="Table"
         onClick={this.showHandsonTableHandler}
       >
