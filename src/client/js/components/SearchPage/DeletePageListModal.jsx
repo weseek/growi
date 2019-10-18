@@ -41,14 +41,14 @@ export default class DeletePageListModal extends React.Component {
           </ul>
         </ModalBody>
         <ModalFooter>
+          {/*  TODO:refactoring the layout of this form */}
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
-            <span className="d-flex align-items-center">
-              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline>Delete completely</Checkbox>
-              <span className="m-l-10">
-                <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
-              </span>
-            </span>
+            <div className="form-group form-check">
+              <input type="checkbox" className="form-check-input" id="delete-completely" onClick={this.props.toggleDeleteCompletely} inline></input>
+              <label className="form-check-label" htmlFor="delete-completely text-danger">Delete completely</label>
+            </div>
+            <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
           </div>
         </ModalFooter>
       </Modal>
