@@ -96,7 +96,6 @@ class PresentationForm extends React.Component {
 
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            {/* TODO GW-220 create function */}
             <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
         </div>
