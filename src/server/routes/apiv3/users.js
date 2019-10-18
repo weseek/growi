@@ -353,7 +353,7 @@ module.exports = (crowi) => {
       return res.apiv3({ extenralAccounts, totalAccounts, pagingLimit });
     }
     catch (err) {
-      const msg = 'Error occurred in fetching user group list';
+      const msg = 'Error occurred in fetching external-account list';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'external-account-list-fetch-failed'));
     }
