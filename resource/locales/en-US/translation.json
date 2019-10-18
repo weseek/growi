@@ -525,6 +525,8 @@
       "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
       "group_search_user_DN_property": "User DN Property",
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
+      "ldaps_self_signed_cert_file": "Self Signed Cert File for LDAPS",
+      "ldaps_self_signed_cert_file_detail": "Self signed certificate file path for ldaps connection",
       "test_config": "Test Saved Configuration"
     },
     "SAML": {

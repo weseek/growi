@@ -224,6 +224,19 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.ldaps_self_signed_cert_file") }}</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text" placeholder="/some/where/server_name.crt"
+              name="settingForm[security:passport-ldap:ldapsSelfSignedCertFile]" value="{{ getConfig('crowi', 'security:passport-ldap:ldapsSelfSignedCertFile') | default('') }}">
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.ldap.ldaps_self_signed_cert_file_detail") }}
+            </small>
+          </p>
+        </div>
+      </div>
+
     </div><!-- /.passport-ldap-configurations -->
 
     <div class="form-group">

@@ -62,6 +62,7 @@ module.exports = function(crowi) {
       'security:passport-ldap:groupSearchBase' : undefined,
       'security:passport-ldap:groupSearchFilter' : undefined,
       'security:passport-ldap:groupDnProperty' : undefined,
+      'security:passport-ldap:ldapsSelfSignedCertFile' : '',
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
       'security:passport-saml:isEnabled' : false,
       'security:passport-saml:isSameEmailTreatedAsIdenticalUser': false,
