@@ -125,7 +125,7 @@ class OptionsSelector extends React.Component {
         <Input
           type="select"
           placeholder="select"
-          className="selectpicker btn-sm"
+          className="selectpicker"
           cssModule={{ width: 'unset' }}
           onChange={this.onChangeTheme}
           // eslint-disable-next-line no-return-assign
@@ -158,7 +158,7 @@ class OptionsSelector extends React.Component {
         <Input
           type="select"
           placeholder="select"
-          className="selectpicker btn-sm"
+          className="selectpicker"
           onChange={this.onChangeKeymapMode}
           // eslint-disable-next-line no-return-assign
           innerRef={(el) => { return this.keymapModeSelectorInputEl = el }}
@@ -177,7 +177,7 @@ class OptionsSelector extends React.Component {
 
         <Dropdown
           direction="up"
-          className="configuration-dropdown btn-sm"
+          className="configuration-dropdown"
           isOpen={this.state.isCddMenuOpened}
           toggle={this.onToggleConfigurationDropdown}
         >
