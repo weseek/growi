@@ -45,10 +45,16 @@ export default class DeletePageListModal extends React.Component {
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <div className="form-group form-check">
-              <input type="checkbox" className="form-check-input" id="delete-completely" onClick={this.props.toggleDeleteCompletely} inline></input>
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="delete-completely"
+                onClick={this.props.toggleDeleteCompletely}
+                inline
+              />
               <label className="form-check-label" htmlFor="delete-completely text-danger">Delete completely</label>
             </div>
-            <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
+            <Button className="ml-2" color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
           </div>
         </ModalFooter>
       </Modal>
