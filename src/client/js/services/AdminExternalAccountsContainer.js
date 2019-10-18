@@ -43,13 +43,13 @@ export default class AdminExternalAccountContainer extends Container {
     const params = { page: selectedPage };
     const response = await this.appContainer.apiv3.get('/users/external-accounts', params);
 
-    const users = response.data.exteranalAccounts;
-    const totalUsers = response.data.totalAccounts;
+    const exteranalAccounts = response.data.externalAccounts;
+    const totalAccounts = response.data.totalAccounts;
     const pagingLimit = response.data.pagingLimit;
 
     this.setState({
-      users,
-      totalUsers,
+      exteranalAccounts,
+      totalAccounts,
       pagingLimit,
       activePage: selectedPage,
     });
