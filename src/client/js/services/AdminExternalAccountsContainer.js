@@ -38,7 +38,7 @@ export default class AdminExternalAccountContainer extends Container {
    * @memberOf AdminExternalAccountsContainer
    * @param {number} selectedPage
    */
-  async retrieveUsersByPagingNum(selectedPage) {
+  async retrieveExternalAccountsByPagingNum(selectedPage) {
 
     const params = { page: selectedPage };
     const response = await this.appContainer.apiv3.get('/users/external-accounts', params);
