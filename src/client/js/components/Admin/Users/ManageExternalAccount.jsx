@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
 
 
 class ManageExternalAccount extends React.Component {
