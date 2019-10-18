@@ -387,8 +387,8 @@ module.exports = (crowi) => {
    *                      description: A result of `ExtenralAccount.findByIdAndRemove`
    */
 
-  router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, validator.delete, ApiV3FormValidator, async(req, res) => {
-    const { id: deleteExtenralAccountId } = req.params;
+  router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, ApiV3FormValidator, async(req, res) => {
+    const { id: deleteExtenralAccountId } = req.params.id;
 
     try {
       const externalAccount = await ExternalAccount.findByIdAndRemove(deleteExtenralAccountId);
