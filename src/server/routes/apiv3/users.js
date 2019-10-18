@@ -348,7 +348,7 @@ module.exports = (crowi) => {
   router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
-      const result = await ExternalAccount.findUsersWithPagination({ page });
+      const result = await ExternalAccount.findAllWithPagination({ page });
       const { docs: extenralAccounts, total: totalAccounts, limit: pagingLimit } = result;
       return res.apiv3({ extenralAccounts, totalAccounts, pagingLimit });
     }
