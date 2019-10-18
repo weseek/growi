@@ -57,24 +57,36 @@ class InstallerForm extends React.Component {
 
         <form role="form" action="/installer" method="post" id="register-form">
           <div className="form-group text-center">
-            <Radio
-              name="registerForm[app:globalLang]"
-              value="en-US"
-              checked={checkedBtn === 'en-US'}
-              inline
-              onChange={(e) => { if (e.target.checked) { this.changeLanguage('en-US') } }}
-            >
-              English
-            </Radio>
-            <Radio
-              name="registerForm[app:globalLang]"
-              value="ja"
-              checked={checkedBtn === 'ja'}
-              inline
-              onChange={(e) => { if (e.target.checked) { this.changeLanguage('ja') } }}
-            >
-              日本語
-            </Radio>
+            <div className="form-check">
+              <input
+                type="radio"
+                className="form-check-input"
+                id="register-form-check-en"
+                name="registerForm[app:globalLang]"
+                value="en-US"
+                checked={checkedBtn === 'en-US'}
+                inline
+                onChange={(e) => { if (e.target.checked) { this.changeLanguage('en-US') } }}
+              />
+              <label className="form-check-label" htmlFor="register-form-check-en">
+                English
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                type="radio"
+                className="form-check-input"
+                id="register-form-check-jp"
+                name="registerForm[app:globalLang]"
+                value="ja"
+                checked={checkedBtn === 'ja'}
+                inline
+                onChange={(e) => { if (e.target.checked) { this.changeLanguage('ja') } }}
+              />
+              <label className="form-check-label" htmlFor="register-form-check-jp">
+                日本語
+              </label>
+            </div>
           </div>
 
           <div className={`input-group${hasErrorClass}`}>
