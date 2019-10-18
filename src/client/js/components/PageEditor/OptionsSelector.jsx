@@ -124,6 +124,7 @@ class OptionsSelector extends React.Component {
         <Label>Theme:</Label>
         <Input
           type="select"
+          bsSize="sm"
           placeholder="select"
           className="selectpicker"
           cssModule={{ width: 'unset' }}
@@ -157,6 +158,7 @@ class OptionsSelector extends React.Component {
         <Label>Keymap:</Label>
         <Input
           type="select"
+          bsSize="sm"
           placeholder="select"
           className="selectpicker"
           onChange={this.onChangeKeymapMode}
@@ -177,6 +179,7 @@ class OptionsSelector extends React.Component {
 
         <Dropdown
           direction="up"
+          bsSize="sm"
           className="configuration-dropdown"
           isOpen={this.state.isCddMenuOpened}
           toggle={this.onToggleConfigurationDropdown}
