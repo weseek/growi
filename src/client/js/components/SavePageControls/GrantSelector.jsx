@@ -207,22 +207,22 @@ class GrantSelector extends React.Component {
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
-      <FormGroup className="grant-selector m-b-0">
-        <FormControl
+      <div className="form-group grant-selector m-b-0">
+        <select
           disabled={this.props.disabled}
           componentClass="select"
           placeholder="select"
           defaultValue={selectedValue}
           bsClass={bsClassName}
-          className="btn-group-sm selectpicker"
+          className="form-control btn-group-sm selectpicker"
           onChange={this.changeGrantHandler}
           inputRef={(el) => { this.grantSelectorInputEl = el }}
         >
-
-          {grantElems}
-
-        </FormControl>
-      </FormGroup>
+          <option>
+            {grantElems}
+          </option>
+        </select>
+      </div>
     );
   }
 
@@ -236,9 +236,9 @@ class GrantSelector extends React.Component {
     const generateGroupListItems = () => {
       return this.state.userRelatedGroups.map((group) => {
         return (
-          <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
+          <li className="list-group-item" key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
             (TBD) List group members
-          </ListGroupItem>
+          </li>
         );
       });
     };
@@ -253,9 +253,9 @@ class GrantSelector extends React.Component {
         </div>
       )
       : (
-        <ListGroup>
+        <li className="list-group-item">
           {generateGroupListItems()}
-        </ListGroup>
+        </li>
       );
 
     return (
