@@ -326,5 +326,80 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users:
+   *      get:
+   *        tags: [Users]
+   *        description: Get external-account
+   *        responses:
+   *          200:
+   *            description: external-account are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    external-account:
+   *                      type: object
+   *                      description: a result of `ExternalAccount.find`
+   */
+  router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const result = await ExternalAccount.findUsersWithPagination({ page });
+      const { docs: extenralAccounts, total: totalAccounts, limit: pagingLimit } = result;
+      return res.apiv3({ extenralAccounts, totalAccounts, pagingLimit });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching user group list';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'external-account-list-fetch-failed'));
+    }
+  });
+
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/users/external-accounts/{id}/remove:
+   *      delete:
+   *        tags: [Users]
+   *        description: Delete ExternalAccount
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description:  External Account is removed
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    externalAccount:
+   *                      type: object
+   *                      description: A result of `ExtenralAccount.findByIdAndRemove`
+   */
+
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, validator.delete, ApiV3FormValidator, async(req, res) => {
+    const { id: deleteExtenralAccountId } = req.params;
+
+    try {
+      const externalAccount = await ExternalAccount.findByIdAndRemove(deleteExtenralAccountId);
+
+      return res.apiv3({ externalAccount });
+    }
+    catch (err) {
+      const msg = 'Error occurred in deleting a external account';
+      logger.error(msg, err);
+      return res.apiv3Err(new ErrorV3(msg, 'extenral-account-delete-failed'));
+    }
+  });
   return router;
 };

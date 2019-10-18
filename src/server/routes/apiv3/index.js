@@ -21,8 +21,6 @@ module.exports = (crowi) => {
 
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
 
-  router.use('/external-accounts', require('./external-account')(crowi));
-
   router.use('/mongo', require('./mongo')(crowi));
 
   router.use('/export', require('./export')(crowi));

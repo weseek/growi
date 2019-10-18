@@ -19,6 +19,9 @@ export default class AdminExternalAccountContainer extends Container {
 
     this.state = {
       exteranalAccounts: JSON.parse(document.getElementById('admin-external-account-setting').getAttribute('external-account')) || [],
+      totalAccounts: 0,
+      activePage: 1,
+      pagingLimit: Infinity,
     };
 
   }
@@ -28,6 +31,29 @@ export default class AdminExternalAccountContainer extends Container {
    */
   static getClassName() {
     return 'AdminExternalAccountsContainer';
+  }
+
+  /**
+   * syncExternalAccounts of selectedPage
+   * @memberOf AdminExternalAccountsContainer
+   * @param {number} selectedPage
+   */
+  async retrieveUsersByPagingNum(selectedPage) {
+
+    const params = { page: selectedPage };
+    const response = await this.appContainer.apiv3.get('/users/external-accounts', params);
+
+    const users = response.data.exteranalAccounts;
+    const totalUsers = response.data.totalAccounts;
+    const pagingLimit = response.data.pagingLimit;
+
+    this.setState({
+      users,
+      totalUsers,
+      pagingLimit,
+      activePage: selectedPage,
+    });
+
   }
 
   /**
