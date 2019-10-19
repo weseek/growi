@@ -107,7 +107,7 @@ SearchClient.prototype.shouldIndexed = function(page) {
   return page.creator != null && page.revision != null && page.redirectTo == null;
 };
 
-// BONSAI_URL is following format:
+// SEARCHBOX_SSL_URL is following format:
 // => https://{ID}:{PASSWORD}@{HOST}
 SearchClient.prototype.parseUri = function(uri) {
   let indexName = 'crowi';

@@ -332,7 +332,7 @@ Crowi.prototype.setupPassport = async function() {
 Crowi.prototype.setupSearcher = async function() {
   const self = this;
   const searcherUri = this.env.ELASTICSEARCH_URI
-    || this.env.BONSAI_URL
+    || this.env.SEARCHBOX_SSL_URL
     || null;
 
   if (searcherUri) {
