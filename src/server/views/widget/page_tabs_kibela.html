@@ -4,21 +4,21 @@
   {#
     Left Tabs
   #}
-  <li class="nav-main-left-tab active">
-    <a href="#revision-body" data-toggle="tab">
+  <li class="nav-item grw-nav-main-left-tab active">
+    <a class="nav-link active" href="#revision-body" data-toggle="tab">
       <i class="icon-control-play"></i> View
     </a>
   </li>
 
   {% if !isTrashPage() %}
-  <li class="nav-main-left-tab nav-tab-edit">
-    <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+  <li class="grw-nav-main-left-tab nav-tab-edit">
+    <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="nav-link edit-button {% if not user %}edit-button-disabled{% endif %}">
       <i class="icon-note"></i> {{ t('Edit') }}
     </a>
   </li>
   {% if isHackmdSetup() %}
-  <li class="nav-main-left-tab nav-tab-hackmd">
-    <a {% if user %}href="#hackmd" data-toggle="tab"{% endif %} class="{% if not user %}edit-button-disabled{% endif %}">
+  <li class="grw-nav-main-left-tab nav-tab-hackmd">
+    <a {% if user %}href="#hackmd" data-toggle="tab"{% endif %} class="nav-link {% if not user %}edit-button-disabled{% endif %}">
       <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
     </a>
   </li>
@@ -30,7 +30,7 @@
   #}
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
-    <li class="nav-main-right-tab dropdown pull-right">
+    <li class="dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
       </a>
@@ -43,7 +43,7 @@
       </ul>
     </li>
     {% else %}
-    <li class="nav-main-right-tab dropdown pull-right">
+    <li class="dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
       </a>
@@ -61,13 +61,13 @@
     {% endif %}
   {% endif %}
 
-  <li class="nav-main-right-tab pull-right">
+  <li class="pull-right">
     <a href="#revision-history" data-toggle="tab">
       <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
     </a>
   </li>
   {% if not page.isPortal() %}
-    <li class="nav-main-right-tab pull-right">
+    <li class="pull-right">
       <a href="?presentation=1" class="toggle-presentation">
         <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
       </a>
@@ -80,14 +80,14 @@
 
 <ul class="nav nav-tabs customtab nav-tabs-create-portal hidden-print">
 
-  <li class="nav-main-left-tab">
-    <a id="portal-form-close" href="#" data-toggle="tab">
+  <li class="nav-item grw-nav-main-left-tab">
+    <a id="portal-form-close" class="nav-link" href="#" data-toggle="tab">
       <i class="icon-action-undo"></i> {{ t('Cancel') }}
     </a>
   </li>
 
-  <li class="nav-main-left-tab active">
-    <a>
+  <li class="nav-item grw-nav-main-left-tab active">
+    <a class="nav-link">
       <i class="icon-note"></i> {{ t('Create') }}
     </a>
   </li>

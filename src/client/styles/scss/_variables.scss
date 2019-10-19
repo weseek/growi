@@ -1,2 +1,6 @@
-// override bootstrap
 $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', MeiryoKe_Gothic, monospace;
+
+// fix tab width to 95 pixels
+// see also '_on-edit.scss'
+$grw-nav-main-left-tab-width: 95px;
+$grw-nav-main-tab-height: 42px;

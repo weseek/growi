@@ -85,8 +85,8 @@ body.on-edit {
   }
 
   .row.bg-title {
-    $left-margin: $nav-main-left-tab-width * 2 + 25px; // width of .nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px + 46px; //                width of all of nav-main-right-tab
+    $left-margin: $grw-nav-main-left-tab-width * 2 + 25px; // width of .grw-nav-main-left-tab x 2 + some margin
+    $right-margin: 128px + 94px + 46px; //                    width of all of grw-nav-main-right-tab
 
     position: absolute;
     left: $left-margin;

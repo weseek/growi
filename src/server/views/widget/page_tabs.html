@@ -4,20 +4,20 @@
   {#
     Left Tabs
   #}
-  <li class="nav-item">
-    <a href="#revision-body" class="nav-link active" role="tab" data-toggle="tab">
+  <li class="nav-item grw-main-nav-item-left">
+    <a class="nav-link active" href="#revision-body" role="tab" data-toggle="tab">
       <i class="icon-control-play"></i> View
     </a>
   </li>
 
   {% if !isTrashPage() %}
-  <li class="nav-item nav-tab-edit">
+  <li class="nav-item grw-main-nav-item-left grw-nav-item-edit">
     <a {% if user %}href="#edit" role="tab" data-toggle="tab" {% endif %} class="nav-link edit-button {% if not user %}edit-button-disabled{% endif %}">
       <i class="icon-note"></i> {{ t('Edit') }}
     </a>
   </li>
   {% if isHackmdSetup() %}
-  <li class="nav-item nav-tab-hackmd">
+  <li class="nav-item grw-main-nav-item-left grw-nav-item-hackmd">
     <a {% if user %}href="#hackmd" role="tab" data-toggle="tab" {% endif %} class="nav-link {% if not user %}edit-button-disabled{% endif %}">
       <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
     </a>
@@ -30,7 +30,7 @@
   #}
 
   <li class="nav-item ml-md-auto">
-    <a href="#revision-history" role="tab" data-toggle="tab" class="nav-link">
+    <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
       <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
     </a>
   </li>

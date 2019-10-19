@@ -29,10 +29,8 @@ $font-family-serif:       Georgia, "Times New Roman", Times, serif;
 $font-family-monospace:   Osaka-Mono, "MS Gothic", Monaco, Menlo, Consolas, "Courier New", monospace;
 $font-family-base:        $font-family-sans-serif;
 
-// $font-size-root effects the value of `rem`, which is used for as well font sizes, paddings and margins
-// $font-size-base effects the font size of the body text
 $font-size-root:          14px;
-
+$line-height-base:        1.42857;
 
 //== Components
 //
@@ -70,3 +68,10 @@ $theme-colors: (
   'warning': #8a6d3b,
   'danger': #ff0a54
 );
+
+
+// Navs
+
+$nav-link-padding-y:              0.75rem;
+$nav-link-padding-x:              1rem;
+$nav-tabs-border-radius:          0;
