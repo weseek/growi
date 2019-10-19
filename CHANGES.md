@@ -10,6 +10,7 @@
     * Introduced by 3.5.12
 * Fix: Config default values
 * Support: REPL with `console` npm scripts
+* Support: Use SearchBox Elasticsearch Addon on Heroku
 
 ## 3.5.16
 
