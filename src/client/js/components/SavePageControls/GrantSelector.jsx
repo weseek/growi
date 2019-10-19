@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 
 import {
-  FormGroup,
   UncontrolledDropdown,
   DropdownToggle, DropdownMenu, DropdownItem,
 
@@ -139,47 +138,42 @@ class GrantSelector extends React.Component {
 
     let dropdownToggleLabelElm = null;
 
-    let index = 0;
     const dropdownMenuElems = this.availableGrants.map((opt) => {
-      let label = opt.label;
-      // rewrite label when grantGroup is selected
-      if (opt.grant === 5 && grantGroup != null) {
-        label = opt.reselectLabel;
-      }
-      const labelElm = <><i className={`icon icon-fw ${opt.iconClass} ${opt.styleClass}`}></i> <span className={opt.styleClass}>{t(label)}</span></>;
+      const label = (opt.grant === 5 && grantGroup != null)
+        ? opt.reselectLabel // when grantGroup is selected
+        : opt.label;
+
+      const labelElm = <span><i className={`icon icon-fw ${opt.iconClass} ${opt.styleClass}`}></i> <span className={opt.styleClass}>{t(label)}</span></span>;
 
       // set dropdownToggleLabelElm
       if (this.state.grant === opt.grant) {
         dropdownToggleLabelElm = labelElm;
       }
 
-      return (
-        <DropdownItem key={index++} onClick={() => this.changeGrantHandler(opt.grant)}>
-          {labelElm}
-        </DropdownItem>
-      );
+      return <DropdownItem key={opt.grant} onClick={() => this.changeGrantHandler(opt.grant)}>{labelElm}</DropdownItem>;
     });
 
     // add specified group option
     if (grantGroup != null) {
-      dropdownMenuElems.push(
-        <DropdownItem>
-          <i className="icon icon-fw icon-organization text-success"></i> <span className="group-name text-success">{this.getGroupName()}</span>
-        </DropdownItem>,
-      );
+      const labelElm = <span><i className="icon icon-fw icon-organization text-success"></i> <span className="text-success">{this.getGroupName()}</span></span>;
+
+      // set dropdownToggleLabelElm
+      dropdownToggleLabelElm = labelElm;
+
+      dropdownMenuElems.push(<DropdownItem key="groupSelected">{labelElm}</DropdownItem>);
     }
 
     return (
-      <FormGroup className="grant-selector mb-0">
+      <div className="form-group grw-grant-selector mb-0">
         <UncontrolledDropdown direction="up" size="sm">
-          <DropdownToggle caret disabled={this.props.disabled}>
+          <DropdownToggle caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
           <DropdownMenu>
             {dropdownMenuElems}
           </DropdownMenu>
         </UncontrolledDropdown>
-      </FormGroup>
+      </div>
     );
   }
 
@@ -193,9 +187,10 @@ class GrantSelector extends React.Component {
     const generateGroupListItems = () => {
       return this.state.userRelatedGroups.map((group) => {
         return (
-          <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
-            (TBD) List group members
-          </ListGroupItem>
+          <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => { this.groupListItemClickHandler(group) }}>
+            <h5>{group.name}</h5>
+            <div className="small">(TBD) List group members</div>
+          </button>
         );
       });
     };
@@ -210,9 +205,9 @@ class GrantSelector extends React.Component {
         </div>
       )
       : (
-        <ListGroup>
+        <div className="list-group">
           {generateGroupListItems()}
-        </ListGroup>
+        </div>
       );
 
     return (

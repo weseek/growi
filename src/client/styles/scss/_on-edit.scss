@@ -129,9 +129,14 @@ body.on-edit {
     margin: 0;
     border-top: solid 1px transparent;
 
-    .grant-selector {
-      .btn-group {
+    .grw-grant-selector {
+      .dropdown-toggle {
         min-width: 150px;
+
+        // caret
+        &::after {
+          margin-left: 1em;
+        }
       }
     }
 
