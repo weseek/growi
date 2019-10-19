@@ -1,6 +1,10 @@
 @import 'override-bootstrap-variables';
 @import 'layout_variable';
 
+:root {
+  font-size: $font-size-root;
+}
+
 //** alert with custom color
 .alert {
   a:not(.btn) {

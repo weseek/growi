@@ -19,9 +19,6 @@
         cursor: default;
       }
     }
-    @include media-breakpoint-down(md) {
-      font-size: 14px;
-    }
   }
 
   /*
