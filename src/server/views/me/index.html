@@ -32,20 +32,20 @@
 
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
-  <div class="alert alert-success m-t-10">
+  <div class="alert alert-success grw-mt-10px">
     {{ smessage }}
   </div>
   {% endif %}
 
   {% set wmessage = req.flash('warningMessage') %}
   {% if wmessage.length %}
-  <div class="alert alert-danger m-t-10">
+  <div class="alert alert-danger grw-mt-10px">
     {{ wmessage }}
   </div>
   {% endif %}
 
   {% if req.form.errors.length > 0 %}
-  <div class="alert alert-danger m-t-10">
+  <div class="alert alert-danger grw-mt-10px">
     <ul>
     {% for error in req.form.errors %}
       <li>{{ error }}</li>
@@ -214,7 +214,7 @@
       formData.append('file', this.files[0]);
       formData.append('_csrf', document.getElementsByName("_csrf")[0].value);
 
-      $('#pictureUploadFormProgress').html('<div class="speeding-wheel-sm m-r-5"></div> アップロード中...');
+      $('#pictureUploadFormProgress').html('<div class="speeding-wheel-sm mr-2"></div> アップロード中...');
       $.ajax($form.attr("action"), {
         type: 'post',
         processData: false,

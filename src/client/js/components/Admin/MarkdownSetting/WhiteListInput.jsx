@@ -45,7 +45,7 @@ class WhiteListInput extends React.Component {
 
     return (
       <>
-        <div className="m-t-15">
+        <div className="mt-4">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag names') }
             {customizable && this.renderRecommendBtn()}
@@ -60,7 +60,7 @@ class WhiteListInput extends React.Component {
             onChange={(e) => { markDownSettingContainer.setState({ tagWhiteList: e.target.value }) }}
           />
         </div>
-        <div className="m-t-15">
+        <div className="mt-4">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag attributes') }
             {customizable && this.renderRecommendBtn()}

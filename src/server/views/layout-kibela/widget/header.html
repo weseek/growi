@@ -13,10 +13,10 @@
     </div>
     {% if page %} {% include '../../widget/header-buttons.html' %}
 
-    <ul class="authors hidden-sm hidden-xs text-nowrap p-t-10">
+    <ul class="authors hidden-sm hidden-xs text-nowrap grw-pt-10px">
       <li>
         <div class="d-flex align-items-center b">
-          <a class="m-r-5" href="{{ userPageRoot(page.creator) }}">
+          <a class="mr-2" href="{{ userPageRoot(page.creator) }}">
             <img src="{{ page.creator|default(author)|picture }}" class="picture img-circle">
           </a>
           <div>
@@ -27,9 +27,9 @@
           </div>
         </div>
       </li>
-      <li class="m-t-5">
+      <li class="mt-2">
         <div class="d-flex align-items-center">
-          <a class="m-r-5" href="{{ userPageRoot(author) }}">
+          <a class="mr-2" href="{{ userPageRoot(author) }}">
             <img src="{{ author|picture }}" class="picture img-circle">
           </a>
           <div>

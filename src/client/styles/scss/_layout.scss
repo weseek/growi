@@ -1,5 +1,15 @@
 @import 'layout_variable';
 
+// FIXME: replace with mt-2 or mt-3
+.grw-mt-10px {
+  margin-top: 10px !important;
+}
+
+// FIXME: replace with pt-2 or pt-3
+.grw-pt-10px {
+  padding-top: 10px !important;
+}
+
 .main-container {
   h1,
   h2,
