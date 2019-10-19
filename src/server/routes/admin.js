@@ -129,24 +129,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
-  actions.markdown.lineBreaksSetting = async function(req, res) {
-
-    const array = {
-      'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
-      'markdown:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
-    };
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('markdown', array);
-      return res.json(ApiResponse.success());
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-
-  };
-
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
   actions.markdown.presentationSetting = async function(req, res) {
     const markdownSetting = req.form.markdownSetting;

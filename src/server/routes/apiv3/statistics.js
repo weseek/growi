@@ -29,25 +29,7 @@ module.exports = (crowi) => {
   const models = crowi.models;
   const User = models.User;
 
-  /**
-   * @swagger
-   *
-   *  /statistics/user:
-   *    get:
-   *      tags: [Statistics]
-   *      description: Get statistics for user
-   *      responses:
-   *        200:
-   *          description: Statistics for user
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  data:
-   *                    type: object
-   *                    description: Statistics for all user
-   */
-  router.get('/user', helmet.noCache(), async(req, res) => {
+  const getUserStatistics = async() => {
     const userCountGroupByStatus = await User.aggregate().group({
       _id: '$status',
       totalCount: { $sum: 1 },
@@ -75,8 +57,8 @@ module.exports = (crowi) => {
     const findAdmins = util.promisify(User.findAdmins).bind(User);
     const adminUsers = await findAdmins();
 
-    const data = {
-      total: activeUserCount + userCountResults.total,
+    return {
+      total: activeUserCount + inactiveUserTotal,
       active: {
         total: activeUserCount,
         admin: adminUsers.length,
@@ -86,6 +68,38 @@ module.exports = (crowi) => {
         ...userCountResults,
       },
     };
+  };
+
+  const getUserStatisticsForNotLoggedIn = async() => {
+    const data = await getUserStatistics();
+    delete data.active.admin;
+    delete data.inactive.invited;
+    delete data.inactive.deleted;
+    delete data.inactive.suspended;
+    delete data.inactive.registered;
+    return data;
+  };
+
+  /**
+   * @swagger
+   *
+   *  /statistics/user:
+   *    get:
+   *      tags: [Statistics]
+   *      description: Get statistics for user
+   *      responses:
+   *        200:
+   *          description: Statistics for user
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  data:
+   *                    type: object
+   *                    description: Statistics for all user
+   */
+  router.get('/user', helmet.noCache(), async(req, res) => {
+    const data = req.user == null ? await getUserStatisticsForNotLoggedIn() : await getUserStatistics();
     res.status(200).send({ data });
   });
 
