@@ -27,16 +27,16 @@
     },
     "INSTALL_PLUGINS": {
       "description": "Comma-separated list of plugin package names to install.",
-      "value": "growi-plugin-lsx,growi-plugin-pukiwiki-like-linker",
+      "value": "growi-plugin-lsx,growi-plugin-pukiwiki-like-linker,growi-plugin-attachment-refs",
       "required": false
     }
   },
   "addons": [
     "mongolab",
     {
-      "plan": "bonsai:sandbox-6",
+      "plan": "searchbox:starter",
       "options": {
-        "version": "6.5.4"
+        "es_version": "6"
       }
     }
   ]
