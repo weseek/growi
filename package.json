@@ -33,7 +33,7 @@
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "console": "env-cmd -f config/env.dev.js node --experimental-repl-await src/server/console.js",
-    "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
+    "heroku-postbuild": "sh bin/heroku/install-packages.sh && npm run build:prod",
     "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
     "lint:js": "eslint \"**/*.{js,jsx}\"",
     "lint:styles:fix": "prettier-stylelint --quiet --write src/client/styles/scss/**/*.scss",
