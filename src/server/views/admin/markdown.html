@@ -17,8 +17,10 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'markdown'} %}
     </div>
-    <!-- TODO reactify admin -->
-    <div class="col-md-9">
+
+    <div class="col-md-9" id="admin-markdown-setting"></div>
+    <!-- TODO delete after reactify admin -->
+    <!-- <div class="col-md-9">
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
       <div class="alert alert-success">
@@ -237,7 +239,7 @@
         </div>
 
       </form>
-    </div>
+    </div> -->
   </div>
 
 </div>
