@@ -179,7 +179,7 @@ class OptionsSelector extends React.Component {
 
         <Dropdown
           direction="up"
-          bsSize="sm"
+          size="sm"
           className="configuration-dropdown"
           isOpen={this.state.isCddMenuOpened}
           toggle={this.onToggleConfigurationDropdown}
