@@ -107,15 +107,16 @@ SearchClient.prototype.shouldIndexed = function(page) {
   return page.creator != null && page.revision != null && page.redirectTo == null;
 };
 
-// SEARCHBOX_SSL_URL is following format:
-// => https://{ID}:{PASSWORD}@{HOST}
 SearchClient.prototype.parseUri = function(uri) {
   let indexName = 'crowi';
   let host = uri;
-  const match = uri.match(/^(https?:\/\/[^/]+)\/(.+)$/);
+
+  // https://regex101.com/r/eKT4Db/4
+  const match = uri.match(/^(https?:\/\/[^/]+)\/?(.+)?$/);
+
   if (match) {
     host = match[1];
-    indexName = match[2];
+    indexName = match[2] || 'growi';
   }
 
   return {
