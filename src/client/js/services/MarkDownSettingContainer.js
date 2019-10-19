@@ -12,8 +12,8 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      pageBreakOption: appContainer.config.pageBreakOption,
-      customRegularExpression: appContainer.config.customRegularExpression || '',
+      pageBreakSeparator: appContainer.config.pageBreakSeparator,
+      pageBreakCustomSeparator: appContainer.config.pageBreakCustomSeparator || '',
       isEnabledXss: (appContainer.config.xssOption != null),
       xssOption: appContainer.config.xssOption,
       tagWhiteList: appContainer.config.tagWhiteList || '',
@@ -61,8 +61,8 @@ export default class MarkDownSettingContainer extends Container {
   async updatePresentationSetting() {
 
     const response = await this.appContainer.apiv3.put('/markdown-setting/presentation', {
-      pageBreakOption: this.state.pageBreakOption,
-      customRegularExpression: this.state.customRegularExpression,
+      pageBreakSeparator: this.state.pageBreakSeparator,
+      pageBreakCustomSeparator: this.state.pageBreakCustomSeparator,
     });
 
     return response;

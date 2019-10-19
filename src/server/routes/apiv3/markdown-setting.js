@@ -30,7 +30,7 @@ module.exports = (crowi) => {
   const { ApiV3FormValidator } = crowi.middlewares;
 
   validator.presentationSetting = [
-    body('pageBreakOption').isInt().not().isEmpty(),
+    body('pageBreakSeparator').isInt().not().isEmpty(),
   ];
 
   /**
@@ -64,12 +64,13 @@ module.exports = (crowi) => {
    *                      description: new presentation params
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
-    if (req.body.pageBreakOption === 3 && req.body.customRegularExpression === '') {
+    if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
       return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
 
     const presentationParams = {
-      'markdown:presentation:pageBreakOption': req.body.pageBreakOption,
+      'markdown:presentation:pageBreakSeparator': req.body.pageBreakSeparator,
+      'markdown:presentation:pageBreakCustomSeparator': req.body.pageBreakCustomSeparator,
     };
 
     try {
