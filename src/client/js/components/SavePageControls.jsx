@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import {
-  ButtonDropdown, Button,
+  UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
@@ -21,10 +21,6 @@ class SavePageControls extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      isSubmitDropdownOpen: false,
-    };
 
     const config = this.props.appContainer.getConfig();
     this.hasSlackConfig = config.hasSlackConfig;
@@ -71,15 +67,10 @@ class SavePageControls extends React.Component {
 
   render() {
     const { t, pageContainer, editorContainer } = this.props;
-    const { isSubmitDropdownOpen } = this.state;
 
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
-
-    const toggle = () => {
-      this.setState({ isSubmitDropdownOpen: !isSubmitDropdownOpen });
-    };
 
     return (
       <div className="d-flex align-items-center form-inline">
@@ -110,13 +101,15 @@ class SavePageControls extends React.Component {
           )
         }
 
-        <ButtonDropdown isOpen={isSubmitDropdownOpen} toggle={toggle} direction="up">
+        <UncontrolledButtonDropdown direction="up">
           <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
           <DropdownToggle caret color="primary" />
           <DropdownMenu right>
-            <DropdownItem>{labelOverwriteScopes}</DropdownItem>
+            <DropdownItem onClick={this.saveAndOverwriteScopesOfDescendants}>
+              {labelOverwriteScopes}
+            </DropdownItem>
           </DropdownMenu>
-        </ButtonDropdown>
+        </UncontrolledButtonDropdown>
 
       </div>
     );
