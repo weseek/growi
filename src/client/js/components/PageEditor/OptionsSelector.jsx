@@ -110,7 +110,7 @@ class OptionsSelector extends React.Component {
 
     return (
       <div className="my-0 form-group">
-        <label>Keymap:</label>
+        <label>Theme:</label>
         <div className="btn-group btn-group-sm dropup">
           <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {selectedTheme}
