@@ -30,7 +30,7 @@
   #}
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
-    <li class="dropdown pull-right">
+    <li class="dropdown float-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
       </a>
@@ -43,7 +43,7 @@
       </ul>
     </li>
     {% else %}
-    <li class="dropdown pull-right">
+    <li class="dropdown float-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
       </a>
@@ -61,13 +61,13 @@
     {% endif %}
   {% endif %}
 
-  <li class="pull-right">
+  <li class="float-right">
     <a href="#revision-history" data-toggle="tab">
       <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
     </a>
   </li>
   {% if not page.isPortal() %}
-    <li class="pull-right">
+    <li class="float-right">
       <a href="?presentation=1" class="toggle-presentation">
         <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
       </a>

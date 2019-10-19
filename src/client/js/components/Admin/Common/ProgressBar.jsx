@@ -19,7 +19,7 @@ class ProgressBar extends React.Component {
       <>
         <h5 className="my-1">
           {header}
-          <div className="pull-right">{currentCount} / {totalCount}</div>
+          <div className="float-right">{currentCount} / {totalCount}</div>
         </h5>
         <div className="progress progress-sm">
           <div
