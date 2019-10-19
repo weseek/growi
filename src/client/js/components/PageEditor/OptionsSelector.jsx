@@ -180,7 +180,7 @@ class OptionsSelector extends React.Component {
         <Dropdown
           direction="up"
           size="sm"
-          className="configuration-dropdown"
+          className="grw-editor-configuration-dropdown"
           isOpen={this.state.isCddMenuOpened}
           toggle={this.onToggleConfigurationDropdown}
         >
