@@ -1,3 +1,5 @@
+@import 'layout_variable';
+
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
 
@@ -15,8 +17,8 @@
   }
 }
 
-@mixin expand-editor($header-plus-footer) {
-  $header-plus-footer: $header-plus-footer + 2px; // add .main padding-top
+@mixin expand-editor($editor-header-plus-footer) {
+  $header-plus-footer: $grw-navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
@@ -24,7 +26,7 @@
 
   .main {
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - #{$grw-navbar-height});
     padding-top: 2px;
     padding-right: 0;
     padding-left: 0;

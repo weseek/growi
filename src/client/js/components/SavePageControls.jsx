@@ -95,7 +95,7 @@ class SavePageControls extends React.Component {
           )
         }
 
-        <div className="btn-group dropup">
+        <div className="btn-group btn-group-sm dropup">
           <button type="button" className="btn btn-primary px-5">{labelSubmitButton}</button>
           <button
             type="button"

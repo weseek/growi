@@ -1,5 +1,10 @@
 .editor-container {
   .navbar-editor {
+    height: 30px;
+    padding: 0;
+
+    border-bottom: 1px solid transparent;
+
     li {
       display: inline-block;
     }

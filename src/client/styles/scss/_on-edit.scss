@@ -11,11 +11,11 @@ body:not(.on-edit) {
 
 body.on-edit {
   // calculate margin
-  $header-plus-footer: 42px //  .nav height
-    + 1px //                    .page-editor-footer border-top
-    + 40px !default; //         .page-editor-footer min-height
+  $editor-header-plus-footer: 42px // .nav-tabs height
+    + 1px //                          .page-editor-footer border-top
+    + 40px !default; //               .page-editor-footer min-height
 
-  @include expand-editor($header-plus-footer);
+  @include expand-editor($editor-header-plus-footer);
 
   // for growi layout
   .main {
@@ -31,7 +31,6 @@ body.on-edit {
   }
 
   // hide unnecessary elements
-  .navbar.navbar-static-top,
   .row.row-alerts,
   .row.page-list,
   .row.page-comments-row,
@@ -166,10 +165,6 @@ body.on-edit {
         .CodeMirror-selection-highlight-scrollbar {
           background-color: darkcyan;
         }
-      }
-
-      .navbar-editor {
-        border-bottom: 1px solid transparent;
       }
 
       // add icon on cursor
