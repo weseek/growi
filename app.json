@@ -25,9 +25,9 @@
       "description": "A password seed is used by password hash generator. ",
       "generator": "secret"
     },
-    "INSTALL_PLUGINS": {
-      "description": "Comma-separated list of plugin package names to install.",
-      "value": "growi-plugin-lsx,growi-plugin-pukiwiki-like-linker,growi-plugin-attachment-refs",
+    "ADDITIONAL_PACKAGES": {
+      "description": "Space-separated list of npm package names to install.",
+      "value": "growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion",
       "required": false
     }
   },
