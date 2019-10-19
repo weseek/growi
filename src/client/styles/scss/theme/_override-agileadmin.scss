@@ -65,11 +65,13 @@
 /*
  * Nav
  */
+/*
 .nav-pills {
   > li > a {
     border-radius: 3px;
   }
 }
+*/
 
 /*
  * Link
@@ -128,6 +130,7 @@ a {
 /*
  * Form
  */
+/*
 .input-sm,
 .input-group-sm > .form-control,
 .input-group-addon.input-sm,
@@ -135,22 +138,27 @@ a {
 .btn-group-sm > .btn {
   border-radius: $radius;
 }
+*/
 
 /*
  * Button
  */
+/*
 button.btn.btn-link:hover {
   text-decoration: none;
 }
+*/
 
 /*
  * Dropdown
  */
+/*
 .dropdown-menu {
   > li > a {
     padding: 5px 15px;
   }
 }
+*/
 
 // dropdown menu for search
 // inherited from elite.admin.scss
@@ -189,6 +197,7 @@ button.btn.btn-link:hover {
 /*
  * Modal
  */
+/*
 .modal-content {
   border: none;
   // border-radius: 0;
@@ -198,11 +207,13 @@ button.btn.btn-link:hover {
     padding: 10px 15px;
   }
 }
+*/
 
 /*
  * Wells
  */
-.well {
+/*
+ .well {
   padding: 0.7em;
   border-radius: 3px;
   &.well-sm {
@@ -213,34 +224,7 @@ button.btn.btn-link:hover {
     text-decoration: underline;
   }
 }
-
-/*
- * Panel
- */
-.panel {
-  .panel-heading {
-    padding: 7px 15px;
-    text-transform: none;
-  }
-  .panel-body {
-    padding: 15px;
-  }
-  .panel-footer {
-    padding: 7px 15px;
-  }
-}
-
-/*
-.panel.panel-primary .panel-heading {
-}
 */
-
-/*
- * Label
- */
-.label {
-  padding: 2px 7px;
-}
 
 /*
  * Wiki
