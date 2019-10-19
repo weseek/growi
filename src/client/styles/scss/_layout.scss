@@ -157,12 +157,18 @@
   }
 }
 
-// GROWI brand logo
 .logo {
   .logo-mark {
-    &._white {
-      color: white;
-      fill: white !important;
+    svg {
+      width: $grw-navbar-height;
+      height: $grw-navbar-height;
+      padding: 12px;
+    }
+  }
+  .logo-text {
+    svg {
+      width: 156px;
+      height: $grw-navbar-height;
     }
   }
 }
