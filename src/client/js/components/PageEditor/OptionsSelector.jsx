@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import {
-  FormGroup, Label, Input,
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
@@ -52,21 +51,9 @@ class OptionsSelector extends React.Component {
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
-  componentDidMount() {
-    this.init();
-  }
-
-  init() {
+  onChangeTheme(newValue) {
     const { editorContainer } = this.props;
 
-    this.themeSelectorInputEl.value = editorContainer.state.editorOptions.theme;
-    this.keymapModeSelectorInputEl.value = editorContainer.state.editorOptions.keymapMode;
-  }
-
-  onChangeTheme() {
-    const { editorContainer } = this.props;
-
-    const newValue = this.themeSelectorInputEl.value;
     const newOpts = Object.assign(editorContainer.state.editorOptions, { theme: newValue });
     editorContainer.setState({ editorOptions: newOpts });
 
@@ -74,10 +61,9 @@ class OptionsSelector extends React.Component {
     editorContainer.saveOptsToLocalStorage();
   }
 
-  onChangeKeymapMode() {
+  onChangeKeymapMode(newValue) {
     const { editorContainer } = this.props;
 
-    const newValue = this.keymapModeSelectorInputEl.value;
     const newOpts = Object.assign(editorContainer.state.editorOptions, { keymapMode: newValue });
     editorContainer.setState({ editorOptions: newOpts });
 
@@ -115,67 +101,58 @@ class OptionsSelector extends React.Component {
   }
 
   renderThemeSelector() {
-    const optionElems = this.availableThemes.map((theme) => {
-      return <option key={theme} value={theme}>{theme}</option>;
+    const { editorContainer } = this.props;
+
+    const selectedTheme = editorContainer.state.editorOptions.theme;
+    const menuItems = this.availableThemes.map((theme) => {
+      return <button key={theme} className="dropdown-item" type="button" onClick={() => this.onChangeTheme(theme)}>{theme}</button>;
     });
 
     return (
-      <FormGroup className="my-0">
-        <Label>Theme:</Label>
-        <Input
-          type="select"
-          bsSize="sm"
-          placeholder="select"
-          className="selectpicker"
-          cssModule={{ width: 'unset' }}
-          onChange={this.onChangeTheme}
-          // eslint-disable-next-line no-return-assign
-          innerRef={(el) => { return this.themeSelectorInputEl = el }}
-        >
-
-          {optionElems}
-
-        </Input>
-      </FormGroup>
+      <div className="my-0 form-group">
+        <label>Keymap:</label>
+        <div className="btn-group btn-group-sm dropup">
+          <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {selectedTheme}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {menuItems}
+          </div>
+        </div>
+      </div>
     );
   }
 
   renderKeymapModeSelector() {
-    const optionElems = [];
-    // eslint-disable-next-line guard-for-in, no-restricted-syntax
-    for (const mode in this.keymapModes) {
+    const { editorContainer } = this.props;
+
+    const selectedKeymapMode = editorContainer.state.editorOptions.keymapMode;
+    const menuItems = Object.keys(this.keymapModes).map((mode) => {
       const label = this.keymapModes[mode];
-      const dataContent = (mode === 'default')
-        ? label
-        : `<img src='/images/icons/${mode}.png' width='16px' class='m-r-5'></img> ${label}`;
-      optionElems.push(
-        <option key={mode} value={mode} data-content={dataContent}>{label}</option>,
-      );
-    }
+      const icon = (mode !== 'default')
+        ? <img src={`/images/icons/${mode}.png`} width="16px" className="mr-2"></img>
+        : null;
+      return <button key={mode} className="dropdown-item" type="button" onClick={() => this.onChangeKeymapMode(mode)}>{icon}{label}</button>;
+    });
 
     return (
-      <FormGroup className="my-0">
-        <Label>Keymap:</Label>
-        <Input
-          type="select"
-          bsSize="sm"
-          placeholder="select"
-          className="selectpicker"
-          onChange={this.onChangeKeymapMode}
-          // eslint-disable-next-line no-return-assign
-          innerRef={(el) => { return this.keymapModeSelectorInputEl = el }}
-        >
-
-          {optionElems}
-
-        </Input>
-      </FormGroup>
+      <div className="my-0 form-group">
+        <label>Keymap:</label>
+        <div className="btn-group btn-group-sm dropup">
+          <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {selectedKeymapMode}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {menuItems}
+          </div>
+        </div>
+      </div>
     );
   }
 
   renderConfigurationDropdown() {
     return (
-      <FormGroup className="my-0">
+      <div className="my-0 form-group">
 
         <Dropdown
           direction="up"
@@ -197,7 +174,7 @@ class OptionsSelector extends React.Component {
 
         </Dropdown>
 
-      </FormGroup>
+      </div>
     );
   }
 
