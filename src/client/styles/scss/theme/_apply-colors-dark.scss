@@ -36,7 +36,7 @@ textarea.form-control {
 }
 
 .input-group .input-group-addon {
-  color: $dark;
+  color: theme-color('dark');
   background-color: rgba($bgcolor-navbar, 0.4);
   border: 1px solid darken($border, 30%);
   border-right: none;
@@ -73,7 +73,7 @@ textarea.form-control {
   &.panel-default {
     .panel-heading,
     .panel-body {
-      color: $light;
+      color: theme-color('light');
     }
   }
 }
