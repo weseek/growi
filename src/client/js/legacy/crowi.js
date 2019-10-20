@@ -119,7 +119,7 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
 Crowi.initAffix = () => {
   const $affixContent = $('#page-header');
   if ($affixContent.length > 0) {
-    const $affixContentContainer = $('.row.bg-title');
+    const $affixContentContainer = $('.row.grw-subnav');
     const containerHeight = $affixContentContainer.outerHeight(true);
     $affixContent.affix({
       offset: {

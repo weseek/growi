@@ -84,7 +84,7 @@ body.on-edit {
     padding-bottom: 0;
   }
 
-  .row.bg-title {
+  .row.grw-subnav {
     $left-margin: $grw-nav-main-left-tab-width * 2 + 25px; // width of .grw-nav-main-left-tab x 2 + some margin
     $right-margin: 128px + 94px + 46px; //                    width of all of grw-nav-main-right-tab
 
@@ -97,7 +97,7 @@ body.on-edit {
 
     background: none;
 
-    > .header-container {
+    > .grw-title-bar {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events

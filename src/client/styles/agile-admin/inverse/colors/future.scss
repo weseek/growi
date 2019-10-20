@@ -31,7 +31,7 @@ $inline-code-bg: darken($bodycolor, 5%);
 @import 'apply-colors-dark';
 
 .main-container:not(.on-edit) {
-  .bg-title {
+  .grw-subnav {
     border-bottom: 1px solid rgb(131, 228, 215);
   }
 }

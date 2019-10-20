@@ -180,17 +180,12 @@
   }
 }
 
-// header widget area
-.grw-title-bar {
-  background: $grw-floral-white;
-}
-
-// bg-title for .row
-.bg-title {
-  padding: initial;
-  margin-right: -15px;
-  margin-left: -15px;
+.grw-subnav {
   overflow: unset;
+
+  .grw-title-bar {
+    background: $grw-floral-white;
+  }
 }
 
 //@each $
