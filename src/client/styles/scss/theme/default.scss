@@ -1,16 +1,17 @@
 @import '../variables';
+@import '../variables-bootstrap';
 
 // == Define colors
 //
 
 // colors for overriding bootstrap $theme-colors
-$grw-primary: #112744;
-// $grw-info: #;
-// $grw-success: #;
-// $grw-warning: #;
-// $grw-danger: #;
-// $grw-light: #;
-// $grw-dark: #;
+$primary: #112744;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
 
 // Background colors
 $bgcolor-global: white;
@@ -20,9 +21,9 @@ $bgcolor-inline-code: #f9f2f4;
 // Font colors
 $color-global: #333333;
 $color-header: #2b2b2b;
-$color-link: lighten($grw-primary, 20%);
+$color-link: lighten($primary, 20%);
 $color-link-hover: lighten($color-link, 20%);
-$color-link-wiki: lighten($grw-primary, 20%);
+$color-link-wiki: lighten($primary, 20%);
 $color-link-wiki-hover: lighten($color-link-wiki, 20%);
 $color-inline-code: #c7254e;
 
@@ -36,7 +37,7 @@ $active-navbar-border: lighten($navbar-border, 10%);
 
 // light mode colors
 @media (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
-  $grw-secondary: #ccc;
+  $secondary: #ccc;
 }
 
 // dark mode colors

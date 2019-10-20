@@ -4,8 +4,13 @@
 
 //== Colors
 //
-//## DO NOT override `$theme-colors` here.
-//## see _variables.scss, theme/_override-bootstrap-themes.scss and each theme files
+$primary: #112744;
+$info: #0d8ea5;
+$success: #00bb83;
+$warning: #ee773b;
+$danger: #ff0a54;
+$light: #dee2e6;
+$dark: #343a40;
 
 //== Typography
 //

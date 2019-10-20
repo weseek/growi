@@ -8,8 +8,6 @@
 $link-color: $color-link;
 $link-hover-color: $color-link-hover;
 
-@import 'override-bootstrap-themes';
-
 @import '~bootstrap/scss/reboot';
 
 @each $color, $value in $theme-colors {
@@ -29,6 +27,8 @@ $link-hover-color: $color-link-hover;
   .alert.alert-#{$theme-color} {
     color: white;
     background: $color;
+    border: none;
+
     a:not(.btn) {
       color: white;
 
