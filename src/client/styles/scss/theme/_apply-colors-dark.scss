@@ -173,8 +173,8 @@ legend {
 .admin-page {
   #themeOptions {
     .theme-option-container.active a {
-      background-color: darken($bgcolor-theme, 15%);
-      border-color: darken($bgcolor-theme, 15%);
+      background-color: darken(theme-color('primary'), 15%);
+      border-color: darken(theme-color('primary'), 15%);
     }
   }
 }
