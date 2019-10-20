@@ -1,7 +1,17 @@
-/*===
- * Apply to Bootstrap
- */
-@import '~bootstrap/scss/bootstrap-reboot';
+//== Apply to Bootstrap
+//
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+
+// override bootstrap variables
+$link-color: $color-link;
+$link-hover-color: $color-link-hover;
+
+@import 'override-bootstrap-themes';
+
+@import '~bootstrap/scss/reboot';
+
 @each $color, $value in $theme-colors {
   @include bg-variant('.bg-#{$color}', $value);
 }
@@ -47,9 +57,9 @@
 //   @include list-group-item-variant($color, color-level($value, -9), color-level($value, 6));
 // }
 
-/*===
- * Apply to GROWI Elements
- */
+//== Apply to GROWI Elements
+//
+
 body {
   background: $bgcolor-global;
 }
@@ -304,7 +314,7 @@ body.on-edit {
         }
         li.active {
           background-color: darken($bgcolor-global, 8%);
-          border-color: $bgcolor-theme;
+          border-color: theme-color('primary');
         }
       }
     }

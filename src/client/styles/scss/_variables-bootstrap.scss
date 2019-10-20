@@ -3,13 +3,9 @@
 // --------------------------------------------------
 
 //== Colors
-$theme-colors: (
-  'primary': $grw-primary,
-  'success': $grw-success,
-  'info': $grw-info,
-  'warning': $grw-warning,
-  'danger': $grw-danger
-);
+//
+//## DO NOT override `$theme-colors` here.
+//## see _variables.scss, theme/_override-bootstrap-themes.scss and each theme files
 
 //== Typography
 //
@@ -37,31 +33,31 @@ $btn-border-radius: 0;
 $btn-border-radius-lg: 0;
 $btn-border-radius-sm: 0;
 
-// Forms
+//== Forms
 
 $input-border-radius: 0;
 $input-border-radius-lg: 0;
 $input-border-radius-sm: 0;
 
-// Navs
+//== Navs
 
 $nav-link-padding-y: 0.75rem;
 $nav-link-padding-x: 1rem;
 $nav-tabs-border-radius: 0;
 
-// Navbar
+//== Navbar
 $navbar-padding-y: 0;
 $navbar-brand-padding-y: 0;
 $navbar-nav-link-padding-x: 1rem;
 
-// Dropdowns
+//== Dropdowns
 $dropdown-border-radius: 0;
 
-// Modals
+//== Modals
 $modal-content-border-width: 0;
 $modal-content-border-radius: 0;
 $modal-header-padding-y: 0.75rem;
 $modal-header-padding-x: 1rem;
 
-// Alerts
+//== Alerts
 $alert-border-radius: 0;

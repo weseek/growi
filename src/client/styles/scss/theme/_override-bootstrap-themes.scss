@@ -1,0 +1,10 @@
+// use $grw-* colors
+$theme-colors: (
+  'primary': $grw-primary,
+  'success': $grw-success,
+  'info': $grw-info,
+  'warning': $grw-warning,
+  'danger': $grw-danger,
+  'light': $grw-light,
+  'dark': $grw-dark
+);
