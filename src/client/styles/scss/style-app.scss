@@ -23,11 +23,12 @@
 @import 'comment_crowi';
 @import 'comment_growi';
 @import 'comment_kibela';
-@import 'navbar_kibela';
 @import 'create-page';
 @import 'create-template';
+@import 'draft';
 @import 'editor-attachment';
 @import 'editor-navbar';
+@import 'handsontable';
 @import 'layout';
 @import 'layout_crowi';
 @import 'layout_crowi_sidebar';
@@ -36,6 +37,7 @@
 @import 'layout_variable';
 @import 'login';
 @import 'navbar';
+@import 'navbar_kibela';
 @import 'notification';
 @import 'on-edit';
 @import 'page_list';
@@ -43,14 +45,12 @@
 @import 'page_growi';
 @import 'search';
 @import 'shortcuts';
+@import 'tag';
 @import 'user';
 @import 'user_growi';
-@import 'handsontable';
+@import 'staff_credit';
+@import 'waves';
 @import 'wiki';
-@import 'staff_credit';
-@import 'tag';
-@import 'staff_credit';
-@import 'draft';
 
 /*
  * for Guest User Mode

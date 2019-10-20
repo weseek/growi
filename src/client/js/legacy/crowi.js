@@ -7,7 +7,7 @@ const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
 require('bootstrap-select');
 
-require('./thirdparty-js/agile-admin');
+require('./thirdparty-js/waves');
 
 const Crowi = {};
 
