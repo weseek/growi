@@ -134,7 +134,7 @@ class GrantSelector extends React.Component {
    */
   renderGrantSelector() {
     const { t } = this.props;
-    const { grantGroup } = this.state;
+    const { grant: currentGrant, grantGroup } = this.state;
 
     let dropdownToggleLabelElm = null;
 
@@ -146,7 +146,7 @@ class GrantSelector extends React.Component {
       const labelElm = <span><i className={`icon icon-fw ${opt.iconClass} ${opt.styleClass}`}></i> <span className={opt.styleClass}>{t(label)}</span></span>;
 
       // set dropdownToggleLabelElm
-      if (this.state.grant === opt.grant) {
+      if (opt.grant === 1 || opt.grant === currentGrant) {
         dropdownToggleLabelElm = labelElm;
       }
 

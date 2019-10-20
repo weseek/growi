@@ -32,3 +32,10 @@
     margin-right: 0.15rem;
   }
 }
+
+// Dropdowns {
+.dropdown {
+  .dropdown-toggle.btn.disabled {
+    cursor: not-allowed;
+  }
+}
