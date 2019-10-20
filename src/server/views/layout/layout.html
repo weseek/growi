@@ -80,13 +80,15 @@
     <div class="navbar-brand">
       <a class="logo d-block top-left-part " href="/">
         <div class="logo-mark d-inline-block">{% include '../widget/logo.html' %}</div>
-        <span class="logo-text mx-3">
+        {#
+        <span class="logo-text mx-2">
           {% set appTitle = appService.getAppTitle() %}
           {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
           <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
             {% block title %}{{ appTitle }}{% endblock %}
           </text>
         </span>
+        #}
       </a>
     </div>
 
