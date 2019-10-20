@@ -37,9 +37,14 @@
   }
 }
 
-// Dropdowns {
+// Dropdowns
 .dropdown {
   .dropdown-toggle.btn.disabled {
     cursor: not-allowed;
   }
+}
+
+//Modals
+.modal-content {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
 }
