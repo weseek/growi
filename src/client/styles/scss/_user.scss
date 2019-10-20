@@ -1,91 +1,90 @@
-.main-container {
-  .user-page-header {
-    #revision-path {
-      margin-bottom: 0;
-    }
+.user-page-header {
+  #revision-path {
+    margin-bottom: 0;
+  }
 
-    .users-meta {
-      margin-left: 30px;
-    }
+  .users-meta {
+    margin-left: 30px;
+  }
 
-    h1 {
-      margin: 0;
-      font-size: 2.5em;
-      color: #666;
-    }
+  h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #666;
+  }
 
-    .picture {
-      width: 64px;
-      height: 64px;
-    }
+  .picture {
+    width: 64px;
+    height: 64px;
+  }
 
-    .user-page-meta {
-      color: #999;
+  .user-page-meta {
+    color: #999;
 
-      ul {
-        padding-left: 0;
+    ul {
+      padding-left: 0;
 
-        li {
-          list-style: none;
-        }
+      li {
+        list-style: none;
       }
-
-      .user-page-username {
-        font-weight: bold;
-      }
-
-      .user-page-email {}
-
-      .user-page-introduction {}
     }
 
-    .btn-like,
-    .btn-bookmark {
-      &.btn-lg {
-        padding: 8px;
-        font-size: 1.5em;
-      }
+    .user-page-username {
+      font-weight: bold;
+    }
+
+    .user-page-email {
+    }
+
+    .user-page-introduction {
     }
   }
 
-  // affix
-  .user-page-header.affix {
-    .users-meta {
-      margin-left: 15px;
-    }
-
-    h1 {
+  .btn-like,
+  .btn-bookmark {
+    &.btn-lg {
+      padding: 8px;
       font-size: 1.5em;
-      line-height: 30px;
-    }
-
-    .picture {
-      width: 48px;
-      height: 48px;
     }
   }
+}
 
-  .user-page-content {
-    #user-draft-list {
-      #draft-list {
-        .panel-title {
-          width: 100%;
+// affix
+.user-page-header.affix {
+  .users-meta {
+    margin-left: 15px;
+  }
 
-          .label-draft {
-            padding: 1px 5px;
-            margin: 0 0 0 4px;
-            font-weight: normal;
-          }
+  h1 {
+    font-size: 1.5em;
+    line-height: 30px;
+  }
+
+  .picture {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.user-page-content {
+  #user-draft-list {
+    #draft-list {
+      .panel-title {
+        width: 100%;
+
+        .label-draft {
+          padding: 1px 5px;
+          margin: 0 0 0 4px;
+          font-weight: normal;
         }
+      }
 
-        a {
-
-          .icon-copy,
-          .draft-delete,
-          .icon-edit {
-            margin: 0 0 0 4px;
-            cursor: pointer;
-          }
+      a {
+        .icon-copy,
+        .draft-delete,
+        .icon-edit {
+          margin: 0 0 0 4px;
+          cursor: pointer;
         }
       }
     }

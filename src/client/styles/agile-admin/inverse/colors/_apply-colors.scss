@@ -1,10 +1,13 @@
-body{
-  background:$sidebar;
+body {
+  background: $sidebar;
 }
 
 /*Top Header Part*/
 
-.logo i{ color:$white;}
+.logo i {
+  color: $white;
+}
+
 .top-left-part {
   background-color: $sidebar;
 }
@@ -24,8 +27,12 @@ body{
           fill: $logo-mark-fill;
 
           &:hover {
-            .group1 { fill: $growi-green; }
-            .group2 { fill: $growi-blue; }
+            .group1 {
+              fill: $growi-green;
+            }
+            .group2 {
+              fill: $growi-blue;
+            }
           }
         }
       }
@@ -33,12 +40,14 @@ body{
   }
 }
 
-.navbar-header{
-  background:$topbar;
+.navbar-header {
+  background: $topbar;
 }
+
 .navbar-top-links > li > a {
-    color:$white;
+  color: $white;
 }
+
 .navbar-top-links .confidential {
   background-color: darken($topbar, 10%);
 }
@@ -51,104 +60,116 @@ body{
 }*/
 
 /*Right panel*/
-.right-sidebar .rpanel-title{
-  background:$themecolor;
+.right-sidebar .rpanel-title {
+  background: $themecolor;
 }
 
 /*Bread Crumb*/
-.bg-title .breadcrumb .active{
-    color:$themecolor;
+.bg-title .breadcrumb .active {
+  color: $themecolor;
 }
-.bg-title{
+
+.bg-title {
   background: darken($bodycolor, 2%);
 }
 
 /*Sidebar*/
 
 .sidebar {
-    background:$sidebar;
-    box-shadow:1px 0px 20px rgba(0, 0, 0, 0.08);
-  .label-custom{
-      background:$megna;
+  background: $sidebar;
+  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+  .label-custom {
+    background: $megna;
   }
 }
-#side-menu li a{
-    color:$sidebar-text;
+
+#side-menu li a {
+  color: $sidebar-text;
 }
-#side-menu li a{
-    color:$sidebar-text;
-  border-left:0px solid $sidebar;
+
+#side-menu li a {
+  color: $sidebar-text;
+  border-left: 0px solid $sidebar;
 }
 
 #side-menu > li > a {
-    &:hover, &:focus{
-        background:rgba(0, 0, 0, 0.03);
-    }
-   &.active {
-            border-left:3px solid $themecolor;
-            color:$dark;
-
-            font-weight:500;
-        i{
-          color:$themecolor;
-        }
-        }
-
-}
-#side-menu ul > li > a {
-    &:hover{
-        color:$themecolor;
-
-    }
-    &.active{
-     color:$dark;
-     font-weight:500;
-    }
-}
-.sidebar #side-menu .user-pro{
-  .nav-second-level a:hover{
-          color:$themecolor;
-        }
+  &:hover,
+  &:focus {
+    background: rgba(0, 0, 0, 0.03);
   }
+  &.active {
+
+    font-weight: 500;
+    color: $dark;
+    border-left: 3px solid $themecolor;
+    i {
+      color: $themecolor;
+    }
+  }
+}
+
+#side-menu ul > li > a {
+  &:hover {
+    color: $themecolor;
+  }
+  &.active {
+    font-weight: 500;
+    color: $dark;
+  }
+}
+
+.sidebar #side-menu .user-pro {
+  .nav-second-level a:hover {
+    color: $themecolor;
+  }
+}
 
 /*themecolor*/
 
 .bg-theme {
   background-color: $danger !important;
 }
+
 .bg-theme-dark {
   background-color: $megna !important;
 }
 
 /*Chat widget*/
-.chat-list .odd .chat-text{
-    background:$themecolor;
+.chat-list .odd .chat-text {
+  background: $themecolor;
 }
 /*Button*/
-.btn-custom{
-  background:$themecolor;
-  border:1px solid $themecolor;
-  color:$white;
-  &:hover{
-    background:$themecolor;
-    opacity:0.8;
-    color:$white;
-    border:1px solid $themecolor;
+.btn-custom {
+  color: $white;
+  background: $themecolor;
+  border: 1px solid $themecolor;
+  &:hover {
+    color: $white;
+    background: $themecolor;
+    border: 1px solid $themecolor;
+    opacity: 0.8;
   }
 }
 /*Custom tab*/
-.customtab li.active a, .customtab li.active a:hover,  .customtab li.active a:focus{
- border-bottom:2px solid $themecolor;
- color:$themecolor;
+.customtab li.active a,
+.customtab li.active a:hover,
+.customtab li.active a:focus {
+  color: $themecolor;
+  border-bottom: 2px solid $themecolor;
 }
-.tabs-vertical li.active a, .tabs-vertical li.active a:hover,  .tabs-vertical li.active a:focus{
-  background:$themecolor;
-  border-right:2px solid $themecolor;
+
+.tabs-vertical li.active a,
+.tabs-vertical li.active a:hover,
+.tabs-vertical li.active a:focus {
+  background: $themecolor;
+  border-right: 2px solid $themecolor;
 }
 /*Nav-pills*/
-.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
-  background:$themecolor;
-  color:$white;
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:focus,
+.nav-pills > li.active > a:hover {
+  color: $white;
+  background: $themecolor;
 }
 
 /*
@@ -158,7 +179,6 @@ body{
   color: $inline-code-color;
   background-color: $inline-code-bg;
 }
-
 
 /*
  * Legend
@@ -173,7 +193,11 @@ legend {
 .modal {
   .modal-header {
     border-bottom-color: $border;
-    &.bg-primary, &.bg-info, &.bg-success, &.bg-warning, &.bg-danger {
+    &.bg-primary,
+    &.bg-info,
+    &.bg-success,
+    &.bg-warning,
+    &.bg-danger {
       color: white;
       .close {
         color: white;
@@ -215,13 +239,14 @@ legend {
  * Tabs
  */
 $active-nav-tabs-bgcolor: $bodycolor !default;
-.nav.nav-tabs {
 
+.nav.nav-tabs {
   border-bottom-color: $navbar-border;
 
   > li > a {
-    color:$linktext;
-    &:hover, &:focus {
+    color: $linktext;
+    &:hover,
+    &:focus {
       color: $linktext-hover;
       background: transparent;
     }
@@ -229,15 +254,16 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
   > li.active > a {
     background: $active-nav-tabs-bgcolor;
     border-top-color: $navbar-border;
-    border-left-color: $navbar-border;
     border-right-color: $navbar-border;
+    border-left-color: $navbar-border;
   }
   > li:not(.active) > a {
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       border-top-color: $active-navbar-border;
-      border-left-color: $active-navbar-border;
       border-right-color: $active-navbar-border;
       border-bottom: transparent;
+      border-left-color: $active-navbar-border;
     }
   }
 }
@@ -252,14 +278,13 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
       background-color: white;
     }
   }
-  input:checked+.slider {
+  input:checked + .slider {
     background-color: #007bff;
   }
-  input:focus+.slider {
+  input:focus + .slider {
     box-shadow: 0 0 1px #007bff;
   }
 }
-
 
 /*
  * Crowi sidebar
@@ -294,12 +319,11 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
   }
 }
 
-
 /*
  * GROWI header
  */
-.main-container header.affix {
-  background: rgba(darken($bodycolor, 2%), .9);
+header.affix {
+  background: rgba(darken($bodycolor, 2%), 0.9);
 }
 
 /*
@@ -312,8 +336,8 @@ body.on-edit {
     .page-editor-editor-container {
       border-right-color: $navbar-border;
       .navbar-editor {
+        background-color: $active-nav-tabs-bgcolor; // same color with active tab
         border-bottom-color: $border;
-        background-color: $active-nav-tabs-bgcolor;   // same color with active tab
       }
     }
     .page-editor-preview-container {
@@ -375,14 +399,14 @@ body.on-edit {
  * GROWI page attachments
  */
 .page-attachments-row {
-  border-top-color: $border;
   background-color: darken($bodycolor, 2%);
+  border-top-color: $border;
 }
 
 /*
  * GROWI admin page #themeOptions
  */
- .admin-page {
+.admin-page {
   #themeOptions {
     .theme-option-container.active {
       .theme-option-name {

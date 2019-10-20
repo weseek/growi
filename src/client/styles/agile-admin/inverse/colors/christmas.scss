@@ -2,7 +2,7 @@
 
 $themecolor: #b3000c;
 $themelight: white;
-$subthemecolor:	#017e20;
+$subthemecolor: #017e20;
 $topbar: $themecolor;
 $sidebar: $themelight;
 $bodycolor: $themelight;
@@ -28,8 +28,8 @@ $active-nav-tabs-bgcolor: white;
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor, 20%);
     color: $themelight;
+    background-color: lighten($themecolor, 20%);
 
     .icon-note,
     .icon-link {
@@ -38,7 +38,7 @@ $active-nav-tabs-bgcolor: white;
   }
 }
 
-.sidebar{
+.sidebar {
   background: $themecolor;
 }
 
@@ -46,11 +46,11 @@ $active-nav-tabs-bgcolor: white;
   background: $themelight;
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/christmas/christmas.jpg");
-  background-size: cover;
+  background-image: url('/images/themes/christmas/christmas.jpg');
   background-attachment: fixed;
+  background-size: cover;
 }
 
 .grw-subnav {
@@ -58,7 +58,7 @@ $active-nav-tabs-bgcolor: white;
 }
 
 #wrapper > .navbar > .navbar-header {
-  background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+  background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   border-bottom: 4px solid $subthemecolor;
 }
 
@@ -70,7 +70,8 @@ body:not(.on-edit) .nav.nav-tabs {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }
 
@@ -86,7 +87,8 @@ body:not(.on-edit) .nav.nav-tabs {
   }
 
   &.login-page {
-    .login-header, .login-dialog {
+    .login-header,
+    .login-dialog {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
@@ -99,7 +101,7 @@ body:not(.on-edit) .nav.nav-tabs {
  * Modal
  */
 .modal-dialog .modal-header.bg-primary {
-  background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+  background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   border-bottom: 2px solid $subthemecolor;
 }
 
@@ -107,12 +109,13 @@ body:not(.on-edit) .nav.nav-tabs {
  * Panel
  */
 .panel {
-  &.panel-white, &.panel-default {
+  &.panel-white,
+  &.panel-default {
     border-color: $border-original;
     .panel-heading {
-        color: $dark;
-        background-color: $border-original;
-        border-bottom:1px solid $border-original;
+      color: $dark;
+      background-color: $border-original;
+      border-bottom: 1px solid $border-original;
     }
   }
 }
@@ -121,7 +124,7 @@ body:not(.on-edit) .nav.nav-tabs {
   border-color: #bd3425;
   .panel-heading {
     color: white;
-    background-image: url("/images/themes/christmas/christmas-navbar.jpg");
     background-color: $themecolor;
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   }
 }

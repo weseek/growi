@@ -9,7 +9,7 @@ $themecolor: #97cbc3;
 $topbar: #0c2a44;
 $sidebar: $themelight;
 $bodycolor: lighten($themelight, 10%);
-$headingtext:#3c6d72;
+$headingtext: #3c6d72;
 $bodytext: #3c6d72;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
@@ -37,13 +37,12 @@ $inline-code-bg: darken($themelight, 3%);
 }
 
 .panel {
-
   &,
   &.panel-white,
   &.panel-default {
+    color: $themecolor;
     background-color: lighten($themecolor, 30%);
     border-color: white;
-    color: $themecolor;
 
     .panel-heading {
       color: $themecolor;
@@ -63,8 +62,8 @@ $inline-code-bg: darken($themelight, 3%);
 /* GROWI page list */
 .page-list {
   .page-list-ul {
-    >li {
-      >a strong {
+    > li {
+      > a strong {
         color: $linkcolor;
       }
     }
@@ -75,49 +74,55 @@ $inline-code-bg: darken($themelight, 3%);
   background: lighten($themelight, 5%);
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/island/island.png");
+  background-image: url('/images/themes/island/island.png');
   background-attachment: fixed;
 }
 
 /*
  * Tabs
  */
- body:not(.on-edit) .nav.nav-tabs {
+body:not(.on-edit) .nav.nav-tabs {
   > li.active > a {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }
 
 /* Table */
- .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
- .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
- .table > thead > tr > th, .table-bordered{
-     border-top: 1px solid $border;
- }
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td,
+.table > thead > tr > th,
+.table-bordered {
+  border-top: 1px solid $border;
+}
 
- .table-bordered > thead > tr > th,
- .table-bordered > tbody > tr > th,
- .table-bordered > tfoot > tr > th,
- .table-bordered > thead > tr > td,
- .table-bordered > tbody > tr > td,
- .table-bordered > tfoot > tr > td {
-   border: 1px solid $border;
- }
- .table > thead > tr > th {
-     border-bottom: 1px solid $border;
- }
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  border: 1px solid $border;
+}
 
- .table-bordered {
-     border: 1px solid $border;
- }
+.table > thead > tr > th {
+  border-bottom: 1px solid $border;
+}
 
+.table-bordered {
+  border: 1px solid $border;
+}
 
- // login page
+// login page
 .nologin {
   &.login-page {
     > #wrapper > #page-wrapper {

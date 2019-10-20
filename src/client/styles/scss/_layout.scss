@@ -10,145 +10,141 @@
   padding-top: 10px !important;
 }
 
-.main-container {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 500;
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
 
-  .navbar-top-links {
-    height: 30px;
-    border-radius: 40px;
-    .confidential {
-      a {
-        font-weight: bold;
-        cursor: default;
-      }
+.navbar-top-links {
+  height: 30px;
+  border-radius: 40px;
+  .confidential {
+    a {
+      font-weight: bold;
+      cursor: default;
     }
   }
+}
 
-  /*
-   * header
-   */
-  header {
-    line-height: 1em;
+/*
+  * header
+  */
+header {
+  line-height: 1em;
+
+  h1 {
+    @include variable-font-size(28px);
+    line-height: 1.1em;
+  }
+
+  // affix
+  &.affix {
+    top: 0;
+    left: 0;
+    z-index: 15; // over the .sidebar
+    width: 100%;
+    padding: 2px 20px;
+    box-shadow: 0 0px 2px #999;
 
     h1 {
-      @include variable-font-size(28px);
-      line-height: 1.1em;
+      @include variable-font-size(20px);
     }
+  }
+}
 
-    // affix
-    &.affix {
-      top: 0;
-      left: 0;
-      z-index: 15; // over the .sidebar
-      width: 100%;
-      padding: 2px 20px;
-      box-shadow: 0 0px 2px #999;
+.main {
+  .header-wrap {
+    min-height: 70px;
+    padding: 15px 15px 0 15px;
+  }
+}
 
-      h1 {
-        @include variable-font-size(20px);
+.layout-control {
+  position: fixed;
+  right: 25%;
+  bottom: 25px;
+  z-index: 1;
+  display: block;
+  padding: 5px 8px;
+  font-size: 0.8em;
+  text-align: center;
+  border: solid 1px #ccc;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+  transition: 0.3s ease;
+
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
+
+.revision-toc {
+  max-width: 250px;
+  overflow: hidden;
+  font-size: 0.9em;
+
+  .revision-toc-content {
+    padding: 10px;
+
+    > ul {
+      padding-left: 0;
+      ul {
+        padding-left: 1em;
       }
     }
-  }
 
-  .main {
-    .header-wrap {
-      min-height: 70px;
-      padding: 15px 15px 0 15px;
+    // first level of li
+    > ul > li {
+      padding: 5px;
+      margin: 4px 4px 4px 17px;
     }
   }
-
-  .layout-control {
-    position: fixed;
-    right: 25%;
-    bottom: 25px;
-    z-index: 1;
-    display: block;
-    padding: 5px 8px;
-    font-size: 0.8em;
-    text-align: center;
-    border: solid 1px #ccc;
-    border-right: none;
-    border-radius: 5px 0 0 5px;
-    transition: 0.3s ease;
-
-    &:hover {
-      text-decoration: none;
-      cursor: pointer;
-    }
-  }
-
-  .revision-toc {
-    max-width: 250px;
-    overflow: hidden;
-    font-size: 0.9em;
-
-    .revision-toc-content {
-      padding: 10px;
-
-      > ul {
-        padding-left: 0;
-        ul {
-          padding-left: 1em;
-        }
-      }
-
-      // first level of li
-      > ul > li {
-        padding: 5px;
-        margin: 4px 4px 4px 17px;
-      }
-    }
-  }
-} // }}}
+}
 
 // printable style
 @media print {
-  .main-container {
-    padding: 30px;
+  padding: 30px;
 
-    a:after {
-      display: none !important;
+  a:after {
+    display: none !important;
+  }
+  .main {
+    header {
+      border-bottom: solid 1px #666;
+      h1 {
+        font-size: 2em;
+        color: #000;
+      }
     }
-    .main {
-      header {
-        border-bottom: solid 1px #666;
-        h1 {
-          font-size: 2em;
-          color: #000;
-        }
-      }
 
-      .revision-toc {
+    .revision-toc {
+      float: none;
+      max-width: 100%;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      border: solid 1px #aaa;
+      border-radius: 5px;
+
+      .revision-toc-head {
+        display: inline-block;
         float: none;
-        max-width: 100%;
-        margin-bottom: 20px;
-        font-size: 0.9em;
-        border: solid 1px #aaa;
-        border-radius: 5px;
-
-        .revision-toc-head {
-          display: inline-block;
-          float: none;
-        }
-
-        .revision-toc-content.collapse {
-          display: block;
-          height: auto;
-        }
       }
 
-      .meta {
-        margin-top: 32px;
-        color: #666;
-        border-top: solid 1px #ccc;
+      .revision-toc-content.collapse {
+        display: block;
+        height: auto;
       }
+    }
+
+    .meta {
+      margin-top: 32px;
+      color: #666;
+      border-top: solid 1px #ccc;
     }
   }
 }

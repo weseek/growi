@@ -222,20 +222,20 @@ $(() => {
   $('[data-tooltip-stay]').tooltip('show');
 
   $('#toggle-crowi-sidebar').click((e) => {
-    const $mainContainer = $('.main-container');
-    if ($mainContainer.hasClass('aside-hidden')) {
-      $('.main-container').removeClass('aside-hidden');
+    const $body = $('body');
+    if ($body.hasClass('aside-hidden')) {
+      $body.removeClass('aside-hidden');
       $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
     }
     else {
-      $mainContainer.addClass('aside-hidden');
+      $body.addClass('aside-hidden');
       $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
     }
     return false;
   });
 
   if ($.cookie('aside-hidden') === 1) {
-    $('.main-container').addClass('aside-hidden');
+    $('body').addClass('aside-hidden');
   }
 
   $('.copy-link').on('click', function() {

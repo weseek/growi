@@ -26,8 +26,8 @@ $active-nav-tabs-bgcolor: #fffffc;
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor, 20%);
     color: $themelight;
+    background-color: lighten($themecolor, 20%);
 
     .icon-note,
     .icon-link {
@@ -40,9 +40,9 @@ $active-nav-tabs-bgcolor: #fffffc;
   background: $themelight;
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/wood/wood.jpg");
+  background-image: url('/images/themes/wood/wood.jpg');
   background-attachment: fixed;
 }
 
@@ -51,7 +51,7 @@ $active-nav-tabs-bgcolor: #fffffc;
 }
 
 #wrapper > .navbar > .navbar-header {
-  background-image: url("/images/themes/wood/wood-navbar.jpg");
+  background-image: url('/images/themes/wood/wood-navbar.jpg');
 }
 
 /*
@@ -62,7 +62,8 @@ body:not(.on-edit) .nav.nav-tabs {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }
 
@@ -78,7 +79,8 @@ body:not(.on-edit) .nav.nav-tabs {
   }
 
   &.login-page {
-    .login-header, .login-dialog {
+    .login-header,
+    .login-dialog {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {

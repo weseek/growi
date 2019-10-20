@@ -61,7 +61,7 @@
 
 {% block html_body %}
 <body
-  class="main-container {% block html_base_css %}{% endblock %}
+  class="{% block html_base_css %}{% endblock %}
       {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"

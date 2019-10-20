@@ -1,16 +1,19 @@
 .top-left-part {
-  .logo-mark, .logo-text {
+  .logo-mark,
+  .logo-text {
     fill: white;
   }
 }
-
 
 /*
  * Button
  */
 .btn-default {
-  &:hover, &:focus,
-  &.active, &.active:hover, &.active:focus {
+  &:hover,
+  &:focus,
+  &.active,
+  &.active:hover,
+  &.active:focus {
     color: white;
     background-color: lighten($bodycolor, 5%);
   }
@@ -19,15 +22,19 @@
 /*
   * Form
   */
-input.form-control, textarea.form-control {
+input.form-control,
+textarea.form-control {
   color: lighten($bodytext, 30%);
   background-color: darken($bodycolor, 5%);
   border: 1px solid darken($border, 30%);
 }
-.form-control[disabled], .form-control[readonly] {
+
+.form-control[disabled],
+.form-control[readonly] {
   color: lighten($bodytext, 10%);
   background-color: lighten($bodycolor, 5%);
 }
+
 .input-group .input-group-addon {
   color: $dark;
   background-color: rgba($topbar, 0.4);
@@ -61,8 +68,11 @@ input.form-control, textarea.form-control {
  * Panel
  */
 .panel {
-  &, &.panel-white, &.panel-default {
-    .panel-heading, .panel-body {
+  &,
+  &.panel-white,
+  &.panel-default {
+    .panel-heading,
+    .panel-body {
       color: $light;
     }
   }
@@ -71,33 +81,38 @@ input.form-control, textarea.form-control {
 /*
  * Table
  */
- .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
- .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
- .table > thead > tr > th, .table-bordered{
-     border-top: 1px solid $border;
- }
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td,
+.table > thead > tr > th,
+.table-bordered {
+  border-top: 1px solid $border;
+}
 
- .table-bordered > thead > tr > th,
- .table-bordered > tbody > tr > th,
- .table-bordered > tfoot > tr > th,
- .table-bordered > thead > tr > td,
- .table-bordered > tbody > tr > td,
- .table-bordered > tfoot > tr > td {
-   border: 1px solid $border;
- }
- .table > thead > tr > th {
-     border-bottom: 1px solid $border;
- }
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  border: 1px solid $border;
+}
 
- .table-bordered {
-     border: 1px solid $border;
- }
+.table > thead > tr > th {
+  border-bottom: 1px solid $border;
+}
 
+.table-bordered {
+  border: 1px solid $border;
+}
 
 /*
  * GROWI header
  */
-.main-container header.affix {
+header.affix {
   .logo-mark {
     fill: white;
   }
@@ -142,6 +157,7 @@ input.form-control, textarea.form-control {
 legend {
   border-color: lighten($border, 10%);
 }
+
 .wiki {
   h1 {
     border-color: lighten($border, 10%);
@@ -157,8 +173,8 @@ legend {
 .admin-page {
   #themeOptions {
     .theme-option-container.active a {
-      background-color: darken($themecolor,15%);
-      border-color: darken($themecolor,15%);
+      background-color: darken($themecolor, 15%);
+      border-color: darken($themecolor, 15%);
     }
   }
 }

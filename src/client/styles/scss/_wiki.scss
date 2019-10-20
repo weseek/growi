@@ -230,7 +230,7 @@ div.body {
 }
 
 @include media-breakpoint-down(sm) {
-  .main-container .main .wiki {
+  .main .wiki {
     img {
       max-width: 100%;
     }

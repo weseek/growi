@@ -1,5 +1,6 @@
 .top-left-part {
-  .logo-mark, .logo-text {
+  .logo-mark,
+  .logo-text {
     fill: $themecolor;
   }
 }
@@ -10,7 +11,9 @@
 .form-control {
   background-color: $bodycolor;
 }
-.form-control[disabled], .form-control[readonly] {
+
+.form-control[disabled],
+.form-control[readonly] {
   color: lighten($bodytext, 10%);
   background-color: darken($bodycolor, 5%);
 }
@@ -18,7 +21,7 @@
 /*
  * GROWI header
  */
- .main-container header.affix {
+header.affix {
   .logo-mark {
     fill: $themecolor;
   }
@@ -39,14 +42,14 @@
 /*
  * GROWI page list
  */
- .page-list {
+.page-list {
   .page-list-ul {
     > li {
       > a strong {
         color: darken($bodytext, 20%);
       }
       > span.page-list-meta {
-        color: lighten($bodytext, 10%);;
+        color: lighten($bodytext, 10%);
       }
     }
   }
@@ -55,7 +58,7 @@
 /*
  * GROWI on-edit
  */
- .page-editor-footer {
+.page-editor-footer {
   #slack-mark-white {
     display: none;
   }
@@ -76,8 +79,8 @@
 .admin-page {
   #themeOptions {
     .theme-option-container.active a {
-      background-color: lighten($themecolor,20%);
-      border-color: lighten($themecolor,20%);
+      background-color: lighten($themecolor, 20%);
+      border-color: lighten($themecolor, 20%);
     }
   }
 }
