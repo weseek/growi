@@ -22,8 +22,8 @@ $info: lighten($bgcolor-theme, 20%);
 $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
 $color-link-wiki: lighten($bgcolor-theme, 20%);
 $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-$inline-code-color: $subthemecolor;
-$inline-code-bg: lighten($subthemecolor, 70%);
+$color-inline-code: $subthemecolor;
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
 $border: rgba(181, 203, 247, 0.61);
 
 @import 'apply-colors';

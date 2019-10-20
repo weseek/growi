@@ -23,7 +23,7 @@ $border: lighten($basecolor, 15%);
 $navbar-border: lighten($border, 10%);
 $active-navbar-border: darken($border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-bg: darken($bgcolor-global, 5%);
+$bgcolor-inline-code: darken($bgcolor-global, 5%);
 
 @import 'apply-colors';
 @import 'apply-colors-dark';

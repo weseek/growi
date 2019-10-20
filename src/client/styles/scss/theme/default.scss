@@ -1,23 +1,47 @@
 @import '../variables';
 
+/*===
+ * Define colors
+ */
+
+// Background colors
 $bgcolor-global: white;
 $bgcolor-theme: #112744;
 $bgcolor-navbar: #334455;
+$bgcolor-inline-code: #f9f2f4;
 
+// Font colors
 $color-global: #333333;
 $color-header: #2b2b2b;
 $color-link: lighten($bgcolor-theme, 20%);
 $color-link-hover: lighten($color-link, 20%);
-
-$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 $color-link-wiki: lighten($bgcolor-theme, 20%);
 $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+$color-inline-code: #c7254e;
 
+// Logo colors
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+// Border colors
+$border: #f0f0f0;
+$navbar-border: #ccc;
+$active-navbar-border: lighten($navbar-border, 10%);
+
+// override Bootstrap 4 theme colors
 $theme-colors: (
-  'primary': $bgcolor-theme
+  'primary': $bgcolor-theme,
 );
 
-@import 'variables-default';
-
+// apply
 @import 'apply-colors';
-@import 'apply-colors-light';
+// apply for no-preference or light mode
+@media (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
+  $theme-colors: (
+    'secondary': #ddd,
+  );
+  @import 'apply-colors-light';
+}
+// apply for dark mode
+@media (prefers-color-scheme: dark) {
+  @import 'apply-colors-dark';
+}

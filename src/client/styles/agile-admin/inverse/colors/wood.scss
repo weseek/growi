@@ -16,8 +16,8 @@ $info: lighten($bgcolor-theme, 10%);
 $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
 $color-link-wiki: lighten($bgcolor-theme, 5%);
 $color-link-wiki-hover: lighten($color-link-wiki, 15%);
-$inline-code-color: darken($bgcolor-theme, 20%);
-$inline-code-bg: lighten($subthemecolor, 70%);
+$color-inline-code: darken($bgcolor-theme, 20%);
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
 $active-nav-tabs-bgcolor: #fffffc;
 
 @import 'apply-colors';

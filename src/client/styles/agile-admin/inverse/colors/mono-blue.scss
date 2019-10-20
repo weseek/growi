@@ -20,8 +20,8 @@ $info: lighten($bgcolor-theme, 20%);
 $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 30%), 20%);
 $color-link-wiki: lighten($bgcolor-theme, 20%);
 $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-$inline-code-color: $subthemecolor;
-$inline-code-bg: lighten($subthemecolor, 70%);
+$color-inline-code: $subthemecolor;
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';

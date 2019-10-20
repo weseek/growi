@@ -81,8 +81,8 @@ body {
  * code color of inline-code
  */
 :not(.hljs) > code:not(.hljs) {
-  color: $inline-code-color;
-  background-color: $inline-code-bg;
+  color: $color-inline-code;
+  background-color: $bgcolor-inline-code;
 }
 
 /*

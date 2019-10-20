@@ -24,8 +24,8 @@ $navbar-border: lighten($basecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $active-nav-tabs-bgcolor: #231313;
 $btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-color: #a94f04;
-$inline-code-bg: #0a121b;
+$color-inline-code: #a94f04;
+$bgcolor-inline-code: #0a121b;
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
