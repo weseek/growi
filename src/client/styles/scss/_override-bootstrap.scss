@@ -1,33 +1,9 @@
-@import 'override-bootstrap-variables';
-@import 'layout_variable';
-
 * {
   outline: none !important;
 }
 
 :root {
   font-size: $font-size-root;
-}
-
-//** alert with custom color
-.alert {
-  a:not(.btn) {
-    color: white;
-  }
-}
-@each $theme-color, $color in $theme-colors {
-  .alert.alert-#{$theme-color} {
-    color: white;
-    background: $color;
-    border: initial;
-    border-radius: initial;
-    a:not(.btn) {
-      &:hover,
-      &:focus {
-        color: lighten($color, 30%);
-      }
-    }
-  }
 }
 
 // Navs

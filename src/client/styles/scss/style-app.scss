@@ -1,13 +1,15 @@
 // import variables
 @import '../agile-admin/inverse/variables';
 @import 'variables';
-@import 'mixins';
+@import 'variables-bootstrap';
 
-@import 'override-bootstrap-variables';
-@import 'override-bootstrap';
+@import 'mixins';
 
 // vendor
 @import 'vendor';
+
+// override bootstrap
+@import 'override-bootstrap';
 
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';

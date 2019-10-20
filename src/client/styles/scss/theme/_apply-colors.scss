@@ -15,6 +15,20 @@
     @include button-outline-variant($value);
   }
 }
+@each $theme-color, $color in $theme-colors {
+  .alert.alert-#{$theme-color} {
+    color: white;
+    background: $color;
+    a:not(.btn) {
+      color: white;
+
+      &:hover,
+      &:focus {
+        color: lighten($color, 30%);
+      }
+    }
+  }
+}
 // @each $color, $value in $theme-colors {
 //   .link-#{$color} {
 //     color: $value;
@@ -24,11 +38,6 @@
 //         color: darken($value, $emphasized-link-hover-darken-percentage);
 //       }
 //     }
-//   }
-// }
-// @each $color, $value in $theme-colors {
-//   .alert-#{$color} {
-//     @include alert-variant(color-level($value, $alert-bg-level), color-level($value, $alert-border-level), color-level($value, $alert-color-level));
 //   }
 // }
 // @each $color, $value in $theme-colors {

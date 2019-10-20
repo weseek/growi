@@ -1,0 +1,67 @@
+//
+// Variables
+// --------------------------------------------------
+
+//== Colors
+$theme-colors: (
+  'primary': $grw-primary,
+  'success': $grw-success,
+  'info': $grw-info,
+  'warning': $grw-warning,
+  'danger': $grw-danger
+);
+
+//== Typography
+//
+//## Font, line-height, and color for body text, headings, and more.
+$font-family-sans-serif: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+$font-family-serif: Georgia, 'Times New Roman', Times, serif;
+$font-family-monospace: Osaka-Mono, 'MS Gothic', Monaco, Menlo, Consolas, 'Courier New', monospace;
+$font-family-base: $font-family-sans-serif;
+
+$font-size-root: 14px;
+$line-height-base: 1.42857;
+
+//== Components
+//
+//## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
+$border-radius-base: 0;
+$border-radius-large: 0;
+$border-radius-small: 0;
+
+//== Buttons
+//
+//## For each of Bootstrap's buttons, define text, background and border color.
+
+$btn-border-radius: 0;
+$btn-border-radius-lg: 0;
+$btn-border-radius-sm: 0;
+
+// Forms
+
+$input-border-radius: 0;
+$input-border-radius-lg: 0;
+$input-border-radius-sm: 0;
+
+// Navs
+
+$nav-link-padding-y: 0.75rem;
+$nav-link-padding-x: 1rem;
+$nav-tabs-border-radius: 0;
+
+// Navbar
+$navbar-padding-y: 0;
+$navbar-brand-padding-y: 0;
+$navbar-nav-link-padding-x: 1rem;
+
+// Dropdowns
+$dropdown-border-radius: 0;
+
+// Modals
+$modal-content-border-width: 0;
+$modal-content-border-radius: 0;
+$modal-header-padding-y: 0.75rem;
+$modal-header-padding-x: 1rem;
+
+// Alerts
+$alert-border-radius: 0;
