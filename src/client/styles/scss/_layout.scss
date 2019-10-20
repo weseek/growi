@@ -13,17 +13,19 @@
 .logo {
   .logo-mark {
     svg {
-      width: $grw-logomark-width;
+      width: $grw-logo-width;
       height: $grw-navbar-height;
-      padding: 12px;
+      padding: ($grw-logo-width - $grw-logomark-width) / 2;
     }
   }
+  /*
   .logo-text {
     svg {
       width: 156px;
       height: $grw-navbar-height;
     }
   }
+  */
 }
 
 .confidential {
