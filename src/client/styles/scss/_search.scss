@@ -53,9 +53,8 @@
   }
 }
 
-// top and sidebar input styles
-.search-top,
-.search-sidebar {
+// input styles
+.search-top {
   .search-clear {
     top: 3px;
     right: 26px;
@@ -104,19 +103,6 @@
     &.focus {
       width: 300px;
     }
-  }
-}
-
-.search-sidebar {
-  .search-form,
-  .form-group,
-  .rbt-input.form-control,
-  .input-group {
-    width: 100%;
-  }
-
-  .btn-group-submit-search {
-    right: 30px;
   }
 }
 

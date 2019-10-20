@@ -221,7 +221,7 @@ $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
 
-  $('#toggle-sidebar').click((e) => {
+  $('#toggle-crowi-sidebar').click((e) => {
     const $mainContainer = $('.main-container');
     if ($mainContainer.hasClass('aside-hidden')) {
       $('.main-container').removeClass('aside-hidden');
