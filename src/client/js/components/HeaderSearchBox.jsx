@@ -61,7 +61,7 @@ class HeaderSearchBox extends React.Component {
 
     return (
       <div className="form-group">
-        <div className="input-group">
+        <div className="input-group flex-nowrap">
           <div className="input-group-prepend">
             <button className="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true">
               {scopeLabel}
