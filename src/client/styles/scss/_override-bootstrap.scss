@@ -1,6 +1,10 @@
 @import 'override-bootstrap-variables';
 @import 'layout_variable';
 
+* {
+  outline: none !important;
+}
+
 :root {
   font-size: $font-size-root;
 }
