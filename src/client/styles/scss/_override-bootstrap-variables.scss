@@ -44,8 +44,9 @@ $border-radius-small: 0;
 //
 //## For each of Bootstrap's buttons, define text, background and border color.
 
-$btn-default-bg: $btn-default-bgcolor;
-
+$btn-border-radius:     0px;
+$btn-border-radius-lg:  0px;
+$btn-border-radius-sm:  0px;
 
 
 //== Forms
