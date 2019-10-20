@@ -134,20 +134,20 @@
             <span class="d-none d-md-inline-block">{{ t('New') }}</span>
           </a>
         </li>
-        <li class="nav-item-user dropdown mr-3">
+        <li class="dropdown mr-3">
           <a class="dropdown-toggle waves-effect waves-light d-inline-flex text-white" data-toggle="dropdown">
             <img src="{{ user|picture }}" class="picture rounded-circle" width="25" />
             <span class="user-name text-wrap ml-2">{{ user.name }}</span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
-            <li><a href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/user/{{ user.username }}#user-draft-list"><i class="icon-fw icon-docs"></i>{{ t('List Drafts') }}</a></li>
-            <li><a href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a></li>
-          </ul>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a>
+            <a class="dropdown-item" href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/user/{{ user.username }}#user-draft-list"><i class="icon-fw icon-docs"></i>{{ t('List Drafts') }}</a>
+            <a class="dropdown-item" href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a>
+          </div>
           <!-- /.dropdown-messages -->
         </li>
         {% else %}
