@@ -19,48 +19,72 @@ h6 {
   font-weight: 500;
 }
 
-.navbar-top-links {
-  height: 30px;
-  border-radius: 40px;
-  .confidential {
-    a {
-      font-weight: bold;
-      cursor: default;
+.logo {
+  .logo-mark {
+    svg {
+      width: $grw-navbar-height;
+      height: $grw-navbar-height;
+      padding: 12px;
     }
   }
+  .logo-text {
+    svg {
+      width: 156px;
+      height: $grw-navbar-height;
+    }
+  }
+}
+
+.confidential {
+  font-weight: bold;
 }
 
 /*
   * header
   */
-header {
-  line-height: 1em;
+.grw-subnav {
+  overflow: unset;
 
-  h1 {
-    @include variable-font-size(28px);
-    line-height: 1.1em;
+  .grw-title-bar {
+    background: $grw-floral-white;
   }
+}
 
-  // affix
-  &.affix {
-    top: 0;
-    left: 0;
-    z-index: 15; // over the .sidebar
-    width: 100%;
-    padding: 2px 20px;
-    box-shadow: 0 0px 2px #999;
+.grw-modal-head {
+  font-size: 1em;
+  border-bottom: 1px solid $grw-line-gray;
+}
+
+.header-wrap {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
+  header {
+    line-height: 1em;
 
     h1 {
-      @include variable-font-size(20px);
+      @include variable-font-size(28px);
+      line-height: 1.1em;
+    }
+
+    // affix
+    &.affix {
+      top: 0;
+      left: 0;
+      z-index: 15; // over the .sidebar
+      width: 100%;
+      padding: 2px 20px;
+      box-shadow: 0 0px 2px #999;
+
+      h1 {
+        @include variable-font-size(20px);
+      }
     }
   }
 }
 
 .main {
-  .header-wrap {
-    min-height: 70px;
-    padding: 15px 15px 0 15px;
-  }
+  margin-top: 1rem;
 }
 
 .layout-control {
@@ -158,34 +182,4 @@ header {
   > span {
     margin-left: 0.5em;
   }
-}
-
-.logo {
-  .logo-mark {
-    svg {
-      width: $grw-navbar-height;
-      height: $grw-navbar-height;
-      padding: 12px;
-    }
-  }
-  .logo-text {
-    svg {
-      width: 156px;
-      height: $grw-navbar-height;
-    }
-  }
-}
-
-.grw-subnav {
-  overflow: unset;
-
-  .grw-title-bar {
-    background: $grw-floral-white;
-  }
-}
-
-//@each $
-.grw-modal-head {
-  font-size: 1em;
-  border-bottom: 1px solid $grw-line-gray;
 }
