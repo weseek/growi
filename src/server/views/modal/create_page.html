@@ -10,7 +10,7 @@
       <div class="modal-body">
 
         <form class="row form-horizontal" id="create-page-today" role="form">
-          <fieldset class="col-12 mb-5">
+          <fieldset class="col-12 mb-4">
             <h3 class="grw-modal-head pb-2">{{ t("Create today's") }}</h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
@@ -27,7 +27,7 @@
         </form>
 
         <form class="row form-horizontal" id="create-page-under-tree" role="form">
-          <fieldset class="col-12 mb-5">
+          <fieldset class="col-12 mb-4">
             <h3 class="grw-modal-head pb-2">{{ t('Create under') }}</h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
@@ -50,11 +50,22 @@
             <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under', templateParentPath) }}</h3>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
-                <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
-                  <!-- TODO:select box refactor -->
-                  <option value="children" data-subtext="- {{ t('template.children.desc') }}">{{ t('template.children.label') }}(_template)</option>
-                  <option value="decentants" data-subtext="- {{ t('template.decendants.desc') }}">{{ t('template.decendants.label') }}(__template)</option>
-                </select>
+
+                <div id="dd-template-type" class="dropdown w-100">
+                  <a type="button" class="btn btn-secondary btn-block dropdown-toggle d-flex align-items-center justify-content-between"
+                      id="template-type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ t('template.option_label.select') }}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" type="button" data-template-type="children">
+                      {{ t('template.children.label') }} (_template) <small class="text-muted">- {{ t('template.children.desc') }}</small>
+                    </a>
+                    <a class="dropdown-item" type="button" data-template-type="decentants">
+                      {{ t('template.decendants.label') }} (__template) <small class="text-muted">- {{ t('template.decendants.desc') }}</small>
+                    </a>
+                  </div>
+                </div>
+
               </div>
               <div class="create-page-button-container my-auto">
                 <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline-primary rounded-pill btn-1b disabled">
@@ -67,16 +78,22 @@
         </div>
 
         <script>
-          $('#template-type').on('change', function() {
-            // enable button
-            $('#link-to-template').removeClass('disabled');
+          $('#dd-template-type .dropdown-item').on('click', function() {
+            const value = $(this).data('template-type');
+
+            // modify label
+            const label = (value === 'children')
+              ? '{{ t("template.children.label") }} (__template)'
+              : '{{ t("template.decendants.label") }} (__template)';
+            $('#dd-template-type .dropdown-toggle').text(label);
 
             // modify href
-            const value = $(this).val();
             const pageName = (value === 'children') ? '_template' : '__template';
             const parentPath = '{{templateParentPath}}';
             const link = parentPath + pageName + '#edit-form';
             $('#link-to-template').attr('href', link);
+            // enable button
+            $('#link-to-template').removeClass('disabled');
           });
         </script>
 
