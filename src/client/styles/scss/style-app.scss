@@ -12,6 +12,10 @@
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';
 
+// atoms
+@import 'atoms/buttons';
+@import 'atoms/nav';
+
 // crowi component
 @import 'admin';
 @import 'attachments';
@@ -31,7 +35,6 @@
 @import 'layout_kibela';
 @import 'layout_variable';
 @import 'login';
-@import 'nav';
 @import 'notification';
 @import 'on-edit';
 @import 'page_list';
