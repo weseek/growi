@@ -422,7 +422,7 @@ export default class HandsontableModal extends React.PureComponent {
           Edit Table
         </ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
-          <div className="px-4 py-3 modal-navbar">
+          <div className="px-4 py-3 modal-navbar bg-light">
             <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
               Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </Button>

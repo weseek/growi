@@ -15,7 +15,7 @@ header {
   .btn-copy,
   .btn-copy-link,
   .btn-edit {
-    @extend .text-muted;
+    color: $text-muted;
     border: none;
     opacity: 0.3;
 
@@ -25,7 +25,7 @@ header {
   }
 
   .btn-edit-tags {
-    @extend .text-muted;
+    color: $text-muted;
     opacity: 0.5;
 
     &.no-tags {
