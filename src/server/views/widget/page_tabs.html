@@ -42,12 +42,12 @@
         <i class="icon-options-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" type="button" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
+        <a class="dropdown-item" href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
         {% if ('/' !== path) %}
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" type="button" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a>
+          <a class="dropdown-item" href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a>
           {% if isDeletablePage() %}
-            <a class="dropdown-item" type="button" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a>
+            <a class="dropdown-item" href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a>
           {% endif %}
         {% endif %}
       </div>
@@ -58,13 +58,13 @@
         <i class="icon-options-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" type="button" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move/Rename') }}</a>
-        <a class="dropdown-item" type="button" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a>
+        <a class="dropdown-item" href="#" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move/Rename') }}</a>
+        <a class="dropdown-item" href="#" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" type="button" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
+        <a class="dropdown-item" href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a>
         {% if isDeletablePage() %}
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" type="button" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a>
+          <a class="dropdown-item" href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a>
         {% endif %}
       </u>
     </li>
