@@ -1,25 +1,25 @@
 @import '../variables';
 
-$themecolor: #b3000c;
+$bgcolor-theme: #b3000c;
 $themelight: white;
 $subthemecolor: #017e20;
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-$headingtext: $subthemecolor;
-$bodytext: black;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
+$color-header: $subthemecolor;
+$color-global: black;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #ffffff;
-$primary: $themecolor;
-$logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
-$wikilinktext: lighten($themecolor, 5%);
-$wikilinktext-hover: lighten($wikilinktext, 15%);
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
+$color-link-wiki: lighten($bgcolor-theme, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
 $inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
 $border-original: $border;
 $border: $subthemecolor;
-$navbar-border: $themecolor;
+$navbar-border: $bgcolor-theme;
 $active-nav-tabs-bgcolor: white;
 
 @import 'apply-colors';
@@ -29,7 +29,7 @@ $active-nav-tabs-bgcolor: white;
 .wiki {
   .code-line.revision-head.highlighted {
     color: $themelight;
-    background-color: lighten($themecolor, 20%);
+    background-color: lighten($bgcolor-theme, 20%);
 
     .icon-note,
     .icon-link {
@@ -39,7 +39,7 @@ $active-nav-tabs-bgcolor: white;
 }
 
 .sidebar {
-  background: $themecolor;
+  background: $bgcolor-theme;
 }
 
 .rbt-menu {
@@ -124,7 +124,7 @@ body:not(.on-edit) .nav.nav-tabs {
   border-color: #bd3425;
   .panel-heading {
     color: white;
-    background-color: $themecolor;
+    background-color: $bgcolor-theme;
     background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   }
 }

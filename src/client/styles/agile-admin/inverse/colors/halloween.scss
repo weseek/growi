@@ -1,25 +1,25 @@
 @import '../variables';
 
 $basecolor: #0a010a;
-$themecolor: #aa4a04;
+$bgcolor-theme: #aa4a04;
 $subthemecolor: #e9af2b;
 $linkcolor: #aa4a04;
-$topbar: $themecolor;
-$sidebar: #061f2f;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: #061f2f;
 $subthemecolor: #e9af2b;
-$bodycolor: #0f0101;
-$headingtext: #e9af2b;
-$bodytext: #e9af2b;
+$bgcolor-global: #0f0101;
+$color-header: #e9af2b;
+$color-global: #e9af2b;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
-$sidebar-text: $themecolor;
+$sidebar-text: $bgcolor-theme;
 $dark-themecolor: #4f5467;
-$primary: $themecolor;
-$logo-mark-fill: lighten($subthemecolor, 20%);
-$wikilinktext: $linkcolor;
-$wikilinktext-hover: rgba($linktext, 0.8);
-$dark: darken($bodytext, 5%);
-$border: $themecolor;
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten($subthemecolor, 20%);
+$color-link-wiki: $linkcolor;
+$color-link-wiki-hover: rgba($linktext, 0.8);
+$dark: darken($color-global, 5%);
+$border: $bgcolor-theme;
 $navbar-border: lighten($basecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $active-nav-tabs-bgcolor: #231313;
@@ -32,7 +32,7 @@ $inline-code-bg: #0a121b;
 
 .wiki {
   .highlighted {
-    background-color: lighten($themecolor, 20%);
+    background-color: lighten($bgcolor-theme, 20%);
   }
 }
 
@@ -41,11 +41,11 @@ $inline-code-bg: #0a121b;
   &.panel-white,
   &.panel-default {
     background-color: lighten($basecolor, 5%);
-    border-color: $bodytext;
+    border-color: $color-global;
 
     .panel-heading {
       color: $basecolor;
-      background-color: 1px solid $bodytext;
+      background-color: 1px solid $color-global;
     }
   }
 }

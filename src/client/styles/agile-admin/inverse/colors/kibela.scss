@@ -2,42 +2,41 @@
 
 $radius: 3px;
 
-$themecolor: rgb(18, 86, 163);
-$themelight: #F4F5F6;
+$bgcolor-theme: rgb(18, 86, 163);
+$themelight: #f4f5f6;
 $subthemecolor: rgb(90, 149, 216);
 
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
 
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-
-$headingtext: $themecolor;
-$bodytext: #3c4a60;
-$linktext: rgb(74,109,204);
+$color-header: $bgcolor-theme;
+$color-global: #3c4a60;
+$linktext: rgb(74, 109, 204);
 $linktext-hover: lighten($linktext, 12%);
-$sidebar-text: $themecolor;
+$sidebar-text: $bgcolor-theme;
 
-$primary: $themecolor;
-$info: lighten($themecolor,20%);
+$primary: $bgcolor-theme;
+$info: lighten($bgcolor-theme, 20%);
 
-$logo-mark-fill: lighten($themecolor, 20%);
-$wikilinktext: lighten($themecolor, 20%);
-$wikilinktext-hover: lighten($wikilinktext, 20%);
+$fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+$color-link-wiki: lighten($bgcolor-theme, 20%);
+$color-link-wiki-hover: lighten($color-link-wiki, 20%);
 $inline-code-color: $subthemecolor;
-$inline-code-bg: lighten($subthemecolor,70%);
+$inline-code-bg: lighten($subthemecolor, 70%);
 $border: rgba(181, 203, 247, 0.61);
 
 @import 'apply-colors';
 @import 'apply-colors-light';
 
-
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor,20%);
     color: $themelight;
+    background-color: lighten($bgcolor-theme, 20%);
 
-    .icon-note, .icon-link {
+    .icon-note,
+    .icon-link {
       color: $themelight;
     }
   }

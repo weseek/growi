@@ -1,7 +1,7 @@
 .logo {
   .logo-mark,
   .logo-text {
-    fill: $themecolor;
+    fill: $bgcolor-theme;
   }
 }
 
@@ -9,13 +9,13 @@
  * Form
  */
 .form-control {
-  background-color: $bodycolor;
+  background-color: $bgcolor-global;
 }
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: lighten($bodytext, 10%);
-  background-color: darken($bodycolor, 5%);
+  color: lighten($color-global, 10%);
+  background-color: darken($bgcolor-global, 5%);
 }
 
 /*
@@ -23,7 +23,7 @@
  */
 header.affix {
   .logo-mark {
-    fill: $themecolor;
+    fill: $bgcolor-theme;
   }
 }
 
@@ -32,10 +32,10 @@ header.affix {
  */
 .search-top {
   .btn-group-dropdown-scope .dropdown-toggle {
-    background-color: rgba($bodycolor, 0.8);
+    background-color: rgba($bgcolor-global, 0.8);
   }
   .rbt-input.form-control {
-    background-color: rgba($bodycolor, 0.9);
+    background-color: rgba($bgcolor-global, 0.9);
   }
 }
 
@@ -46,10 +46,10 @@ header.affix {
   .page-list-ul {
     > li {
       > a strong {
-        color: darken($bodytext, 20%);
+        color: darken($color-global, 20%);
       }
       > span.page-list-meta {
-        color: lighten($bodytext, 10%);
+        color: lighten($color-global, 10%);
       }
     }
   }
@@ -79,8 +79,8 @@ header.affix {
 .admin-page {
   #themeOptions {
     .theme-option-container.active a {
-      background-color: lighten($themecolor, 20%);
-      border-color: lighten($themecolor, 20%);
+      background-color: lighten($bgcolor-theme, 20%);
+      border-color: lighten($bgcolor-theme, 20%);
     }
   }
 }

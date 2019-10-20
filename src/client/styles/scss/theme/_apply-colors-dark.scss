@@ -15,7 +15,7 @@
   &.active:hover,
   &.active:focus {
     color: white;
-    background-color: lighten($bodycolor, 5%);
+    background-color: lighten($bgcolor-global, 5%);
   }
 }
 
@@ -24,20 +24,20 @@
   */
 input.form-control,
 textarea.form-control {
-  color: lighten($bodytext, 30%);
-  background-color: darken($bodycolor, 5%);
+  color: lighten($color-global, 30%);
+  background-color: darken($bgcolor-global, 5%);
   border: 1px solid darken($border, 30%);
 }
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: lighten($bodytext, 10%);
-  background-color: lighten($bodycolor, 5%);
+  color: lighten($color-global, 10%);
+  background-color: lighten($bgcolor-global, 5%);
 }
 
 .input-group .input-group-addon {
   color: $dark;
-  background-color: rgba($topbar, 0.4);
+  background-color: rgba($bgcolor-navbar, 0.4);
   border: 1px solid darken($border, 30%);
   border-right: none;
 }
@@ -46,9 +46,9 @@ textarea.form-control {
  * Dropdown
  */
 .dropdown-menu {
-  background-color: $bodycolor;
+  background-color: $bgcolor-global;
   > li > a {
-    color: $bodytext;
+    color: $color-global;
   }
 
   .divider {
@@ -125,10 +125,10 @@ header.affix {
   .page-list-ul {
     > li {
       > a strong {
-        color: lighten($bodytext, 25%);
+        color: lighten($color-global, 25%);
       }
       > span.page-list-meta {
-        color: $bodytext;
+        color: $color-global;
       }
     }
   }
@@ -173,8 +173,8 @@ legend {
 .admin-page {
   #themeOptions {
     .theme-option-container.active a {
-      background-color: darken($themecolor, 15%);
-      border-color: darken($themecolor, 15%);
+      background-color: darken($bgcolor-theme, 15%);
+      border-color: darken($bgcolor-theme, 15%);
     }
   }
 }

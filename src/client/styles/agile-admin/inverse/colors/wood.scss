@@ -1,22 +1,22 @@
 @import '../variables';
 
-$themecolor: #aaa45f;
+$bgcolor-theme: #aaa45f;
 $themelight: #f5f3ee;
 $subthemecolor: #dddebf;
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-$headingtext: #577254;
-$bodytext: #7c7a70;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
+$color-header: #577254;
+$color-global: #7c7a70;
 $linktext: lighten(#6d8969, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #859083;
-$primary: $themecolor;
-$info: lighten($themecolor, 10%);
-$logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
-$wikilinktext: lighten($themecolor, 5%);
-$wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: darken($themecolor, 20%);
+$primary: $bgcolor-theme;
+$info: lighten($bgcolor-theme, 10%);
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
+$color-link-wiki: lighten($bgcolor-theme, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+$inline-code-color: darken($bgcolor-theme, 20%);
 $inline-code-bg: lighten($subthemecolor, 70%);
 $active-nav-tabs-bgcolor: #fffffc;
 
@@ -27,7 +27,7 @@ $active-nav-tabs-bgcolor: #fffffc;
 .wiki {
   .code-line.revision-head.highlighted {
     color: $themelight;
-    background-color: lighten($themecolor, 20%);
+    background-color: lighten($bgcolor-theme, 20%);
 
     .icon-note,
     .icon-link {
@@ -84,7 +84,7 @@ body:not(.on-edit) .nav.nav-tabs {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
-      color: $bodytext;
+      color: $color-global;
     }
   }
 }

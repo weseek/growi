@@ -1,22 +1,21 @@
+@import 'variables';
 @import '../override-bootstrap';
 
-$themecolor: #112744;
+$bgcolor-global: white;
+$bgcolor-theme: #112744;
+$bgcolor-navbar: #334455;
 
-$topbar: #334455;
-$sidebar: #fff;
-$bodycolor: #fff;
-$headingtext: #2b2b2b;
-$bodytext: #333333;
-$linktext: lighten($themecolor, 20%);
-$linktext-hover: lighten($linktext, 20%);
-$sidebar-text: #38495a;
+$color-global: #333333;
+$color-header: #2b2b2b;
+$color-link: lighten($bgcolor-theme, 20%);
+$color-link-hover: lighten($color-link, 20%);
 
-$primary: $themecolor;
+$primary: $bgcolor-theme;
 
-$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
-$wikilinktext: lighten($themecolor, 20%);
-$wikilinktext-hover: lighten($wikilinktext, 20%);
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+$color-link-wiki: lighten($bgcolor-theme, 20%);
+$color-link-wiki-hover: lighten($color-link-wiki, 20%);
 
-@import 'variables';
+@import 'variables-default';
 @import 'apply-colors';
 @import 'apply-colors-light';

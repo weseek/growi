@@ -1,29 +1,29 @@
 @import '../variables';
 
-$themecolor: #0c2a44;
+$bgcolor-theme: #0c2a44;
 $themelight: rgba(183, 226, 219, 1);
 
 $subthemecolor: rgba($linktext, 0.8);
 $linkcolor: #3c6d72;
-$themecolor: #97cbc3;
-$topbar: #0c2a44;
-$sidebar: $themelight;
-$bodycolor: lighten($themelight, 10%);
-$headingtext: #3c6d72;
-$bodytext: #3c6d72;
+$bgcolor-theme: #97cbc3;
+$bgcolor-navbar: #0c2a44;
+$bgcolor-global: $themelight;
+$bgcolor-global: lighten($themelight, 10%);
+$color-header: #3c6d72;
+$color-global: #3c6d72;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
-$sidebar-text: $themecolor;
-$primary: $themecolor;
-$logo-mark-fill: lighten($themelight, 10%);
-$wikilinktext: $linkcolor;
-$wikilinktext-hover: rgba($linktext, 0.8);
-$dark: darken($bodytext, 5%);
+$sidebar-text: $bgcolor-theme;
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten($themelight, 10%);
+$color-link-wiki: $linkcolor;
+$color-link-wiki-hover: rgba($linktext, 0.8);
+$dark: darken($color-global, 5%);
 $border: #76b1a8;
 $navbar-border: #76b1a8;
 $active-navbar-border: darken($navbar-border, 13%);
 $active-nav-tabs-bgcolor: #dbf0ed;
-$btn-default-bgcolor: darken($themecolor, 10%);
+$btn-default-bgcolor: darken($bgcolor-theme, 10%);
 $inline-code-color: #8f5313;
 $inline-code-bg: darken($themelight, 3%);
 
@@ -32,7 +32,7 @@ $inline-code-bg: darken($themelight, 3%);
 
 .wiki {
   .highlighted {
-    background-color: lighten($themecolor, 20%);
+    background-color: lighten($bgcolor-theme, 20%);
   }
 }
 
@@ -40,19 +40,19 @@ $inline-code-bg: darken($themelight, 3%);
   &,
   &.panel-white,
   &.panel-default {
-    color: $themecolor;
-    background-color: lighten($themecolor, 30%);
+    color: $bgcolor-theme;
+    background-color: lighten($bgcolor-theme, 30%);
     border-color: white;
 
     .panel-heading {
-      color: $themecolor;
+      color: $bgcolor-theme;
       background-color: white;
     }
 
     ul {
       li {
         a {
-          color: darken($themecolor, 15%);
+          color: darken($bgcolor-theme, 15%);
         }
       }
     }

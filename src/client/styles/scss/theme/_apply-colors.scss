@@ -1,69 +1,41 @@
 body {
-  background: $sidebar;
-}
-
-/*Top Header Part*/
-
-.logo i {
-  color: white;
+  background: $bgcolor-global;
 }
 
 .logo {
-  background-color: $sidebar;
-}
-// when sidebar is hidden
-.content-wrapper {
-  .logo {
-    // set transition for fill
-    svg * {
-      transition: fill 0.8s ease-out;
-    }
+  // set transition for fill
+  svg * {
+    transition: fill 0.8s ease-out;
+  }
 
-    background-color: darken($topbar, 10%);
+  background-color: darken($bgcolor-navbar, 10%);
 
-    .logo {
-      .logo-mark {
-        svg {
-          fill: $logo-mark-fill;
+  .logo-mark {
+    svg {
+      fill: $fillcolor-logo-mark;
 
-          &:hover {
-            .group1 {
-              fill: $growi-green;
-            }
-            .group2 {
-              fill: $growi-blue;
-            }
-          }
+      &:hover {
+        .group1 {
+          fill: $growi-green;
+        }
+        .group2 {
+          fill: $growi-blue;
         }
       }
     }
   }
 }
 
-.navbar-header {
-  background: $topbar;
+.navbar.bg-dark {
+  background: $bgcolor-navbar;
 }
 
-.navbar-top-links > li > a {
+.navbar.navbar-dark .nav-link {
   color: white;
 }
 
-.navbar-top-links .confidential {
-  background-color: darken($topbar, 10%);
-}
-
-/*Right panel*/
-.right-sidebar .rpanel-title {
-  background: $themecolor;
-}
-
-/*Bread Crumb*/
-.bg-title .breadcrumb .active {
-  color: $themecolor;
-}
-
-.bg-title {
-  background: darken($bodycolor, 2%);
+.grw-title-bar {
+  background: darken($bgcolor-global, 2%);
 }
 
 /*
@@ -78,7 +50,7 @@ body {
  * Legend
  */
 legend {
-  color: $headingtext;
+  color: $color-header;
 }
 
 /*
@@ -105,7 +77,7 @@ legend {
     }
   }
   .modal-content {
-    background-color: $bodycolor;
+    background-color: $bgcolor-global;
   }
   .modal-footer {
     border-top-color: $border;
@@ -117,7 +89,7 @@ legend {
  */
 .panel {
   .panel-body {
-    background-color: $bodycolor;
+    background-color: $bgcolor-global;
   }
 }
 
@@ -125,14 +97,14 @@ legend {
  * Wells
  */
 .well {
-  background-color: darken($bodycolor, 5%);
+  background-color: darken($bgcolor-global, 5%);
   border-color: $border;
 }
 
 /*
  * Tabs
  */
-$active-nav-tabs-bgcolor: $bodycolor !default;
+$active-nav-tabs-bgcolor: $bgcolor-global !default;
 
 /*
 .nav.nav-tabs {
@@ -186,10 +158,10 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
  * Crowi sidebar
  */
 .crowi-sidebar {
-  background-color: darken($bodycolor, 4%);
+  background-color: darken($bgcolor-global, 4%);
   border-left: solid 1px $border;
   .system-version {
-    background-color: darken($bodycolor, 4%);
+    background-color: darken($bgcolor-global, 4%);
   }
 }
 
@@ -198,19 +170,19 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
  */
 .wiki {
   a {
-    color: $wikilinktext;
+    color: $color-link-wiki;
     &:hover {
-      color: $wikilinktext-hover;
+      color: $color-link-wiki-hover;
     }
   }
 
   // table with handsontable modal button
   .editable-with-handsontable {
     button {
-      color: $wikilinktext;
+      color: $color-link-wiki;
     }
     button:hover {
-      color: $wikilinktext-hover;
+      color: $color-link-wiki-hover;
     }
   }
 }
@@ -219,7 +191,7 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
  * GROWI header
  */
 header.affix {
-  background: rgba(darken($bodycolor, 2%), 0.9);
+  background: rgba(darken($bgcolor-global, 2%), 0.9);
 }
 
 /*
@@ -227,7 +199,7 @@ header.affix {
  */
 body.on-edit {
   .main {
-    background-color: darken($bodycolor, 2%);
+    background-color: darken($bgcolor-global, 2%);
 
     .page-editor-editor-container {
       border-right-color: $navbar-border;
@@ -237,7 +209,7 @@ body.on-edit {
       }
     }
     .page-editor-preview-container {
-      background-color: $bodycolor;
+      background-color: $bgcolor-global;
     }
 
     .page-editor-footer {
@@ -255,15 +227,15 @@ body.on-edit {
   }
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
-    background-color: darken($bodycolor, 4%);
+    background-color: darken($bgcolor-global, 4%);
     &:before {
-      border-right-color: darken($bodycolor, 4%);
+      border-right-color: darken($bgcolor-global, 4%);
     }
     .nav.nav-tabs {
       > li.active > a {
         background: transparent;
-        border-bottom: solid 1px darken($bodycolor, 4%);
-        border-bottom-color: darken($bodycolor, 4%);
+        border-bottom: solid 1px darken($bgcolor-global, 4%);
+        border-bottom-color: darken($bgcolor-global, 4%);
       }
     }
   }
@@ -280,11 +252,11 @@ body.on-edit {
           background-color: transparent;
         }
         li:hover {
-          background-color: darken($bodycolor, 4%);
+          background-color: darken($bgcolor-global, 4%);
         }
         li.active {
-          background-color: darken($bodycolor, 8%);
-          border-color: $themecolor;
+          background-color: darken($bgcolor-global, 8%);
+          border-color: $bgcolor-theme;
         }
       }
     }
@@ -295,7 +267,7 @@ body.on-edit {
  * GROWI page attachments
  */
 .page-attachments-row {
-  background-color: darken($bodycolor, 2%);
+  background-color: darken($bgcolor-global, 2%);
   border-top-color: $border;
 }
 
@@ -306,7 +278,7 @@ body.on-edit {
   #themeOptions {
     .theme-option-container.active {
       .theme-option-name {
-        color: $bodytext;
+        color: $color-global;
       }
     }
   }

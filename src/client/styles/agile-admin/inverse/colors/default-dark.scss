@@ -1,29 +1,29 @@
 @import '../variables';
 
-$basecolor:#212731;
-$themecolor:#f75b36;
+$basecolor: #212731;
+$bgcolor-theme: #f75b36;
 
-$topbar: #151515;
-$sidebar: #101010;
-$bodycolor:$basecolor;
-$headingtext: lighten($basecolor, 45%);
-$bodytext: lighten($basecolor, 35%);
+$bgcolor-navbar: #151515;
+$bgcolor-global: #101010;
+$bgcolor-global: $basecolor;
+$color-header: lighten($basecolor, 45%);
+$color-global: lighten($basecolor, 35%);
 $linktext: lighten($basecolor, 45%);
 $linktext-hover: lighten($linktext, 10%);
-$sidebar-text:#a6acbc;
-$dark-themecolor:#4F5467;
+$sidebar-text: #a6acbc;
+$dark-themecolor: #4f5467;
 
-$primary: $themecolor;
-$logo-mark-fill: #444;
-$wikilinktext: saturate($bodytext, 20%);
-$wikilinktext-hover: darken($wikilinktext, 5%);
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: #444;
+$color-link-wiki: saturate($color-global, 20%);
+$color-link-wiki-hover: darken($color-link-wiki, 5%);
 
-$dark: darken($bodytext, 5%);
+$dark: darken($color-global, 5%);
 $border: lighten($basecolor, 15%);
 $navbar-border: lighten($border, 10%);
 $active-navbar-border: darken($border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-bg: darken($bodycolor, 5%);
+$inline-code-bg: darken($bgcolor-global, 5%);
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
