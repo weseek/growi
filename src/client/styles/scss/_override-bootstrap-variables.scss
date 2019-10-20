@@ -6,11 +6,11 @@
 //
 
 $theme-colors: (
-  'primary': #337ab7,
-  'success': #00bb83,
-  'info': #0d8ea5,
-  'warning': #ee773b,
-  'danger': #ff0a54
+  'primary': $grw-primary,
+  'success': $grw-success,
+  'info': $grw-info,
+  'warning': $grw-warning,
+  'danger': $grw-danger
 );
 
 //== Typography

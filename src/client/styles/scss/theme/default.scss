@@ -1,5 +1,4 @@
-@import 'variables';
-@import '../override-bootstrap';
+@import '../variables';
 
 $bgcolor-global: white;
 $bgcolor-theme: #112744;
@@ -10,12 +9,15 @@ $color-header: #2b2b2b;
 $color-link: lighten($bgcolor-theme, 20%);
 $color-link-hover: lighten($color-link, 20%);
 
-$primary: $bgcolor-theme;
-
 $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 $color-link-wiki: lighten($bgcolor-theme, 20%);
 $color-link-wiki-hover: lighten($color-link-wiki, 20%);
 
+$theme-colors: (
+  'primary': $bgcolor-theme
+);
+
 @import 'variables-default';
+
 @import 'apply-colors';
 @import 'apply-colors-light';
