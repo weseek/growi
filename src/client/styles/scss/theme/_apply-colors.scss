@@ -5,7 +5,7 @@ body {
 /*Top Header Part*/
 
 .logo i {
-  color: $white;
+  color: white;
 }
 
 .logo {
@@ -45,19 +45,12 @@ body {
 }
 
 .navbar-top-links > li > a {
-  color: $white;
+  color: white;
 }
 
 .navbar-top-links .confidential {
   background-color: darken($topbar, 10%);
 }
-/*
-.notify .heartbit{
-    border-color:$white;
-}
-.notify .point{
-  background-color:$danger;
-}*/
 
 /*Right panel*/
 .right-sidebar .rpanel-title {
@@ -71,105 +64,6 @@ body {
 
 .bg-title {
   background: darken($bodycolor, 2%);
-}
-
-/*Sidebar*/
-
-.sidebar {
-  background: $sidebar;
-  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
-  .label-custom {
-    background: $megna;
-  }
-}
-
-#side-menu li a {
-  color: $sidebar-text;
-}
-
-#side-menu li a {
-  color: $sidebar-text;
-  border-left: 0px solid $sidebar;
-}
-
-#side-menu > li > a {
-  &:hover,
-  &:focus {
-    background: rgba(0, 0, 0, 0.03);
-  }
-  &.active {
-
-    font-weight: 500;
-    color: $dark;
-    border-left: 3px solid $themecolor;
-    i {
-      color: $themecolor;
-    }
-  }
-}
-
-#side-menu ul > li > a {
-  &:hover {
-    color: $themecolor;
-  }
-  &.active {
-    font-weight: 500;
-    color: $dark;
-  }
-}
-
-.sidebar #side-menu .user-pro {
-  .nav-second-level a:hover {
-    color: $themecolor;
-  }
-}
-
-/*themecolor*/
-
-.bg-theme {
-  background-color: $danger !important;
-}
-
-.bg-theme-dark {
-  background-color: $megna !important;
-}
-
-/*Chat widget*/
-.chat-list .odd .chat-text {
-  background: $themecolor;
-}
-/*Button*/
-.btn-custom {
-  color: $white;
-  background: $themecolor;
-  border: 1px solid $themecolor;
-  &:hover {
-    color: $white;
-    background: $themecolor;
-    border: 1px solid $themecolor;
-    opacity: 0.8;
-  }
-}
-/*Custom tab*/
-.customtab li.active a,
-.customtab li.active a:hover,
-.customtab li.active a:focus {
-  color: $themecolor;
-  border-bottom: 2px solid $themecolor;
-}
-
-.tabs-vertical li.active a,
-.tabs-vertical li.active a:hover,
-.tabs-vertical li.active a:focus {
-  background: $themecolor;
-  border-right: 2px solid $themecolor;
-}
-/*Nav-pills*/
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:focus,
-.nav-pills > li.active > a:hover {
-  color: $white;
-  background: $themecolor;
 }
 
 /*
@@ -240,6 +134,7 @@ legend {
  */
 $active-nav-tabs-bgcolor: $bodycolor !default;
 
+/*
 .nav.nav-tabs {
   border-bottom-color: $navbar-border;
 
@@ -267,6 +162,7 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
     }
   }
 }
+*/
 
 /*
  * Form Slider
