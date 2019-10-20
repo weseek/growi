@@ -92,7 +92,6 @@ const i18n = appContainer.i18n;
  */
 let componentMappings = {
   'search-top': <HeaderSearchBox crowi={appContainer} />,
-  'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'search-page': <SearchPage crowi={appContainer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
