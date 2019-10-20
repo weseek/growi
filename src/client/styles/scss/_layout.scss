@@ -22,7 +22,7 @@ h6 {
 .logo {
   .logo-mark {
     svg {
-      width: $grw-navbar-height;
+      width: $grw-logomark-width;
       height: $grw-navbar-height;
       padding: 12px;
     }
@@ -44,10 +44,6 @@ h6 {
   */
 .grw-subnav {
   overflow: unset;
-
-  .grw-title-bar {
-    background: $grw-floral-white;
-  }
 }
 
 .grw-modal-head {
