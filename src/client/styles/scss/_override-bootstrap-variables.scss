@@ -13,13 +13,14 @@ $gray-light:             lighten($gray-base, 46.7%); // #777
 $gray-lighter:           lighten($gray-base, 93.5%); // #eee
 $gray-extralight:        #fafafa; // Growi original
 
-$brand-primary:         $primary;
-$brand-success:         $success;
-$brand-info:            $info;
-$brand-warning:         $warning;
-$brand-danger:          $danger;
-
-
+//** override bootstrap theme colors
+$theme-colors: (
+  'primary': #337ab7,
+  'success': #2cce90,
+  'info': #31708f,
+  'warning': #8a6d3b,
+  'danger': #ff0a54
+);
 
 //== Typography
 //
@@ -35,40 +36,25 @@ $line-height-base:        1.42857;
 //== Components
 //
 //## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
-$border-radius-base: 0;
-$border-radius-large: 0;
-$border-radius-small: 0;
+$border-radius-base:      0;
+$border-radius-large:     0;
+$border-radius-small:     0;
 
 
 //== Buttons
 //
 //## For each of Bootstrap's buttons, define text, background and border color.
 
-$btn-border-radius:     0px;
-$btn-border-radius-lg:  0px;
-$btn-border-radius-sm:  0px;
+$btn-border-radius:       0;
+$btn-border-radius-lg:    0;
+$btn-border-radius-sm:    0;
 
 
-//== Forms
-//
-//##
+// Forms
 
-//** `<input>` background color
-$input-bg:                       $bodycolor;
-//** `<input disabled>` background color
-$input-bg-disabled:              $btn-default-bgcolor;
-
-//** `<input>` border color
-$input-border:                   $border;
-
-//** override bootstrap theme colors
-$theme-colors: (
-  'primary': #337ab7,
-  'success': #2cce90,
-  'info': #31708f,
-  'warning': #8a6d3b,
-  'danger': #ff0a54
-);
+$input-border-radius:     0;
+$input-border-radius-lg:  0;
+$input-border-radius-sm:  0;
 
 
 // Navs

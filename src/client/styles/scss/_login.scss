@@ -139,7 +139,7 @@
   }
   .btn-login.fcbtn {
     .btn-label {
-      background-color: rgba($brand-danger, 0.4);
+      background-color: rgba($danger, 0.4);
     }
     &:after {
       background-color: #7e4153;
@@ -187,7 +187,7 @@
   }
   .btn-register.fcbtn {
     .btn-label {
-      background-color: rgba($brand-success, 0.4);
+      background-color: rgba($success, 0.4);
     }
     .btn-label-text {
       display: inline-block;

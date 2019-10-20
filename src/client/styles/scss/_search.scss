@@ -61,12 +61,9 @@
     right: 26px;
   }
 
-  .btn-group-dropdown-scope .dropdown-toggle {
+  .dropdown-toggle {
     min-width: 95px;
-    height: 30px;
-    padding-top: 4px;
-    padding-right: 4px;
-    padding-bottom: 4px;
+    padding-left: 1.5rem;
     border-top-left-radius: 40px;
     border-bottom-left-radius: 40px;
   }
@@ -74,8 +71,6 @@
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
-    height: 30px;
-    border: none;
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
 
@@ -89,11 +84,13 @@
     top: 0;
     right: 0;
 
-    .btn {
-      padding: 4px 10px;
-    }
-
     z-index: 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
   }
 }
 
@@ -121,21 +118,6 @@
   .btn-group-submit-search {
     right: 30px;
   }
-}
-
-@mixin search-typeahead-rbtmenu-mt($margin-top) {
-  .search-typeahead .rbt-menu {
-    margin-top: $margin-top; // DIRTY HACK
-    //                            note: 'transform: translate3d(0px, XXpx, 0px)' calculation has failed
-    //                                  since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
-  }
-}
-
-#search-top,
-#renamePage,
-#duplicatePage,
-.search-page-input {
-  @include search-typeahead-rbtmenu-mt(36px);
 }
 
 .search-result {
