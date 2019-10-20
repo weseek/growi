@@ -8,12 +8,12 @@ body {
   color: $white;
 }
 
-.top-left-part {
+.logo {
   background-color: $sidebar;
 }
 // when sidebar is hidden
 .content-wrapper {
-  .top-left-part {
+  .logo {
     // set transition for fill
     svg * {
       transition: fill 0.8s ease-out;
