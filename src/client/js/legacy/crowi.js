@@ -5,7 +5,6 @@ import { pathUtils } from 'growi-commons';
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
-require('bootstrap-select');
 
 require('./thirdparty-js/waves');
 
