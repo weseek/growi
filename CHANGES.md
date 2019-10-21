@@ -2,7 +2,8 @@
 
 ## 3.5.18-RC
 
-* 
+* Improvement: Optimize handling promise of stream when exporting
+* Improvement: Optimize handling promise of stream when building indices
 
 ## 3.5.17
 
