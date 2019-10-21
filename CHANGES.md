@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.5.17-RC
+## 3.5.18-RC
+
+* 
+
+## 3.5.17
 
 * Feature: Upload to GCS (Google Cloud Storage)
 * Feature: Statistics API
