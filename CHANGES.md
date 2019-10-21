@@ -1,6 +1,19 @@
 # CHANGES
 
-## 3.5.16-RC
+## 3.5.17-RC
+
+* Feature: Upload to GCS (Google Cloud Storage)
+* Feature: Statistics API
+* Improvement: Optimize exporting
+* Improvement: Show progress bar when exporting
+* Improvement: Validate collection combinations when importing
+* Improvement: Reactify admin pages
+* Fix: Use HTTP PlantUML URL in default
+    * Introduced by 3.5.12
+* Fix: Config default values
+* Support: REPL with `console` npm scripts
+
+## 3.5.16
 
 * Fix: Full Text Search doesn't work after when building indices
     * Introduced by 3.5.12

@@ -21,6 +21,7 @@
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
+  "add": "追加",
   "Undo": "元に戻す",
   "Article": "記事",
   "Page": "ページ",
@@ -49,6 +50,7 @@
   "History": "更新履歴",
   "Presentation Mode": "プレゼンテーション",
 
+  "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
   "Last_Login": "最終ログイン",
@@ -663,6 +665,7 @@
 
   "user_management": {
     "target_user": "対象ユーザー",
+    "new_password": "新しいパスワード",
     "invite_users": "新規ユーザーの招待",
     "emails": "メールアドレス (複数行入力で複数人招待可能)",
     "invite_thru_email": "招待をメールで送信",
@@ -682,6 +685,7 @@
     "unset": "未設定",
     "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
     "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
+    "password_reset_message": "対象ユーザーに下記のパスワードを伝え、すぐに新しく別のパスワードを設定するよう伝えてください。",
     "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
     "password_never_seen": "表示されたパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。",
     "reset_password": "パスワードの再発行",
@@ -692,12 +696,21 @@
     "administrator_menu": "管理者メニュー",
     "cannot_remove": "自分自身を管理者から外すことはできません",
     "cannot_invite_maximum_users": "ユーザーが上限に達したため招待できません。",
-    "current_users": "現在のユーザー数："
+    "current_users": "現在のユーザー数：",
+    "valid_email": "メールアドレスを入力してください。",
+    "existing_email": "以下のEmailはすでに存在しています。",
+    "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました"
   },
 
   "user_group_management": {
     "group_list": "グループ一覧",
     "back_to_list": "グループ一覧に戻る",
+    "basic_info": "基本情報",
+    "user_list": "ユーザー一覧",
     "create_group": "新規グループの作成",
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
@@ -714,23 +727,28 @@
     "select_group": "グループを選択してください",
     "no_groups": "グループがありません",
     "no_pages": "グループが閲覧権限を保有するページはありません",
-    "how_to_add1": "ユーザー名を入力して追加",
-    "how_to_add2": "ユーザーを下のリストから選択",
     "remove_from_group": "グループから外す"
   },
 
   "importer_management": {
+    "import_form_esa": "esa.ioからインポート",
+    "import_form_qiita": "Qiita:Teamからインポート",
     "beta_warning": "この機能はベータ版です",
     "import_from": "%s からインポート",
     "import_form_growi": "GROWIからインポート",
     "growi_settings": {
       "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
-      "zip_file": "Zip ファイル",
+      "zip_file": "エクスポートされた Zip ファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",
       "upload": "アップロード",
-      "discard": "アップロードしたデータを破棄する"
+      "discard": "アップロードしたデータを破棄する",
+      "errors": {
+        "at_least_one": "コレクションが選択されていません",
+        "page_and_revision": "'Pages' と 'Revisions' はセットでインポートする必要があります",
+        "depends": "'{{condition}}' をインポートする場合は、'{{target}}' を一緒に選択する必要があります"
+      }
     },
     "esa_settings": {
       "team_name": "チーム名",
@@ -747,12 +765,20 @@
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
 
+  "full_text_search_management":{
+    "elasticsearch_management":"Elasticsearch 管理",
+    "build_button":"インデックスのリビルド",
+    "rebuild_description_1":"Build Now ボタンを押すと全てのページのインデックスを削除し、作り直します。",
+    "rebuild_description_2":"この作業には数秒かかります。",
+    "rebuild_description_3":""
+  },
   "export_management": {
-    "beta_warning": "この機能はベータ版です",
+    "exporting_data_list": "エクスポート中のデータ",
     "exported_data_list": "エクスポートデータリスト",
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
+    "desc_password_seed": "ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。",
     "create_new_exported_data": "エクスポートデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",

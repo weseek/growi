@@ -6,6 +6,13 @@ const elasticsearch = require('elasticsearch');
 const debug = require('debug')('growi:lib:search');
 const logger = require('@alias/logger')('growi:lib:search');
 
+const {
+  Writable, Transform,
+} = require('stream');
+const streamToPromise = require('stream-to-promise');
+
+const BULK_REINDEX_SIZE = 100;
+
 function SearchClient(crowi, esUri) {
   this.DEFAULT_OFFSET = 0;
   this.DEFAULT_LIMIT = 50;
@@ -84,9 +91,8 @@ SearchClient.prototype.checkESVersion = async function() {
 
 SearchClient.prototype.registerUpdateEvent = function() {
   const pageEvent = this.crowi.event('page');
-  pageEvent.on('create', this.syncPageCreated.bind(this));
+  pageEvent.on('create', this.syncPageUpdated.bind(this));
   pageEvent.on('update', this.syncPageUpdated.bind(this));
-  pageEvent.on('updateTag', this.syncPageUpdated.bind(this));
   pageEvent.on('delete', this.syncPageDeleted.bind(this));
 
   const bookmarkEvent = this.crowi.event('bookmark');
@@ -98,7 +104,7 @@ SearchClient.prototype.registerUpdateEvent = function() {
 };
 
 SearchClient.prototype.shouldIndexed = function(page) {
-  return (page.redirectTo == null);
+  return page.creator != null && page.revision != null && page.redirectTo == null;
 };
 
 // BONSAI_URL is following format:
@@ -163,6 +169,7 @@ SearchClient.prototype.buildIndex = async function(uri) {
   // reindex to tmp index
   await this.createIndex(tmpIndexName);
   await client.reindex({
+    waitForCompletion: false,
     body: {
       source: { index: indexName },
       dest: { index: tmpIndexName },
@@ -225,38 +232,6 @@ function generateDocContentsRelatedToRestriction(page) {
   };
 }
 
-SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
-  if (!Array.isArray(body)) {
-    throw new Error('Body must be an array.');
-  }
-
-  const command = {
-    update: {
-      _index: this.aliasName,
-      _type: 'pages',
-      _id: page._id.toString(),
-    },
-  };
-
-  let document = {
-    path: page.path,
-    body: page.revision.body,
-    comment_count: page.commentCount,
-    bookmark_count: page.bookmarkCount || 0,
-    like_count: page.liker.length || 0,
-    updated_at: page.updatedAt,
-    tag_names: page.tagNames,
-  };
-
-  document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
-
-  body.push(command);
-  body.push({
-    doc: document,
-    doc_as_upsert: true,
-  });
-};
-
 SearchClient.prototype.prepareBodyForCreate = function(body, page) {
   if (!Array.isArray(body)) {
     throw new Error('Body must be an array.');
@@ -296,7 +271,7 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
   const command = {
     delete: {
-      _index: this.aliasName,
+      _index: this.indexName,
       _type: 'pages',
       _id: page._id.toString(),
     },
@@ -305,42 +280,169 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
   body.push(command);
 };
 
-SearchClient.prototype.addPages = async function(pages) {
-  const Bookmark = this.crowi.model('Bookmark');
-  const PageTagRelation = this.crowi.model('PageTagRelation');
-  const body = [];
-
-  /* eslint-disable no-await-in-loop */
-  for (const page of pages) {
-    page.bookmarkCount = await Bookmark.countByPageId(page._id);
-    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
-    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
-    this.prepareBodyForCreate(body, page);
-  }
-  /* eslint-enable no-await-in-loop */
-
-  logger.debug('addPages(): Sending Request to ES', body);
-  return this.client.bulk({
-    body,
-  });
+SearchClient.prototype.addAllPages = async function() {
+  const Page = this.crowi.model('Page');
+  return this.updateOrInsertPages(() => Page.find(), true);
 };
 
-SearchClient.prototype.updatePages = async function(pages) {
-  const self = this;
+SearchClient.prototype.updateOrInsertPageById = async function(pageId) {
+  const Page = this.crowi.model('Page');
+  return this.updateOrInsertPages(() => Page.findById(pageId));
+};
+
+/**
+ * @param {function} queryFactory factory method to generate a Mongoose Query instance
+ */
+SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmittingProgressEvent = false) {
+  const Page = this.crowi.model('Page');
+  const { PageQueryBuilder } = Page;
+  const Bookmark = this.crowi.model('Bookmark');
   const PageTagRelation = this.crowi.model('PageTagRelation');
-  const body = [];
 
-  /* eslint-disable no-await-in-loop */
-  for (const page of pages) {
-    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
-    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
-    self.prepareBodyForUpdate(body, page);
-  }
+  const searchEvent = this.searchEvent;
 
-  logger.debug('updatePages(): Sending Request to ES', body);
-  return this.client.bulk({
-    body,
+  const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
+  const shouldIndexed = this.shouldIndexed.bind(this);
+  const bulkWrite = this.client.bulk.bind(this.client);
+
+  const findQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
+  const countQuery = new PageQueryBuilder(queryFactory()).addConditionToExcludeRedirect().query;
+
+  const totalCount = await countQuery.count();
+
+  const readStream = findQuery
+    // populate data which will be referenced by prepareBodyForCreate()
+    .populate([
+      { path: 'creator', model: 'User', select: 'username' },
+      { path: 'revision', model: 'Revision', select: 'body' },
+    ])
+    .snapshot()
+    .lean()
+    .cursor();
+
+  let skipped = 0;
+  const thinOutStream = new Transform({
+    objectMode: true,
+    async transform(doc, encoding, callback) {
+      if (shouldIndexed(doc)) {
+        this.push(doc);
+      }
+      else {
+        skipped++;
+      }
+      callback();
+    },
   });
+
+  let batchBuffer = [];
+  const batchingStream = new Transform({
+    objectMode: true,
+    transform(doc, encoding, callback) {
+      batchBuffer.push(doc);
+
+      if (batchBuffer.length >= BULK_REINDEX_SIZE) {
+        this.push(batchBuffer);
+        batchBuffer = [];
+      }
+
+      callback();
+    },
+    final(callback) {
+      if (batchBuffer.length > 0) {
+        this.push(batchBuffer);
+      }
+      callback();
+    },
+  });
+
+  const appendBookmarkCountStream = new Transform({
+    objectMode: true,
+    async transform(chunk, encoding, callback) {
+      const pageIds = chunk.map(doc => doc._id);
+
+      const idToCountMap = await Bookmark.getPageIdToCountMap(pageIds);
+      const idsHavingCount = Object.keys(idToCountMap);
+
+      // append count
+      chunk
+        .filter(doc => idsHavingCount.includes(doc._id.toString()))
+        .forEach((doc) => {
+          // append count from idToCountMap
+          doc.bookmarkCount = idToCountMap[doc._id.toString()];
+        });
+
+      this.push(chunk);
+      callback();
+    },
+  });
+
+  const appendTagNamesStream = new Transform({
+    objectMode: true,
+    async transform(chunk, encoding, callback) {
+      const pageIds = chunk.map(doc => doc._id);
+
+      const idToTagNamesMap = await PageTagRelation.getIdToTagNamesMap(pageIds);
+      const idsHavingTagNames = Object.keys(idToTagNamesMap);
+
+      // append tagNames
+      chunk
+        .filter(doc => idsHavingTagNames.includes(doc._id.toString()))
+        .forEach((doc) => {
+          // append tagName from idToTagNamesMap
+          doc.tagNames = idToTagNamesMap[doc._id.toString()];
+        });
+
+      this.push(chunk);
+      callback();
+    },
+  });
+
+  let count = 0;
+  const writeStream = new Writable({
+    objectMode: true,
+    async write(batch, encoding, callback) {
+      const body = [];
+      batch.forEach(doc => prepareBodyForCreate(body, doc));
+
+      try {
+        const res = await bulkWrite({
+          body,
+          requestTimeout: Infinity,
+        });
+
+        count += (res.items || []).length;
+
+        logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
+
+        if (isEmittingProgressEvent) {
+          searchEvent.emit('addPageProgress', totalCount, count, skipped);
+        }
+      }
+      catch (err) {
+        logger.error('addAllPages error on add anyway: ', err);
+      }
+
+      callback();
+    },
+    final(callback) {
+      logger.info(`Adding pages has terminated: (totalCount=${totalCount}, skipped=${skipped})`);
+
+      if (isEmittingProgressEvent) {
+        searchEvent.emit('finishAddPage', totalCount, count, skipped);
+      }
+      callback();
+    },
+  });
+
+  readStream
+    .pipe(thinOutStream)
+    .pipe(batchingStream)
+    .pipe(appendBookmarkCountStream)
+    .pipe(appendTagNamesStream)
+    .pipe(writeStream);
+
+  return streamToPromise(readStream);
+
 };
 
 SearchClient.prototype.deletePages = function(pages) {
@@ -355,72 +457,6 @@ SearchClient.prototype.deletePages = function(pages) {
   logger.debug('deletePages(): Sending Request to ES', body);
   return this.client.bulk({
     body,
-  });
-};
-
-SearchClient.prototype.addAllPages = async function() {
-  const self = this;
-  const Page = this.crowi.model('Page');
-  const allPageCount = await Page.allPageCount();
-  const Bookmark = this.crowi.model('Bookmark');
-  const PageTagRelation = this.crowi.model('PageTagRelation');
-  const cursor = Page.getStreamOfFindAll();
-  let body = [];
-  let sent = 0;
-  let skipped = 0;
-  let total = 0;
-
-  return new Promise((resolve, reject) => {
-    const bulkSend = (body) => {
-      self.client
-        .bulk({
-          body,
-          requestTimeout: Infinity,
-        })
-        .then((res) => {
-          logger.info('addAllPages add anyway (items, errors, took): ', (res.items || []).length, res.errors, res.took, 'ms');
-        })
-        .catch((err) => {
-          logger.error('addAllPages error on add anyway: ', err);
-        });
-    };
-
-    cursor
-      .eachAsync(async(doc) => {
-        if (!doc.creator || !doc.revision || !self.shouldIndexed(doc)) {
-          // debug('Skipped', doc.path);
-          skipped++;
-          return;
-        }
-        total++;
-
-        const bookmarkCount = await Bookmark.countByPageId(doc._id);
-        const tagRelations = await PageTagRelation.find({ relatedPage: doc._id }).populate('relatedTag');
-        const page = { ...doc, bookmarkCount, tagNames: tagRelations.map((relation) => { return relation.relatedTag.name }) };
-        self.prepareBodyForCreate(body, page);
-
-        if (body.length >= 4000) {
-          // send each 2000 docs. (body has 2 elements for each data)
-          sent++;
-          logger.debug('Sending request (seq, total, skipped)', sent, total, skipped);
-          bulkSend(body);
-          this.searchEvent.emit('addPageProgress', allPageCount, total, skipped);
-
-          body = [];
-        }
-      })
-      .then(() => {
-        // send all remaining data on body[]
-        logger.debug('Sending last body of bulk operation:', body.length);
-        bulkSend(body);
-        this.searchEvent.emit('finishAddPage', allPageCount, total, skipped);
-
-        resolve();
-      })
-      .catch((e) => {
-        logger.error('Error wile iterating cursor.eachAsync()', e);
-        reject(e);
-      });
   });
 };
 
@@ -855,76 +891,44 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   };
 };
 
-SearchClient.prototype.syncPageCreated = function(page, user, bookmarkCount = 0) {
-  debug('SearchClient.syncPageCreated', page.path);
+SearchClient.prototype.syncPageUpdated = async function(page, user) {
+  logger.debug('SearchClient.syncPageUpdated', page.path);
 
+  // delete if page should not indexed
   if (!this.shouldIndexed(page)) {
+    try {
+      await this.deletePages([page]);
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
     return;
   }
 
-  page.bookmarkCount = bookmarkCount;
-  this.addPages([page])
-    .then((res) => {
-      debug('ES Response', res);
-    })
-    .catch((err) => {
-      logger.error('ES Error', err);
-    });
+  return this.updateOrInsertPageById(page._id);
 };
 
-SearchClient.prototype.syncPageUpdated = function(page, user, bookmarkCount = 0) {
-  debug('SearchClient.syncPageUpdated', page.path);
-  // TODO delete
-  if (!this.shouldIndexed(page)) {
-    this.deletePages([page])
-      .then((res) => {
-        debug('deletePages: ES Response', res);
-      })
-      .catch((err) => {
-        logger.error('deletePages:ES Error', err);
-      });
-
-    return;
-  }
-
-  page.bookmarkCount = bookmarkCount;
-  this.updatePages([page])
-    .then((res) => {
-      debug('ES Response', res);
-    })
-    .catch((err) => {
-      logger.error('ES Error', err);
-    });
-};
-
-SearchClient.prototype.syncPageDeleted = function(page, user) {
+SearchClient.prototype.syncPageDeleted = async function(page, user) {
   debug('SearchClient.syncPageDeleted', page.path);
 
-  this.deletePages([page])
-    .then((res) => {
-      debug('deletePages: ES Response', res);
-    })
-    .catch((err) => {
-      logger.error('deletePages:ES Error', err);
-    });
+  try {
+    return await this.deletePages([page]);
+  }
+  catch (err) {
+    logger.error('deletePages:ES Error', err);
+  }
 };
 
 SearchClient.prototype.syncBookmarkChanged = async function(pageId) {
-  const Page = this.crowi.model('Page');
-  const Bookmark = this.crowi.model('Bookmark');
-  const page = await Page.findById(pageId);
-  const bookmarkCount = await Bookmark.countByPageId(pageId);
+  logger.debug('SearchClient.syncBookmarkChanged', pageId);
 
-  page.bookmarkCount = bookmarkCount;
-  this.updatePages([page])
-    .then((res) => { return debug('ES Response', res) })
-    .catch((err) => { return logger.error('ES Error', err) });
+  return this.updateOrInsertPageById(pageId);
 };
 
 SearchClient.prototype.syncTagChanged = async function(page) {
-  this.updatePages([page])
-    .then((res) => { return debug('ES Response', res) })
-    .catch((err) => { return logger.error('ES Error', err) });
+  logger.debug('SearchClient.syncTagChanged', page.path);
+
+  return this.updateOrInsertPageById(page._id);
 };
 
 

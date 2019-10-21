@@ -27,7 +27,9 @@ class GrowiBridgeService {
    */
   initCollectionMap(models) {
     for (const model of Object.values(models)) {
-      this.collectionMap[model.collection.collectionName] = model;
+      if (model.collection != null) {
+        this.collectionMap[model.collection.name] = model;
+      }
     }
   }
 
@@ -97,10 +99,11 @@ class GrowiBridgeService {
    * @return {object} meta{object} and files{Array.<object>}
    */
   async parseZipFile(zipFile) {
-    const readStream = fs.createReadStream(zipFile);
-    const unzipStream = readStream.pipe(unzipper.Parse());
     const fileStats = [];
     let meta = {};
+
+    const readStream = fs.createReadStream(zipFile);
+    const unzipStream = readStream.pipe(unzipper.Parse());
 
     unzipStream.on('entry', async(entry) => {
       const fileName = entry.path;
@@ -120,7 +123,14 @@ class GrowiBridgeService {
       entry.autodrain();
     });
 
-    await streamToPromise(unzipStream);
+    try {
+      await streamToPromise(unzipStream);
+    }
+    // if zip is broken
+    catch (err) {
+      logger.error(err);
+      return null;
+    }
 
     return {
       meta,

@@ -1,4 +1,4 @@
-module.exports = function(crowi, app, req, locals) {
+module.exports = function(crowi, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
   const entities = require('entities');

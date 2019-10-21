@@ -163,20 +163,26 @@ Environment Variables
     * PASSWORD_SEED: A password seed used by password hash generator.
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
     * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
-    * FILE_UPLOAD: Attached files storage. default: `aws`
-      * `aws` : AWS S3 (needs AWS settings on Admin page)
-      * `mongodb` : MongoDB GridFS (Setting-less)
-      * `local` : Server's Local file system (Setting-less)
-      * `none` : Disable file uploading
-    * MAX_FILE_SIZE: The maximum file size limit for uploads (bytes). default: `Infinity`
-    * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
     * SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: If `true`, the system uses only the value of the environment variable as the value of the SAML option that can be set via the environment variable.
     * PUBLISH_OPEN_API: Publish GROWI OpenAPI resources with [ReDoc](https://github.com/Rebilly/ReDoc). Visit `/api-docs`.
     * FORCE_WIKI_MODE: Forces wiki mode. default: undefined
-      * `public`  : Forces all pages to become public
-      * `private` : Forces all pages to become private
-      * undefined : Publicity will be configured by the admin security page settings
+        * `public`  : Forces all pages to become public
+        * `private` : Forces all pages to become private
+        * undefined : Publicity will be configured by the admin security page settings
     * FORMAT_NODE_LOG: If `false`, Output server log as JSON. defautl: `true` (Enabled only when `NODE_ENV=production`)
+* **Option for file uploading**
+    * FILE_UPLOAD: Attached files storage. default: `aws`
+        * `aws` : Amazon Web Service S3 (needs AWS settings on Admin page)
+        * `gcs` : Google Cloud Storage (needs settings with environment variables)
+        * `mongodb` : MongoDB GridFS (Setting-less)
+        * `local` : Server's Local file system (Setting-less)
+        * `none` : Disable file uploading
+    * MAX_FILE_SIZE: The maximum file size limit for uploads (bytes). default: `Infinity`
+    * FILE_UPLOAD_TOTAL_LIMIT: Total capacity limit for uploads (bytes). default: `Infinity`
+    * GCS_API_KEY_JSON_PATH: Path of the JSON file that contains [service account key to authenticate to GCP API](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
+    * GCS_BUCKET: Name of the GCS bucket
+    * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
+        * MONGO_GRIDFS_TOTAL_LIMIT setting takes precedence over FILE_UPLOAD_TOTAL_LIMIT.
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html).**

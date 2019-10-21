@@ -24,10 +24,6 @@ module.exports = function(crowi, app) {
 
   const env = crowi.node_env;
 
-  // New type config API
-  const configManager = crowi.configManager;
-  const getConfig = configManager.getConfig;
-
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
@@ -56,13 +52,12 @@ module.exports = function(crowi, app) {
 
   app.use((req, res, next) => {
     const now = new Date();
-    const tzoffset = -(getConfig('crowi', 'app:timezone') || 9) * 60;
     // for datez
 
     const Page = crowi.model('Page');
     const User = crowi.model('User');
     const Config = crowi.model('Config');
-    app.set('tzoffset', tzoffset);
+    app.set('tzoffset', crowi.appService.getTzoffset());
 
     req.csrfToken = null;
 
@@ -70,7 +65,6 @@ module.exports = function(crowi, app) {
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
-    res.locals.tzoffset = tzoffset;
     res.locals.consts = {
       pageGrants: Page.getGrantLabels(),
       userStatus: User.getUserStatusLabels(),
