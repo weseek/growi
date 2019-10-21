@@ -251,7 +251,9 @@
       "redirected": "You are redirected from <code>%s</code>",
       "duplicated": "This page was duplicated from <code>%s</code>",
       "unlinked": "Redirect pages to this page have been deleted.",
-      "restricted": "Access to this page is restricted"
+      "restricted": "Access to this page is restricted",
+      "stale": "More than {{years}} year has passed since last update.",
+      "stale_plural": "More than {years}} years has passed since last update."
     }
   },
 

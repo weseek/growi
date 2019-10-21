@@ -488,6 +488,10 @@ module.exports = function(crowi) {
     }
   };
 
+  pageSchema.methods.isStale = function() {
+    return Math.max(0, new Date(new Date() - this.updatedAt).getUTCFullYear() - 1970)
+  }
+
 
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
