@@ -75,6 +75,10 @@ class GrowiZipImportSection extends React.Component {
       <Fragment>
         <h2>{t('importer_management.import_form_growi')}</h2>
 
+        <div className="alert alert-warning">
+          <i className="icon-exclamation"></i> { t('importer_management.beta_warning') }
+        </div>
+
         {this.state.fileName ? (
           <div className="px-4">
             <GrowiZipImportForm

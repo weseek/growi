@@ -788,7 +788,6 @@
     "rebuild_description_3":"This may take a while."
   },
   "export_management": {
-    "beta_warning": "This function is Beta.",
     "exporting_data_list": "Exporting Data List",
     "exported_data_list": "Exported Data List",
     "export_collections": "Export Collections",

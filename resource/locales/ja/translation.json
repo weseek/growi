@@ -773,7 +773,6 @@
     "rebuild_description_3":""
   },
   "export_management": {
-    "beta_warning": "この機能はベータ版です",
     "exporting_data_list": "エクスポート中のデータ",
     "exported_data_list": "エクスポートデータリスト",
     "export_collections": "コレクションのエクスポート",
