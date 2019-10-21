@@ -245,12 +245,29 @@ class GrowiImportForm extends React.Component {
     );
   }
 
-  renderGroups(groupList, color) {
+  renderGroups(groupList, groupName, errors, { wellContent, color } = {}) {
     const collectionNames = groupList.filter((collectionName) => {
       return this.allCollectionNames.includes(collectionName);
     });
 
-    return this.renderCheckboxes(collectionNames, color);
+    if (collectionNames.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="mt-4">
+        <legend>{groupName} Collections</legend>
+        { wellContent != null && (
+          <div className="well well-sm small">
+            <ul>
+              <li>{wellContent}</li>
+            </ul>
+          </div>
+        ) }
+        { this.renderCheckboxes(collectionNames, color) }
+        { this.renderWarnForGroups(errors, `warnFor${groupName}`) }
+      </div>
+    );
   }
 
   renderOthers() {
@@ -258,7 +275,7 @@ class GrowiImportForm extends React.Component {
       return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
     });
 
-    return this.renderCheckboxes(collectionNames);
+    return this.renderGroups(collectionNames, 'Other', this.state.errorsForOtherGroups);
   }
 
   renderCheckboxes(collectionNames, color) {
@@ -291,6 +308,7 @@ class GrowiImportForm extends React.Component {
 
   render() {
     const { t } = this.props;
+    const { errorsForPageGroups, errorsForUserGroups, errorsForConfigGroups } = this.state;
 
     return (
       <>
@@ -307,31 +325,10 @@ class GrowiImportForm extends React.Component {
           </div>
         </form>
 
-        <div className="mt-4">
-          <legend>Page Collections</legend>
-          <div className="well well-sm small">
-            <ul>
-              <li>{t('importer_management.growi_settings.overwrite_documents')}</li>
-            </ul>
-          </div>
-          { this.renderGroups(GROUPS_PAGE) }
-          { this.renderWarnForGroups(this.state.errorsForPageGroups, 'warnPageGroups') }
-        </div>
-        <div className="mt-4">
-          <legend>User Collections</legend>
-          { this.renderGroups(GROUPS_USER) }
-          { this.renderWarnForGroups(this.state.errorsForUserGroups, 'warnUserGroups') }
-        </div>
-        <div className="mt-4">
-          <legend>Config Collections</legend>
-          { this.renderGroups(GROUPS_CONFIG) }
-          { this.renderWarnForGroups(this.state.errorsForConfigGroups, 'warnConfigGroups') }
-        </div>
-        <div className="mt-4">
-          <legend>Other Collections</legend>
-          { this.renderOthers() }
-          { this.renderWarnForGroups(this.state.errorsForOtherGroups, 'warnOtherGroups') }
-        </div>
+        { this.renderGroups(GROUPS_PAGE, 'Page', errorsForPageGroups, { wellContent: t('importer_management.growi_settings.overwrite_documents') }) }
+        { this.renderGroups(GROUPS_USER, 'User', errorsForUserGroups) }
+        { this.renderGroups(GROUPS_CONFIG, 'Config', errorsForConfigGroups) }
+        { this.renderOthers() }
 
         <div className="mt-5 text-center">
           <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
