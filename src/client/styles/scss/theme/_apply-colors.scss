@@ -1,14 +1,7 @@
+//
 //== Apply to Bootstrap
 //
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '~bootstrap/scss/mixins';
-
-// override bootstrap variables
-$link-color: $color-link;
-$link-hover-color: $color-link-hover;
-
-@import '~bootstrap/scss/reboot';
+@import '~bootstrap/scss/bootstrap-reboot';
 
 @each $color, $value in $theme-colors {
   @include bg-variant('.bg-#{$color}', $value);
@@ -39,24 +32,41 @@ $link-hover-color: $color-link-hover;
     }
   }
 }
-// @each $color, $value in $theme-colors {
-//   .link-#{$color} {
-//     color: $value;
-//     @if $emphasized-link-hover-darken-percentage != 0 {
-//       &:hover,
-//       &:focus {
-//         color: darken($value, $emphasized-link-hover-darken-percentage);
-//       }
-//     }
-//   }
-// }
-// @each $color, $value in $theme-colors {
-//   @include table-row-variant($color, color-level($value, $table-bg-level), color-level($value, $table-border-level));
-// }
-// @each $color, $value in $theme-colors {
-//   @include list-group-item-variant($color, color-level($value, -9), color-level($value, 6));
-// }
 
+// Link buttons
+.btn-link {
+  color: $link-color;
+
+  @include hover {
+    color: $link-hover-color;
+  }
+}
+
+// Dropdown
+.dropdown-item {
+  &.active,
+  &:active {
+    @include gradient-bg($dropdown-link-active-bg);
+  }
+}
+
+// Form
+.form-control {
+  @include form-control-focus();
+}
+
+// Tabs
+.nav.nav-tabs {
+  > li > a {
+    color: $color-link;
+    &:hover,
+    &:focus {
+      color: $color-link-hover;
+    }
+  }
+}
+
+//
 //== Apply to GROWI Elements
 //
 
@@ -160,41 +170,6 @@ legend {
 }
 
 /*
- * Tabs
- */
-$active-nav-tabs-bgcolor: $bgcolor-global !default;
-
-/*
-.nav.nav-tabs {
-  border-bottom-color: $navbar-border;
-
-  > li > a {
-    color: $linktext;
-    &:hover,
-    &:focus {
-      color: $linktext-hover;
-      background: transparent;
-    }
-  }
-  > li.active > a {
-    background: $active-nav-tabs-bgcolor;
-    border-top-color: $navbar-border;
-    border-right-color: $navbar-border;
-    border-left-color: $navbar-border;
-  }
-  > li:not(.active) > a {
-    &:hover,
-    &:focus {
-      border-top-color: $active-navbar-border;
-      border-right-color: $active-navbar-border;
-      border-bottom: transparent;
-      border-left-color: $active-navbar-border;
-    }
-  }
-}
-*/
-
-/*
  * Form Slider
  */
 .admin-page {
@@ -262,7 +237,7 @@ body.on-edit {
     .page-editor-editor-container {
       border-right-color: $navbar-border;
       .navbar-editor {
-        background-color: $active-nav-tabs-bgcolor; // same color with active tab
+        background-color: $bgcolor-global; // same color with active tab
         border-bottom-color: $border;
       }
     }

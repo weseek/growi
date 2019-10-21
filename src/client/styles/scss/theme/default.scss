@@ -36,6 +36,10 @@ $border: #f0f0f0;
 $navbar-border: #ccc;
 $active-navbar-border: lighten($navbar-border, 10%);
 
+// override bootstrap variables
+$link-color: $color-link;
+$link-hover-color: $color-link-hover;
+
 // light mode colors
 @media (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
 }
@@ -46,7 +50,6 @@ $active-navbar-border: lighten($navbar-border, 10%);
 
 //== Apply
 //
-
 @import 'apply-colors';
 
 // apply for no-preference or light mode
