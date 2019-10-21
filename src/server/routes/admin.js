@@ -1057,7 +1057,6 @@ module.exports = function(crowi, app) {
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log('validator', errors);
       return res.json(ApiResponse.error('Qiita form is blank'));
     }
 
