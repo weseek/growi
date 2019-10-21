@@ -6,6 +6,7 @@
 
 // colors for overriding bootstrap $theme-colors
 $primary: #112744;
+$secondary: #ced4da;
 // $info: #;
 // $success: #;
 // $warning: #;
@@ -37,7 +38,6 @@ $active-navbar-border: lighten($navbar-border, 10%);
 
 // light mode colors
 @media (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
-  $secondary: #ccc;
 }
 
 // dark mode colors
