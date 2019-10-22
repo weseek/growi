@@ -1,4 +1,4 @@
-class ExportingProgress {
+class CollectionProgress {
 
   constructor(collectionName, totalCount) {
     this.collectionName = collectionName;
@@ -8,4 +8,4 @@ class ExportingProgress {
 
 }
 
-module.exports = ExportingProgress;
+module.exports = CollectionProgress;

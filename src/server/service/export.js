@@ -223,14 +223,14 @@ class ExportService {
    *
    * @memberOf ExportService
    *
-   * @param {ExportProgress} exportProgress
+   * @param {CollectionProgress} collectionProgress
    * @param {number} currentCount number of items exported
    */
-  logProgress(exportProgress, currentCount) {
-    const output = `${exportProgress.collectionName}: ${currentCount}/${exportProgress.totalCount} written`;
+  logProgress(collectionProgress, currentCount) {
+    const output = `${collectionProgress.collectionName}: ${currentCount}/${collectionProgress.totalCount} written`;
 
     // update exportProgress.currentCount
-    exportProgress.currentCount = currentCount;
+    collectionProgress.currentCount = currentCount;
 
     // output every this.per items
     if (currentCount % this.per === 0) {
@@ -238,7 +238,7 @@ class ExportService {
       this.emitProgressEvent();
     }
     // output last item
-    else if (currentCount === exportProgress.totalCount) {
+    else if (currentCount === collectionProgress.totalCount) {
       logger.info(output);
       this.emitProgressEvent();
     }

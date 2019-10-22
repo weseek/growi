@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const ExportingProgress = require('./collection-progress');
+const CollectionProgress = require('./collection-progress');
 
 class CollectionProgressingStatus {
 
@@ -14,7 +14,7 @@ class CollectionProgressingStatus {
     const promisesForCreatingInstance = collections.map(async(collectionName) => {
       const collection = mongoose.connection.collection(collectionName);
       const totalCount = await collection.count();
-      return new ExportingProgress(collectionName, totalCount);
+      return new CollectionProgress(collectionName, totalCount);
     });
     this.progressList = await Promise.all(promisesForCreatingInstance);
 
