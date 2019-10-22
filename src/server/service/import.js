@@ -1,10 +1,17 @@
 const logger = require('@alias/logger')('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
+
+const { Writable, Transform } = require('stream');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
+
 const { ObjectId } = require('mongoose').Types;
+
+const { createBatchStream } = require('../util/batch-stream');
+
+const BULK_IMPORT_SIZE = 100;
 
 class ImportService {
 
@@ -13,7 +20,6 @@ class ImportService {
     this.growiBridgeService = crowi.growiBridgeService;
     this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'imports');
-    this.per = 100;
     this.keepOriginal = this.keepOriginal.bind(this);
 
     // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
@@ -104,63 +110,60 @@ class ImportService {
    * @return {insertedIds: Array.<string>, failedIds: Array.<string>}
    */
   async import(Model, jsonFile, overwriteParams = {}) {
-    // streamToPromise(jsonStream) throws an error, use new Promise instead
-    return new Promise((resolve, reject) => {
-      const collectionName = Model.collection.name;
+    // prepare functions invoked from custom streams
+    const convertDocuments = this.convertDocuments.bind(this);
+    const execUnorderedBulkOpSafely = this.execUnorderedBulkOpSafely.bind(this);
 
-      let counter = 0;
-      let insertedIds = [];
-      let failedIds = [];
-      let unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
+    const readStream = fs.createReadStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
 
-      const readStream = fs.createReadStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
-      const jsonStream = readStream.pipe(JSONStream.parse('*'));
+    const jsonStream = JSONStream.parse('*');
 
-      jsonStream.on('data', async(document) => {
-        // documents are not persisted until unorderedBulkOp.execute()
-        unorderedBulkOp.insert(this.convertDocuments(Model, document, overwriteParams));
-
-        counter++;
-
-        if (counter % this.per === 0) {
-          // puase jsonStream to prevent more items to be added to unorderedBulkOp
-          jsonStream.pause();
-
-          const { insertedIds: _insertedIds, failedIds: _failedIds } = await this.execUnorderedBulkOpSafely(unorderedBulkOp);
-          insertedIds = [...insertedIds, ..._insertedIds];
-          failedIds = [...failedIds, ..._failedIds];
-
-          // reset initializeUnorderedBulkOp
-          unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
-
-          // resume jsonStream
-          jsonStream.resume();
-        }
-      });
-
-      jsonStream.on('end', async(data) => {
-        // insert the rest. avoid errors when unorderedBulkOp has no items
-        if (unorderedBulkOp.s.currentBatch !== null) {
-          const { insertedIds: _insertedIds, failedIds: _failedIds } = await this.execUnorderedBulkOpSafely(unorderedBulkOp);
-          insertedIds = [...insertedIds, ..._insertedIds];
-          failedIds = [...failedIds, ..._failedIds];
-        }
-
-        logger.info(`Done. Inserted ${insertedIds.length} ${collectionName}.`);
-
-        if (failedIds.length > 0) {
-          logger.error(`Failed to insert ${failedIds.length} ${collectionName}: ${failedIds.join(', ')}.`);
-        }
-
-        // clean up tmp directory
-        fs.unlinkSync(jsonFile);
-
-        return resolve({
-          insertedIds,
-          failedIds,
-        });
-      });
+    const convertStream = new Transform({
+      objectMode: true,
+      transform(doc, encoding, callback) {
+        const converted = convertDocuments(Model, doc, overwriteParams);
+        this.push(converted);
+        callback();
+      },
     });
+
+    const batchStream = createBatchStream(BULK_IMPORT_SIZE);
+
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        const unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
+
+        // documents are not persisted until unorderedBulkOp.execute()
+        batch.forEach((document) => {
+          unorderedBulkOp.insert(document);
+        });
+
+        // exec
+        const { insertedIds, failedIds } = await execUnorderedBulkOpSafely(unorderedBulkOp);
+
+        // TODO: emit event
+
+        callback();
+      },
+      final(callback) {
+        // TODO: logger.info
+        // TODO: emit event
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(jsonStream)
+      .pipe(convertStream)
+      .pipe(batchStream)
+      .pipe(writeStream);
+
+    await streamToPromise(writeStream);
+
+    // clean up tmp directory
+    fs.unlinkSync(jsonFile);
   }
 
   /**
