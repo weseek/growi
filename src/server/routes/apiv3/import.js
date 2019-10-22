@@ -242,8 +242,8 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/all
-   *    post:
+   *  /import/all:
+   *    delete:
    *      tags: [Import]
    *      description: Delete all zip files
    *      responses:

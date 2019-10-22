@@ -140,6 +140,7 @@ class ImportService {
         });
 
         // exec
+        // eslint-disable-next-line no-unused-vars
         const { insertedIds, failedIds } = await execUnorderedBulkOpSafely(unorderedBulkOp);
 
         // TODO: emit event
