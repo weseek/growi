@@ -21,7 +21,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *  paths:
-   *    /_api/v3/user-group-relations:
+   *    /user-group-relations:
    *      get:
    *        tags: [UserGroupRelation]
    *        description: Gets the user group relations
