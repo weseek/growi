@@ -22,6 +22,9 @@ const addCustomFunctionToResponse = (express, crowi) => {
       if (e instanceof ErrorV3) {
         return e;
       }
+      if (e instanceof Error) {
+        return new ErrorV3(e.message, null, e.stack);
+      }
       if (typeof e === 'string') {
         return { message: e };
       }
