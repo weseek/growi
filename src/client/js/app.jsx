@@ -43,9 +43,9 @@ import Users from './components/Admin/Users/Users';
 import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
-import Importer from './components/Admin/Importer';
+import ImportDataPage from './components/Admin/ImportDataPage';
+import ExportDataPage from './components/Admin/ExportDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
-import ExportPage from './components/Admin/Export/ExportPage';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -113,7 +113,7 @@ let componentMappings = {
   'admin-external-account-setting': <ManageExternalAccount />,
 
   'staff-credit': <StaffCredit />,
-  'admin-importer': <Importer />,
+  'admin-importer': <ImportDataPage />,
 };
 
 // additional definitions if data exists
@@ -250,7 +250,7 @@ if (adminExportPageElem != null) {
   ReactDOM.render(
     <Provider inject={[appContainer, websocketContainer]}>
       <I18nextProvider i18n={i18n}>
-        <ExportPage
+        <ExportDataPage
           crowi={appContainer}
         />
       </I18nextProvider>
