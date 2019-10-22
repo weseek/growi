@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 
 const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
 
 const { ObjectId } = require('mongoose').Types;
@@ -165,17 +164,16 @@ module.exports = (crowi) => {
     // eslint-disable-next-line no-unused-vars
     const { meta, fileStats, innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
 
-    // delete zip file after unzipping and parsing it
-    fs.unlinkSync(zipFile);
-
     // filter innerFileStats
-    const filteredInnerFileStats = innerFileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
+    const filteredInnerFileStats = innerFileStats.filter(({ fileName, collectionName, size }) => {
+      return collections.includes(collectionName);
+    });
 
     try {
       // validate with meta.json
       importService.validate(meta);
 
-      const results = await Promise.all(filteredInnerFileStats.map(async({ fileName, collectionName, size }) => {
+      filteredInnerFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 
@@ -185,22 +183,14 @@ module.exports = (crowi) => {
           overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
         }
 
-        const { insertedIds, failedIds } = await importService.import(Model, jsonFile, overwriteParams);
+        importService.import(Model, jsonFile, overwriteParams);
+      });
 
-        return {
-          collectionName,
-          insertedIds,
-          failedIds,
-        };
-      }));
-
-      // TODO: use res.apiv3
-      return res.send({ ok: true, results });
+      return res.apiv3();
     }
     catch (err) {
-      // TODO: use ApiV3Error
       logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
+      return res.apiv3Err(err, 500);
     }
   });
 

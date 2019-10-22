@@ -95,7 +95,6 @@ class GrowiZipImportSection extends React.Component {
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
-              onPostImport={this.resetState}
             />
           </div>
         ) : (

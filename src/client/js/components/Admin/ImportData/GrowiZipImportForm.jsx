@@ -182,19 +182,23 @@ class GrowiImportForm extends React.Component {
   }
 
   async import() {
+    const { appContainer, fileName, onPostImport } = this.props;
+    const { selectedCollections, schema } = this.state;
+
     try {
       // TODO: use appContainer.apiv3.post
-      const { results } = await this.props.appContainer.apiPost('/v3/import', {
-        fileName: this.props.fileName,
-        collections: Array.from(this.state.selectedCollections),
-        schema: this.state.schema,
+      await appContainer.apiv3Post('/import', {
+        fileName,
+        collections: Array.from(selectedCollections),
+        schema,
       });
 
-      this.setState(this.initialState);
-      this.props.onPostImport();
+      if (onPostImport != null) {
+        onPostImport();
+      }
 
       // TODO: toastSuccess, toastError
-      toastr.success(undefined, 'Imported documents', {
+      toastr.success(undefined, 'Export process has requested.', {
         closeButton: true,
         progressBar: true,
         newestOnTop: false,
@@ -203,17 +207,6 @@ class GrowiImportForm extends React.Component {
         timeOut: '1200',
         extendedTimeOut: '150',
       });
-
-      for (const { collectionName, failedIds } of results) {
-        if (failedIds.length > 0) {
-          toastr.error(`failed to insert ${failedIds.join(', ')}`, collectionName, {
-            closeButton: true,
-            progressBar: true,
-            newestOnTop: false,
-            timeOut: '30000',
-          });
-        }
-      }
     }
     catch (err) {
       // TODO: toastSuccess, toastError
@@ -351,7 +344,7 @@ GrowiImportForm.propTypes = {
   fileName: PropTypes.string,
   innerFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onDiscard: PropTypes.func.isRequired,
-  onPostImport: PropTypes.func.isRequired,
+  onPostImport: PropTypes.func,
 };
 
 /**
