@@ -5,7 +5,8 @@ import * as toastr from 'toastr';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import WebsocketContainer from '../../../services/WebsocketContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const GROUPS_PAGE = [
   'pages', 'revisions', 'tags', 'pagetagrelations',
@@ -25,6 +26,10 @@ class GrowiImportForm extends React.Component {
     super(props);
 
     this.initialState = {
+      isImporting: false,
+      isImported: false,
+      progressList: [],
+
       collectionNameToFileNameMap: {},
       selectedCollections: new Set(),
       schema: {
@@ -56,6 +61,36 @@ class GrowiImportForm extends React.Component {
 
   get allCollectionNames() {
     return Object.keys(this.state.collectionNameToFileNameMap);
+  }
+
+  componentWillMount() {
+    this.setupWebsocketEventHandler();
+  }
+
+  setupWebsocketEventHandler() {
+    const socket = this.props.websocketContainer.getWebSocket();
+
+    // websocket event
+    // eslint-disable-next-line object-curly-newline
+    socket.on('admin:onProgressForImport', ({ currentCount, totalCount, progressList, appendedErrors }) => {
+      console.log(progressList);
+      console.log(appendedErrors);
+
+      this.setState({
+        isImporting: true,
+        progressList,
+      });
+    });
+
+    // websocket event
+    socket.on('admin:onTerminateForImport', () => {
+      this.setState({
+        isImporting: false,
+        isImported: true,
+      });
+
+      toastSuccess(undefined, 'Import process has terminated.');
+    });
   }
 
   async toggleCheckbox(e) {
@@ -340,6 +375,7 @@ class GrowiImportForm extends React.Component {
 GrowiImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 
   fileName: PropTypes.string,
   innerFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -351,7 +387,7 @@ GrowiImportForm.propTypes = {
  * Wrapper component for using unstated
  */
 const GrowiImportFormWrapper = (props) => {
-  return createSubscribedElement(GrowiImportForm, props, [AppContainer]);
+  return createSubscribedElement(GrowiImportForm, props, [AppContainer, WebsocketContainer]);
 };
 
 export default withTranslation()(GrowiImportFormWrapper);

@@ -45,6 +45,16 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
+  this.adminEvent = crowi.event('admin');
+
+  // setup event
+  this.adminEvent.on('onProgressForImport', (data) => {
+    crowi.getIo().sockets.emit('admin:onProgressForImport', data);
+  });
+  this.adminEvent.on('onTerminateForImport', (data) => {
+    crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
+  });
+
   const uploads = multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {
@@ -68,15 +78,13 @@ module.exports = (crowi) => {
    * all imported documents are overwriten by this value
    * each value can be any value or a function (_value, { _document, key, schema }) { return newValue }
    *
-   * @param {object} Model instance of mongoose model
+   * @param {string} collectionName MongoDB collection name
    * @param {object} req request object
    * @return {object} document to be persisted
    */
-  const overwriteParamsFn = async(Model, schema, req) => {
-    const collectionName = Model.collection.name;
-
+  const overwriteParamsFn = (collectionName, schema, req) => {
     /* eslint-disable no-case-declarations */
-    switch (Model.collection.collectionName) {
+    switch (collectionName) {
       case 'pages':
         // TODO: use schema and req to generate overwriteParams
         // e.g. { creator: schema.creator === 'me' ? ObjectId(req.user._id) : importService.keepOriginal }
@@ -101,7 +109,7 @@ module.exports = (crowi) => {
       //   return {};
       // ... add more cases
       default:
-        throw new Error(`cannot find a model for collection name "${collectionName}"`);
+        return {};
     }
     /* eslint-enable no-case-declarations */
   };
@@ -159,33 +167,55 @@ module.exports = (crowi) => {
     const { fileName, collections, schema } = req.body;
     const zipFile = importService.getFile(fileName);
 
-    // unzip
-    await importService.unzip(zipFile);
-    // eslint-disable-next-line no-unused-vars
-    const { meta, fileStats, innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
+    /*
+     * unzip, parse
+     */
+    let meta = null;
+    let fileStatsToImport = null;
+    try {
+      // unzip
+      await importService.unzip(zipFile);
 
-    // filter innerFileStats
-    const filteredInnerFileStats = innerFileStats.filter(({ fileName, collectionName, size }) => {
-      return collections.includes(collectionName);
+      // eslint-disable-next-line no-unused-vars
+      const { meta: parsedMeta, fileStats, innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
+      meta = parsedMeta;
+
+      // filter innerFileStats
+      fileStatsToImport = innerFileStats.filter(({ fileName, collectionName, size }) => {
+        return collections.includes(collectionName);
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+
+    /*
+     * validate with meta.json
+     */
+    try {
+      importService.validate(meta);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err);
+    }
+
+    // generate maps to import
+    const jsonFileNamesMap = {};
+    const overwriteParamsMap = {};
+    fileStatsToImport.forEach(({ fileName, collectionName }) => {
+      jsonFileNamesMap[collectionName] = fileName;
+
+      const overwriteParams = overwriteParamsFn(collectionName, schema[collectionName], req);
+      overwriteParamsMap[collectionName] = overwriteParams;
     });
 
+    /*
+     * import
+     */
     try {
-      // validate with meta.json
-      importService.validate(meta);
-
-      filteredInnerFileStats.map(async({ fileName, collectionName, size }) => {
-        const Model = growiBridgeService.getModelFromCollectionName(collectionName);
-        const jsonFile = importService.getFile(fileName);
-
-        let overwriteParams;
-        if (overwriteParamsFn[collectionName] != null) {
-          // await in case overwriteParamsFn[collection] is a Promise
-          overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
-        }
-
-        importService.import(Model, jsonFile, overwriteParams);
-      });
-
+      importService.import(collections, jsonFileNamesMap, overwriteParamsMap);
       return res.apiv3();
     }
     catch (err) {
