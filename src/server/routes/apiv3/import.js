@@ -258,41 +258,23 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/{fileName}:
+   *  /import/all
    *    post:
    *      tags: [Import]
-   *      description: delete a zip file
-   *      parameters:
-   *        - name: fileName
-   *          in: path
-   *          description: the file name of zip file
-   *          required: true
-   *          schema:
-   *            type: string
+   *      description: Delete all zip files
    *      responses:
    *        200:
-   *          description: the file is deleted
-   *          content:
-   *            application/json:
-   *              schema:
-   *                type: object
+   *          description: all files are deleted
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
-    const { fileName } = req.params;
-
+  router.delete('/all', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     try {
-      const zipFile = importService.getFile(fileName);
-      fs.unlinkSync(zipFile);
+      importService.deleteAllZipFiles();
 
-      // TODO: use res.apiv3
-      return res.send({
-        ok: true,
-      });
+      return res.apiv3();
     }
     catch (err) {
-      // TODO: use ApiV3Error
       logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
+      return res.apiv3Err(err, 500);
     }
   });
 

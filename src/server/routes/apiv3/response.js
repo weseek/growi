@@ -3,7 +3,7 @@ const toArrayIfNot = require('../../../lib/util/toArrayIfNot');
 const addCustomFunctionToResponse = (express, crowi) => {
   const { ErrorV3 } = crowi.models;
 
-  express.response.apiv3 = function(obj) { // not arrow function
+  express.response.apiv3 = function(obj = {}) { // not arrow function
     // obj must be object
     if (typeof obj !== 'object' || obj instanceof Array) {
       throw new Error('invalid value supplied to res.apiv3');

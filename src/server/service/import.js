@@ -298,6 +298,15 @@ class ImportService {
     // - import: throw err if there are pending migrations
   }
 
+  /**
+   * Delete all uploaded files
+   */
+  deleteAllZipFiles() {
+    fs.readdirSync(this.baseDir)
+      .filter(file => path.extname(file) === '.zip')
+      .forEach(file => fs.unlinkSync(path.join(this.baseDir, file)));
+  }
+
 }
 
 module.exports = ImportService;
