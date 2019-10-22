@@ -22,6 +22,7 @@ class ImportDataPage extends React.Component {
       qiitaTeamName: '',
       qiitaAccessToken: '',
     };
+
     this.esaHandleSubmit = this.esaHandleSubmit.bind(this);
     this.esaHandleSubmitTest = this.esaHandleSubmitTest.bind(this);
     this.esaHandleSubmitUpdate = this.esaHandleSubmitUpdate.bind(this);
@@ -329,6 +330,12 @@ class ImportDataPage extends React.Component {
 
 }
 
+ImportDataPage.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+
 /**
  * Wrapper component for using unstated
  */
@@ -336,9 +343,5 @@ const ImportDataPageWrapper = (props) => {
   return createSubscribedElement(ImportDataPage, props, [AppContainer]);
 };
 
-ImportDataPage.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  t: PropTypes.func.isRequired, // i18next
-};
 
 export default withTranslation()(ImportDataPageWrapper);
