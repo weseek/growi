@@ -18,6 +18,29 @@ const router = express.Router();
  *    name: Import
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ImportStatus:
+ *        type: object
+ *        properties:
+ *          zipFileStats:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: the property of each file
+ *          progressList:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: progress data for each exporting collections
+ *          isImporting:
+ *            type: boolean
+ *            description: whether the current importing job exists or not
+ */
+
 module.exports = (crowi) => {
   const { growiBridgeService, importService } = crowi;
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
@@ -85,6 +108,33 @@ module.exports = (crowi) => {
     }
     /* eslint-enable no-case-declarations */
   };
+
+  /**
+   * @swagger
+   *
+   *  /import/status:
+   *    get:
+   *      tags: [Import]
+   *      description: Get properties of stored zip files for import
+   *      responses:
+   *        200:
+   *          description: the zip file statuses
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  status:
+   *                    $ref: '#/components/schemas/ImportStatus'
+   */
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    const status = await importService.getStatus();
+
+    // TODO: use res.apiv3
+    return res.json({
+      ok: true,
+      status,
+    });
+  });
 
   /**
    * @swagger

@@ -19,6 +19,8 @@ class ImportService {
     // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
     this.convertMap = {};
     this.initConvertMap(crowi.models);
+
+    this.currentProgressingStatus = null;
   }
 
   /**
@@ -62,6 +64,31 @@ class ImportService {
     }
 
     return value;
+  }
+
+  /**
+   * parse all zip files in downloads dir
+   *
+   * @memberOf ExportService
+   * @return {object} info for zip files and whether currentProgressingStatus exists
+   */
+  async getStatus() {
+    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
+    const zipFileStats = await Promise.all(zipFiles.map((file) => {
+      const zipFile = this.getFile(file);
+      return this.growiBridgeService.parseZipFile(zipFile);
+    }));
+
+    // filter null object (broken zip)
+    const filtered = zipFileStats.filter(element => element != null);
+
+    const isImporting = this.currentProgressingStatus != null;
+
+    return {
+      zipFileStats: filtered,
+      isImporting,
+      progressList: isImporting ? this.currentProgressingStatus.progressList : null,
+    };
   }
 
   /**

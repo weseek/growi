@@ -7,53 +7,9 @@ const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
 
-
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
-
-class ExportingProgress {
-
-  constructor(collectionName, totalCount) {
-    this.collectionName = collectionName;
-    this.currentCount = 0;
-    this.totalCount = totalCount;
-  }
-
-}
-
-class ExportingStatus {
-
-  constructor() {
-    this.totalCount = 0;
-
-    this.progressList = null;
-    this.progressMap = {};
-  }
-
-  async init(collections) {
-    const promisesForCreatingInstance = collections.map(async(collectionName) => {
-      const collection = mongoose.connection.collection(collectionName);
-      const totalCount = await collection.count();
-      return new ExportingProgress(collectionName, totalCount);
-    });
-    this.progressList = await Promise.all(promisesForCreatingInstance);
-
-    // collection name to instance mapping
-    this.progressList.forEach((p) => {
-      this.progressMap[p.collectionName] = p;
-      this.totalCount += p.totalCount;
-    });
-  }
-
-  get currentCount() {
-    return this.progressList.reduce(
-      (acc, crr) => acc + crr.currentCount,
-      0,
-    );
-  }
-
-}
-
+const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
 class ExportService {
 
@@ -68,14 +24,14 @@ class ExportService {
 
     this.adminEvent = crowi.event('admin');
 
-    this.currentExportingStatus = null;
+    this.currentProgressingStatus = null;
   }
 
   /**
    * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {object} info for zip files and whether currentExportingStatus exists
+   * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
@@ -87,12 +43,12 @@ class ExportService {
     // filter null object (broken zip)
     const filtered = zipFileStats.filter(element => element != null);
 
-    const isExporting = this.currentExportingStatus != null;
+    const isExporting = this.currentProgressingStatus != null;
 
     return {
       zipFileStats: filtered,
       isExporting,
-      progressList: isExporting ? this.currentExportingStatus.progressList : null,
+      progressList: isExporting ? this.currentProgressingStatus.progressList : null,
     };
   }
 
@@ -196,7 +152,7 @@ class ExportService {
     const transformStream = this.generateTransformStream();
 
     // log configuration
-    const exportProgress = this.currentExportingStatus.progressMap[collectionName];
+    const exportProgress = this.currentProgressingStatus.progressMap[collectionName];
     const logStream = this.generateLogStream(exportProgress);
 
     // create WritableStream
@@ -246,18 +202,18 @@ class ExportService {
   }
 
   async export(collections) {
-    if (this.currentExportingStatus != null) {
+    if (this.currentProgressingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
 
-    this.currentExportingStatus = new ExportingStatus();
-    await this.currentExportingStatus.init(collections);
+    this.currentProgressingStatus = new CollectionProgressingStatus();
+    await this.currentProgressingStatus.init(collections);
 
     try {
       await this.exportCollectionsToZippedJson(collections);
     }
     finally {
-      this.currentExportingStatus = null;
+      this.currentProgressingStatus = null;
     }
 
   }
@@ -293,7 +249,7 @@ class ExportService {
    * @param {ExportProgress} exportProgress
    */
   emitProgressEvent(exportProgress) {
-    const { currentCount, totalCount, progressList } = this.currentExportingStatus;
+    const { currentCount, totalCount, progressList } = this.currentProgressingStatus;
     const data = {
       currentCount,
       totalCount,
