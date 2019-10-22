@@ -26,11 +26,9 @@ const router = express.Router();
  *      ImportStatus:
  *        type: object
  *        properties:
- *          zipFileStats:
- *            type: array
- *            items:
- *              type: object
- *              description: the property of each file
+ *          zipFileStat:
+ *            type: object
+ *            description: the property object
  *          progressList:
  *            type: array
  *            items:
@@ -127,13 +125,13 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/ImportStatus'
    */
   router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    const status = await importService.getStatus();
-
-    // TODO: use res.apiv3
-    return res.json({
-      ok: true,
-      status,
-    });
+    try {
+      const status = await importService.getStatus();
+      return res.apiv3(status);
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
   });
 
   /**
@@ -242,11 +240,7 @@ module.exports = (crowi) => {
       // validate with meta.json
       importService.validate(data.meta);
 
-      // TODO: use res.apiv3
-      return res.send({
-        ok: true,
-        data,
-      });
+      return res.apiv3(data);
     }
     catch (err) {
       // TODO: use ApiV3Error
