@@ -246,9 +246,8 @@ class ExportService {
 
   /**
    * emit progress event
-   * @param {ExportProgress} exportProgress
    */
-  emitProgressEvent(exportProgress) {
+  emitProgressEvent() {
     const { currentCount, totalCount, progressList } = this.currentProgressingStatus;
     const data = {
       currentCount,
