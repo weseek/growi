@@ -27,6 +27,16 @@ class GrowiZipImportSection extends React.Component {
     this.resetState = this.resetState.bind(this);
   }
 
+  async componentWillMount() {
+    // get uploaded file status
+    const res = await this.props.appContainer.apiv3Get('/import/status');
+
+    if (res.data.zipFileStat != null) {
+      const { fileName, innerFileStats } = res.data.zipFileStat;
+      this.setState({ fileName, innerFileStats });
+    }
+  }
+
   handleUpload({ meta, fileName, innerFileStats }) {
     this.setState({
       fileName,
