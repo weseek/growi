@@ -11,6 +11,21 @@ const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
+class ExportProgressingStatus extends CollectionProgressingStatus {
+
+  async init() {
+    // retrieve total document count from each collections
+    const promises = this.progressList.map(async(collectionProgress) => {
+      const collection = mongoose.connection.collection(collectionProgress.collectionName);
+      collectionProgress.totalCount = await collection.count();
+    });
+    await Promise.all(promises);
+
+    this.recalculateTotalCount();
+  }
+
+}
+
 class ExportService {
 
   constructor(crowi) {
@@ -79,7 +94,7 @@ class ExportService {
 
   /**
    *
-   * @param {ExportProguress} exportProgress
+   * @param {ExportProgress} exportProgress
    * @return {Transform}
    */
   generateLogStream(exportProgress) {
@@ -206,8 +221,8 @@ class ExportService {
       throw new Error('There is an exporting process running.');
     }
 
-    this.currentProgressingStatus = new CollectionProgressingStatus();
-    await this.currentProgressingStatus.init(collections);
+    this.currentProgressingStatus = new ExportProgressingStatus(collections);
+    await this.currentProgressingStatus.init();
 
     try {
       await this.exportCollectionsToZippedJson(collections);
