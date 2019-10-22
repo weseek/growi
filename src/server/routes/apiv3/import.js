@@ -165,19 +165,19 @@ module.exports = (crowi) => {
     // unzip
     await importService.unzip(zipFile);
     // eslint-disable-next-line no-unused-vars
-    const { meta, fileStats } = await growiBridgeService.parseZipFile(zipFile);
+    const { meta, fileStats, innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
 
     // delete zip file after unzipping and parsing it
     fs.unlinkSync(zipFile);
 
-    // filter fileStats
-    const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
+    // filter innerFileStats
+    const filteredInnerFileStats = innerFileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
 
     try {
       // validate with meta.json
       importService.validate(meta);
 
-      const results = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
+      const results = await Promise.all(filteredInnerFileStats.map(async({ fileName, collectionName, size }) => {
         const Model = growiBridgeService.getModelFromCollectionName(collectionName);
         const jsonFile = importService.getFile(fileName);
 

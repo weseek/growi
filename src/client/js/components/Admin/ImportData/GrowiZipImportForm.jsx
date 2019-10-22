@@ -40,7 +40,7 @@ class GrowiImportForm extends React.Component {
       errorsForOtherGroups: [],
     };
 
-    this.props.fileStats.forEach((fileStat) => {
+    this.props.innerFileStats.forEach((fileStat) => {
       const { fileName, collectionName } = fileStat;
       this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
     });
@@ -349,7 +349,7 @@ GrowiImportForm.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   fileName: PropTypes.string,
-  fileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
+  innerFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onDiscard: PropTypes.func.isRequired,
   onPostImport: PropTypes.func.isRequired,
 };

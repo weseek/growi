@@ -73,19 +73,22 @@ class ImportService {
    * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
-    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
+    const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
     const zipFileStats = await Promise.all(zipFiles.map((file) => {
       const zipFile = this.getFile(file);
       return this.growiBridgeService.parseZipFile(zipFile);
     }));
 
     // filter null object (broken zip)
-    const filtered = zipFileStats.filter(element => element != null);
+    const filtered = zipFileStats
+      .filter(zipFileStat => zipFileStat != null);
+    // sort with ctime("Change Time" - Time when file status was last changed (inode data modification).)
+    filtered.sort((a, b) => { return a.fileStat.ctime - b.fileStat.ctime });
 
     const isImporting = this.currentProgressingStatus != null;
 
     return {
-      zipFileStats: filtered,
+      zipFileStat: filtered.pop(),
       isImporting,
       progressList: isImporting ? this.currentProgressingStatus.progressList : null,
     };

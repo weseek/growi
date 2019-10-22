@@ -99,7 +99,8 @@ class GrowiBridgeService {
    * @return {object} meta{object} and files{Array.<object>}
    */
   async parseZipFile(zipFile) {
-    const fileStats = [];
+    const fileStat = fs.statSync(zipFile);
+    const innerFileStats = [];
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
@@ -113,7 +114,7 @@ class GrowiBridgeService {
         meta = JSON.parse((await entry.buffer()).toString());
       }
       else {
-        fileStats.push({
+        innerFileStats.push({
           fileName,
           collectionName: path.basename(fileName, '.json'),
           size,
@@ -135,7 +136,8 @@ class GrowiBridgeService {
     return {
       meta,
       fileName: path.basename(zipFile),
-      fileStats,
+      fileStat,
+      innerFileStats,
     };
   }
 

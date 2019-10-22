@@ -16,8 +16,8 @@ class GrowiZipImportSection extends React.Component {
     super(props);
 
     this.initialState = {
-      fileName: '',
-      fileStats: [],
+      fileName: null,
+      innerFileStats: null,
     };
 
     this.state = this.initialState;
@@ -27,10 +27,10 @@ class GrowiZipImportSection extends React.Component {
     this.resetState = this.resetState.bind(this);
   }
 
-  handleUpload({ meta, fileName, fileStats }) {
+  handleUpload({ meta, fileName, innerFileStats }) {
     this.setState({
       fileName,
-      fileStats,
+      innerFileStats,
     });
   }
 
@@ -79,11 +79,11 @@ class GrowiZipImportSection extends React.Component {
           <i className="icon-exclamation"></i> { t('importer_management.beta_warning') }
         </div>
 
-        {this.state.fileName ? (
+        { this.state.fileName != null ? (
           <div className="px-4">
             <GrowiZipImportForm
               fileName={this.state.fileName}
-              fileStats={this.state.fileStats}
+              innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
               onPostImport={this.resetState}
             />
