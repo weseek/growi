@@ -22,7 +22,7 @@
     <div class="alert alert-danger">
     {% endif %}
       <i class="icon-fw icon-hourglass"></i>
-      <strong>{{ t('page_page.notice.stale', { years: page.isStale() }) }}</strong>
+      <strong>{{ t('page_page.notice.stale', { count: page.isStale() }) }}</strong>
     </div>
     {% endif %}
 
