@@ -6,12 +6,26 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 
-export default class GrowiZipImportItem extends React.PureComponent {
+import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
+
+
+export const DEFAULT_MODE = 'insert';
+
+export default class GrowiZipImportItem extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.changeHandler = this.changeHandler.bind(this);
+    this.modeSelectedHandler = this.modeSelectedHandler.bind(this);
+  }
+
+  get currentModeLabel() {
+    const { option } = this.props;
+    const { mode } = option;
+
+    // convert 'insert' -> 'Insert'
+    return mode.substring(0, 1).toUpperCase() + mode.substring(1);
   }
 
   changeHandler(e) {
@@ -22,13 +36,26 @@ export default class GrowiZipImportItem extends React.PureComponent {
     }
   }
 
+  modeSelectedHandler(mode) {
+    const { collectionName, onOptionChange } = this.props;
+
+    if (onOptionChange == null) {
+      return;
+    }
+
+    const { option } = this.props;
+    option.mode = mode;
+
+    onOptionChange(collectionName, option);
+  }
+
   renderControls() {
     const {
       collectionName, isSelected,
     } = this.props;
 
     return (
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between align-items-center">
         {/* left */}
         <div>
           <input
@@ -45,19 +72,20 @@ export default class GrowiZipImportItem extends React.PureComponent {
           </label>
         </div>
         {/* right */}
-        <div className="dropdown">
-          <button className="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Dropdown
-            <span className="caret"></span>
-          </button>
-          <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" className="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </div>
+        <span className="d-inline-flex align-items-center">
+          Mode:
+          <div className="dropdown d-inline-block">
+            <button className="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {this.currentModeLabel}
+              <span className="caret ml-2"></span>
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+              <li><a href="#" onClick={() => this.modeSelectedHandler('insert')}>Insert</a></li>
+              <li><a href="#" onClick={() => this.modeSelectedHandler('upsert')}>Upsert</a></li>
+              <li><a href="#" onClick={() => this.modeSelectedHandler('flushAndInsert')}>Flush and Insert</a></li>
+            </ul>
+          </div>
+        </span>
       </div>
     );
   }
@@ -88,6 +116,8 @@ export default class GrowiZipImportItem extends React.PureComponent {
 GrowiZipImportItem.propTypes = {
   collectionName: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
+  option: PropTypes.instanceOf(GrowiZipImportOption).isRequired,
 
   onChange: PropTypes.func,
+  onOptionChange: PropTypes.func,
 };

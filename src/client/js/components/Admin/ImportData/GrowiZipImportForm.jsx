@@ -8,7 +8,9 @@ import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import GrowiZipImportItem from './GrowiZipImportItem';
+import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
+
+import GrowiZipImportItem, { DEFAULT_MODE } from './GrowiZipImportItem';
 
 
 const GROUPS_PAGE = [
@@ -35,11 +37,7 @@ class GrowiImportForm extends React.Component {
 
       collectionNameToFileNameMap: {},
       selectedCollections: new Set(),
-      schema: {
-        pages: {},
-        revisions: {},
-        // ...
-      },
+      optionMap: {},
 
       canImport: false,
       errorsForPageGroups: [],
@@ -51,6 +49,7 @@ class GrowiImportForm extends React.Component {
     this.props.innerFileStats.forEach((fileStat) => {
       const { fileName, collectionName } = fileStat;
       this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
+      this.initialState.optionMap[collectionName] = new GrowiZipImportOption(DEFAULT_MODE);
     });
 
     this.state = this.initialState;
@@ -58,6 +57,7 @@ class GrowiImportForm extends React.Component {
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.checkAll = this.checkAll.bind(this);
     this.uncheckAll = this.uncheckAll.bind(this);
+    this.updateOption = this.updateOption.bind(this);
     this.validate = this.validate.bind(this);
     this.import = this.import.bind(this);
   }
@@ -97,16 +97,15 @@ class GrowiImportForm extends React.Component {
   }
 
   async toggleCheckbox(collectionName, bool) {
-    await this.setState((prevState) => {
-      const selectedCollections = new Set(prevState.selectedCollections);
-      if (bool) {
-        selectedCollections.add(collectionName);
-      }
-      else {
-        selectedCollections.delete(collectionName);
-      }
-      return { selectedCollections };
-    });
+    const selectedCollections = new Set(this.state.selectedCollections);
+    if (bool) {
+      selectedCollections.add(collectionName);
+    }
+    else {
+      selectedCollections.delete(collectionName);
+    }
+
+    await this.setState({ selectedCollections });
 
     this.validate();
   }
@@ -119,6 +118,12 @@ class GrowiImportForm extends React.Component {
   async uncheckAll() {
     await this.setState({ selectedCollections: new Set() });
     this.validate();
+  }
+
+  updateOption(collectionName, option) {
+    const newOptionMap = { ...this.state.optionMap };
+    newOptionMap[collectionName] = option;
+    this.setState({ optionMap: newOptionMap });
   }
 
   async validate() {
@@ -308,6 +313,7 @@ class GrowiImportForm extends React.Component {
 
   renderCheckboxes(collectionNames, color) {
     const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+    const { selectedCollections, optionMap } = this.state;
 
     return (
       <div className={`row checkbox ${checkboxColor}`}>
@@ -316,8 +322,10 @@ class GrowiImportForm extends React.Component {
             <div className="col-xs-6 my-1" key={collectionName}>
               <GrowiZipImportItem
                 collectionName={collectionName}
-                isSelected={this.state.selectedCollections.has(collectionName)}
+                isSelected={selectedCollections.has(collectionName)}
+                option={optionMap[collectionName]}
                 onChange={this.toggleCheckbox}
+                onOptionChange={this.updateOption}
               />
             </div>
           );
