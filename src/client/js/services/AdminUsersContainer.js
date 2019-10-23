@@ -46,11 +46,13 @@ export default class AdminUsersContainer extends Container {
   async retrieveUsersByPagingNum(selectedPage) {
 
     const params = { page: selectedPage };
-    const response = await this.appContainer.apiv3.get('/users', params);
+    const { data } = await this.appContainer.apiv3.get('/users', params);
 
-    const users = response.data.users;
-    const totalUsers = response.data.totalUsers;
-    const pagingLimit = response.data.pagingLimit;
+    if (data.paginateResult == null) {
+      throw new Error('data must conclude \'paginateResult\' property.');
+    }
+
+    const { docs: users, totalDocs: totalUsers, limit: pagingLimit } = data.paginateResult;
 
     this.setState({
       users,

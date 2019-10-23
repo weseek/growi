@@ -20,7 +20,7 @@
     "url": "https://github.com/weseek/growi/issues"
   },
   "scripts": {
-    "build:apiv3:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js src/server/routes/apiv3/**/*.js",
+    "build:apiv3:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js src/server/**/*.js",
     "build:dev:app:watch": "npm run build:dev:app -- --watch",
     "build:dev:app": "env-cmd -f config/env.dev.js webpack --config config/webpack.dev.js --progress",
     "build:dev:dll": "webpack --config config/webpack.dev.dll.js",
