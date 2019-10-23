@@ -66,8 +66,6 @@ class UserTable extends React.Component {
 
     return (
       <Fragment>
-        <h2>{ t('User_Management') }</h2>
-
         <table className="table table-default table-bordered table-user-list">
           <thead>
             <tr>

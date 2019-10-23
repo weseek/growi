@@ -39,6 +39,17 @@ class UserManagement extends React.Component {
   render() {
     const { t, adminUsersContainer } = this.props;
 
+    const pager = (
+      <div className="pull-right">
+        <PaginationWrapper
+          activePage={adminUsersContainer.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={adminUsersContainer.state.totalUsers}
+          pagingLimit={adminUsersContainer.state.pagingLimit}
+        />
+      </div>
+    );
+
     return (
       <Fragment>
         {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
@@ -49,13 +60,13 @@ class UserManagement extends React.Component {
             { t('user_management.external_account') }
           </a>
         </p>
+
+        <h2>{ t('User_Management') }</h2>
+
+        {pager}
         <UserTable />
-        <PaginationWrapper
-          activePage={adminUsersContainer.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={adminUsersContainer.state.totalUsers}
-          pagingLimit={adminUsersContainer.state.pagingLimit}
-        />
+        {pager}
+
       </Fragment>
     );
   }
