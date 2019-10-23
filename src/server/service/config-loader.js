@@ -140,7 +140,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'gridfs:totalLimit',
     type:    TYPES.NUMBER,
-    default: null,
+    default: null, // set null in default for backward compatibility
+    //                cz: Newer system respects FILE_UPLOAD_TOTAL_LIMIT.
+    //                    If the default value of MONGO_GRIDFS_TOTAL_LIMIT is Infinity, the system can't distinguish between "not specified" and "Infinity is specified".
   },
   FORCE_WIKI_MODE: {
     ns:      'crowi',
