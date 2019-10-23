@@ -5,7 +5,6 @@
       <form role="form" id="delete-page-form" onsubmit="return false;">
 
         <div class="modal-header {% if page.isDeleted() %}bg-danger{% else %}bg-primary{% endif %}">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title">
             {% if page.isDeleted() %}
             <i class="icon-fw icon-fire"></i> {{ t('modal_delete.delete_completely') }}
@@ -13,18 +12,17 @@
             <i class="icon-fw icon-trash"></i> {{ t('modal_delete.delete_page') }}
             {% endif %}
           </div>
+          <button type="button" class="close ml-auto" data-dismiss="modal" aria-hidden="true">&times;</button>
         </div>
-        <div class="modal-body">
-          <div class="form-group">
+        <div class="modal-body border-bottom">
+          <div class="form-group border-bottom pb-3">
             <label for="">{{ t('modal_delete.deleting_page') }}:</label><br>
             <code>{{ page.path }}</code>
           </div>
 
-          <hr>
-
           {% if page.grant != 2 %}
           <div class="checkbox checkbox-warning">
-            <input name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
+            <input class="align-top" name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
             <label for="cbDeleteRecursively">
               {{ t('modal_delete.delete_recursively') }}
               <p class="help-block mt-0"> {{ t('modal_delete.recursively', page.path) }}</p>
@@ -33,7 +31,7 @@
           {% endif %}
           {% if not page.isDeleted() %}
           <div class="checkbox checkbox-danger">
-            <input name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
+            <input class="align-top" name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
             <label for="cbDeleteCompletely" class="text-danger">
               {{ t('modal_delete.delete_completely') }}
               <p class="help-block mt-0"> {{ t('modal_delete.completely') }}</p>

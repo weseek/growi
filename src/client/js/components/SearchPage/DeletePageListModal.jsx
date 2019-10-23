@@ -31,16 +31,21 @@ export default class DeletePageListModal extends React.Component {
     });
 
     return (
-      <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
-        <ModalHeader toggle={this.props.cancel}>
+      <div
+        className="page-list-delete-modal modal-dialog modal-dialog-centered"
+        role="document"
+        isOpen={this.props.isShown}
+        toggle={this.props.cancel}
+      >
+        <div className="modal-header" toggle={this.props.cancel}>
           Deleting pages:
-        </ModalHeader>
-        <ModalBody>
+        </div>
+        <div className="modal-body border-bottom">
           <ul>
             {listView}
           </ul>
-        </ModalBody>
-        <ModalFooter>
+        </div>
+        <div className="modal-footer">
           {/*  TODO:refactoring the layout of this form */}
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
@@ -54,10 +59,17 @@ export default class DeletePageListModal extends React.Component {
               />
               <label className="form-check-label" htmlFor="delete-completely text-danger">Delete completely</label>
             </div>
-            <Button className="ml-2" color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
+            <button
+              type="button"
+              className="btn btn-secondary ml-2"
+              color="secondary"
+              onClick={this.props.confirmedToDelete}
+            >
+              <i className="icon-trash"></i>Delete
+            </button>
           </div>
-        </ModalFooter>
-      </Modal>
+        </div>
+      </div>
     );
   }
 
