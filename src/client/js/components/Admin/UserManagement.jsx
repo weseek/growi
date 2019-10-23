@@ -2,18 +2,20 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PasswordResetModal from './PasswordResetModal';
-import PaginationWrapper from '../../PaginationWrapper';
-import InviteUserControl from './InviteUserControl';
-import UserTable from './UserTable';
+import PaginationWrapper from '../PaginationWrapper';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
+import { toastError } from '../../util/apiNotification';
 
-class UserPage extends React.Component {
+import AppContainer from '../../services/AppContainer';
+import AdminUsersContainer from '../../services/AdminUsersContainer';
+
+import PasswordResetModal from './Users/PasswordResetModal';
+import InviteUserControl from './Users/InviteUserControl';
+import UserTable from './Users/UserTable';
+
+class UserManagement extends React.Component {
 
   constructor(props) {
     super();
@@ -56,15 +58,15 @@ class UserPage extends React.Component {
 
 }
 
-const UserPageWrapper = (props) => {
-  return createSubscribedElement(UserPage, props, [AppContainer, AdminUsersContainer]);
-};
 
-UserPage.propTypes = {
+UserManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-
 };
 
-export default withTranslation()(UserPageWrapper);
+const UserManagementWrapper = (props) => {
+  return createSubscribedElement(UserManagement, props, [AppContainer, AdminUsersContainer]);
+};
+
+export default withTranslation()(UserManagementWrapper);
