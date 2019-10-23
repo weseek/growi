@@ -8,6 +8,9 @@ import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+import GrowiZipImportItem from './GrowiZipImportItem';
+
+
 const GROUPS_PAGE = [
   'pages', 'revisions', 'tags', 'pagetagrelations',
 ];
@@ -93,17 +96,14 @@ class GrowiImportForm extends React.Component {
     });
   }
 
-  async toggleCheckbox(e) {
-    const { target } = e;
-    const { name, checked } = target;
-
+  async toggleCheckbox(collectionName, bool) {
     await this.setState((prevState) => {
       const selectedCollections = new Set(prevState.selectedCollections);
-      if (checked) {
-        selectedCollections.add(name);
+      if (bool) {
+        selectedCollections.add(collectionName);
       }
       else {
-        selectedCollections.delete(name);
+        selectedCollections.delete(collectionName);
       }
       return { selectedCollections };
     });
@@ -314,18 +314,11 @@ class GrowiImportForm extends React.Component {
         {collectionNames.map((collectionName) => {
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
-              <input
-                type="checkbox"
-                id={collectionName}
-                name={collectionName}
-                className="form-check-input"
-                value={collectionName}
-                checked={this.state.selectedCollections.has(collectionName)}
+              <GrowiZipImportItem
+                collectionName={collectionName}
+                isSelected={this.state.selectedCollections.has(collectionName)}
                 onChange={this.toggleCheckbox}
               />
-              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
-                {collectionName}
-              </label>
             </div>
           );
         })}
