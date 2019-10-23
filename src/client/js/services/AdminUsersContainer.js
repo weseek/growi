@@ -17,7 +17,7 @@ export default class AdminUsersContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      users: JSON.parse(document.getElementById('admin-user-page').getAttribute('users')) || [],
+      users: [],
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,

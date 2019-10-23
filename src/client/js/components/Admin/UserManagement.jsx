@@ -23,6 +23,10 @@ class UserManagement extends React.Component {
     this.handlePage = this.handlePage.bind(this);
   }
 
+  componentWillMount() {
+    this.handlePage(1);
+  }
+
   async handlePage(selectedPage) {
     try {
       await this.props.adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
