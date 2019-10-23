@@ -163,7 +163,7 @@ class GrantSelector extends React.Component {
     }
 
     return (
-      <div className="form-group grant-selector m-b-0">
+      <div className="form-group grw-grant-selector m-b-0">
         <UncontrolledDropdown direction="up" size="sm">
           <DropdownToggle caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
             {dropdownToggleLabelElm}
