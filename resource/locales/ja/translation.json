@@ -741,12 +741,17 @@
     "import_form_growi": "GROWIからインポート",
     "growi_settings": {
       "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
-      "zip_file": "Zip ファイル",
+      "zip_file": "エクスポートされた Zip ファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",
       "upload": "アップロード",
-      "discard": "アップロードしたデータを破棄する"
+      "discard": "アップロードしたデータを破棄する",
+      "errors": {
+        "at_least_one": "コレクションが選択されていません",
+        "page_and_revision": "'Pages' と 'Revisions' はセットでインポートする必要があります",
+        "depends": "'{{condition}}' をインポートする場合は、'{{target}}' を一緒に選択する必要があります"
+      }
     },
     "esa_settings": {
       "team_name": "チーム名",
@@ -771,7 +776,6 @@
     "rebuild_description_3":""
   },
   "export_management": {
-    "beta_warning": "この機能はベータ版です",
     "exporting_data_list": "エクスポート中のデータ",
     "exported_data_list": "エクスポートデータリスト",
     "export_collections": "コレクションのエクスポート",

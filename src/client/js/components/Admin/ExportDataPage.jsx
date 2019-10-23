@@ -4,17 +4,17 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import WebsocketContainer from '../../../services/WebsocketContainer';
+import ProgressBar from './Common/ProgressBar';
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import WebsocketContainer from '../../services/WebsocketContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import ProgressBar from '../Common/ProgressBar';
 
-import ExportZipFormModal from './ExportZipFormModal';
-import ZipFileTable from './ZipFileTable';
+import ExportZipFormModal from './ExportData/ExportZipFormModal';
+import ZipFileTable from './ExportData/ZipFileTable';
 
-class ExportPage extends React.Component {
+class ExportDataPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -235,7 +235,7 @@ class ExportPage extends React.Component {
 
 }
 
-ExportPage.propTypes = {
+ExportDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
@@ -244,8 +244,8 @@ ExportPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportPageFormWrapper = (props) => {
-  return createSubscribedElement(ExportPage, props, [AppContainer, WebsocketContainer]);
+const ExportDataPageFormWrapper = (props) => {
+  return createSubscribedElement(ExportDataPage, props, [AppContainer, WebsocketContainer]);
 };
 
-export default withTranslation()(ExportPageFormWrapper);
+export default withTranslation()(ExportDataPageFormWrapper);

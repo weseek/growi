@@ -441,7 +441,7 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmit
     .pipe(appendTagNamesStream)
     .pipe(writeStream);
 
-  return streamToPromise(readStream);
+  return streamToPromise(writeStream);
 
 };
 
