@@ -57,7 +57,7 @@ export default class GrowiZipImportItem extends React.Component {
     return (
       <div className="d-flex justify-content-between align-items-center">
         {/* left */}
-        <div>
+        <div className="checkbox checkbox-info">
           <input
             type="checkbox"
             id={collectionName}
@@ -67,7 +67,7 @@ export default class GrowiZipImportItem extends React.Component {
             checked={isSelected}
             onChange={this.changeHandler}
           />
-          <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+          <label className="text-capitalize form-check-label" htmlFor={collectionName}>
             {collectionName}
           </label>
         </div>

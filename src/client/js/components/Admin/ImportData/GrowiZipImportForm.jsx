@@ -278,7 +278,7 @@ class GrowiImportForm extends React.Component {
     );
   }
 
-  renderGroups(groupList, groupName, errors, { wellContent, color } = {}) {
+  renderGroups(groupList, groupName, errors, { wellContent } = {}) {
     const collectionNames = groupList.filter((collectionName) => {
       return this.allCollectionNames.includes(collectionName);
     });
@@ -297,7 +297,7 @@ class GrowiImportForm extends React.Component {
             </ul>
           </div>
         ) }
-        { this.renderCheckboxes(collectionNames, color) }
+        { this.renderCheckboxes(collectionNames) }
         { this.renderWarnForGroups(errors, `warnFor${groupName}`) }
       </div>
     );
@@ -311,12 +311,11 @@ class GrowiImportForm extends React.Component {
     return this.renderGroups(collectionNames, 'Other', this.state.errorsForOtherGroups);
   }
 
-  renderCheckboxes(collectionNames, color) {
-    const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+  renderCheckboxes(collectionNames) {
     const { selectedCollections, optionMap } = this.state;
 
     return (
-      <div className={`row checkbox ${checkboxColor}`}>
+      <div className="row">
         {collectionNames.map((collectionName) => {
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
