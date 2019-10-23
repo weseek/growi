@@ -1,32 +1,53 @@
 @import 'layout_variable';
 
-.main-container {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 500;
-  }
+// FIXME: replace with mt-2 or mt-3
+.grw-mt-10px {
+  margin-top: 10px !important;
+}
 
-  .navbar-top-links {
-    height: 30px;
-    border-radius: 40px;
-    .confidential {
-      a {
-        font-weight: bold;
-        cursor: default;
-      }
-    }
-    @include media-breakpoint-down(md) {
-      font-size: 14px;
+// FIXME: replace with pt-2 or pt-3
+.grw-pt-10px {
+  padding-top: 10px !important;
+}
+
+.logo {
+  .logo-mark {
+    svg {
+      width: $grw-logo-width;
+      height: $grw-navbar-height;
+      padding: ($grw-logo-width - $grw-logomark-width) / 2;
     }
   }
-
   /*
-   * header
-   */
+  .logo-text {
+    svg {
+      width: 156px;
+      height: $grw-navbar-height;
+    }
+  }
+  */
+}
+
+.confidential {
+  font-weight: bold;
+}
+
+/*
+  * header
+  */
+.grw-subnav {
+  overflow: unset;
+}
+
+.grw-modal-head {
+  font-size: 1em;
+  border-bottom: 1px solid $grw-line-gray;
+}
+
+.header-wrap {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+
   header {
     line-height: 1em;
 
@@ -49,99 +70,94 @@
       }
     }
   }
+}
 
-  .main {
-    .header-wrap {
-      min-height: 70px;
-      padding: 15px 15px 0 15px;
-    }
+.main {
+  margin-top: 1rem;
+}
+
+.layout-control {
+  position: fixed;
+  right: 25%;
+  bottom: 25px;
+  z-index: 1;
+  display: block;
+  padding: 5px 8px;
+  font-size: 0.8em;
+  text-align: center;
+  border: solid 1px #ccc;
+  border-right: none;
+  border-radius: 5px 0 0 5px;
+  transition: 0.3s ease;
+
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
   }
+}
 
-  .layout-control {
-    position: fixed;
-    right: 25%;
-    bottom: 25px;
-    z-index: 1;
-    display: block;
-    padding: 5px 8px;
-    font-size: 0.8em;
-    text-align: center;
-    border: solid 1px #ccc;
-    border-right: none;
-    border-radius: 5px 0 0 5px;
-    transition: 0.3s ease;
+.revision-toc {
+  max-width: 250px;
+  overflow: hidden;
+  font-size: 0.9em;
 
-    &:hover {
-      text-decoration: none;
-      cursor: pointer;
-    }
-  }
+  .revision-toc-content {
+    padding: 10px;
 
-  .revision-toc {
-    max-width: 250px;
-    overflow: hidden;
-    font-size: 0.9em;
-
-    .revision-toc-content {
-      padding: 10px;
-
-      > ul {
-        padding-left: 0;
-        ul {
-          padding-left: 1em;
-        }
-      }
-
-      // first level of li
-      > ul > li {
-        padding: 5px;
-        margin: 4px 4px 4px 17px;
+    > ul {
+      padding-left: 0;
+      ul {
+        padding-left: 1em;
       }
     }
+
+    // first level of li
+    > ul > li {
+      padding: 5px;
+      margin: 4px 4px 4px 17px;
+    }
   }
-} // }}}
+}
 
 // printable style
 @media print {
-  .main-container {
-    padding: 30px;
+  padding: 30px;
 
-    a:after {
-      display: none !important;
+  a:after {
+    display: none !important;
+  }
+  .main {
+    header {
+      border-bottom: solid 1px #666;
+      h1 {
+        font-size: 2em;
+        color: #000;
+      }
     }
-    .main {
-      header {
-        border-bottom: solid 1px #666;
-        h1 {
-          font-size: 2em;
-          color: #000;
-        }
-      }
 
-      .revision-toc {
+    .revision-toc {
+      float: none;
+      max-width: 100%;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      border: solid 1px #aaa;
+      border-radius: 5px;
+
+      .revision-toc-head {
+        display: inline-block;
         float: none;
-        max-width: 100%;
-        margin-bottom: 20px;
-        font-size: 0.9em;
-        border: solid 1px #aaa;
-        border-radius: 5px;
-
-        .revision-toc-head {
-          display: inline-block;
-          float: none;
-        }
-
-        .revision-toc-content.collapse {
-          display: block;
-          height: auto;
-        }
       }
 
-      .meta {
-        margin-top: 32px;
-        color: #666;
-        border-top: solid 1px #ccc;
+      .revision-toc-content.collapse {
+        display: block;
+        height: auto;
       }
+    }
+
+    .meta {
+      margin-top: 32px;
+      color: #666;
+      border-top: solid 1px #ccc;
     }
   }
 }
@@ -155,33 +171,4 @@
   > span {
     margin-left: 0.5em;
   }
-}
-
-// GROWI brand logo
-.logo {
-  .logo-mark {
-    &._white {
-      color: white;
-      fill: white !important;
-    }
-  }
-}
-
-// header widget area
-.grw-title-bar {
-  background: $grw-floral-white;
-}
-
-// bg-title for .row
-.bg-title {
-  padding: initial;
-  margin-right: -15px;
-  margin-left: -15px;
-  overflow: unset;
-}
-
-//@each $
-.grw-modal-head {
-  font-size: 1em;
-  border-bottom: 1px solid $grw-line-gray;
 }

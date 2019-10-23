@@ -278,7 +278,7 @@ class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
             <nav data-spy="affix" data-offset-top="50">
-              <div className="pull-right">
+              <div className="float-right">
                 {deletionModeButtons}
                 {allSelectCheck}
               </div>

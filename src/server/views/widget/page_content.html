@@ -38,7 +38,7 @@
           <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
           <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
         </div>
-        <div id="page" class="m-t-15"></div>
+        <div id="page" class="mt-4"></div>
       </div>
     {% elseif 'crowi' === getConfig('crowi', 'customize:behavior') %}
       <div class="tab-pane active" id="cancel-creating-portal">
@@ -59,7 +59,7 @@
     {# raw revision history #}
     {% if not page %}
     {% else %}
-    <div class="tab-pane revision-history m-t-10" id="revision-history">
+    <div class="tab-pane revision-history" id="revision-history">
     </div>
     {% endif %}
 

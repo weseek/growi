@@ -1,11 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-// TODO: GW-333
-// import FormGroup from 'react-bootstrap/es/FormGroup';
-// import ControlLabel from 'react-bootstrap/es/ControlLabel';
-// import FormControl from 'react-bootstrap/es/FormControl';
-
 import {
   Button,
   Collapse,
@@ -57,9 +51,11 @@ export default class MarkdownTableDataImportForm extends React.Component {
   render() {
     return (
       <form action="" className="data-import-form pt-5">
-        <FormGroup>
-          <ControlLabel>Select Data Format</ControlLabel>
-          <FormControl
+        <div className="form-group">
+          <label htmlFor="data-import-form-type-select">Select Data Format</label>
+          <select
+            id="data-import-form-type-select"
+            className="form-control"
             componentClass="select"
             placeholder="select"
             value={this.state.dataFormat}
@@ -68,22 +64,29 @@ export default class MarkdownTableDataImportForm extends React.Component {
             <option value="csv">CSV</option>
             <option value="tsv">TSV</option>
             <option value="html">HTML</option>
-          </FormControl>
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Import Data</ControlLabel>
-          <FormControl
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="data-import-form-type-textarea">Import Data</label>
+          <textarea
+            id="data-import-form-type-textarea"
             componentClass="textarea"
             placeholder="Paste table data"
             style={{ height: 200 }}
             onChange={(e) => { return this.setState({ data: e.target.value }) }}
           />
-        </FormGroup>
+        </div>
         <Collapse isOpen={this.state.parserErrorMessage != null}>
-          <FormGroup>
-            <ControlLabel>Parse Error</ControlLabel>
-            <FormControl componentClass="textarea" style={{ height: 100 }} value={this.state.parserErrorMessage || ''} readOnly />
-          </FormGroup>
+          <div className="form-group">
+            <label htmlFor="data-import-form-type-textarea-alert">Parse Error</label>
+            <textarea
+              id="data-import-form-type-textarea-alert"
+              componentClass="textarea"
+              style={{ height: 100 }}
+              value={this.state.parserErrorMessage || ''}
+              readOnly
+            />
+          </div>
         </Collapse>
         <div className="d-flex justify-content-end">
           <Button color="secondary" onClick={this.props.onCancel}>Cancel</Button>

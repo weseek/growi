@@ -62,7 +62,7 @@ div.body {
     padding: 0 20px;
     margin: 0 0 30px 0;
     font-size: 0.9em;
-    color: lighten($gray-dark, 35%);
+    color: lighten($gray-800, 35%);
   }
 
   img {
@@ -139,7 +139,7 @@ div.body {
   }
 
   .highlighted {
-    background-color: $brand-warning;
+    background-color: $warning;
   }
 
   .revision-head {
@@ -230,7 +230,7 @@ div.body {
 }
 
 @include media-breakpoint-down(sm) {
-  .main-container .main .wiki {
+  .main .wiki {
     img {
       max-width: 100%;
     }

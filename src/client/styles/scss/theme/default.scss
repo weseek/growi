@@ -1,8 +1,62 @@
-// import colors
-// @import '../../agile-admin/inverse/colors/default';
+@import '../variables';
+@import '../variables-bootstrap';
 
-// apply agile-admin theme
-// @import '../../agile-admin/inverse/style';
+// == Define colors
+//
 
-// override
-// @import 'override-agileadmin';
+// colors for overriding bootstrap $theme-colors
+$primary: #112744;
+$secondary: #ced4da;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
+
+// Background colors
+$bgcolor-global: white;
+$bgcolor-navbar: #334455;
+$bgcolor-inline-code: #f9f2f4;
+
+// Font colors
+$color-global: #333333;
+$color-header: #2b2b2b;
+$color-link: lighten($primary, 20%);
+$color-link-hover: lighten($color-link, 20%);
+$color-link-wiki: lighten($primary, 20%);
+$color-link-wiki-hover: lighten($color-link-wiki, 20%);
+$color-inline-code: #c7254e;
+
+// Logo colors
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+// Border colors
+$border: #f0f0f0;
+$navbar-border: #ccc;
+$active-navbar-border: lighten($navbar-border, 10%);
+
+// override bootstrap variables
+$link-color: $color-link;
+$link-hover-color: $color-link-hover;
+
+// light mode colors
+@media (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
+}
+
+// dark mode colors
+@media (prefers-color-scheme: dark) {
+}
+
+//== Apply
+//
+@import 'apply-colors';
+
+// apply for no-preference or light mode
+@media (prefers-color-scheme: no-preference), (prefers-color-scheme: light) {
+  @import 'apply-colors-light';
+}
+// apply for dark mode
+@media (prefers-color-scheme: dark) {
+  @import 'apply-colors-dark';
+}

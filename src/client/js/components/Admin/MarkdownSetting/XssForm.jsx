@@ -37,7 +37,7 @@ class XssForm extends React.Component {
           />
           <label htmlFor="xssOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
-            <div className="m-t-15">
+            <div className="mt-4">
               { t('markdown_setting.Ignore all tags desc') }
             </div>
           </label>

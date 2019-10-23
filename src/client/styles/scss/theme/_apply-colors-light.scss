@@ -1,26 +1,22 @@
-.top-left-part {
-  .logo-mark, .logo-text {
-    fill: $themecolor;
-  }
-}
-
 /*
  * Form
  */
 .form-control {
-  background-color: $bodycolor;
+  background-color: $bgcolor-global;
 }
-.form-control[disabled], .form-control[readonly] {
-  color: lighten($bodytext, 10%);
-  background-color: darken($bodycolor, 5%);
+
+.form-control[disabled],
+.form-control[readonly] {
+  color: lighten($color-global, 10%);
+  background-color: darken($bgcolor-global, 5%);
 }
 
 /*
  * GROWI header
  */
- .main-container header.affix {
+header.affix {
   .logo-mark {
-    fill: $themecolor;
+    fill: theme-color('primary');
   }
 }
 
@@ -29,24 +25,24 @@
  */
 .search-top {
   .btn-group-dropdown-scope .dropdown-toggle {
-    background-color: rgba($bodycolor, 0.8);
+    background-color: rgba($bgcolor-global, 0.8);
   }
   .rbt-input.form-control {
-    background-color: rgba($bodycolor, 0.9);
+    background-color: rgba($bgcolor-global, 0.9);
   }
 }
 
 /*
  * GROWI page list
  */
- .page-list {
+.page-list {
   .page-list-ul {
     > li {
       > a strong {
-        color: darken($bodytext, 20%);
+        color: darken($color-global, 20%);
       }
       > span.page-list-meta {
-        color: lighten($bodytext, 10%);;
+        color: lighten($color-global, 10%);
       }
     }
   }
@@ -55,7 +51,7 @@
 /*
  * GROWI on-edit
  */
- .page-editor-footer {
+.page-editor-footer {
   #slack-mark-white {
     display: none;
   }
@@ -76,8 +72,8 @@
 .admin-page {
   #themeOptions {
     .theme-option-container.active a {
-      background-color: lighten($themecolor,20%);
-      border-color: lighten($themecolor,20%);
+      background-color: lighten(theme-color('primary'), 20%);
+      border-color: lighten(theme-color('primary'), 20%);
     }
   }
 }

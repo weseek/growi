@@ -4,14 +4,16 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import {
+  UncontrolledDropdown,
+  DropdownToggle, DropdownMenu, DropdownItem,
+
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
+
 
 import AppContainer from '../../services/AppContainer';
 
 import { createSubscribedElement } from '../UnstatedUtils';
-
-const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
 
 /**
  * Page grant select component
@@ -37,11 +39,8 @@ class GrantSelector extends React.Component {
         grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me',
       },
       {
-        grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group',
-      }, // appeared only one of these 'grant: 5'
-      {
-        grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Reselect the group',
-      }, // appeared only one of these 'grant: 5'
+        grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group', reselectLabel: 'Reselect the group',
+      },
     ];
 
     this.state = {
@@ -67,25 +66,6 @@ class GrantSelector extends React.Component {
 
     this.changeGrantHandler = this.changeGrantHandler.bind(this);
     this.groupListItemClickHandler = this.groupListItemClickHandler.bind(this);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    /*
-     * set SPECIFIED_GROUP_VALUE to grant selector
-     *  cz: bootstrap-select input element has the defferent state to React component
-     */
-    if (this.state.grantGroup != null) {
-      this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
-    }
-
-    // refresh bootstrap-select
-    // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
-    $('.grant-selector .selectpicker').selectpicker('refresh');
-    // // DIRTY HACK -- 2018.05.25 Yuki Takei
-    // set group name to the bootstrap-select options
-    //  cz: .selectpicker('refresh') doesn't replace data-content
-    $('.grant-selector .group-name').text(this.getGroupName());
-
   }
 
   showSelectGroupModal() {
@@ -121,16 +101,10 @@ class GrantSelector extends React.Component {
   /**
    * change event handler for grant selector
    */
-  changeGrantHandler() {
-    const grant = +this.grantSelectorInputEl.value;
-
+  changeGrantHandler(grant) {
     // select group
     if (grant === 5) {
       this.showSelectGroupModal();
-      /*
-       * reset grant selector to state
-       */
-      this.grantSelectorInputEl.value = this.state.grant;
       return;
     }
 
@@ -159,63 +133,45 @@ class GrantSelector extends React.Component {
    */
   renderGrantSelector() {
     const { t } = this.props;
+    const { grant: currentGrant, grantGroup } = this.state;
 
-    let index = 0;
-    let selectedValue = this.state.grant;
-    const grantElems = this.availableGrants.map((opt) => {
-      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="${opt.styleClass}">${t(opt.label)}</span>`;
-      return <option key={index++} value={opt.grant} data-content={dataContent}>{t(opt.label)}</option>;
+    let dropdownToggleLabelElm = null;
+
+    const dropdownMenuElems = this.availableGrants.map((opt) => {
+      const label = (opt.grant === 5 && grantGroup != null)
+        ? opt.reselectLabel // when grantGroup is selected
+        : opt.label;
+
+      const labelElm = <span><i className={`icon icon-fw ${opt.iconClass} ${opt.styleClass}`}></i> <span className={opt.styleClass}>{t(label)}</span></span>;
+
+      // set dropdownToggleLabelElm
+      if (opt.grant === 1 || opt.grant === currentGrant) {
+        dropdownToggleLabelElm = labelElm;
+      }
+
+      return <DropdownItem key={opt.grant} onClick={() => this.changeGrantHandler(opt.grant)}>{labelElm}</DropdownItem>;
     });
 
-    const grantGroup = this.state.grantGroup;
-    if (grantGroup != null) {
-      selectedValue = SPECIFIED_GROUP_VALUE;
-      // DIRTY HACK -- 2018.05.25 Yuki Takei
-      // remove 'Only inside the group' item
-      //  cz: .selectpicker('refresh') doesn't replace data-content
-      grantElems.splice(3, 1);
-    }
-    else {
-      // DIRTY HACK -- 2018.05.25 Yuki Takei
-      // remove 'Reselect the group' item
-      //  cz: .selectpicker('refresh') doesn't replace data-content
-      grantElems.splice(4, 1);
-    }
-
-    /*
-     * react-bootstrap couldn't be rendered only with React feature.
-     * see also 'componentDidUpdate'
-     */
-
     // add specified group option
-    grantElems.push(
-      <option
-        key="specifiedGroupKey"
-        value={SPECIFIED_GROUP_VALUE}
-        style={{ display: grantGroup ? 'inherit' : 'none' }}
-        data-content={`<i class="icon icon-fw icon-organization text-success"></i> <span class="group-name text-success">${this.getGroupName()}</span>`}
-      >
-        {this.getGroupName()}
-      </option>,
-    );
+    if (grantGroup != null) {
+      const labelElm = <span><i className="icon icon-fw icon-organization text-success"></i> <span className="text-success">{this.getGroupName()}</span></span>;
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
+      // set dropdownToggleLabelElm
+      dropdownToggleLabelElm = labelElm;
+
+      dropdownMenuElems.push(<DropdownItem key="groupSelected">{labelElm}</DropdownItem>);
+    }
+
     return (
       <div className="form-group grant-selector m-b-0">
-        <select
-          disabled={this.props.disabled}
-          componentClass="select"
-          placeholder="select"
-          defaultValue={selectedValue}
-          bsClass={bsClassName}
-          className="form-control btn-group-sm selectpicker"
-          onChange={this.changeGrantHandler}
-          inputRef={(el) => { this.grantSelectorInputEl = el }}
-        >
-          <option>
-            {grantElems}
-          </option>
-        </select>
+        <UncontrolledDropdown direction="up" size="sm">
+          <DropdownToggle caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
+            {dropdownToggleLabelElm}
+          </DropdownToggle>
+          <DropdownMenu>
+            {dropdownMenuElems}
+          </DropdownMenu>
+        </UncontrolledDropdown>
       </div>
     );
   }
@@ -230,9 +186,10 @@ class GrantSelector extends React.Component {
     const generateGroupListItems = () => {
       return this.state.userRelatedGroups.map((group) => {
         return (
-          <li className="list-group-item" key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
-            (TBD) List group members
-          </li>
+          <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => { this.groupListItemClickHandler(group) }}>
+            <h5>{group.name}</h5>
+            <div className="small">(TBD) List group members</div>
+          </button>
         );
       });
     };
@@ -247,9 +204,9 @@ class GrantSelector extends React.Component {
         </div>
       )
       : (
-        <li className="list-group-item">
+        <div className="list-group">
           {generateGroupListItems()}
-        </li>
+        </div>
       );
 
     return (
@@ -272,8 +229,7 @@ class GrantSelector extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {/* FIXME: activate in GW-412 */}
-        {/* { this.renderGrantSelector() } */}
+        { this.renderGrantSelector() }
         { !this.props.disabled && this.renderSelectGroupModal() }
       </React.Fragment>
     );

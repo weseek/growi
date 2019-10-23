@@ -1,0 +1,22 @@
+.grw-navbar {
+  .nav-link,
+  .nav-item.confidential {
+    display: flex;
+    align-items: center;
+    min-height: $grw-navbar-height;
+    padding: 0 1rem;
+  }
+
+  .nav-link {
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      background: rgba(0, 0, 0, 0);
+    }
+  }
+  .nav-item.confidential {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
