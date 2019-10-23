@@ -39,7 +39,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
-import Users from './components/Admin/Users/Users';
+import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -164,7 +164,7 @@ if (adminUsersElem != null) {
   ReactDOM.render(
     <Provider inject={[injectableContainers, adminUsersContainer]}>
       <I18nextProvider i18n={i18n}>
-        <Users />
+        <UserManagement />
       </I18nextProvider>
     </Provider>,
     adminUsersElem,
