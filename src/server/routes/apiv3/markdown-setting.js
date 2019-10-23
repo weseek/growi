@@ -96,16 +96,11 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        description: Update presentation
    *        parameters:
-   *          - name: markdown:presentation:isEnabledPrevention
+   *          - name: markdown:presentation:pageBreakSeparator
    *            in: query
-   *            description: enable presentation
+   *            description: pageBreakSeparator
    *            schema:
-   *              type: boolean
-   *          - name: markdown:presentation:option
-   *            in: query
-   *            description: presentation option
-   *            schema:
-   *              type: boolean
+   *              type: number
    *        responses:
    *          200:
    *            description: Updating presentation success
