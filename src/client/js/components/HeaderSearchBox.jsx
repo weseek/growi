@@ -78,7 +78,7 @@ class HeaderSearchBox extends React.Component {
             onSubmit={this.search}
             placeholder="Search ..."
           />
-          <div className="btn-group-submit-search mr-2">
+          <div className="btn-group-submit-search pr-2">
             <span className="btn-link" onClick={this.search}>
               <i className="icon-magnifier"></i>
             </span>
