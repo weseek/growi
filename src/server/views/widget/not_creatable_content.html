@@ -1,4 +1,4 @@
-<div class="row not-found-message-row m-b-20">
+<div class="row not-found-message-row mb-4">
   <div class="col-md-12">
     <h2 class="text-muted">
       <i class="icon-ban" aria-hidden="true"></i>
@@ -13,7 +13,7 @@
   >
 
   <ul class="nav nav-tabs hidden-print">
-    <li class="nav-main-left-tab active">
+    <li class="grw-nav-main-left-tab active">
       <a href="#revision-body" data-toggle="tab">
         <i class="icon-notebook"></i> List
       </a>
@@ -22,9 +22,9 @@
 
   <div class="tab-content">
     {# list view #}
-    <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
+    <div class="pt-2 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
-        <div class="m-t-10">
+        <div class="mt-2">
           There are no pages under <strong>{{ path }}</strong>.
         </div>
       {% endif  %}

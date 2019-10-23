@@ -51,6 +51,9 @@
       {% include './widget/menu.html' with {current: 'customize'} %}
     </div>
     <div class="col-md-9">
+      <!-- TODO reactify admin -->
+      <!-- <div id="admin-customize"></div> -->
+
       <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
@@ -491,7 +494,7 @@ export  $initHighlight;</code></pre>
         </p>
         <p class="help-block">
           Examples:
-<pre class="hljs"><code>console.log($('.main-container'));
+<pre class="hljs"><code>console.log($('body'));
 
 window.addEventListener('load', (event) => {
   console.log('config: ', appContainer.config);
@@ -525,7 +528,7 @@ window.addEventListener('load', (event) => {
   </div>
 {% endblock content_main %}
 
-{% block body_end %}
+<!-- {% block body_end %}
   {% parent %}
   <script>
     $(`#customlayoutSettingForm, #custombehaviorSettingForm, #customhighlightJsStyleSettingForm,
@@ -646,7 +649,7 @@ window.addEventListener('load', (event) => {
   </script>
 
 </div>
-{% endblock %}
+{% endblock %} -->
 
 {% block content_footer %}
 {% endblock content_footer %}

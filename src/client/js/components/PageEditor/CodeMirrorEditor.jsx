@@ -4,17 +4,14 @@ import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
 
-import {
-  Button, Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
-
+import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
-import Cheatsheet from './Cheatsheet';
+
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
@@ -64,7 +61,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
-      isCheatsheetModalButtonShown: this.props.isGfmMode && this.props.value.length > 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
     };
@@ -509,10 +505,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const isGfmMode = isGfmModeTmp || this.state.isGfmMode;
     const value = valueTmp || this.getCodeMirror().getDoc().getValue();
 
-    // update isSimpleCheatsheetShown, isCheatsheetModalButtonShown
+    // update isSimpleCheatsheetShown
     const isSimpleCheatsheetShown = isGfmMode && value.length === 0;
-    const isCheatsheetModalButtonShown = isGfmMode && value.length > 0;
-    this.setState({ isSimpleCheatsheetShown, isCheatsheetModalButtonShown });
+    this.setState({ isSimpleCheatsheetShown });
+  }
+
+  markdownHelpButtonClickedHandler() {
+    if (this.props.onMarkdownHelpButtonClicked != null) {
+      this.props.onMarkdownHelpButtonClicked();
+    }
   }
 
   renderLoadingKeymapOverlay() {
@@ -535,38 +536,35 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
-  renderSimpleCheatsheet() {
-    return <SimpleCheatsheet />;
-  }
-
-  renderCheatsheetModalBody() {
-    return <Cheatsheet />;
-  }
-
   renderCheatsheetModalButton() {
-    const showCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: true });
-    };
+    return (
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+        <i className="icon-question" /> Markdown
+      </button>
+    );
+  }
 
-    const hideCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: false });
-    };
+  renderCheatsheetOverlay() {
+    const cheatsheetModalButton = this.renderCheatsheetModalButton();
 
     return (
-      <>
-        <Modal className="modal-gfm-cheatsheet" isOpen={this.state.isCheatsheetModalShown} toggle={() => { hideCheatsheetModal() }}>
-          <ModalHeader toggle={() => { hideCheatsheetModal() }}>
-            <i className="icon-fw icon-question" />Markdown Help
-          </ModalHeader>
-          <ModalBody className="pt-1">
-            { this.renderCheatsheetModalBody() }
-          </ModalBody>
-        </Modal>
-
-        <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small mr-3" onClick={() => { showCheatsheetModal() }}>
-          <i className="icon-question" /> Markdown
-        </button>
-      </>
+      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
+        { this.state.isSimpleCheatsheetShown
+          ? (
+            <div className="text-right">
+              {cheatsheetModalButton}
+              <div className="mt-2">
+                <SimpleCheatsheet />
+              </div>
+            </div>
+          )
+          : (
+            <div className="mr-4">
+              {cheatsheetModalButton}
+            </div>
+          )
+        }
+      </div>
     );
   }
 
@@ -645,7 +643,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return [
       <Button
         key="nav-item-bold"
-        bsSize="small"
+        size="sm"
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
       >
@@ -653,7 +651,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-italic"
-        bsSize="small"
+        size="sm"
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
       >
@@ -661,7 +659,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-strikethrough"
-        bsSize="small"
+        size="sm"
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
       >
@@ -669,7 +667,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-header"
-        bsSize="small"
+        size="sm"
         title="Heading"
         onClick={this.makeHeaderHandler}
       >
@@ -677,7 +675,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-code"
-        bsSize="small"
+        size="sm"
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
       >
@@ -685,7 +683,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-quote"
-        bsSize="small"
+        size="sm"
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
       >
@@ -693,7 +691,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ul"
-        bsSize="small"
+        size="sm"
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
       >
@@ -701,7 +699,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ol"
-        bsSize="small"
+        size="sm"
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
       >
@@ -709,7 +707,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-checkbox"
-        bsSize="small"
+        size="sm"
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
       >
@@ -717,7 +715,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-link"
-        bsSize="small"
+        size="sm"
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
       >
@@ -725,7 +723,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-image"
-        bsSize="small"
+        size="sm"
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
       >
@@ -733,7 +731,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-table"
-        bsSize="small"
+        size="sm"
         title="Table"
         onClick={this.showHandsonTableHandler}
       >
@@ -810,15 +808,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
         { this.renderLoadingKeymapOverlay() }
 
-        <div className="overlay overlay-gfm-cheatsheet d-none d-sm-block mt-1 p-3 pt-3">
-          { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
-          { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
-        </div>
+        { this.renderCheatsheetOverlay() }
 
         <HandsontableModal
           ref={(c) => { this.handsontableModal = c }}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
         />
+
       </React.Fragment>
     );
   }
@@ -829,6 +825,7 @@ CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
+  onMarkdownHelpButtonClicked: PropTypes.func,
 }, AbstractEditor.propTypes);
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,

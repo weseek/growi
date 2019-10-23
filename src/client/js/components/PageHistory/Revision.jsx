@@ -59,7 +59,7 @@ export default class Revision extends React.Component {
     const iconClass = this.props.revisionDiffOpened ? 'caret caret-opened' : 'caret';
     return (
       <div className="revision-history-main d-flex mt-3">
-        <div className="m-t-5">
+        <div className="mt-2">
           {pic}
         </div>
         <div className="m-l-10">

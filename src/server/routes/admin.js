@@ -4,7 +4,6 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:admin');
 
   const models = crowi.models;
-  const Page = models.Page;
   const User = models.User;
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
@@ -18,6 +17,7 @@ module.exports = function(crowi, app) {
     aclService,
     slackNotificationService,
     customizeService,
+    exportService,
   } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
@@ -30,6 +30,10 @@ module.exports = function(crowi, app) {
 
   const MAX_PAGE_LIST = 50;
   const actions = {};
+
+  const { check } = require('express-validator/check');
+
+  const api = {};
 
   function createPager(total, limit, page, pagesCount, maxPageList) {
     const pager = {
@@ -87,6 +91,14 @@ module.exports = function(crowi, app) {
     return pager;
   }
 
+  // setup websocket event for rebuild index
+  searchEvent.on('addPageProgress', (total, current, skip) => {
+    crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
+  });
+  searchEvent.on('finishAddPage', (total, current, skip) => {
+    crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
+  });
+
   actions.index = function(req, res) {
     return res.render('admin/index', {
       plugins: pluginUtils.listPlugins(crowi.rootDir),
@@ -127,6 +139,7 @@ module.exports = function(crowi, app) {
 
   // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
   actions.markdown.lineBreaksSetting = async function(req, res) {
+
     const markdownSetting = req.form.markdownSetting;
 
     if (req.form.isValid) {
@@ -136,8 +149,8 @@ module.exports = function(crowi, app) {
     else {
       req.flash('errorMessage', req.form.errors);
     }
-
     return res.redirect('/admin/markdown');
+
   };
 
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
@@ -455,135 +468,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.invite = function(req, res) {
-    const form = req.form.inviteForm;
-    const toSendEmail = form.sendEmail || false;
-    if (req.form.isValid) {
-      User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, (err, userList) => {
-        if (err) {
-          req.flash('errorMessage', req.form.errors.join('\n'));
-        }
-        else {
-          req.flash('createdUser', userList);
-        }
-        return res.redirect('/admin/users');
-      });
-    }
-    else {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return res.redirect('/admin/users');
-    }
-  };
-
-  actions.user.makeAdmin = function(req, res) {
-    const id = req.params.id;
-    User.findById(id, (err, userData) => {
-      userData.makeAdmin((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを管理者に設定しました。`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
-  actions.user.removeFromAdmin = function(req, res) {
-    const id = req.params.id;
-    User.findById(id, (err, userData) => {
-      userData.removeFromAdmin((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを管理者から外しました。`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
-  actions.user.activate = async function(req, res) {
-    // check user upper limit
-    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
-    if (isUserCountExceedsUpperLimit) {
-      req.flash('errorMessage', 'ユーザーが上限に達したため有効化できません。');
-      return res.redirect('/admin/users');
-    }
-
-    const id = req.params.id;
-    User.findById(id, (err, userData) => {
-      userData.statusActivate((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを有効化しました`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
-  actions.user.suspend = function(req, res) {
-    const id = req.params.id;
-
-    User.findById(id, (err, userData) => {
-      userData.statusSuspend((err, userData) => {
-        if (err === null) {
-          req.flash('successMessage', `${userData.name}さんのアカウントを利用停止にしました`);
-        }
-        else {
-          req.flash('errorMessage', '更新に失敗しました。');
-          debug(err, userData);
-        }
-        return res.redirect('/admin/users');
-      });
-    });
-  };
-
-  actions.user.remove = function(req, res) {
-    const id = req.params.id;
-    let username = '';
-
-    return new Promise((resolve, reject) => {
-      User.findById(id, (err, userData) => {
-        username = userData.username;
-        return resolve(userData);
-      });
-    })
-      .then((userData) => {
-        return new Promise((resolve, reject) => {
-          userData.statusDelete((err, userData) => {
-            if (err) {
-              reject(err);
-            }
-            resolve(userData);
-          });
-        });
-      })
-      .then((userData) => {
-      // remove all External Accounts
-        return ExternalAccount.remove({ user: userData }).then(() => { return userData });
-      })
-      .then((userData) => {
-        return Page.removeByPath(`/user/${username}`).then(() => { return userData });
-      })
-      .then((userData) => {
-        req.flash('successMessage', `${username} さんのアカウントを削除しました`);
-        return res.redirect('/admin/users');
-      })
-      .catch((err) => {
-        req.flash('errorMessage', '削除に失敗しました。');
-        return res.redirect('/admin/users');
-      });
-  };
-
   // これやったときの relation の挙動未確認
   actions.user.removeCompletely = function(req, res) {
     // ユーザーの物理削除
@@ -676,7 +560,12 @@ module.exports = function(crowi, app) {
           return new Promise((resolve, reject) => {
             UserGroupRelation.findAllRelationForUserGroup(userGroup)
               .then((relations) => {
-                return resolve([userGroup, relations]);
+                return resolve({
+                  id: userGroup._id,
+                  relatedUsers: relations.map((relation) => {
+                    return relation.relatedUser;
+                  }),
+                });
               });
           });
         });
@@ -685,7 +574,9 @@ module.exports = function(crowi, app) {
         return Promise.all(allRelationsPromise);
       })
       .then((relations) => {
-        renderVar.userGroupRelations = new Map(relations);
+        for (const relation of relations) {
+          renderVar.userGroupRelations[relation.id] = relation.relatedUsers;
+        }
         debug('in findUserGroupsWithPagination findAllRelationForUserGroupResult', renderVar.userGroupRelations);
         return res.render('admin/user-groups', renderVar);
       })
@@ -698,180 +589,65 @@ module.exports = function(crowi, app) {
   // グループ詳細
   actions.userGroup.detail = async function(req, res) {
     const userGroupId = req.params.id;
-    const renderVar = {
-      userGroup: null,
-      userGroupRelations: [],
-      notRelatedusers: [],
-      relatedPages: [],
-    };
-
     const userGroup = await UserGroup.findOne({ _id: userGroupId });
 
     if (userGroup == null) {
       logger.error('no userGroup is exists. ', userGroupId);
-      req.flash('errorMessage', 'グループがありません');
       return res.redirect('/admin/user-groups');
     }
-    renderVar.userGroup = userGroup;
 
-    const resolves = await Promise.all([
-      // get all user and group relations
-      UserGroupRelation.findAllRelationForUserGroup(userGroup),
-      // get all not related users for group
-      UserGroupRelation.findUserByNotRelatedGroup(userGroup),
-      // get all related pages
-      Page.find({ grant: Page.GRANT_USER_GROUP, grantedGroup: { $in: [userGroup] } }),
-    ]);
-    renderVar.userGroupRelations = resolves[0];
-    renderVar.notRelatedusers = resolves[1];
-    renderVar.relatedPages = resolves[2];
-
-    return res.render('admin/user-group-detail', renderVar);
-  };
-
-  // グループの生成
-  actions.userGroup.create = function(req, res) {
-    const form = req.form.createGroupForm;
-    if (req.form.isValid) {
-      const userGroupName = crowi.xss.process(form.userGroupName);
-
-      UserGroup.createGroupByName(userGroupName)
-        .then((newUserGroup) => {
-          req.flash('successMessage', newUserGroup.name);
-          req.flash('createdUserGroup', newUserGroup);
-          return res.redirect('/admin/user-groups');
-        })
-        .catch((err) => {
-          debug('create userGroup error:', err);
-          req.flash('errorMessage', '同じグループ名が既に存在します。');
-        });
-    }
-    else {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return res.redirect('/admin/user-groups');
-    }
-  };
-
-  //
-  actions.userGroup.update = function(req, res) {
-    const userGroupId = req.params.userGroupId;
-    const name = crowi.xss.process(req.body.name);
-
-    UserGroup.findById(userGroupId)
-      .then((userGroupData) => {
-        if (userGroupData == null) {
-          req.flash('errorMessage', 'グループの検索に失敗しました。');
-          return new Promise();
-        }
-
-        // 名前存在チェック
-        return UserGroup.isRegisterableName(name)
-          .then((isRegisterableName) => {
-          // 既に存在するグループ名に更新しようとした場合はエラー
-            if (!isRegisterableName) {
-              req.flash('errorMessage', 'グループ名が既に存在します。');
-            }
-            else {
-              return userGroupData.updateName(name)
-                .then(() => {
-                  req.flash('successMessage', 'グループ名を更新しました。');
-                })
-                .catch((err) => {
-                  req.flash('errorMessage', 'グループ名の更新に失敗しました。');
-                });
-            }
-          });
-      })
-      .then(() => {
-        return res.redirect(`/admin/user-group-detail/${userGroupId}`);
-      });
-  };
-
-
-  // app.post('/_api/admin/user-group/delete' , admin.userGroup.removeCompletely);
-  actions.userGroup.removeCompletely = async(req, res) => {
-    const { deleteGroupId, actionName, selectedGroupId } = req.body;
-
-    try {
-      await UserGroup.removeCompletelyById(deleteGroupId, actionName, selectedGroupId);
-      req.flash('successMessage', '削除しました');
-    }
-    catch (err) {
-      debug('Error while removing userGroup.', err, deleteGroupId);
-      req.flash('errorMessage', '完全な削除に失敗しました。');
-    }
-
-    return res.redirect('/admin/user-groups');
-  };
-
-  actions.userGroupRelation = {};
-  actions.userGroupRelation.index = function(req, res) {
-
-  };
-
-  actions.userGroupRelation.create = function(req, res) {
-    const User = crowi.model('User');
-    const UserGroup = crowi.model('UserGroup');
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-
-    // req params
-    const userName = req.body.user_name;
-    const userGroupId = req.body.user_group_id;
-
-    let user = null;
-    let userGroup = null;
-
-    Promise.all([
-      // ユーザグループをIDで検索
-      UserGroup.findById(userGroupId),
-      // ユーザを名前で検索
-      User.findUserByUsername(userName),
-    ])
-      .then((resolves) => {
-        userGroup = resolves[0];
-        user = resolves[1];
-        // Relation を作成
-        UserGroupRelation.createRelation(userGroup, user);
-      })
-      .then((result) => {
-        return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
-      })
-      .catch((err) => {
-        debug('Error on create user-group relation', err);
-        req.flash('errorMessage', 'Error on create user-group relation');
-        return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
-      });
-  };
-
-  actions.userGroupRelation.remove = function(req, res) {
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-    const userGroupId = req.params.id;
-    const relationId = req.params.relationId;
-
-    UserGroupRelation.removeById(relationId)
-      .then(() => {
-        return res.redirect(`/admin/user-group-detail/${userGroupId}`);
-      })
-      .catch((err) => {
-        debug('Error on remove user-group-relation', err);
-        req.flash('errorMessage', 'グループのユーザ削除に失敗しました。');
-      });
+    return res.render('admin/user-group-detail', { userGroup });
   };
 
   // Importer management
   actions.importer = {};
+  actions.importer.api = api;
+  api.validators = {};
+  api.validators.importer = {};
+
   actions.importer.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'importer:');
-
     return res.render('admin/importer', {
       settingForm,
     });
   };
 
+  api.validators.importer.esa = function() {
+    const validator = [
+      check('importer:esa:team_name').not().isEmpty().withMessage('Error. Empty esa:team_name'),
+      check('importer:esa:access_token').not().isEmpty().withMessage('Error. Empty esa:access_token'),
+    ];
+    return validator;
+  };
+
+  api.validators.importer.qiita = function() {
+    const validator = [
+      check('importer:qiita:team_name').not().isEmpty().withMessage('Error. Empty qiita:team_name'),
+      check('importer:qiita:access_token').not().isEmpty().withMessage('Error. Empty qiita:access_token'),
+    ];
+    return validator;
+  };
+
+
   // Export management
   actions.export = {};
   actions.export.index = (req, res) => {
     return res.render('admin/export');
+  };
+
+  actions.export.download = (req, res) => {
+    // TODO: add express validator
+    const { fileName } = req.params;
+
+    try {
+      const zipFile = exportService.getFile(fileName);
+      return res.download(zipFile);
+    }
+    catch (err) {
+      // TODO: use ApiV3Error
+      logger.error(err);
+      return res.json(ApiResponse.error());
+    }
   };
 
   actions.api = {};
@@ -1256,16 +1032,17 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   actions.api.importerSettingEsa = async(req, res) => {
-    const form = req.form.settingForm;
+    const form = req.body;
 
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.json(ApiResponse.error('esa.io form is blank'));
     }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeEsaClient(); // let it run in the back aftert res
-
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1275,16 +1052,19 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   actions.api.importerSettingQiita = async(req, res) => {
-    const form = req.form.settingForm;
+    const form = req.body;
 
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log('validator', errors);
+      return res.json(ApiResponse.error('Qiita form is blank'));
     }
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
 
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1305,9 +1085,9 @@ module.exports = function(crowi, app) {
     }
 
     if (errors.length > 0) {
-      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+      return res.json(ApiResponse.error(`<br> - ${errors.join('<br> - ')}`));
     }
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1328,9 +1108,9 @@ module.exports = function(crowi, app) {
     }
 
     if (errors.length > 0) {
-      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+      return res.json(ApiResponse.error(`<br> - ${errors.join('<br> - ')}`));
     }
-    return res.json({ status: true });
+    return res.json(ApiResponse.success());
   };
 
   /**
@@ -1342,10 +1122,10 @@ module.exports = function(crowi, app) {
   actions.api.testEsaAPI = async(req, res) => {
     try {
       await importer.testConnectionToEsa();
-      return res.json({ status: true });
+      return res.json(ApiResponse.success());
     }
     catch (err) {
-      return res.json({ status: false, message: `${err}` });
+      return res.json(ApiResponse.error(err));
     }
   };
 
@@ -1358,10 +1138,10 @@ module.exports = function(crowi, app) {
   actions.api.testQiitaAPI = async(req, res) => {
     try {
       await importer.testConnectionToQiita();
-      return res.json({ status: true });
+      return res.json(ApiResponse.success());
     }
     catch (err) {
-      return res.json({ status: false, message: `${err}` });
+      return res.json(ApiResponse.error(err));
     }
   };
 
@@ -1372,27 +1152,14 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
     }
 
-    searchEvent.on('addPageProgress', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
-    });
-    searchEvent.on('finishAddPage', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
-    });
-
-    await search.buildIndex();
-
-    return res.json(ApiResponse.success());
-  };
-
-  actions.api.userGroups = async(req, res) => {
     try {
-      const userGroups = await UserGroup.find();
-      return res.json(ApiResponse.success({ userGroups }));
+      search.buildIndex();
     }
     catch (err) {
-      logger.error('Error', err);
-      return res.json(ApiResponse.error('Error'));
+      return res.json(ApiResponse.error(err));
     }
+
+    return res.json(ApiResponse.success());
   };
 
   function validateMailSetting(req, form, callback) {

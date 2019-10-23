@@ -21,6 +21,23 @@ module.exports = function(crowi) {
     return await this.count({ page: pageId });
   };
 
+  /**
+   * @return {object} key: page._id, value: bookmark count
+   */
+  bookmarkSchema.statics.getPageIdToCountMap = async function(pageIds) {
+    const results = await this.aggregate()
+      .match({ page: { $in: pageIds } })
+      .group({ _id: '$page', count: { $sum: 1 } });
+
+    // convert to map
+    const idToCountMap = {};
+    results.forEach((result) => {
+      idToCountMap[result._id] = result.count;
+    });
+
+    return idToCountMap;
+  };
+
   bookmarkSchema.statics.populatePage = async function(bookmarks) {
     const Bookmark = this;
     const User = crowi.model('User');
@@ -122,12 +139,12 @@ module.exports = function(crowi) {
     }
   };
 
-  bookmarkSchema.statics.removeBookmark = async function(page, user) {
+  bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
     const Bookmark = this;
 
     try {
-      const data = await Bookmark.findOneAndRemove({ page, user });
-      bookmarkEvent.emit('delete', page);
+      const data = await Bookmark.findOneAndRemove({ page: pageId, user });
+      bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {

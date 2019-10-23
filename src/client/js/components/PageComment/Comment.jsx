@@ -295,6 +295,7 @@ class Comment extends React.Component {
             commentBody={comment.comment}
             replyTo={undefined}
             commentButtonClickedHandler={this.commentButtonClickedHandler}
+            commentCreator={creator.username}
           />
         ) : (
           <div className={rootClassName}>

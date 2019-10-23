@@ -3,14 +3,20 @@ import PropTypes from 'prop-types';
 
 import { Subscribe } from 'unstated';
 
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
+
 import Dropzone from 'react-dropzone';
+
+import EditorContainer from '../../services/EditorContainer';
+
+import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
-
 import pasteHelper from './PasteHelper';
-import EditorContainer from '../../services/EditorContainer';
 
 export default class Editor extends AbstractEditor {
 
@@ -21,6 +27,7 @@ export default class Editor extends AbstractEditor {
       isComponentDidMount: false,
       dropzoneActive: false,
       isUploading: false,
+      isCheatsheetModalShown: false,
     };
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
@@ -30,6 +37,8 @@ export default class Editor extends AbstractEditor {
     this.dragEnterHandler = this.dragEnterHandler.bind(this);
     this.dragLeaveHandler = this.dragLeaveHandler.bind(this);
     this.dropHandler = this.dropHandler.bind(this);
+
+    this.showMarkdownHelp = this.showMarkdownHelp.bind(this);
 
     this.getAcceptableType = this.getAcceptableType.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
@@ -174,6 +183,10 @@ export default class Editor extends AbstractEditor {
     this.setState({ isUploading: true });
   }
 
+  showMarkdownHelp() {
+    this.setState({ isCheatsheetModalShown: true });
+  }
+
   getDropzoneClassName(isDragAccept, isDragReject) {
     let className = 'dropzone';
     if (!this.props.isUploadable) {
@@ -240,6 +253,23 @@ export default class Editor extends AbstractEditor {
     return navbarItems.concat(this.getEditorSubstance().getNavbarItems());
   }
 
+  renderCheatsheetModal() {
+    const hideCheatsheetModal = () => {
+      this.setState({ isCheatsheetModalShown: false });
+    };
+
+    return (
+      <Modal isOpen={this.state.isCheatsheetModalShown} toggle={hideCheatsheetModal} className="modal modal-gfm-cheatsheet">
+        <ModalHeader closeButton className="bg-primary">
+          <span className="text-white"><i className="icon-fw icon-question" />Markdown Help</span>
+        </ModalHeader>
+        <ModalBody>
+          <Cheatsheet />
+        </ModalBody>
+      </Modal>
+    );
+  }
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -282,6 +312,7 @@ export default class Editor extends AbstractEditor {
                         editorOptions={editorContainer.state.editorOptions}
                         onPasteFiles={this.pasteFilesHandler}
                         onDragEnter={this.dragEnterHandler}
+                        onMarkdownHelpButtonClicked={this.showMarkdownHelp}
                         {...this.props}
                       />
                     )}
@@ -311,17 +342,20 @@ export default class Editor extends AbstractEditor {
             className="btn btn-default btn-block btn-open-dropzone"
             onClick={() => { this.dropzone.open() }}
           >
-
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
             Attach files
-            <span className="d-none d-sm-block">
+            <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;
               <span className="btn-link">selecting them</span>,&nbsp;
               or pasting from the clipboard.
             </span>
+
           </button>
           )
         }
+
+        { this.renderCheatsheetModal() }
+
       </div>
     );
   }

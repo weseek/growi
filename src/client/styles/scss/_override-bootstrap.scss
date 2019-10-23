@@ -1,23 +1,26 @@
-@import 'override-bootstrap-variables';
-@import 'layout_variable';
+* {
+  outline: none !important;
+}
 
-//** alert with custom color
-.alert {
-  a:not(.btn) {
-    color: white;
+:root {
+  font-size: $font-size-root;
+}
+
+// Navs
+.nav-tabs {
+  .nav-item {
+    margin-right: 0.15rem;
   }
 }
-@each $theme-color, $color in $theme-colors {
-  .alert.alert-#{$theme-color} {
-    color: white;
-    background: $color;
-    border: initial;
-    border-radius: initial;
-    a:not(.btn) {
-      &:hover,
-      &:focus {
-        color: lighten($color, 30%);
-      }
-    }
+
+// Dropdowns
+.dropdown {
+  .dropdown-toggle.btn.disabled {
+    cursor: not-allowed;
   }
+}
+
+//Modals
+.modal-content {
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
 }

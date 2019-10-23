@@ -17,125 +17,18 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'search'} %}
     </div>
-    <div class="col-md-9">
-
-      {% if !searchConfigured() %}
-        <div class="col-md-12">
-          <div class="alert alert-warning">
-            <strong><i class="icon-fw icon-exclamation"></i> Full Text Search is not configured</strong>
-          </div>
-          <p>Check whether the env var <code>ELASTICSEARCH_URI</code> is set.</p>
-        </div>
-      {% else %}
-        {% set smessage = req.flash('successMessage') %}
-        {% if smessage.length %}
-        <div class="alert alert-success">
-          {% for e in smessage %}
-            {{ e }}<br>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        {% set emessage = req.flash('errorMessage') %}
-        {% if emessage.length %}
-        <div class="alert alert-danger">
-          {% for e in emessage %}
-          {{ e }}<br>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        <form action="/_api/admin/search/build" method="post" class="form-horizontal" id="buildIndexForm" role="form">
-          <fieldset>
-            <legend>Index Build</legend>
-            <div class="form-group">
-              <label for="" class="col-xs-3 control-label">Index Build</label>
-              <div class="col-xs-6">
-
-                <div id="admin-rebuild-search">
-                </div>
-
-                <button type="submit" class="btn btn-inverse">Build Now</button>
-                <p class="help-block">
-                  Force rebuild index.<br>
-                  Click "Build Now" to delete and create mapping file and add all pages.<br>
-                  This may take a while.
-                </p>
-              </div>
-            </div>
-          </fieldset>
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        </form>
-      {% endif %}
+    <div
+      class="col-md-9"
+      id ="admin-full-text-search-management"
+    >
+      <!-- Reactify Paginator start -->
+      <!-- {% include '../widget/pager.html' with {path: "/admin/search", pager: pager} %} -->
+      <!-- Reactify Paginator end -->
     </div>
   </div>
 
 </div>
 
-<script>
-  /**
-   * show flash message
-   */
-  function showMessage(formId, msg, status) {
-    $('#' + formId + ' .alert').remove();
-
-    if (!status) {
-      status = 'success';
-    }
-    var $message = $('<p class="alert"></p>');
-    $message.addClass('alert-' + status);
-    $message.html(msg.replace(/\n/g, '<br>'));
-    $message.insertAfter('#' + formId + ' legend');
-
-    if (status == 'success') {
-      setTimeout(function()
-      {
-        $message.fadeOut({
-          complete: function() {
-            $message.remove();
-          }
-        });
-      }, 5000);
-    }
-  }
-
-  /**
-   * Post form data and process UI
-   */
-  function postData(form, button, action) {
-    var id = form.attr('id');
-    button.attr('disabled', 'disabled');
-    var jqxhr = $.post(action, form.serialize(), function(res)
-      {
-        if (!res.ok) {
-          showMessage(id, `Error: ${res.message}`, 'danger');
-        }
-        else {
-          showMessage(id, 'Building request is successfully posted.');
-        }
-      })
-      .fail(function() {
-        showMessage(id, "エラーが発生しました", 'danger');
-      })
-      .always(function() {
-        button.prop('disabled', false);
-      });
-    return false;
-  }
-
-  /**
-   * Handle submit button esa
-   */
-  $('#buildIndexForm').each(function() {
-    var $form = $(this);
-    var $button = $("#buildIndexForm" + $(this).attr('name') + " button[type='submit']");
-    var $action = $form.attr('action');
-    var $success_msg = $button.attr('data-success-message');
-    var $error_msg = $button.attr('data-error-message');
-    $form.submit(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
-  });
-
-</script>
 
 {% endblock content_main %}
 

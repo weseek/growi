@@ -62,13 +62,13 @@ class HeaderSearchBox extends React.Component {
     return (
       <div className="form-group">
         <div className="input-group flex-nowrap">
-          <div className="dropdown my-auto">
-            <span className="btn-group-dropdown-scope d-block dropdown-toggle pl-3 pr-2" id="dbScope" data-toggle="dropdown">
+          <div className="input-group-prepend">
+            <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true">
               {scopeLabel}
-            </span>
-            <div className="dropdown-menu" aria-labelledby="dbScope">
-              <a className="dropdown-item" onClick={this.onClickAllPages}>All pages</a>
-              <a className="dropdown-item" onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</a>
+            </button>
+            <div className="dropdown-menu">
+              <button className="dropdown-item" type="button" onClick={this.onClickAllPages}>All pages</button>
+              <button className="dropdown-item" type="button" onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</button>
             </div>
           </div>
           <SearchForm

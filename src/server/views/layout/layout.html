@@ -61,7 +61,7 @@
 
 {% block html_body %}
 <body
-  class="main-container content-wrapper {% block html_base_css %}{% endblock %}
+  class="{% block html_base_css %}{% endblock %}
       {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"
@@ -75,90 +75,86 @@
 <div id="wrapper">
   <!-- Navigation -->
   {% block layout_head_nav %}
-  <nav class="navbar navbar-default bg-grw-green mb-0 p-0">
-    <div class="navbar-header d-flex w-100">
-
-      <!-- 1 GROWI logo -->
-      <a class="logo d-block top-left-part bg-grw-mos-green my-auto" href="/">
-        <div class="logo-mark _white d-inline-block">{% include '../widget/logo.html' %}</div>
-        <span class="logo-text mx-3 text-white">
+  <nav class="navbar grw-navbar navbar-expand-lg navbar-dark mb-0 p-0">
+    <!-- 1 GROWI logo -->
+    <div class="navbar-brand">
+      <a class="logo d-block" href="/">
+        <div class="logo-mark d-inline-block">{% include '../widget/logo.html' %}</div>
+        {#
+        <span class="logo-text mx-2">
           {% set appTitle = appService.getAppTitle() %}
           {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
           <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
             {% block title %}{{ appTitle }}{% endblock %}
           </text>
         </span>
-      </a>
-
-      <!-- 2 side nav open -->
-      <a class="open-close d-none d-md-block mx-3 my-auto waves-effect waves-light">
-        <i class="ti-menu text-white"></i>
-      </a>
-
-      <!-- 3 mobile menu touch icon -->
-      <a class="navbar-toggle d-md-none my-auto mx-3" href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
-        <i class="ti-menu text-white"></i>
-      </a>
-
-      <!-- 4 search nav -->
-      <ul class="nav navbar-top-links d-none d-md-block bg-grw-light-green ml-3 my-auto text-nowrap">
-        {#  disabled temporary -- 2019.05.13 Yuki Takei
-        <li class="nav-item-admin">
-          <a href="/tags">
-            <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
-          </a>
-        </li>
         #}
-        <li>
-          {% if searchConfigured() %}
-          <span class="navbar-form search-top" role="search" id="search-top"></span>
-          {% endif %}
-        </li>
-      </ul>
+      </a>
+    </div>
 
-      <!-- 5 user action -->
-      <ul class="nav navbar-top-links flex-nowrap ml-auto mr-2 my-auto">
-        {% if user and user.admin %}
-        <li class="nav-item-admin mr-2 mr-lg-3 my-auto">
-          <a class="text-white" href="/admin">
-            <i class="icon-settings mr-2"></i>
-            <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
-          </a>
-        </li>
+    <ul class="navbar-nav mr-auto">
+      {#
+      <!-- 2 side nav open -->
+      <a class="open-close d-none d-md-block mx-3 waves-effect waves-light">
+        <i class="ti-menu"></i>
+      </a>
+      #}
+      {#  disabled temporary -- 2019.05.13 Yuki Takei
+      <li class="nav-item">
+        <a class="nav-link" href="/tags">
+          <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
+        </a>
+      </li>
+      #}
+      <form class="form-inline">
+        {% if searchConfigured() %}
+        <span class="navbar-form search-top" role="search" id="search-top"></span>
         {% endif %}
+      </form>
+    </ul>
 
-        {% if user %}
-        <li class="nav-item-create-page mr-2 mr-lg-3 my-auto">
-          <a class="text-white" href="#" data-target="#create-page" data-toggle="modal">
-            <i class="icon-pencil mr-2"></i>
-            <span class="d-none d-md-inline-block">{{ t('New') }}</span>
-          </a>
-        </li>
-        <li class="nav-item-user dropdown mr-3">
-          <a class="dropdown-toggle waves-effect waves-light d-inline-flex text-white" data-toggle="dropdown">
-            <img src="{{ user|picture }}" class="picture rounded-circle" width="25" />
-            <span class="user-name text-wrap ml-2">{{ user.name }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
-            <li><a href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/user/{{ user.username }}#user-draft-list"><i class="icon-fw icon-docs"></i>{{ t('List Drafts') }}</a></li>
-            <li><a href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a></li>
-          </ul>
-          <!-- /.dropdown-messages -->
-        </li>
-        {% else %}
-        <li id="login-user"><a href="/login">Login</a></li>
-        {% endif %}
-        {% if getConfig('crowi', 'app:confidential') %}
-        <li class="confidential"><a href="#">{{ getConfig('crowi', 'app:confidential') }}</a></li>
-        {% endif %}
-      </ul>
+    <!-- 5 user action -->
+    <ul class="navbar-nav">
+      {% if user and user.admin %}
+      <li class="nav-item">
+        <a class="nav-link" href="/admin">
+          <i class="icon-settings mr-2"></i>
+          <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
+        </a>
+      </li>
+      {% endif %}
 
-    </div><!-- /.navbar-header -->
+      {% if user %}
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-target="#create-page" data-toggle="modal">
+          <i class="icon-pencil mr-2"></i>
+          <span class="d-none d-md-inline-block">{{ t('New') }}</span>
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a type="button" class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
+          <img src="{{ user|picture }}" class="picture rounded-circle" width="25" />
+          <span class="user-name text-wrap ml-2">{{ user.name }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a>
+          <a class="dropdown-item" href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/user/{{ user.username }}#user-draft-list"><i class="icon-fw icon-docs"></i>{{ t('List Drafts') }}</a>
+          <a class="dropdown-item" href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a>
+        </div>
+        <!-- /.dropdown-messages -->
+      </li>
+      {% else %}
+      <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+      {% endif %}
+      {% if getConfig('crowi', 'app:confidential') %}
+      <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
+      {% endif %}
+    </ul>
+
   </nav>
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
@@ -168,24 +164,6 @@
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
   {% block sidebar %}
-  <!-- Left navbar-header -->
-  <div class="navbar-default sidebar d-print-none" role="navigation">
-
-    <!-- 7 mobile drop down area-->
-    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
-      <ul class="nav" id="side-menu">
-        <li class="sidebar-search hidden-sm hidden-md hidden-lg">
-          {% if searchConfigured() %}
-          <div class="search-sidebar" role="search" id="search-sidebar"></div>
-          {% endif %}
-        </li>
-
-        <li class="tbd"><a href="#">(TBD) Create /Sidebar</a></li>
-      </ul>
-    </div>
-
-  </div>
-  <!-- Left navbar-header end -->
   {% endblock %}
 
   <!-- 8 Page Content -->

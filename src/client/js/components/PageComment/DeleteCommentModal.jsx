@@ -45,7 +45,7 @@ export default class DeleteCommentModal extends React.Component {
         </ModalHeader>
         <ModalBody>
           <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
-          <p className="well well-sm comment-body m-t-5">{commentBody}</p>
+          <p className="well well-sm comment-body mt-2">{commentBody}</p>
         </ModalBody>
         <ModalFooter>
           <span className="text-danger">{this.props.errorMessage}</span>&nbsp;

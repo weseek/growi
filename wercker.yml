@@ -16,6 +16,12 @@ test:
         yarn
 
     - script:
+      name: install plugins
+      code: |
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+        yarn add -D react-images react-motion
+
+    - script:
       name: print dependencies
       code: |
         echo -n "node " && node -v
@@ -47,12 +53,6 @@ build-prod:
     - script:
       name: set yarn cache-folder
       code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
-
-    - script:
-      name: install plugins
-      code: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
-        yarn add -D react-images react-motion
 
     - script:
       name: npm run build:prod:analyze
@@ -89,11 +89,6 @@ build-dev:
     - script:
       name: set yarn cache-folder
       code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
-
-    - script:
-      name: install plugins
-      code: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker
 
     - script:
       name: npm run build:dev
@@ -153,6 +148,10 @@ release: # would be run on release branch
     - script:
       name: trigger growi-docker release-nocdn pipeline
       code: GROWI_DOCKER_PIPELINE_ID=$GROWI_DOCKER_PIPELINE_ID_NOCDN sh ./bin/wercker/trigger-growi-docker.sh
+
+    - script:
+      name: trigger growi-docs deploy pipeline
+      code: sh ./bin/wercker/trigger-growi-docs.sh
 
   after-steps:
     - slack-notifier:

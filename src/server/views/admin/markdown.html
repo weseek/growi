@@ -17,8 +17,8 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'markdown'} %}
     </div>
+    <!-- TODO reactify admin -->
     <div class="col-md-9">
-
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
       <div class="alert alert-success">
@@ -181,7 +181,7 @@
             <input type="radio" id="xssOption1" name="{{nameForXssOption}}" value="1" {% if xssOption === 1 %}checked{% endif %}>
             <label for="xssOption1">
               <p class="font-weight-bold">{{ t('markdown_setting.Ignore all tags') }}</p>
-              <div class="m-t-15">
+              <div class="mt-4">
                   {{ t('markdown_setting.Ignore all tags desc') }}
               </div>
             </label>
@@ -191,11 +191,11 @@
             <input type="radio" id="xssOption2" name="{{nameForXssOption}}" value="2" {% if xssOption === 2 %}checked{% endif %}>
             <label for="xssOption2">
               <p class="font-weight-bold">{{ t('markdown_setting.Recommended setting') }}</p>
-              <div class="m-t-15">
+              <div class="mt-4">
                 {{ t('markdown_setting.Tag names') }}
                 <textarea class="form-control xss-list" name="recommendedTags" rows="6" cols="40" readonly>{{ recommendedWhitelist.tags }}</textarea>
               </div>
-              <div class="m-t-15">
+              <div class="mt-4">
                 {{ t('markdown_setting.Tag attributes') }}
                 <textarea class="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readonly>{{ recommendedWhitelist.attrs }}</textarea>
               </div>
@@ -206,7 +206,7 @@
             <input type="radio" id="xssOption3" name="{{nameForXssOption}}" value="3" {% if xssOption === 3 %}checked{% endif %}>
             <label for="xssOption3">
               <p class="font-weight-bold">{{ t('markdown_setting.Custom Whitelist') }}</p>
-              <div class="m-t-15">
+              <div class="mt-4">
                 <div class="d-flex justify-content-between">
                   {{ t('markdown_setting.Tag names') }}
                   <p id="btn-import-tags" class="btn btn-xs btn-primary">
@@ -215,7 +215,7 @@
                 </div>
                 <textarea class="form-control xss-list" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="6" cols="40" placeholder="e.g. iframe, script, video...">{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
               </div>
-              <div class="m-t-15">
+              <div class="mt-4">
                 <div class="d-flex justify-content-between">
                   {{ t('markdown_setting.Tag attributes') }}
                   <p id="btn-import-attrs" class="btn btn-xs btn-primary">

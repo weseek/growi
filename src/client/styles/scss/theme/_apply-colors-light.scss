@@ -1,0 +1,88 @@
+/*
+ * Form
+ */
+.form-control {
+  background-color: $bgcolor-global;
+}
+
+.form-control[disabled],
+.form-control[readonly] {
+  color: lighten($color-global, 10%);
+  background-color: darken($bgcolor-global, 5%);
+}
+
+/*
+ * GROWI header
+ */
+header.affix {
+  .logo-mark {
+    fill: theme-color('primary');
+  }
+}
+
+/*
+ * GROWI search-top
+ */
+.search-top {
+  .btn-group-dropdown-scope .dropdown-toggle {
+    background-color: rgba($bgcolor-global, 0.8);
+  }
+  .rbt-input.form-control {
+    background-color: rgba($bgcolor-global, 0.9);
+  }
+}
+
+/*
+ * GROWI page list
+ */
+.page-list {
+  .page-list-ul {
+    > li {
+      > a strong {
+        color: darken($color-global, 20%);
+      }
+      > span.page-list-meta {
+        color: lighten($color-global, 10%);
+      }
+    }
+  }
+}
+
+/*
+ * GROWI on-edit
+ */
+.page-editor-footer {
+  #slack-mark-white {
+    display: none;
+  }
+}
+
+.wiki {
+  h1 {
+    border-color: darken($border, 10%);
+  }
+  h2 {
+    border-color: $border;
+  }
+}
+
+/*
+ * GROWI admin page #themeOptions
+ */
+.admin-page {
+  #themeOptions {
+    .theme-option-container.active a {
+      background-color: lighten(theme-color('primary'), 20%);
+      border-color: lighten(theme-color('primary'), 20%);
+    }
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.comment-form {
+  #slack-mark-white {
+    display: none;
+  }
+}

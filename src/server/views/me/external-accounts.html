@@ -24,7 +24,7 @@
 
   {% set couldntDisassociateError = req.flash('couldntDisassociateError') %}
   {% if couldntDisassociateError != null %}
-  <div class="alert alert-danger m-t-10">
+  <div class="alert alert-danger grw-mt-10px">
     <b>Couldn't disassociate External Account</b><br>
     You have not set a password and have only one External Account.
   </div>
@@ -33,7 +33,7 @@
   {% set error = req.flash('errorMessage') %}
   {% if error.length %}
   {% for e in error %}
-  <div class="alert alert-danger m-t-10">
+  <div class="alert alert-danger grw-mt-10px">
     <b>Server Error occured:</b><br>
     {{ e }}
   </div>
@@ -43,7 +43,7 @@
   {% set warn = req.flash('warningMessage') %}
   {% if warn.length %}
   {% for w in warn %}
-  <div class="alert alert-warning m-t-10">
+  <div class="alert alert-warning grw-mt-10px">
     {{ w }}
   </div>
   {% endfor %}
@@ -51,7 +51,7 @@
 
   {% set message = req.flash('successMessage') %}
   {% if message.length %}
-  <div class="alert alert-success m-t-10">
+  <div class="alert alert-success grw-mt-10px">
     <b>{{ message }}</b>
   </div>
   {% endif %}
@@ -59,7 +59,7 @@
 
 
   <legend class="m-t-20" style="line-height: 1.7em;">
-    <button class="btn btn-default btn-sm pull-right" data-target="#create-external-account" data-toggle="modal">
+    <button class="btn btn-default btn-sm float-right" data-target="#create-external-account" data-toggle="modal">
       <i class="icon-plus" aria-hidden="true"></i>
       Add
     </button>
@@ -136,14 +136,14 @@
             </li>
           </ul>
 
-          <div class="tab-content passport-settings m-t-15">
+          <div class="tab-content passport-settings mt-4">
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               <div id="formLdapAssociationContainer">
                 {% include '../widget/passport/ldap-association-tester.html' %}
                 <div class="clearfix">
-                  <button type="button" class="btn btn-info pull-right" onclick="associateLdap()">
+                  <button type="button" class="btn btn-info float-right" onclick="associateLdap()">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                    {{ t('Add') }}
+                    {{ t('add') }}
                   </button>
                 </div>
               </div>

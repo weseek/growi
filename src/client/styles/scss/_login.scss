@@ -1,5 +1,5 @@
 .nologin {
-  $gray-dark-for-login: darken(white, 30%);
+  $gray-800-for-login: darken(white, 30%);
 
   // background color
   background: linear-gradient(45deg, darken($inverse, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
@@ -74,7 +74,7 @@
     margin-bottom: 10px;
 
     .input-group-addon {
-      color: $gray-dark-for-login;
+      color: $gray-800-for-login;
       text-align: center;
       background-color: rgba(black, 0.4);
       border: none;
@@ -84,7 +84,7 @@
       color: white;
       background-color: rgba(lighten(black, 10%), 0.4);
       &::placeholder {
-        color: $gray-dark-for-login;
+        color: $gray-800-for-login;
       }
     }
   }
@@ -139,7 +139,7 @@
   }
   .btn-login.fcbtn {
     .btn-label {
-      background-color: rgba($brand-danger, 0.4);
+      background-color: rgba($danger, 0.4);
     }
     &:after {
       background-color: #7e4153;
@@ -187,7 +187,7 @@
   }
   .btn-register.fcbtn {
     .btn-label {
-      background-color: rgba($brand-success, 0.4);
+      background-color: rgba($success, 0.4);
     }
     .btn-label-text {
       display: inline-block;
@@ -227,7 +227,7 @@
     }
   }
   .link-switch {
-    color: $gray-lighter;
+    color: $gray-200;
     &:hover {
       color: white;
     }

@@ -1,25 +1,25 @@
 @import '../variables';
 
-$themecolor: #b3000c;
+$bgcolor-theme: #b3000c;
 $themelight: white;
-$subthemecolor:	#017e20;
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-$headingtext: $subthemecolor;
-$bodytext: black;
+$subthemecolor: #017e20;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
+$color-header: $subthemecolor;
+$color-global: black;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #ffffff;
-$primary: $themecolor;
-$logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
-$wikilinktext: lighten($themecolor, 5%);
-$wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: darken($subthemecolor, 5%);
-$inline-code-bg: lighten($subthemecolor, 70%);
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
+$color-link-wiki: lighten($bgcolor-theme, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+$color-inline-code: darken($subthemecolor, 5%);
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
 $border-original: $border;
 $border: $subthemecolor;
-$navbar-border: $themecolor;
+$navbar-border: $bgcolor-theme;
 $active-nav-tabs-bgcolor: white;
 
 @import 'apply-colors';
@@ -28,8 +28,8 @@ $active-nav-tabs-bgcolor: white;
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor, 20%);
     color: $themelight;
+    background-color: lighten($bgcolor-theme, 20%);
 
     .icon-note,
     .icon-link {
@@ -38,27 +38,27 @@ $active-nav-tabs-bgcolor: white;
   }
 }
 
-.sidebar{
-  background: $themecolor;
+.sidebar {
+  background: $bgcolor-theme;
 }
 
 .rbt-menu {
   background: $themelight;
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/christmas/christmas.jpg");
-  background-size: cover;
+  background-image: url('/images/themes/christmas/christmas.jpg');
   background-attachment: fixed;
+  background-size: cover;
 }
 
-.bg-title {
+.grw-subnav {
   background-color: #ffffff;
 }
 
 #wrapper > .navbar > .navbar-header {
-  background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+  background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   border-bottom: 4px solid $subthemecolor;
 }
 
@@ -70,7 +70,8 @@ body:not(.on-edit) .nav.nav-tabs {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }
 
@@ -86,7 +87,8 @@ body:not(.on-edit) .nav.nav-tabs {
   }
 
   &.login-page {
-    .login-header, .login-dialog {
+    .login-header,
+    .login-dialog {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
@@ -99,7 +101,7 @@ body:not(.on-edit) .nav.nav-tabs {
  * Modal
  */
 .modal-dialog .modal-header.bg-primary {
-  background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+  background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   border-bottom: 2px solid $subthemecolor;
 }
 
@@ -107,12 +109,13 @@ body:not(.on-edit) .nav.nav-tabs {
  * Panel
  */
 .panel {
-  &.panel-white, &.panel-default {
+  &.panel-white,
+  &.panel-default {
     border-color: $border-original;
     .panel-heading {
-        color: $dark;
-        background-color: $border-original;
-        border-bottom:1px solid $border-original;
+      color: $dark;
+      background-color: $border-original;
+      border-bottom: 1px solid $border-original;
     }
   }
 }
@@ -121,7 +124,7 @@ body:not(.on-edit) .nav.nav-tabs {
   border-color: #bd3425;
   .panel-heading {
     color: white;
-    background-image: url("/images/themes/christmas/christmas-navbar.jpg");
-    background-color: $themecolor;
+    background-color: $bgcolor-theme;
+    background-image: url('/images/themes/christmas/christmas-navbar.jpg');
   }
 }

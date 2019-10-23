@@ -11,11 +11,11 @@ body:not(.on-edit) {
 
 body.on-edit {
   // calculate margin
-  $header-plus-footer: 42px //  .nav height
-    + 1px //                    .page-editor-footer border-top
-    + 40px !default; //         .page-editor-footer min-height
+  $editor-header-plus-footer: 42px // .nav-tabs height
+    + 1px //                          .page-editor-footer border-top
+    + 40px !default; //               .page-editor-footer min-height
 
-  @include expand-editor($header-plus-footer);
+  @include expand-editor($editor-header-plus-footer);
 
   // for growi layout
   .main {
@@ -31,7 +31,6 @@ body.on-edit {
   }
 
   // hide unnecessary elements
-  .navbar.navbar-static-top,
   .row.row-alerts,
   .row.page-list,
   .row.page-comments-row,
@@ -56,7 +55,7 @@ body.on-edit {
   }
 
   // hide unnecessary elements for crowi layout
-  #toggle-sidebar,
+  #toggle-crowi-sidebar,
   .crowi-sidebar {
     display: none;
   }
@@ -85,9 +84,9 @@ body.on-edit {
     padding-bottom: 0;
   }
 
-  .row.bg-title {
-    $left-margin: $nav-main-left-tab-width * 2 + 25px; // width of .nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px + 46px; //                width of all of nav-main-right-tab
+  .row.grw-subnav {
+    $left-margin: $grw-nav-main-left-tab-width * 2 + 25px; // width of .grw-nav-main-left-tab x 2 + some margin
+    $right-margin: 128px + 94px + 46px; //                    width of all of grw-nav-main-right-tab
 
     position: absolute;
     left: $left-margin;
@@ -98,7 +97,7 @@ body.on-edit {
 
     background: none;
 
-    > .header-container {
+    > .grw-title-bar {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
@@ -130,10 +129,19 @@ body.on-edit {
     margin: 0;
     border-top: solid 1px transparent;
 
-    .grant-selector {
-      .btn-group {
+    .grw-grant-selector {
+      .dropdown-toggle {
         min-width: 150px;
+
+        // caret
+        &::after {
+          margin-left: 1em;
+        }
       }
+    }
+
+    .btn-submit {
+      width: 100px;
     }
   }
 
@@ -166,10 +174,6 @@ body.on-edit {
         .CodeMirror-selection-highlight-scrollbar {
           background-color: darkcyan;
         }
-      }
-
-      .navbar-editor {
-        border-bottom: 1px solid transparent;
       }
 
       // add icon on cursor
@@ -209,8 +213,7 @@ body.on-edit {
         margin-right: 0.5em;
       }
 
-      // configuration dropdown
-      .configuration-dropdown {
+      .grw-editor-configuration-dropdown {
         .icon-container {
           display: inline-block;
           width: 20px;
@@ -256,7 +259,7 @@ body.on-edit {
 
     .hackmd-error {
       top: 0;
-      background-color: rgba($gray-dark, 0.8);
+      background-color: rgba($gray-800, 0.8);
     }
 
     .hackmd-status-label {
@@ -291,7 +294,7 @@ body.on-edit {
 }
 
 // overwrite .CodeMirror pre
-.CodeMirror pre {
+.CodeMirror pre.CodeMirror-line {
   font-family: $font-family-monospace;
 }
 

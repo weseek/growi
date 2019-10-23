@@ -6,6 +6,7 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
+const { getMongoUri } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
 
@@ -14,6 +15,7 @@ const sep = path.sep;
 const mongoose = require('mongoose');
 
 const models = require('../models');
+const initMiddlewares = require('../middlewares');
 
 const PluginService = require('../plugins/plugin.service');
 
@@ -46,7 +48,9 @@ function Crowi(rootdir) {
   this.appService = null;
   this.fileUploadService = null;
   this.restQiitaAPIService = null;
+  this.growiBridgeService = null;
   this.exportService = null;
+  this.importService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -54,6 +58,7 @@ function Crowi(rootdir) {
   this.tokens = null;
 
   this.models = {};
+  this.middlewares = {};
 
   this.env = process.env;
   this.node_env = this.env.NODE_ENV || 'development';
@@ -66,30 +71,26 @@ function Crowi(rootdir) {
     search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
     tag: new (require(`${self.eventsDir}tag`))(this),
+    admin: new (require(`${self.eventsDir}admin`))(this),
   };
-}
-
-function getMongoUrl(env) {
-  return env.MONGOLAB_URI // for B.C.
-    || env.MONGODB_URI // MONGOLAB changes their env name
-    || env.MONGOHQ_URL
-    || env.MONGO_URI
-    || ((process.env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
 }
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupModels();
+  await this.setupMiddlewares();
   await this.setupSessionConfig();
   await this.setupConfigManager();
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
   // slack depends on setUpSlacklNotification
+  // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
     this.setUpSlacklNotification(),
+    this.setUpGrowiBridge(),
   ]);
 
   await Promise.all([
@@ -105,6 +106,7 @@ Crowi.prototype.init = async function() {
     this.setUpRestQiitaAPI(),
     this.setupUserGroup(),
     this.setupExport(),
+    this.setupImport(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -124,6 +126,7 @@ Crowi.prototype.initForTest = async function() {
     this.setUpApp(),
     // this.setUpXss(),
     // this.setUpSlacklNotification(),
+    // this.setUpGrowiBridge(),
   ]);
 
   await Promise.all([
@@ -137,6 +140,9 @@ Crowi.prototype.initForTest = async function() {
     this.setUpAcl(),
   //   this.setUpCustomize(),
   //   this.setUpRestQiitaAPI(),
+  //   this.setupUserGroup(),
+  //   this.setupExport(),
+  //   this.setupImport(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -189,10 +195,10 @@ Crowi.prototype.event = function(name, event) {
 };
 
 Crowi.prototype.setupDatabase = function() {
-  // mongoUri = mongodb://user:password@host/dbname
   mongoose.Promise = global.Promise;
 
-  const mongoUri = getMongoUrl(this.env);
+  // mongoUri = mongodb://user:password@host/dbname
+  const mongoUri = getMongoUri();
 
   return mongoose.connect(mongoUri, { useNewUrlParser: true });
 };
@@ -203,7 +209,7 @@ Crowi.prototype.setupSessionConfig = function() {
   const sessionAge = (1000 * 3600 * 24 * 30);
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
 
-  const mongoUrl = getMongoUrl(this.env);
+  const mongoUrl = getMongoUri();
   let sessionConfig;
 
   return new Promise(((resolve, reject) => {
@@ -247,6 +253,11 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
   });
+};
+
+Crowi.prototype.setupMiddlewares = async function() {
+  // const self = this;
+  this.middlewares = await initMiddlewares(this);
 };
 
 Crowi.prototype.getIo = function() {
@@ -534,10 +545,24 @@ Crowi.prototype.setupUserGroup = async function() {
   }
 };
 
+Crowi.prototype.setUpGrowiBridge = async function() {
+  const GrowiBridgeService = require('../service/growi-bridge');
+  if (this.growiBridgeService == null) {
+    this.growiBridgeService = new GrowiBridgeService(this);
+  }
+};
+
 Crowi.prototype.setupExport = async function() {
   const ExportService = require('../service/export');
   if (this.exportService == null) {
     this.exportService = new ExportService(this);
+  }
+};
+
+Crowi.prototype.setupImport = async function() {
+  const ImportService = require('../service/import');
+  if (this.importService == null) {
+    this.importService = new ImportService(this);
   }
 };
 

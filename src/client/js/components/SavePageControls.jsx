@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import {
+  UncontrolledButtonDropdown, Button,
+  DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
+
 import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -62,6 +67,7 @@ class SavePageControls extends React.Component {
 
   render() {
     const { t, pageContainer, editorContainer } = this.props;
+
     const isRootPage = pageContainer.state.path === '/';
     const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
@@ -95,25 +101,16 @@ class SavePageControls extends React.Component {
           )
         }
 
-        <div className="btn-group dropup">
-          <button type="button" className="btn btn-primary px-5">{labelSubmitButton}</button>
-          <button
-            type="button"
-            id="spl-btn-submit"
-            className="btn-submit btn btn-primary dropdown-toggle dropdown-toggle-split"
-            data-toggle="dropdown"
-            onClick={this.save}
-          >
-            <span className="sr-only">{labelSubmitButton}</span>
-          </button>
-          <div
-            className="dropdown-menu"
-            // eventKey="1"
-            onClick={this.saveAndOverwriteScopesOfDescendants}
-          >
-            {labelOverwriteScopes}
-          </div>
-        </div>
+        <UncontrolledButtonDropdown direction="up">
+          <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
+          <DropdownToggle caret color="primary" />
+          <DropdownMenu right>
+            <DropdownItem onClick={this.saveAndOverwriteScopesOfDescendants}>
+              {labelOverwriteScopes}
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledButtonDropdown>
+
       </div>
     );
   }

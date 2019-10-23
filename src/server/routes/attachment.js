@@ -203,7 +203,8 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
-    return res.json(ApiResponse.success(await fileUploader.checkLimit(req.query.fileSize)));
+    const fileSize = Number(req.query.fileSize);
+    return res.json(ApiResponse.success(await fileUploader.checkLimit(fileSize)));
   };
 
   /**

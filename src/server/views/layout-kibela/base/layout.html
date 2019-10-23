@@ -10,13 +10,13 @@
 
   <div class="row body m-0 p-0">
 
-    <div id="main" class="main col-md-7 col-xs-12 kibela-block bg-white m-t-30 round-corner {% if page %}{{ css.grant(page) }}{% endif %}{% block main_css_class %}{% endblock %}">
-      <div class="row bg-title d-none d-md-block">
-        <div class="col-xs-12 header-container">
+    <div id="main" class="main mt-5 col-md-7 col-xs-12 kibela-block bg-white round-corner {% if page %}{{ css.grant(page) }}{% endif %}{% block main_css_class %}{% endblock %}">
+      <div class="row grw-subnav">
+        <div class="col-xs-12 grw-title-bar">
           {% block content_header %} {% endblock %}
         </div>
       </div>
-      <!-- /.bg-title -->
+      <!-- /.grw-subnav -->
 
       {% block content_main_before %}
       {% endblock %}
