@@ -1,14 +1,14 @@
 @import 'layout_variable';
 @import 'layout';
 
-.growi.main-container {
+.growi {
   .content-main {
     padding: 0;
   }
 
   .liker-and-seenusers {
     // adjusting position with negative margin
-    height: $nav-main-tab-height;
+    height: $grw-nav-main-tab-height;
     line-height: 1.25;
     border-bottom: 1px solid $grw-line-gray;
 

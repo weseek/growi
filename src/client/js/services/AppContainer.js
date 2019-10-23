@@ -35,7 +35,7 @@ export default class AppContainer extends Container {
     this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
-    this.isLoggedin = document.querySelector('.main-container.nologin') == null;
+    this.isLoggedin = document.querySelector('body.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 

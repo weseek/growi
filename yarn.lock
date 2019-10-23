@@ -2190,11 +2190,6 @@ boom@5.x.x:
   dependencies:
     hoek "4.x.x"
 
-bootstrap-select@^1.13.11:
-  version "1.13.11"
-  resolved "https://registry.yarnpkg.com/bootstrap-select/-/bootstrap-select-1.13.11.tgz#d364ccc67cd6c1f9158689087f1d2d029df82c29"
-  integrity sha512-WPpx2DYL9jVilNoqy4Pjcfa/Q0LOq8V0+xws/pmnRDn/deS7OYjo1njvD1Cv0s9/1ZUXt77UypxuloimEnkYsA==
-
 bootstrap@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.3.1.tgz#280ca8f610504d99d7b6b4bfc4b68cec601704ac"

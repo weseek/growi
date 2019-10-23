@@ -10,7 +10,7 @@
 {% block layout_main %}
 <div class="container-fluid">
 
-  <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar">
+  <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-crowi-sidebar">
     <i class="ti-angle-right"></i><i class="ti-angle-left"></i> <span class="hide-on-affix-top"></span>
   </a>
   <aside class="crowi-sidebar col-md-3 hidden-xs hidden-sm hidden-print">
@@ -29,15 +29,15 @@
     {% include '../../widget/system-version.html' %}
   </aside>
 
-  <div class="row hidden-print bg-title d-none d-md-block">
-    <div class="col-md-9 header-container">
+  <div class="row grw-subnav">
+    <div class="col-md-9 grw-title-bar">
       {% block content_header %}
       {% endblock %}
     </div>
-  </div><!-- /.bg-title -->
+  </div><!-- /.grw-subnav -->
 
   <div class="row">
-    <div id="main" class="main m-t-15 col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+    <div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
       {% block content_main_before %}
       {% endblock %}
 

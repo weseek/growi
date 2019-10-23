@@ -8,17 +8,15 @@
 {% block layout_main %}
 <div class="container-fluid">
 
-  <div class="row bg-title">
-    <div class="col-12 header-container grw-title-bar">
-      <div class="d-none d-md-block d-print-none py-2">
-        {% block content_header %}
-        {% endblock %}
-      </div>
+  <div class="row grw-subnav">
+    <div class="col-12 grw-title-bar">
+      {% block content_header %}
+      {% endblock %}
     </div><!-- /.grw-title-bar -->
   </div><!-- /.row -->
 
   <div class="row">
-    <div id="main" class="main m-t-15 col-md-12 mt-2 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+    <div id="main" class="main col-md-12 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
       {% block content_main_before %}
       {% endblock %}
 

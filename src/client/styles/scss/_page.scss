@@ -1,117 +1,113 @@
 // import diff2html styles
 @import '~diff2html/dist/diff2html.css';
 
-.main-container {
-  // padding controll of .header-wrap and .content-main are moved to _layout and _form
+/*
+  * header
+  */
+header {
+  // the container of h1
+  div.title-container {
+    padding-right: 5px;
+    padding-left: 5px;
+    margin-right: auto;
+  }
 
-  /*
-   * header
-   */
-  header {
-    // the container of h1
-    div.title-container {
-      padding-right: 5px;
-      padding-left: 5px;
-      margin-right: auto;
+  .btn-copy,
+  .btn-copy-link,
+  .btn-edit {
+    color: $text-muted;
+    border: none;
+    opacity: 0.3;
+
+    &:not(:hover) {
+      background-color: transparent;
     }
+  }
 
-    .btn-copy,
+  .btn-edit-tags {
+    color: $text-muted;
+    opacity: 0.5;
+
+    &.no-tags {
+      opacity: 0.7;
+    }
+  }
+
+  // change button opacity
+  &:hover {
+    .btn.btn-copy,
     .btn-copy-link,
-    .btn-edit {
-      @extend .text-muted;
-      border: none;
-      opacity: 0.3;
-
-      &:not(:hover) {
-        background-color: transparent;
-      }
-    }
-
-    .btn-edit-tags {
-      @extend .text-muted;
-      opacity: 0.5;
-
-      &.no-tags {
-        opacity: 0.7;
-      }
-    }
-
-    // change button opacity
-    &:hover {
-      .btn.btn-copy,
-      .btn-copy-link,
-      .btn.btn-edit,
-      .btn.btn-edit-tags {
-        opacity: unset;
-      }
-    }
-
-    .btn-like,
-    .btn-bookmark {
-      font-size: 1.2em;
-      line-height: 0.8em;
-      border: none;
-
-      &:not(:hover):not(.active) {
-        background-color: transparent;
-      }
-    }
-
-    .btn-like {
-      &.active {
-        @extend .btn-info;
-      }
-    }
-
-    .btn-bookmark {
-      &.active {
-        @extend .btn-warning;
-      }
-    }
-
-    .url-line {
-      font-size: 1rem;
-      color: #999;
-    }
-
-    h1.title {
-      margin-top: 0;
-      margin-bottom: 0;
-
-      .d-flex {
-        flex-wrap: wrap; // for long page path
-      }
-
-      // crowi layout only
-      a.last-path {
-        color: #ccc;
-
-        &:hover {
-          color: inherit;
-        }
-      }
-    }
-
-    .tag-viewer.new-page {
-      display: none;
+    .btn.btn-edit,
+    .btn.btn-edit-tags {
+      opacity: unset;
     }
   }
 
-  // alert component settings
-  .alert-trash,
-  .alert-moved,
-  .alert-unlinked,
-  .alert-grant {
-    padding: 10px 15px;
+  .btn-like,
+  .btn-bookmark {
+    font-size: 1.2em;
+    line-height: 0.8em;
+    border: none;
+
+    &:not(:hover):not(.active) {
+      background-color: transparent;
+    }
   }
 
-  // show PageStatusAlert in default
-  #page-status-alert .myadmin-alert {
-    display: block;
+  .btn-like {
+    &.active {
+      @extend .btn-info;
+    }
+  }
+
+  .btn-bookmark {
+    &.active {
+      @extend .btn-warning;
+    }
+  }
+
+  .url-line {
+    font-size: 1rem;
+    color: #999;
+  }
+
+  h1.title {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    .d-flex {
+      flex-wrap: wrap; // for long page path
+    }
+
+    // crowi layout only
+    a.last-path {
+      color: #ccc;
+
+      &:hover {
+        color: inherit;
+      }
+    }
+  }
+
+  .tag-viewer.new-page {
+    display: none;
   }
 }
 
-.main-container .main .content-main .revision-history {
+// alert component settings
+.alert-trash,
+.alert-moved,
+.alert-unlinked,
+.alert-grant {
+  padding: 10px 15px;
+}
+
+// show PageStatusAlert in default
+#page-status-alert .myadmin-alert {
+  display: block;
+}
+
+.main .content-main .revision-history {
   .revision-history-list {
     .revision-history-outer {
       // add border-top except of first element

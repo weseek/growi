@@ -342,14 +342,14 @@ export default class Editor extends AbstractEditor {
             className="btn btn-default btn-block btn-open-dropzone"
             onClick={() => { this.dropzone.open() }}
           >
-
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
             Attach files
-            <span className="d-none d-sm-block">
+            <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;
               <span className="btn-link">selecting them</span>,&nbsp;
               or pasting from the clipboard.
             </span>
+
           </button>
           )
         }

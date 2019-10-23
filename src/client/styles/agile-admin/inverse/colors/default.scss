@@ -1,21 +1,21 @@
 @import '../variables';
 
-$themecolor:#112744;
+$bgcolor-theme: #112744;
 
-$topbar:#334455;
-$sidebar:#fff;
-$bodycolor:#fff;
-$headingtext: #2b2b2b;
-$bodytext: #333333;
-$linktext: lighten($themecolor, 20%);
+$bgcolor-navbar: #334455;
+$bgcolor-global: #fff;
+$bgcolor-global: #fff;
+$color-header: #2b2b2b;
+$color-global: #333333;
+$linktext: lighten($bgcolor-theme, 20%);
 $linktext-hover: lighten($linktext, 20%);
-$sidebar-text:#38495a;
+$sidebar-text: #38495a;
 
-$primary: $themecolor;
+$primary: $bgcolor-theme;
 
-$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
-$wikilinktext: lighten($themecolor, 20%);
-$wikilinktext-hover: lighten($wikilinktext, 20%);
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+$color-link-wiki: lighten($bgcolor-theme, 20%);
+$color-link-wiki-hover: lighten($color-link-wiki, 20%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';

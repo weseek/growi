@@ -148,7 +148,7 @@ class MyDraftList extends React.Component {
               </div>
             </div>
 
-            <div className="tab-pane m-t-30 accordion" id="draft-list">
+            <div className="tab-pane mt-5 accordion" id="draft-list">
               {draftList}
             </div>
             <PaginationWrapper

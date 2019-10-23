@@ -11,7 +11,6 @@ $basefont2: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN'
 $growi-green: #74bc46;
 $growi-blue: #175fa5;
 
-
 /*bootstrap Color*/
 $danger: #ff0a54 !default;
 $success: #00bb83 !default;
@@ -20,42 +19,40 @@ $primary: $growi-blue !default;
 $info: #009fbb !default;
 $muted: #98a6ad !default;
 $dark: #3e4d6c !default;
-$inverse:#3e4d6c !default;
-$light:#e4e7ea !default;
-$extralight:#f7fafc !default;
-
+$inverse: #3e4d6c !default;
+$light: #e4e7ea !default;
+$extralight: #f7fafc !default;
 
 /*Normal Color*/
 $white: #ffffff !default;
-$red:#ff0000 !default;
-$purple:#7b00ce !default;
-$blue:#0d00c5 !default;
-$yellow:#cccf0e !default;
-$border:#f0f0f0 !default;
-$megna:#00b5c2 !default;
+$red: #ff0000 !default;
+$purple: #7b00ce !default;
+$blue: #0d00c5 !default;
+$yellow: #cccf0e !default;
+$border: #f0f0f0 !default;
+$megna: #00b5c2 !default;
 
 /*Theme Colors*/
-$topbar:#3c4451 !default;
-$sidebar:#4F5467 !default;
-$bodycolor:#fff !default;
+$topbar: #3c4451 !default;
+$sidebar: #4f5467 !default;
+$bodycolor: #fff !default;
 $headingtext: #2b2b2b !default;
 $bodytext: #686868 !default;
 $linktext: $inverse !default;
 $linktext-hover: lighten($inverse, 20%) !default;
-$sidebar-text:#54667a !default;
-$themecolor:#ff6849 !default;
-$dark-themecolor:#4F5467 !default;
+$sidebar-text: #54667a !default;
+$themecolor: #ff6849 !default;
+$dark-themecolor: #4f5467 !default;
 
+$rgt: right !default;
+$lft: left !default;
 
-$rgt:right !default;
-$lft:left !default;
-
-$dark-text:#848a96 !default;
+$dark-text: #848a96 !default;
 $navbar-border: #ccc !default;
 $active-navbar-border: lighten($navbar-border, 10%) !default;
 $btn-default-bgcolor: darken(#fff, 10%) !default;
-$inline-code-color: #c7254e !default;
-$inline-code-bg: #f9f2f4 !default;
+$color-inline-code: #c7254e !default;
+$bgcolor-inline-code: #f9f2f4 !default;
 
 /*Border radius*/
 $radius: 0 !default;
@@ -78,4 +75,4 @@ $radius: 0 !default;
 */
 
 /*Font weight*/
-$font-bold:700 !default;
+$font-bold: 700 !default;

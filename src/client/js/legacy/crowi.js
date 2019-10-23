@@ -5,9 +5,8 @@ import { pathUtils } from 'growi-commons';
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
-require('bootstrap-select');
 
-require('./thirdparty-js/agile-admin');
+require('./thirdparty-js/waves');
 
 const Crowi = {};
 
@@ -120,7 +119,7 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
 Crowi.initAffix = () => {
   const $affixContent = $('#page-header');
   if ($affixContent.length > 0) {
-    const $affixContentContainer = $('.row.bg-title');
+    const $affixContentContainer = $('.row.grw-subnav');
     const containerHeight = $affixContentContainer.outerHeight(true);
     $affixContent.affix({
       offset: {
@@ -222,21 +221,21 @@ $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
 
-  $('#toggle-sidebar').click((e) => {
-    const $mainContainer = $('.main-container');
-    if ($mainContainer.hasClass('aside-hidden')) {
-      $('.main-container').removeClass('aside-hidden');
+  $('#toggle-crowi-sidebar').click((e) => {
+    const $body = $('body');
+    if ($body.hasClass('aside-hidden')) {
+      $body.removeClass('aside-hidden');
       $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
     }
     else {
-      $mainContainer.addClass('aside-hidden');
+      $body.addClass('aside-hidden');
       $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
     }
     return false;
   });
 
   if ($.cookie('aside-hidden') === 1) {
-    $('.main-container').addClass('aside-hidden');
+    $('body').addClass('aside-hidden');
   }
 
   $('.copy-link').on('click', function() {

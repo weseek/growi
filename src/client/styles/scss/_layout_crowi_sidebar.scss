@@ -174,7 +174,7 @@
   }
 }
 
-body:not(.aside-hidden) #toggle-sidebar {
+body:not(.aside-hidden) #toggle-crowi-sidebar {
   i.ti-angle-left {
     display: none;
   }
@@ -184,7 +184,7 @@ body:not(.aside-hidden) #toggle-sidebar {
 }
 
 .aside-hidden {
-  #toggle-sidebar {
+  #toggle-crowi-sidebar {
     right: 0;
     i.ti-angle-right {
       display: block;
@@ -199,7 +199,7 @@ body:not(.aside-hidden) #toggle-sidebar {
     right: -25%;
   }
 
-  .bg-title .col-md-9,
+  .grw-subnav .col-md-9,
   .main {
     width: 100%;
   }

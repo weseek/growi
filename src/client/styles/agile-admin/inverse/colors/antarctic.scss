@@ -1,26 +1,26 @@
 @import '../variables';
 
-$themecolor: #000080;
+$bgcolor-theme: #000080;
 $themelight: #f0f8ff;
 $subthemecolor: black;
 $accentcolor: #ffd700;
 $sidebar-text: $themelight;
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-$headingtext: $subthemecolor;
-$bodytext: $subthemecolor;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
+$color-header: $subthemecolor;
+$color-global: $subthemecolor;
 $linktext: lighten(blue, 5%);
-$primary: $themecolor;
-$active-nav-tabs-bgcolor: $themecolor;
-$logo-mark-fill: $themelight;
-$wikilinktext: lighten($themecolor, 5%);
-$wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: #c7254e;
-$inline-code-bg: #f9f2f4;
+$primary: $bgcolor-theme;
+$active-nav-tabs-bgcolor: $bgcolor-theme;
+$fillcolor-logo-mark: $themelight;
+$color-link-wiki: lighten($bgcolor-theme, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+$color-inline-code: #c7254e;
+$bgcolor-inline-code: #f9f2f4;
 $border: $subthemecolor;
 $border-original: $subthemecolor;
-$navbar-border: $themecolor;
+$navbar-border: $bgcolor-theme;
 $background-color: rgba(
   $color: $themelight,
   $alpha: 0.8,
@@ -43,7 +43,7 @@ ul > .text-muted {
 
   .code-line.revision-head.highlighted {
     color: $themelight;
-    background-color: lighten($themecolor, 50%);
+    background-color: lighten($bgcolor-theme, 50%);
 
     .icon-note,
     .icon-link {
@@ -53,7 +53,7 @@ ul > .text-muted {
 }
 
 // add background-image
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
   background-image: url('/images/themes/antarctic/bg.svg');
   background-attachment: fixed;
@@ -62,7 +62,7 @@ ul > .text-muted {
 }
 
 .sidebar {
-  background: $themecolor;
+  background: $bgcolor-theme;
 }
 
 table,
@@ -71,7 +71,7 @@ table,
   background-color: $background-color;
 }
 
-.bg-title,
+.grw-subnav,
 .nav-navbar {
   background-color: $themelight;
 }
@@ -135,9 +135,9 @@ header.affix {
 
     .nav.nav-tabs {
       > li.active > a {
-        background: $themecolor;
-        border-bottom: solid 1px $themecolor;
-        border-bottom-color: $themecolor;
+        background: $bgcolor-theme;
+        border-bottom: solid 1px $bgcolor-theme;
+        border-bottom-color: $bgcolor-theme;
       }
     }
   }
@@ -164,7 +164,7 @@ body:not(.on-edit) .nav.nav-tabs {
       rgba($active-nav-tabs-bgcolor, 0) 90%,
       $active-nav-tabs-bgcolor 100%
     ); // overwrite only the bottom pixel
-    background-color: $themecolor;
+    background-color: $bgcolor-theme;
   }
 }
 
@@ -192,7 +192,7 @@ body:not(.on-edit) .nav.nav-tabs {
  *  Right space for readable
  */
 
-.growi.main-container {
+.growi {
   .revision-toc {
     max-width: 360px;
     background-color: $background-color;
