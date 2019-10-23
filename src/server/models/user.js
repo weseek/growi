@@ -504,15 +504,12 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const { aclService } = crowi;
+    const { configManager } = crowi;
 
-    const userUpperLimit = aclService.userUpperLimit();
-    if (userUpperLimit === 0) {
-      return false;
-    }
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
     const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
-    if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
+    if (userUpperLimit <= activeUsers) {
       return true;
     }
 

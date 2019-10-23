@@ -150,6 +150,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: undefined,
   },
+  USER_UPPER_LIMIT: {
+    ns:      'crowi',
+    key:     'security:userUpperLimit',
+    type:    TYPES.NUMBER,
+    default: Infinity,
+  },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-local:isEnabled',
