@@ -521,8 +521,8 @@
       "group_search_user_DN_property": "ユーザーの DN プロパティー",
       "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
       "ldaps_tls_options": "LDAPS TLS 設定",
-      "ldaps_self_signed_cert_file": "LDAPS接続自己署名証明書ファイル",
-      "ldaps_self_signed_cert_file_detail": "LDAPS接続用自己署名証明書のファイルパス",
+      "ldaps_tls_ca_cert_file": "LDAPS接続用 CA証明書ファイル",
+      "ldaps_tls_ca_cert_file_detail": "LDAPS接続用 CA証明書のファイルパス",
       "test_config": "ログインテスト"
     },
     "SAML": {

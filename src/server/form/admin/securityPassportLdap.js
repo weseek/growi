@@ -20,5 +20,5 @@ module.exports = form(
   field('settingForm[security:passport-ldap:groupSearchBase]'),
   field('settingForm[security:passport-ldap:groupSearchFilter]'),
   field('settingForm[security:passport-ldap:groupDnProperty]'),
-  field('settingForm[security:passport-ldap:ldapsSelfSignedCertFile]'),
+  field('settingForm[security:passport-ldap:ldapsTlsCACertFile]'),
 );

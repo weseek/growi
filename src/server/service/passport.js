@@ -251,7 +251,7 @@ class PassportService {
     const groupSearchBase     = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
     const groupSearchFilter   = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter');
     const groupDnProperty     = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
-    const ldapsSelfSignedCertFile  = configManager.getConfig('crowi', 'security:passport-ldap:ldapsSelfSignedCertFile');
+    const ldapsTlsCACertFile  = configManager.getConfig('crowi', 'security:passport-ldap:ldapsTlsCACertFile');
     /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
@@ -275,7 +275,7 @@ class PassportService {
     debug(`LdapStrategy: groupSearchBase=${groupSearchBase}`);
     debug(`LdapStrategy: groupSearchFilter=${groupSearchFilter}`);
     debug(`LdapStrategy: groupDnProperty=${groupDnProperty}`);
-    debug(`LdapStrategy: ldapsSelfSignedCertFile=${ldapsSelfSignedCertFile}`);
+    debug(`LdapStrategy: ldapsTlsCACertFile=${ldapsTlsCACertFile}`);
 
     return (req, callback) => {
       // get credentials from form data
@@ -292,9 +292,9 @@ class PassportService {
 
       let fs = require('fs');
 
-      let tlsOpt = (ldapsSelfSignedCertFile == "") ? {} : {
+      let tlsOpt = (ldapsTlsCACertFile == "") ? {} : {
           ca: [
-            fs.readFileSync(ldapsSelfSignedCertFile)
+            fs.readFileSync(ldapsTlsCACertFile)
           ]
         } ;
 

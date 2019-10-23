@@ -526,8 +526,8 @@
       "group_search_user_DN_property": "User DN Property",
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
       "ldaps_tls_options": "LDAPS TLS options",
-      "ldaps_self_signed_cert_file": "Self Signed Cert File for LDAPS",
-      "ldaps_self_signed_cert_file_detail": "Self signed certificate file path for ldaps connection",
+      "ldaps_tls_ca_cert_file": "CA Certificate File for LDAPS",
+      "ldaps_tls_ca_cert_file_detail": "CA Certificate file path for ldaps connection",
       "test_config": "Test Saved Configuration"
     },
     "SAML": {

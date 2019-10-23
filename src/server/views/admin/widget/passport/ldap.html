@@ -227,13 +227,13 @@
       <h4>{{ t("security_setting.ldap.ldaps_tls_options") }} ({{ t("security_setting.optional") }})</h4>
 
       <div class="form-group">
-        <label for="settingForm[security:passport-ldap:ldapsSelfSignedCertFile]" class="col-xs-3 control-label">{{ t("security_setting.ldap.ldaps_self_signed_cert_file") }}</label>
+        <label for="settingForm[security:passport-ldap:ldapsTlsCACertFile]" class="col-xs-3 control-label">{{ t("security_setting.ldap.ldaps_tls_ca_cert_file") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="/some/where/server_name.crt"
-              name="settingForm[security:passport-ldap:ldapsSelfSignedCertFile]" value="{{ getConfig('crowi', 'security:passport-ldap:ldapsSelfSignedCertFile') | default('') }}">
+              name="settingForm[security:passport-ldap:ldapsTlsCACertFile]" value="{{ getConfig('crowi', 'security:passport-ldap:ldapsTlsCACertFile') | default('') }}">
           <p class="help-block">
             <small>
-              {{ t("security_setting.ldap.ldaps_self_signed_cert_file_detail") }}
+              {{ t("security_setting.ldap.ldaps_tls_ca_cert_file_detail") }}
             </small>
           </p>
         </div>
