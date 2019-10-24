@@ -38,15 +38,14 @@ import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDet
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
-import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
-import Users from './components/Admin/Users/Users';
+import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
-import Importer from './components/Admin/Importer';
-import FullTextSearchManagement from './components/Admin/FullTextSearchManagement/FullTextSearchPage';
-import ExportPage from './components/Admin/Export/ExportPage';
+import ImportDataPage from './components/Admin/ImportDataPage';
+import ExportDataPage from './components/Admin/ExportDataPage';
+import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -115,7 +114,7 @@ let componentMappings = {
   'admin-external-account-setting': <ManageExternalAccount />,
 
   'staff-credit': <StaffCredit />,
-  'admin-importer': <Importer />,
+  'admin-importer': <ImportDataPage />,
 };
 
 // additional definitions if data exists
@@ -134,8 +133,6 @@ if (pageContainer.state.pageId != null) {
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-
-    'admin-rebuild-search': <AdminRebuildSearch crowi={appContainer} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
@@ -168,7 +165,7 @@ if (adminUsersElem != null) {
   ReactDOM.render(
     <Provider inject={[injectableContainers, adminUsersContainer]}>
       <I18nextProvider i18n={i18n}>
-        <Users />
+        <UserManagement />
       </I18nextProvider>
     </Provider>,
     adminUsersElem,
@@ -267,7 +264,7 @@ if (adminExportPageElem != null) {
   ReactDOM.render(
     <Provider inject={[appContainer, websocketContainer]}>
       <I18nextProvider i18n={i18n}>
-        <ExportPage
+        <ExportDataPage
           crowi={appContainer}
         />
       </I18nextProvider>

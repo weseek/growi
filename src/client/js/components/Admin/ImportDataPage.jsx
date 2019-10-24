@@ -8,11 +8,11 @@ import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
 
-import GrowiZipImportSection from './Import/GrowiZipImportSection';
+import GrowiZipImportSection from './ImportData/GrowiZipImportSection';
 
 const logger = loggerFactory('growi:importer');
 
-class Importer extends React.Component {
+class ImportDataPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -332,13 +332,13 @@ class Importer extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ImporterWrapper = (props) => {
-  return createSubscribedElement(Importer, props, [AppContainer]);
+const ImportDataPageWrapper = (props) => {
+  return createSubscribedElement(ImportDataPage, props, [AppContainer]);
 };
 
-Importer.propTypes = {
+ImportDataPage.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(ImporterWrapper);
+export default withTranslation()(ImportDataPageWrapper);
