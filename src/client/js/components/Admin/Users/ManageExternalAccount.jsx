@@ -1,9 +1,12 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
 class ManageExternalAccount extends React.Component {
@@ -12,12 +15,40 @@ class ManageExternalAccount extends React.Component {
     super(props);
     // TODO GW-417
     this.state = {
+      isPassword: false,
     };
+    this.xss = window.xss;
+    this.handlePage = this.handlePage.bind(this);
   }
 
+  async handlePage(selectedPage) {
+    try {
+      await this.props.adminExternalAccountsContainer.retrieveExternalAccountsByPagingNum(selectedPage);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  async checkPassword(password) {
+    if (password != null) {
+      return;
+    }
+  }
+
+  // remove external-account
+  async removeExtenalAccount(externalAccountId) {
+    try {
+      await this.props.adminExternalAccountsContainer.removeExternal(externalAccountId);
+      toastSuccess(`Removed "${this.xss.process(externalAccountId)}"`);
+    }
+    catch (err) {
+      toastError(new Error(`Unable to remove "${this.xss.process(externalAccountId)}"`));
+    }
+  }
 
   render() {
-    const { t } = this.props;
+    const { t, adminExternalAccountsContainer } = this.props;
 
     return (
       <Fragment>
@@ -35,7 +66,7 @@ class ManageExternalAccount extends React.Component {
             <tr>
               <th width="120px">{ t('user_management.authentication_provider') }</th>
               <th><code>accountId</code></th>
-              <th>{ t('user_management.related_username', 'username') }</th>
+              <th>{ t('user_management.related_username')}</th>
               <th>
                 { t('user_management.password_setting') }
                 <div
@@ -47,7 +78,7 @@ class ManageExternalAccount extends React.Component {
                   role="button"
                   data-animation="false"
                   data-html="true"
-                  data-content="<small>{{ t('user_management.password_setting_help') }}</small>"
+                  data-content={t('user_management.password_setting_help')}
                 >
                   <small>
                     <i className="icon-question" aria-hidden="true"></i>
@@ -58,7 +89,31 @@ class ManageExternalAccount extends React.Component {
               <th width="70px"></th>
             </tr>
           </thead>
-          {/* TODO GW-417 */}
+          <tbody>
+            {adminExternalAccountsContainer.state.exteranalAccounts.map((ea) => {
+              const { exteranalAccount } = ea;
+              return (
+                <tr>
+                  <td>{exteranalAccount.providerType}</td>
+                  <td>
+                    <strong>{exteranalAccount.accountId}</strong>
+                  </td>
+                  <td>
+                    <strong>{exteranalAccount.user.username}</strong>
+                  </td>
+                  <td>
+                    <span className="label label-info">
+                    </span>
+                    <span className="label label-warning">
+                    </span>
+                  </td>
+                  <td>
+                    {dateFnsFormat(new Date(exteranalAccount.createdAt), 'yyyy-MM-dd')}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </Fragment>
     );
@@ -73,6 +128,7 @@ const ManageExternalAccountWrapper = (props) => {
 ManageExternalAccount.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
 export default withTranslation()(ManageExternalAccountWrapper);
