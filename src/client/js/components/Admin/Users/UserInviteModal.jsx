@@ -78,7 +78,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="checkbox checkbox-success text-left" onChange={this.handleCheckBox} style={{ flex: 1 }}>
+        <div className="checkbox checkbox-success text-left" onChange={this.handleCheckBox} style={{ flex: 0.95 }}>
           <input type="checkbox" id="sendEmail" className="form-check-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
           <label htmlFor="sendEmail">
             { t('user_management.invite_thru_email') }
@@ -188,8 +188,8 @@ class UserInviteModal extends React.Component {
 
 
     return (
-      <Modal show={adminUsersContainer.state.isUserInviteModalShown} onHide={this.onToggleModal}>
-        <ModalHeader className="modal-header" closeButton>
+      <Modal show={adminUsersContainer.state.isUserInviteModalShown} toggle={this.onToggleModal}>
+        <ModalHeader isOpen={this.props.onToggleModal} className="modal-header" closeButton>
           { t('user_management.invite_users') }
         </ModalHeader>
         <ModalBody>
@@ -218,6 +218,7 @@ UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
+  onToggleModal: PropTypes.func.isRequired, // for cancel evnet handling
 };
 
 export default withTranslation()(UserInviteModalWrapper);
