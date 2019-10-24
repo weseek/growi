@@ -238,6 +238,9 @@ class GrowiImportForm extends React.Component {
     const { appContainer, fileName, onPostImport } = this.props;
     const { selectedCollections, optionsMap } = this.state;
 
+    // init progress data
+    this.setState({ progressMap: [], errorsMap: [] });
+
     try {
       // TODO: use appContainer.apiv3.post
       await appContainer.apiv3Post('/import', {
