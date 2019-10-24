@@ -9,6 +9,12 @@ import { withTranslation } from 'react-i18next';
 import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
 
 
+const MODE_ATTR_MAP = {
+  insert: { color: 'info', icon: 'icon-plus', label: 'Insert' },
+  upsert: { color: 'success', icon: 'icon-plus', label: 'Upsert' },
+  flushAndInsert: { color: 'danger', icon: 'icon-refresh', label: 'Flush and Insert' },
+};
+
 export const DEFAULT_MODE = 'insert';
 
 export default class GrowiZipImportItem extends React.Component {
@@ -41,26 +47,19 @@ export default class GrowiZipImportItem extends React.Component {
     onOptionChange(collectionName, option);
   }
 
-  renderModeLabel(mode) {
-    let label = null;
-    switch (mode) {
-      case 'insert':
-        label = <span className="text-info"><i className="icon-plus"></i> Insert</span>;
-        break;
-      case 'upsert':
-        label = <span className="text-success"><i className="icon-plus"></i> Upsert</span>;
-        break;
-      case 'flushAndInsert':
-        label = <span className="text-danger"><i className="icon-refresh"></i> Flush and Insert</span>;
-        break;
-    }
-    return label;
+  renderModeLabel(mode, isColorized = false) {
+    const attrMap = MODE_ATTR_MAP[mode];
+    const className = isColorized ? `text-${attrMap.color}` : '';
+    return <span className={className}><i className={attrMap.icon}></i> {attrMap.label}</span>;
   }
 
   renderControls() {
     const {
       collectionName, option, isSelected,
     } = this.props;
+
+    const attrMap = MODE_ATTR_MAP[option.mode];
+    const btnColor = `btn-${attrMap.color}`;
 
     return (
       <div className="d-flex justify-content-between align-items-center">
@@ -84,7 +83,7 @@ export default class GrowiZipImportItem extends React.Component {
           Mode:&nbsp;
           <div className="dropdown d-inline-block">
             <button
-              className="btn btn-default btn-xs dropdown-toggle"
+              className={`btn ${btnColor} btn-xs dropdown-toggle`}
               type="button"
               id="ddmMode"
               data-toggle="dropdown"
@@ -99,7 +98,7 @@ export default class GrowiZipImportItem extends React.Component {
                 return (
                   <li key={`buttonMode_${mode}`}>
                     <a href="#" onClick={() => this.modeSelectedHandler(mode)}>
-                      {this.renderModeLabel(mode)}
+                      {this.renderModeLabel(mode, true)}
                     </a>
                   </li>
                 );
