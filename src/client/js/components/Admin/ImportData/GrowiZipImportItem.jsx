@@ -24,6 +24,7 @@ export default class GrowiZipImportItem extends React.Component {
 
     this.changeHandler = this.changeHandler.bind(this);
     this.modeSelectedHandler = this.modeSelectedHandler.bind(this);
+    this.errorLinkClickedHandler = this.errorLinkClickedHandler.bind(this);
   }
 
   changeHandler(e) {
@@ -45,6 +46,16 @@ export default class GrowiZipImportItem extends React.Component {
     option.mode = mode;
 
     onOptionChange(collectionName, option);
+  }
+
+  errorLinkClickedHandler() {
+    const { collectionName, onErrorLinkClicked } = this.props;
+
+    if (onErrorLinkClicked == null) {
+      return;
+    }
+
+    onErrorLinkClicked(collectionName);
   }
 
   renderModeLabel(mode, isColorized = false) {
@@ -131,6 +142,24 @@ export default class GrowiZipImportItem extends React.Component {
     );
   }
 
+  renderBody() {
+    const { isImported } = this.props;
+
+    if (!isImported) {
+      return 'Ready';
+    }
+
+    const { insertedCount, modifiedCount, errorsCount } = this.props;
+    return (
+      <div className="w-100 text-center">
+        <span className="text-info"><strong>{insertedCount}</strong> Inserted</span>,&nbsp;
+        <span className="text-success"><strong>{modifiedCount}</strong> Modified</span>,&nbsp;
+        <a className="text-danger" href="#" onClick={this.errorLinkClickedHandler}><u><strong>{errorsCount}</strong> Failed</u></a>
+      </div>
+    );
+
+  }
+
   render() {
     const {
       isSelected,
@@ -150,7 +179,7 @@ export default class GrowiZipImportItem extends React.Component {
           <>
             {this.renderProgressBar()}
             <div className="panel-body">
-              Ready
+              {this.renderBody()}
             </div>
           </>
         ) }
@@ -173,6 +202,7 @@ GrowiZipImportItem.propTypes = {
 
   onChange: PropTypes.func,
   onOptionChange: PropTypes.func,
+  onErrorLinkClicked: PropTypes.func,
 };
 
 GrowiZipImportItem.defaultProps = {
