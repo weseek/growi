@@ -188,8 +188,8 @@ class UserInviteModal extends React.Component {
 
 
     return (
-      <Modal show={adminUsersContainer.state.isUserInviteModalShown} toggle={this.onToggleModal}>
-        <ModalHeader isOpen={this.props.onToggleModal} className="modal-header" closeButton>
+      <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown} toggle={this.props.onToggleModal}>
+        <ModalHeader toggle={this.props.onToggleModal} className="modal-header">
           { t('user_management.invite_users') }
         </ModalHeader>
         <ModalBody>
