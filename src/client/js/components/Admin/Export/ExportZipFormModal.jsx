@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-// import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 import * as toastr from 'toastr';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -171,12 +173,12 @@ class ExportZipFormModal extends React.Component {
 
     return (
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('export_management.export_collections')}</Modal.Title>
-        </Modal.Header>
+        <ModalHeader closeButton>
+          {t('export_management.export_collections')}
+        </ModalHeader>
 
         <form onSubmit={this.export}>
-          <Modal.Body>
+          <ModalBody>
             <div className="row">
               <div className="col-sm-12">
                 <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
@@ -212,12 +214,12 @@ class ExportZipFormModal extends React.Component {
                 { this.renderOthers() }
               </div>
             </div>
-          </Modal.Body>
+          </ModalBody>
 
-          <Modal.Footer>
+          <ModalFooter>
             <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
             <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
-          </Modal.Footer>
+          </ModalFooter>
         </form>
       </Modal>
     );
