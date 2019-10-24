@@ -5,6 +5,7 @@ const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-lin
 const path = require('path');
 const multer = require('multer');
 
+// eslint-disable-next-line no-unused-vars
 const { ObjectId } = require('mongoose').Types;
 
 const express = require('express');
@@ -148,6 +149,24 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Import]
    *      description: import a collection from a zipped json
+   *      parameters:
+   *        - name: fileName
+   *          in: path
+   *          description: the file name of zip file
+   *          required: true
+   *          schema:
+   *            type: string
+   *        - name: collections
+   *          description: collection names to import
+   *          required: true
+   *          schema:
+   *            type: array
+   *            items:
+   *              type: string
+   *        - name: optionsMap
+   *          description: the map object of importing option
+   *          schema:
+   *            type: object
    *      responses:
    *        200:
    *          description: the data is successfully imported
@@ -164,7 +183,7 @@ module.exports = (crowi) => {
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
 
-    const { fileName, collections, schema } = req.body;
+    const { fileName, collections, optionsMap } = req.body;
     const zipFile = importService.getFile(fileName);
 
     /*
@@ -201,21 +220,24 @@ module.exports = (crowi) => {
       return res.apiv3Err(err);
     }
 
-    // generate maps to import
-    const jsonFileNamesMap = {};
-    const overwriteParamsMap = {};
+    // generate maps of ImportOptions to import
+    const importOptionsMap = {};
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
-      jsonFileNamesMap[collectionName] = fileName;
+      const options = optionsMap[collectionName];
 
-      const overwriteParams = overwriteParamsFn(collectionName, schema[collectionName], req);
-      overwriteParamsMap[collectionName] = overwriteParams;
+      // generate options
+      const importOptions = importService.generateImportOptions(options.mode);
+      importOptions.jsonFileName = fileName;
+      importOptions.overwriteParams = overwriteParamsFn(collectionName, options.schema, req);
+
+      importOptionsMap[collectionName] = importOptions;
     });
 
     /*
      * import
      */
     try {
-      importService.import(collections, jsonFileNamesMap, overwriteParamsMap);
+      importService.import(collections, importOptionsMap);
       return res.apiv3();
     }
     catch (err) {
