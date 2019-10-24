@@ -362,7 +362,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = 'Error occurred in fetching external-account list';
       logger.error(msg, err);
-      const errMsg = Object.assign(msg, err);
+      const errMsg = Object.assign(msg, err.message);
       return res.apiv3Err(new ErrorV3(errMsg, 'external-account-list-fetch-failed'));
     }
   });
@@ -406,7 +406,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = 'Error occurred in deleting a external account';
       logger.error(msg, err);
-      const errMsg = Object.assign(msg, err);
+      const errMsg = Object.assign(msg, err.message);
       return res.apiv3Err(new ErrorV3(errMsg, 'extenral-account-delete-failed'));
     }
   });
