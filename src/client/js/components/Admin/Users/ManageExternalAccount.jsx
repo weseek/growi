@@ -10,7 +10,7 @@ class ManageExternalAccount extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // TODO GW-417
     this.state = {
     };
   }
@@ -58,7 +58,7 @@ class ManageExternalAccount extends React.Component {
               <th width="70px"></th>
             </tr>
           </thead>
-          {/* TODO GW-328 */}
+          {/* TODO GW-417 */}
         </table>
       </Fragment>
     );
