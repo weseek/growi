@@ -2,9 +2,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
-import {
-  Button,
-} from 'reactstrap';
 
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -206,9 +203,9 @@ class ExportPage extends React.Component {
       <Fragment>
         <h2>{t('Export Data')}</h2>
 
-        <Button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
+        <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
           {t('export_management.create_new_exported_data')}
-        </Button>
+        </button>
 
         { showExportingData && (
           <div className="mt-5">

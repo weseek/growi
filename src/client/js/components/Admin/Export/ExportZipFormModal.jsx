@@ -145,25 +145,26 @@ class ExportZipFormModal extends React.Component {
     const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
 
     return (
-      <div className={`row checkbox ${checkboxColor}`}>
-        {collectionNames.map((collectionName) => {
-          return (
-            <div className="col-xs-6 my-1" key={collectionName}>
-              <input
-                type="checkbox"
-                id={collectionName}
-                name={collectionName}
-                className="form-check-input"
-                value={collectionName}
-                checked={this.state.selectedCollections.has(collectionName)}
-                onChange={this.toggleCheckbox}
-              />
-              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
-                {collectionName}
-              </label>
-            </div>
-          );
-        })}
+      <div className={`checkbox ${checkboxColor}`}>
+        <div className="row">
+          {collectionNames.map((collectionName) => {
+            return (
+              <div className="col-sm-6 my-1" key={collectionName}>
+                <input
+                  type="checkbox"
+                  id={collectionName}
+                  name={collectionName}
+                  value={collectionName}
+                  checked={this.state.selectedCollections.has(collectionName)}
+                  onChange={this.toggleCheckbox}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+                  {collectionName}
+                </label>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -172,8 +173,8 @@ class ExportZipFormModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <ModalHeader closeButton>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader toggle={this.props.onClose}>
           {t('export_management.export_collections')}
         </ModalHeader>
 
@@ -190,26 +191,26 @@ class ExportZipFormModal extends React.Component {
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>Page Collections</legend>
                 { this.renderGroups(GROUPS_PAGE) }
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>User Collections</legend>
                 { this.renderGroups(GROUPS_USER, 'danger') }
                 { this.renderWarnForUser() }
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>Config Collections</legend>
                 { this.renderGroups(GROUPS_CONFIG) }
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>Other Collections</legend>
                 { this.renderOthers() }
               </div>
