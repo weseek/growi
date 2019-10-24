@@ -15,6 +15,7 @@ class ManageExternalAccount extends React.Component {
     super(props);
     this.xss = window.xss;
     this.handlePage = this.handlePage.bind(this);
+    this.removeExtenalAccount = this.removeExtenalAccount.bind(this);
   }
 
   async handlePage(selectedPage) {
@@ -23,12 +24,6 @@ class ManageExternalAccount extends React.Component {
     }
     catch (err) {
       toastError(err);
-    }
-  }
-
-  async checkPassword(password) {
-    if (password != null) {
-      return;
     }
   }
 
@@ -62,7 +57,7 @@ class ManageExternalAccount extends React.Component {
             <tr>
               <th width="120px">{ t('user_management.authentication_provider') }</th>
               <th><code>accountId</code></th>
-              <th>{ t('user_management.related_username')}</th>
+              <th>{ t('user_management.related_username', 'username') }</th>
               <th>
                 { t('user_management.password_setting') }
                 <div
