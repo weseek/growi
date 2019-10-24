@@ -3,9 +3,9 @@
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
-const mongoosePaginate = require('mongoose-paginate');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
@@ -426,17 +426,6 @@ module.exports = function(crowi) {
       });
   };
 
-  userSchema.statics.findUsersWithPagination = async function(options) {
-    const defaultOptions = {
-      sort: { status: 1, username: 1, createdAt: 1 },
-      page: 1,
-      limit: PAGE_ITEMS,
-    };
-    const mergedOptions = Object.assign(defaultOptions, options);
-
-    return this.paginate({ status: { $ne: STATUS_DELETED } }, mergedOptions);
-  };
-
   userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
     const status = options.status || null;
     const emailPartRegExp = new RegExp(emailPart.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
@@ -504,15 +493,12 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const { aclService } = crowi;
+    const { configManager } = crowi;
 
-    const userUpperLimit = aclService.userUpperLimit();
-    if (userUpperLimit === 0) {
-      return false;
-    }
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
     const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
-    if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
+    if (userUpperLimit <= activeUsers) {
       return true;
     }
 

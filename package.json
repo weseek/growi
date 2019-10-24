@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.5.17-RC",
+  "version": "3.5.18-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -20,7 +20,7 @@
     "url": "https://github.com/weseek/growi/issues"
   },
   "scripts": {
-    "build:apiv3:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js src/server/routes/apiv3/**/*.js",
+    "build:apiv3:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js src/server/**/*.js",
     "build:dev:app:watch": "npm run build:dev:app -- --watch",
     "build:dev:app": "env-cmd -f config/env.dev.js webpack --config config/webpack.dev.js --progress",
     "build:dev:dll": "webpack --config config/webpack.dev.dll.js",
@@ -72,6 +72,7 @@
     "@google-cloud/storage": "^3.3.0",
     "JSONStream": "^1.3.5",
     "archiver": "^3.1.1",
+    "array.prototype.flatmap": "^1.2.2",
     "async": "^3.0.1",
     "aws-sdk": "^2.88.0",
     "axios": "^0.19.0",
@@ -113,7 +114,7 @@
     "module-alias": "^2.0.6",
     "mongoose": "5.4.4",
     "mongoose-gridfs": "^1.2.2",
-    "mongoose-paginate": "^5.0.3",
+    "mongoose-paginate-v2": "^1.3.2",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "~1.4.0",
     "multer-autoreap": "^1.0.3",

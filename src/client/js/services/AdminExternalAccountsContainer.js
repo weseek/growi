@@ -34,6 +34,22 @@ export default class AdminExternalAccountContainer extends Container {
   }
 
   /**
+   * update external-account
+   *
+   * @memberOf AdminExternalAccountsContainer
+   * @param {object} param update param for external account
+   * @return {object} response object
+   */
+  async updateExternalAccount(param) {
+    const res = await this.appContainer.apiv3.put(`/users/external-account/${this.state.externalAccounts._id}`, param);
+    const { exteranalAccounts } = res.data;
+
+    await this.setState({ exteranalAccounts });
+
+    return res;
+  }
+
+  /**
    * syncExternalAccounts of selectedPage
    * @memberOf AdminExternalAccountsContainer
    * @param {number} selectedPage

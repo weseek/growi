@@ -753,12 +753,17 @@
     "import_form_growi": "Import from GROWI",
     "growi_settings": {
       "overwrite_documents": "Imported documents will overwrite existing documents",
-      "zip_file": "Zip File",
+      "zip_file": "Exported Zip File",
       "uploaded_data": "Uploaded Data",
       "extracted_file": "Extracted File",
       "collection": "Collection",
       "upload": "Upload",
-      "discard": "Discard Uploaded Data"
+      "discard": "Discard Uploaded Data",
+      "errors": {
+        "at_least_one": "Select one or more collections.",
+        "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
+        "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
+      }
     },
     "esa_settings": {
       "team_name": "Team name",
@@ -783,7 +788,6 @@
     "rebuild_description_3":"This may take a while."
   },
   "export_management": {
-    "beta_warning": "This function is Beta.",
     "exporting_data_list": "Exporting Data List",
     "exported_data_list": "Exported Data List",
     "export_collections": "Export Collections",

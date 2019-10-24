@@ -9,6 +9,8 @@ const router = express.Router();
 const { body } = require('express-validator/check');
 const { isEmail } = require('validator');
 
+const PAGE_ITEMS = 50;
+
 const validator = {};
 
 /**
@@ -16,7 +18,6 @@ const validator = {};
  *  tags:
  *    name: Users
  */
-
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -47,21 +48,27 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    users:
-   *                      type: object
-   *                      description: a result of `Users.find`
+   *                    paginateResult:
+   *                      $ref: '#/components/schemas/PaginateResult'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const page = parseInt(req.query.page) || 1;
+
     try {
-      const page = parseInt(req.query.page) || 1;
-      const result = await User.findUsersWithPagination({ page });
-      const { docs: users, total: totalUsers, limit: pagingLimit } = result;
-      return res.apiv3({ users, totalUsers, pagingLimit });
+      const paginateResult = await User.paginate(
+        { status: { $ne: User.STATUS_DELETED } },
+        {
+          sort: { status: 1, username: 1, createdAt: 1 },
+          page,
+          limit: PAGE_ITEMS,
+        },
+      );
+      return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group list';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
     }
   });
 
@@ -354,8 +361,9 @@ module.exports = (crowi) => {
     }
     catch (err) {
       const msg = 'Error occurred in fetching external-account list';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'external-account-list-fetch-failed'));
+      logger.error(msg, err);
+      const errMsg = Object.assign(msg, err.message);
+      return res.apiv3Err(new ErrorV3(errMsg, 'external-account-list-fetch-failed'));
     }
   });
 
@@ -398,7 +406,8 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = 'Error occurred in deleting a external account';
       logger.error(msg, err);
-      return res.apiv3Err(new ErrorV3(msg, 'extenral-account-delete-failed'));
+      const errMsg = Object.assign(msg, err.message);
+      return res.apiv3Err(new ErrorV3(errMsg, 'extenral-account-delete-failed'));
     }
   });
   return router;
