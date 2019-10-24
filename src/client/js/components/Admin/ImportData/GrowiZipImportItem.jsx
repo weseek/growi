@@ -97,7 +97,7 @@ export default class GrowiZipImportItem extends React.Component {
             <ul className="dropdown-menu" aria-labelledby="ddmMode">
               { ['insert', 'upsert', 'flushAndInsert'].map((mode) => {
                 return (
-                  <li>
+                  <li key={`buttonMode_${mode}`}>
                     <a href="#" onClick={() => this.modeSelectedHandler(mode)}>
                       {this.renderModeLabel(mode)}
                     </a>
