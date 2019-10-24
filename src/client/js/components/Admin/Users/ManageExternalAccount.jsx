@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
-import { toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
 class ManageExternalAccount extends React.Component {
@@ -14,7 +15,9 @@ class ManageExternalAccount extends React.Component {
     super(props);
     // TODO GW-417
     this.state = {
+      isPassword: false,
     };
+    this.xss = window.xss;
     this.handlePage = this.handlePage.bind(this);
   }
 
@@ -27,8 +30,25 @@ class ManageExternalAccount extends React.Component {
     }
   }
 
+  async checkPassword(password) {
+    if (password != null) {
+      return;
+    }
+  }
+
+  // remove external-account
+  async removeExtenalAccount(externalAccountId) {
+    try {
+      await this.props.adminExternalAccountsContainer.removeExternal(externalAccountId);
+      toastSuccess(`Removed "${this.xss.process(externalAccountId)}"`);
+    }
+    catch (err) {
+      toastError(new Error(`Unable to remove "${this.xss.process(externalAccountId)}"`));
+    }
+  }
+
   render() {
-    const { t } = this.props;
+    const { t, adminExternalAccountsContainer } = this.props;
 
     return (
       <Fragment>
@@ -69,7 +89,31 @@ class ManageExternalAccount extends React.Component {
               <th width="70px"></th>
             </tr>
           </thead>
-          {/* TODO GW-417 */}
+          <tbody>
+            {adminExternalAccountsContainer.state.exteranalAccounts.map((ea) => {
+              const { exteranalAccount } = ea;
+              return (
+                <tr>
+                  <td>{exteranalAccount.providerType}</td>
+                  <td>
+                    <strong>{exteranalAccount.accountId}</strong>
+                  </td>
+                  <td>
+                    <strong>{exteranalAccount.user.username}</strong>
+                  </td>
+                  <td>
+                    <span className="label label-info">
+                    </span>
+                    <span className="label label-warning">
+                    </span>
+                  </td>
+                  <td>
+                    {dateFnsFormat(new Date(exteranalAccount.createdAt), 'yyyy-MM-dd')}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
       </Fragment>
     );
