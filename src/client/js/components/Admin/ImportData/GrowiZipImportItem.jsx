@@ -81,13 +81,20 @@ export default class GrowiZipImportItem extends React.Component {
         </div>
         {/* right */}
         <span className="d-inline-flex align-items-center">
-          Mode:
+          Mode:&nbsp;
           <div className="dropdown d-inline-block">
-            <button className="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button
+              className="btn btn-default btn-xs dropdown-toggle"
+              type="button"
+              id="ddmMode"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
               {this.renderModeLabel(option.mode)}
               <span className="caret ml-2"></span>
             </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <ul className="dropdown-menu" aria-labelledby="ddmMode">
               { ['insert', 'upsert', 'flushAndInsert'].map((mode) => {
                 return (
                   <li>
