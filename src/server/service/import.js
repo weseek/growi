@@ -199,9 +199,14 @@ class ImportService {
         // exec
         const { insertedCount, modifiedCount, errors } = await execUnorderedBulkOpSafely(unorderedBulkOp);
         logger.debug(`Importing ${collectionName}. Inserted: ${insertedCount}. Modified: ${modifiedCount}. Failed: ${errors.length}.`);
-        collectionProgress.currentCount += insertedCount + modifiedCount;
 
-        emitProgressEvent(errors);
+        const increment = insertedCount + modifiedCount + errors.length;
+        collectionProgress.currentCount += increment;
+        collectionProgress.totalCount += increment;
+        collectionProgress.insertedCount += insertedCount;
+        collectionProgress.modifiedCount += modifiedCount;
+
+        emitProgressEvent(collectionName, collectionProgress, errors);
 
         callback();
       },
@@ -250,17 +255,9 @@ class ImportService {
    * emit progress event
    * @param {object} appendedErrors key: collection name, value: array of error object
    */
-  emitProgressEvent(appendedErrors) {
-    const { currentCount, totalCount, progressList } = this.currentProgressingStatus;
-    const data = {
-      currentCount,
-      totalCount,
-      progressList,
-      appendedErrors,
-    };
-
+  emitProgressEvent(collectionName, collectionProgress, appendedErrors) {
     // send event (in progress in global)
-    this.adminEvent.emit('onProgressForImport', data);
+    this.adminEvent.emit('onProgressForImport', { collectionName, collectionProgress, appendedErrors });
   }
 
   /**

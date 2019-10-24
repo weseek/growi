@@ -33,7 +33,8 @@ class GrowiImportForm extends React.Component {
     this.initialState = {
       isImporting: false,
       isImported: false,
-      progressList: [],
+      progressMap: [],
+      errorsMap: [],
 
       collectionNameToFileNameMap: {},
       selectedCollections: new Set(),
@@ -75,18 +76,26 @@ class GrowiImportForm extends React.Component {
 
     // websocket event
     // eslint-disable-next-line object-curly-newline
-    socket.on('admin:onProgressForImport', ({ currentCount, totalCount, progressList, appendedErrors }) => {
-      console.log(progressList);
-      console.log(appendedErrors);
+    socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
+      console.log('onProgressForImport');
+
+      const { progressMap, errorsMap } = this.state;
+      progressMap[collectionName] = collectionProgress;
+
+      const errors = errorsMap[collectionName] || [];
+      errorsMap[collectionName] = errors.concat(appendedErrors);
 
       this.setState({
         isImporting: true,
-        progressList,
+        progressMap,
+        errorsMap,
       });
     });
 
     // websocket event
     socket.on('admin:onTerminateForImport', () => {
+      console.log('onTerminateForImport');
+
       this.setState({
         isImporting: false,
         isImported: true,
@@ -297,7 +306,7 @@ class GrowiImportForm extends React.Component {
             </ul>
           </div>
         ) }
-        { this.renderCheckboxes(collectionNames) }
+        { this.renderImportItems(collectionNames) }
         { this.renderWarnForGroups(errors, `warnFor${groupName}`) }
       </div>
     );
@@ -311,15 +320,32 @@ class GrowiImportForm extends React.Component {
     return this.renderGroups(collectionNames, 'Other', this.state.errorsForOtherGroups);
   }
 
-  renderCheckboxes(collectionNames) {
-    const { selectedCollections, optionsMap } = this.state;
+  renderImportItems(collectionNames) {
+    const {
+      isImporting,
+      isImported,
+      progressMap,
+      errorsMap,
+
+      selectedCollections,
+      optionsMap,
+    } = this.state;
 
     return (
       <div className="row">
         {collectionNames.map((collectionName) => {
+          const collectionProgress = progressMap[collectionName] || {};
+          const errors = errorsMap[collectionName] || [];
+
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
               <GrowiZipImportItem
+                isImporting={isImporting}
+                isImported={isImported}
+                insertedCount={collectionProgress.insertedCount}
+                modifiedCount={collectionProgress.modifiedCount}
+                errorsCount={errors.length}
+
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
                 option={optionsMap[collectionName]}
