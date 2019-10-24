@@ -37,7 +37,7 @@ class GrowiImportForm extends React.Component {
 
       collectionNameToFileNameMap: {},
       selectedCollections: new Set(),
-      optionMap: {},
+      optionsMap: {},
 
       canImport: false,
       errorsForPageGroups: [],
@@ -49,7 +49,7 @@ class GrowiImportForm extends React.Component {
     this.props.innerFileStats.forEach((fileStat) => {
       const { fileName, collectionName } = fileStat;
       this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
-      this.initialState.optionMap[collectionName] = new GrowiZipImportOption(DEFAULT_MODE);
+      this.initialState.optionsMap[collectionName] = new GrowiZipImportOption(DEFAULT_MODE);
     });
 
     this.state = this.initialState;
@@ -121,9 +121,9 @@ class GrowiImportForm extends React.Component {
   }
 
   updateOption(collectionName, option) {
-    const newOptionMap = { ...this.state.optionMap };
-    newOptionMap[collectionName] = option;
-    this.setState({ optionMap: newOptionMap });
+    const newOptionsMap = { ...this.state.optionsMap };
+    newOptionsMap[collectionName] = option;
+    this.setState({ optionsMap: newOptionsMap });
   }
 
   async validate() {
@@ -223,14 +223,14 @@ class GrowiImportForm extends React.Component {
 
   async import() {
     const { appContainer, fileName, onPostImport } = this.props;
-    const { selectedCollections, schema } = this.state;
+    const { selectedCollections, optionsMap } = this.state;
 
     try {
       // TODO: use appContainer.apiv3.post
       await appContainer.apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),
-        schema,
+        optionsMap,
       });
 
       if (onPostImport != null) {
@@ -312,7 +312,7 @@ class GrowiImportForm extends React.Component {
   }
 
   renderCheckboxes(collectionNames) {
-    const { selectedCollections, optionMap } = this.state;
+    const { selectedCollections, optionsMap } = this.state;
 
     return (
       <div className="row">
@@ -322,7 +322,7 @@ class GrowiImportForm extends React.Component {
               <GrowiZipImportItem
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
-                option={optionMap[collectionName]}
+                option={optionsMap[collectionName]}
                 onChange={this.toggleCheckbox}
                 onOptionChange={this.updateOption}
               />
