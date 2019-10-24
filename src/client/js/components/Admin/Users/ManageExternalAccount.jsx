@@ -13,10 +13,6 @@ class ManageExternalAccount extends React.Component {
 
   constructor(props) {
     super(props);
-    // TODO GW-417
-    this.state = {
-      isPassword: false,
-    };
     this.xss = window.xss;
     this.handlePage = this.handlePage.bind(this);
   }
@@ -91,24 +87,45 @@ class ManageExternalAccount extends React.Component {
           </thead>
           <tbody>
             {adminExternalAccountsContainer.state.exteranalAccounts.map((ea) => {
-              const { exteranalAccount } = ea;
+              const { externalAccount } = ea;
               return (
                 <tr>
-                  <td>{exteranalAccount.providerType}</td>
+                  <td>{externalAccount.providerType}</td>
                   <td>
-                    <strong>{exteranalAccount.accountId}</strong>
+                    <strong>{externalAccount.accountId}</strong>
                   </td>
                   <td>
-                    <strong>{exteranalAccount.user.username}</strong>
+                    <strong>{externalAccount.user.username}</strong>
                   </td>
                   <td>
-                    <span className="label label-info">
-                    </span>
-                    <span className="label label-warning">
-                    </span>
+                    { externalAccount.password
+                      ? (
+                        <span className="label label-info">
+                          { t('user_management.set') }
+                        </span>
+                      )
+                      : (
+                        <span className="label label-warning">
+                          { t('user_management.unset') }
+                        </span>
+                      )
+                    }
                   </td>
+                  <td>{dateFnsFormat(new Date(externalAccount.createdAt), 'yyyy-MM-dd')}</td>
                   <td>
-                    {dateFnsFormat(new Date(exteranalAccount.createdAt), 'yyyy-MM-dd')}
+                    <div className="btn-group admin-user-menu">
+                      <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <i className="icon-settings"></i> <span className="caret"></span>
+                      </button>
+                      <ul className="dropdown-menu" role="menu">
+                        <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
+                        <li>
+                          <a onClick={() => { return this.removeExtenalAccount(externalAccount.accountId) }}>
+                            <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
                   </td>
                 </tr>
               );
@@ -121,14 +138,15 @@ class ManageExternalAccount extends React.Component {
 
 }
 
-const ManageExternalAccountWrapper = (props) => {
-  return createSubscribedElement(ManageExternalAccount, props, [AppContainer]);
-};
-
 ManageExternalAccount.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
+
+const ManageExternalAccountWrapper = (props) => {
+  return createSubscribedElement(ManageExternalAccount, props, [AppContainer, AdminExternalAccountsContainer]);
+};
+
 
 export default withTranslation()(ManageExternalAccountWrapper);
