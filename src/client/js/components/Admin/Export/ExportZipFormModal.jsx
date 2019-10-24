@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-// import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 import * as toastr from 'toastr';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -143,25 +145,26 @@ class ExportZipFormModal extends React.Component {
     const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
 
     return (
-      <div className={`row checkbox ${checkboxColor}`}>
-        {collectionNames.map((collectionName) => {
-          return (
-            <div className="col-xs-6 my-1" key={collectionName}>
-              <input
-                type="checkbox"
-                id={collectionName}
-                name={collectionName}
-                className="form-check-input"
-                value={collectionName}
-                checked={this.state.selectedCollections.has(collectionName)}
-                onChange={this.toggleCheckbox}
-              />
-              <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
-                {collectionName}
-              </label>
-            </div>
-          );
-        })}
+      <div className={`checkbox ${checkboxColor}`}>
+        <div className="row">
+          {collectionNames.map((collectionName) => {
+            return (
+              <div className="col-sm-6 my-1" key={collectionName}>
+                <input
+                  type="checkbox"
+                  id={collectionName}
+                  name={collectionName}
+                  value={collectionName}
+                  checked={this.state.selectedCollections.has(collectionName)}
+                  onChange={this.toggleCheckbox}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+                  {collectionName}
+                </label>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -170,13 +173,13 @@ class ExportZipFormModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('export_management.export_collections')}</Modal.Title>
-        </Modal.Header>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader toggle={this.props.onClose}>
+          {t('export_management.export_collections')}
+        </ModalHeader>
 
         <form onSubmit={this.export}>
-          <Modal.Body>
+          <ModalBody>
             <div className="row">
               <div className="col-sm-12">
                 <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
@@ -188,36 +191,36 @@ class ExportZipFormModal extends React.Component {
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>Page Collections</legend>
                 { this.renderGroups(GROUPS_PAGE) }
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>User Collections</legend>
                 { this.renderGroups(GROUPS_USER, 'danger') }
                 { this.renderWarnForUser() }
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>Config Collections</legend>
                 { this.renderGroups(GROUPS_CONFIG) }
               </div>
             </div>
             <div className="row mt-4">
-              <div className="col-xs-12">
+              <div className="col-sm-12">
                 <legend>Other Collections</legend>
                 { this.renderOthers() }
               </div>
             </div>
-          </Modal.Body>
+          </ModalBody>
 
-          <Modal.Footer>
+          <ModalFooter>
             <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
             <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
-          </Modal.Footer>
+          </ModalFooter>
         </form>
       </Modal>
     );
