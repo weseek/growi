@@ -163,6 +163,8 @@ class UserGroupPage extends React.Component {
           isShow={this.state.isDeleteModalShow}
           onShow={this.showDeleteModal}
           onHide={this.hideDeleteModal}
+          isShown={this.state.isDeleteConfirmModalShown}
+          cancel={this.closeDeleteConfirmModal}
         />
       </Fragment>
     );
