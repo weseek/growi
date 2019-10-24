@@ -35,14 +35,6 @@
     </a>
   </li>
 
-  {% if not page.isPortal() %}
-  <li class="nav-item">
-    <a href="?presentation=1" class="nav-link toggle-presentation">
-      <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
-    </a>
-  </li>
-{% endif %}
-
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
     <li class="nav-item dropdown">
@@ -77,6 +69,14 @@
       </u>
     </li>
     {% endif %}
+  {% endif %}
+
+  {% if not page.isPortal() %}
+    <li class="nav-item">
+      <a href="?presentation=1" class="nav-link toggle-presentation">
+        <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
+      </a>
+    </li>
   {% endif %}
 
 </ul>
