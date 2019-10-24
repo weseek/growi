@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
-// import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -150,20 +151,18 @@ class UserGroupDeleteModal extends React.Component {
 
     return (
       <Modal show={this.props.isShow} onHide={this.onHide}>
-        <Modal.Header className="modal-header bg-danger" closeButton>
-          <Modal.Title>
-            <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader className="modal-header bg-danger" closeButton>
+          <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
+        </ModalHeader>
+        <ModalBody>
           <div>
             <span className="font-weight-bold">{t('user_group_management.group_name')}</span> : &quot;{this.props.deleteUserGroup.name}&quot;
           </div>
           <div className="text-danger mt-5">
             {t('user_group_management.group_and_pages_not_retrievable')}
           </div>
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <form className="d-flex justify-content-between" onSubmit={this.handleSubmit}>
             <div className="d-flex">
               {this.renderPageActionSelector()}
@@ -173,7 +172,7 @@ class UserGroupDeleteModal extends React.Component {
               <i className="icon icon-fire"></i> {t('Delete')}
             </button>
           </form>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

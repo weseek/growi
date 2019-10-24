@@ -5,7 +5,9 @@ import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // import Button from 'react-bootstrap/es/Button';
-// import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter, Button,
+} from 'reactstrap';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -184,21 +186,20 @@ class UserInviteModal extends React.Component {
     const { t, adminUsersContainer } = this.props;
     const { invitedEmailList } = this.state;
 
+
     return (
       <Modal show={adminUsersContainer.state.isUserInviteModalShown} onHide={this.onToggleModal}>
-        <Modal.Header className="modal-header" closeButton>
-          <Modal.Title>
-            { t('user_management.invite_users') }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader className="modal-header" closeButton>
+          { t('user_management.invite_users') }
+        </ModalHeader>
+        <ModalBody>
           {invitedEmailList == null ? this.renderModalBody()
            : this.renderCreatedModalBody()}
-        </Modal.Body>
-        <Modal.Footer className="d-flex">
+        </ModalBody>
+        <ModalFooter className="d-flex">
           {invitedEmailList == null ? this.renderModalFooter()
            : this.renderCreatedModalFooter()}
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
