@@ -20,14 +20,6 @@ export default class GrowiZipImportItem extends React.Component {
     this.modeSelectedHandler = this.modeSelectedHandler.bind(this);
   }
 
-  get currentModeLabel() {
-    const { option } = this.props;
-    const { mode } = option;
-
-    // convert 'insert' -> 'Insert'
-    return mode.substring(0, 1).toUpperCase() + mode.substring(1);
-  }
-
   changeHandler(e) {
     const { collectionName, onChange } = this.props;
 
@@ -49,15 +41,31 @@ export default class GrowiZipImportItem extends React.Component {
     onOptionChange(collectionName, option);
   }
 
+  renderModeLabel(mode) {
+    let label = null;
+    switch (mode) {
+      case 'insert':
+        label = <span className="text-info"><i className="icon-plus"></i> Insert</span>;
+        break;
+      case 'upsert':
+        label = <span className="text-success"><i className="icon-plus"></i> Upsert</span>;
+        break;
+      case 'flushAndInsert':
+        label = <span className="text-danger"><i className="icon-refresh"></i> Flush and Insert</span>;
+        break;
+    }
+    return label;
+  }
+
   renderControls() {
     const {
-      collectionName, isSelected,
+      collectionName, option, isSelected,
     } = this.props;
 
     return (
       <div className="d-flex justify-content-between align-items-center">
         {/* left */}
-        <div className="checkbox checkbox-info">
+        <div className="checkbox checkbox-info my-0">
           <input
             type="checkbox"
             id={collectionName}
@@ -76,13 +84,19 @@ export default class GrowiZipImportItem extends React.Component {
           Mode:
           <div className="dropdown d-inline-block">
             <button className="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              {this.currentModeLabel}
+              {this.renderModeLabel(option.mode)}
               <span className="caret ml-2"></span>
             </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-              <li><a href="#" onClick={() => this.modeSelectedHandler('insert')}>Insert</a></li>
-              <li><a href="#" onClick={() => this.modeSelectedHandler('upsert')}>Upsert</a></li>
-              <li><a href="#" onClick={() => this.modeSelectedHandler('flushAndInsert')}>Flush and Insert</a></li>
+              { ['insert', 'upsert', 'flushAndInsert'].map((mode) => {
+                return (
+                  <li>
+                    <a href="#" onClick={() => this.modeSelectedHandler(mode)}>
+                      {this.renderModeLabel(mode)}
+                    </a>
+                  </li>
+                );
+              }) }
             </ul>
           </div>
         </span>

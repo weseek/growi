@@ -138,7 +138,7 @@ class ImportDataPage extends React.Component {
         <GrowiZipImportSection />
 
         <form
-          className="form-horizontal"
+          className="form-horizontal mt-5"
           id="importerSettingFormEsa"
           role="form"
         >

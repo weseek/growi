@@ -358,7 +358,7 @@ class GrowiImportForm extends React.Component {
         { this.renderGroups(GROUPS_CONFIG, 'Config', errorsForConfigGroups) }
         { this.renderOthers() }
 
-        <div className="mt-5 text-center">
+        <div className="mt-4 text-center">
           <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
             { t('importer_management.growi_settings.discard') }
           </button>
