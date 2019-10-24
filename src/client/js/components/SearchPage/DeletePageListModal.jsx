@@ -4,11 +4,6 @@ import PropTypes from 'prop-types';
 // TODO: GW-333
 // import Checkbox from 'react-bootstrap/es/Checkbox';
 
-import {
-  Button,
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
-
 export default class DeletePageListModal extends React.Component {
 
   /*
@@ -55,14 +50,12 @@ export default class DeletePageListModal extends React.Component {
                 className="form-check-input"
                 id="delete-completely"
                 onClick={this.props.toggleDeleteCompletely}
-                inline
               />
               <label className="form-check-label" htmlFor="delete-completely text-danger">Delete completely</label>
             </div>
             <button
               type="button"
               className="btn btn-secondary ml-2"
-              color="secondary"
               onClick={this.props.confirmedToDelete}
             >
               <i className="icon-trash"></i>Delete
