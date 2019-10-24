@@ -41,10 +41,10 @@ class GrowiImportForm extends React.Component {
       optionsMap: {},
 
       canImport: false,
-      errorsForPageGroups: [],
-      errorsForUserGroups: [],
-      errorsForConfigGroups: [],
-      errorsForOtherGroups: [],
+      warnForPageGroups: [],
+      warnForUserGroups: [],
+      warnForConfigGroups: [],
+      warnForOtherGroups: [],
     };
 
     this.props.innerFileStats.forEach((fileStat) => {
@@ -135,13 +135,17 @@ class GrowiImportForm extends React.Component {
     this.setState({ optionsMap: newOptionsMap });
   }
 
+  showErrorsModal(collectionName) {
+
+  }
+
   async validate() {
     // init errors
     await this.setState({
-      errorsForPageGroups: [],
-      errorsForUserGroups: [],
-      errorsForConfigGroups: [],
-      errorsForOtherGroups: [],
+      warnForPageGroups: [],
+      warnForUserGroups: [],
+      warnForConfigGroups: [],
+      warnForOtherGroups: [],
     });
 
     await this.validateCollectionSize();
@@ -151,10 +155,10 @@ class GrowiImportForm extends React.Component {
     await this.validateUserGroupRelations();
 
     const errors = [
-      ...this.state.errorsForPageGroups,
-      ...this.state.errorsForUserGroups,
-      ...this.state.errorsForConfigGroups,
-      ...this.state.errorsForOtherGroups,
+      ...this.state.warnForPageGroups,
+      ...this.state.warnForUserGroups,
+      ...this.state.warnForConfigGroups,
+      ...this.state.warnForOtherGroups,
     ];
     const canImport = errors.length === 0;
 
@@ -163,18 +167,18 @@ class GrowiImportForm extends React.Component {
 
   async validateCollectionSize(validationErrors) {
     const { t } = this.props;
-    const { errorsForOtherGroups, selectedCollections } = this.state;
+    const { warnForOtherGroups, selectedCollections } = this.state;
 
     if (selectedCollections.size === 0) {
-      errorsForOtherGroups.push(t('importer_management.growi_settings.errors.at_least_one'));
+      warnForOtherGroups.push(t('importer_management.growi_settings.errors.at_least_one'));
     }
 
-    this.setState({ errorsForOtherGroups });
+    this.setState({ warnForOtherGroups });
   }
 
   async validatePagesCollectionPairs() {
     const { t } = this.props;
-    const { errorsForPageGroups, selectedCollections } = this.state;
+    const { warnForPageGroups, selectedCollections } = this.state;
 
     const pageRelatedCollectionsLength = ['pages', 'revisions'].filter((collectionName) => {
       return selectedCollections.has(collectionName);
@@ -182,52 +186,52 @@ class GrowiImportForm extends React.Component {
 
     // MUST be included both or neither when importing
     if (pageRelatedCollectionsLength !== 0 && pageRelatedCollectionsLength !== 2) {
-      errorsForPageGroups.push(t('importer_management.growi_settings.errors.page_and_revision'));
+      warnForPageGroups.push(t('importer_management.growi_settings.errors.page_and_revision'));
     }
 
-    this.setState({ errorsForPageGroups });
+    this.setState({ warnForPageGroups });
   }
 
   async validateExternalAccounts() {
     const { t } = this.props;
-    const { errorsForUserGroups, selectedCollections } = this.state;
+    const { warnForUserGroups, selectedCollections } = this.state;
 
     // MUST include also 'users' if 'externalaccounts' is selected
     if (selectedCollections.has('externalaccounts')) {
       if (!selectedCollections.has('users')) {
-        errorsForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Users', condition: 'Externalaccounts' }));
+        warnForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Users', condition: 'Externalaccounts' }));
       }
     }
 
-    this.setState({ errorsForUserGroups });
+    this.setState({ warnForUserGroups });
   }
 
   async validateUserGroups() {
     const { t } = this.props;
-    const { errorsForUserGroups, selectedCollections } = this.state;
+    const { warnForUserGroups, selectedCollections } = this.state;
 
     // MUST include also 'users' if 'usergroups' is selected
     if (selectedCollections.has('usergroups')) {
       if (!selectedCollections.has('users')) {
-        errorsForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Users', condition: 'Usergroups' }));
+        warnForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Users', condition: 'Usergroups' }));
       }
     }
 
-    this.setState({ errorsForUserGroups });
+    this.setState({ warnForUserGroups });
   }
 
   async validateUserGroupRelations() {
     const { t } = this.props;
-    const { errorsForUserGroups, selectedCollections } = this.state;
+    const { warnForUserGroups, selectedCollections } = this.state;
 
     // MUST include also 'usergroups' if 'usergrouprelations' is selected
     if (selectedCollections.has('usergrouprelations')) {
       if (!selectedCollections.has('usergroups')) {
-        errorsForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Usergroups', condition: 'Usergrouprelations' }));
+        warnForUserGroups.push(t('importer_management.growi_settings.errors.depends', { target: 'Usergroups', condition: 'Usergrouprelations' }));
       }
     }
 
-    this.setState({ errorsForUserGroups });
+    this.setState({ warnForUserGroups });
   }
 
   async import() {
@@ -317,7 +321,7 @@ class GrowiImportForm extends React.Component {
       return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
     });
 
-    return this.renderGroups(collectionNames, 'Other', this.state.errorsForOtherGroups);
+    return this.renderGroups(collectionNames, 'Other', this.state.warnForOtherGroups);
   }
 
   renderImportItems(collectionNames) {
@@ -351,6 +355,7 @@ class GrowiImportForm extends React.Component {
                 option={optionsMap[collectionName]}
                 onChange={this.toggleCheckbox}
                 onOptionChange={this.updateOption}
+                onErrorLinkClicked={this.showErrorsModal}
               />
             </div>
           );
@@ -362,7 +367,7 @@ class GrowiImportForm extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { errorsForPageGroups, errorsForUserGroups, errorsForConfigGroups } = this.state;
+    const { warnForPageGroups, warnForUserGroups, warnForConfigGroups } = this.state;
 
     return (
       <>
@@ -379,9 +384,9 @@ class GrowiImportForm extends React.Component {
           </div>
         </form>
 
-        { this.renderGroups(GROUPS_PAGE, 'Page', errorsForPageGroups, { wellContent: t('importer_management.growi_settings.overwrite_documents') }) }
-        { this.renderGroups(GROUPS_USER, 'User', errorsForUserGroups) }
-        { this.renderGroups(GROUPS_CONFIG, 'Config', errorsForConfigGroups) }
+        { this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups, { wellContent: t('importer_management.growi_settings.overwrite_documents') }) }
+        { this.renderGroups(GROUPS_USER, 'User', warnForUserGroups) }
+        { this.renderGroups(GROUPS_CONFIG, 'Config', warnForConfigGroups) }
         { this.renderOthers() }
 
         <div className="mt-4 text-center">
