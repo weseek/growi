@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-// import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
 
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -15,12 +17,12 @@ class UserGroupUserModal extends React.Component {
 
     return (
       <Modal show={userGroupDetailContainer.state.isUserGroupUserModalOpen} onHide={userGroupDetailContainer.closeUserGroupUserModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>{ t('user_group_management.add_user') }</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <ModalHeader closeButton>
+          { t('user_group_management.add_user') }
+        </ModalHeader>
+        <ModalBody>
           <UserGroupUserFormByInput />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }
