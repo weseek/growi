@@ -136,7 +136,7 @@ class ImportService {
     try {
       const promises = collections.map((collectionName) => {
         const importOptions = importOptionsMap[collectionName];
-        return this.importCollection(collections, importOptions);
+        return this.importCollection(collectionName, importOptions);
       });
       await Promise.all(promises);
     }
