@@ -18,6 +18,10 @@ pre.hljs {
     background: #ccc;
     opacity: 0.6;
   }
+
+  @media print {
+    font-family: none;
+  }
 }
 
 // styles for highlightjs-line-numbers
