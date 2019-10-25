@@ -142,6 +142,7 @@ class ImportService {
     }
     finally {
       this.currentProgressingStatus = null;
+      this.emitTerminateEvent();
     }
   }
 
@@ -159,7 +160,6 @@ class ImportService {
     const bulkOperate = this.bulkOperate.bind(this);
     const execUnorderedBulkOpSafely = this.execUnorderedBulkOpSafely.bind(this);
     const emitProgressEvent = this.emitProgressEvent.bind(this);
-    const emitTerminateEvent = this.emitTerminateEvent.bind(this);
 
     const { jsonFileName, overwriteParams } = importOptions;
     const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
@@ -211,10 +211,7 @@ class ImportService {
         callback();
       },
       final(callback) {
-        // TODO: logger.info
-
-        emitTerminateEvent();
-
+        logger.info(`Importing ${collectionName} has terminated.`);
         callback();
       },
     });
