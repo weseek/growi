@@ -114,7 +114,7 @@ export default class GrowiZipImportItem extends React.Component {
             { ['insert', 'upsert', 'flushAndInsert'].map((mode) => {
               return (
                 <li key={`buttonMode_${mode}`}>
-                  <a href="#" onClick={() => this.modeSelectedHandler(mode)}>
+                  <a type="button" role="button" onClick={() => this.modeSelectedHandler(mode)}>
                     {this.renderModeLabel(mode, true)}
                   </a>
                 </li>
