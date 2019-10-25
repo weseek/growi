@@ -11,6 +11,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
 
 import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
+import ErrorViewer from './ErrorViewer';
 
 
 const GROUPS_PAGE = [
@@ -35,9 +36,15 @@ class GrowiImportForm extends React.Component {
       progressMap: [],
       errorsMap: [],
 
-      collectionNameToFileNameMap: {},
       selectedCollections: new Set(),
+
+      // store relations from collection name to file name
+      collectionNameToFileNameMap: {},
+      // store relations from collection name to GrowiZipImportOption instance
       optionsMap: {},
+
+      isErrorsViewerOpen: false,
+      collectionNameForErrorsViewer: null,
 
       canImport: false,
       warnForPageGroups: [],
@@ -62,6 +69,7 @@ class GrowiImportForm extends React.Component {
     this.checkAll = this.checkAll.bind(this);
     this.uncheckAll = this.uncheckAll.bind(this);
     this.updateOption = this.updateOption.bind(this);
+    this.showErrorsViewer = this.showErrorsViewer.bind(this);
     this.validate = this.validate.bind(this);
     this.import = this.import.bind(this);
   }
@@ -134,8 +142,8 @@ class GrowiImportForm extends React.Component {
     this.setState({ optionsMap: newOptionsMap });
   }
 
-  showErrorsModal(collectionName) {
-
+  showErrorsViewer(collectionName) {
+    this.setState({ isErrorsViewerOpen: true, collectionNameForErrorsViewer: collectionName });
   }
 
   async validate() {
@@ -357,7 +365,7 @@ class GrowiImportForm extends React.Component {
                 option={optionsMap[collectionName]}
                 onChange={this.toggleCheckbox}
                 onOptionChange={this.updateOption}
-                onErrorLinkClicked={this.showErrorsModal}
+                onErrorLinkClicked={this.showErrorsViewer}
               />
             </div>
           );
@@ -366,6 +374,18 @@ class GrowiImportForm extends React.Component {
     );
   }
 
+  renderErrorsViewer() {
+    const { isErrorsViewerOpen, errorsMap, collectionNameForErrorsViewer } = this.state;
+    const errors = errorsMap[collectionNameForErrorsViewer];
+
+    return (
+      <ErrorViewer
+        isOpen={isErrorsViewerOpen}
+        onClose={() => this.setState({ isErrorsViewerOpen: false })}
+        errors={errors}
+      />
+    );
+  }
 
   render() {
     const { t } = this.props;
@@ -399,6 +419,8 @@ class GrowiImportForm extends React.Component {
             { t('importer_management.import') }
           </button>
         </div>
+
+        { this.renderErrorsViewer() }
       </>
     );
   }
