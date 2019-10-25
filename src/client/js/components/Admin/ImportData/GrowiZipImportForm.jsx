@@ -350,17 +350,17 @@ class GrowiImportForm extends React.Component {
     return (
       <div className="row">
         {collectionNames.map((collectionName) => {
-          const collectionProgress = progressMap[collectionName] || {};
-          const errors = errorsMap[collectionName] || [];
+          const collectionProgress = progressMap[collectionName];
+          const errors = errorsMap[collectionName];
 
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
               <GrowiZipImportItem
                 isImporting={isImporting}
-                isImported={isImported}
-                insertedCount={collectionProgress.insertedCount}
-                modifiedCount={collectionProgress.modifiedCount}
-                errorsCount={errors.length}
+                isImported={collectionProgress ? isImported : false}
+                insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
+                modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
+                errorsCount={errors ? errors.length : 0}
 
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
