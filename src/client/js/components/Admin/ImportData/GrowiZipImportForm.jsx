@@ -10,7 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
 
-import GrowiZipImportItem, { DEFAULT_MODE } from './GrowiZipImportItem';
+import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
 
 
 const GROUPS_PAGE = [
@@ -23,7 +23,6 @@ const GROUPS_CONFIG = [
   'configs', 'updateposts', 'globalnotificationsettings',
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
-
 
 class GrowiImportForm extends React.Component {
 
@@ -50,7 +49,11 @@ class GrowiImportForm extends React.Component {
     this.props.innerFileStats.forEach((fileStat) => {
       const { fileName, collectionName } = fileStat;
       this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
-      this.initialState.optionsMap[collectionName] = new GrowiZipImportOption(DEFAULT_MODE);
+
+      // determine initial mode
+      const initialMode = MODE_RESTRICTED_COLLECTION[collectionName] || DEFAULT_MODE;
+      // create GrowiZipImportOption
+      this.initialState.optionsMap[collectionName] = new GrowiZipImportOption(initialMode);
     });
 
     this.state = this.initialState;

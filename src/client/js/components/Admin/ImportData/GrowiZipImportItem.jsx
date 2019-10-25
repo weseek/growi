@@ -17,6 +17,10 @@ const MODE_ATTR_MAP = {
 
 export const DEFAULT_MODE = 'insert';
 
+export const MODE_RESTRICTED_COLLECTION = {
+  configs: ['flushAndInsert'],
+};
+
 export default class GrowiZipImportItem extends React.Component {
 
   constructor(props) {
@@ -89,11 +93,13 @@ export default class GrowiZipImportItem extends React.Component {
 
   renderModeSelector() {
     const {
-      option,
+      collectionName, option,
     } = this.props;
 
     const attrMap = MODE_ATTR_MAP[option.mode];
     const btnColor = `btn-${attrMap.color}`;
+
+    const modes = MODE_RESTRICTED_COLLECTION[collectionName] || Object.keys(MODE_ATTR_MAP);
 
     return (
       <span className="d-inline-flex align-items-center">
@@ -111,7 +117,7 @@ export default class GrowiZipImportItem extends React.Component {
             <span className="caret ml-2"></span>
           </button>
           <ul className="dropdown-menu" aria-labelledby="ddmMode">
-            { ['insert', 'upsert', 'flushAndInsert'].map((mode) => {
+            { modes.map((mode) => {
               return (
                 <li key={`buttonMode_${mode}`}>
                   <a type="button" role="button" onClick={() => this.modeSelectedHandler(mode)}>
