@@ -160,7 +160,10 @@ export default class GrowiZipImportItem extends React.Component {
       <div className="w-100 text-center">
         <span className="text-info"><strong>{insertedCount}</strong> Inserted</span>,&nbsp;
         <span className="text-success"><strong>{modifiedCount}</strong> Modified</span>,&nbsp;
-        <a className="text-danger" role="button" onClick={this.errorLinkClickedHandler}><u><strong>{errorsCount}</strong> Failed</u></a>
+        { errorsCount > 0
+          ? <a className="text-danger" role="button" onClick={this.errorLinkClickedHandler}><u><strong>{errorsCount}</strong> Failed</u></a>
+          : <span className="text-muted"><strong>0</strong> Failed</span>
+        }
       </div>
     );
 

@@ -12,7 +12,7 @@ class ErrorViewer extends React.Component {
     const { errors } = this.props;
 
     let value = '(no errors)';
-    if (errors != null) {
+    if (errors != null && errors.length > 0) {
       const lines = errors.map((obj) => {
         return JSON.stringify(obj);
       });
