@@ -149,36 +149,36 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Import]
    *      description: import a collection from a zipped json
-   *      parameters:
-   *        - name: fileName
-   *          in: path
-   *          description: the file name of zip file
-   *          required: true
-   *          schema:
-   *            type: string
-   *        - name: collections
-   *          description: collection names to import
-   *          required: true
-   *          schema:
-   *            type: array
-   *            items:
-   *              type: string
-   *        - name: optionsMap
-   *          description: the map object of importing option
-   *          schema:
-   *            type: object
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                fileName:
+   *                  description: the file name of zip file
+   *                  type: string
+   *                collections:
+   *                  description: collection names to import
+   *                  type: array
+   *                  items:
+   *                    type: string
+   *                optionsMap:
+   *                  description: |
+   *                    the map object of importing option that have collection name as the key
+   *                  additionalProperties:
+   *                    type: object
+   *                    properties:
+   *                      mode:
+   *                        description: Import mode
+   *                        type: string
+   *                        enum: [insert, upsert, flushAndInsert]
+   *                      schema:
+   *                        type: object
    *      responses:
    *        200:
-   *          description: the data is successfully imported
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  results:
-   *                    type: array
-   *                    items:
-   *                      type: object
-   *                      description: collectionName, insertedIds, failedIds
+   *          description: Import process has requested
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
