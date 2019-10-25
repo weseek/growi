@@ -77,8 +77,6 @@ class GrowiImportForm extends React.Component {
     // websocket event
     // eslint-disable-next-line object-curly-newline
     socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
-      console.log('onProgressForImport');
-
       const { progressMap, errorsMap } = this.state;
       progressMap[collectionName] = collectionProgress;
 
@@ -94,8 +92,6 @@ class GrowiImportForm extends React.Component {
 
     // websocket event
     socket.on('admin:onTerminateForImport', () => {
-      console.log('onTerminateForImport');
-
       this.setState({
         isImporting: false,
         isImported: true,
