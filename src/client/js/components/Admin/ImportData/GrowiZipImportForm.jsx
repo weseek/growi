@@ -58,7 +58,9 @@ class GrowiImportForm extends React.Component {
       this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
 
       // determine initial mode
-      const initialMode = MODE_RESTRICTED_COLLECTION[collectionName] || DEFAULT_MODE;
+      const initialMode = (MODE_RESTRICTED_COLLECTION[collectionName] != null)
+        ? MODE_RESTRICTED_COLLECTION[collectionName][0]
+        : DEFAULT_MODE;
       // create GrowiZipImportOption
       this.initialState.optionsMap[collectionName] = new GrowiZipImportOption(initialMode);
     });
