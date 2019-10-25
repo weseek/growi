@@ -161,10 +161,15 @@ class ImportService {
     const execUnorderedBulkOpSafely = this.execUnorderedBulkOpSafely.bind(this);
     const emitProgressEvent = this.emitProgressEvent.bind(this);
 
-    const { jsonFileName, overwriteParams } = importOptions;
+    const { mode, jsonFileName, overwriteParams } = importOptions;
     const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
     const jsonFile = this.getFile(jsonFileName);
     const collectionProgress = this.currentProgressingStatus.progressMap[collectionName];
+
+    // flush
+    if (mode === 'flushAndInsert') {
+      await Model.remove({});
+    }
 
     // stream 1
     const readStream = fs.createReadStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
