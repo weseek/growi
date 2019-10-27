@@ -71,6 +71,7 @@ class GrowiImportForm extends React.Component {
     this.checkAll = this.checkAll.bind(this);
     this.uncheckAll = this.uncheckAll.bind(this);
     this.updateOption = this.updateOption.bind(this);
+    this.openConfigurationModal = this.openConfigurationModal.bind(this);
     this.showErrorsViewer = this.showErrorsViewer.bind(this);
     this.validate = this.validate.bind(this);
     this.import = this.import.bind(this);
@@ -142,6 +143,11 @@ class GrowiImportForm extends React.Component {
     const { optionsMap } = this.state;
     optionsMap[collectionName] = importOption;
     this.setState({ optionsMap });
+  }
+
+  openConfigurationModal(collectionName) {
+    console.log('openConfigurationModal', collectionName);
+    // TODO: impl
   }
 
   showErrorsViewer(collectionName) {
@@ -367,6 +373,7 @@ class GrowiImportForm extends React.Component {
                 option={optionsMap[collectionName]}
                 onChange={this.toggleCheckbox}
                 onOptionChange={this.updateOption}
+                onConfigButtonClicked={this.openConfigurationModal}
                 onErrorLinkClicked={this.showErrorsViewer}
               />
             </div>

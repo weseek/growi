@@ -28,6 +28,7 @@ export default class GrowiZipImportItem extends React.Component {
 
     this.changeHandler = this.changeHandler.bind(this);
     this.modeSelectedHandler = this.modeSelectedHandler.bind(this);
+    this.configButtonClickedHandler = this.configButtonClickedHandler.bind(this);
     this.errorLinkClickedHandler = this.errorLinkClickedHandler.bind(this);
   }
 
@@ -50,6 +51,16 @@ export default class GrowiZipImportItem extends React.Component {
     option.mode = mode;
 
     onOptionChange(collectionName, option);
+  }
+
+  configButtonClickedHandler() {
+    const { collectionName, onConfigButtonClicked } = this.props;
+
+    if (onConfigButtonClicked == null) {
+      return;
+    }
+
+    onConfigButtonClicked(collectionName);
   }
 
   errorLinkClickedHandler() {
@@ -132,6 +143,14 @@ export default class GrowiZipImportItem extends React.Component {
     );
   }
 
+  renderConfigButton() {
+    return (
+      <button type="button" className="btn btn-default btn-xs ml-2" onClick={this.configButtonClickedHandler}>
+        <i className="icon-settings"></i>
+      </button>
+    );
+  }
+
   renderProgressBar() {
     const {
       isImporting, insertedCount, modifiedCount, errorsCount,
@@ -181,7 +200,10 @@ export default class GrowiZipImportItem extends React.Component {
             {/* left */}
             {this.renderCheckbox()}
             {/* right */}
-            {this.renderModeSelector()}
+            <span className="d-flex align-items-center">
+              {this.renderModeSelector()}
+              {this.renderConfigButton()}
+            </span>
           </div>
         </div>
         { isSelected && (
@@ -211,6 +233,7 @@ GrowiZipImportItem.propTypes = {
 
   onChange: PropTypes.func,
   onOptionChange: PropTypes.func,
+  onConfigButtonClicked: PropTypes.func,
   onErrorLinkClicked: PropTypes.func,
 };
 
