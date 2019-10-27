@@ -11,6 +11,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
 
 import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
+import GrowiZipImportConfigurationModal from './GrowiZipImportConfigurationModal';
 import ErrorViewer from './ErrorViewer';
 
 
@@ -42,6 +43,9 @@ class GrowiImportForm extends React.Component {
       collectionNameToFileNameMap: {},
       // store relations from collection name to GrowiZipImportOption instance
       optionsMap: {},
+
+      isConfigurationModalOpen: false,
+      collectionNameForConfiguration: null,
 
       isErrorsViewerOpen: false,
       collectionNameForErrorsViewer: null,
@@ -146,8 +150,7 @@ class GrowiImportForm extends React.Component {
   }
 
   openConfigurationModal(collectionName) {
-    console.log('openConfigurationModal', collectionName);
-    // TODO: impl
+    this.setState({ isConfigurationModalOpen: true, collectionNameForConfiguration: collectionName });
   }
 
   showErrorsViewer(collectionName) {
@@ -383,6 +386,23 @@ class GrowiImportForm extends React.Component {
     );
   }
 
+  renderConfigurationModal() {
+    const { isConfigurationModalOpen, collectionNameForConfiguration: collectionName, optionsMap } = this.state;
+
+    if (collectionName == null) {
+      return null;
+    }
+
+    return (
+      <GrowiZipImportConfigurationModal
+        isOpen={isConfigurationModalOpen}
+        onClose={() => this.setState({ isConfigurationModalOpen: false })}
+        collectionName={collectionName}
+        importOption={optionsMap[collectionName]}
+      />
+    );
+  }
+
   renderErrorsViewer() {
     const { isErrorsViewerOpen, errorsMap, collectionNameForErrorsViewer } = this.state;
     const errors = errorsMap[collectionNameForErrorsViewer];
@@ -429,6 +449,7 @@ class GrowiImportForm extends React.Component {
           </button>
         </div>
 
+        { this.renderConfigurationModal() }
         { this.renderErrorsViewer() }
       </>
     );
