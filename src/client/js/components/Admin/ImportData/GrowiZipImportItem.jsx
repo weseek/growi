@@ -144,8 +144,15 @@ export default class GrowiZipImportItem extends React.Component {
   }
 
   renderConfigButton() {
+    const { isConfigButtonAvailable } = this.props;
+
     return (
-      <button type="button" className="btn btn-default btn-xs ml-2" onClick={this.configButtonClickedHandler}>
+      <button
+        type="button"
+        className="btn btn-default btn-xs ml-2"
+        disabled={!isConfigButtonAvailable}
+        onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
+      >
         <i className="icon-settings"></i>
       </button>
     );
@@ -230,6 +237,8 @@ GrowiZipImportItem.propTypes = {
   insertedCount: PropTypes.number,
   modifiedCount: PropTypes.number,
   errorsCount: PropTypes.number,
+
+  isConfigButtonAvailable: PropTypes.bool,
 
   onChange: PropTypes.func,
   onOptionChange: PropTypes.func,

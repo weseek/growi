@@ -12,7 +12,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
 import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
-import GrowiZipImportConfigurationModal from './GrowiZipImportConfigurationModal';
+import GrowiZipImportConfigurationModal, { AVAILABLE_COLLECTION_NAMES as CONFIGMODAL_AVAILABLE_COLLECTION_NAMES } from './GrowiZipImportConfigurationModal';
 import ErrorViewer from './ErrorViewer';
 
 
@@ -362,6 +362,7 @@ class GrowiImportForm extends React.Component {
         {collectionNames.map((collectionName) => {
           const collectionProgress = progressMap[collectionName];
           const errors = errorsMap[collectionName];
+          const isConfigButtonAvailable = CONFIGMODAL_AVAILABLE_COLLECTION_NAMES.includes(collectionName);
 
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
@@ -375,6 +376,9 @@ class GrowiImportForm extends React.Component {
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
                 option={optionsMap[collectionName]}
+
+                isConfigButtonAvailable={isConfigButtonAvailable}
+
                 onChange={this.toggleCheckbox}
                 onOptionChange={this.updateOption}
                 onConfigButtonClicked={this.openConfigurationModal}
