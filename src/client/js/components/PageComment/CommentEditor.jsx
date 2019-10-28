@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import {
   Nav, NavItem, NavLink, TabContent, TabPane, Button,
 } from 'reactstrap';
+import classnames from 'classnames';
 
 import * as toastr from 'toastr';
 
@@ -237,6 +238,10 @@ class CommentEditor extends React.Component {
     );
     const [activeTab, setActiveTab] = useState('1');
 
+    const toggle = (tab) => {
+      if (activeTab !== tab) setActiveTab(tab);
+    };
+
     return (
       <div className="form page-comment-form">
         <div className="comment-form">
@@ -247,20 +252,26 @@ class CommentEditor extends React.Component {
           ) }
           <div className="comment-form-main">
             <div className="comment-write">
+              <Nav tabs>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: activeTab === '1' })}
+                    onClick={() => { toggle('1') }}
+                  >
+                    Write
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: activeTab === '2' })}
+                    onClick={() => { toggle('2') }}
+                  >
+                    Preview
+                  </NavLink>
+                </NavItem>
+              </Nav>
               <TabContent activeTab={activeTab} activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                <Nav tabs>
-                  <NavItem>
-                    <NavLink className={activeTab === '1' ? 'active' : ''} onClick={() => setActiveTab('1')}>
-                      Write
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink className={activeTab === '2' ? 'active' : ''} onClick={() => setActiveTab('2')}>
-                      Preview
-                    </NavLink>
-                  </NavItem>
-                </Nav>
-                <TabPane eventKey={1} title="Write">
+                <TabPane tabId="1" title="Write">
                   <Editor
                     ref={(c) => { this.editor = c }}
                     value={this.state.comment}
@@ -276,7 +287,7 @@ class CommentEditor extends React.Component {
                   />
                 </TabPane>
                 { this.state.isMarkdown && (
-                  <TabPane eventKey={2} title="Preview">
+                  <TabPane tabId="2" title="Preview">
                     <div className="comment-form-preview">
                       {commentPreview}
                     </div>
