@@ -1,4 +1,4 @@
-export default class ImportOption {
+class GrowiArchiveImportOption {
 
   constructor(mode, schema = {}) {
     this.mode = mode;
@@ -6,3 +6,5 @@ export default class ImportOption {
   }
 
 }
+
+module.exports = GrowiArchiveImportOption;

@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import ProgressBar from 'react-bootstrap/es/ProgressBar';
 
-import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
+import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
 
 const MODE_ATTR_MAP = {
@@ -223,7 +223,7 @@ export default class GrowiZipImportItem extends React.Component {
 GrowiZipImportItem.propTypes = {
   collectionName: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
-  option: PropTypes.instanceOf(GrowiZipImportOption).isRequired,
+  option: PropTypes.instanceOf(GrowiArchiveImportOption).isRequired,
 
   isImporting: PropTypes.bool.isRequired,
   isImported: PropTypes.bool.isRequired,

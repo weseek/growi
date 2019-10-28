@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap/es/Modal';
 
+import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
-
-import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
 
 
 class GrowiZipImportConfigurationModal extends React.Component {
@@ -16,7 +16,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
     super(props);
 
     this.state = {
-      importOptions: this.props.importOptions,
+      option: this.props.option,
     };
   }
 
@@ -94,7 +94,7 @@ GrowiZipImportConfigurationModal.propTypes = {
   onClose: PropTypes.func.isRequired,
 
   collectionName: PropTypes.string,
-  importOption: PropTypes.instanceOf(GrowiZipImportOption).isRequired,
+  option: PropTypes.instanceOf(GrowiArchiveImportOption).isRequired,
 };
 
 /**

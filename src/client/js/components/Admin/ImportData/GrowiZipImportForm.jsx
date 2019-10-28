@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
+import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import GrowiZipImportOption from '../../../models/GrowiZipImportOption';
 
 import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
 import GrowiZipImportConfigurationModal from './GrowiZipImportConfigurationModal';
@@ -41,7 +42,7 @@ class GrowiImportForm extends React.Component {
 
       // store relations from collection name to file name
       collectionNameToFileNameMap: {},
-      // store relations from collection name to GrowiZipImportOption instance
+      // store relations from collection name to GrowiArchiveImportOption instance
       optionsMap: {},
 
       isConfigurationModalOpen: false,
@@ -65,8 +66,8 @@ class GrowiImportForm extends React.Component {
       const initialMode = (MODE_RESTRICTED_COLLECTION[collectionName] != null)
         ? MODE_RESTRICTED_COLLECTION[collectionName][0]
         : DEFAULT_MODE;
-      // create GrowiZipImportOption
-      this.initialState.optionsMap[collectionName] = new GrowiZipImportOption(initialMode);
+      // create GrowiArchiveImportOption
+      this.initialState.optionsMap[collectionName] = new GrowiArchiveImportOption(initialMode);
     });
 
     this.state = this.initialState;
@@ -398,7 +399,7 @@ class GrowiImportForm extends React.Component {
         isOpen={isConfigurationModalOpen}
         onClose={() => this.setState({ isConfigurationModalOpen: false })}
         collectionName={collectionName}
-        importOption={optionsMap[collectionName]}
+        option={optionsMap[collectionName]}
       />
     );
   }
