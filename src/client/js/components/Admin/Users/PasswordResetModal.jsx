@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-
-// import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { toastError } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -85,18 +86,16 @@ class PasswordResetModal extends React.Component {
     const { t, adminUsersContainer } = this.props;
 
     return (
-      <Modal show={adminUsersContainer.state.isPasswordResetModalShown} onHide={adminUsersContainer.hidePasswordResetModal}>
-        <Modal.Header className="modal-header" closeButton>
-          <Modal.Title>
-            { t('user_management.reset_password') }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={adminUsersContainer.state.isPasswordResetModalShown} toggle={adminUsersContainer.hidePasswordResetModal}>
+        <ModalHeader toggle={adminUsersContainer.hidePasswordResetModal} className="modal-header">
+          { t('user_management.reset_password') }
+        </ModalHeader>
+        <ModalBody>
           {this.state.isPasswordResetDone ? this.renderModalBodyBeforeReset() : this.returnModalBodyAfterReset()}
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           {this.state.isPasswordResetDone && this.returnModalFooter()}
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
