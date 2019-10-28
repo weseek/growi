@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // TODO: GW-333
 // import Tab from 'react-bootstrap/es/Tab';
 // import Tabs from 'react-bootstrap/es/Tabs';
-
 import {
-  Button,
+  Nav, NavItem, NavLink, TabContent, TabPane, Button,
 } from 'reactstrap';
 
 import * as toastr from 'toastr';
@@ -236,6 +235,7 @@ class CommentEditor extends React.Component {
         Comment
       </Button>
     );
+    const [activeTab, setActiveTab] = useState('1');
 
     return (
       <div className="form page-comment-form">
@@ -247,8 +247,20 @@ class CommentEditor extends React.Component {
           ) }
           <div className="comment-form-main">
             <div className="comment-write">
-              <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                <Tab eventKey={1} title="Write">
+              <TabContent activeTab={activeTab} activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                <Nav tabs>
+                  <NavItem>
+                    <NavLink className={activeTab === '1' ? 'active' : ''} onClick={() => setActiveTab('1')}>
+                      Write
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink className={activeTab === '2' ? 'active' : ''} onClick={() => setActiveTab('2')}>
+                      Preview
+                    </NavLink>
+                  </NavItem>
+                </Nav>
+                <TabPane eventKey={1} title="Write">
                   <Editor
                     ref={(c) => { this.editor = c }}
                     value={this.state.comment}
@@ -262,15 +274,15 @@ class CommentEditor extends React.Component {
                     onUpload={this.uploadHandler}
                     onCtrlEnter={this.postHandler}
                   />
-                </Tab>
+                </TabPane>
                 { this.state.isMarkdown && (
-                  <Tab eventKey={2} title="Preview">
+                  <TabPane eventKey={2} title="Preview">
                     <div className="comment-form-preview">
                       {commentPreview}
                     </div>
-                  </Tab>
+                  </TabPane>
                 ) }
-              </Tabs>
+              </TabContent>
             </div>
             <div className="comment-submit">
               <div className="d-flex">

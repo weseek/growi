@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { format, formatDistanceStrict } from 'date-fns';
@@ -10,6 +10,7 @@ import { format, formatDistanceStrict } from 'date-fns';
 import {
   Button,
   Collapse,
+  Tooltip,
 } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
@@ -273,17 +274,19 @@ class Comment extends React.Component {
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
     const commentDateTooltip = (
-      <Tooltip id={`commentDateTooltip-${comment._id}`}>
+      <p id={`commentDateTooltip-${comment._id}`}>
         {format(createdAt, 'yyyy/MM/dd HH:mm')}
-      </Tooltip>
+      </p>
     );
     const editedDateTooltip = isEdited
       ? (
-        <Tooltip id={`editedDateTooltip-${comment._id}`}>
+        <p id={`editedDateTooltip-${comment._id}`}>
           {format(updatedAt, 'yyyy/MM/dd HH:mm')}
-        </Tooltip>
+        </p>
       )
       : null;
+    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const toggle = () => setTooltipOpen(!tooltipOpen);
 
     return (
       <React.Fragment>
@@ -306,13 +309,13 @@ class Comment extends React.Component {
               </div>
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
-                <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
+                <Tooltip overlay={commentDateTooltip} placement="bottom" target="commentDateTooltip" isOpen={tooltipOpen} toggle={toggle}>
                   <span>{commentDate}</span>
-                </OverlayTrigger>
+                </Tooltip>
                 { isEdited && (
-                  <OverlayTrigger overlay={editedDateTooltip} placement="bottom">
+                  <Tooltip overlay={editedDateTooltip} placement="bottom" target="editedDateTooltip" isOpen={tooltipOpen} toggle={toggle}>
                     <span>&nbsp;(edited)</span>
-                  </OverlayTrigger>
+                  </Tooltip>
                 ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
