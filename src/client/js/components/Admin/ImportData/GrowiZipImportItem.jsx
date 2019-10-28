@@ -19,6 +19,7 @@ export const DEFAULT_MODE = 'insert';
 
 export const MODE_RESTRICTED_COLLECTION = {
   configs: ['flushAndInsert'],
+  users: ['insert', 'upsert'],
 };
 
 export default class GrowiZipImportItem extends React.Component {
