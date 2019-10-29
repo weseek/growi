@@ -253,12 +253,12 @@ class CommentEditor extends React.Component {
             <div className="comment-write">
               <Nav tabs>
                 <NavItem>
-                  <NavLink className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
+                  <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
                     Write
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
+                  <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
                     Preview
                   </NavLink>
                 </NavItem>
