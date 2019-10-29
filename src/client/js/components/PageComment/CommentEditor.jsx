@@ -95,7 +95,7 @@ class CommentEditor extends React.Component {
       comment: '',
       isMarkdown: true,
       html: '',
-      key: 1,
+      activeTab: 1,
       errorMessage: undefined,
     });
     // reset value
