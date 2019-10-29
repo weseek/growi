@@ -86,14 +86,14 @@ class UserInviteModal extends React.Component {
         </div>
         <div>
           <Button className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
-          Cancel
+            Cancel
           </Button>
           <Button
             className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
-          Done
+            Done
           </Button>
         </div>
       </>
