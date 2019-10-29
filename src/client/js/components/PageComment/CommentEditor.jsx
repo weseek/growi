@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 // TODO: GW-333
@@ -236,7 +236,7 @@ class CommentEditor extends React.Component {
         Comment
       </Button>
     );
-    const [activeTab, setActiveTab] = useState('1');
+    const [activeTab, setActiveTab] = this.props;
 
     const toggle = (tab) => {
       if (activeTab !== tab) setActiveTab(tab);

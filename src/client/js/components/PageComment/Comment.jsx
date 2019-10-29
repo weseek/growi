@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { format, formatDistanceStrict } from 'date-fns';
@@ -285,7 +285,7 @@ class Comment extends React.Component {
         </p>
       )
       : null;
-    const [tooltipOpen, setTooltipOpen] = useState(false);
+    const [tooltipOpen, setTooltipOpen] = this.props;
     const toggle = () => setTooltipOpen(!tooltipOpen);
 
     return (
