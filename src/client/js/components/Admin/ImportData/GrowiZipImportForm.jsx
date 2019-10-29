@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import * as toastr from 'toastr';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '@commons/models/admin/import-option-for-pages';
@@ -129,6 +128,16 @@ class GrowiImportForm extends React.Component {
       });
 
       toastSuccess(undefined, 'Import process has terminated.');
+    });
+
+    // websocket event
+    socket.on('admin:onErrorForImport', (err) => {
+      this.setState({
+        isImporting: false,
+        isImported: false,
+      });
+
+      toastError(err, 'Import process has failed.');
     });
   }
 
@@ -300,27 +309,10 @@ class GrowiImportForm extends React.Component {
         onPostImport();
       }
 
-      // TODO: toastSuccess, toastError
-      toastr.success(undefined, 'Export process has requested.', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
-      });
+      toastSuccess(undefined, 'Import process has requested.');
     }
     catch (err) {
-      // TODO: toastSuccess, toastError
-      toastr.error(err, 'Error', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '3000',
-      });
+      toastError(err, 'Import request failed.');
     }
   }
 

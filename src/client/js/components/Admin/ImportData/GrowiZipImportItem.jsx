@@ -79,7 +79,7 @@ export default class GrowiZipImportItem extends React.Component {
 
   renderCheckbox() {
     const {
-      collectionName, isSelected,
+      collectionName, isSelected, isImporting,
     } = this.props;
 
     return (
@@ -91,6 +91,7 @@ export default class GrowiZipImportItem extends React.Component {
           className="form-check-input"
           value={collectionName}
           checked={isSelected}
+          disabled={isImporting}
           onChange={this.changeHandler}
         />
         <label className="text-capitalize form-check-label" htmlFor={collectionName}>
@@ -102,7 +103,7 @@ export default class GrowiZipImportItem extends React.Component {
 
   renderModeSelector() {
     const {
-      collectionName, option,
+      collectionName, option, isImporting,
     } = this.props;
 
     const attrMap = MODE_ATTR_MAP[option.mode];
@@ -118,6 +119,7 @@ export default class GrowiZipImportItem extends React.Component {
             className={`btn ${btnColor} btn-xs dropdown-toggle`}
             type="button"
             id="ddmMode"
+            disabled={isImporting}
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="true"
@@ -142,13 +144,13 @@ export default class GrowiZipImportItem extends React.Component {
   }
 
   renderConfigButton() {
-    const { isConfigButtonAvailable } = this.props;
+    const { isImporting, isConfigButtonAvailable } = this.props;
 
     return (
       <button
         type="button"
         className="btn btn-default btn-xs ml-2"
-        disabled={!isConfigButtonAvailable}
+        disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >
         <i className="icon-settings"></i>

@@ -75,6 +75,9 @@ module.exports = (crowi) => {
   this.adminEvent.on('onTerminateForImport', (data) => {
     crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
   });
+  this.adminEvent.on('onErrorForImport', (data) => {
+    crowi.getIo().sockets.emit('admin:onErrorForImport', data);
+  });
 
   const uploads = multer({
     storage: multer.diskStorage({
@@ -164,6 +167,9 @@ module.exports = (crowi) => {
     const { fileName, collections, optionsMap } = req.body;
     const zipFile = importService.getFile(fileName);
 
+    // return response first
+    res.apiv3();
+
     /*
      * unzip, parse
      */
@@ -184,7 +190,8 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err, 500);
+      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
     }
 
     /*
@@ -195,7 +202,8 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err);
+      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
     }
 
     // generate maps of ImportSettings to import
@@ -219,11 +227,10 @@ module.exports = (crowi) => {
      */
     try {
       importService.import(collections, importSettingsMap);
-      return res.apiv3();
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(err, 500);
+      this.adminEvent.emit('onErrorForImport', { message: err.message });
     }
   });
 
