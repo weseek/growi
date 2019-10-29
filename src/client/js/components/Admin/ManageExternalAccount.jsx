@@ -2,13 +2,13 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PaginationWrapper from '../../PaginationWrapper';
+import PaginationWrapper from '../PaginationWrapper';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
-import ExternalAccountTable from './ExternalAccountTable';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import AdminExternalAccountsContainer from '../../services/AdminExternalAccountsContainer';
+import ExternalAccountTable from './Users/ExternalAccountTable';
+import { toastError } from '../../util/apiNotification';
 
 
 class ManageExternalAccount extends React.Component {
@@ -17,7 +17,6 @@ class ManageExternalAccount extends React.Component {
     super(props);
     this.xss = window.xss;
     this.handlePage = this.handlePage.bind(this);
-    this.removeExtenalAccount = this.removeExtenalAccount.bind(this);
   }
 
   componentWillMount() {
@@ -30,17 +29,6 @@ class ManageExternalAccount extends React.Component {
     }
     catch (err) {
       toastError(err);
-    }
-  }
-
-  // remove external-account
-  async removeExtenalAccount(externalAccountId) {
-    try {
-      await this.props.adminExternalAccountsContainer.removeExternal(externalAccountId);
-      toastSuccess(`Removed "${this.xss.process(externalAccountId)}"`);
-    }
-    catch (err) {
-      toastError(new Error(`Unable to remove "${this.xss.process(externalAccountId)}"`));
     }
   }
 

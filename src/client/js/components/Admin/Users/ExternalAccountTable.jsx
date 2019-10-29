@@ -7,6 +7,8 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 class ExternalAccountTable extends React.Component {
 
   constructor(props) {
@@ -17,6 +19,18 @@ class ExternalAccountTable extends React.Component {
     };
 
     this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
+    this.removeExtenalAccount = this.removeExtenalAccount.bind(this);
+  }
+
+  // remove external-account
+  async removeExtenalAccount(externalAccountId) {
+    try {
+      await this.props.adminExternalAccountsContainer.removeExternal(externalAccountId);
+      toastSuccess(`Removed "${this.xss.process(externalAccountId)}"`);
+    }
+    catch (err) {
+      toastError(new Error(`Unable to remove "${this.xss.process(externalAccountId)}"`));
+    }
   }
 
   /**
