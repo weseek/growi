@@ -348,16 +348,22 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    external-account:
-   *                      type: object
-   *                      description: a result of `ExternalAccount.find`
+   *                    paginateResult:
+   *                      $ref: '#components/schemas/PaginateResult'
    */
   router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const page = parseInt(req.query.page) || 1;
+
     try {
-      const page = parseInt(req.query.page) || 1;
-      const result = await ExternalAccount.findAllWithPagination({ page });
-      const { docs: extenralAccounts, total: totalAccounts, limit: pagingLimit } = result;
-      return res.apiv3({ extenralAccounts, totalAccounts, pagingLimit });
+      const paginateResult = await ExternalAccount.paginate(
+        { status: { $ne: ExternalAccount.STATUS_DELETED } },
+        {
+          sort: { status: 1, username: 1, createdAt: 1 },
+          page,
+          limit: PAGE_ITEMS,
+        },
+      );
+      return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occurred in fetching external-account list';
