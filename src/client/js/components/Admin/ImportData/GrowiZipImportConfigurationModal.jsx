@@ -16,15 +16,15 @@ class GrowiZipImportConfigurationModal extends React.Component {
     super(props);
 
     this.state = {
-      option: Object.assign({}, this.props.option), // clone
+      option: null,
     };
 
     this.initialize = this.initialize.bind(this);
     this.updateOption = this.updateOption.bind(this);
   }
 
-  initialize() {
-    this.setState({
+  async initialize() {
+    await this.setState({
       option: Object.assign({}, this.props.option), // clone
     });
   }
@@ -35,16 +35,17 @@ class GrowiZipImportConfigurationModal extends React.Component {
    */
   changeHandler(updateObj) {
     const { option } = this.state;
-    Object.assign(option, updateObj);
-    this.setState({ option });
+    const newOption = Object.assign(option, updateObj);
+    this.setState({ option: newOption });
   }
 
   updateOption() {
-    const { collectionName, onOptionChange, onClose } = this.props;
-    const { option } = this.state;
+    const {
+      collectionName, onOptionChange, onClose,
+    } = this.props;
 
     if (onOptionChange != null) {
-      onOptionChange(collectionName, option);
+      onOptionChange(collectionName, this.state.option);
     }
 
     onClose();
@@ -60,7 +61,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt4"
             type="checkbox"
-            checked={option.isOverwriteAuthorWithCurrentUser}
+            checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
           <label htmlFor="cbOpt4">
@@ -72,7 +73,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt1"
             type="checkbox"
-            checked={option.makePublicForGrant2}
+            checked={option.makePublicForGrant2 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant2: !option.makePublicForGrant2 })}
           />
           <label htmlFor="cbOpt1">
@@ -86,7 +87,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt2"
             type="checkbox"
-            checked={option.makePublicForGrant4}
+            checked={option.makePublicForGrant4 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
           <label htmlFor="cbOpt2">
@@ -100,7 +101,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt3"
             type="checkbox"
-            checked={option.makePublicForGrant5}
+            checked={option.makePublicForGrant5 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant5: !option.makePublicForGrant5 })}
           />
           <label htmlFor="cbOpt3">
@@ -114,7 +115,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt5"
             type="checkbox"
-            checked={option.initPageMetadatas}
+            checked={option.initPageMetadatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initPageMetadatas: !option.initPageMetadatas })}
           />
           <label htmlFor="cbOpt5">
@@ -126,7 +127,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt6"
             type="checkbox"
-            checked={option.initHackmdDatas}
+            checked={option.initHackmdDatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initHackmdDatas: !option.initHackmdDatas })}
           />
           <label htmlFor="cbOpt6">
@@ -149,7 +150,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
           <input
             id="cbOpt1"
             type="checkbox"
-            checked={option.isOverwriteAuthorWithCurrentUser}
+            checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
           <label htmlFor="cbOpt1">
@@ -164,19 +165,22 @@ class GrowiZipImportConfigurationModal extends React.Component {
 
   render() {
     const { t, collectionName } = this.props;
+    const { option } = this.state;
 
     let contents = null;
-    switch (collectionName) {
-      case 'pages':
-        contents = this.renderPagesContents();
-        break;
-      case 'revisions':
-        contents = this.renderRevisionsContents();
-        break;
+    if (option != null) {
+      switch (collectionName) {
+        case 'pages':
+          contents = this.renderPagesContents();
+          break;
+        case 'revisions':
+          contents = this.renderRevisionsContents();
+          break;
+      }
     }
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose} onExited={this.initialize}>
+      <Modal show={this.props.isOpen} onHide={this.props.onClose} onEnter={this.initialize}>
         <Modal.Header closeButton>
           <Modal.Title>{`'${collectionName}'`} Configuration</Modal.Title>
         </Modal.Header>

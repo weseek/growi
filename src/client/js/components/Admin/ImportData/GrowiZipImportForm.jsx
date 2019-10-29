@@ -163,9 +163,14 @@ class GrowiImportForm extends React.Component {
     this.validate();
   }
 
-  updateOption(collectionName, importOption) {
+  updateOption(collectionName, data) {
     const { optionsMap } = this.state;
-    optionsMap[collectionName] = importOption;
+    const options = optionsMap[collectionName];
+
+    // merge
+    Object.assign(options, data);
+
+    optionsMap[collectionName] = options;
     this.setState({ optionsMap });
   }
 

@@ -48,10 +48,7 @@ export default class GrowiZipImportItem extends React.Component {
       return;
     }
 
-    const { option } = this.props;
-    option.mode = mode;
-
-    onOptionChange(collectionName, option);
+    onOptionChange(collectionName, { mode });
   }
 
   configButtonClickedHandler() {
