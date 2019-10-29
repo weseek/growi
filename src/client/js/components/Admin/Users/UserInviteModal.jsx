@@ -85,11 +85,10 @@ class UserInviteModal extends React.Component {
           </label>
         </div>
         <div>
-          <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
+          <Button className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
           Cancel
           </Button>
           <Button
-            bsStyle="primary"
             className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
@@ -188,8 +187,8 @@ class UserInviteModal extends React.Component {
 
 
     return (
-      <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown} toggle={this.props.onToggleModal}>
-        <ModalHeader toggle={this.props.onToggleModal} className="modal-header">
+      <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown} toggle={this.onToggleModal}>
+        <ModalHeader toggle={this.onToggleModal} className="modal-header">
           { t('user_management.invite_users') }
         </ModalHeader>
         <ModalBody>
@@ -218,7 +217,6 @@ UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-  onToggleModal: PropTypes.func.isRequired, // for cancel evnet handling
 };
 
 export default withTranslation()(UserInviteModalWrapper);
