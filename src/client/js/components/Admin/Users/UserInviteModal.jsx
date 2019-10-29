@@ -6,7 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // import Button from 'react-bootstrap/es/Button';
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter, Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -85,17 +85,17 @@ class UserInviteModal extends React.Component {
           </label>
         </div>
         <div>
-          <Button color="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.onToggleModal}>
+          <button type="button" className="fcbtn btn btn-xs btn-outline-secondary" onClick={this.onToggleModal}>
             Cancel
-          </Button>
-          <Button
-            color="primary"
-            className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+          </button>
+          <button
+            type="button"
+            className="fcbtn btn btn-primary btn-1b"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
-            Done
-          </Button>
+            Invite
+          </button>
         </div>
       </>
     );
@@ -109,13 +109,13 @@ class UserInviteModal extends React.Component {
         <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
           {t('user_management.send_temporary_password')}
         </label>
-        <Button
-          bsStyle="primary"
-          className="fcbtn btn btn-primary btn-outline btn-rounded"
+        <button
+          type="button"
+          className="fcbtn btn btn-primary"
           onClick={this.onToggleModal}
         >
           Close
-        </Button>
+        </button>
       </>
     );
   }
