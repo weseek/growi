@@ -96,6 +96,10 @@ class GrowiImportForm extends React.Component {
     this.setupWebsocketEventHandler();
   }
 
+  componentWillUnmount() {
+    this.teardownWebsocketEventHandler();
+  }
+
   setupWebsocketEventHandler() {
     const socket = this.props.websocketContainer.getWebSocket();
 
@@ -124,6 +128,13 @@ class GrowiImportForm extends React.Component {
 
       toastSuccess(undefined, 'Import process has terminated.');
     });
+  }
+
+  teardownWebsocketEventHandler() {
+    const socket = this.props.websocketContainer.getWebSocket();
+
+    socket.removeAllListeners('admin:onProgressForImport');
+    socket.removeAllListeners('admin:onTerminateForImport');
   }
 
   async toggleCheckbox(collectionName, bool) {
@@ -264,7 +275,11 @@ class GrowiImportForm extends React.Component {
     const { selectedCollections, optionsMap } = this.state;
 
     // init progress data
-    this.setState({ progressMap: [], errorsMap: [] });
+    await this.setState({
+      isImporting: true,
+      progressMap: [],
+      errorsMap: [],
+    });
 
     try {
       // TODO: use appContainer.apiv3.post
@@ -430,7 +445,10 @@ class GrowiImportForm extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { warnForPageGroups, warnForUserGroups, warnForConfigGroups } = this.state;
+    const {
+      canImport, isImporting,
+      warnForPageGroups, warnForUserGroups, warnForConfigGroups,
+    } = this.state;
 
     return (
       <>
@@ -456,7 +474,7 @@ class GrowiImportForm extends React.Component {
           <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
             { t('importer_management.growi_settings.discard') }
           </button>
-          <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!this.state.canImport}>
+          <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>
             { t('importer_management.import') }
           </button>
         </div>
