@@ -176,9 +176,9 @@ export default class GrowiZipImportItem extends React.Component {
   }
 
   renderBody() {
-    const { isImported } = this.props;
+    const { isImporting, isImported } = this.props;
 
-    if (!isImported) {
+    if (!isImporting && !isImported) {
       return 'Ready';
     }
 
