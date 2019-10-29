@@ -225,6 +225,11 @@ class CommentEditor extends React.Component {
     const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
+    const cancelButton = (
+      <Button outline color="danger" size="xs" className="fcbtn btn-rounded" onClick={this.toggleEditor}>
+        Cancel
+      </Button>
+    );
     const submitButton = (
       <Button
         outline
@@ -251,6 +256,8 @@ class CommentEditor extends React.Component {
                   <NavLink className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
                     Write
                   </NavLink>
+                </NavItem>
+                <NavItem>
                   <NavLink className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
                     Preview
                   </NavLink>
@@ -284,7 +291,7 @@ class CommentEditor extends React.Component {
             <div className="comment-submit">
               <div className="d-flex">
                 <label style={{ flex: 1 }}>
-                  { isBaloonStyle && this.state.key === 1 && (
+                  { isBaloonStyle && activeTab === 1 && (
                     <span>
                       <input
                         type="checkbox"
@@ -298,7 +305,7 @@ class CommentEditor extends React.Component {
                     </span>
                   ) }
                 </label>
-                <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
                 { this.state.hasSlackConfig
                   && (
                   <div className="form-inline align-self-center mr-md-2">
@@ -311,18 +318,14 @@ class CommentEditor extends React.Component {
                   </div>
                   )
                 }
-                <div>
-                  <Button outline color="danger" size="xs" className="fcbtn btn-rounded" onClick={this.toggleEditor}>
-                    Cancel
-                  </Button>
+                <div className="d-none d-sm-block">
+                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
                 </div>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <div className="hidden-xs">{submitButton}</div>
               </div>
-              <div className="visible-xs mt-2">
+              <div className="d-block d-sm-none mt-2">
                 <div className="d-flex justify-content-end">
                   { this.state.errorMessage && errorMessage }
-                  <div>{submitButton}</div>
+                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
                 </div>
               </div>
             </div>
