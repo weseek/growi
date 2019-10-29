@@ -77,13 +77,13 @@ module.exports = (crowi) => {
   /**
    * defined overwrite params for each collection
    * all imported documents are overwriten by this value
-   * each value can be any value or a function (_value, { _document, key, schema }) { return newValue }
+   * each value can be any value or a function (value, { document, schema, propertyName }) { return newValue }
    *
    * @param {string} collectionName MongoDB collection name
    * @param {object} req request object
    * @return {object} document to be persisted
    */
-  const overwriteParamsFn = (collectionName, schema, req) => {
+  const overwriteParamsFn = (collectionName, req) => {
     /* eslint-disable no-case-declarations */
     switch (collectionName) {
       case 'pages':
@@ -174,8 +174,6 @@ module.exports = (crowi) => {
    *                        description: Import mode
    *                        type: string
    *                        enum: [insert, upsert, flushAndInsert]
-   *                      schema:
-   *                        type: object
    *      responses:
    *        200:
    *          description: Import process has requested
@@ -228,7 +226,7 @@ module.exports = (crowi) => {
       // generate options
       const importOptions = importService.generateImportOptions(options.mode);
       importOptions.jsonFileName = fileName;
-      importOptions.overwriteParams = overwriteParamsFn(collectionName, options.schema, req);
+      importOptions.overwriteParams = overwriteParamsFn(collectionName, req, options);
 
       importOptionsMap[collectionName] = importOptions;
     });

@@ -89,20 +89,20 @@ class ImportService {
    * automatically convert ObjectId
    *
    * @memberOf ImportService
-   * @param {any} _value value from imported document
-   * @param {{ _document: object, schema: object, key: string }}
+   * @param {any} value value from imported document
+   * @param {{ document: object, schema: object, key: string }}
    * @return {any} new value for the document
    */
-  keepOriginal(_value, { _document, schema, key }) {
-    let value;
-    if (schema[key].instance === 'ObjectID' && ObjectId.isValid(_value)) {
-      value = ObjectId(_value);
+  keepOriginal(value, { document, schema, propertyName }) {
+    let _value;
+    if (schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
+      _value = ObjectId(value);
     }
     else {
-      value = _value;
+      _value = value;
     }
 
-    return value;
+    return _value;
   }
 
   /**
@@ -201,7 +201,7 @@ class ImportService {
       const convertStream = new Transform({
         objectMode: true,
         transform(doc, encoding, callback) {
-          const converted = convertDocuments(Model, doc, overwriteParams);
+          const converted = convertDocuments(collectionName, doc, overwriteParams);
           this.push(converted);
           callback();
         },
@@ -383,13 +383,13 @@ class ImportService {
    * execute unorderedBulkOp and ignore errors
    *
    * @memberOf ImportService
-   * @param {object} Model instance of mongoose model
-   * @param {object} _document document being imported
+   * @param {string} collectionName
+   * @param {object} document document being imported
    * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
    * @return {object} document to be persisted
    */
-  convertDocuments(Model, _document, overwriteParams) {
-    const collectionName = Model.collection.name;
+  convertDocuments(collectionName, document, overwriteParams) {
+    const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
     const schema = Model.schema.paths;
     const convertMap = this.convertMap[collectionName];
 
@@ -397,31 +397,33 @@ class ImportService {
       throw new Error(`attribute map is not defined for ${collectionName}`);
     }
 
-    const document = {};
+    const _document = {};
 
     // assign value from documents being imported
-    for (const entry of Object.entries(convertMap)) {
-      const [key, value] = entry;
+    Object.entries(convertMap).forEach(([propertyName, convertedValue]) => {
+      const value = document[propertyName];
 
       // distinguish between null and undefined
-      if (_document[key] === undefined) {
-        continue; // next entry
+      if (value === undefined) {
+        return; // next entry
       }
 
-      document[key] = (typeof value === 'function') ? value(_document[key], { _document, key, schema }) : value;
-    }
+      const convertFunc = (typeof convertedValue === 'function') ? convertedValue : null;
+      _document[propertyName] = (convertFunc != null) ? convertFunc(value, { document, propertyName, schema }) : convertedValue;
+    });
 
     // overwrite documents with custom values
-    for (const entry of Object.entries(overwriteParams)) {
-      const [key, value] = entry;
+    Object.entries(overwriteParams).forEach(([propertyName, overwriteValue]) => {
+      const value = document[propertyName];
 
       // distinguish between null and undefined
-      if (_document[key] !== undefined) {
-        document[key] = (typeof value === 'function') ? value(_document[key], { _document, key, schema }) : value;
+      if (value !== undefined) {
+        const overwriteFunc = (typeof overwriteValue === 'function') ? overwriteValue : null;
+        _document[propertyName] = (overwriteFunc != null) ? overwriteFunc(value, { document: _document, propertyName, schema }) : value;
       }
-    }
+    });
 
-    return document;
+    return _document;
   }
 
   /**
