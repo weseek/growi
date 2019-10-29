@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 // import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 // import Tooltip from 'react-bootstrap/es/Tooltip';
 
+import { Tooltip } from 'reactstrap';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
