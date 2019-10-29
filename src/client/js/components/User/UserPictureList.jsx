@@ -26,11 +26,12 @@ class UserPictureList extends React.Component {
 
   render() {
     const users = this.state.users.map((user) => {
+      const userTarget = <span id={`span-${user._id}`}><UserPicture user={user} size="xs" ref={`userPicture-${user._id}`} /></span>;
+
       return (
         <span>
-          <Button id={`span-${user._id}`}>{/* workaround from https://github.com/react-bootstrap/react-bootstrap/issues/2208#issuecomment-301737531 */}
-            <UserPicture user={user} size="xs" ref={`userPicture-${user._id}`} />
-          </Button>
+          {/* workaround from https://github.com/react-bootstrap/react-bootstrap/issues/2208#issuecomment-301737531 */}
+          {userTarget}
           <UncontrolledTooltip
             id={`tooltip-${user._id}`}
             placement="bottom"
