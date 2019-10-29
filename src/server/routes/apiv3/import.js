@@ -185,7 +185,7 @@ module.exports = (crowi) => {
     const importSettingsMap = {};
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
       // instanciate GrowiArchiveImportOption
-      const options = new GrowiArchiveImportOption(optionsMap[collectionName]);
+      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
       // generate options
       const importSettings = importService.generateImportSettings(options.mode);
