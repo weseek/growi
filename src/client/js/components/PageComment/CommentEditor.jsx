@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO: GW-333
-// import Tab from 'react-bootstrap/es/Tab';
-// import Tabs from 'react-bootstrap/es/Tabs';
-
 import {
   Button,
+  TabContent, TabPane, Nav, NavItem, NavLink,
 } from 'reactstrap';
 
 import * as toastr from 'toastr';
@@ -44,7 +41,7 @@ class CommentEditor extends React.Component {
       comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
-      key: 1,
+      activeTab: 1,
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
@@ -75,8 +72,8 @@ class CommentEditor extends React.Component {
     this.editor.setGfmMode(value);
   }
 
-  handleSelect(key) {
-    this.setState({ key });
+  handleSelect(activeTab) {
+    this.setState({ activeTab });
     this.renderHtml(this.state.comment);
   }
 
@@ -217,6 +214,8 @@ class CommentEditor extends React.Component {
 
   render() {
     const { appContainer, commentContainer } = this.props;
+    const { activeTab } = this.state;
+
     const username = appContainer.me;
     const user = appContainer.findUser(username);
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
@@ -247,8 +246,18 @@ class CommentEditor extends React.Component {
           ) }
           <div className="comment-form-main">
             <div className="comment-write">
-              <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                <Tab eventKey={1} title="Write">
+              <Nav tabs>
+                <NavItem>
+                  <NavLink className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
+                    Write
+                  </NavLink>
+                  <NavLink className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
+                    Preview
+                  </NavLink>
+                </NavItem>
+              </Nav>
+              <TabContent activeTab={activeTab}>
+                <TabPane tabId={1}>
                   <Editor
                     ref={(c) => { this.editor = c }}
                     value={this.state.comment}
@@ -262,15 +271,15 @@ class CommentEditor extends React.Component {
                     onUpload={this.uploadHandler}
                     onCtrlEnter={this.postHandler}
                   />
-                </Tab>
+                </TabPane>
                 { this.state.isMarkdown && (
-                  <Tab eventKey={2} title="Preview">
+                  <TabPane tabId={2}>
                     <div className="comment-form-preview">
                       {commentPreview}
                     </div>
-                  </Tab>
+                  </TabPane>
                 ) }
-              </Tabs>
+              </TabContent>
             </div>
             <div className="comment-submit">
               <div className="d-flex">
