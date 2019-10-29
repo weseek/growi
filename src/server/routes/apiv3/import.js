@@ -10,6 +10,9 @@ const { ObjectId } = require('mongoose').Types;
 
 const express = require('express');
 
+const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
+
+
 const router = express.Router();
 
 /**
@@ -74,46 +77,6 @@ module.exports = (crowi) => {
     },
   });
 
-  /**
-   * defined overwrite params for each collection
-   * all imported documents are overwriten by this value
-   * each value can be any value or a function (value, { document, schema, propertyName }) { return newValue }
-   *
-   * @param {string} collectionName MongoDB collection name
-   * @param {object} req request object
-   * @return {object} document to be persisted
-   */
-  const overwriteParamsFn = (collectionName, req) => {
-    /* eslint-disable no-case-declarations */
-    switch (collectionName) {
-      case 'pages':
-        // TODO: use schema and req to generate overwriteParams
-        // e.g. { creator: schema.creator === 'me' ? ObjectId(req.user._id) : importService.keepOriginal }
-        return {
-          status: 'published', // FIXME when importing users and user groups
-          grant: 1, // FIXME when importing users and user groups
-          grantedUsers: [], // FIXME when importing users and user groups
-          grantedGroup: null, // FIXME when importing users and user groups
-          creator: ObjectId(req.user._id), // FIXME when importing users
-          lastUpdateUser: ObjectId(req.user._id), // FIXME when importing users
-          liker: [], // FIXME when importing users
-          seenUsers: [], // FIXME when importing users
-          commentCount: 0, // FIXME when importing comments
-          extended: {}, // FIXME when ?
-          pageIdOnHackmd: undefined, // FIXME when importing hackmd?
-          revisionHackmdSynced: undefined, // FIXME when importing hackmd?
-          hasDraftOnHackmd: undefined, // FIXME when importing hackmd?
-        };
-      // case 'revisoins':
-      //   return {};
-      // case 'users':
-      //   return {};
-      // ... add more cases
-      default:
-        return {};
-    }
-    /* eslint-enable no-case-declarations */
-  };
 
   /**
    * @swagger
@@ -218,24 +181,37 @@ module.exports = (crowi) => {
       return res.apiv3Err(err);
     }
 
-    // generate maps of ImportOptions to import
-    const importOptionsMap = {};
+    // generate maps of ImportSettings to import
+    const importSettingsMap = {};
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
-      const options = optionsMap[collectionName];
+      // instanciate GrowiArchiveImportOption
+      const options = new GrowiArchiveImportOption(optionsMap[collectionName]);
 
       // generate options
-      const importOptions = importService.generateImportOptions(options.mode);
-      importOptions.jsonFileName = fileName;
-      importOptions.overwriteParams = overwriteParamsFn(collectionName, req, options);
+      const importSettings = importService.generateImportSettings(options.mode);
+      importSettings.jsonFileName = fileName;
 
-      importOptionsMap[collectionName] = importOptions;
+      /*
+       * define overwrite params for each collection
+       * all imported documents are overwriten by this value
+       * each value can be any value or a function (value, { document, schema, propertyName }) { return newValue }
+       */
+      switch (collectionName) {
+        case 'pages':
+          importSettings.overwriteParams = require('./overwrite-params/pages')(req, options);
+          break;
+        default:
+          importSettings.overwriteParams = {};
+      }
+
+      importSettingsMap[collectionName] = importSettings;
     });
 
     /*
      * import
      */
     try {
-      importService.import(collections, importOptionsMap);
+      importService.import(collections, importSettingsMap);
       return res.apiv3();
     }
     catch (err) {

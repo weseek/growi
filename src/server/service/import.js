@@ -16,7 +16,7 @@ const CollectionProgressingStatus = require('../models/vo/collection-progressing
 const BULK_IMPORT_SIZE = 100;
 
 
-class ImportOptions {
+class ImportSettings {
 
   constructor(mode) {
     this.mode = mode || 'insert';
@@ -55,11 +55,11 @@ class ImportService {
   }
 
   /**
-   * generate ImportOptions instance
+   * generate ImportSettings instance
    * @param {string} mode bulk operation mode (insert | upsert | flushAndInsert)
    */
-  generateImportOptions(mode) {
-    return new ImportOptions(mode);
+  generateImportSettings(mode) {
+    return new ImportSettings(mode);
   }
 
   /**
@@ -137,16 +137,16 @@ class ImportService {
    * import collections from json
    *
    * @param {string} collections MongoDB collection name
-   * @param {array} importOptionsMap key: collection name, value: ImportOptions instance
+   * @param {array} importSettingsMap key: collection name, value: ImportSettings instance
    */
-  async import(collections, importOptionsMap) {
+  async import(collections, importSettingsMap) {
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
     try {
       const promises = collections.map((collectionName) => {
-        const importOptions = importOptionsMap[collectionName];
-        return this.importCollection(collectionName, importOptions);
+        const importSettings = importSettingsMap[collectionName];
+        return this.importCollection(collectionName, importSettings);
       });
       await Promise.all(promises);
     }
@@ -167,24 +167,24 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {string} collectionName MongoDB collection name
-   * @param {ImportOptions} importOptions
+   * @param {ImportSettings} importSettings
    * @return {insertedIds: Array.<string>, failedIds: Array.<string>}
    */
-  async importCollection(collectionName, importOptions) {
+  async importCollection(collectionName, importSettings) {
     // prepare functions invoked from custom streams
     const convertDocuments = this.convertDocuments.bind(this);
     const bulkOperate = this.bulkOperate.bind(this);
     const execUnorderedBulkOpSafely = this.execUnorderedBulkOpSafely.bind(this);
     const emitProgressEvent = this.emitProgressEvent.bind(this);
 
-    const { mode, jsonFileName, overwriteParams } = importOptions;
+    const { mode, jsonFileName, overwriteParams } = importSettings;
     const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
     const jsonFile = this.getFile(jsonFileName);
     const collectionProgress = this.currentProgressingStatus.progressMap[collectionName];
 
     try {
       // validate options
-      this.validateImportOptions(collectionName, importOptions);
+      this.validateImportSettings(collectionName, importSettings);
 
       // flush
       if (mode === 'flushAndInsert') {
@@ -218,7 +218,7 @@ class ImportService {
 
           // documents are not persisted until unorderedBulkOp.execute()
           batch.forEach((document) => {
-            bulkOperate(unorderedBulkOp, collectionName, document, importOptions);
+            bulkOperate(unorderedBulkOp, collectionName, document, importSettings);
           });
 
           // exec
@@ -261,10 +261,10 @@ class ImportService {
   /**
    *
    * @param {string} collectionName
-   * @param {ImportOptions} importOptions
+   * @param {importSettings} importSettings
    */
-  validateImportOptions(collectionName, importOptions) {
-    const { mode } = importOptions;
+  validateImportSettings(collectionName, importSettings) {
+    const { mode } = importSettings;
 
     switch (collectionName) {
       case 'configs':
@@ -280,11 +280,11 @@ class ImportService {
    * @param {object} bulk MongoDB Bulk instance
    * @param {string} collectionName collection name
    * @param {object} document
-   * @param {ImportOptions} importOptions
+   * @param {ImportSettings} importSettings
    */
-  bulkOperate(bulk, collectionName, document, importOptions) {
+  bulkOperate(bulk, collectionName, document, importSettings) {
     // insert
-    if (importOptions.mode !== 'upsert') {
+    if (importSettings.mode !== 'upsert') {
       return bulk.insert(document);
     }
 
