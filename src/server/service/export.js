@@ -208,7 +208,7 @@ class ExportService {
       .pipe(transformStream)
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return writeStream.path;
   }

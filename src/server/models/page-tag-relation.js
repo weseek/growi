@@ -4,7 +4,7 @@
 const flatMap = require('array.prototype.flatmap');
 
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

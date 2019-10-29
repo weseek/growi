@@ -75,7 +75,7 @@
 <div id="wrapper">
   <!-- Navigation -->
   {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand-lg navbar-dark mb-0 p-0">
+  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark mb-0 p-0">
     <!-- 1 GROWI logo -->
     <div class="navbar-brand">
       <a class="logo d-block" href="/">
@@ -129,6 +129,11 @@
         <a class="nav-link" href="#" data-target="#create-page" data-toggle="modal">
           <i class="icon-pencil mr-2"></i>
           <span class="d-none d-md-inline-block">{{ t('New') }}</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://docs.growi.org/" target="_blank">
+          <i class="icon-question"></i><span class="d-none d-md-inline-block">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
         </a>
       </li>
       <li class="nav-item dropdown">
