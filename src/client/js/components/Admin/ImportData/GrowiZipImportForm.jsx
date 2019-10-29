@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
+import ImportOptionForPages from '@commons/models/admin/import-option-for-pages';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -26,6 +27,10 @@ const GROUPS_CONFIG = [
   'configs', 'updateposts', 'globalnotificationsettings',
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
+
+const IMPORT_OPTION_CLASS_MAPPING = {
+  pages: ImportOptionForPages,
+};
 
 class GrowiImportForm extends React.Component {
 
@@ -66,8 +71,9 @@ class GrowiImportForm extends React.Component {
       const initialMode = (MODE_RESTRICTED_COLLECTION[collectionName] != null)
         ? MODE_RESTRICTED_COLLECTION[collectionName][0]
         : DEFAULT_MODE;
-      // create GrowiArchiveImportOption
-      this.initialState.optionsMap[collectionName] = new GrowiArchiveImportOption(initialMode);
+      // create GrowiArchiveImportOption instance
+      const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
+      this.initialState.optionsMap[collectionName] = new ImportOption(initialMode);
     });
 
     this.state = this.initialState;
@@ -402,6 +408,7 @@ class GrowiImportForm extends React.Component {
       <GrowiZipImportConfigurationModal
         isOpen={isConfigurationModalOpen}
         onClose={() => this.setState({ isConfigurationModalOpen: false })}
+        onOptionChange={this.updateOption}
         collectionName={collectionName}
         option={optionsMap[collectionName]}
       />
