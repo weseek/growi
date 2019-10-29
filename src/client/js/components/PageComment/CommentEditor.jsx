@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO: GW-333
-// import Tab from 'react-bootstrap/es/Tab';
-// import Tabs from 'react-bootstrap/es/Tabs';
-
 import {
   Button,
+  TabContent, TabPane, Nav, NavItem, NavLink,
 } from 'reactstrap';
 
 import * as toastr from 'toastr';
@@ -44,7 +41,7 @@ class CommentEditor extends React.Component {
       comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
-      key: 1,
+      activeTab: 1,
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
@@ -75,8 +72,8 @@ class CommentEditor extends React.Component {
     this.editor.setGfmMode(value);
   }
 
-  handleSelect(key) {
-    this.setState({ key });
+  handleSelect(activeTab) {
+    this.setState({ activeTab });
     this.renderHtml(this.state.comment);
   }
 
@@ -98,7 +95,7 @@ class CommentEditor extends React.Component {
       comment: '',
       isMarkdown: true,
       html: '',
-      key: 1,
+      activeTab: 1,
       errorMessage: undefined,
     });
     // reset value
@@ -217,6 +214,8 @@ class CommentEditor extends React.Component {
 
   render() {
     const { appContainer, commentContainer } = this.props;
+    const { activeTab } = this.state;
+
     const username = appContainer.me;
     const user = appContainer.findUser(username);
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
@@ -226,6 +225,11 @@ class CommentEditor extends React.Component {
     const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
+    const cancelButton = (
+      <Button outline color="danger" size="xs" className="fcbtn btn-rounded" onClick={this.toggleEditor}>
+        Cancel
+      </Button>
+    );
     const submitButton = (
       <Button
         outline
@@ -247,8 +251,20 @@ class CommentEditor extends React.Component {
           ) }
           <div className="comment-form-main">
             <div className="comment-write">
-              <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                <Tab eventKey={1} title="Write">
+              <Nav tabs>
+                <NavItem>
+                  <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
+                    Write
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
+                    Preview
+                  </NavLink>
+                </NavItem>
+              </Nav>
+              <TabContent activeTab={activeTab}>
+                <TabPane tabId={1}>
                   <Editor
                     ref={(c) => { this.editor = c }}
                     value={this.state.comment}
@@ -262,20 +278,20 @@ class CommentEditor extends React.Component {
                     onUpload={this.uploadHandler}
                     onCtrlEnter={this.postHandler}
                   />
-                </Tab>
+                </TabPane>
                 { this.state.isMarkdown && (
-                  <Tab eventKey={2} title="Preview">
+                  <TabPane tabId={2}>
                     <div className="comment-form-preview">
                       {commentPreview}
                     </div>
-                  </Tab>
+                  </TabPane>
                 ) }
-              </Tabs>
+              </TabContent>
             </div>
             <div className="comment-submit">
               <div className="d-flex">
                 <label style={{ flex: 1 }}>
-                  { isBaloonStyle && this.state.key === 1 && (
+                  { isBaloonStyle && activeTab === 1 && (
                     <span>
                       <input
                         type="checkbox"
@@ -289,7 +305,7 @@ class CommentEditor extends React.Component {
                     </span>
                   ) }
                 </label>
-                <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
                 { this.state.hasSlackConfig
                   && (
                   <div className="form-inline align-self-center mr-md-2">
@@ -302,18 +318,14 @@ class CommentEditor extends React.Component {
                   </div>
                   )
                 }
-                <div>
-                  <Button outline color="danger" size="xs" className="fcbtn btn-rounded" onClick={this.toggleEditor}>
-                    Cancel
-                  </Button>
+                <div className="d-none d-sm-block">
+                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
                 </div>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <div className="hidden-xs">{submitButton}</div>
               </div>
-              <div className="visible-xs mt-2">
+              <div className="d-block d-sm-none mt-2">
                 <div className="d-flex justify-content-end">
                   { this.state.errorMessage && errorMessage }
-                  <div>{submitButton}</div>
+                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
                 </div>
               </div>
             </div>
