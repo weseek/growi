@@ -7,10 +7,10 @@ import loggerFactory from '@alias/logger';
 const logger = loggerFactory('growi:services:UserGroupDetailContainer');
 
 /**
- * Service container for admin users page (Users.jsx)
+ * Service container for admin external-accounts page (ManageExternalAccountsContainer.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminExternalAccountContainer extends Container {
+export default class AdminExternalAccountsContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -57,7 +57,7 @@ export default class AdminExternalAccountContainer extends Container {
   async retrieveExternalAccountsByPagingNum(selectedPage) {
 
     const params = { page: selectedPage };
-    const { data } = await this.appContainer.apiv3.get('/users/external-accounts', params);
+    const { data } = await this.appContainer.apiv3.get('/users', params);
 
 
     if (data.paginateResult == null) {
