@@ -10,10 +10,6 @@ import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
-export const AVAILABLE_COLLECTION_NAMES = [
-  'pages',
-];
-
 class GrowiZipImportConfigurationModal extends React.Component {
 
   constructor(props) {
@@ -143,6 +139,29 @@ class GrowiZipImportConfigurationModal extends React.Component {
     /* eslint-enable react/no-unescaped-entities */
   }
 
+  renderRevisionsContents() {
+    const { option } = this.state;
+
+    /* eslint-disable react/no-unescaped-entities */
+    return (
+      <>
+        <div className="checkbox checkbox-warning">
+          <input
+            id="cbOpt1"
+            type="checkbox"
+            checked={option.isOverwriteAuthorWithCurrentUser}
+            onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
+          />
+          <label htmlFor="cbOpt1">
+            Overwrite page's author with the current user
+            <p className="help-block mt-0">Recommended <span className="text-danger">NOT</span> to check this when users will also be restored.</p>
+          </label>
+        </div>
+      </>
+    );
+    /* eslint-enable react/no-unescaped-entities */
+  }
+
   render() {
     const { t, collectionName } = this.props;
 
@@ -150,6 +169,9 @@ class GrowiZipImportConfigurationModal extends React.Component {
     switch (collectionName) {
       case 'pages':
         contents = this.renderPagesContents();
+        break;
+      case 'revisions':
+        contents = this.renderRevisionsContents();
         break;
     }
 

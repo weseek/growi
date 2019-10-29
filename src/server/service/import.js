@@ -419,7 +419,7 @@ class ImportService {
       // distinguish between null and undefined
       if (value !== undefined) {
         const overwriteFunc = (typeof overwriteValue === 'function') ? overwriteValue : null;
-        _document[propertyName] = (overwriteFunc != null) ? overwriteFunc(value, { document: _document, propertyName, schema }) : value;
+        _document[propertyName] = (overwriteFunc != null) ? overwriteFunc(value, { document: _document, propertyName, schema }) : overwriteValue;
       }
     });
 

@@ -42,6 +42,23 @@ const router = express.Router();
  *            description: whether the current importing job exists or not
  */
 
+/**
+ * generate overwrite params with overwrite-params/* modules
+ * @param {string} collectionName
+ * @param {object} req Request Object
+ * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
+ */
+const generateOverwriteParams = (collectionName, req, options) => {
+  switch (collectionName) {
+    case 'pages':
+      return require('./overwrite-params/pages')(req, options);
+    case 'revisions':
+      return require('./overwrite-params/revisions')(req, options);
+    default:
+      return {};
+  }
+};
+
 module.exports = (crowi) => {
   const { growiBridgeService, importService } = crowi;
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
@@ -191,18 +208,8 @@ module.exports = (crowi) => {
       const importSettings = importService.generateImportSettings(options.mode);
       importSettings.jsonFileName = fileName;
 
-      /*
-       * define overwrite params for each collection
-       * all imported documents are overwriten by this value
-       * each value can be any value or a function (value, { document, schema, propertyName }) { return newValue }
-       */
-      switch (collectionName) {
-        case 'pages':
-          importSettings.overwriteParams = require('./overwrite-params/pages')(req, options);
-          break;
-        default:
-          importSettings.overwriteParams = {};
-      }
+      // generate overwrite params
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
 
       importSettingsMap[collectionName] = importSettings;
     });

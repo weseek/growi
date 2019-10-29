@@ -5,6 +5,7 @@ import * as toastr from 'toastr';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '@commons/models/admin/import-option-for-pages';
+import ImportOptionForRevisions from '@commons/models/admin/import-option-for-revisions';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -13,7 +14,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
 import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
-import GrowiZipImportConfigurationModal, { AVAILABLE_COLLECTION_NAMES as CONFIGMODAL_AVAILABLE_COLLECTION_NAMES } from './GrowiZipImportConfigurationModal';
+import GrowiZipImportConfigurationModal from './GrowiZipImportConfigurationModal';
 import ErrorViewer from './ErrorViewer';
 
 
@@ -30,6 +31,7 @@ const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CO
 
 const IMPORT_OPTION_CLASS_MAPPING = {
   pages: ImportOptionForPages,
+  revisions: ImportOptionForRevisions,
 };
 
 class GrowiImportForm extends React.Component {
@@ -383,7 +385,7 @@ class GrowiImportForm extends React.Component {
         {collectionNames.map((collectionName) => {
           const collectionProgress = progressMap[collectionName];
           const errors = errorsMap[collectionName];
-          const isConfigButtonAvailable = CONFIGMODAL_AVAILABLE_COLLECTION_NAMES.includes(collectionName);
+          const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
