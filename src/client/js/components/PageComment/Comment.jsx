@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 
 import { format, formatDistanceStrict } from 'date-fns';
 
-// TODO: GW-333
-// import Tooltip from 'react-bootstrap/es/Tooltip';
-// import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
-
 import {
   Button,
   Collapse,
+  UncontrolledTooltip,
 } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
@@ -266,23 +263,17 @@ class Comment extends React.Component {
     const showReEditor = this.state.showReEditorIds.has(commentId);
 
     const rootClassName = this.getRootClassName(comment);
-    const commentDate = formatDistanceStrict(createdAt, new Date());
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const commentDateTooltip = (
-      <Tooltip id={`commentDateTooltip-${comment._id}`}>
-        {format(createdAt, 'yyyy/MM/dd HH:mm')}
-      </Tooltip>
-    );
-    const editedDateTooltip = isEdited
-      ? (
-        <Tooltip id={`editedDateTooltip-${comment._id}`}>
-          {format(updatedAt, 'yyyy/MM/dd HH:mm')}
-        </Tooltip>
-      )
+    const commentedDateId = `commentDate-${comment._id}`;
+    const commentedDate = <span id={commentedDateId}>{formatDistanceStrict(createdAt, new Date())}</span>;
+    const commentedDateFormatted = format(createdAt, 'yyyy/MM/dd HH:mm');
+    const editedDateId = `editedDate-${comment._id}`;
+    const editedDateFormatted = isEdited
+      ? format(updatedAt, 'yyyy/MM/dd HH:mm')
       : null;
 
     return (
@@ -306,13 +297,13 @@ class Comment extends React.Component {
               </div>
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
-                <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
-                  <span>{commentDate}</span>
-                </OverlayTrigger>
+                {commentedDate}
+                <UncontrolledTooltip placement="bottom" fade={false} target={commentedDateId}>{commentedDateFormatted}</UncontrolledTooltip>
                 { isEdited && (
-                  <OverlayTrigger overlay={editedDateTooltip} placement="bottom">
-                    <span>&nbsp;(edited)</span>
-                  </OverlayTrigger>
+                  <>
+                    <span id={editedDateId}>&nbsp;(edited)</span>
+                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                  </>
                 ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
