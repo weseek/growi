@@ -91,6 +91,14 @@ module.exports = function(crowi, app) {
     return pager;
   }
 
+  // setup websocket event for rebuild index
+  searchEvent.on('addPageProgress', (total, current, skip) => {
+    crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
+  });
+  searchEvent.on('finishAddPage', (total, current, skip) => {
+    crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
+  });
+
   actions.index = function(req, res) {
     return res.render('admin/index', {
       plugins: pluginUtils.listPlugins(crowi.rootDir),
@@ -437,27 +445,7 @@ module.exports = function(crowi, app) {
 
   actions.user = {};
   actions.user.index = async function(req, res) {
-    const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
-    const userUpperLimit = aclService.userUpperLimit();
-    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
-
-    const page = parseInt(req.query.page) || 1;
-
-    const result = await User.findUsersWithPagination({
-      page,
-      select: `${User.USER_PUBLIC_FIELDS} lastLoginAt`,
-      populate: User.IMAGE_POPULATION,
-    });
-
-    const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
-
-    return res.render('admin/users', {
-      users: result.docs,
-      pager,
-      activeUsers,
-      userUpperLimit,
-      isUserCountExceedsUpperLimit,
-    });
+    return res.render('admin/users');
   };
 
   // これやったときの relation の挙動未確認
@@ -1049,7 +1037,6 @@ module.exports = function(crowi, app) {
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log('validator', errors);
       return res.json(ApiResponse.error('Qiita form is blank'));
     }
 
@@ -1144,14 +1131,12 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
     }
 
-    searchEvent.on('addPageProgress', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
-    });
-    searchEvent.on('finishAddPage', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
-    });
-
-    await search.buildIndex();
+    try {
+      search.buildIndex();
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
 
     return res.json(ApiResponse.success());
   };

@@ -2,7 +2,7 @@
 /* eslint-disable no-return-await */
 
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 /*
  * define schema
@@ -22,6 +22,17 @@ schema.plugin(mongoosePaginate);
  * @class Tag
  */
 class Tag {
+
+  static async getIdToNameMap(tagIds) {
+    const tags = await this.find({ _id: { $in: tagIds } });
+
+    const idToNameMap = {};
+    tags.forEach((tag) => {
+      idToNameMap[tag._id.toString()] = tag.name;
+    });
+
+    return idToNameMap;
+  }
 
   static async findOrCreate(tagName) {
     const tag = await this.findOne({ name: tagName });
