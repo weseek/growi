@@ -1,3 +1,5 @@
+/* eslint-disable react/no-danger */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -52,7 +54,10 @@ class GrowiZipImportConfigurationModal extends React.Component {
   }
 
   renderPagesContents() {
+    const { t } = this.props;
     const { option } = this.state;
+
+    const translationBase = 'importer_management.growi_settings.configuration.pages';
 
     /* eslint-disable react/no-unescaped-entities */
     return (
@@ -65,8 +70,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
           <label htmlFor="cbOpt4">
-            Overwrite page's author with the current user
-            <p className="help-block mt-0">Recommended <span className="text-danger">NOT</span> to check this when users will also be restored.</p>
+            {t(`${translationBase}.overwrite_author.label`)}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
         <div className="checkbox checkbox-warning">
@@ -77,10 +82,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant2: !option.makePublicForGrant2 })}
           />
           <label htmlFor="cbOpt1">
-            Set 'Public' to the pages that is 'Anyone with the link'
-            <p className="help-block mt-0">
-              Make sure that this configuration makes all 'Anyone with the link' pages readable from <span className="text-danger">ANY</span> users.<br />
-            </p>
+            {t(`${translationBase}.set_public_to_page.label`, { from: 'Anyone with the link' })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: 'Anyone with the link' }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-warning">
@@ -91,10 +94,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
           <label htmlFor="cbOpt2">
-            Set 'Public' to the pages that is 'Just me'
-            <p className="help-block mt-0">
-              Make sure that this configuration makes all 'Just me' pages readable from <span className="text-danger">ANY</span> users.<br />
-            </p>
+            {t(`${translationBase}.set_public_to_page.label`, { from: 'Just me' })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: 'Just me' }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-warning">
@@ -105,10 +106,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant5: !option.makePublicForGrant5 })}
           />
           <label htmlFor="cbOpt3">
-            Set 'Public' to the pages that is 'Only inside the group'
-            <p className="help-block mt-0">
-              Make sure that this configuration makes all 'Only inside the group' pages readable from <span className="text-danger">ANY</span> users.<br />
-            </p>
+            {t(`${translationBase}.set_public_to_page.label`, { from: 'Only inside the group' })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: 'Only inside the group' }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-default">
@@ -119,8 +118,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ initPageMetadatas: !option.initPageMetadatas })}
           />
           <label htmlFor="cbOpt5">
-            Initialize page's like, read users and comment count
-            <p className="help-block mt-0">Recommended <span className="text-danger">NOT</span> to check this when users will also be restored.</p>
+            {t(`${translationBase}.initialize_meta_datas.label`)}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
         </div>
         <div className="checkbox checkbox-default">
@@ -131,8 +130,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ initHackmdDatas: !option.initHackmdDatas })}
           />
           <label htmlFor="cbOpt6">
-            Initialize HackMD related data
-            <p className="help-block mt-0">Recommended to check this unless there is important drafts on HackMD.</p>
+            {t(`${translationBase}.initialize_hackmd_related_datas.label`)}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
           </label>
         </div>
       </>
@@ -141,7 +140,10 @@ class GrowiZipImportConfigurationModal extends React.Component {
   }
 
   renderRevisionsContents() {
+    const { t } = this.props;
     const { option } = this.state;
+
+    const translationBase = 'importer_management.growi_settings.configuration.revisions';
 
     /* eslint-disable react/no-unescaped-entities */
     return (
@@ -154,8 +156,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
           <label htmlFor="cbOpt1">
-            Overwrite page's author with the current user
-            <p className="help-block mt-0">Recommended <span className="text-danger">NOT</span> to check this when users will also be restored.</p>
+            {t(`${translationBase}.overwrite_author.label`)}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
       </>
