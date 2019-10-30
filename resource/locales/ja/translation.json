@@ -752,26 +752,26 @@
       "configuration": {
         "pages": {
           "overwrite_author": {
-            "label": "Overwrite page's author with the current user",
-            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+            "label": "ページ作成者を現在のユーザーで上書きする",
+            "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
           },
           "set_public_to_page": {
-            "label": "Set 'Public' to the pages that is '{{from}}'",
-            "desc": "Make sure that this configuration makes all <b>'{{from}}'</b> pages readable from <span class=\"text-danger\">ANY</span> users."
+            "label": "'{{from}}' 設定のページを '公開' 設定にする",
+            "desc": "全ての <b>'{{from}}'</b> 設定のページが<span class=\"text-danger\">全ユーザーから</span>読み取り可能になることに注意してください。"
           },
           "initialize_meta_datas": {
-            "label": "Initialize page's like, read users and comment count",
-            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+            "label": "「いいね」「閲覧したユーザー」「コメント数」を初期化する",
+            "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
           },
           "initialize_hackmd_related_datas": {
-            "label": "Initialize HackMD related data",
-            "desc": "Recommended to check this unless there is important drafts on HackMD."
+            "label": "HackMD 関連データを初期化する",
+            "desc": "HackMD に重要な下書きデータがない限りはこのオプションをチェックすることを推奨します。"
           }
         },
         "revisions": {
           "overwrite_author": {
-            "label": "Overwrite revision's author with the current user",
-            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+            "label": "リビジョン作成者を現在のユーザーで上書きする",
+            "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
           }
         }
       }

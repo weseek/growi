@@ -82,8 +82,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant2: !option.makePublicForGrant2 })}
           />
           <label htmlFor="cbOpt1">
-            {t(`${translationBase}.set_public_to_page.label`, { from: 'Anyone with the link' })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: 'Anyone with the link' }) }} />
+            {t(`${translationBase}.set_public_to_page.label`, { from: t('Anyone with the link') })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Anyone with the link') }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-warning">
@@ -94,8 +94,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
           <label htmlFor="cbOpt2">
-            {t(`${translationBase}.set_public_to_page.label`, { from: 'Just me' })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: 'Just me' }) }} />
+            {t(`${translationBase}.set_public_to_page.label`, { from: t('Just me') })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-warning">
@@ -106,8 +106,8 @@ class GrowiZipImportConfigurationModal extends React.Component {
             onChange={() => this.changeHandler({ makePublicForGrant5: !option.makePublicForGrant5 })}
           />
           <label htmlFor="cbOpt3">
-            {t(`${translationBase}.set_public_to_page.label`, { from: 'Only inside the group' })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: 'Only inside the group' }) }} />
+            {t(`${translationBase}.set_public_to_page.label`, { from: t('Only inside the group') })}
+            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Only inside the group') }) }} />
           </label>
         </div>
         <div className="checkbox checkbox-default">
