@@ -301,7 +301,7 @@ class ExportService {
     const configs = toArrayIfNot(_configs);
     const appTitle = this.appService.getAppTitle();
     const timeStamp = (new Date()).getTime();
-    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.zip`);
+    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.growi.zip`);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });

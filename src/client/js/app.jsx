@@ -44,7 +44,7 @@ import ManageExternalAccount from './components/Admin/Users/ManageExternalAccoun
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
-import ExportDataPage from './components/Admin/ExportDataPage';
+import ExportArchiveDataPage from './components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
 
 import AppContainer from './services/AppContainer';
@@ -250,7 +250,7 @@ if (adminExportPageElem != null) {
   ReactDOM.render(
     <Provider inject={[appContainer, websocketContainer]}>
       <I18nextProvider i18n={i18n}>
-        <ExportDataPage
+        <ExportArchiveDataPage
           crowi={appContainer}
         />
       </I18nextProvider>
