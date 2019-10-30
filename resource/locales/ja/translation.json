@@ -731,14 +731,12 @@
   },
 
   "importer_management": {
-    "import_form_esa": "esa.ioからインポート",
-    "import_form_qiita": "Qiita:Teamからインポート",
     "beta_warning": "この機能はベータ版です",
-    "import_from": "%s からインポート",
-    "import_form_growi": "GROWIからインポート",
+    "import_from": "{{from}} からインポート",
+    "import_growi_archive": "GROWI アーカイブをインポート",
     "growi_settings": {
       "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
-      "zip_file": "エクスポートされた Zip ファイル",
+      "growi_archive_file": "GROWI アーカイブファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",

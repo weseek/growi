@@ -51,12 +51,13 @@ class GrowiZipUploadForm extends React.Component {
       <form className="form-horizontal" onSubmit={this.uploadZipFile}>
         <fieldset>
           <div className="form-group">
-            <label htmlFor="file" className="col-xs-3 control-label">{t('importer_management.growi_settings.zip_file')}</label>
+            <label htmlFor="file" className="col-xs-3 control-label">{t('importer_management.growi_settings.growi_archive_file')}</label>
             <div className="col-xs-6">
               <input
                 type="file"
                 name="file"
                 className="form-control-file"
+                accept=".growi.zip"
                 ref={this.inputRef}
                 onChange={this.changeFileName}
               />
