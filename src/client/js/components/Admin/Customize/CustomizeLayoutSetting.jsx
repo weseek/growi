@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 class CustomizeLayoutSetting extends React.Component {
 
@@ -117,14 +118,14 @@ class CustomizeLayoutSetting extends React.Component {
 
 }
 
-
 const CustomizeLayoutSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeLayoutSetting, props, [AppContainer]);
+  return createSubscribedElement(CustomizeLayoutSetting, props, [AppContainer, AdminCustomizeContainer]);
 };
 
 CustomizeLayoutSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
 export default withTranslation()(CustomizeLayoutSettingWrapper);
