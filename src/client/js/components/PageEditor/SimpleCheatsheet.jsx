@@ -8,8 +8,8 @@ class SimpleCheatsheet extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="panel panel-default gfm-cheatsheet mb-0">
-        <div className="panel-body small p-b-0">
+      <div className="card bg-default gfm-cheatsheet mb-0">
+        <div className="card-body small p-b-0">
           <div className="row">
             <div className="col-xs-6">
               <p>
@@ -27,7 +27,7 @@ class SimpleCheatsheet extends React.Component {
                 ```
               </p>
             </div>
-            <div className="col-xs-6">
+            <div className="col-sm-6">
               <p>
                 - {t('sandbox.unordered_list_x', { index: '1' })}<br />
                 &nbsp;&nbsp;&nbsp;- {t('sandbox.unordered_list_x', { index: '1.1' })}<br />
