@@ -83,7 +83,10 @@ class GrowiZipImportConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt1">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Anyone with the link') })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Anyone with the link') }) }} />
+            <p
+              className="help-block mt-0"
+              dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Anyone with the link') }) }}
+            />
           </label>
         </div>
         <div className="checkbox checkbox-warning">
@@ -107,7 +110,10 @@ class GrowiZipImportConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt3">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Only inside the group') })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Only inside the group') }) }} />
+            <p
+              className="help-block mt-0"
+              dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Only inside the group') }) }}
+            />
           </label>
         </div>
         <div className="checkbox checkbox-default">
