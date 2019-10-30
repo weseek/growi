@@ -763,6 +763,32 @@
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
         "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
+      },
+      "configuration": {
+        "pages": {
+          "overwrite_author": {
+            "label": "Overwrite page's author with the current user",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          },
+          "set_public_to_page": {
+            "label": "Set 'Public' to the pages that is '{{from}}'",
+            "desc": "Make sure that this configuration makes all <b>'{{from}}'</b> pages readable from <span class=\"text-danger\">ANY users</span>."
+          },
+          "initialize_meta_datas": {
+            "label": "Initialize page's like, read users and comment count",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          },
+          "initialize_hackmd_related_datas": {
+            "label": "Initialize HackMD related data",
+            "desc": "Recommended to check this unless there is important drafts on HackMD."
+          }
+        },
+        "revisions": {
+          "overwrite_author": {
+            "label": "Overwrite revision's author with the current user",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          }
+        }
       }
     },
     "esa_settings": {

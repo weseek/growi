@@ -26,12 +26,12 @@ class ZipFileTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.zipFileStats.map(({ meta, fileName, fileStats }) => {
+          {this.props.zipFileStats.map(({ meta, fileName, innerFileStats }) => {
             return (
               <tr key={fileName}>
                 <th>{fileName}</th>
                 <td>{meta.version}</td>
-                <td className="text-capitalize">{fileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
+                <td className="text-capitalize">{innerFileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
                 <td>{meta.exportedAt ? format(new Date(meta.exportedAt), 'yyyy/MM/dd HH:mm:ss') : ''}</td>
                 <td>
                   <ExportTableMenu

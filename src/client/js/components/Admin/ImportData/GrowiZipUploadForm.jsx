@@ -31,8 +31,7 @@ class GrowiZipUploadForm extends React.Component {
     formData.append('_csrf', this.props.appContainer.csrfToken);
     formData.append('file', this.inputRef.current.files[0]);
 
-    // TODO: use appContainer.apiv3.post
-    const { data } = await this.props.appContainer.apiPost('/v3/import/upload', formData);
+    const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
     this.props.onUpload(data);
     // TODO: toastSuccess, toastError
   }

@@ -16,8 +16,8 @@ class GrowiZipImportSection extends React.Component {
     super(props);
 
     this.initialState = {
-      fileName: '',
-      fileStats: [],
+      fileName: null,
+      innerFileStats: null,
     };
 
     this.state = this.initialState;
@@ -27,17 +27,27 @@ class GrowiZipImportSection extends React.Component {
     this.resetState = this.resetState.bind(this);
   }
 
-  handleUpload({ meta, fileName, fileStats }) {
+  async componentWillMount() {
+    // get uploaded file status
+    const res = await this.props.appContainer.apiv3Get('/import/status');
+
+    if (res.data.zipFileStat != null) {
+      const { fileName, innerFileStats } = res.data.zipFileStat;
+      this.setState({ fileName, innerFileStats });
+    }
+  }
+
+  handleUpload({ meta, fileName, innerFileStats }) {
     this.setState({
       fileName,
-      fileStats,
+      innerFileStats,
     });
   }
 
   async discardData() {
     try {
       const { fileName } = this.state;
-      await this.props.appContainer.apiDelete(`/v3/import/${this.state.fileName}`, {});
+      await this.props.appContainer.apiv3Delete('/import/all');
       this.resetState();
 
       // TODO: toastSuccess, toastError
@@ -79,13 +89,12 @@ class GrowiZipImportSection extends React.Component {
           <i className="icon-exclamation"></i> { t('importer_management.beta_warning') }
         </div>
 
-        {this.state.fileName ? (
+        { this.state.fileName != null ? (
           <div className="px-4">
             <GrowiZipImportForm
               fileName={this.state.fileName}
-              fileStats={this.state.fileStats}
+              innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
-              onPostImport={this.resetState}
             />
           </div>
         ) : (

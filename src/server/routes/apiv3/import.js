@@ -3,12 +3,15 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 
 const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
 
+// eslint-disable-next-line no-unused-vars
 const { ObjectId } = require('mongoose').Types;
 
 const express = require('express');
+
+const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
+
 
 const router = express.Router();
 
@@ -18,12 +21,63 @@ const router = express.Router();
  *    name: Import
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      ImportStatus:
+ *        type: object
+ *        properties:
+ *          zipFileStat:
+ *            type: object
+ *            description: the property object
+ *          progressList:
+ *            type: array
+ *            items:
+ *              type: object
+ *              description: progress data for each exporting collections
+ *          isImporting:
+ *            type: boolean
+ *            description: whether the current importing job exists or not
+ */
+
+/**
+ * generate overwrite params with overwrite-params/* modules
+ * @param {string} collectionName
+ * @param {object} req Request Object
+ * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
+ */
+const generateOverwriteParams = (collectionName, req, options) => {
+  switch (collectionName) {
+    case 'pages':
+      return require('./overwrite-params/pages')(req, options);
+    case 'revisions':
+      return require('./overwrite-params/revisions')(req, options);
+    default:
+      return {};
+  }
+};
+
 module.exports = (crowi) => {
   const { growiBridgeService, importService } = crowi;
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
   const loginRequired = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
+
+  this.adminEvent = crowi.event('admin');
+
+  // setup event
+  this.adminEvent.on('onProgressForImport', (data) => {
+    crowi.getIo().sockets.emit('admin:onProgressForImport', data);
+  });
+  this.adminEvent.on('onTerminateForImport', (data) => {
+    crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
+  });
+  this.adminEvent.on('onErrorForImport', (data) => {
+    crowi.getIo().sockets.emit('admin:onErrorForImport', data);
+  });
 
   const uploads = multer({
     storage: multer.diskStorage({
@@ -43,48 +97,33 @@ module.exports = (crowi) => {
     },
   });
 
-  /**
-   * defined overwrite params for each collection
-   * all imported documents are overwriten by this value
-   * each value can be any value or a function (_value, { _document, key, schema }) { return newValue }
-   *
-   * @param {object} Model instance of mongoose model
-   * @param {object} req request object
-   * @return {object} document to be persisted
-   */
-  const overwriteParamsFn = async(Model, schema, req) => {
-    const collectionName = Model.collection.name;
 
-    /* eslint-disable no-case-declarations */
-    switch (Model.collection.collectionName) {
-      case 'pages':
-        // TODO: use schema and req to generate overwriteParams
-        // e.g. { creator: schema.creator === 'me' ? ObjectId(req.user._id) : importService.keepOriginal }
-        return {
-          status: 'published', // FIXME when importing users and user groups
-          grant: 1, // FIXME when importing users and user groups
-          grantedUsers: [], // FIXME when importing users and user groups
-          grantedGroup: null, // FIXME when importing users and user groups
-          creator: ObjectId(req.user._id), // FIXME when importing users
-          lastUpdateUser: ObjectId(req.user._id), // FIXME when importing users
-          liker: [], // FIXME when importing users
-          seenUsers: [], // FIXME when importing users
-          commentCount: 0, // FIXME when importing comments
-          extended: {}, // FIXME when ?
-          pageIdOnHackmd: undefined, // FIXME when importing hackmd?
-          revisionHackmdSynced: undefined, // FIXME when importing hackmd?
-          hasDraftOnHackmd: undefined, // FIXME when importing hackmd?
-        };
-      // case 'revisoins':
-      //   return {};
-      // case 'users':
-      //   return {};
-      // ... add more cases
-      default:
-        throw new Error(`cannot find a model for collection name "${collectionName}"`);
+  /**
+   * @swagger
+   *
+   *  /import/status:
+   *    get:
+   *      tags: [Import]
+   *      description: Get properties of stored zip files for import
+   *      responses:
+   *        200:
+   *          description: the zip file statuses
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  status:
+   *                    $ref: '#/components/schemas/ImportStatus'
+   */
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    try {
+      const status = await importService.getStatus();
+      return res.apiv3(status);
     }
-    /* eslint-enable no-case-declarations */
-  };
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   /**
    * @swagger
@@ -93,66 +132,105 @@ module.exports = (crowi) => {
    *    post:
    *      tags: [Import]
    *      description: import a collection from a zipped json
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                fileName:
+   *                  description: the file name of zip file
+   *                  type: string
+   *                collections:
+   *                  description: collection names to import
+   *                  type: array
+   *                  items:
+   *                    type: string
+   *                optionsMap:
+   *                  description: |
+   *                    the map object of importing option that have collection name as the key
+   *                  additionalProperties:
+   *                    type: object
+   *                    properties:
+   *                      mode:
+   *                        description: Import mode
+   *                        type: string
+   *                        enum: [insert, upsert, flushAndInsert]
    *      responses:
    *        200:
-   *          description: the data is successfully imported
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  results:
-   *                    type: array
-   *                    items:
-   *                      type: object
-   *                      description: collectionName, insertedIds, failedIds
+   *          description: Import process has requested
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     // TODO: add express validator
 
-    const { fileName, collections, schema } = req.body;
+    const { fileName, collections, optionsMap } = req.body;
     const zipFile = importService.getFile(fileName);
 
-    // unzip
-    await importService.unzip(zipFile);
-    // eslint-disable-next-line no-unused-vars
-    const { meta, fileStats } = await growiBridgeService.parseZipFile(zipFile);
+    // return response first
+    res.apiv3();
 
-    // delete zip file after unzipping and parsing it
-    fs.unlinkSync(zipFile);
-
-    // filter fileStats
-    const filteredFileStats = fileStats.filter(({ fileName, collectionName, size }) => { return collections.includes(collectionName) });
-
+    /*
+     * unzip, parse
+     */
+    let meta = null;
+    let fileStatsToImport = null;
     try {
-      // validate with meta.json
-      importService.validate(meta);
+      // unzip
+      await importService.unzip(zipFile);
 
-      const results = await Promise.all(filteredFileStats.map(async({ fileName, collectionName, size }) => {
-        const Model = growiBridgeService.getModelFromCollectionName(collectionName);
-        const jsonFile = importService.getFile(fileName);
+      // eslint-disable-next-line no-unused-vars
+      const { meta: parsedMeta, fileStats, innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
+      meta = parsedMeta;
 
-        let overwriteParams;
-        if (overwriteParamsFn[collectionName] != null) {
-          // await in case overwriteParamsFn[collection] is a Promise
-          overwriteParams = await overwriteParamsFn(Model, schema[collectionName], req);
-        }
-
-        const { insertedIds, failedIds } = await importService.import(Model, jsonFile, overwriteParams);
-
-        return {
-          collectionName,
-          insertedIds,
-          failedIds,
-        };
-      }));
-
-      // TODO: use res.apiv3
-      return res.send({ ok: true, results });
+      // filter innerFileStats
+      fileStatsToImport = innerFileStats.filter(({ fileName, collectionName, size }) => {
+        return collections.includes(collectionName);
+      });
     }
     catch (err) {
-      // TODO: use ApiV3Error
       logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
+      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
+    }
+
+    /*
+     * validate with meta.json
+     */
+    try {
+      importService.validate(meta);
+    }
+    catch (err) {
+      logger.error(err);
+      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
+    }
+
+    // generate maps of ImportSettings to import
+    const importSettingsMap = {};
+    fileStatsToImport.forEach(({ fileName, collectionName }) => {
+      // instanciate GrowiArchiveImportOption
+      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+
+      // generate options
+      const importSettings = importService.generateImportSettings(options.mode);
+      importSettings.jsonFileName = fileName;
+
+      // generate overwrite params
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+
+      importSettingsMap[collectionName] = importSettings;
+    });
+
+    /*
+     * import
+     */
+    try {
+      importService.import(collections, importSettingsMap);
+    }
+    catch (err) {
+      logger.error(err);
+      this.adminEvent.emit('onErrorForImport', { message: err.message });
     }
   });
 
@@ -192,11 +270,7 @@ module.exports = (crowi) => {
       // validate with meta.json
       importService.validate(data.meta);
 
-      // TODO: use res.apiv3
-      return res.send({
-        ok: true,
-        data,
-      });
+      return res.apiv3(data);
     }
     catch (err) {
       // TODO: use ApiV3Error
@@ -208,41 +282,23 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/{fileName}:
-   *    post:
+   *  /import/all:
+   *    delete:
    *      tags: [Import]
-   *      description: delete a zip file
-   *      parameters:
-   *        - name: fileName
-   *          in: path
-   *          description: the file name of zip file
-   *          required: true
-   *          schema:
-   *            type: string
+   *      description: Delete all zip files
    *      responses:
    *        200:
-   *          description: the file is deleted
-   *          content:
-   *            application/json:
-   *              schema:
-   *                type: object
+   *          description: all files are deleted
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
-    const { fileName } = req.params;
-
+  router.delete('/all', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     try {
-      const zipFile = importService.getFile(fileName);
-      fs.unlinkSync(zipFile);
+      importService.deleteAllZipFiles();
 
-      // TODO: use res.apiv3
-      return res.send({
-        ok: true,
-      });
+      return res.apiv3();
     }
     catch (err) {
-      // TODO: use ApiV3Error
       logger.error(err);
-      return res.status(500).send({ status: 'ERROR' });
+      return res.apiv3Err(err, 500);
     }
   });
 

@@ -4,12 +4,13 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import ProgressBar from './Common/ProgressBar';
 import { createSubscribedElement } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import WebsocketContainer from '../../services/WebsocketContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+import AppContainer from '../../services/AppContainer';
+import WebsocketContainer from '../../services/WebsocketContainer';
+
+import ProgressBar from './Common/ProgressBar';
 
 import ExportZipFormModal from './ExportData/ExportZipFormModal';
 import ZipFileTable from './ExportData/ZipFileTable';
