@@ -1,9 +1,18 @@
 # CHANGES
 
-## 3.5.18-RC
+## 3.5.19-RC
+
+* 
+
+## 3.5.18
 
 * Improvement: Import GROWI Archive
-* Improvement: Optimize handling promise of stream when exporting
+    * Process asynchronously
+    * Collection configurations
+    * Selectable mode (insert/upsert/flush and insert)
+    * Safely mode settings for configs and users collections
+    * Show errors view
+* Improvement: Optimize handling promise of stream when exporting archive
 * Improvement: Optimize handling promise of stream when building indices
 * Improvement: Add link to [docs.growi.org](https://docs.growi.org)
 * Fix: Monospace font code is broken when printing on Mac
