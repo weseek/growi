@@ -59,6 +59,7 @@ class CustomizeLayoutSetting extends React.Component {
           </a>
           <h4>Separated Functions</h4>
           <ul>
+            {/* TODO i18n */}
             <li>Collapsible Sidebar</li>
             <li>Show and post comments in Sidebar</li>
             <li>Collapsible Table-of-contents</li>
