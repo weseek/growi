@@ -2120,10 +2120,6 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.0.5.tgz#2ff9d07c9b3edb29d6d280fe07528365e7ecd392"
-
 bluebird@3.5.1, bluebird@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
@@ -8424,11 +8420,10 @@ mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
 
-mongoose-paginate@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/mongoose-paginate/-/mongoose-paginate-5.0.3.tgz#d7ae49ed5bf64f1f7af7620ea865b67058c55371"
-  dependencies:
-    bluebird "3.0.5"
+mongoose-paginate-v2@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/mongoose-paginate-v2/-/mongoose-paginate-v2-1.3.2.tgz#4a6077255156c555879c857eb0350b16272ed113"
+  integrity sha512-z8fmLaUjJ8u6Q/zxd/6JEbwKB+MY7lp2NahWlFdPYqiVHGVuL2cOpW99t4JA+EgW59V2zxwv8ZSoN0mFDaVrqw==
 
 mongoose-schema-jsonschema@>=1.2.1:
   version "1.2.1"

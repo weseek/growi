@@ -1,6 +1,14 @@
 # CHANGES
 
-## 3.5.17-RC
+## 3.5.18-RC
+
+* Improvement: Import GROWI Archive
+* Improvement: Optimize handling promise of stream when exporting
+* Improvement: Optimize handling promise of stream when building indices
+* Improvement: Add link to [docs.growi.org](https://docs.growi.org)
+* Fix: Monospace font code is broken when printing on Mac
+
+## 3.5.17
 
 * Feature: Upload to GCS (Google Cloud Storage)
 * Feature: Statistics API
