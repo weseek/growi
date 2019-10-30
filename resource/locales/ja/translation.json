@@ -663,8 +663,7 @@
     "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
     "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
     "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
-    "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
-    "update_layout_success": "レイアウトをアップデートしました"
+    "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。"
   },
 
   "user_management": {
