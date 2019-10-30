@@ -4,14 +4,28 @@ import { withTranslation } from 'react-i18next';
 
 class CustomizeLayoutSetting extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      // TODO GW-477 save setting at customizeContainer
+      layout: 'growi',
+    };
+
+    this.onChangeLayout = this.onChangeLayout.bind(this);
+  }
+
+  onChangeLayout(lauoutName) {
+    this.setState({ layout: lauoutName });
+  }
+
   growiLayout() {
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" />
+            <input type="radio" id="radioLayoutGrowi" checked={this.state.layout === 'growi'} onChange={() => this.onChangeLayout('growi')} />
             <label htmlFor="radioLayoutGrowi">
-          GROWI Enhanced Layout <small className="text-success">(Recommended)</small>
+              GROWI Enhanced Layout <small className="text-success">(Recommended)</small>
             </label>
           </div>
         </h4>
@@ -34,9 +48,9 @@ class CustomizeLayoutSetting extends React.Component {
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" />
+            <input type="radio" id="radioLayoutKibela" checked={this.state.layout === 'kibela'} onChange={() => this.onChangeLayout('kibela')} />
             <label htmlFor="radioLayoutKibela">
-                  Kibela Like Layout
+              Kibela Like Layout
             </label>
           </div>
         </h4>
@@ -59,9 +73,9 @@ class CustomizeLayoutSetting extends React.Component {
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" />
+            <input type="radio" id="radioLayoutCrowi" checked={this.state.layout === 'crowi'} onChange={() => this.onChangeLayout('crowi')} />
             <label htmlFor="radioLayoutCrowi">
-                  Crowi Classic Layout
+              Crowi Classic Layout
             </label>
           </div>
         </h4>
