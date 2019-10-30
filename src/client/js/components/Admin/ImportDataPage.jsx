@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
 
-import GrowiZipImportSection from './ImportData/GrowiZipImportSection';
+import GrowiArchiveSection from './ImportData/GrowiArchiveSection';
 
 const logger = loggerFactory('growi:importer');
 
@@ -135,7 +135,7 @@ class ImportDataPage extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
-        <GrowiZipImportSection />
+        <GrowiArchiveSection />
 
         <form
           className="form-horizontal mt-5"

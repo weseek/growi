@@ -7,12 +7,12 @@ import Modal from 'react-bootstrap/es/Modal';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
+import { createSubscribedElement } from '../../../UnstatedUtils';
+import AppContainer from '../../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
-class GrowiZipImportConfigurationModal extends React.Component {
+class ImportCollectionConfigurationModal extends React.Component {
 
   constructor(props) {
     super(props);
@@ -207,7 +207,7 @@ class GrowiZipImportConfigurationModal extends React.Component {
 
 }
 
-GrowiZipImportConfigurationModal.propTypes = {
+ImportCollectionConfigurationModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   isOpen: PropTypes.bool.isRequired,
@@ -221,8 +221,8 @@ GrowiZipImportConfigurationModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const GrowiZipImportConfigurationModalWrapper = (props) => {
-  return createSubscribedElement(GrowiZipImportConfigurationModal, props, [AppContainer]);
+const ImportCollectionConfigurationModalWrapper = (props) => {
+  return createSubscribedElement(ImportCollectionConfigurationModal, props, [AppContainer]);
 };
 
-export default withTranslation()(GrowiZipImportConfigurationModalWrapper);
+export default withTranslation()(ImportCollectionConfigurationModalWrapper);

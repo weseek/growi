@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Modal from 'react-bootstrap/es/Modal';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
+import { createSubscribedElement } from '../../../UnstatedUtils';
 
 
 class ErrorViewer extends React.Component {

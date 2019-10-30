@@ -6,14 +6,14 @@ import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import
 import ImportOptionForPages from '@commons/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '@commons/models/admin/import-option-for-revisions';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import WebsocketContainer from '../../../services/WebsocketContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { createSubscribedElement } from '../../../UnstatedUtils';
+import AppContainer from '../../../../services/AppContainer';
+import WebsocketContainer from '../../../../services/WebsocketContainer';
+import { toastSuccess, toastError } from '../../../../util/apiNotification';
 
 
-import GrowiZipImportItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './GrowiZipImportItem';
-import GrowiZipImportConfigurationModal from './GrowiZipImportConfigurationModal';
+import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
+import ImportCollectionConfigurationModal from './ImportCollectionConfigurationModal';
 import ErrorViewer from './ErrorViewer';
 
 
@@ -33,7 +33,7 @@ const IMPORT_OPTION_CLASS_MAPPING = {
   revisions: ImportOptionForRevisions,
 };
 
-class GrowiImportForm extends React.Component {
+class ImportForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -386,7 +386,7 @@ class GrowiImportForm extends React.Component {
 
           return (
             <div className="col-xs-6 my-1" key={collectionName}>
-              <GrowiZipImportItem
+              <ImportCollectionItem
                 isImporting={isImporting}
                 isImported={collectionProgress ? isImported : false}
                 insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
@@ -419,7 +419,7 @@ class GrowiImportForm extends React.Component {
     }
 
     return (
-      <GrowiZipImportConfigurationModal
+      <ImportCollectionConfigurationModal
         isOpen={isConfigurationModalOpen}
         onClose={() => this.setState({ isConfigurationModalOpen: false })}
         onOptionChange={this.updateOption}
@@ -486,7 +486,7 @@ class GrowiImportForm extends React.Component {
 
 }
 
-GrowiImportForm.propTypes = {
+ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
@@ -500,8 +500,8 @@ GrowiImportForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const GrowiImportFormWrapper = (props) => {
-  return createSubscribedElement(GrowiImportForm, props, [AppContainer, WebsocketContainer]);
+const ImportFormWrapper = (props) => {
+  return createSubscribedElement(ImportForm, props, [AppContainer, WebsocketContainer]);
 };
 
-export default withTranslation()(GrowiImportFormWrapper);
+export default withTranslation()(ImportFormWrapper);

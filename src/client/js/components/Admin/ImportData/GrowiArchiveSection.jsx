@@ -7,10 +7,10 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import GrowiZipUploadForm from './GrowiZipUploadForm';
-import GrowiZipImportForm from './GrowiZipImportForm';
+import UploadForm from './GrowiArchive/UploadForm';
+import ImportForm from './GrowiArchive/ImportForm';
 
-class GrowiZipImportSection extends React.Component {
+class GrowiArchiveSection extends React.Component {
 
   constructor(props) {
     super(props);
@@ -87,14 +87,14 @@ class GrowiZipImportSection extends React.Component {
 
         { this.state.fileName != null ? (
           <div className="px-4">
-            <GrowiZipImportForm
+            <ImportForm
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
             />
           </div>
         ) : (
-          <GrowiZipUploadForm
+          <UploadForm
             onUpload={this.handleUpload}
           />
         )}
@@ -104,7 +104,7 @@ class GrowiZipImportSection extends React.Component {
 
 }
 
-GrowiZipImportSection.propTypes = {
+GrowiArchiveSection.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
@@ -112,8 +112,8 @@ GrowiZipImportSection.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const GrowiZipImportSectionWrapper = (props) => {
-  return createSubscribedElement(GrowiZipImportSection, props, [AppContainer]);
+const GrowiArchiveSectionWrapper = (props) => {
+  return createSubscribedElement(GrowiArchiveSection, props, [AppContainer]);
 };
 
-export default withTranslation()(GrowiZipImportSectionWrapper);
+export default withTranslation()(GrowiArchiveSectionWrapper);

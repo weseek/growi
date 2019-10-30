@@ -22,7 +22,7 @@ export const MODE_RESTRICTED_COLLECTION = {
   users: ['insert', 'upsert'],
 };
 
-export default class GrowiZipImportItem extends React.Component {
+export default class ImportCollectionItem extends React.Component {
 
   constructor(props) {
     super(props);
@@ -227,7 +227,7 @@ export default class GrowiZipImportItem extends React.Component {
 
 }
 
-GrowiZipImportItem.propTypes = {
+ImportCollectionItem.propTypes = {
   collectionName: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
   option: PropTypes.instanceOf(GrowiArchiveImportOption).isRequired,
@@ -246,7 +246,7 @@ GrowiZipImportItem.propTypes = {
   onErrorLinkClicked: PropTypes.func,
 };
 
-GrowiZipImportItem.defaultProps = {
+ImportCollectionItem.defaultProps = {
   insertedCount: 0,
   modifiedCount: 0,
   errorsCount: 0,
