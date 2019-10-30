@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 
 class Customize extends React.Component {
 
@@ -16,7 +17,7 @@ class Customize extends React.Component {
       <Fragment>
         <div className="row my-3">
           <h2>{t('customize_page.Layout')}</h2>
-          {/* レイアウトコンポーネントを設置する */}
+          <CustomizeLayoutSetting />
         </div>
         <legend>{t('customize_page.Theme')}</legend>
         {/* テーマフォームの react componentをここで呼ぶ(GW-245) */}
