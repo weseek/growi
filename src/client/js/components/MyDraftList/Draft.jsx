@@ -6,8 +6,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // TODO: GW-333
 // import Panel from 'react-bootstrap/es/Panel';
-// import Tooltip from 'react-bootstrap/es/Tooltip';
-// import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+import {
+  UncontrolledTooltip,
+} from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -99,18 +100,6 @@ class Draft extends React.Component {
 
   render() {
     const { t } = this.props;
-
-    const copyButtonTooltip = (
-      <Tooltip id="draft-copied-tooltip">
-        { this.state.showCopiedMessage && (
-          <strong>copied!</strong>
-        ) }
-        { !this.state.showCopiedMessage && (
-          <span>{this.props.t('Copy')}</span>
-        ) }
-      </Tooltip>
-    );
-
     return (
       <div className="draft-list-item">
         <Panel>
@@ -135,7 +124,7 @@ class Draft extends React.Component {
                   </a>
                 )
               }
-              <OverlayTrigger overlay={copyButtonTooltip} placement="top">
+              <span id="draft-copied-tooltip">
                 <CopyToClipboard text={this.props.markdown} onCopy={this.changeToolTipLabel}>
                   <a
                     className="text-center draft-copy"
@@ -143,7 +132,15 @@ class Draft extends React.Component {
                     <i className="mx-2 ti-clipboard" />
                   </a>
                 </CopyToClipboard>
-              </OverlayTrigger>
+              </span>
+              <UncontrolledTooltip placement="top" target="draft-copied-tooltip">
+                { this.state.showCopiedMessage && (
+                  <strong>copied!</strong>
+                ) }
+                { !this.state.showCopiedMessage && (
+                  <span>{this.props.t('Copy')}</span>
+                ) }
+              </UncontrolledTooltip>
               <a
                 className="text-danger text-center"
                 data-toggle="tooltip"
