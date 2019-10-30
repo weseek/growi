@@ -34,10 +34,10 @@
 
     pointer-events: none;
 
-    .panel.gfm-cheatsheet {
+    .card.gfm-cheatsheet {
       box-shadow: unset;
       opacity: 0.6;
-      .panel-body {
+      .card-body {
         min-width: 30em;
         font-family: monospace;
         color: $text-muted;
