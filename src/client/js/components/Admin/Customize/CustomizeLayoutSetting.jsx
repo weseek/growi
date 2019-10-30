@@ -1,13 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
+const logger = loggerFactory('growi:importer');
+
 class CustomizeLayoutSetting extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t } = this.props;
+
+    try {
+      toastSuccess(t(''));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   growiLayout() {
     const { adminCustomizeContainer } = this.props;
