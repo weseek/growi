@@ -1,14 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 class CustomizeLayoutSetting extends React.Component {
 
   render() {
+    const { t } = this.props;
+
     return (
       <form>
         <div className="col-sm-4">
           <h4>
             <div className="radio radio-primary">
-              <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onClick="selectableTheme(event)" />
+              <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" />
               <label htmlFor="radioLayoutGrowi">
                   GROWI Enhanced Layout <small className="text-success">(Recommended)</small>
               </label>
@@ -28,7 +32,7 @@ class CustomizeLayoutSetting extends React.Component {
         <div className="col-sm-4">
           <h4>
             <div className="radio radio-primary">
-              <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onClick="selectableTheme(event)" />
+              <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" />
               <label htmlFor="radioLayoutKibela">
                   Kibela Like Layout
               </label>
@@ -48,7 +52,7 @@ class CustomizeLayoutSetting extends React.Component {
         <div className="col-sm-4">
           <h4>
             <div className="radio radio-primary">
-              <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onClick="selectableTheme(event)" />
+              <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" />
               <label htmlFor="radioLayoutCrowi">
                   Crowi Classic Layout
               </label>
@@ -65,11 +69,19 @@ class CustomizeLayoutSetting extends React.Component {
             <li>Collapsible Table-of-contents</li>
           </ul>
         </div>
+        <div className="form-group my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+          </div>
+        </div>
       </form>
     );
   }
 
 }
 
+CustomizeLayoutSetting.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+};
 
-export default CustomizeLayoutSetting;
+export default withTranslation()(CustomizeLayoutSetting);
