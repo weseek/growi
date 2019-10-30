@@ -8,13 +8,7 @@ class CustomizeLayoutSetting extends React.Component {
         <div className="col-sm-4">
           <h4>
             <div className="radio radio-primary">
-              <input
-                type="radio"
-                id="radioLayoutGrowi"
-                name="settingForm[customize:layout]"
-                value="growi"
-                onClick="selectableTheme(event)"
-              />
+              <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onClick="selectableTheme(event)" />
               <label htmlFor="radioLayoutGrowi">
                   GROWI Enhanced Layout <small className="text-success">(Recommended)</small>
               </label>
