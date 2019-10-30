@@ -15,6 +15,7 @@ export default class AdminCustomizeContainer extends Container {
       layoutType: appContainer.config.layoutType,
     };
 
+    this.switchLayoutType = this.switchLayoutType.bind(this);
   }
 
   /**
@@ -22,6 +23,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   static getClassName() {
     return 'AdminCustomizeContainer';
+  }
+
+  /**
+   * Switch layoutType
+   */
+  switchLayoutType(lauoutName) {
+    this.setState({ layoutType: lauoutName });
   }
 
 }

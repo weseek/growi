@@ -9,26 +9,19 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 class CustomizeLayoutSetting extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // TODO GW-477 save setting at customizeContainer
-      layout: 'growi',
-    };
-
-    this.onChangeLayout = this.onChangeLayout.bind(this);
-  }
-
-  onChangeLayout(lauoutName) {
-    this.setState({ layout: lauoutName });
-  }
-
   growiLayout() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutGrowi" checked={this.state.layout === 'growi'} onChange={() => this.onChangeLayout('growi')} />
+            <input
+              type="radio"
+              id="radioLayoutGrowi"
+              checked={adminCustomizeContainer.state.layoutType === 'growi'}
+              onChange={() => adminCustomizeContainer.switchLayoutType('growi')}
+            />
             <label htmlFor="radioLayoutGrowi">
               GROWI Enhanced Layout <small className="text-success">(Recommended)</small>
             </label>
@@ -49,11 +42,18 @@ class CustomizeLayoutSetting extends React.Component {
   }
 
   kibelaLayout() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutKibela" checked={this.state.layout === 'kibela'} onChange={() => this.onChangeLayout('kibela')} />
+            <input
+              type="radio"
+              id="radioLayoutKibela"
+              checked={adminCustomizeContainer.state.layoutType === 'kibela'}
+              onChange={() => adminCustomizeContainer.switchLayoutType('kibela')}
+            />
             <label htmlFor="radioLayoutKibela">
               Kibela Like Layout
             </label>
@@ -74,11 +74,18 @@ class CustomizeLayoutSetting extends React.Component {
   }
 
   classicLayout() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutCrowi" checked={this.state.layout === 'crowi'} onChange={() => this.onChangeLayout('crowi')} />
+            <input
+              type="radio"
+              id="radioLayoutCrowi"
+              checked={adminCustomizeContainer.state.layoutType === 'crowi'}
+              onChange={() => adminCustomizeContainer.switchLayoutType('crowi')}
+            />
             <label htmlFor="radioLayoutCrowi">
               Crowi Classic Layout
             </label>
