@@ -8,8 +8,8 @@ class SimpleCheatsheet extends React.Component {
     const { t } = this.props;
 
     return (
-      <div className="panel panel-default gfm-cheatsheet mb-0">
-        <div className="panel-body small p-b-0">
+      <div className="card bg-default gfm-cheatsheet mb-0">
+        <div className="card-body small p-b-0">
           <div className="row">
             <div className="col-xs-6">
               <p>
