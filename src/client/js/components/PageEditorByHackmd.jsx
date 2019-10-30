@@ -247,9 +247,9 @@ class PageEditorByHackmd extends React.Component {
           <p className="text-center"><strong>HackMD has unsaved draft.</strong></p>
 
           { isHackmdDocumentOutdated && (
-            <div className="panel panel-warning">
-              <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
-              <div className="panel-body text-center">
+            <div className="card bg-warning">
+              <div className="card-header"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
+              <div className="card-body text-center">
                 The current draft on HackMD is based on&nbsp;
                 <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.
 
