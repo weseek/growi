@@ -52,6 +52,7 @@ import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import AdminCustomizeContainer from './services/AdminCustomizeContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -109,7 +110,6 @@ let componentMappings = {
   'user-draft-list': <MyDraftList />,
 
   'admin-full-text-search-management': <FullTextSearchManagement />,
-  'admin-customize': <Customize />,
   'admin-external-account-setting': <ManageExternalAccount />,
 
   'staff-credit': <StaffCredit />,
@@ -156,6 +156,19 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
+
+const adminCustomizeElem = document.getElementById('admin-customize');
+if (adminCustomizeElem != null) {
+  const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminCustomizeContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <Customize />
+      </I18nextProvider>
+    </Provider>,
+    adminCustomizeElem,
+  );
+}
 
 // render for admin
 const adminUsersElem = document.getElementById('admin-user-page');
