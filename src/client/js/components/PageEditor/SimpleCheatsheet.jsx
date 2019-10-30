@@ -27,7 +27,7 @@ class SimpleCheatsheet extends React.Component {
                 ```
               </p>
             </div>
-            <div className="col-xs-6">
+            <div className="col-sm-6">
               <p>
                 - {t('sandbox.unordered_list_x', { index: '1' })}<br />
                 &nbsp;&nbsp;&nbsp;- {t('sandbox.unordered_list_x', { index: '1.1' })}<br />
