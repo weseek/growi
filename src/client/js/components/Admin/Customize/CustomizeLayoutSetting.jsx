@@ -23,7 +23,7 @@ class CustomizeLayoutSetting extends React.Component {
     const { t } = this.props;
 
     try {
-      toastSuccess(t(''));
+      toastSuccess(t('customize_page.update_layout_success'));
     }
     catch (err) {
       toastError(err);

@@ -676,7 +676,8 @@
     "attach_title_header": "Add h1 section when create new page automatically",
     "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
     "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
-    "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page"
+    "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
+    "update_layout_success": "Succeeded to update layout"
   },
 
   "user_management": {
