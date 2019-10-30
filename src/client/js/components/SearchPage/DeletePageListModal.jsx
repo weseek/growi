@@ -32,21 +32,22 @@ export default class DeletePageListModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
-        <ModalHeader className="border-bottom" toggle={this.props.cancel}>
+        <ModalHeader toggle={this.props.cancel}>
           Deleting pages:
         </ModalHeader>
-        <ModalBody className="border-bottom">
-          <ul className="m-0">
+        <ModalBody>
+          <ul>
             {listView}
           </ul>
         </ModalBody>
         <ModalFooter>
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
-            <span className="d-flex align-items-center">
-              <label className="text-danger mb-0 mr-3">
-                <input type="checkbox" onClick={this.props.toggleDeleteCompletely} className="align-middle mr-2" />Delete completely
-              </label>
+            <span className="d-flex">
+              <div className="custom-control custom-checkbox">
+                <input type="checkbox" className="custom-control-input" id="customCheck-delete-completely" />
+                <label className="custom-control-label text-danger" htmlFor="customCheck-delete-completely" onClick={this.props.toggleDeleteCompletely}>Delete completely</label>
+              </div>
               <span className="m-l-10">
                 <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
               </span>
