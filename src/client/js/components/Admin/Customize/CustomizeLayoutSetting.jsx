@@ -31,6 +31,26 @@ class CustomizeLayoutSetting extends React.Component {
             <li>Affix Table-of-contents</li>
           </ul>
         </div>
+        <div className="col-sm-4">
+          <h4>
+            <div className="radio radio-primary">
+              <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onClick="selectableTheme(event)" />
+              <label htmlFor="radioLayoutKibela">
+                  Kibela Like Layout
+              </label>
+            </div>
+          </h4>
+          <a href="/images/admin/customize/layout-kibela.gif" className="ss-container">
+            <img src="/images/admin/customize/layout-kibela-thumb.gif" width="240px" />
+          </a>
+          <h4>Easy Viewing Structure</h4>
+          <ul>
+            {/* TODO i18n */}
+            <li>Center aligned contents</li>
+            <li>Show and post comments at the bottom of the page</li>
+            <li>Affix Table-of-contents</li>
+          </ul>
+        </div>
       </form>
     );
   }
