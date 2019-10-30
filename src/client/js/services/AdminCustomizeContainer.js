@@ -32,4 +32,8 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ layoutType: lauoutName });
   }
 
+  updateCustomizeLayout() {
+    // TODO GW-479 post api
+  }
+
 }
