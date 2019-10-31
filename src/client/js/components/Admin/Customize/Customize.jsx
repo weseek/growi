@@ -19,8 +19,6 @@ class Customize extends React.Component {
           <h2>{t('customize_page.Layout')}</h2>
           <CustomizeLayoutSetting />
         </div>
-        <legend>{t('customize_page.Theme')}</legend>
-        {/* テーマフォームの react componentをここで呼ぶ(GW-245) */}
         <legend>{t('customize_page.Behavior')}</legend>
         {/* 挙動フォームの react componentをここで呼ぶ(GW-246) */}
         <legend>{t('customize_page.Function')}</legend>
