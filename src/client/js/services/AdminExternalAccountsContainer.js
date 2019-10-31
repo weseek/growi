@@ -4,7 +4,7 @@ import loggerFactory from '@alias/logger';
 
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:UserGroupDetailContainer');
+const logger = loggerFactory('growi:services:AdminexternalaccountsContainer');
 
 /**
  * Service container for admin external-accounts page (ManageExternalAccountsContainer.jsx)
