@@ -220,7 +220,7 @@ class SearchResult extends React.Component {
           <label>
             <input
               type="checkbox"
-              onClick={() => { return this.handleAllSelect() }}
+              onChange={() => { return this.handleAllSelect() }}
               checked={this.isAllSelected()}
             />
             &nbsp;Check All
@@ -253,7 +253,7 @@ class SearchResult extends React.Component {
                 className="search-result-list-delete-checkbox"
                 value={pageId}
                 checked={this.state.selectedPages.has(page)}
-                onClick={() => { return this.toggleCheckbox(page) }}
+                onChange={() => { return this.toggleCheckbox(page) }}
               />
             )
             }
