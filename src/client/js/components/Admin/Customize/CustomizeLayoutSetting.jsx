@@ -11,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import CustomizeLayoutForm from './CustomizeLayoutForm';
+import CustomizeThemeForm from './CustomizeThemeForm';
 
 const logger = loggerFactory('growi:importer');
 
@@ -36,7 +37,7 @@ class CustomizeLayoutSetting extends React.Component {
     return (
       <React.Fragment>
         <CustomizeLayoutForm />
-        {/* TODO GW-245 create themeForm Component */}
+        <CustomizeThemeForm />
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>

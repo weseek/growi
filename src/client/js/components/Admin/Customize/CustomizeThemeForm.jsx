@@ -8,7 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 
-class CustomizeThemeSetting extends React.Component {
+class CustomizeThemeForm extends React.Component {
 
   render() {
     return (
@@ -17,14 +17,14 @@ class CustomizeThemeSetting extends React.Component {
   }
 
 }
-const CustomizeThemeSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeThemeSetting, props, [AppContainer, AdminCustomizeContainer]);
+const CustomizeThemeFormWrapper = (props) => {
+  return createSubscribedElement(CustomizeThemeForm, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-CustomizeThemeSetting.propTypes = {
+CustomizeThemeForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeThemeSettingWrapper);
+export default withTranslation()(CustomizeThemeFormWrapper);
