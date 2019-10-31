@@ -37,6 +37,10 @@ export default class AdminCustomizeContainer extends Container {
    * Switch themeType
    */
   switchThemeType(themeName) {
+    // can't choose theme when kibela
+    if (this.state.layoutType === 'kibela') {
+      return;
+    }
     this.setState({ themeType: themeName });
   }
 
