@@ -10,12 +10,21 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 class ThemeColorBox extends React.Component {
 
+  isThemeSelected(name) {
+    // TODO comparison current Theme
+    return true;
+  }
+
   render() {
+    const { name } = this.props;
     return (
-      <div id={`theme-option-${this.props.name}`} className="theme-option-container d-flex flex-column align-items-center">
+      <div
+        id={`theme-option-${name}`}
+        className={`theme-option-container d-flex flex-column align-items-center ${this.isThemeSelected(name) && 'active'}`}
+      >
         <a
-          className={`m-0 ${this.props.name} theme-button`}
-          id={this.props.name}
+          className={`m-0 ${name} theme-button`}
+          id={name}
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
             <g>
@@ -25,7 +34,7 @@ class ThemeColorBox extends React.Component {
             </g>
           </svg>
         </a>
-        <span className="theme-option-name"><b>{ this.props.name }</b></span>
+        <span className="theme-option-name"><b>{ name }</b></span>
       </div>
     );
   }
