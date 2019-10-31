@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import CustomizeLayoutForm from './CustomizeLayoutForm';
+import CustomizeLayoutOption from './CustomizeLayoutOption';
 
 class CustomizeLayoutSetting extends React.Component {
 
@@ -9,15 +9,15 @@ class CustomizeLayoutSetting extends React.Component {
     const { t } = this.props;
 
     return (
-      <React.Fragment>
-        <CustomizeLayoutForm />
+      <form>
+        <CustomizeLayoutOption />
         {/* TODO GW-245 create themeForm Component */}
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
         </div>
-      </React.Fragment>
+      </form>
     );
   }
 
