@@ -6,6 +6,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import ThemeColorBox from './ThemeColorBox';
 
 
 class CustomizeThemeForm extends React.Component {
@@ -15,7 +16,7 @@ class CustomizeThemeForm extends React.Component {
       <div id="themeOptions">
         {/* Light Themes  */}
         <div className="d-flex">
-
+          <ThemeColorBox />
         </div>
         {/* Dark Themes  */}
         <div className="d-flex mt-3">
@@ -26,6 +27,7 @@ class CustomizeThemeForm extends React.Component {
   }
 
 }
+
 const CustomizeThemeFormWrapper = (props) => {
   return createSubscribedElement(CustomizeThemeForm, props, [AppContainer, AdminCustomizeContainer]);
 };
