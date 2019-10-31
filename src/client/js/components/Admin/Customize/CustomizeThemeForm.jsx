@@ -13,7 +13,7 @@ class CustomizeThemeForm extends React.Component {
 
   render() {
     return (
-      <div id="themeOptions">
+      <div id="themeOptions" className={`${this.props.adminCustomizeContainer.state.layoutType === 'kibela' && 'disabled'}`}>
         {/* Light Themes  */}
         <div className="d-flex">
           <ThemeColorBox name="default" bg="#ffffff" topbar="#334455" theme="#112744" />
