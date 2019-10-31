@@ -35,7 +35,7 @@ CustomizeLayoutOption.propTypes = {
   labelHtml: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
   onSelected: PropTypes.func.isRequired,
-  children: PropTypes.func.isRequired,
+  children: PropTypes.array.isRequired,
 };
 
 export default withTranslation()(CustomizeLayoutOption);
