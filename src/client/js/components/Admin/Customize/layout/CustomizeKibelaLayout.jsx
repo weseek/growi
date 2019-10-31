@@ -2,14 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import AppContainer from '../../../../services/AppContainer';
+import AdminCustomizeContainer from '../../../../services/AdminCustomizeContainer';
+import { createSubscribedElement } from '../../../UnstatedUtils';
+
 class CustomizeKibelaLayout extends React.Component {
 
   render() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutKibela" checked={this.props.currentLayout === 'kibela'} onChange={() => this.props.onChangeLayout('kibela')} />
+            <input
+              type="radio"
+              id="radioLayoutKibela"
+              checked={adminCustomizeContainer.state.currentLayout === 'kibela'}
+              onChange={() => adminCustomizeContainer.switchLayoutType('kibela')}
+            />
             <label htmlFor="radioLayoutKibela">
               Kibela Like Layout
             </label>
@@ -31,11 +42,14 @@ class CustomizeKibelaLayout extends React.Component {
 
 }
 
-CustomizeKibelaLayout.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  currentLayout: PropTypes.string.isRequired,
-  onChangeLayout: PropTypes.func.isRequired,
+const CustomizeKibelaLayoutWrapper = (props) => {
+  return createSubscribedElement(CustomizeKibelaLayout, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-export default withTranslation()(CustomizeKibelaLayout);
+CustomizeKibelaLayout.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+};
+
+export default withTranslation()(CustomizeKibelaLayoutWrapper);

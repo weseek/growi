@@ -2,14 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import AppContainer from '../../../../services/AppContainer';
+import AdminCustomizeContainer from '../../../../services/AdminCustomizeContainer';
+import { createSubscribedElement } from '../../../UnstatedUtils';
+
 class CustomizeCrowiLayout extends React.Component {
 
   render() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutCrowi" checked={this.props.currentLayout === 'crowi'} onChange={() => this.props.onChangeLayout('crowi')} />
+            <input
+              type="radio"
+              id="radioLayoutCrowi"
+              checked={adminCustomizeContainer.state.currentLayout === 'crowi'}
+              onChange={() => adminCustomizeContainer.switchLayoutType('crowi')}
+            />
             <label htmlFor="radioLayoutCrowi">
                 Crowi Classic Layout
             </label>
@@ -31,11 +42,14 @@ class CustomizeCrowiLayout extends React.Component {
 
 }
 
-CustomizeCrowiLayout.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  currentLayout: PropTypes.string.isRequired,
-  onChangeLayout: PropTypes.func.isRequired,
+const CustomizeCrowiLayoutWrapper = (props) => {
+  return createSubscribedElement(CustomizeCrowiLayout, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-export default withTranslation()(CustomizeCrowiLayout);
+CustomizeCrowiLayout.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+};
+
+export default withTranslation()(CustomizeCrowiLayoutWrapper);

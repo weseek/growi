@@ -2,14 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import AppContainer from '../../../../services/AppContainer';
+import AdminCustomizeContainer from '../../../../services/AdminCustomizeContainer';
+import { createSubscribedElement } from '../../../UnstatedUtils';
+
 class CustomizeGrowiLayout extends React.Component {
 
   render() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id="radioLayoutGrowi" checked={this.props.currentLayout === 'growi'} onChange={() => this.props.onChangeLayout('growi')} />
+            <input
+              type="radio"
+              id="radioLayoutGrowi"
+              checked={adminCustomizeContainer.state.currentLayout === 'growi'}
+              onChange={() => adminCustomizeContainer.switchLayoutType('growi')}
+            />
             <label htmlFor="radioLayoutGrowi">
               GROWI Enhanced Layout <small className="text-success">(Recommended)</small>
             </label>
@@ -31,11 +42,15 @@ class CustomizeGrowiLayout extends React.Component {
 
 }
 
-CustomizeGrowiLayout.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
 
-  currentLayout: PropTypes.string.isRequired,
-  onChangeLayout: PropTypes.func.isRequired,
+const CustomizeGrowiLayoutWrapper = (props) => {
+  return createSubscribedElement(CustomizeGrowiLayout, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-export default withTranslation()(CustomizeGrowiLayout);
+CustomizeGrowiLayout.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+};
+
+export default withTranslation()(CustomizeGrowiLayoutWrapper);
