@@ -1,34 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import CustomizeGrowiLayout from './layout/CustomizeGrowiLayout';
-import CustomizeKibelaLayout from './layout/CustomizeKibelaLayout';
-import CustomizeCrowiLayout from './layout/CustomizeCrowiLayout';
 
 class CustomizeLayoutOption extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      // TODO GW-477 save setting at customizeContainer
-      currentLayout: 'growi',
-    };
-
-    this.onChangeLayout = this.onChangeLayout.bind(this);
-  }
-
-  onChangeLayout(lauoutName) {
-    this.setState({ currentLayout: lauoutName });
-  }
 
   render() {
 
     return (
-      <React.Fragment>
-        <CustomizeGrowiLayout currentLayout={this.state.currentLayout} onChangeLayout={this.onChangeLayout} />
-        <CustomizeKibelaLayout currentLayout={this.state.currentLayout} onChangeLayout={this.onChangeLayout} />
-        <CustomizeCrowiLayout currentLayout={this.state.currentLayout} onChangeLayout={this.onChangeLayout} />
-      </React.Fragment>
+      <div className="col-sm-4">
+        <h4>
+          <div className="radio radio-primary">
+            <input type="radio" id={`radio-layout-${this.props.layoutType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
+            <label htmlFor={`radio-layout-${this.props.layoutType}`}>
+              {/* eslint-disable-next-line react/no-danger */}
+              <span dangerouslySetInnerHTML={{ __html: this.props.labelHtml }} />
+            </label>
+          </div>
+        </h4>
+        <a href={`/images/admin/customize/layout-${this.props.layoutType}.gif`} className="ss-container">
+          <img src={`/images/admin/customize/layout-${this.props.layoutType}-thumb.gif`} width="240px" />
+        </a>
+        {/* render layout description */}
+        {this.props.children}
+      </div>
     );
   }
 
@@ -36,6 +30,12 @@ class CustomizeLayoutOption extends React.Component {
 
 CustomizeLayoutOption.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
+  layoutType: PropTypes.string.isRequired,
+  labelHtml: PropTypes.string.isRequired,
+  isSelected: PropTypes.bool.isRequired,
+  onSelected: PropTypes.func.isRequired,
+  children: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(CustomizeLayoutOption);

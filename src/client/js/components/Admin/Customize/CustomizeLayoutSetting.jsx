@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import CustomizeLayoutOption from './CustomizeLayoutOption';
+import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 
 class CustomizeLayoutSetting extends React.Component {
 
@@ -10,7 +10,7 @@ class CustomizeLayoutSetting extends React.Component {
 
     return (
       <form>
-        <CustomizeLayoutOption />
+        <CustomizeLayoutOptions />
         {/* TODO GW-245 create themeForm Component */}
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
