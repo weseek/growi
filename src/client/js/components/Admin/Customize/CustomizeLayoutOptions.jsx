@@ -41,7 +41,7 @@ class CustomizeLayoutOptions extends React.Component {
           layoutType="kibela"
           isSelected={this.state.currentLayout === 'kibela'}
           onSelected={() => this.selectLayout('kibela')}
-          labelHtml=" Kibela Like Layout"
+          labelHtml="Kibela Like Layout"
         >
           {/* TODO i18n */}
           <h4>Easy Viewing Structure</h4>
