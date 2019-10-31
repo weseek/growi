@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO: GW-333
-// import Checkbox from 'react-bootstrap/es/Checkbox';
-
 import {
   Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
