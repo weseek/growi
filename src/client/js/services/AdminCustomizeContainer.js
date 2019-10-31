@@ -13,6 +13,7 @@ export default class AdminCustomizeContainer extends Container {
 
     this.state = {
       layoutType: appContainer.config.layoutType,
+      themeType: appContainer.config.themeType,
     };
 
     this.switchLayoutType = this.switchLayoutType.bind(this);
