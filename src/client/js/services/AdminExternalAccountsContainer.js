@@ -41,7 +41,7 @@ export default class AdminExternalAccountsContainer extends Container {
    * @return {object} response object
    */
   async updateExternalAccount(param) {
-    const res = await this.appContainer.apiv3.put(`/users/external-account/${this.state.externalAccounts._id}`, param);
+    const res = await this.appContainer.apiv3.put(`/users/external-accounts/${this.state.externalAccounts._id}`, param);
     const { exteranalAccounts } = res.data;
 
     await this.setState({ exteranalAccounts });
@@ -57,7 +57,7 @@ export default class AdminExternalAccountsContainer extends Container {
   async retrieveExternalAccountsByPagingNum(selectedPage) {
 
     const params = { page: selectedPage };
-    const { data } = await this.appContainer.apiv3.get('/users', params);
+    const { data } = await this.appContainer.apiv3.get('/users/external-accounts', params);
 
 
     if (data.paginateResult == null) {

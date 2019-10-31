@@ -172,7 +172,7 @@ if (adminUsersElem != null) {
   );
 }
 
-const adminExternalAccountsElem = document.getElementById('admin-external-account');
+const adminExternalAccountsElem = document.getElementById('admin-external-account-setting');
 if (adminExternalAccountsElem != null) {
   const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
   ReactDOM.render(
