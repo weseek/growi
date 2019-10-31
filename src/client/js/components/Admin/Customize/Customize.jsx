@@ -16,7 +16,6 @@ class Customize extends React.Component {
     return (
       <Fragment>
         <div className="row my-3">
-          <h2>{t('customize_page.Layout')}</h2>
           <CustomizeLayoutSetting />
         </div>
         <legend>{t('customize_page.Behavior')}</legend>

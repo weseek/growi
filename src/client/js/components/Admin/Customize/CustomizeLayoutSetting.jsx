@@ -36,6 +36,7 @@ class CustomizeLayoutSetting extends React.Component {
 
     return (
       <React.Fragment>
+        <h2>{t('customize_page.Layout')}</h2>
         <CustomizeLayoutForm />
         <CustomizeThemeForm />
         <div className="form-group my-3">
