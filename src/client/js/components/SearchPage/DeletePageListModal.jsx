@@ -46,7 +46,13 @@ export default class DeletePageListModal extends React.Component {
             <span className="d-flex align-items-center">
               <div className="custom-control custom-checkbox">
                 <input type="checkbox" className="custom-control-input" id="customCheck-delete-completely" />
-                <label className="custom-control-label text-danger" htmlFor="customCheck-delete-completely" onClick={this.props.toggleDeleteCompletely}>Delete completely</label>
+                <label
+                  className="custom-control-label text-danger"
+                  htmlFor="customCheck-delete-completely"
+                  onClick={this.props.toggleDeleteCompletely}
+                >
+                  Delete completely
+                </label>
               </div>
               <span className="m-l-10">
                 <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
