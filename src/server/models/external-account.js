@@ -149,6 +149,32 @@ class ExternalAccount {
     return this.create({ providerType, accountId, user: user._id });
   }
 
+  /**
+   * find all entities with pagination
+   *
+   * @see https://github.com/edwardhotchkiss/mongoose-paginate
+   *
+   * @static
+   * @param {any} opts mongoose-paginate options object
+   * @returns {Promise<any>} mongoose-paginate result object
+   * @memberof ExternalAccount
+   */
+  static findAllWithPagination(opts) {
+    const query = {};
+    const options = Object.assign({ populate: 'user' }, opts);
+    if (options.sort == null) {
+      options.sort = { accountId: 1, createdAt: 1 };
+    }
+    if (options.limit == null) {
+      options.limit = ExternalAccount.DEFAULT_LIMIT;
+    }
+
+    return this.paginate(query, options)
+      .catch((err) => {
+        debug('Error on pagination:', err);
+      });
+  }
+
 }
 
 module.exports = function(crowi) {

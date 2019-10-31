@@ -486,7 +486,16 @@ module.exports = function(crowi, app) {
 
   actions.externalAccount = {};
   actions.externalAccount.index = function(req, res) {
-    return res.render('admin/users/external-accounts');
+    const page = parseInt(req.query.page) || 1;
+
+    ExternalAccount.findALLWithPagination({ page })
+      .then((result) => {
+        const pager = createPager(result.total, result.limit, result.page, MAX_PAGE_LIST);
+        return res.render('admin/users/external-accounts', {
+          accounts: result.docs,
+          pager,
+        });
+      });
   };
 
   actions.externalAccount.remove = async function(req, res) {
