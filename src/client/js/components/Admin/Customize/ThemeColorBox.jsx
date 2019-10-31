@@ -11,8 +11,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 class ThemeColorBox extends React.Component {
 
   isThemeSelected(name) {
-    // TODO comparison current Theme
-    return true;
+    return (this.props.adminCustomizeContainer.state.themeType === name);
   }
 
   render() {
@@ -21,6 +20,7 @@ class ThemeColorBox extends React.Component {
       <div
         id={`theme-option-${name}`}
         className={`theme-option-container d-flex flex-column align-items-center ${this.isThemeSelected(name) && 'active'}`}
+        onClick={() => this.props.adminCustomizeContainer.switchThemeType(name)}
       >
         <a
           className={`m-0 ${name} theme-button`}

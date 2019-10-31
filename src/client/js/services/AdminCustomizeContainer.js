@@ -33,6 +33,13 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ layoutType: lauoutName });
   }
 
+  /**
+   * Switch themeType
+   */
+  switchThemeType(themeName) {
+    this.setState({ themeType: themeName });
+  }
+
   updateCustomizeLayout() {
     // TODO GW-479 post api
   }
