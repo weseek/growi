@@ -353,7 +353,6 @@ module.exports = (crowi) => {
    */
   router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const page = parseInt(req.query.page) || 1;
-
     try {
       const paginateResult = await ExternalAccount.paginate(
         { status: { $ne: ExternalAccount.STATUS_DELETED } },

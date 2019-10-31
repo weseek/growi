@@ -486,7 +486,7 @@ module.exports = function(crowi, app) {
 
   actions.externalAccount = {};
   actions.externalAccount.index = function(req, res) {
-    return res.render('admin/external-accounts');
+    return res.render('admin/users/external-accounts');
   };
 
   actions.externalAccount.remove = async function(req, res) {
