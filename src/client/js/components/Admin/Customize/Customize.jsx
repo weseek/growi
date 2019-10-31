@@ -7,7 +7,6 @@ import AppContainer from '../../../services/AppContainer';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
-import CustomizeThemeSetting from './CustomizeThemeSetting';
 
 class Customize extends React.Component {
 
@@ -19,10 +18,6 @@ class Customize extends React.Component {
         <div className="row my-3">
           <h2>{t('customize_page.Layout')}</h2>
           <CustomizeLayoutSetting />
-        </div>
-        <div className="row my-3">
-          <h2>{t('customize_page.Theme')}</h2>
-          <CustomizeThemeSetting />
         </div>
         <legend>{t('customize_page.Behavior')}</legend>
         {/* 挙動フォームの react componentをここで呼ぶ(GW-246) */}
