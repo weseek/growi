@@ -18,10 +18,10 @@ const logger = loggerFactory('growi:importer');
 class CustomizeLayoutSetting extends React.Component {
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     try {
-      this.props.adminCustomizeContainer.updateCustomizeLayout();
+      await adminCustomizeContainer.updateCustomizeLayout();
       toastSuccess(t('customize_page.update_layout_success'));
     }
     catch (err) {
