@@ -18,8 +18,7 @@ export default class AdminExternalAccountsContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      users: JSON.parse(document.getElementById('admin-external-account-setting').getAttribute('external-accounts')) || [],
-      exteranalAccounts: [],
+      externalAccounts: [],
       totalAccounts: 0,
       activePage: 1,
       pagingLimit: Infinity,
@@ -60,13 +59,12 @@ export default class AdminExternalAccountsContainer extends Container {
     const params = { page: selectedPage };
     const { data } = await this.appContainer.apiv3.get('/users/external-accounts', params);
 
-
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');
     }
-    const { docs: exteranalAccounts, totalDocs: totalAccounts, limit: pagingLimit } = data.paginateResult;
+    const { docs: externalAccounts, totalDocs: totalAccounts, limit: pagingLimit } = data.paginateResult;
     this.setState({
-      exteranalAccounts,
+      externalAccounts,
       totalAccounts,
       pagingLimit,
       activePage: selectedPage,

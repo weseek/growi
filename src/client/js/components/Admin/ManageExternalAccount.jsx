@@ -16,14 +16,10 @@ class ManageExternalAccount extends React.Component {
   constructor(props) {
     super(props);
     this.xss = window.xss;
-    this.handlePage = this.handlePage.bind(this);
+    this.handleExternalAccountPage = this.handleExternalAccountPage.bind(this);
   }
 
-  componentWillMount() {
-    this.handlePage(1);
-  }
-
-  async handlePage(selectedPage) {
+  async handleExternalAccountPage(selectedPage) {
     try {
       await this.props.adminExternalAccountsContainer.retrieveExternalAccountsByPagingNum(selectedPage);
     }
@@ -39,7 +35,7 @@ class ManageExternalAccount extends React.Component {
       <div className="pull-right">
         <PaginationWrapper
           activePage={adminExternalAccountsContainer.state.activePage}
-          changePage={this.handlePage}
+          changePage={this.handleExternalAccountPage}
           totalItemsCount={adminExternalAccountsContainer.state.totalAccounts}
           pagingLimit={adminExternalAccountsContainer.state.pagingLimit}
         />

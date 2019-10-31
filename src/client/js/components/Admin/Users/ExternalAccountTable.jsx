@@ -17,8 +17,7 @@ class ExternalAccountTable extends React.Component {
     this.state = {
 
     };
-
-    this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
+    this.xss = window.xss;
     this.removeExtenalAccount = this.removeExtenalAccount.bind(this);
   }
 
@@ -33,44 +32,6 @@ class ExternalAccountTable extends React.Component {
     }
   }
 
-  /**
-   * user.statusをみてステータスのラベルを返す
-   * @param {string} userStatus
-   * @return ステータスラベル
-   */
-  getUserStatusLabel(userStatus) {
-    let additionalClassName;
-    let text;
-
-    switch (userStatus) {
-      case 1:
-        additionalClassName = 'label-info';
-        text = 'Approval Pending';
-        break;
-      case 2:
-        additionalClassName = 'label-success';
-        text = 'Active';
-        break;
-      case 3:
-        additionalClassName = 'label-warning';
-        text = 'Suspended';
-        break;
-      case 4:
-        additionalClassName = 'label-danger';
-        text = 'Deleted';
-        break;
-      case 5:
-        additionalClassName = 'label-info';
-        text = 'Invited';
-        break;
-    }
-
-    return (
-      <span className={`label ${additionalClassName}`}>
-        {text}
-      </span>
-    );
-  }
 
   render() {
     const { t, adminExternalAccountsContainer } = this.props;
@@ -106,19 +67,18 @@ class ExternalAccountTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {adminExternalAccountsContainer.state.exteranalAccounts.map((ea) => {
-              const { externalAccount } = ea;
+            {adminExternalAccountsContainer.state.externalAccounts.map((ea) => {
               return (
                 <tr>
-                  <td>{externalAccount.providerType}</td>
+                  <td>{ea.providerType}</td>
                   <td>
-                    <strong>{externalAccount.accountId}</strong>
+                    <strong>{ea.accountId}</strong>
                   </td>
                   <td>
-                    <strong>{externalAccount.user.username}</strong>
+                    <strong>{ ea.user.username }</strong>
                   </td>
                   <td>
-                    { externalAccount.password
+                    { ea.password
                       ? (
                         <span className="label label-info">
                           { t('user_management.set') }
@@ -131,7 +91,7 @@ class ExternalAccountTable extends React.Component {
                       )
                     }
                   </td>
-                  <td>{dateFnsFormat(new Date(externalAccount.createdAt), 'yyyy-MM-dd')}</td>
+                  <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>
                   <td>
                     <div className="btn-group admin-user-menu">
                       <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -140,7 +100,7 @@ class ExternalAccountTable extends React.Component {
                       <ul className="dropdown-menu" role="menu">
                         <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
                         <li>
-                          <a onClick={() => { return this.removeExtenalAccount(externalAccount.accountId) }}>
+                          <a onClick={() => { return this.removeExtenalAccount(ea.accountId) }}>
                             <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
                           </a>
                         </li>
