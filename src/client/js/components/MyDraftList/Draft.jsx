@@ -110,48 +110,48 @@ class Draft extends React.Component {
     const tooltipTargetId = `draft-copied-tooltip_${encodedPath}`;
 
     return (
-            <div className="icon-container">
-              {this.props.isExist
-                ? null
-                : (
-                  <a
-                    href={`${this.props.path}#edit`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-toggle="tooltip"
-                    title={this.props.t('Edit')}
-                  >
-                    <i className="mx-2 icon-note" />
-                  </a>
-                )
-              }
-              <span id="draft-copied-tooltip">
-                <CopyToClipboard text={this.props.markdown} onCopy={this.changeToolTipLabel}>
-                  <a
-                    className="text-center draft-copy"
-                  >
-                    <i className="mx-2 ti-clipboard" />
-                  </a>
-                </CopyToClipboard>
-              </span>
-              <UncontrolledTooltip placement="top" target="draft-copied-tooltip">
-                { this.state.showCopiedMessage && (
-                  <strong>copied!</strong>
-                ) }
-                { !this.state.showCopiedMessage && (
-                  <span>{this.props.t('Copy')}</span>
-                ) }
-              </UncontrolledTooltip>
-              <a
-                className="text-danger text-center"
-                data-toggle="tooltip"
-                data-placement="top"
-                title={t('Delete')}
-                onClick={() => { return this.props.clearDraft(this.props.path) }}
-              >
-                <i className="mx-2 icon-trash" />
-              </a>
-            </div>
+      <div className="icon-container">
+        {this.props.isExist
+          ? null
+          : (
+            <a
+              href={`${this.props.path}#edit`}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-toggle="tooltip"
+              title={this.props.t('Edit')}
+            >
+              <i className="mx-2 icon-note" />
+            </a>
+          )
+        }
+        <span id={tooltipTargetId}>
+          <CopyToClipboard text={this.props.markdown} onCopy={this.changeToolTipLabel}>
+            <a
+              className="text-center draft-copy"
+            >
+              <i className="mx-2 ti-clipboard" />
+            </a>
+          </CopyToClipboard>
+        </span>
+        <UncontrolledTooltip placement="top" target={tooltipTargetId} fade={false} trigger="hover">
+          { this.state.showCopiedMessage && (
+            <strong>copied!</strong>
+          ) }
+          { !this.state.showCopiedMessage && (
+            <span>{this.props.t('Copy')}</span>
+          ) }
+        </UncontrolledTooltip>
+        <a
+          className="text-danger text-center"
+          data-toggle="tooltip"
+          data-placement="top"
+          title={t('Delete')}
+          onClick={() => { return this.props.clearDraft(this.props.path) }}
+        >
+          <i className="mx-2 icon-trash" />
+        </a>
+      </div>
     );
   }
 
