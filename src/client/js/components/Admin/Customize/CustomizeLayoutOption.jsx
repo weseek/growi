@@ -7,27 +7,13 @@ import CustomizeCrowiLayout from './layout/CustomizeCrowiLayout';
 
 class CustomizeLayoutOption extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // TODO GW-477 save setting at customizeContainer
-      currentLayout: 'growi',
-    };
-
-    this.onChangeLayout = this.onChangeLayout.bind(this);
-  }
-
-  onChangeLayout(lauoutName) {
-    this.setState({ currentLayout: lauoutName });
-  }
-
   render() {
 
     return (
       <React.Fragment>
-        <CustomizeGrowiLayout currentLayout={this.state.currentLayout} onChangeLayout={this.onChangeLayout} />
-        <CustomizeKibelaLayout currentLayout={this.state.currentLayout} onChangeLayout={this.onChangeLayout} />
-        <CustomizeCrowiLayout currentLayout={this.state.currentLayout} onChangeLayout={this.onChangeLayout} />
+        <CustomizeGrowiLayout />
+        <CustomizeKibelaLayout />
+        <CustomizeCrowiLayout />
       </React.Fragment>
     );
   }
