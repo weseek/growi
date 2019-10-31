@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 // TODO: GW-333
 // import Panel from 'react-bootstrap/es/Panel';
 import {
-  UncontrolledTooltip,
+  UncontrolledTooltip, Card,
 } from 'reactstrap';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -102,11 +102,11 @@ class Draft extends React.Component {
     const { t } = this.props;
     return (
       <div className="draft-list-item">
-        <Panel>
-          <Panel.Heading className="d-flex">
-            <Panel.Toggle>
+        <Card>
+          <Card.Header className="d-flex">
+            <Card.Toggle>
               {this.renderAccordionTitle(this.props.isExist)}
-            </Panel.Toggle>
+            </Card.Toggle>
             <a href={this.props.path}><i className="icon icon-login"></i></a>
             <div className="flex-grow-1"></div>
             <div className="icon-container">
@@ -151,9 +151,9 @@ class Draft extends React.Component {
                 <i className="mx-2 icon-trash" />
               </a>
             </div>
-          </Panel.Heading>
-          <Panel.Collapse onEnter={this.expandPanelHandler} onExit={this.collapsePanelHandler}>
-            <Panel.Body>
+          </Card.Header>
+          <Card.Collapse onEnter={this.expandPanelHandler} onExit={this.collapsePanelHandler}>
+            <Card.Body>
               {/* loading spinner */}
               { this.state.isPanelExpanded && !this.state.isRendered && (
                 <div className="text-center">
@@ -164,9 +164,9 @@ class Draft extends React.Component {
               { this.state.isPanelExpanded && this.state.isRendered && (
                 <RevisionBody html={this.state.html} />
               ) }
-            </Panel.Body>
-          </Panel.Collapse>
-        </Panel>
+            </Card.Body>
+          </Card.Collapse>
+        </Card>
       </div>
     );
   }
