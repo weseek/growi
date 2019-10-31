@@ -1,12 +1,11 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-// TODO: GW-333
-// import Panel from 'react-bootstrap/es/Panel';
 import {
+  Collapse,
   UncontrolledTooltip,
 } from 'reactstrap';
 
@@ -82,33 +81,35 @@ class Draft extends React.Component {
   }
 
   renderAccordionTitle(isExist) {
-    const iconClass = this.state.isPanelExpanded ? 'caret-opened' : '';
+    const { isPanelExpanded } = this.state;
+
+    const iconClass = isPanelExpanded ? 'caret-opened' : '';
 
     return (
-      <Fragment>
+      <span>
         <i className={`caret ${iconClass}`}></i>
-        <span className="mx-2">{this.props.path}</span>
+        <span className="mx-2" onClick={() => this.setState({ isPanelExpanded: !isPanelExpanded })}>
+          {this.props.path}
+        </span>
         { isExist && (
           <span>({this.props.t('page exists')})</span>
         ) }
         { !isExist && (
-          <span className="label-draft label label-default">draft</span>
+          <span className="badge badge-secondary">draft</span>
         ) }
-      </Fragment>
+
+        <a className="ml-2" href={this.props.path}><i className="icon icon-login"></i></a>
+      </span>
     );
   }
 
-  render() {
-    const { t } = this.props;
+  renderControls() {
+    const { t, path } = this.props;
+
+    const encodedPath = path.replace(/\//g, '-');
+    const tooltipTargetId = `draft-copied-tooltip_${encodedPath}`;
+
     return (
-      <div className="draft-list-item">
-        <Panel>
-          <Panel.Heading className="d-flex">
-            <Panel.Toggle>
-              {this.renderAccordionTitle(this.props.isExist)}
-            </Panel.Toggle>
-            <a href={this.props.path}><i className="icon icon-login"></i></a>
-            <div className="flex-grow-1"></div>
             <div className="icon-container">
               {this.props.isExist
                 ? null
@@ -151,9 +152,26 @@ class Draft extends React.Component {
                 <i className="mx-2 icon-trash" />
               </a>
             </div>
-          </Panel.Heading>
-          <Panel.Collapse onEnter={this.expandPanelHandler} onExit={this.collapsePanelHandler}>
-            <Panel.Body>
+    );
+  }
+
+  render() {
+    const { isPanelExpanded } = this.state;
+
+    return (
+      <div className="accordion draft-list-item" role="tablist">
+        <div className="card">
+
+          <div className="card-header d-flex" role="tab">
+            {this.renderAccordionTitle(this.props.isExist)}
+
+            <div className="flex-grow-1"></div>
+
+            {this.renderControls()}
+          </div>
+
+          <Collapse isOpen={isPanelExpanded} onEntering={this.expandPanelHandler} onExiting={this.collapsePanelHandler}>
+            <div className="card-body">
               {/* loading spinner */}
               { this.state.isPanelExpanded && !this.state.isRendered && (
                 <div className="text-center">
@@ -164,9 +182,10 @@ class Draft extends React.Component {
               { this.state.isPanelExpanded && this.state.isRendered && (
                 <RevisionBody html={this.state.html} />
               ) }
-            </Panel.Body>
-          </Panel.Collapse>
-        </Panel>
+            </div>
+          </Collapse>
+
+        </div>
       </div>
     );
   }
