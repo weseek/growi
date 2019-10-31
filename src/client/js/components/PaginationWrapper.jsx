@@ -73,20 +73,20 @@ class PaginationWrapper extends React.Component {
     if (activePage !== 1) {
       paginationItems.push(
         <PaginationItem>
-          <PaginationLink first onClick={() => { return this.props.changePage(1) }} />,
+          <PaginationLink first onClick={() => { return this.props.changePage(1) }} />
         </PaginationItem>,
         <PaginationItem>
-          <PaginationLink previous onClick={() => { return this.props.changePage(activePage - 1) }} />,
+          <PaginationLink previous onClick={() => { return this.props.changePage(activePage - 1) }} />
         </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
         <PaginationItem disabled>
-          <PaginationLink first />,
+          <PaginationLink first />
         </PaginationItem>,
         <PaginationItem disabled>
-          <PaginationLink previous />,
+          <PaginationLink previous />
         </PaginationItem>,
       );
     }
@@ -120,20 +120,20 @@ class PaginationWrapper extends React.Component {
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem>
-          <PaginationLink next onClick={() => { return this.props.changePage(activePage + 1) }} />,
+          <PaginationLink next onClick={() => { return this.props.changePage(activePage + 1) }} />
         </PaginationItem>,
         <PaginationItem>
-          <PaginationLink last onClick={() => { return this.props.changePage(totalPage) }} />,
+          <PaginationLink last onClick={() => { return this.props.changePage(totalPage) }} />
         </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
         <PaginationItem disabled>
-          <PaginationLink next />,
+          <PaginationLink next />
         </PaginationItem>,
         <PaginationItem disabled>
-          <PaginationLink last />,
+          <PaginationLink last />
         </PaginationItem>,
       );
     }
@@ -157,9 +157,7 @@ class PaginationWrapper extends React.Component {
 
     return (
       <React.Fragment>
-        <div>
-          <Pagination size="sm">{paginationItems}</Pagination>
-        </div>
+        <Pagination size="sm">{paginationItems}</Pagination>
       </React.Fragment>
     );
   }
