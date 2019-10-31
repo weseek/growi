@@ -355,7 +355,6 @@ module.exports = (crowi) => {
     const page = parseInt(req.query.page) || 1;
     try {
       const paginateResult = await ExternalAccount.findAllWithPagination({ page });
-      // const { docs: userGroups, total: totalUserGroups, limit: pagingLimit } = result;
       return res.apiv3({ paginateResult });
     }
     catch (err) {

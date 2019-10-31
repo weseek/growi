@@ -111,7 +111,6 @@ let componentMappings = {
 
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
-  'admin-external-account-setting': <ManageExternalAccount />,
 
   'staff-credit': <StaffCredit />,
   'admin-importer': <ImportDataPage />,

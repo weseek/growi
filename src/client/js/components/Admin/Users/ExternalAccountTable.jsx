@@ -69,7 +69,7 @@ class ExternalAccountTable extends React.Component {
           <tbody>
             {adminExternalAccountsContainer.state.externalAccounts.map((ea) => {
               return (
-                <tr>
+                <tr key={ea._id}>
                   <td>{ea.providerType}</td>
                   <td>
                     <strong>{ea.accountId}</strong>
@@ -78,7 +78,7 @@ class ExternalAccountTable extends React.Component {
                     <strong>{ ea.user.username }</strong>
                   </td>
                   <td>
-                    { ea.password
+                    { ea.user.password
                       ? (
                         <span className="label label-info">
                           { t('user_management.set') }
@@ -100,7 +100,7 @@ class ExternalAccountTable extends React.Component {
                       <ul className="dropdown-menu" role="menu">
                         <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
                         <li>
-                          <a onClick={() => { return this.removeExtenalAccount(ea.accountId) }}>
+                          <a onClick={() => { return this.removeExtenalAccount(ea._id) }}>
                             <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
                           </a>
                         </li>
