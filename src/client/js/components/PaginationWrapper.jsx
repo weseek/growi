@@ -72,20 +72,20 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     if (activePage !== 1) {
       paginationItems.push(
-        <PaginationItem>
+        <PaginationItem key="painationItemFirst">
           <PaginationLink first onClick={() => { return this.props.changePage(1) }} />
         </PaginationItem>,
-        <PaginationItem>
+        <PaginationItem key="painationItemPrevious">
           <PaginationLink previous onClick={() => { return this.props.changePage(activePage - 1) }} />
         </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <PaginationItem disabled>
+        <PaginationItem key="painationItemFirst" disabled>
           <PaginationLink first />
         </PaginationItem>,
-        <PaginationItem disabled>
+        <PaginationItem key="painationItemPrevious" disabled>
           <PaginationLink previous />
         </PaginationItem>,
       );
@@ -102,8 +102,10 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
-        <PaginationItem active={number === activePage}>
-          <PaginationLink onClick={() => { return this.props.changePage(number) }}>{number}</PaginationLink>
+        <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
+          <PaginationLink onClick={() => { return this.props.changePage(number) }}>
+            {number}
+          </PaginationLink>
         </PaginationItem>,
       );
     }
@@ -119,20 +121,20 @@ class PaginationWrapper extends React.Component {
     const paginationItems = [];
     if (totalPage !== activePage) {
       paginationItems.push(
-        <PaginationItem>
+        <PaginationItem key="painationItemNext">
           <PaginationLink next onClick={() => { return this.props.changePage(activePage + 1) }} />
         </PaginationItem>,
-        <PaginationItem>
+        <PaginationItem key="painationItemLast">
           <PaginationLink last onClick={() => { return this.props.changePage(totalPage) }} />
         </PaginationItem>,
       );
     }
     else {
       paginationItems.push(
-        <PaginationItem disabled>
+        <PaginationItem key="painationItemNext" disabled>
           <PaginationLink next />
         </PaginationItem>,
-        <PaginationItem disabled>
+        <PaginationItem key="painationItemLast" disabled>
           <PaginationLink last />
         </PaginationItem>,
       );
