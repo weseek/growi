@@ -38,6 +38,11 @@ class CustomizeLayoutSetting extends React.Component {
       <React.Fragment>
         <h2>{t('customize_page.Layout')}</h2>
         <CustomizeLayoutForm />
+        <h2>{ t('customize_page.Theme') }</h2>
+        {/* TODO hide dev mode */}
+        <div className="alert alert-warning">
+          <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+        </div>
         <CustomizeThemeForm />
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">

@@ -12,7 +12,16 @@ class CustomizeThemeForm extends React.Component {
 
   render() {
     return (
-      <p>hogehoge</p>
+      <div id="themeOptions">
+        {/* Light Themes  */}
+        <div className="d-flex">
+
+        </div>
+        {/* Dark Themes  */}
+        <div className="d-flex mt-3">
+
+        </div>
+      </div>
     );
   }
 
