@@ -23,9 +23,24 @@ module.exports = (crowi) => {
     Config,
   } = crowi.models;
 
+  // TODO validator
   // TODO writte swagger
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    console.log('here is route');
+
+    const customizeParams = {
+      'customize:layout': req.body.layoutType,
+      'customize:theme': req.body.themeType,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', customizeParams);
+      return res.apiv3({ customizeParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating presentation';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
+    }
   });
 
   return router;

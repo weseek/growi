@@ -50,10 +50,12 @@ export default class AdminCustomizeContainer extends Container {
    * @return {Array}} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
-    await this.appContainer.apiv3.put('/customize-setting/layoutTheme');
-    // const { username } = response.data.userData;
-    const Appearance = [];
-    return Appearance;
+    const response = await this.appContainer.apiv3.put('/customize-setting/layoutTheme', {
+      layoutType: this.state.currentLayout,
+      themeType: this.state.currentTheme,
+    });
+    const { customizeParams } = response.data;
+    return customizeParams;
   }
 
 }
