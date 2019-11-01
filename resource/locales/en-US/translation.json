@@ -705,7 +705,7 @@
     "send_new_password": "Please send the new password to the user.",
     "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
     "reset_password": "Reset Password",
-    "related_username": "Related user's <code>%s</code>",
+    "related_username": "Related user's {{username}}",
     "accept": "Accept",
     "deactivate_account":"Deactivate Account",
     "your_own":"You cannot deactivate your own account",
