@@ -28,7 +28,7 @@ class CustomizeLayoutSetting extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.updateCustomizeLayout();
+      await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
       toastSuccess(t('customize_page.update_layout_success'));
     }
     catch (err) {
