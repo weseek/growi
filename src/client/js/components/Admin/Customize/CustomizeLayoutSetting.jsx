@@ -10,7 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
-import CustomizeLayoutOption from './CustomizeLayoutOption';
+import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 
 const logger = loggerFactory('growi:importer');
 
@@ -41,7 +41,7 @@ class CustomizeLayoutSetting extends React.Component {
 
     return (
       <form>
-        <CustomizeLayoutOption />
+        <CustomizeLayoutOptions />
         {/* TODO GW-245 create themeForm Component */}
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
