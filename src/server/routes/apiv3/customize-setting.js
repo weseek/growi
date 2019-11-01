@@ -75,9 +75,9 @@ module.exports = (crowi) => {
       return res.apiv3({ customizeParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating presentation';
+      const msg = 'Error occurred in updating layout and theme';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
     }
   });
 
