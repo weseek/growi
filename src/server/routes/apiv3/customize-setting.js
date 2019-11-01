@@ -7,6 +7,10 @@ const express = require('express');
 
 const router = express.Router();
 
+const { body } = require('express-validator/check');
+
+const validator = {};
+
 /**
  * @swagger
  *  tags:
@@ -23,10 +27,44 @@ module.exports = (crowi) => {
     Config,
   } = crowi.models;
 
-  // TODO validator
-  // TODO writte swagger
-  router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  const { ApiV3FormValidator } = crowi.middlewares;
 
+  validator.layoutTheme = [
+    body('layoutType').isString(),
+    body('themeType').isString(),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/customize-setting/layoutTheme:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update layout and theme
+   *        parameters:
+   *          - name: layoutType
+   *            in: query
+   *            description: type of layout
+   *            schema:
+   *              type: string
+   *          - name: themeType
+   *            in: query
+   *            description: type of theme
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to update layout and theme
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    customizeParams:
+   *                      type: object
+   *                      description: new params of layout and theme
+   */
+  router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const customizeParams = {
       'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
