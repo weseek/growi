@@ -8,7 +8,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import AdminExternalAccountsContainer from '../../services/AdminExternalAccountsContainer';
 import ExternalAccountTable from './Users/ExternalAccountTable';
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastError } from '../../util/apiNotification';
 
 
 class ManageExternalAccount extends React.Component {
@@ -26,7 +26,6 @@ class ManageExternalAccount extends React.Component {
   async handleExternalAccountPage(selectedPage) {
     try {
       await this.props.adminExternalAccountsContainer.retrieveExternalAccountsByPagingNum(selectedPage);
-      toastSuccess(' Success ');
     }
     catch (err) {
       toastError(err);

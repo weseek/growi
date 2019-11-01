@@ -358,10 +358,9 @@ module.exports = (crowi) => {
       return res.apiv3({ paginateResult });
     }
     catch (err) {
-      const msg = 'Error occurred in fetching external-account list';
+      const msg = 'Error occurred in fetching external-account list  ';
       logger.error(msg, err);
-      const errMsg = Object.assign(msg, err.message);
-      return res.apiv3Err(new ErrorV3(errMsg, 'external-account-list-fetch-failed'));
+      return res.apiv3Err(new ErrorV3(msg + err.message, 'external-account-list-fetch-failed'), 500);
     }
   });
 
@@ -402,10 +401,9 @@ module.exports = (crowi) => {
       return res.apiv3({ externalAccount });
     }
     catch (err) {
-      const msg = 'Error occurred in deleting a external account';
+      const msg = 'Error occurred in deleting a external account  ';
       logger.error(msg, err);
-      const errMsg = Object.assign(msg, err.message);
-      return res.apiv3Err(new ErrorV3(errMsg, 'extenral-account-delete-failed'));
+      return res.apiv3Err(new ErrorV3(msg + err.message, 'extenral-account-delete-failed'));
     }
   });
   return router;
