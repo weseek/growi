@@ -5,20 +5,21 @@ import { withTranslation } from 'react-i18next';
 class CustomizeLayoutOption extends React.Component {
 
   render() {
+    const { layoutType } = this.props;
 
     return (
       <div className="col-sm-4">
         <h4>
           <div className="radio radio-primary">
-            <input type="radio" id={`radio-layout-${this.props.layoutType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
-            <label htmlFor={`radio-layout-${this.props.layoutType}`}>
+            <input type="radio" id={`radio-layout-${layoutType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
+            <label htmlFor={`radio-layout-${layoutType}`}>
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: this.props.labelHtml }} />
             </label>
           </div>
         </h4>
-        <a href={`/images/admin/customize/layout-${this.props.layoutType}.gif`} className="ss-container">
-          <img src={`/images/admin/customize/layout-${this.props.layoutType}-thumb.gif`} width="240px" />
+        <a href={`/images/admin/customize/layout-${layoutType}.gif`} className="ss-container">
+          <img src={`/images/admin/customize/layout-${layoutType}-thumb.gif`} width="240px" />
         </a>
         {/* render layout description */}
         {this.props.children}
