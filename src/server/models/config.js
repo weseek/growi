@@ -185,6 +185,7 @@ module.exports = function(crowi) {
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
       env: {
+        NODE_ENV: env.NODE_ENV || 'default',
         PLANTUML_URI: env.PLANTUML_URI || null,
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
         HACKMD_URI: env.HACKMD_URI || null,
