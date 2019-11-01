@@ -401,7 +401,7 @@ export default class HandsontableModal extends React.PureComponent {
   renderExpandOrContractButton() {
     const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
     return (
-      <button type="button" className="close mr-3" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
+      <button type="button" className="close" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
         <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
       </button>
     );
@@ -416,15 +416,15 @@ export default class HandsontableModal extends React.PureComponent {
     const dialogClassName = dialogClassNames.join(' ');
 
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} bsSize="large" dialogClassName={dialogClassName}>
-        <ModalHeader toggle={this.cancel}>
-          { this.renderExpandOrContractButton() }
-          Edit Table
+      <Modal isOpen={this.state.show} toggle={this.cancel} bsSize="large" dialogClassName={dialogClassName} className="grw-handsontable-modal">
+        <ModalHeader toggle={this.cancel} className="grw-modal-header">
+          <span>Edit Table</span>
+          <span className="ml-auto">{ this.renderExpandOrContractButton() }</span>
         </ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
-            <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
+            <Button className="mr-4 data-import-button" onClick={this.toggleDataImportArea}>
+              <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </Button>
             <ButtonGroup>
               <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
@@ -452,13 +452,11 @@ export default class HandsontableModal extends React.PureComponent {
             />
           </div>
         </ModalBody>
-        <ModalFooter>
-          <div className="d-flex justify-content-between">
-            <Button color="danger" onClick={this.reset}>Reset</Button>
-            <div className="d-flex">
-              <Button color="secondary" onClick={this.cancel}>Cancel</Button>
-              <Button color="primary" onClick={this.save}>Done</Button>
-            </div>
+        <ModalFooter className="grw-modal-footer">
+          <Button color="danger" onClick={this.reset}>Reset</Button>
+          <div className="ml-auto">
+            <Button className="mr-2" color="secondary" onClick={this.cancel}>Cancel</Button>
+            <Button color="primary" onClick={this.save}>Done</Button>
           </div>
         </ModalFooter>
       </Modal>

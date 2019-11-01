@@ -71,6 +71,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
           <textarea
             id="data-import-form-type-textarea"
             componentClass="textarea"
+            className="w-100"
             placeholder="Paste table data"
             style={{ height: 200 }}
             onChange={(e) => { return this.setState({ data: e.target.value }) }}
@@ -89,7 +90,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
           </div>
         </Collapse>
         <div className="d-flex justify-content-end">
-          <Button color="secondary" onClick={this.props.onCancel}>Cancel</Button>
+          <Button color="secondary mr-2" onClick={this.props.onCancel}>Cancel</Button>
           <Button color="primary" onClick={this.importButtonHandler}>Import</Button>
         </div>
       </form>
