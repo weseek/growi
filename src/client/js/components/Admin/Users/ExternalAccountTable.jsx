@@ -35,7 +35,7 @@ class ExternalAccountTable extends React.Component {
 
   render() {
     const { t, adminExternalAccountsContainer } = this.props;
-
+    const username = <code>username</code>;
     return (
       <Fragment>
         <table className="table table-bordered table-user-list">
@@ -43,7 +43,7 @@ class ExternalAccountTable extends React.Component {
             <tr>
               <th width="120px">{ t('user_management.authentication_provider') }</th>
               <th><code>accountId</code></th>
-              <th>{ t('user_management.related_username', 'username') }</th>
+              <th>{ t('user_management.related_username', username) }</th>
               <th>
                 { t('user_management.password_setting') }
                 <div
