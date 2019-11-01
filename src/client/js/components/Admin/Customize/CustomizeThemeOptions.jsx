@@ -5,15 +5,15 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import ThemeColorBox from './ThemeColorBox';
+import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 
-class CustomizeThemeForm extends React.Component {
+class CustomizeThemeOptions extends React.Component {
 
   render() {
     return (
-      <div id="themeOptions" className={`${this.props.adminCustomizeContainer.state.layoutType === 'kibela' && 'disabled'}`}>
+      <div id="themeOptions" className={`${this.props.adminCustomizeContainer.state.currentLayout === 'kibela' && 'disabled'}`}>
         {/* Light Themes  */}
         <div className="d-flex">
           <ThemeColorBox name="default" bg="#ffffff" topbar="#334455" theme="#112744" />
@@ -37,14 +37,14 @@ class CustomizeThemeForm extends React.Component {
 
 }
 
-const CustomizeThemeFormWrapper = (props) => {
-  return createSubscribedElement(CustomizeThemeForm, props, [AppContainer, AdminCustomizeContainer]);
+const CustomizeThemeOptionsWrapper = (props) => {
+  return createSubscribedElement(CustomizeThemeOptions, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-CustomizeThemeForm.propTypes = {
+CustomizeThemeOptions.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeThemeFormWrapper);
+export default withTranslation()(CustomizeThemeOptionsWrapper);

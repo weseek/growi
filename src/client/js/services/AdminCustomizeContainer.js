@@ -12,8 +12,8 @@ export default class AdminCustomizeContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      layoutType: appContainer.config.layoutType,
-      themeType: appContainer.config.themeType,
+      currentTheme: appContainer.config.themeType,
+      currentLayout: appContainer.config.layoutType,
     };
 
     this.switchLayoutType = this.switchLayoutType.bind(this);
@@ -30,7 +30,7 @@ export default class AdminCustomizeContainer extends Container {
    * Switch layoutType
    */
   switchLayoutType(lauoutName) {
-    this.setState({ layoutType: lauoutName });
+    this.setState({ currentLayout: lauoutName });
   }
 
   /**
@@ -38,10 +38,10 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchThemeType(themeName) {
     // can't choose theme when kibela
-    if (this.state.layoutType === 'kibela') {
+    if (this.state.currentLayout === 'kibela') {
       return;
     }
-    this.setState({ themeType: themeName });
+    this.setState({ currentTheme: themeName });
   }
 
   updateCustomizeLayout() {

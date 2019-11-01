@@ -11,11 +11,12 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 class ThemeColorBox extends React.Component {
 
   isThemeSelected(name) {
-    return (this.props.adminCustomizeContainer.state.themeType === name);
+    return (this.props.adminCustomizeContainer.state.currentTheme === name);
   }
 
   render() {
     const { name } = this.props;
+
     return (
       <div
         id={`theme-option-${name}`}
