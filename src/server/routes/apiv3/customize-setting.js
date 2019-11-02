@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {};
 
@@ -21,11 +22,6 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
-
-  const {
-    ErrorV3,
-    Config,
-  } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
