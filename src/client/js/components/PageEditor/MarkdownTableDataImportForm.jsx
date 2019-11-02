@@ -50,13 +50,12 @@ export default class MarkdownTableDataImportForm extends React.Component {
 
   render() {
     return (
-      <form action="" className="data-import-form pt-5">
+      <form className="data-import-form">
         <div className="form-group">
           <label htmlFor="data-import-form-type-select">Select Data Format</label>
           <select
             id="data-import-form-type-select"
             className="form-control"
-            componentClass="select"
             placeholder="select"
             value={this.state.dataFormat}
             onChange={(e) => { return this.setState({ dataFormat: e.target.value }) }}
@@ -70,9 +69,9 @@ export default class MarkdownTableDataImportForm extends React.Component {
           <label htmlFor="data-import-form-type-textarea">Import Data</label>
           <textarea
             id="data-import-form-type-textarea"
-            componentClass="textarea"
+            className="form-control"
             placeholder="Paste table data"
-            style={{ height: 200 }}
+            rows="8"
             onChange={(e) => { return this.setState({ data: e.target.value }) }}
           />
         </div>
@@ -81,15 +80,15 @@ export default class MarkdownTableDataImportForm extends React.Component {
             <label htmlFor="data-import-form-type-textarea-alert">Parse Error</label>
             <textarea
               id="data-import-form-type-textarea-alert"
-              componentClass="textarea"
-              style={{ height: 100 }}
+              className="form-control"
+              rows="4"
               value={this.state.parserErrorMessage || ''}
               readOnly
             />
           </div>
         </Collapse>
         <div className="d-flex justify-content-end">
-          <Button color="secondary" onClick={this.props.onCancel}>Cancel</Button>
+          <Button color="secondary mr-2" onClick={this.props.onCancel}>Cancel</Button>
           <Button color="primary" onClick={this.importButtonHandler}>Import</Button>
         </div>
       </form>

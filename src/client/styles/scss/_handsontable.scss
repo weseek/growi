@@ -12,6 +12,7 @@
 .handsontable-modal.handsontable-modal-expanded {
   // full-screen modal
   width: 97%;
+  max-width: unset;
   height: 95%;
   .modal-content {
     height: 95%;
