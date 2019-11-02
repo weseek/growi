@@ -33,32 +33,26 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/customize-setting/layoutTheme:
+   *    /customize-setting/layoutTheme:
    *      put:
    *        tags: [CustomizeSetting]
    *        description: Update layout and theme
-   *        parameters:
-   *          - name: layoutType
-   *            in: query
-   *            description: type of layout
-   *            schema:
-   *              type: string
-   *          - name: themeType
-   *            in: query
-   *            description: type of theme
-   *            schema:
-   *              type: string
-   *        responses:
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  layoutType:
+   *                    description: type of layout
+   *                    type: string
+   *                  themeType:
+   *                    description: type of theme
+   *                    type: string
+   *      responses:
    *          200:
    *            description: Succeeded to update layout and theme
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    customizeParams:
-   *                      type: object
-   *                      description: new params of layout and theme
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const customizeParams = {
