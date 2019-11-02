@@ -416,8 +416,8 @@ export default class HandsontableModal extends React.PureComponent {
     const dialogClassName = dialogClassNames.join(' ');
 
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} bsSize="large" dialogClassName={dialogClassName} className="grw-handsontable-modal">
-        <ModalHeader toggle={this.cancel} className="grw-modal-header">
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
+        <ModalHeader toggle={this.cancel}>
           <span>Edit Table</span>
           <span className="ml-auto">{ this.renderExpandOrContractButton() }</span>
         </ModalHeader>
