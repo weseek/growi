@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -12,7 +11,7 @@ class CustomizeThemeOptions extends React.Component {
 
   render() {
     const { adminCustomizeContainer } = this.props;
-    const { currentTheme } = adminCustomizeContainer.state;
+    const { currentLayout, currentTheme } = adminCustomizeContainer.state;
 
     const lightTheme = [{
       name: 'default', bg: '#ffffff', topbar: '#334455', theme: '#112744',
@@ -41,7 +40,7 @@ class CustomizeThemeOptions extends React.Component {
     }];
 
     return (
-      <div id="themeOptions" className={`${adminCustomizeContainer.state.currentLayout === 'kibela' && 'disabled'}`}>
+      <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
         {/* Light Themes  */}
         <div className="d-flex">
           {lightTheme.map((theme) => {
@@ -83,9 +82,8 @@ const CustomizeThemeOptionsWrapper = (props) => {
 };
 
 CustomizeThemeOptions.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeThemeOptionsWrapper);
+export default CustomizeThemeOptionsWrapper;
