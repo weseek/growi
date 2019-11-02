@@ -54,8 +54,8 @@ export default class AdminCustomizeContainer extends Container {
       layoutType: this.state.currentLayout,
       themeType: this.state.currentTheme,
     });
-    const { customizeParams } = response.data;
-    return customizeParams;
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
 }

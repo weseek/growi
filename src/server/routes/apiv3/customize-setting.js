@@ -55,14 +55,18 @@ module.exports = (crowi) => {
    *            description: Succeeded to update layout and theme
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
-    const customizeParams = {
+    const requestParams = {
       'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', customizeParams);
-      return res.apiv3({ customizeParams });
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
+        themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+      };
+      return res.apiv3({ customizedParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating layout and theme';
