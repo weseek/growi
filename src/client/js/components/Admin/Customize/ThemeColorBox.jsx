@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-class ThemeColorBox extends React.Component {
+class ThemeColorBox extends React.PureComponent {
 
   render() {
     const { name } = this.props;
