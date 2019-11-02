@@ -34,7 +34,6 @@ class ThemeColorBox extends React.PureComponent {
 
 
 ThemeColorBox.propTypes = {
-
   isSelected: PropTypes.bool.isRequired,
   onSelected: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
