@@ -8,7 +8,6 @@ import AppContainer from '../../../services/AppContainer';
 import ThemeColorBox from './ThemeColorBox';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
-
 class CustomizeThemeOptions extends React.Component {
 
   render() {
