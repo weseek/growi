@@ -113,7 +113,7 @@
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
-  "Export Data": "Export Data",
+  "Export Archive Data": "Export Archive Data",
   "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
   "Register limitation": "Register limitation",
@@ -747,14 +747,12 @@
   },
 
   "importer_management": {
-    "import_form_esa": "Import from esa.io",
-    "import_form_qiita": "import_from Qiita:Team",
     "beta_warning": "This function is Beta.",
-    "import_from": "Import from %s",
-    "import_form_growi": "Import from GROWI",
+    "import_from": "Import from {{from}}",
+    "import_growi_archive": "Import GROWI Archive",
     "growi_settings": {
       "overwrite_documents": "Imported documents will overwrite existing documents",
-      "zip_file": "Exported Zip File",
+      "growi_archive_file": "GROWI Archive File",
       "uploaded_data": "Uploaded Data",
       "extracted_file": "Extracted File",
       "collection": "Collection",
@@ -764,6 +762,32 @@
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
         "depends": "'{{target}}' must be selected when '{{condition}}' is selected."
+      },
+      "configuration": {
+        "pages": {
+          "overwrite_author": {
+            "label": "Overwrite page's author with the current user",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          },
+          "set_public_to_page": {
+            "label": "Set 'Public' to the pages that is '{{from}}'",
+            "desc": "Make sure that this configuration makes all <b>'{{from}}'</b> pages readable from <span class=\"text-danger\">ANY users</span>."
+          },
+          "initialize_meta_datas": {
+            "label": "Initialize page's like, read users and comment count",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          },
+          "initialize_hackmd_related_datas": {
+            "label": "Initialize HackMD related data",
+            "desc": "Recommended to check this unless there is important drafts on HackMD."
+          }
+        },
+        "revisions": {
+          "overwrite_author": {
+            "label": "Overwrite revision's author with the current user",
+            "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
+          }
+        }
       }
     },
     "esa_settings": {
@@ -789,13 +813,13 @@
     "rebuild_description_3":"This may take a while."
   },
   "export_management": {
-    "exporting_data_list": "Exporting Data List",
-    "exported_data_list": "Exported Data List",
+    "exporting_collection_list": "Exporting Collection List",
+    "exported_data_list": "Exported Archive Data List",
     "export_collections": "Export Collections",
     "check_all": "Check All",
     "uncheck_all": "Uncheck All",
     "desc_password_seed": "DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.<br><br><strong>HINT:</strong><br>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.",
-    "create_new_exported_data": "Create New Exported Data",
+    "create_new_archive_data": "Create New Archive Data",
     "export": "Export",
     "cancel": "Cancel",
     "file": "File",
