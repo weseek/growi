@@ -173,6 +173,7 @@ module.exports = function(crowi) {
       },
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
+      themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),

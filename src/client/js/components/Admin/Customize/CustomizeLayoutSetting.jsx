@@ -8,9 +8,10 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import CustomizeLayoutOptions from './CustomizeLayoutOptions';
+import CustomizeThemeOptions from './CustomizeThemeOptions';
+import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 const logger = loggerFactory('growi:importer');
 
@@ -36,19 +37,33 @@ class CustomizeLayoutSetting extends React.Component {
     }
   }
 
+  renderDevAlert() {
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <div className="alert alert-warning">
+          <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+        </div>
+      );
+    }
+  }
+
+
   render() {
     const { t } = this.props;
 
     return (
-      <form>
+      <React.Fragment>
+        <h2>{t('customize_page.Layout')}</h2>
         <CustomizeLayoutOptions />
-        {/* TODO GW-245 create themeForm Component */}
+        <h2>{ t('customize_page.Theme') }</h2>
+        {this.renderDevAlert()}
+        <CustomizeThemeOptions />
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
         </div>
-      </form>
+      </React.Fragment>
     );
   }
 

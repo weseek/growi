@@ -12,6 +12,7 @@ export default class AdminCustomizeContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
     };
 
@@ -30,6 +31,17 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchLayoutType(lauoutName) {
     this.setState({ currentLayout: lauoutName });
+  }
+
+  /**
+   * Switch themeType
+   */
+  switchThemeType(themeName) {
+    // can't choose theme when kibela
+    if (this.state.currentLayout === 'kibela') {
+      return;
+    }
+    this.setState({ currentTheme: themeName });
   }
 
   updateCustomizeLayout() {
