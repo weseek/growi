@@ -38,12 +38,15 @@ class CustomizeLayoutSetting extends React.Component {
   }
 
   renderDevAlert() {
-    return (
-      <div className="alert alert-warning">
-        <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-      </div>
-    );
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <div className="alert alert-warning">
+          <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+        </div>
+      );
+    }
   }
+
 
   render() {
     const { t } = this.props;
@@ -53,7 +56,7 @@ class CustomizeLayoutSetting extends React.Component {
         <h2>{t('customize_page.Layout')}</h2>
         <CustomizeLayoutOptions />
         <h2>{ t('customize_page.Theme') }</h2>
-        {process.env.NODE_ENV === 'development' && (this.renderDevAlert())}
+        {this.renderDevAlert()}
         <CustomizeThemeOptions />
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
