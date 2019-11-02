@@ -7,7 +7,7 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const { pathUtils } = require('growi-commons');
@@ -923,21 +923,6 @@ module.exports = function(crowi) {
     return { templateBody, templateTags };
   };
 
-  /**
-   * Bulk get (for internal only)
-   */
-  pageSchema.statics.getStreamOfFindAll = function(options) {
-    const criteria = { redirectTo: null };
-
-    return this.find(criteria)
-      .populate([
-        { path: 'creator', model: 'User' },
-        { path: 'revision', model: 'Revision' },
-      ])
-      .lean()
-      .cursor();
-  };
-
   async function pushRevision(pageData, newRevision, user) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
@@ -1382,10 +1367,6 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.addSlashOfEnd = function(path) {
     return addSlashOfEnd(path);
-  };
-
-  pageSchema.statics.allPageCount = function() {
-    return this.count({ redirectTo: null });
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;

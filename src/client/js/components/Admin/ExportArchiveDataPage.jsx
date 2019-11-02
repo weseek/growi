@@ -4,16 +4,18 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import WebsocketContainer from '../../../services/WebsocketContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import ExportZipFormModal from './ExportZipFormModal';
-import ZipFileTable from './ZipFileTable';
-import ExportingProgressBar from './ExportingProgressBar';
+import AppContainer from '../../services/AppContainer';
+import WebsocketContainer from '../../services/WebsocketContainer';
 
-class ExportPage extends React.Component {
+import ProgressBar from './Common/ProgressBar';
+
+import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
+import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
+
+class ExportArchiveDataPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -85,7 +87,7 @@ class ExportPage extends React.Component {
       });
 
       // TODO: toastSuccess, toastError
-      toastr.success(undefined, `New Exported Data '${addedZipFileStat.fileName}' is added`, {
+      toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
         closeButton: true,
         progressBar: true,
         newestOnTop: false,
@@ -158,7 +160,7 @@ class ExportPage extends React.Component {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
         <div className="col-md-6" key={collectionName}>
-          <ExportingProgressBar
+          <ProgressBar
             header={collectionName}
             currentCount={currentCount}
             totalCount={totalCount}
@@ -181,7 +183,7 @@ class ExportPage extends React.Component {
     return (
       <div className="row px-3">
         <div className="col-md-12" key="progressBarForZipping">
-          <ExportingProgressBar
+          <ProgressBar
             header="Zip Files"
             currentCount={1}
             totalCount={1}
@@ -200,15 +202,15 @@ class ExportPage extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('Export Data')}</h2>
+        <h2>{t('Export Archive Data')}</h2>
 
         <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
-          {t('export_management.create_new_exported_data')}
+          {t('export_management.create_new_archive_data')}
         </button>
 
         { showExportingData && (
           <div className="mt-5">
-            <h3>{t('export_management.exporting_data_list')}</h3>
+            <h3>{t('export_management.exporting_collection_list')}</h3>
             { this.renderProgressBarsForCollections() }
             { this.renderProgressBarForZipping() }
           </div>
@@ -216,13 +218,13 @@ class ExportPage extends React.Component {
 
         <div className="mt-5">
           <h3>{t('export_management.exported_data_list')}</h3>
-          <ZipFileTable
+          <ArchiveFilesTable
             zipFileStats={this.state.zipFileStats}
             onZipFileStatRemove={this.onZipFileStatRemove}
           />
         </div>
 
-        <ExportZipFormModal
+        <SelectCollectionsModal
           isOpen={this.state.isExportModalOpen}
           onExportingRequested={this.exportingRequestedHandler}
           onClose={this.closeExportModal}
@@ -234,7 +236,7 @@ class ExportPage extends React.Component {
 
 }
 
-ExportPage.propTypes = {
+ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
@@ -243,8 +245,8 @@ ExportPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportPageFormWrapper = (props) => {
-  return createSubscribedElement(ExportPage, props, [AppContainer, WebsocketContainer]);
+const ExportArchiveDataPageWrapper = (props) => {
+  return createSubscribedElement(ExportArchiveDataPage, props, [AppContainer, WebsocketContainer]);
 };
 
-export default withTranslation()(ExportPageFormWrapper);
+export default withTranslation()(ExportArchiveDataPageWrapper);
