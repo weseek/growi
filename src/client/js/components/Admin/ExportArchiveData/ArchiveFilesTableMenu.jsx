@@ -6,7 +6,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-class ExportTableMenu extends React.Component {
+class ArchiveFilesTableMenu extends React.Component {
 
   render() {
     const { t } = this.props;
@@ -35,7 +35,7 @@ class ExportTableMenu extends React.Component {
 
 }
 
-ExportTableMenu.propTypes = {
+ArchiveFilesTableMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   fileName: PropTypes.string.isRequired,
@@ -45,8 +45,8 @@ ExportTableMenu.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportTableMenuWrapper = (props) => {
-  return createSubscribedElement(ExportTableMenu, props, [AppContainer]);
+const ArchiveFilesTableMenuWrapper = (props) => {
+  return createSubscribedElement(ArchiveFilesTableMenu, props, [AppContainer]);
 };
 
-export default withTranslation()(ExportTableMenuWrapper);
+export default withTranslation()(ArchiveFilesTableMenuWrapper);
