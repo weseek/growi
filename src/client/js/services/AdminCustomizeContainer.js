@@ -47,7 +47,7 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update layout
    * @memberOf AdminCustomizeContainer
-   * @return {Array}} Appearance
+   * @return {Array} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
     const response = await this.appContainer.apiv3.put('/customize-setting/layoutTheme', {
