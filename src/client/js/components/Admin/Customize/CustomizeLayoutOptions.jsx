@@ -1,31 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AppContainer from '../../../services/AppContainer';
+
 import CustomizeLayoutOption from './CustomizeLayoutOption';
 
 class CustomizeLayoutOptions extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // TODO GW-477 save setting at customizeContainer
-      currentLayout: 'growi',
-    };
-
-    this.selectLayout = this.selectLayout.bind(this);
-  }
-
-  selectLayout(lauoutName) {
-    this.setState({ currentLayout: lauoutName });
-  }
-
   render() {
+    const { adminCustomizeContainer } = this.props;
+
     return (
       <React.Fragment>
         <CustomizeLayoutOption
           layoutType="crowi-plus"
-          isSelected={this.state.currentLayout === 'growi'}
-          onSelected={() => this.selectLayout('growi')}
+          isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
+          onSelected={() => adminCustomizeContainer.switchLayoutType('growi')}
           labelHtml={'GROWI Enhanced Layout <small className="text-success">(Recommended)</small>'}
         >
           {/* TODO i18n */}
@@ -39,8 +32,8 @@ class CustomizeLayoutOptions extends React.Component {
 
         <CustomizeLayoutOption
           layoutType="kibela"
-          isSelected={this.state.currentLayout === 'kibela'}
-          onSelected={() => this.selectLayout('kibela')}
+          isSelected={adminCustomizeContainer.state.currentLayout === 'kibela'}
+          onSelected={() => adminCustomizeContainer.switchLayoutType('kibela')}
           labelHtml="Kibela Like Layout"
         >
           {/* TODO i18n */}
@@ -54,8 +47,8 @@ class CustomizeLayoutOptions extends React.Component {
 
         <CustomizeLayoutOption
           layoutType="classic"
-          isSelected={this.state.currentLayout === 'crowi'}
-          onSelected={() => this.selectLayout('crowi')}
+          isSelected={adminCustomizeContainer.state.currentLayout === 'crowi'}
+          onSelected={() => adminCustomizeContainer.switchLayoutType('crowi')}
           labelHtml="Crowi Classic Layout"
         >
           {/* TODO i18n */}
@@ -72,9 +65,14 @@ class CustomizeLayoutOptions extends React.Component {
 
 }
 
-CustomizeLayoutOptions.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
+const CustomizeLayoutOptionsWrapper = (props) => {
+  return createSubscribedElement(CustomizeLayoutOptions, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-export default withTranslation()(CustomizeLayoutOptions);
+CustomizeLayoutOptions.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+};
+
+export default withTranslation()(CustomizeLayoutOptionsWrapper);

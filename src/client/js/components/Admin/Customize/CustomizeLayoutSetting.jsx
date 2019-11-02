@@ -1,9 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
+import loggerFactory from '@alias/logger';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+import AppContainer from '../../../services/AppContainer';
+import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+
 import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 
+const logger = loggerFactory('growi:importer');
+
+
 class CustomizeLayoutSetting extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t, adminCustomizeContainer } = this.props;
+
+    try {
+      await adminCustomizeContainer.updateCustomizeLayout();
+      toastSuccess(t('customize_page.update_layout_success'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t } = this.props;
@@ -23,8 +54,14 @@ class CustomizeLayoutSetting extends React.Component {
 
 }
 
-CustomizeLayoutSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
+const CustomizeLayoutSettingWrapper = (props) => {
+  return createSubscribedElement(CustomizeLayoutSetting, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-export default withTranslation()(CustomizeLayoutSetting);
+CustomizeLayoutSetting.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+};
+
+export default withTranslation()(CustomizeLayoutSettingWrapper);
