@@ -22,7 +22,7 @@ module.exports = function(crowi) {
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true },
     filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
-    fileName: { type: String, required: true },
+    fileName: { type: String, required: true, unique: true },
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },

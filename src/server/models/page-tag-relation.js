@@ -18,6 +18,7 @@ const schema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Page',
     required: true,
+    index: true,
   },
   relatedTag: {
     type: ObjectId,

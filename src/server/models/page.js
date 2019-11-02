@@ -39,9 +39,9 @@ const pageSchema = new mongoose.Schema({
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
   grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
   creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
-  liker: [{ type: ObjectId, ref: 'User', index: true }],
-  seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
+  lastUpdateUser: { type: ObjectId, ref: 'User' },
+  liker: [{ type: ObjectId, ref: 'User' }],
+  seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   extended: {
     type: String,

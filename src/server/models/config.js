@@ -2,11 +2,10 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 module.exports = function(crowi) {
-  const mongoose = require('mongoose');
 
   const configSchema = new mongoose.Schema({
-    ns: { type: String, required: true, index: true },
-    key: { type: String, required: true, index: true },
+    ns: { type: String, required: true },
+    key: { type: String, required: true },
     value: { type: String, required: true },
   });
   // define unique compound index
