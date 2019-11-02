@@ -46,6 +46,7 @@ class CustomizeThemeOptions extends React.Component {
           {lightTheme.map((theme) => {
             return (
               <ThemeColorBox
+                key={theme.name}
                 isSelected={currentTheme === theme.name}
                 onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
                 name={theme.name}
@@ -61,6 +62,7 @@ class CustomizeThemeOptions extends React.Component {
           {darkTheme.map((theme) => {
             return (
               <ThemeColorBox
+                key={theme.name}
                 isSelected={currentTheme === theme.name}
                 onSelected={() => adminCustomizeContainer.switchThemeType(theme.name)}
                 name={theme.name}
