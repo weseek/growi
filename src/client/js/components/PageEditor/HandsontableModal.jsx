@@ -407,6 +407,14 @@ export default class HandsontableModal extends React.PureComponent {
     );
   }
 
+  renderCloseButton() {
+    return (
+      <button type="button" className="close" onClick={this.cancel} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    );
+  }
+
   render() {
     const dialogClassNames = ['handsontable-modal'];
     if (this.state.isWindowExpanded) {
@@ -415,12 +423,17 @@ export default class HandsontableModal extends React.PureComponent {
 
     const dialogClassName = dialogClassNames.join(' ');
 
+    const buttons = (
+      <span>
+        {/* change order because of `float: right` by '.close' class */}
+        {this.renderCloseButton()}
+        {this.renderExpandOrContractButton()}
+      </span>
+    );
+
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
-        <ModalHeader toggle={this.cancel}>
-          <span>Edit Table</span>
-          <span className="ml-auto">{ this.renderExpandOrContractButton() }</span>
-        </ModalHeader>
+        <ModalHeader toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
             <Button className="mr-4 data-import-button" onClick={this.toggleDataImportArea}>
