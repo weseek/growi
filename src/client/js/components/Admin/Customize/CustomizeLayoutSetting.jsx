@@ -47,14 +47,13 @@ class CustomizeLayoutSetting extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { NODE_ENV } = this.props.appContainer.config.env;
 
     return (
       <React.Fragment>
         <h2>{t('customize_page.Layout')}</h2>
         <CustomizeLayoutOptions />
         <h2>{ t('customize_page.Theme') }</h2>
-        {NODE_ENV === 'development' && (this.renderDevAlert())}
+        {process.env.NODE_ENV === 'development' && (this.renderDevAlert())}
         <CustomizeThemeOptions />
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
