@@ -26,7 +26,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     try {
       // await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
-      toastSuccess(t('customize_page.update_layout_success'));
+      toastSuccess(t('customize_page.update_behavior_success'));
     }
     catch (err) {
       toastError(err);
