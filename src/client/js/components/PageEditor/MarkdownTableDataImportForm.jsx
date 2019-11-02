@@ -56,7 +56,6 @@ export default class MarkdownTableDataImportForm extends React.Component {
           <select
             id="data-import-form-type-select"
             className="form-control"
-            componentClass="select"
             placeholder="select"
             value={this.state.dataFormat}
             onChange={(e) => { return this.setState({ dataFormat: e.target.value }) }}
@@ -70,7 +69,6 @@ export default class MarkdownTableDataImportForm extends React.Component {
           <label htmlFor="data-import-form-type-textarea">Import Data</label>
           <textarea
             id="data-import-form-type-textarea"
-            componentClass="textarea"
             className="w-100"
             placeholder="Paste table data"
             style={{ height: 200 }}
@@ -82,7 +80,6 @@ export default class MarkdownTableDataImportForm extends React.Component {
             <label htmlFor="data-import-form-type-textarea-alert">Parse Error</label>
             <textarea
               id="data-import-form-type-textarea-alert"
-              componentClass="textarea"
               style={{ height: 100 }}
               value={this.state.parserErrorMessage || ''}
               readOnly
