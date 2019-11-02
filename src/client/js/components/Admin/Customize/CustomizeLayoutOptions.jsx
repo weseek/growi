@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import CustomizeLayoutOption from './CustomizeLayoutOption';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AppContainer from '../../../services/AppContainer';
+
+import CustomizeLayoutOption from './CustomizeLayoutOption';
 
 class CustomizeLayoutOptions extends React.Component {
 
