@@ -445,7 +445,7 @@ export default class HandsontableModal extends React.PureComponent {
               <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
             <Collapse isOpen={this.state.isDataImportAreaExpanded}>
-              <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
+              <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
             </Collapse>
