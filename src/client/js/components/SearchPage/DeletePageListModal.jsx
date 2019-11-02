@@ -51,7 +51,7 @@ export default class DeletePageListModal extends React.Component {
                   Delete completely
                 </label>
               </div>
-              <span className="m-l-10">
+              <span className="ml-2">
                 <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
               </span>
             </span>
