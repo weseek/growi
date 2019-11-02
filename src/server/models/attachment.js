@@ -6,6 +6,7 @@ const logger = require('@alias/logger')('growi:models:attachment');
 const path = require('path');
 
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -27,6 +28,7 @@ module.exports = function(crowi) {
     fileSize: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
   });
+  attachmentSchema.plugin(uniqueValidator);
 
   attachmentSchema.virtual('filePathProxied').get(function() {
     return `/attachment/${this._id}`;
