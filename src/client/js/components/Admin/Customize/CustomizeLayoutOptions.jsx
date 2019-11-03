@@ -19,7 +19,7 @@ class CustomizeLayoutOptions extends React.Component {
           layoutType="crowi-plus"
           isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
           onSelected={() => adminCustomizeContainer.switchLayoutType('growi')}
-          labelHtml={'GROWI Enhanced Layout <small className="text-success">(Recommended)</small>'}
+          labelHtml={'GROWI Enhanced Layout <small class="text-success">(Recommended)</small>'}
         >
           {/* TODO i18n */}
           <h4>Simple and Clear</h4>
