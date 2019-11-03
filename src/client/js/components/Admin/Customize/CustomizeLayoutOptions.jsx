@@ -11,7 +11,7 @@ import CustomizeLayoutOption from './CustomizeLayoutOption';
 class CustomizeLayoutOptions extends React.Component {
 
   render() {
-    const { adminCustomizeContainer } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -21,12 +21,11 @@ class CustomizeLayoutOptions extends React.Component {
           onSelected={() => adminCustomizeContainer.switchLayoutType('growi')}
           labelHtml={'GROWI Enhanced Layout <small className="text-success">(Recommended)</small>'}
         >
-          {/* TODO i18n */}
-          <h4>Simple and Clear</h4>
+          <h4>{t('customize_page.layout_description.growi_title')}</h4>
           <ul>
-            <li>Full screen layout and thin margins/paddings</li>
-            <li>Show and post comments at the bottom of the page</li>
-            <li>Affix Table-of-contents</li>
+            <li>{t('customize_page.layout_description.growi_text1')}</li>
+            <li>{t('customize_page.layout_description.growi_text2')}</li>
+            <li>{t('customize_page.layout_description.growi_text3')}</li>
           </ul>
         </CustomizeLayoutOption>
 
@@ -36,12 +35,11 @@ class CustomizeLayoutOptions extends React.Component {
           onSelected={() => adminCustomizeContainer.switchLayoutType('kibela')}
           labelHtml="Kibela Like Layout"
         >
-          {/* TODO i18n */}
-          <h4>Easy Viewing Structure</h4>
+          <h4>{t('customize_page.layout_description.kibela_title')}</h4>
           <ul>
-            <li>Center aligned contents</li>
-            <li>Show and post comments at the bottom of the page</li>
-            <li>Affix Table-of-contents</li>
+            <li>{t('customize_page.layout_description.kibela_text1')}</li>
+            <li>{t('customize_page.layout_description.kibela_text2')}</li>
+            <li>{t('customize_page.layout_description.kibela_text3')}</li>
           </ul>
         </CustomizeLayoutOption>
 
@@ -51,12 +49,11 @@ class CustomizeLayoutOptions extends React.Component {
           onSelected={() => adminCustomizeContainer.switchLayoutType('crowi')}
           labelHtml="Crowi Classic Layout"
         >
-          {/* TODO i18n */}
-          <h4>Separated Functions</h4>
+          <h4>{t('customize_page.layout_description.crowi_title')}</h4>
           <ul>
-            <li>Collapsible Sidebar</li>
-            <li>Show and post comments in Sidebar</li>
-            <li>Collapsible Table-of-contents</li>
+            <li>{t('customize_page.layout_description.crowi_text1')}</li>
+            <li>{t('customize_page.layout_description.crowi_text2')}</li>
+            <li>{t('customize_page.layout_description.crowi_text3')}</li>
           </ul>
         </CustomizeLayoutOption>
       </React.Fragment>

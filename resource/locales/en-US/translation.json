@@ -677,7 +677,22 @@
     "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
     "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
     "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
-    "update_layout_success": "Succeeded to update layout"
+    "update_layout_success": "Succeeded to update layout",
+    "update_behavior_success": "Succeeded to update behavior",
+    "layout_description":{
+      "growi_title":"Simple and Clear",
+      "growi_text1":"Full screen layout and thin margins/paddings",
+      "growi_text2":"Show and post comments at the bottom of the page",
+      "growi_text3":"Affix Table-of-contents",
+      "kibela_title":"Easy Viewing Structure",
+      "kibela_text1":"Center aligned contents",
+      "kibela_text2":"Show and post comments at the bottom of the page",
+      "kibela_text3":"Affix Table-of-contents",
+      "crowi_title":"Separated Functions",
+      "crowi_text1":"Collapsible Sidebar",
+      "crowi_text2":"Show and post comments in Sidebar",
+      "crowi_text3":"Collapsible Table-of-contents"
+    }
   },
 
   "user_management": {

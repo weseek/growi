@@ -661,7 +661,22 @@
     "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
     "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
     "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
-    "update_layout_success": "レイアウトを更新しました"
+    "update_layout_success": "レイアウトを更新しました",
+    "update_behavior_success": "挙動を更新しました",
+    "layout_description":{
+      "growi_title":"シンプルに鮮明に",
+      "growi_text1":"全画面レイアウトで、余白は少なくなります。",
+      "growi_text2":"コメントはページの下部に表示されます。",
+      "growi_text3":"ページ情報は下部に表示されます。",
+      "kibela_title":"構造を把握しやすく",
+      "kibela_text1":"コンテンツが中心に表示されます。",
+      "kibela_text2":"コメントはページの下部に表示されます。",
+      "kibela_text3":"ページ情報は下部に表示されます。",
+      "crowi_title":"分離された機能表示",
+      "crowi_text1":"サイドバーに機能が格納されます。",
+      "crowi_text2":"コメントはサイドバーに表示されます。",
+      "crowi_text3":"ページ情報はサイドバーに表示されます。"
+    }
   },
 
   "user_management": {
