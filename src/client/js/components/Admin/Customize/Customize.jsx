@@ -22,6 +22,8 @@ class Customize extends React.Component {
         <div className="row my-3">
           <CustomizeBehaviorSetting />
         </div>
+        <legend>{t('customize_page.Function')}</legend>
+        {/* 機能フォームの react componentをここで呼ぶ(GW-276) */}
         <legend>{t('customize_page.Code Highlight')}</legend>
         {/* コードハイライトフォームの react componentをここで呼ぶ(GW-277) */}
         <legend>{t('customize_page.custom_title')}</legend>
