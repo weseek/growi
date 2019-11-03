@@ -16,10 +16,10 @@ class Customize extends React.Component {
 
     return (
       <Fragment>
-        <div className="row my-3">
+        <div className="my-3">
           <CustomizeLayoutSetting />
         </div>
-        <div className="row my-3">
+        <div className="my-3">
           <CustomizeBehaviorSetting />
         </div>
         <legend>{t('customize_page.Function')}</legend>

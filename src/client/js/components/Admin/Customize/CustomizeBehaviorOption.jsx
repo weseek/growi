@@ -7,7 +7,7 @@ class CustomizeBehaviorOption extends React.PureComponent {
   render() {
 
     return (
-      <div className="col-xs-6">
+      <React.Fragment>
         <h4>
           <div className="radio radio-primary">
             <input type="radio" id={`radioBehavior${this.props.behaviorType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
@@ -19,7 +19,7 @@ class CustomizeBehaviorOption extends React.PureComponent {
         </h4>
         {/* render layout description */}
         {this.props.children}
-      </div>
+      </React.Fragment>
     );
   }
 

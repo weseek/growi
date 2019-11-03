@@ -8,7 +8,7 @@ class CustomizeLayoutOption extends React.Component {
     const { layoutType } = this.props;
 
     return (
-      <div className="col-sm-4">
+      <React.Fragment>
         <h4>
           <div className="radio radio-primary">
             <input type="radio" id={`radio-layout-${layoutType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
@@ -23,7 +23,7 @@ class CustomizeLayoutOption extends React.Component {
         </a>
         {/* render layout description */}
         {this.props.children}
-      </div>
+      </React.Fragment>
     );
   }
 

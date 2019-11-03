@@ -42,37 +42,43 @@ class CustomizeBehaviorSetting extends React.Component {
     return (
       <React.Fragment>
         <h2>{t('customize_page.Behavior')}</h2>
-        <CustomizeBehaviorOption
-          behaviorType="growi"
-          isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
-          onSelected={() => adminCustomizeContainer.switchBehaviorType('growi')}
-          labelHtml='GROWI Simplified Behavior <small class="text-success">(Recommended)</small>'
-        >
-          {/* TODO i18n */}
-          <ul>
-            <li>Both of <code>/page</code> and <code>/page/</code> shows the same page</li>
-            <li><code>/nonexistent_page</code> shows editing form</li>
-            <li>All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b></li>
-          </ul>
-        </CustomizeBehaviorOption>
+        <div className="row">
+          <div className="col-xs-6">
+            <CustomizeBehaviorOption
+              behaviorType="growi"
+              isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
+              onSelected={() => adminCustomizeContainer.switchBehaviorType('growi')}
+              labelHtml='GROWI Simplified Behavior <small class="text-success">(Recommended)</small>'
+            >
+              {/* TODO i18n */}
+              <ul>
+                <li>Both of <code>/page</code> and <code>/page/</code> shows the same page</li>
+                <li><code>/nonexistent_page</code> shows editing form</li>
+                <li>All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b></li>
+              </ul>
+            </CustomizeBehaviorOption>
+          </div>
 
-        <CustomizeBehaviorOption
-          behaviorType="crowi-plus"
-          isSelected={adminCustomizeContainer.state.currentBehavior === 'crowi-plus'}
-          onSelected={() => adminCustomizeContainer.switchBehaviorType('crowi-plus')}
-          labelHtml="Crowi Classic Behavior"
-        >
-          {/* TODO i18n */}
-          <ul>
-            <li><code>/page</code> shows the page</li>
-            <li><code>/page/</code> shows the list of sub pages</li>
-            <ul>
-              <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
-            </ul>
-            <li><code>/nonexistent_page</code> shows editing form</li>
-            <li><code>/nonexistent_page/</code> the list of sub pages</li>
-          </ul>
-        </CustomizeBehaviorOption>
+          <div className="col-xs-6">
+            <CustomizeBehaviorOption
+              behaviorType="crowi-plus"
+              isSelected={adminCustomizeContainer.state.currentBehavior === 'crowi-plus'}
+              onSelected={() => adminCustomizeContainer.switchBehaviorType('crowi-plus')}
+              labelHtml="Crowi Classic Behavior"
+            >
+              {/* TODO i18n */}
+              <ul>
+                <li><code>/page</code> shows the page</li>
+                <li><code>/page/</code> shows the list of sub pages</li>
+                <ul>
+                  <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
+                </ul>
+                <li><code>/nonexistent_page</code> shows editing form</li>
+                <li><code>/nonexistent_page/</code> the list of sub pages</li>
+              </ul>
+            </CustomizeBehaviorOption>
+          </div>
+        </div>
 
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
