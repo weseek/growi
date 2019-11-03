@@ -17,8 +17,6 @@ export default class AdminCustomizeContainer extends Container {
       currentBehavior: appContainer.config.behaviorType,
     };
 
-    this.switchLayoutType = this.switchLayoutType.bind(this);
-    this.switchBehaviorType = this.switchBehaviorType.bind(this);
   }
 
   /**
