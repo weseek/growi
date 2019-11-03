@@ -12,7 +12,7 @@ import AppContainer from '../../../services/AppContainer';
 import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AdminUpdateButton from '../Common/AdminUpdateButton';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:importer');
 
@@ -59,7 +59,7 @@ class CustomizeLayoutSetting extends React.Component {
         <h2>{ t('customize_page.Theme') }</h2>
         {this.renderDevAlert()}
         <CustomizeThemeOptions />
-        <AdminUpdateButton onClick={this.onClickSubmit} />
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
   }
