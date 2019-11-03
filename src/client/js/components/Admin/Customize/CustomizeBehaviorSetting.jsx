@@ -46,7 +46,7 @@ class CustomizeBehaviorSetting extends React.Component {
           behaviorType="growi"
           isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
           onSelected={() => adminCustomizeContainer.switchBehaviorType('growi')}
-          labelHtml='GROWI Simplified Behavior <small className="text-success">(Recommended)</small>'
+          labelHtml='GROWI Simplified Behavior <small class="text-success">(Recommended)</small>'
         >
           {/* TODO i18n */}
           <ul>
