@@ -7,8 +7,18 @@ class CustomizeBehaviorOption extends React.Component {
   render() {
 
     return (
-      <div className="col-sm-4">
-        <p>hoge</p>
+      <div className="col-xs-6">
+        <h4>
+          <div className="radio radio-primary">
+            <input type="radio" id={`radioBehavior${this.props.behaviorType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
+            <label htmlFor={`radioBehavior${this.props.behaviorType}`}>
+              {/* eslint-disable-next-line react/no-danger */}
+              <span dangerouslySetInnerHTML={{ __html: this.props.labelHtml }} />
+            </label>
+          </div>
+        </h4>
+        {/* render layout description */}
+        {this.props.children}
       </div>
     );
   }
@@ -18,11 +28,11 @@ class CustomizeBehaviorOption extends React.Component {
 CustomizeBehaviorOption.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  layoutType: PropTypes.string.isRequired,
+  behaviorType: PropTypes.string.isRequired,
   labelHtml: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
   onSelected: PropTypes.func.isRequired,
-  children: PropTypes.array.isRequired,
+  children: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(CustomizeBehaviorOption);

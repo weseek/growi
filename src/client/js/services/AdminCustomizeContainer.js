@@ -18,6 +18,7 @@ export default class AdminCustomizeContainer extends Container {
     };
 
     this.switchLayoutType = this.switchLayoutType.bind(this);
+    this.switchBehaviorType = this.switchBehaviorType.bind(this);
   }
 
   /**
@@ -43,6 +44,13 @@ export default class AdminCustomizeContainer extends Container {
       return;
     }
     this.setState({ currentTheme: themeName });
+  }
+
+  /**
+   * Switch behaviorType
+   */
+  switchBehaviorType(behaviorName) {
+    this.setState({ currentBehavior: behaviorName });
   }
 
   /**
