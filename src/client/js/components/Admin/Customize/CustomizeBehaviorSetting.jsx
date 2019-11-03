@@ -10,6 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import CustomizeBehaviorOption from './CustomizeBehaviorOption';
 
 const logger = loggerFactory('growi:importer');
 
@@ -39,6 +40,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
+        <CustomizeBehaviorOption />
         <h2>{t('customize_page.Behavior')}</h2>
         <div className="col-xs-6">
           <h4>
