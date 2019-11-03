@@ -678,7 +678,8 @@
     "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
     "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
     "update_layout_success": "Succeeded to update layout",
-    "update_behavior_success": "Succeeded to update behavior"
+    "update_behavior_success": "Succeeded to update behavior",
+    "update_function_success": "Succeeded to update function"
   },
 
   "user_management": {

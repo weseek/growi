@@ -662,7 +662,8 @@
     "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
     "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
     "update_layout_success": "レイアウトを更新しました",
-    "update_behavior_success": "挙動を更新しました"
+    "update_behavior_success": "挙動を更新しました",
+    "update_function_success": "機能を更新しました"
   },
 
   "user_management": {

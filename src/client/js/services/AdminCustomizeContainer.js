@@ -74,4 +74,13 @@ export default class AdminCustomizeContainer extends Container {
     // TODO GW-497 create apiV3
   }
 
+  /**
+   * Update function
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Functions
+   */
+  async updateCustomizeFunction() {
+    // TODO GW-506 create apiV3
+  }
+
 }

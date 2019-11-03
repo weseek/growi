@@ -10,6 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AdminUpdateButton from '../Common/AdminUpdateButton';
 
 const logger = loggerFactory('growi:importer');
 
@@ -25,8 +26,8 @@ class CustomizeBehaviorSetting extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.updateCustomizeBehavior();
-      toastSuccess(t('customize_page.update_behavior_success'));
+      await adminCustomizeContainer.updateCustomizeFunction();
+      toastSuccess(t('customize_page.update_function_success'));
     }
     catch (err) {
       toastError(err);
@@ -40,6 +41,7 @@ class CustomizeBehaviorSetting extends React.Component {
     return (
       <React.Fragment>
         <h2>{t('customize_page.Function')}</h2>
+        <AdminUpdateButton onClick={this.onClickSubmit} />
       </React.Fragment>
     );
   }
