@@ -20,7 +20,7 @@ const GROUPS_CONFIG = [
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
-class ExportZipFormModal extends React.Component {
+class SelectCollectionsModal extends React.Component {
 
   constructor(props) {
     super(props);
@@ -225,7 +225,7 @@ class ExportZipFormModal extends React.Component {
 
 }
 
-ExportZipFormModal.propTypes = {
+SelectCollectionsModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
@@ -238,8 +238,8 @@ ExportZipFormModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportZipFormModalWrapper = (props) => {
-  return createSubscribedElement(ExportZipFormModal, props, [AppContainer]);
+const SelectCollectionsModalWrapper = (props) => {
+  return createSubscribedElement(SelectCollectionsModal, props, [AppContainer]);
 };
 
-export default withTranslation()(ExportZipFormModalWrapper);
+export default withTranslation()(SelectCollectionsModalWrapper);

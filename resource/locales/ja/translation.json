@@ -113,7 +113,7 @@
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
-  "Export Data": "データエクスポート",
+  "Export Archive Data": "データアーカイブ",
   "Basic Settings": "基本設定",
   "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
@@ -733,14 +733,12 @@
   },
 
   "importer_management": {
-    "import_form_esa": "esa.ioからインポート",
-    "import_form_qiita": "Qiita:Teamからインポート",
     "beta_warning": "この機能はベータ版です",
-    "import_from": "%s からインポート",
-    "import_form_growi": "GROWIからインポート",
+    "import_from": "{{from}} からインポート",
+    "import_growi_archive": "GROWI アーカイブをインポート",
     "growi_settings": {
       "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
-      "zip_file": "エクスポートされた Zip ファイル",
+      "growi_archive_file": "GROWI アーカイブファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
       "collection": "コレクション",
@@ -750,6 +748,32 @@
         "at_least_one": "コレクションが選択されていません",
         "page_and_revision": "'Pages' と 'Revisions' はセットでインポートする必要があります",
         "depends": "'{{condition}}' をインポートする場合は、'{{target}}' を一緒に選択する必要があります"
+      },
+      "configuration": {
+        "pages": {
+          "overwrite_author": {
+            "label": "ページ作成者を現在のユーザーで上書きする",
+            "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
+          },
+          "set_public_to_page": {
+            "label": "'{{from}}' 設定のページを '公開' 設定にする",
+            "desc": "全ての <b>'{{from}}'</b> 設定のページが<span class=\"text-danger\">全ユーザーから</span>読み取り可能になることに注意してください。"
+          },
+          "initialize_meta_datas": {
+            "label": "「いいね」「閲覧したユーザー」「コメント数」を初期化する",
+            "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
+          },
+          "initialize_hackmd_related_datas": {
+            "label": "HackMD 関連データを初期化する",
+            "desc": "HackMD に重要な下書きデータがない限りはこのオプションをチェックすることを推奨します。"
+          }
+        },
+        "revisions": {
+          "overwrite_author": {
+            "label": "リビジョン作成者を現在のユーザーで上書きする",
+            "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
+          }
+        }
       }
     },
     "esa_settings": {
@@ -775,13 +799,13 @@
     "rebuild_description_3":""
   },
   "export_management": {
-    "exporting_data_list": "エクスポート中のデータ",
-    "exported_data_list": "エクスポートデータリスト",
+    "exporting_collection_list": "エクスポート中のコレクション",
+    "exported_data_list": "エクスポートされたアーカイブリスト",
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
     "desc_password_seed": "ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。",
-    "create_new_exported_data": "エクスポートデータの新規作成",
+    "create_new_archive_data": "アーカイブデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",
     "file": "ファイル名",

@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {};
 
@@ -22,11 +23,6 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const {
-    ErrorV3,
-    Config,
-  } = crowi.models;
-
   const { ApiV3FormValidator } = crowi.middlewares;
 
   validator.layoutTheme = [
@@ -37,42 +33,40 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/customize-setting/layoutTheme:
+   *    /customize-setting/layoutTheme:
    *      put:
    *        tags: [CustomizeSetting]
    *        description: Update layout and theme
-   *        parameters:
-   *          - name: layoutType
-   *            in: query
-   *            description: type of layout
-   *            schema:
-   *              type: string
-   *          - name: themeType
-   *            in: query
-   *            description: type of theme
-   *            schema:
-   *              type: string
-   *        responses:
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  layoutType:
+   *                    description: type of layout
+   *                    type: string
+   *                  themeType:
+   *                    description: type of theme
+   *                    type: string
+   *      responses:
    *          200:
    *            description: Succeeded to update layout and theme
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    customizeParams:
-   *                      type: object
-   *                      description: new params of layout and theme
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
-    const customizeParams = {
+    const requestParams = {
       'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', customizeParams);
-      return res.apiv3({ customizeParams });
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
+        themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+      };
+      return res.apiv3({ customizedParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating layout and theme';

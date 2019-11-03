@@ -9,6 +9,8 @@ const router = express.Router();
 const { body } = require('express-validator/check');
 const { isEmail } = require('validator');
 
+const ErrorV3 = require('../../models/vo/error-apiv3');
+
 const PAGE_ITEMS = 50;
 
 const validator = {};
@@ -25,7 +27,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const {
-    ErrorV3,
     User,
     Page,
     ExternalAccount,
