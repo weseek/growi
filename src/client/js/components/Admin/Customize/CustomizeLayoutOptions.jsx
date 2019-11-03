@@ -14,7 +14,7 @@ class CustomizeLayoutOptions extends React.Component {
     const { adminCustomizeContainer } = this.props;
 
     return (
-      <React.Fragment>
+      <div className="row">
         <div className="col-sm-4">
           <CustomizeLayoutOption
             layoutType="crowi-plus"
@@ -65,7 +65,7 @@ class CustomizeLayoutOptions extends React.Component {
             </ul>
           </CustomizeLayoutOption>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 
