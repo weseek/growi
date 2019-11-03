@@ -23,10 +23,10 @@ class CustomizeBehaviorSetting extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     try {
-      // await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
+      await adminCustomizeContainer.updateCustomizeBehavior();
       toastSuccess(t('customize_page.update_behavior_success'));
     }
     catch (err) {

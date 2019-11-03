@@ -65,4 +65,13 @@ export default class AdminCustomizeContainer extends Container {
     return customizedParams;
   }
 
+  /**
+   * Update behavior
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Behavior
+   */
+  async updateCustomizeBehavior() {
+    // TODO GW-497 create apiV3
+  }
+
 }
