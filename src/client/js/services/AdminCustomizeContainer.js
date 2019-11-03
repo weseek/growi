@@ -44,8 +44,18 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentTheme: themeName });
   }
 
-  updateCustomizeLayout() {
-    // TODO GW-479 post api
+  /**
+   * Update layout
+   * @memberOf AdminCustomizeContainer
+   * @return {Array} Appearance
+   */
+  async updateCustomizeLayoutAndTheme() {
+    const response = await this.appContainer.apiv3.put('/customize-setting/layoutTheme', {
+      layoutType: this.state.currentLayout,
+      themeType: this.state.currentTheme,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
 }
