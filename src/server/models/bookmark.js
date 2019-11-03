@@ -1,10 +1,12 @@
-// disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+const debug = require('debug')('growi:models:bookmark');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:bookmark');
-  const mongoose = require('mongoose');
-  const ObjectId = mongoose.Schema.Types.ObjectId;
   const bookmarkEvent = crowi.event('bookmark');
 
   let bookmarkSchema = null;
@@ -16,6 +18,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
   });
   bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
+  bookmarkSchema.plugin(uniqueValidator);
 
   bookmarkSchema.statics.countByPageId = async function(pageId) {
     return await this.count({ page: pageId });
