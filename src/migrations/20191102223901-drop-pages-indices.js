@@ -4,15 +4,21 @@ const logger = require('@alias/logger')('growi:migrate:drop-pages-indices');
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
+async function dropIndexIfExists(collection, indexName) {
+  if (await collection.indexExists(indexName)) {
+    await collection.dropIndex(indexName);
+  }
+}
+
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
     const collection = db.collection('pages');
-    await collection.dropIndex('lastUpdateUser_1');
-    await collection.dropIndex('liker_1');
-    await collection.dropIndex('seenUsers_1');
+    await dropIndexIfExists(collection, 'lastUpdateUser_1');
+    await dropIndexIfExists(collection, 'liker_1');
+    await dropIndexIfExists(collection, 'seenUsers_1');
 
     logger.info('Migration has successfully applied');
   },
