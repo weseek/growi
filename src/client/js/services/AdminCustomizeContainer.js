@@ -14,9 +14,9 @@ export default class AdminCustomizeContainer extends Container {
     this.state = {
       currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
+      currentBehavior: appContainer.config.behaviorType,
     };
 
-    this.switchLayoutType = this.switchLayoutType.bind(this);
   }
 
   /**
@@ -45,6 +45,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Switch behaviorType
+   */
+  switchBehaviorType(behaviorName) {
+    this.setState({ currentBehavior: behaviorName });
+  }
+
+  /**
    * Update layout
    * @memberOf AdminCustomizeContainer
    * @return {Array} Appearance
@@ -56,6 +63,15 @@ export default class AdminCustomizeContainer extends Container {
     });
     const { customizedParams } = response.data;
     return customizedParams;
+  }
+
+  /**
+   * Update behavior
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Behavior
+   */
+  async updateCustomizeBehavior() {
+    // TODO GW-497 create apiV3
   }
 
 }
