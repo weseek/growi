@@ -11,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import CustomizeBehaviorOption from './CustomizeBehaviorOption';
+import AdminUpdateButton from '../Common/AdminUpdateButton';
 
 const logger = loggerFactory('growi:importer');
 
@@ -73,11 +74,7 @@ class CustomizeBehaviorSetting extends React.Component {
           </ul>
         </CustomizeBehaviorOption>
 
-        <div className="form-group my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
-          </div>
-        </div>
+        <AdminUpdateButton onClick={this.onClickSubmit} />
       </React.Fragment>
     );
   }
