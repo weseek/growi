@@ -12,6 +12,7 @@ import AppContainer from '../../../services/AppContainer';
 import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:importer');
 
@@ -28,7 +29,7 @@ class CustomizeLayoutSetting extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.updateCustomizeLayout();
+      await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
       toastSuccess(t('customize_page.update_layout_success'));
     }
     catch (err) {
@@ -58,11 +59,7 @@ class CustomizeLayoutSetting extends React.Component {
         <h2>{ t('customize_page.Theme') }</h2>
         {this.renderDevAlert()}
         <CustomizeThemeOptions />
-        <div className="form-group my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
-          </div>
-        </div>
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
   }

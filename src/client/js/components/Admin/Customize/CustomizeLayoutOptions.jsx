@@ -14,49 +14,55 @@ class CustomizeLayoutOptions extends React.Component {
     const { t, adminCustomizeContainer } = this.props;
 
     return (
-      <React.Fragment>
-        <CustomizeLayoutOption
-          layoutType="crowi-plus"
-          isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
-          onSelected={() => adminCustomizeContainer.switchLayoutType('growi')}
-          labelHtml={'GROWI Enhanced Layout <small className="text-success">(Recommended)</small>'}
-        >
-          <h4>{t('customize_page.layout_description.growi_title')}</h4>
-          <ul>
-            <li>{t('customize_page.layout_description.growi_text1')}</li>
-            <li>{t('customize_page.layout_description.growi_text2')}</li>
-            <li>{t('customize_page.layout_description.growi_text3')}</li>
-          </ul>
-        </CustomizeLayoutOption>
+      <div className="row">
+        <div className="col-sm-4">
+          <CustomizeLayoutOption
+            layoutType="crowi-plus"
+            isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
+            onSelected={() => adminCustomizeContainer.switchLayoutType('growi')}
+            labelHtml={'GROWI Enhanced Layout <small className="text-success">(Recommended)</small>'}
+          >
+            <h4>{t('customize_page.layout_description.growi_title')}</h4>
+            <ul>
+              <li>{t('customize_page.layout_description.growi_text1')}</li>
+              <li>{t('customize_page.layout_description.growi_text2')}</li>
+              <li>{t('customize_page.layout_description.growi_text3')}</li>
+            </ul>
+          </CustomizeLayoutOption>
+        </div>
 
-        <CustomizeLayoutOption
-          layoutType="kibela"
-          isSelected={adminCustomizeContainer.state.currentLayout === 'kibela'}
-          onSelected={() => adminCustomizeContainer.switchLayoutType('kibela')}
-          labelHtml="Kibela Like Layout"
-        >
-          <h4>{t('customize_page.layout_description.kibela_title')}</h4>
-          <ul>
-            <li>{t('customize_page.layout_description.kibela_text1')}</li>
-            <li>{t('customize_page.layout_description.kibela_text2')}</li>
-            <li>{t('customize_page.layout_description.kibela_text3')}</li>
-          </ul>
-        </CustomizeLayoutOption>
+        <div className="col-sm-4">
+          <CustomizeLayoutOption
+            layoutType="kibela"
+            isSelected={adminCustomizeContainer.state.currentLayout === 'kibela'}
+            onSelected={() => adminCustomizeContainer.switchLayoutType('kibela')}
+            labelHtml="Kibela Like Layout"
+          >
+            <h4>{t('customize_page.layout_description.kibela_title')}</h4>
+            <ul>
+              <li>{t('customize_page.layout_description.kibela_text1')}</li>
+              <li>{t('customize_page.layout_description.kibela_text2')}</li>
+              <li>{t('customize_page.layout_description.kibela_text3')}</li>
+            </ul>
+          </CustomizeLayoutOption>
+        </div>
 
-        <CustomizeLayoutOption
-          layoutType="classic"
-          isSelected={adminCustomizeContainer.state.currentLayout === 'crowi'}
-          onSelected={() => adminCustomizeContainer.switchLayoutType('crowi')}
-          labelHtml="Crowi Classic Layout"
-        >
-          <h4>{t('customize_page.layout_description.crowi_title')}</h4>
-          <ul>
-            <li>{t('customize_page.layout_description.crowi_text1')}</li>
-            <li>{t('customize_page.layout_description.crowi_text2')}</li>
-            <li>{t('customize_page.layout_description.crowi_text3')}</li>
-          </ul>
-        </CustomizeLayoutOption>
-      </React.Fragment>
+        <div className="col-sm-4">
+          <CustomizeLayoutOption
+            layoutType="classic"
+            isSelected={adminCustomizeContainer.state.currentLayout === 'crowi'}
+            onSelected={() => adminCustomizeContainer.switchLayoutType('crowi')}
+            labelHtml="Crowi Classic Layout"
+          >
+            <h4>{t('customize_page.layout_description.crowi_title')}</h4>
+            <ul>
+              <li>{t('customize_page.layout_description.crowi_text1')}</li>
+              <li>{t('customize_page.layout_description.crowi_text2')}</li>
+              <li>{t('customize_page.layout_description.crowi_text3')}</li>
+            </ul>
+          </CustomizeLayoutOption>
+        </div>
+      </div>
     );
   }
 
