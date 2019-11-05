@@ -37,13 +37,28 @@ class CustomizeBehaviorSetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
         <h2>{t('customize_page.Function')}</h2>
         <p className="well">{ t('customize_page.function_choose') }</p>
-        <CustomizeFunctionOption />
+
+        <CustomizeFunctionOption
+          optionId="isEnabledTimeline"
+          label={t('customize_page.Timeline function')}
+          isChecked={adminCustomizeContainer.state.isEnabledTimeline}
+          onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
+        >
+          <p className="help-block">
+            { t('customize_page.subpage_display') }
+          </p>
+          <p className="help-block">
+            { t('customize_page.performance_decrease') }<br />
+            { t('customize_page.list_page_display') }
+          </p>
+        </CustomizeFunctionOption>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );

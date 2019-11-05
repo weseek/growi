@@ -15,6 +15,7 @@ export default class AdminCustomizeContainer extends Container {
       currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
       currentBehavior: appContainer.config.behaviorType,
+      isEnabledTimeline: appContainer.config.isEnabledTimeline,
     };
 
   }
@@ -49,6 +50,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchBehaviorType(behaviorName) {
     this.setState({ currentBehavior: behaviorName });
+  }
+
+  /**
+   * Switch enabledTimeLine
+   */
+  switchEnableTimeline() {
+    this.setState({ isEnabledTimeline:  !this.state.isEnabledTimeline });
   }
 
   /**
