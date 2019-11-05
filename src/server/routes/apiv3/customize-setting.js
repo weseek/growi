@@ -75,7 +75,27 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO writte swagger & validator
+  /**
+   * @swagger
+   *
+   *    /customize-setting/behavior:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update behavior
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  behaviorType:
+   *                    description: type of behavior
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update behavior
+   */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const requestParams = {
       'customize:behavior': req.body.behaviorType,
