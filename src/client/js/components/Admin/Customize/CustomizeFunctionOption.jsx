@@ -7,7 +7,7 @@ class CustomizeFunctionOption extends React.PureComponent {
   render() {
     return (
       <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
+        <div className="col-xs-offset-3 col-xs-9 text-left">
           <div className="checkbox checkbox-success">
             <input
               type="checkbox"
