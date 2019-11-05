@@ -16,7 +16,7 @@ class CustomizeFunctionOption extends React.PureComponent {
               onChange={this.props.onChecked}
             />
             <label htmlFor={this.props.optionId}>
-              {this.props.label}
+              <strong>{this.props.label}</strong>
             </label>
           </div>
           {this.props.children}

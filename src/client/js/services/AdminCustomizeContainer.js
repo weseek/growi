@@ -18,6 +18,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledTimeline: appContainer.config.isEnabledTimeline,
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
+      currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
     };
 
   }
@@ -73,6 +74,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchEnabledAttachTitleHeader() {
     this.setState({ isEnabledAttachTitleHeader:  !this.state.isEnabledAttachTitleHeader });
+  }
+
+  /**
+   * Switch recentCreatedLimit
+   */
+  switchRecentCreatedLimit(value) {
+    this.setState({ currentRecentCreatedLimit: value });
   }
 
   /**
