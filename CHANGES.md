@@ -2,7 +2,8 @@
 
 ## 3.5.19-RC
 
-* 
+* Improvement: Drop unnecessary MongoDB collection indexes
+* Improvement: Organize MongoDB collection indexes uniqueness
 
 ## 3.5.18
 
