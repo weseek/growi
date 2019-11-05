@@ -51,6 +51,21 @@ class CustomizeHighlightSetting extends React.Component {
         >
           <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
         </AdminDropdownOption>
+        <div className="form-group row">
+          <div className="col-xs-offset-3 col-xs-9 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                type="checkbox"
+                id="highlightBorder"
+                checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
+                onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              />
+              <label htmlFor="highlightBorder">
+                <strong>Border</strong>
+              </label>
+            </div>
+          </div>
+        </div>
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );

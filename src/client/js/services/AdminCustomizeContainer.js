@@ -86,6 +86,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Switch highlightJsStyleBorder
+   */
+  switchHighlightJsStyleBorder() {
+    this.setState({ isHighlightJsStyleBorderEnabled: !this.state.isHighlightJsStyleBorderEnabled });
+  }
+
+  /**
    * Update layout
    * @memberOf AdminCustomizeContainer
    * @return {Array} Appearance
