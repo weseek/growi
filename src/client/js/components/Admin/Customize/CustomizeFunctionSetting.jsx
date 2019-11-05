@@ -10,7 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AdminUpdateButton from '../Common/AdminUpdateButton';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:importer');
 
@@ -42,7 +42,7 @@ class CustomizeBehaviorSetting extends React.Component {
       <React.Fragment>
         <h2>{t('customize_page.Function')}</h2>
         <p className="well">{ t('customize_page.function_choose') }</p>
-        <AdminUpdateButton onClick={this.onClickSubmit} />
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
   }

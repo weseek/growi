@@ -23,7 +23,7 @@ class Customize extends React.Component {
         <div className="my-3">
           <CustomizeBehaviorSetting />
         </div>
-        <div className="row my-3">
+        <div className="my-3">
           <CustomizeFunctionSetting />
         </div>
         <legend>{t('customize_page.Code Highlight')}</legend>
