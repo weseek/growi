@@ -36,7 +36,7 @@ class AdminDropdownOption extends React.PureComponent {
 AdminDropdownOption.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  value: PropTypes.number.isRequired,
+  value: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
