@@ -19,7 +19,7 @@
       border: 1em solid transparent;
       border-left-width: 0;
 
-      @include media-breakpoint-down(xs) {
+      @include media-breakpoint-down(sm) {
         display: none;
       }
     }
