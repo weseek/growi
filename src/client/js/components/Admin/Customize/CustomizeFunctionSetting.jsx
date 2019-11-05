@@ -59,6 +59,18 @@ class CustomizeBehaviorSetting extends React.Component {
           </p>
         </CustomizeFunctionOption>
 
+        <CustomizeFunctionOption
+          optionId="isSavedStatesOfTabChanges"
+          label={t('customize_page.tab_switch')}
+          isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
+          onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
+        >
+          <p className="help-block">
+            { t('customize_page.save_edit') }<br />
+            { t('customize_page.by_invalidating') }
+          </p>
+        </CustomizeFunctionOption>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );

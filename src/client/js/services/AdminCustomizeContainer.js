@@ -16,6 +16,7 @@ export default class AdminCustomizeContainer extends Container {
       currentLayout: appContainer.config.layoutType,
       currentBehavior: appContainer.config.behaviorType,
       isEnabledTimeline: appContainer.config.isEnabledTimeline,
+      isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
     };
 
   }
@@ -57,6 +58,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchEnableTimeline() {
     this.setState({ isEnabledTimeline:  !this.state.isEnabledTimeline });
+  }
+
+  /**
+   * Switch savedStatesOfTabChanges
+   */
+  switchSavedStatesOfTabChanges() {
+    this.setState({ isSavedStatesOfTabChanges:  !this.state.isSavedStatesOfTabChanges });
   }
 
   /**
