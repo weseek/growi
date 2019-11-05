@@ -29,4 +29,18 @@
       padding: 0;
     }
   }
+
+  //customize modal layout
+  .duplicate-page-modal {
+    .modal-dialog {
+      max-width: 600px;
+      overflow-x: hidden;
+    }
+    .modal-body {
+      border-bottom: 1px solid $border;
+    }
+  }
+  .grw-text-bold {
+    font-weight: $font-bold;
+  }
 }
