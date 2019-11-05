@@ -1,7 +1,7 @@
 .modal.create-template {
   @include media-breakpoint-up(sm) {
     // align .panel-body heights
-    .panel-select-template .panel-body {
+    .card-select-template .card-body {
       min-height: 120px;
     }
   }
