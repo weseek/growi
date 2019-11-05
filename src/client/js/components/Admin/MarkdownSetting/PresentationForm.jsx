@@ -33,7 +33,7 @@ class PresentationForm extends React.Component {
 
   render() {
     const { t, markDownSettingContainer } = this.props;
-    const { /* pageBreakSeparator, */ pageBreakCustomSeparator } = markDownSettingContainer.state;
+    const { pageBreakSeparator, pageBreakCustomSeparator } = markDownSettingContainer.state;
 
     return (
       <fieldset className="form-group row my-2">
@@ -46,10 +46,8 @@ class PresentationForm extends React.Component {
           <input
             type="radio"
             id="pageBreakOption1"
-            // checked={pageBreakSeparator === 1}
-            // onChange={() => { markDownSettingContainer.setState({ pageBreakSeparator: 1 }) }}
-            isSelected={markDownSettingContainer.state.pageBreakSeparator === 1}
-            onSelected={() => markDownSettingContainer.switchPageBreakSeparator(1)}
+            checked={pageBreakSeparator === 1}
+            onChange={() => markDownSettingContainer.switchPageBreakSeparator(1)}
           />
           <label htmlFor="pageBreakOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
@@ -64,10 +62,8 @@ class PresentationForm extends React.Component {
           <input
             type="radio"
             id="pageBreakOption2"
-            // checked={pageBreakSeparator === 2}
-            // onChange={() => { markDownSettingContainer.setState({ pageBreakSeparator: 2 }) }}
-            isSelected={markDownSettingContainer.state.pageBreakSeparator === 2}
-            onSelected={() => markDownSettingContainer.switchPageBreakSeparator(2)}
+            checked={pageBreakSeparator === 2}
+            onChange={() => markDownSettingContainer.switchPageBreakSeparator(2)}
           />
           <label htmlFor="pageBreakOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
@@ -82,10 +78,8 @@ class PresentationForm extends React.Component {
           <input
             type="radio"
             id="pageBreakOption3"
-            // checked={pageBreakSeparator === 3}
-            // onChange={() => { markDownSettingContainer.setState({ pageBreakSeparator: 3 }) }}
-            isSelected={markDownSettingContainer.state.pageBreakSeparator === 3}
-            onSelected={() => markDownSettingContainer.switchPageBreakSeparator(3)}
+            checked={pageBreakSeparator === 3}
+            onChange={() => markDownSettingContainer.switchPageBreakSeparator(3)}
           />
           <label htmlFor="pageBreakOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>

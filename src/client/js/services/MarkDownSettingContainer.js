@@ -16,7 +16,7 @@ export default class MarkDownSettingContainer extends Container {
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
       pageBreakSeparator: appContainer.config.pageBreakSeparator,
       pageBreakCustomSeparator: appContainer.config.pageBreakCustomSeparator || '',
-      pageBreakOption: appContainer.config.pageBreakOption,
+      // pageBreakOption: appContainer.config.pageBreakOption,
       customRegularExpression: appContainer.config.customRegularExpression || '',
       isEnabledXss: (appContainer.config.xssOption != null),
       xssOption: appContainer.config.xssOption,
@@ -38,7 +38,7 @@ export default class MarkDownSettingContainer extends Container {
    * Switch PageBreakSeparator
    */
   switchPageBreakSeparator(pageBreakSeparator) {
-    this.setState({ pageBreakSeparator: this.state.pageBreakSeparator });
+    this.setState({ pageBreakSeparator });
   }
 
   /**
