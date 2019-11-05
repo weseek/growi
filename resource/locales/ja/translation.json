@@ -633,7 +633,7 @@
   },
 
   "customize_page": {
-    "Behavior": "挙動",
+    "Behavior": "動作",
     "Layout": "レイアウト",
     "Function": "機能",
     "function_choose": "機能の有効/無効を選択できます。",
@@ -662,18 +662,18 @@
     "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
     "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
     "update_layout_success": "レイアウトを更新しました",
-    "update_behavior_success": "挙動を更新しました",
+    "update_behavior_success": "動作を更新しました",
     "layout_description":{
-      "growi_title":"シンプルに鮮明に",
+      "growi_title":"シンプルなレイアウト",
       "growi_text1":"全画面レイアウトで、余白は少なくなります。",
       "growi_text2":"コメントはページの下部に表示されます。",
       "growi_text3":"ページ情報は下部に表示されます。",
-      "kibela_title":"構造を把握しやすく",
+      "kibela_title":"構造を把握しやすいレイアウト",
       "kibela_text1":"コンテンツが中心に表示されます。",
       "kibela_text2":"コメントはページの下部に表示されます。",
       "kibela_text3":"ページ情報は下部に表示されます。",
-      "crowi_title":"分離された機能表示",
-      "crowi_text1":"サイドバーに機能が格納されます。",
+      "crowi_title":"サイドバーレイアウト",
+      "crowi_text1":"サイドバーを開くと情報が表示されます。",
       "crowi_text2":"コメントはサイドバーに表示されます。",
       "crowi_text3":"ページ情報はサイドバーに表示されます。"
     }
