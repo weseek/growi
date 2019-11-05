@@ -22,6 +22,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    @include media-breakpoint-down(sm) {
+      position: relative;
+    }
   }
 
   // loading keymap
@@ -31,6 +34,10 @@
   .overlay.overlay-gfm-cheatsheet {
     align-items: flex-end;
     justify-content: flex-end;
+    @include media-breakpoint-down(sm) {
+      align-items: center;
+      justify-content: initial;
+    }
 
     pointer-events: none;
 
@@ -41,6 +48,9 @@
         min-width: 30em;
         font-family: monospace;
         color: $text-muted;
+        @include media-breakpoint-down(sm) {
+          min-width: initial;
+        }
       }
       ul > li {
         list-style: none;

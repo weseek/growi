@@ -548,7 +548,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const cheatsheetModalButton = this.renderCheatsheetModalButton();
 
     return (
-      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
+      <div className="overlay overlay-gfm-cheatsheet mt-1">
         { this.state.isSimpleCheatsheetShown
           ? (
             <div className="text-right">

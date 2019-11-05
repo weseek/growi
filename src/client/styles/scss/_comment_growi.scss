@@ -4,8 +4,8 @@
     padding: 1em;
     margin-left: 4.5em;
 
-    @include media-breakpoint-down(xs) {
-      margin-left: 3.5em;
+    @include media-breakpoint-down(sm) {
+      margin-left: 0em;
     }
 
     // speech balloon
@@ -20,7 +20,7 @@
       border-left-width: 0;
 
       @include media-breakpoint-down(xs) {
-        top: 1em;
+        display: none;
       }
     }
   }
@@ -40,6 +40,9 @@
   .page-comments-row {
     margin: 30px 0px;
     border-top: 5px solid;
+    @include media-breakpoint-down(sm) {
+      margin: 0;
+    }
   }
 
   .page-comments {
@@ -139,6 +142,16 @@
     }
     .comment-form-preview {
       padding-top: 0.5em;
+    }
+  }
+
+  .comment-form-user {
+    @include media-breakpoint-down(sm) {
+      position: absolute;
+      top: 3px;
+      left: 0px;
+      z-index: 10;
+      display: none;
     }
   }
 }
