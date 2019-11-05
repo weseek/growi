@@ -33,7 +33,7 @@ class PresentationForm extends React.Component {
 
   render() {
     const { t, markDownSettingContainer } = this.props;
-    const { pageBreakSeparator, pageBreakCustomSeparator } = markDownSettingContainer.state;
+    const { /* pageBreakSeparator, */ pageBreakCustomSeparator } = markDownSettingContainer.state;
 
     return (
       <fieldset className="form-group row my-2">

@@ -35,6 +35,13 @@ export default class MarkDownSettingContainer extends Container {
   }
 
   /**
+   * Switch PageBreakSeparator
+   */
+  switchPageBreakSeparator(pageBreakSeparator) {
+    this.setState({ pageBreakSeparator: this.state.pageBreakSeparator });
+  }
+
+  /**
    * Switch enableXss
    */
   switchEnableXss() {
