@@ -75,5 +75,25 @@ module.exports = (crowi) => {
     }
   });
 
+  // TODO writte swagger & validator
+  router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const requestParams = {
+      'customize:behavior': req.body.behaviorType,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating behavior';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-behavior-failed'));
+    }
+  });
+
   return router;
 };
