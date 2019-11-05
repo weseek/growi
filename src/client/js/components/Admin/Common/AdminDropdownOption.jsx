@@ -6,7 +6,7 @@ import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
 
-class CustomizeFunctionDropdownOption extends React.PureComponent {
+class AdminDropdownOption extends React.PureComponent {
 
   render() {
     return (
@@ -33,7 +33,7 @@ class CustomizeFunctionDropdownOption extends React.PureComponent {
 
 }
 
-CustomizeFunctionDropdownOption.propTypes = {
+AdminDropdownOption.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   value: PropTypes.number.isRequired,
@@ -43,4 +43,4 @@ CustomizeFunctionDropdownOption.propTypes = {
   children: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(CustomizeFunctionDropdownOption);
+export default withTranslation()(AdminDropdownOption);

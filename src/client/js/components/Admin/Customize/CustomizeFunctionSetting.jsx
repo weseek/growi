@@ -12,7 +12,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
-import CustomizeFunctionDropdownOption from './CustomizeFunctionDropdownOption';
+import AdminDropdownOption from '../Common/AdminDropdownOption';
 
 const logger = loggerFactory('growi:importer');
 
@@ -83,7 +83,7 @@ class CustomizeBehaviorSetting extends React.Component {
           </p>
         </CustomizeFunctionOption>
 
-        <CustomizeFunctionDropdownOption
+        <AdminDropdownOption
           label={t('customize_page.recent_created__n_draft_num_desc')}
           value={adminCustomizeContainer.state.currentRecentCreatedLimit}
           onChange={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
@@ -92,7 +92,7 @@ class CustomizeBehaviorSetting extends React.Component {
           <p className="help-block">
             { t('customize_page.recently_created_n_draft_num_desc') }
           </p>
-        </CustomizeFunctionDropdownOption>
+        </AdminDropdownOption>
 
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
