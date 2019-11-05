@@ -75,6 +75,10 @@ module.exports = (crowi) => {
     }
   });
 
+  validator.behavior = [
+    body('behaviorType').isString(),
+  ];
+
   /**
    * @swagger
    *
@@ -96,7 +100,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update behavior
    */
-  router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:behavior': req.body.behaviorType,
     };
