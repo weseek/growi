@@ -8,6 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
+import CustomizeTitle from './CustomizeTitle';
 
 class Customize extends React.Component {
 
@@ -28,6 +29,9 @@ class Customize extends React.Component {
         {/* コードハイライトフォームの react componentをここで呼ぶ(GW-277) */}
         <legend>{t('customize_page.custom_title')}</legend>
         {/* カスタムタイトルフォームの react componentをここで呼ぶ(GW-278) */}
+        <div className="my-3">
+          <CustomizeTitle />
+        </div>
         <legend>{t('customize_page.Custom CSS')}</legend>
         {/* カスタムCSSフォームの react componentをここで呼ぶ(GW-279) */}
         <legend>{t('customize_page.Custom script')}</legend>
