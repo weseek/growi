@@ -182,6 +182,7 @@ module.exports = function(crowi) {
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
       tagWhiteList: crowi.xssService.getTagWhiteList(),
       attrWhiteList: crowi.xssService.getAttrWhiteList(),
+      highlightJsStyle: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),

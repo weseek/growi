@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -11,6 +12,7 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AdminDropdownOption from '../Common/AdminDropdownOption';
 
 const logger = loggerFactory('growi:importer');
 
@@ -36,11 +38,19 @@ class CustomizeHighlightSetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
         <h2>{t('customize_page.Code Highlight')}</h2>
+        <AdminDropdownOption
+          label={t('customize_page.Theme')}
+          value={adminCustomizeContainer.state.currenthighlightJsStyle}
+          onChange={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
+          options={[10, 30, 50]}
+        >
+          <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
+        </AdminDropdownOption>
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );

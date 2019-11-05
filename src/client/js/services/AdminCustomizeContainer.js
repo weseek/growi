@@ -19,6 +19,8 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
+      currenthighlightJsStyle: appContainer.config.highlightJsStyle,
+      isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
     };
 
   }
