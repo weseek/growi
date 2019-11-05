@@ -66,6 +66,17 @@ class CustomizeHighlightSetting extends React.Component {
             </div>
           </div>
         </div>
+        <p className="help-block">
+            Examples:
+          <div className="wiki">
+            <pre className={`hljs ${adminCustomizeContainer.highlightJsStyleBorder && 'hljs-no-border'}`}>
+              <code className="highlightjs-demo">
+                highlight
+              </code>
+            </pre>
+          </div>
+        </p>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
