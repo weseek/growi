@@ -17,6 +17,7 @@ export default class AdminCustomizeContainer extends Container {
       currentBehavior: appContainer.config.behaviorType,
       isEnabledTimeline: appContainer.config.isEnabledTimeline,
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
+      isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
     };
 
   }
@@ -65,6 +66,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchSavedStatesOfTabChanges() {
     this.setState({ isSavedStatesOfTabChanges:  !this.state.isSavedStatesOfTabChanges });
+  }
+
+  /**
+   * Switch enabledAttachTitleHeader
+   */
+  switchEnabledAttachTitleHeader() {
+    this.setState({ isEnabledAttachTitleHeader:  !this.state.isEnabledAttachTitleHeader });
   }
 
   /**

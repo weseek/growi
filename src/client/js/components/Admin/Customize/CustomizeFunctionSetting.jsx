@@ -71,6 +71,17 @@ class CustomizeBehaviorSetting extends React.Component {
           </p>
         </CustomizeFunctionOption>
 
+        <CustomizeFunctionOption
+          optionId="isEnabledAttachTitleHeader"
+          label={t('customize_page.attach_title_header')}
+          isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
+          onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
+        >
+          <p className="help-block">
+            { t('customize_page.attach_title_header_desc') }
+          </p>
+        </CustomizeFunctionOption>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
