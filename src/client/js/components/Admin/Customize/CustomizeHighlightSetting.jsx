@@ -27,8 +27,7 @@ class CustomizeHighlightSetting extends React.Component {
 
     try {
       // await adminCustomizeContainer.updateCustomizeFunction();
-      // TODO i18n
-      toastSuccess(t('customize_page.update_function_success'));
+      toastSuccess(t('customize_page.update_highlight_success'));
     }
     catch (err) {
       toastError(err);
