@@ -1,5 +1,5 @@
-  <div class="modal grw-modal" id="duplicatePage">
-    <div class="modal-dialog">
+  <div class="modal" id="duplicatePage">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
 
       <form role="form" id="duplicatePageForm" onsubmit="return false;">
@@ -15,8 +15,8 @@
             </div>
             <div class="form-group">
               <label for="duplicatePageName">{{ t('modal_duplicate.label.New page name') }}</label><br>
-              <div class="input-group">
-                <span class="input-group-addon">{{ baseUrl }}</span>
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ baseUrl }}</span>
                 {% if searchConfigured() %}
                 <div id="duplicate-page-name-input" class="page-name-input"></div>
                 {% else %}

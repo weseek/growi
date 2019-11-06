@@ -24,3 +24,10 @@
 .modal-content {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
 }
+
+.modal-body {
+  border-bottom: 1px solid $border;
+  .form-group label {
+    font-weight: $font-bold;
+  }
+}

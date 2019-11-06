@@ -1,5 +1,5 @@
-  <div class="modal grw-modal" id="renamePage">
-    <div class="modal-dialog">
+  <div class="modal" id="renamePage">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
 
       <form role="form" id="renamePageForm" onsubmit="return false;">
@@ -15,8 +15,8 @@
           </div>
           <div class="form-group">
             <label for="newPageName">{{ t('modal_rename.label.New page name') }}</label><br>
-            <div class="input-group">
-              <span class="input-group-addon">{{ baseUrl }}</span>
+            <div class="input-group-prepend">
+              <span class="input-group-text">{{ baseUrl }}</span>
               {% if searchConfigured() %}
               <div id="rename-page-name-input" class="page-name-input"></div>
               {% else %}
