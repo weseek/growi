@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:user-group');
+const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
 const express = require('express');
 
