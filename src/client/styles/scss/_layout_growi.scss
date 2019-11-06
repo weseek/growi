@@ -29,30 +29,4 @@
       padding: 0;
     }
   }
-
-  .modal.grw-modal {
-    .modal-dialog {
-      max-width: 600px;
-      overflow-x: hidden;
-    }
-    .modal-body {
-      border-bottom: 1px solid $border;
-    }
-    label {
-      font-weight: $font-bold;
-    }
-    .checkbox label {
-      font-weight: normal;
-    }
-    .input-group-addon {
-      padding: 0.5em 1em 0;
-      background: $secondary;
-    }
-    .card-header {
-      background: $secondary;
-    }
-    .card-footer {
-      background: white;
-    }
-  }
 }
