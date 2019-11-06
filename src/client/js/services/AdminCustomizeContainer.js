@@ -103,7 +103,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Behavior
    */
   async updateCustomizeBehavior() {
-    // TODO GW-497 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/behavior', {
+      behaviorType: this.state.currentBehavior,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**
