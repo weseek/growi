@@ -1,25 +1,25 @@
 {% set templateParentPath = parentPath(page.path | preventXss | escape) %}
 
 <div class="modal create-template" id="create-template">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
       <div class="modal-header bg-primary">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <div class="modal-title">{{ t('template.modal_label.Create/Edit Template Page') }}</div>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
           <label class="mb-4">{{ t('template.modal_label.Create template under', templateParentPath ) }}</label>
           <div class="row">
             <div class="col-sm-6">
-              <div class="panel panel-default panel-select-template">
-                <div class="panel-heading">{{ t('template.children.label') }}</div>
-                <div class="panel-body">
+              <div class="card card-select-template">
+                <div class="card-header">{{ t('template.children.label') }}</div>
+                <div class="card-body">
                   <p class="text-center"><code>_template</code></p>
                   <p class="help-block text-center"><small>{{ t('template.children.desc') }}</small></p>
                 </div>
-                <div class="panel-footer text-center">
+                <div class="card-footer text-center">
                   <a href="{{templateParentPath}}_template#edit"
                       class="btn btn-sm btn-primary" id="template-button-children">
                       {{ t("Edit") }}
@@ -28,13 +28,13 @@
               </div>
             </div>
             <div class="col-sm-6">
-              <div class="panel panel-default panel-select-template">
-                <div class="panel-heading">{{ t('template.decendants.label') }}</div>
-                <div class="panel-body">
+              <div class="card card-select-template">
+                <div class="card-header">{{ t('template.decendants.label') }}</div>
+                <div class="card-body">
                   <p class="text-center"><code>__template</code></p>
                   <p class="help-block text-center"><small>{{ t('template.decendants.desc') }}</small></p>
                 </div>
-                <div class="panel-footer text-center">
+                <div class="card-footer text-center">
                   <a href="{{templateParentPath}}__template#edit"
                       class="btn btn-sm btn-primary" id="template-button-decendants">
                       {{ t("Edit") }}
