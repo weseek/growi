@@ -108,6 +108,7 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
+  'admin-app': <AppSettingPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
   'admin-external-account-setting': <ManageExternalAccount />,
