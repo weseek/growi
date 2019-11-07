@@ -19,7 +19,7 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
-      currenthighlightJsStyle: appContainer.config.highlightJsStyle,
+      currentHighlightJsStyle: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
     };
 
@@ -83,6 +83,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchRecentCreatedLimit(value) {
     this.setState({ currentRecentCreatedLimit: value });
+  }
+
+  /**
+   * Switch highlightJsStyle
+   */
+  switchHighlightJsStyle(value) {
+    this.setState({ currentHighlightJsStyle: value });
   }
 
   /**

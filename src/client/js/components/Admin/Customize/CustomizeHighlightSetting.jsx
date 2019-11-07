@@ -43,16 +43,22 @@ class CustomizeHighlightSetting extends React.Component {
     return (
       <React.Fragment>
         <h2>{t('customize_page.Code Highlight')}</h2>
-        <AdminDropdownOption
-          label={t('customize_page.Theme')}
-          value={adminCustomizeContainer.state.currenthighlightJsStyle}
-          onChange={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
-          options={[10, 30, 50]}
-        >
-          <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
-        </AdminDropdownOption>
+
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-9 text-left">
+          <div className="col-xs-offset-2 col-xs-8 text-left">
+            <AdminDropdownOption
+              label={t('customize_page.Theme')}
+              selectedValue={adminCustomizeContainer.state.currentHighlightJsStyle}
+              onChangeValue={(value) => { adminCustomizeContainer.switchHighlightJsStyle(value) }}
+              options={[10, 30, 50]}
+            >
+              <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
+            </AdminDropdownOption>
+          </div>
+        </div>
+
+        <div className="form-group row">
+          <div className="col-xs-offset-2 col-xs-8 text-left">
             <div className="checkbox checkbox-success">
               <input
                 type="checkbox"
