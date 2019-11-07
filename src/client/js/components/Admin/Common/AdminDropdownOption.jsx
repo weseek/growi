@@ -10,24 +10,22 @@ class AdminDropdownOption extends React.PureComponent {
 
   render() {
     return (
-      <div className="form-group row">
-        <div className="col-xs-offset-3 col-xs-6 text-left">
-          <FormGroup controlId="formControlsSelect" className="my-0">
-            <ControlLabel>{this.props.label}</ControlLabel>
-            <FormControl
-              componentClass="select"
-              placeholder="select"
-              className="btn-group-sm selectpicker"
-              onChange={event => this.props.onChange(event.target.value)}
-            >
-              {this.props.options.map((option) => {
-                return <option key={option} value={option}>{option}</option>;
-              })}
-            </FormControl>
-          </FormGroup>
-          {this.props.children}
-        </div>
-      </div>
+      <React.Fragment>
+        <FormGroup controlId="formControlsSelect" className="my-0">
+          <ControlLabel>{this.props.label}</ControlLabel>
+          <FormControl
+            componentClass="select"
+            placeholder="select"
+            className="btn-group-sm selectpicker"
+            onChange={event => this.props.onChange(event.target.value)}
+          >
+            {this.props.options.map((option) => {
+              return <option key={option} value={option}>{option}</option>;
+            })}
+          </FormControl>
+        </FormGroup>
+        {this.props.children}
+      </React.Fragment>
     );
   }
 
