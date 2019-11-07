@@ -92,7 +92,7 @@ class CustomizeHighlightSetting extends React.Component {
         <p className="help-block">
             Examples:
           <div className="wiki">
-            <pre className={`hljs ${adminCustomizeContainer.highlightJsStyleBorder && 'hljs-no-border'}`}>
+            <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
               <code className="highlightjs-demo">
                 {demoFunction.toString()}
               </code>
