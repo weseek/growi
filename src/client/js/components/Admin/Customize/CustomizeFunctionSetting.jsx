@@ -99,8 +99,8 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="col-xs-offset-2 col-xs-8 text-left">
             <AdminDropdownOption
               label={t('customize_page.recent_created__n_draft_num_desc')}
-              value={adminCustomizeContainer.state.currentRecentCreatedLimit}
-              onChange={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
+              selectedValue={adminCustomizeContainer.state.currentRecentCreatedLimit}
+              onChangeValue={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
               options={[10, 30, 50]}
             >
               <p className="help-block">
