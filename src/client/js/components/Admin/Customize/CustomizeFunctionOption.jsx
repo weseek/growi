@@ -6,22 +6,20 @@ class CustomizeFunctionOption extends React.PureComponent {
 
   render() {
     return (
-      <div className="form-group row">
-        <div className="col-xs-offset-3 col-xs-9 text-left">
-          <div className="checkbox checkbox-success">
-            <input
-              type="checkbox"
-              id={this.props.optionId}
-              checked={this.props.isChecked}
-              onChange={this.props.onChecked}
-            />
-            <label htmlFor={this.props.optionId}>
-              <strong>{this.props.label}</strong>
-            </label>
-          </div>
-          {this.props.children}
+      <React.Fragment>
+        <div className="checkbox checkbox-success">
+          <input
+            type="checkbox"
+            id={this.props.optionId}
+            checked={this.props.isChecked}
+            onChange={this.props.onChecked}
+          />
+          <label htmlFor={this.props.optionId}>
+            <strong>{this.props.label}</strong>
+          </label>
         </div>
-      </div>
+        {this.props.children}
+      </React.Fragment>
     );
   }
 
@@ -34,7 +32,7 @@ CustomizeFunctionOption.propTypes = {
   label: PropTypes.string.isRequired,
   isChecked: PropTypes.bool.isRequired,
   onChecked: PropTypes.func.isRequired,
-  children: PropTypes.array.isRequired,
+  children: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(CustomizeFunctionOption);

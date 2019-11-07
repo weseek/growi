@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
-const logger = loggerFactory('growi:importer');
+const logger = loggerFactory('growi:LineBreak');
 
 class LineBreakSetting extends React.Component {
 

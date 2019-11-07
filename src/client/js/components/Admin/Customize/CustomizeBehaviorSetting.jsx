@@ -13,7 +13,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import CustomizeBehaviorOption from './CustomizeBehaviorOption';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const logger = loggerFactory('growi:importer');
+const logger = loggerFactory('growi:Customize');
 
 class CustomizeBehaviorSetting extends React.Component {
 

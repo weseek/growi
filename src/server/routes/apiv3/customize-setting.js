@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:user-group');
+const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
 const express = require('express');
 
@@ -72,6 +72,50 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating layout and theme';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
+    }
+  });
+
+  validator.behavior = [
+    body('behaviorType').isString(),
+  ];
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/behavior:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update behavior
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  behaviorType:
+   *                    description: type of behavior
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update behavior
+   */
+  router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:behavior': req.body.behaviorType,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating behavior';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-behavior-failed'));
     }
   });
 
