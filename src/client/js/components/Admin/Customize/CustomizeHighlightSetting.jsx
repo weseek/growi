@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -40,6 +41,21 @@ class CustomizeHighlightSetting extends React.Component {
   render() {
     const { t, adminCustomizeContainer } = this.props;
 
+    const demoFunction = function $initHighlight(block, cls) {
+      try {
+        if (cls.search(/\bno\-highlight\b/) != -1) {
+          return `${process(block, true, 0x0F)
+          } class="${cls}"`;
+        }
+      }
+      catch (e) {
+        /* handle exception */
+      }
+      for (let i = 0 / 2; i < classes.length; i++) {
+        if (checkCondition(classes[i]) === undefined) { console.log('undefined') }
+      }
+    };
+
     return (
       <React.Fragment>
         <h2>{t('customize_page.Code Highlight')}</h2>
@@ -72,12 +88,13 @@ class CustomizeHighlightSetting extends React.Component {
             </div>
           </div>
         </div>
+
         <p className="help-block">
             Examples:
           <div className="wiki">
             <pre className={`hljs ${adminCustomizeContainer.highlightJsStyleBorder && 'hljs-no-border'}`}>
               <code className="highlightjs-demo">
-                highlight
+                {demoFunction.toString()}
               </code>
             </pre>
           </div>
