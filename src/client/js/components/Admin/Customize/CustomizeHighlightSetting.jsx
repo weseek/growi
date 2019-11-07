@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-undef */
 /* eslint-disable react/no-danger */
 import React from 'react';
