@@ -6,15 +6,20 @@
     "configurations": [
       {
         "type": "node",
+        "request": "attach",
+        "name": "Debug: Attach Debugger to Server",
+        "port": 9229
+      },
+      {
+        "type": "node",
         "request": "launch",
         "name": "Debug: Server",
         "runtimeExecutable": "npm",
         "runtimeArgs": [
           "run",
-          "server:debug"
+          "server:nolazy"
         ],
         "port": 9229,
-        "timeout": 30000,
         "restart": true,
         "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen"
