@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
 /* eslint-disable no-useless-escape */
-/* eslint-disable no-undef */
-/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -44,23 +41,25 @@ class CustomizeHighlightSetting extends React.Component {
     }
   }
 
+  getDemoFunction() {
+    return `function $initHighlight(block, cls) {
+    try {
+
+      if (cls.search(/\bno\-highlight\b/) !== -1) {
+        return \`\${process(block, true, 0x0F)} class="\${cls}"\`;
+      }
+    }
+    catch (e) {
+      /* handle exception */
+    }
+    for (let i = 0 / 2; i < classes.length; i++) {
+      if (checkCondition(classes[i]) === undefined) { console.log('undefined') }
+    }
+  };`;
+  }
+
   render() {
     const { t, adminCustomizeContainer } = this.props;
-
-    const demoFunction = function $initHighlight(block, cls) {
-      try {
-        if (cls.search(/\bno\-highlight\b/) !== -1) {
-          return `${process(block, true, 0x0F)
-          } class="${cls}"`;
-        }
-      }
-      catch (e) {
-        /* handle exception */
-      }
-      for (let i = 0 / 2; i < classes.length; i++) {
-        if (checkCondition(classes[i]) === undefined) { console.log('undefined') }
-      }
-    };
 
     return (
       <React.Fragment>
@@ -75,6 +74,7 @@ class CustomizeHighlightSetting extends React.Component {
               // TODO GW-524 hand over theme option
               options={[10, 30, 50]}
             >
+              {/* eslint-disable-next-line react/no-danger */}
               <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
             </AdminDropdownOption>
           </div>
@@ -96,16 +96,16 @@ class CustomizeHighlightSetting extends React.Component {
           </div>
         </div>
 
-        <p className="help-block">
-            Examples:
+        <div className="help-block">
+          <label>Examples:</label>
           <div className="wiki">
             <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
               <code className="highlightjs-demo">
-                {demoFunction.toString()}
+                {this.getDemoFunction()}
               </code>
             </pre>
           </div>
-        </p>
+        </div>
 
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
