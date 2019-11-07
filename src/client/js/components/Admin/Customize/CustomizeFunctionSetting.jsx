@@ -54,9 +54,7 @@ class CustomizeBehaviorSetting extends React.Component {
               onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
             >
               <p className="help-block">
-                { t('customize_page.subpage_display') }
-              </p>
-              <p className="help-block">
+                { t('customize_page.subpage_display') }<br />
                 { t('customize_page.performance_decrease') }<br />
                 { t('customize_page.list_page_display') }
               </p>

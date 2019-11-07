@@ -32,7 +32,7 @@ CustomizeFunctionOption.propTypes = {
   label: PropTypes.string.isRequired,
   isChecked: PropTypes.bool.isRequired,
   onChecked: PropTypes.func.isRequired,
-  children: PropTypes.array.isRequired,
+  children: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(CustomizeFunctionOption);
