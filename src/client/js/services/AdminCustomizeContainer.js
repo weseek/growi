@@ -135,4 +135,13 @@ export default class AdminCustomizeContainer extends Container {
     // TODO GW-506 create apiV3
   }
 
+  /**
+   * Update code highlight
+   * @memberOf AdminCustomizeContainer
+   * @return {Array} Code highlight
+   */
+  async updateHighlightJsStyle() {
+    // TODO GW-515 create apiV3
+  }
+
 }

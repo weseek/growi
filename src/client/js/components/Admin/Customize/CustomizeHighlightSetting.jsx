@@ -32,10 +32,10 @@ class CustomizeHighlightSetting extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     try {
-      // await adminCustomizeContainer.updateCustomizeFunction();
+      await adminCustomizeContainer.updateHighlightJsStyle();
       toastSuccess(t('customize_page.update_highlight_success'));
     }
     catch (err) {
