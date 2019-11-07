@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-undef */
 /* eslint-disable react/no-danger */
@@ -26,6 +27,10 @@ class CustomizeHighlightSetting extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
+  componentDidMount() {
+    // TODO GW-524 fetch highlightTheme option
+  }
+
   async onClickSubmit() {
     const { t } = this.props;
 
@@ -44,7 +49,7 @@ class CustomizeHighlightSetting extends React.Component {
 
     const demoFunction = function $initHighlight(block, cls) {
       try {
-        if (cls.search(/\bno\-highlight\b/) != -1) {
+        if (cls.search(/\bno\-highlight\b/) !== -1) {
           return `${process(block, true, 0x0F)
           } class="${cls}"`;
         }
@@ -67,6 +72,7 @@ class CustomizeHighlightSetting extends React.Component {
               label={t('customize_page.Theme')}
               selectedValue={adminCustomizeContainer.state.currentHighlightJsStyle}
               onChangeValue={(value) => { adminCustomizeContainer.switchHighlightJsStyle(value) }}
+              // TODO GW-524 hand over theme option
               options={[10, 30, 50]}
             >
               <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
