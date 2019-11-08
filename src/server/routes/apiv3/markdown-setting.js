@@ -136,48 +136,38 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/markdown-setting/xss:
+   *    /markdown-setting/xss:
    *      put:
    *        tags: [MarkDownSetting]
    *        description: Update xss
-   *        parameters:
-   *          - name: isEnabledPrevention
-   *            in: query
-   *            description: enable xss
-   *            schema:
-   *              type: boolean
-   *          - name: option
-   *            in: query
-   *            description: xss option
-   *            schema:
-   *              type: number
-   *          - name: tagWhiteList
-   *            in: query
-   *            description: custom tag whitelist
-   *            schema:
-   *              type: array
-   *              items:
-   *                type: string
-   *                description: tag whitelist
-   *          - name: attrWhiteList
-   *            in: query
-   *            description: custom attr whitelist
-   *            schema:
-   *              type: array
-   *              items:
-   *                type: string
-   *                description: tag whitelist
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isEnabledPrevention:
+   *                    description: enable xss
+   *                    type: boolean
+   *                  xssOption:
+   *                    description: number of xss option
+   *                    type: number
+   *                  tagWhiteList:
+   *                    description: array of tag whiteList
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                      description: tag whitelist
+   *                  attrWhiteList:
+   *                    description: array of attr whiteList
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                      description: attr whitelist
    *        responses:
    *          200:
-   *            description: Updating xss success
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    xssParams:
-   *                      type: object
-   *                      description: new xss params
+   *            description: Succeeded to update xss setting
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
