@@ -9,7 +9,20 @@ const router = express.Router();
 
 const { body } = require('express-validator/check');
 
-const validator = {};
+const validator = {
+  lineBreak: [
+    body('isEnabledLinebreaks').isBoolean(),
+    body('isEnabledLinebreaksInComments').isBoolean(),
+  ],
+  presentationSetting: [
+    body('pageBreakSeparator').isInt().not().isEmpty(),
+  ],
+  xssSetting: [
+    body('isEnabledXss').isBoolean(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
+  ],
+};
 
 /**
  * @swagger
@@ -28,11 +41,6 @@ module.exports = (crowi) => {
   } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
-
-  validator.lineBreak = [
-    body('isEnabledLinebreaks').isBoolean(),
-    body('isEnabledLinebreaksInComments').isBoolean(),
-  ];
 
   /**
    * @swagger
@@ -76,10 +84,6 @@ module.exports = (crowi) => {
     }
 
   });
-
-  validator.presentationSetting = [
-    body('pageBreakSeparator').isInt().not().isEmpty(),
-  ];
 
   /**
    * @swagger
@@ -126,12 +130,6 @@ module.exports = (crowi) => {
     }
 
   });
-
-  validator.xssSetting = [
-    body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').isArray(),
-    body('attrWhiteList').isArray(),
-  ];
 
   /**
    * @swagger
