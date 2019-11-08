@@ -37,32 +37,26 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/markdown-setting/lineBreak:
+   *    /markdown-setting/lineBreak:
    *      put:
    *        tags: [MarkDownSetting]
-   *        description: Update lineBreak
-   *        parameters:
-   *          - name: isEnabledLinebreaks
-   *            in: query
-   *            description: enable lineBreak
-   *            schema:
-   *              type: boolean
-   *          - name: isEnabledLinebreaksInComments
-   *            in: query
-   *            description: enable lineBreak in comment
-   *            schema:
-   *              type: boolean
+   *        description: Update lineBreak setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isEnabledLinebreaks:
+   *                    description: enable lineBreak
+   *                    type: boolean
+   *                  isEnabledLinebreaksInComments:
+   *                    description: enable lineBreak in comment
+   *                    type: boolean
    *        responses:
    *          200:
-   *            description: Updating lineBreak success
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    xssParams:
-   *                      type: object
-   *                      description: new lineBreak params
+   *            description: Succeeded to update lineBreak setting
    */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
