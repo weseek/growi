@@ -29,32 +29,28 @@
       {{ t("admin_top.assign_administrator") }}
       </p>
 
-      <legend>
-        <h2>{{ t('admin_top.System Information') }}</h2>
-      </legend>
-      <table class="table table-bordered">
+      <h2 class="border-bottom pb-3">{{ t('admin_top.System Information') }}</h2>
+      <table class="table table-bordered mt-4">
         <tr>
-          <th class="col-sm-4">GROWI</th>
+          <th class="w-25" scope="row">GROWI</th>
           <td>{{ growiVersion() }}</td>
         </tr>
         <tr>
-          <th>node.js</th>
+          <th class="w-25" scope="row">node.js</th>
           <td>{{ nodeVersion() }}</td>
         </tr>
         <tr>
-          <th>npm</th>
+          <th class="w-25" scope="row">npm</th>
           <td>{{ npmVersion() }}</td>
         </tr>
         <tr>
-          <th>yarn</th>
+          <th class="w-25" scope="row">yarn</th>
           <td>{{ yarnVersion() }}</td>
         </tr>
       </table>
 
-      <legend>
-        <h2>{{ t('admin_top.List of installed plugins') }}</h2>
-      </legend>
-      <table class="table table-bordered">
+      <h2 class="border-bottom pb-3">{{ t('admin_top.List of installed plugins') }}</h2>
+      <table class="table table-bordered mt-4">
         <th class="text-center">
           {{ t('admin_top.Package name') }}
         </th>
