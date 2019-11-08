@@ -84,27 +84,26 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/markdown-setting/presentation:
+   *    /markdown-setting/presentation:
    *      put:
-   *        tags: [Users]
+   *        tags: [MarkDownSetting]
    *        description: Update presentation
-   *        parameters:
-   *          - name: markdown:presentation:pageBreakSeparator
-   *            in: query
-   *            description: pageBreakSeparator
-   *            schema:
-   *              type: number
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  pageBreakSeparator:
+   *                    description: number of pageBreakSeparator
+   *                    type: number
+   *                  pageBreakCustomSeparator:
+   *                    description: string of pageBreakCustomSeparator
+   *                    type: string
    *        responses:
    *          200:
-   *            description: Updating presentation success
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    presentationParams:
-   *                      type: object
-   *                      description: new presentation params
+   *            description: Succeeded to update presentation setting
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
