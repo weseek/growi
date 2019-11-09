@@ -126,5 +126,31 @@ module.exports = (crowi) => {
     }
   });
 
+  // TODO writte swagger
+  router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:isEnabledTimeline': req.body.isEnabledTimeline,
+      'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
+      'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
+      'customize:showRecentCreatedNumber': req.body.recentCreatedLimit,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
+        isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
+        isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
+        recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating function';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
   return router;
 };
