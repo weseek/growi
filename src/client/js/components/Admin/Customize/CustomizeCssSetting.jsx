@@ -40,6 +40,23 @@ class CustomizeCssSetting extends React.Component {
     return (
       <React.Fragment>
         <h2>{t('customize_page.Custom CSS')}</h2>
+        <p className="well">
+          { t('customize_page.write_CSS') }<br />
+          { t('customize_page.reflect_change') }
+        </p>
+        <div className="form-group">
+          <div className="col-xs-12">
+            <div id="custom-css-editor" />
+            {/* TODO set value */}
+            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="" />
+          </div>
+          <div className="col-xs-12">
+            <p className="help-block text-right">
+              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
+              { t('customize_page.ctrl_space') }
+            </p>
+          </div>
+        </div>
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
