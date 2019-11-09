@@ -25,10 +25,15 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  validator.layoutTheme = [
-    body('layoutType').isString(),
-    body('themeType').isString(),
-  ];
+  const validator = {
+    layoutTheme: [
+      body('layoutType').isString(),
+      body('themeType').isString(),
+    ],
+    behavior: [
+      body('behaviorType').isString(),
+    ],
+  };
 
   /**
    * @swagger
@@ -74,10 +79,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
     }
   });
-
-  validator.behavior = [
-    body('behaviorType').isString(),
-  ];
 
   /**
    * @swagger
