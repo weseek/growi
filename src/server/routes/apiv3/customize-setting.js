@@ -126,7 +126,36 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO writte swagger
+  /**
+   * @swagger
+   *
+   *    /customize-setting/function:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update function
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  isEnabledTimeline:
+   *                    description: is enabled timeline
+   *                    type: boolean
+   *                  isSavedStatesOfTabChanges:
+   *                    description: is saved states of tabChanges
+   *                    type: boolean
+   *                  isEnabledAttachTitleHeader:
+   *                    description: is enabled attach titleHeader
+   *                    type: boolean
+   *                  recentCreatedLimit:
+   *                    description: limit of recent created
+   *                    type: number
+   *      responses:
+   *          200:
+   *            description: Succeeded to update function
+   */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
