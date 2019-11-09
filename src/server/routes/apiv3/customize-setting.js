@@ -33,6 +33,12 @@ module.exports = (crowi) => {
     behavior: [
       body('behaviorType').isString(),
     ],
+    function: [
+      body('isEnabledTimeline').isBoolean(),
+      body('isSavedStatesOfTabChanges').isBoolean(),
+      body('isEnabledAttachTitleHeader').isBoolean(),
+      body('recentCreatedLimit').isInt(),
+    ],
   };
 
   /**
