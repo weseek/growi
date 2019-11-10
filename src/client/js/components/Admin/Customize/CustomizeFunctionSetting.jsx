@@ -46,7 +46,7 @@ class CustomizeBehaviorSetting extends React.Component {
         <p className="well">{ t('customize_page.function_choose') }</p>
 
         <div className="form-group row">
-          <div className="col-xs-offset-2 col-xs-8 text-left">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledTimeline"
               label={t('customize_page.Timeline function')}
@@ -63,7 +63,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-2 col-xs-8 text-left">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isSavedStatesOfTabChanges"
               label={t('customize_page.tab_switch')}
@@ -79,7 +79,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-2 col-xs-8 text-left">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledAttachTitleHeader"
               label={t('customize_page.attach_title_header')}
@@ -94,7 +94,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-2 col-xs-8 text-left">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
             <AdminDropdownOption
               label={t('customize_page.recent_created__n_draft_num_desc')}
               selectedValue={adminCustomizeContainer.state.currentRecentCreatedLimit}
