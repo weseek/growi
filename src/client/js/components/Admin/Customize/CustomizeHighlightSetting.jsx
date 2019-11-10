@@ -14,7 +14,7 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import AdminDropdownOption from '../Common/AdminDropdownOption';
 
-const logger = loggerFactory('growi:importer');
+const logger = loggerFactory('growi:customizeHighlight');
 
 class CustomizeHighlightSetting extends React.Component {
 
