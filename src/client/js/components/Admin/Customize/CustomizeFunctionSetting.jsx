@@ -14,7 +14,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
 import AdminDropdownOption from '../Common/AdminDropdownOption';
 
-const logger = loggerFactory('growi:importer');
+const logger = loggerFactory('growi:customize');
 
 class CustomizeBehaviorSetting extends React.Component {
 
