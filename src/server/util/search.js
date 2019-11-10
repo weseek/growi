@@ -143,8 +143,7 @@ SearchClient.prototype.shouldIndexed = function(page) {
 };
 
 SearchClient.prototype.initIndices = async function() {
-  // FIXME: comment out experimentally
-  // await this.checkESVersion();
+  await this.checkESVersion();
 
   const { client, indexName, aliasName } = this;
 
@@ -177,12 +176,19 @@ SearchClient.prototype.createIndex = async function(index) {
   return this.client.indices.create({ index, body });
 };
 
-SearchClient.prototype.buildIndex = async function(uri) {
+SearchClient.prototype.buildIndex = async function() {
   await this.initIndices();
 
-  const { client, indexName } = this;
+  const isSearchboxSsl = this.configManager.getConfig('crowi', 'app:searchboxSslUrl') != null;
 
-  const aliasName = `${indexName}-alias`;
+  return isSearchboxSsl
+    ? this.buildIndexForSearchbox()
+    : this.buildIndexDefault();
+};
+
+SearchClient.prototype.buildIndexDefault = async function() {
+  const { client, indexName, aliasName } = this;
+
   const tmpIndexName = `${indexName}-tmp`;
 
   // reindex to tmp index
@@ -224,6 +230,26 @@ SearchClient.prototype.buildIndex = async function(uri) {
 
   // remove tmp index
   await client.indices.delete({ index: tmpIndexName });
+};
+
+SearchClient.prototype.buildIndexForSearchbox = async function() {
+  const { client, indexName, aliasName } = this;
+
+  // flush index
+  await client.indices.delete({
+    index: indexName,
+  });
+  await this.createIndex(indexName);
+  await this.addAllPages();
+
+  // update alias
+  await client.indices.updateAliases({
+    body: {
+      actions: [
+        { add: { alias: aliasName, index: indexName } },
+      ],
+    },
+  });
 };
 
 /**
