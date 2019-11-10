@@ -6,6 +6,8 @@ const elasticsearch = require('elasticsearch');
 const debug = require('debug')('growi:lib:search');
 const logger = require('@alias/logger')('growi:lib:search');
 
+const { URL } = require('url');
+
 const {
   Writable, Transform,
 } = require('stream');
@@ -50,21 +52,52 @@ function SearchClient(crowi, esUri) {
     },
   };
 
-  const uri = this.parseUri(this.esUri);
-  this.host = uri.host;
-  this.indexName = uri.indexName;
-  this.aliasName = `${this.indexName}-alias`;
+  this.client = null;
+  this.indexName = null;
+  this.aliasName = null;
+
+  this.mappingFile = `${crowi.resourceDir}search/mappings.json`;
+
+  try {
+    this.initClient();
+    this.registerUpdateEvent();
+  }
+  catch (err) {
+    logger.error(err);
+  }
+
+}
+
+SearchClient.prototype.initClient = function() {
+  let indexName = 'crowi';
+  let host = this.esUri;
+  let httpAuth = '';
+
+  const isSearchboxSsl = this.configManager.getConfig('crowi', 'app:searchboxSslUrl') != null;
+
+  const url = new URL(this.esUri);
+  if (url.pathname !== '/') {
+    host = isSearchboxSsl
+      ? `${url.protocol}//${url.hostname}:443` // use 443 when Searchbox
+      : `${url.protocol}//${url.host}`;
+
+    indexName = url.pathname.substring(1); // omit heading slash
+
+    if (url.auth != null) {
+      httpAuth = url.auth;
+    }
+  }
 
   this.client = new elasticsearch.Client({
-    host: this.host,
+    host,
+    httpAuth,
     requestTimeout: 5000,
     // log: 'debug',
   });
 
-  this.registerUpdateEvent();
-
-  this.mappingFile = `${crowi.resourceDir}search/mappings.json`;
-}
+  this.indexName = indexName;
+  this.aliasName = `${this.indexName}-alias`;
+};
 
 SearchClient.prototype.getInfo = function() {
   return this.client.info({});
@@ -107,24 +140,6 @@ SearchClient.prototype.registerUpdateEvent = function() {
 
 SearchClient.prototype.shouldIndexed = function(page) {
   return page.creator != null && page.revision != null && page.redirectTo == null;
-};
-
-SearchClient.prototype.parseUri = function(uri) {
-  let indexName = 'crowi';
-  let host = uri;
-
-  // https://regex101.com/r/eKT4Db/4
-  const match = uri.match(/^(https?:\/\/[^/]+)\/?(.+)?$/);
-
-  if (match) {
-    host = match[1];
-    indexName = match[2] || 'growi';
-  }
-
-  return {
-    host,
-    indexName,
-  };
 };
 
 SearchClient.prototype.initIndices = async function() {

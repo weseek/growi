@@ -330,19 +330,20 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const self = this;
-  const searcherUri = this.env.ELASTICSEARCH_URI
-    || this.env.SEARCHBOX_SSL_URL
-    || null;
+  const esUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+  const sbUrl = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
+
+  const searcherUri = esUri || sbUrl;
 
   if (searcherUri) {
+    const SearchClient = require('@server/util/search');
     try {
-      self.searcher = new (require(path.join(self.libDir, 'util', 'search')))(self, searcherUri);
-      self.searcher.initIndices();
+      this.searcher = new SearchClient(this, searcherUri);
+      this.searcher.initIndices();
     }
     catch (e) {
       logger.error('Error on setup searcher', e);
-      self.searcher = null;
+      this.searcher = null;
     }
   }
 };
