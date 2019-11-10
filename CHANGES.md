@@ -4,6 +4,7 @@
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 * Improvement: Organize MongoDB collection indexes uniqueness
+* Support: Use SearchBox Elasticsearch Addon on Heroku
 
 ## 3.5.18
 
@@ -30,7 +31,6 @@
     * Introduced by 3.5.12
 * Fix: Config default values
 * Support: REPL with `console` npm scripts
-* Support: Use SearchBox Elasticsearch Addon on Heroku
 
 ## 3.5.16
 
