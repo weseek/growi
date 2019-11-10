@@ -445,27 +445,7 @@ module.exports = function(crowi, app) {
 
   actions.user = {};
   actions.user.index = async function(req, res) {
-    const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
-    const userUpperLimit = aclService.userUpperLimit();
-    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
-
-    const page = parseInt(req.query.page) || 1;
-
-    const result = await User.findUsersWithPagination({
-      page,
-      select: `${User.USER_PUBLIC_FIELDS} lastLoginAt`,
-      populate: User.IMAGE_POPULATION,
-    });
-
-    const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
-
-    return res.render('admin/users', {
-      users: result.docs,
-      pager,
-      activeUsers,
-      userUpperLimit,
-      isUserCountExceedsUpperLimit,
-    });
+    return res.render('admin/users');
   };
 
   // これやったときの relation の挙動未確認
@@ -1057,7 +1037,6 @@ module.exports = function(crowi, app) {
     const { validationResult } = require('express-validator');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log('validator', errors);
       return res.json(ApiResponse.error('Qiita form is blank'));
     }
 

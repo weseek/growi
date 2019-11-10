@@ -4,6 +4,8 @@ const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslin
 
 const express = require('express');
 
+const ErrorV3 = require('../../models/vo/error-apiv3');
+
 const router = express.Router();
 
 /**
@@ -16,12 +18,12 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
 
-  const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
+  const { UserGroup, UserGroupRelation } = crowi.models;
 
   /**
    * @swagger
    *  paths:
-   *    /_api/v3/user-group-relations:
+   *    /user-group-relations:
    *      get:
    *        tags: [UserGroupRelation]
    *        description: Gets the user group relations

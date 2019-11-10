@@ -2,7 +2,8 @@
 /* eslint-disable no-return-await */
 
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 /*
  * define schema
@@ -15,6 +16,7 @@ const schema = new mongoose.Schema({
   },
 });
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
 /**
  * Tag Class

@@ -1,6 +1,15 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
+const MODULE_NAME_MAPPING = {
+  '@root/(.+)': '<rootDir>/$1',
+  '@commons/(.+)': '<rootDir>/src/lib/$1',
+  '@server/(.+)': '<rootDir>/src/server/$1',
+  '@alias/logger': '<rootDir>/src/lib/service/logger',
+  // -- doesn't work with unknown error -- 2019.06.19 Yuki Takei
+  // debug: '<rootDir>/src/lib/service/logger/alias-for-debug',
+};
+
 module.exports = {
   // Indicates whether each individual test should be reported during the run
   verbose: true,
@@ -19,14 +28,7 @@ module.exports = {
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
       // A map from regular expressions to module names that allow to stub out resources with a single module
-      moduleNameMapper: {
-        '@root/(.+)': '<rootDir>/$1',
-        '@commons/(.+)': '<rootDir>/src/lib/$1',
-        '@server/(.+)': '<rootDir>/src/server/$1',
-        '@alias/logger': '<rootDir>/src/lib/service/logger',
-        // -- doesn't work with unknown error -- 2019.06.19 Yuki Takei
-        // debug: '<rootDir>/src/lib/service/logger/alias-for-debug',
-      },
+      moduleNameMapper: MODULE_NAME_MAPPING,
     },
     // {
     //   displayName: 'client',

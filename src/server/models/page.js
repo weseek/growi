@@ -7,7 +7,7 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const { pathUtils } = require('growi-commons');
@@ -39,9 +39,9 @@ const pageSchema = new mongoose.Schema({
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
   grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
   creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
-  liker: [{ type: ObjectId, ref: 'User', index: true }],
-  seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
+  lastUpdateUser: { type: ObjectId, ref: 'User' },
+  liker: [{ type: ObjectId, ref: 'User' }],
+  seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   extended: {
     type: String,

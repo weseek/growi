@@ -9,11 +9,16 @@ const router = express.Router();
 const { body, param, query } = require('express-validator/check');
 const { sanitizeQuery } = require('express-validator/filter');
 
-const validator = {};
+const mongoose = require('mongoose');
 
-const { ObjectId } = require('mongoose').Types;
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
+
+const validator = {};
+
+const { ObjectId } = mongoose.Types;
+
 
 /**
  * @swagger
@@ -27,7 +32,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const {
-    ErrorV3,
     UserGroup,
     UserGroupRelation,
     User,
@@ -39,7 +43,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups:
+   *    /user-groups:
    *      get:
    *        tags: [UserGroup]
    *        description: Get usergroups
@@ -77,7 +81,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups:
+   *    /user-groups:
    *      post:
    *        tags: [UserGroup]
    *        description: Adds userGroup
@@ -127,7 +131,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}:
+   *    /user-groups/{id}:
    *      delete:
    *        tags: [UserGroup]
    *        description: Deletes userGroup
@@ -187,7 +191,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}:
+   *    /user-groups/{id}:
    *      put:
    *        tags: [UserGroup]
    *        description: Update userGroup
@@ -242,7 +246,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/users:
+   *    /user-groups/{id}/users:
    *      get:
    *        tags: [UserGroup]
    *        description: Get users related to the userGroup
@@ -290,7 +294,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/unrelated-users:
+   *    /user-groups/{id}/unrelated-users:
    *      get:
    *        tags: [UserGroup]
    *        description: Get users unrelated to the userGroup
@@ -339,7 +343,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/users:
+   *    /user-groups/{id}/users:
    *      post:
    *        tags: [UserGroup]
    *        description: Add a user to the userGroup
@@ -398,7 +402,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/users:
+   *    /user-groups/{id}/users:
    *      delete:
    *        tags: [UserGroup]
    *        description: remove a user from the userGroup
@@ -458,7 +462,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/user-group-relations:
+   *    /user-groups/{id}/user-group-relations:
    *      get:
    *        tags: [UserGroup]
    *        description: Get the user group relations for the userGroup
@@ -510,7 +514,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/pages:
+   *    /user-groups/{id}/pages:
    *      get:
    *        tags: [UserGroup]
    *        description: Get closed pages for the userGroup

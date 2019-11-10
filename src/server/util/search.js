@@ -11,6 +11,8 @@ const {
 } = require('stream');
 const streamToPromise = require('stream-to-promise');
 
+const { createBatchStream } = require('./batch-stream');
+
 const BULK_REINDEX_SIZE = 100;
 
 function SearchClient(crowi, esUri) {
@@ -302,6 +304,7 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmit
 
   const searchEvent = this.searchEvent;
 
+  // prepare functions invoked from custom streams
   const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
   const shouldIndexed = this.shouldIndexed.bind(this);
   const bulkWrite = this.client.bulk.bind(this.client);
@@ -335,26 +338,7 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmit
     },
   });
 
-  let batchBuffer = [];
-  const batchingStream = new Transform({
-    objectMode: true,
-    transform(doc, encoding, callback) {
-      batchBuffer.push(doc);
-
-      if (batchBuffer.length >= BULK_REINDEX_SIZE) {
-        this.push(batchBuffer);
-        batchBuffer = [];
-      }
-
-      callback();
-    },
-    final(callback) {
-      if (batchBuffer.length > 0) {
-        this.push(batchBuffer);
-      }
-      callback();
-    },
-  });
+  const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
   const appendBookmarkCountStream = new Transform({
     objectMode: true,
@@ -437,12 +421,12 @@ SearchClient.prototype.updateOrInsertPages = async function(queryFactory, isEmit
 
   readStream
     .pipe(thinOutStream)
-    .pipe(batchingStream)
+    .pipe(batchStream)
     .pipe(appendBookmarkCountStream)
     .pipe(appendTagNamesStream)
     .pipe(writeStream);
 
-  return streamToPromise(readStream);
+  return streamToPromise(writeStream);
 
 };
 
