@@ -8,6 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
+import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 
 class Customize extends React.Component {
 
@@ -22,8 +23,9 @@ class Customize extends React.Component {
         <div className="my-3">
           <CustomizeBehaviorSetting />
         </div>
-        <legend>{t('customize_page.Function')}</legend>
-        {/* 機能フォームの react componentをここで呼ぶ(GW-276) */}
+        <div className="my-3">
+          <CustomizeFunctionSetting />
+        </div>
         <legend>{t('customize_page.Code Highlight')}</legend>
         {/* コードハイライトフォームの react componentをここで呼ぶ(GW-277) */}
         <legend>{t('customize_page.custom_title')}</legend>

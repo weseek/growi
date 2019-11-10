@@ -679,6 +679,7 @@
     "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
     "update_layout_success": "Succeeded to update layout",
     "update_behavior_success": "Succeeded to update behavior",
+    "update_function_success": "Succeeded to update function",
     "layout_description":{
       "growi_title":"Simple and Clear",
       "growi_text1":"Full screen layout and thin margins/paddings",

@@ -663,6 +663,7 @@
     "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
     "update_layout_success": "レイアウトを更新しました",
     "update_behavior_success": "動作を更新しました",
+    "update_function_success": "機能を更新しました",
     "layout_description":{
       "growi_title":"シンプルなレイアウト",
       "growi_text1":"全画面レイアウトで、余白は少なくなります。",
