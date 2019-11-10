@@ -143,7 +143,8 @@ SearchClient.prototype.shouldIndexed = function(page) {
 };
 
 SearchClient.prototype.initIndices = async function() {
-  await this.checkESVersion();
+  // FIXME: comment out experimentally
+  // await this.checkESVersion();
 
   const { client, indexName, aliasName } = this;
 
