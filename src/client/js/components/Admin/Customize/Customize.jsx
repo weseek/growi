@@ -9,6 +9,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
+import CustomizeCustomScriptSetting from './CustomizeCustomScriptSetting';
 
 class Customize extends React.Component {
 
@@ -32,8 +33,9 @@ class Customize extends React.Component {
         {/* カスタムタイトルフォームの react componentをここで呼ぶ(GW-278) */}
         <legend>{t('customize_page.Custom CSS')}</legend>
         {/* カスタムCSSフォームの react componentをここで呼ぶ(GW-279) */}
-        <legend>{t('customize_page.Custom script')}</legend>
-        {/* カスタムスクリプトフォームの react componentをここで呼ぶ(GW-280) */}
+        <div className="my-3">
+          <CustomizeCustomScriptSetting />
+        </div>
       </Fragment>
     );
   }
