@@ -78,7 +78,7 @@ SearchClient.prototype.initClient = function() {
   const url = new URL(this.esUri);
   if (url.pathname !== '/') {
     host = isSearchboxSsl
-      ? `${url.protocol}//${url.hostname}:443` // use 443 when Searchbox
+      ? `${url.protocol}//${url.auth}${url.hostname}:443` // use 443 when Searchbox
       : `${url.protocol}//${url.host}`;
 
     indexName = url.pathname.substring(1); // omit heading slash
