@@ -15,6 +15,10 @@ export default class AdminCustomizeContainer extends Container {
       currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
       currentBehavior: appContainer.config.behaviorType,
+      isEnabledTimeline: appContainer.config.isEnabledTimeline,
+      isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
+      isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
+      currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
     };
 
   }
@@ -52,6 +56,34 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Switch enabledTimeLine
+   */
+  switchEnableTimeline() {
+    this.setState({ isEnabledTimeline:  !this.state.isEnabledTimeline });
+  }
+
+  /**
+   * Switch savedStatesOfTabChanges
+   */
+  switchSavedStatesOfTabChanges() {
+    this.setState({ isSavedStatesOfTabChanges:  !this.state.isSavedStatesOfTabChanges });
+  }
+
+  /**
+   * Switch enabledAttachTitleHeader
+   */
+  switchEnabledAttachTitleHeader() {
+    this.setState({ isEnabledAttachTitleHeader:  !this.state.isEnabledAttachTitleHeader });
+  }
+
+  /**
+   * Switch recentCreatedLimit
+   */
+  switchRecentCreatedLimit(value) {
+    this.setState({ currentRecentCreatedLimit: value });
+  }
+
+  /**
    * Update layout
    * @memberOf AdminCustomizeContainer
    * @return {Array} Appearance
@@ -76,6 +108,15 @@ export default class AdminCustomizeContainer extends Container {
     });
     const { customizedParams } = response.data;
     return customizedParams;
+  }
+
+  /**
+   * Update function
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Functions
+   */
+  async updateCustomizeFunction() {
+    // TODO GW-506 create apiV3
   }
 
 }
