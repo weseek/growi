@@ -633,7 +633,8 @@
   },
 
   "customize_page": {
-    "Behavior": "挙動",
+    "recommended":"おすすめ",
+    "Behavior": "動作",
     "Layout": "レイアウト",
     "Function": "機能",
     "function_choose": "機能の有効/無効を選択できます。",
@@ -664,7 +665,21 @@
     "update_layout_success": "レイアウトを更新しました",
     "update_behavior_success": "挙動を更新しました",
     "update_function_success": "機能を更新しました",
-    "update_customCss_success": "カスタムCSSを更新しました"
+    "update_customCss_success": "カスタムCSSを更新しました",
+    "layout_description":{
+      "growi_title":"シンプル・明瞭",
+      "growi_text1":"全画面レイアウトで、余白は少なくなります。",
+      "growi_text2":"コメントはページの下部に表示されます。",
+      "growi_text3":"ページ情報は下部に表示されます。",
+      "kibela_title":"閲覧重視の構造",
+      "kibela_text1":"コンテンツが中心に表示されます。",
+      "kibela_text2":"コメントはページの下部に表示されます。",
+      "kibela_text3":"ページ情報は下部に表示されます。",
+      "crowi_title":"ビュー・コントロールの分離",
+      "crowi_text1":"サイドバーを開くと情報が表示されます。",
+      "crowi_text2":"コメントはサイドバーに表示されます。",
+      "crowi_text3":"ページ情報はサイドバーに表示されます。"
+    }
   },
 
   "user_management": {
