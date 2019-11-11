@@ -23,9 +23,10 @@ class CustomizeCssSetting extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     try {
+      adminCustomizeContainer.updateCustomizeCss();
       toastSuccess(t('customize_page.update_customCss_success'));
     }
     catch (err) {

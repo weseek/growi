@@ -126,4 +126,13 @@ export default class AdminCustomizeContainer extends Container {
     return customizedParams;
   }
 
+  /**
+   * Update customCss
+   * @memberOf AdminCustomizeContainer
+   * @return {string} css
+   */
+  async updateCustomizeCss() {
+    // TODO GW-534 create apiV3
+  }
+
 }
