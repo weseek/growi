@@ -649,6 +649,7 @@
   },
 
   "customize_page": {
+    "recommended":"Recommended",
     "Behavior": "Behavior",
     "Layout": "Layout",
     "Function": "Function",
