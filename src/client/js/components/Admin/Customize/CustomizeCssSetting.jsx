@@ -11,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import CustomCssEditor from '../CustomCssEditor';
 
 const logger = loggerFactory('growi:Customize');
 
@@ -47,11 +48,9 @@ class CustomizeCssSetting extends React.Component {
         </p>
         <div className="form-group">
           <div className="col-xs-12">
-            <div id="custom-css-editor" />
-            <input
-              type="hidden"
-              id="inputCustomCss"
+            <CustomCssEditor
               value={adminCustomizeContainer.state.currentCustomizeCss}
+              onChange={(inputValue) => { adminCustomizeContainer.changeCustomCss(inputValue) }}
             />
           </div>
           <div className="col-xs-12">

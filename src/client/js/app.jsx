@@ -210,16 +210,6 @@ if (adminMarkDownSettingElem != null) {
   );
 }
 
-const customCssEditorElem = document.getElementById('custom-css-editor');
-if (customCssEditorElem != null) {
-  // get input[type=hidden] element
-  const customCssInputElem = document.getElementById('inputCustomCss');
-
-  ReactDOM.render(
-    <CustomCssEditor inputElem={customCssInputElem} />,
-    customCssEditorElem,
-  );
-}
 const customScriptEditorElem = document.getElementById('custom-script-editor');
 if (customScriptEditorElem != null) {
   // get input[type=hidden] element

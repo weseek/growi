@@ -85,6 +85,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Change custom css
+   */
+  changeCustomCss(inputValue) {
+    this.setState({ currentCustomizeCss: inputValue });
+  }
+
+  /**
    * Update layout
    * @memberOf AdminCustomizeContainer
    * @return {Array} Appearance
