@@ -48,7 +48,6 @@ class CustomizeCssSetting extends React.Component {
         <div className="form-group">
           <div className="col-xs-12">
             <div id="custom-css-editor" />
-            {/* TODO set value */}
             <input
               type="hidden"
               id="inputCustomCss"
