@@ -330,16 +330,12 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const esUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
-  const sbUrl = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
+  const SearchService = require('@server/service/search');
+  const searchService = new SearchService(this);
 
-  const searcherUri = esUri || sbUrl;
-
-  if (searcherUri) {
-    const SearchClient = require('@server/util/search');
+  if (searchService.isAvailable) {
     try {
-      this.searcher = new SearchClient(this, searcherUri);
-      this.searcher.initIndices();
+      this.searcher = searchService;
     }
     catch (e) {
       logger.error('Error on setup searcher', e);
