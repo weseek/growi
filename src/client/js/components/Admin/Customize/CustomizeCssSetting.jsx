@@ -36,7 +36,7 @@ class CustomizeCssSetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -49,7 +49,11 @@ class CustomizeCssSetting extends React.Component {
           <div className="col-xs-12">
             <div id="custom-css-editor" />
             {/* TODO set value */}
-            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="" />
+            <input
+              type="hidden"
+              id="inputCustomCss"
+              value={adminCustomizeContainer.state.currentCustomizeCss}
+            />
           </div>
           <div className="col-xs-12">
             <p className="help-block text-right">
