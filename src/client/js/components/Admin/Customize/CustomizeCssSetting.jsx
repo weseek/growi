@@ -37,7 +37,7 @@ class CustomizeCssSetting extends React.Component {
   }
 
   render() {
-    const { t, adminCustomizeContainer } = this.props;
+    const { t, appContainer, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -49,7 +49,8 @@ class CustomizeCssSetting extends React.Component {
         <div className="form-group">
           <div className="col-xs-12">
             <CustomCssEditor
-              value={adminCustomizeContainer.state.currentCustomizeCss}
+              // The value passed must be immutable
+              value={appContainer.config.customizeCss}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomCss(inputValue) }}
             />
           </div>
