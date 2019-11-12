@@ -24,26 +24,28 @@ class SearchService {
     return this.delegator != null;
   }
 
+  get isSearchboxEnabled() {
+    return this.configManager.getConfig('crowi', 'app:searchboxSslUrl') != null;
+  }
+
+  get isElasticsearchEnabled() {
+    return this.configManager.getConfig('crowi', 'app:elasticsearchUri') != null;
+  }
+
   initDelegator() {
     logger.info('Initializing search delegator');
 
-    const esUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
-    const sbUrl = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
-
-    const isSearchboxEnabled = sbUrl != null;
-    const isElasticsearchEnabled = esUri != null;
-
     const searchEvent = this.crowi.event('search');
 
-    if (isSearchboxEnabled) {
+    if (this.isSearchboxEnabled) {
       logger.info('Searchbox is enabled');
       const SearchboxDelegator = require('./search-delegator/searchbox.js');
-      return new SearchboxDelegator(sbUrl, this.configManager, searchEvent);
+      return new SearchboxDelegator(this.configManager, searchEvent);
     }
-    if (isElasticsearchEnabled) {
+    if (this.isElasticsearchEnabled) {
       logger.info('Elasticsearch (not Searchbox) is enabled');
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch.js');
-      return new ElasticsearchDelegator(esUri, this.configManager, searchEvent);
+      return new ElasticsearchDelegator(this.configManager, searchEvent);
     }
 
   }

@@ -17,8 +17,7 @@ const BULK_REINDEX_SIZE = 100;
 
 class ElasticsearchDelegator {
 
-  constructor(esUri, configManager, searchEvent) {
-    this.esUri = esUri;
+  constructor(configManager, searchEvent) {
     this.configManager = configManager;
     this.searchEvent = searchEvent;
 
@@ -63,7 +62,7 @@ class ElasticsearchDelegator {
   }
 
   initClient() {
-    const { host, httpAuth, indexName } = this.parseUri();
+    const { host, httpAuth, indexName } = this.getConnectionInfo();
     this.client = new elasticsearch.Client({
       host,
       httpAuth,
@@ -74,15 +73,17 @@ class ElasticsearchDelegator {
   }
 
   /**
-   * parse `this.esUri` and return information object to connect to ES
+   * return information object to connect to ES
    * @return {object} { host, httpAuth, indexName}
    */
-  parseUri() {
+  getConnectionInfo() {
     let indexName = 'crowi';
     let host = this.esUri;
     let httpAuth = '';
 
-    const url = new URL(this.esUri);
+    const elasticsearchUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+
+    const url = new URL(elasticsearchUri);
     if (url.pathname !== '/') {
       host = `${url.protocol}//${url.host}`;
       indexName = url.pathname.substring(1); // omit heading slash
