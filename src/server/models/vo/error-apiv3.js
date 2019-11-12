@@ -9,6 +9,4 @@ class ErrorV3 extends Error {
 
 }
 
-module.exports = function(crowi) {
-  return ErrorV3;
-};
+module.exports = ErrorV3;
