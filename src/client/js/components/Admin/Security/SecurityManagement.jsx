@@ -2,11 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PaginationWrapper from '../../PaginationWrapper';
-
-
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
