@@ -73,6 +73,10 @@ class ElasticsearchDelegator {
     this.indexName = indexName;
   }
 
+  /**
+   * parse `this.esUri` and return information object to connect to ES
+   * @return {object} { host, httpAuth, indexName}
+   */
   parseUri() {
     let indexName = 'crowi';
     let host = this.esUri;
@@ -99,6 +103,9 @@ class ElasticsearchDelegator {
     return this.initIndices();
   }
 
+  /**
+   * build index
+   */
   async buildIndex() {
     const { client, indexName, aliasName } = this;
 
@@ -145,6 +152,9 @@ class ElasticsearchDelegator {
     await client.indices.delete({ index: tmpIndexName });
   }
 
+  /**
+   * retrieve elasticsearch node information
+   */
   async checkESVersion() {
     try {
       const nodes = await this.client.nodes.info();
@@ -162,7 +172,7 @@ class ElasticsearchDelegator {
       }
     }
     catch (error) {
-      logger.error('es check version error:', error);
+      logger.error('Couldn\'t check ES version:', error);
     }
   }
 
@@ -199,26 +209,6 @@ class ElasticsearchDelegator {
     const body = require('@root/resource/search/mappings.json');
     return this.client.indices.create({ index, body });
   }
-
-  // SearchClient.prototype.buildIndexForSearchbox = async function() {
-  //   const { client, indexName, aliasName } = this;
-
-  //   // flush index
-  //   await client.indices.delete({
-  //     index: indexName,
-  //   });
-  //   await this.createIndex(indexName);
-  //   await this.addAllPages();
-
-  //   // update alias
-  //   await client.indices.updateAliases({
-  //     body: {
-  //       actions: [
-  //         { add: { alias: aliasName, index: indexName } },
-  //       ],
-  //     },
-  //   });
-  // };
 
   /**
    * generate object that is related to page.grant*

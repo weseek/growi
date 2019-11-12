@@ -76,12 +76,4 @@ class SearchService {
 
 }
 
-
-// SearchClient.prototype.initClient = function() {
-//     host = isSearchboxSsl
-//       ? `${url.protocol}//${url.auth}${url.hostname}:443` // use 443 when Searchbox
-//       : `${url.protocol}//${url.host}`;
-// };
-
-
 module.exports = SearchService;
