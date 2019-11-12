@@ -124,7 +124,14 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Functions
    */
   async updateCustomizeFunction() {
-    // TODO GW-506 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/function', {
+      isEnabledTimeline: this.state.isEnabledTimeline,
+      isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
+      isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+      recentCreatedLimit: this.state.currentRecentCreatedLimit,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**

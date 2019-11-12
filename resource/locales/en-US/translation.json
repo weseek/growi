@@ -649,6 +649,7 @@
   },
 
   "customize_page": {
+    "recommended":"Recommended",
     "Behavior": "Behavior",
     "Layout": "Layout",
     "Function": "Function",
@@ -680,7 +681,21 @@
     "update_layout_success": "Succeeded to update layout",
     "update_behavior_success": "Succeeded to update behavior",
     "update_function_success": "Succeeded to update function",
-    "update_script_success": "Succeeded to update custom script"
+    "update_script_success": "Succeeded to update custom script",
+    "layout_description":{
+      "growi_title":"Simple and Clear",
+      "growi_text1":"Full screen layout and thin margins/paddings",
+      "growi_text2":"Show and post comments at the bottom of the page",
+      "growi_text3":"Affix Table-of-contents",
+      "kibela_title":"Easy Viewing Structure",
+      "kibela_text1":"Center aligned contents",
+      "kibela_text2":"Show and post comments at the bottom of the page",
+      "kibela_text3":"Affix Table-of-contents",
+      "crowi_title":"Separated Functions",
+      "crowi_text1":"Collapsible Sidebar",
+      "crowi_text2":"Show and post comments in Sidebar",
+      "crowi_text3":"Collapsible Table-of-contents"
+    }
   },
 
   "user_management": {
