@@ -1,7 +1,5 @@
 /* eslint-disable arrow-body-style */
 
-import each from 'jest-each';
-
 const { getInstance } = require('../setup-crowi');
 
 describe('loginRequired', () => {
@@ -129,15 +127,13 @@ describe('loginRequired', () => {
       expect(req.session.jumpTo).toBe(undefined);
     });
 
-    each`
+    /* eslint-disable indent */
+    test.each`
       userStatus  | expectedPath
       ${1}        | ${'/login/error/registered'}
       ${3}        | ${'/login/error/suspended'}
       ${5}        | ${'/login/invited'}
-    `
-      .test('redirect to \'$expectedPath\''
-        + ' when user.status is \'$userStatus\' ', ({ userStatus, expectedPath }) => {
-
+    `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
         req.user = {
           _id: 'user id',
           status: userStatus,
@@ -153,6 +149,7 @@ describe('loginRequired', () => {
         expect(result).toBe('redirect');
         expect(req.session.jumpTo).toBe(undefined);
       });
+    /* eslint-disable indent */
 
     test('redirect to \'/login\' when user.status is \'STATUS_DELETED\'', () => {
       const User = crowi.model('User');
