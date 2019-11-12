@@ -41,6 +41,7 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
+import SecurityManagement from './components/Admin/Security/SecurityManagement';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
@@ -54,6 +55,7 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
+import AdminSecurityContainer from './services/AdminSecurityContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
@@ -194,6 +196,19 @@ if (adminMarkDownSettingElem != null) {
       </I18nextProvider>
     </Provider>,
     adminMarkDownSettingElem,
+  );
+}
+
+const adminSecuritySettingElem = document.getElementById('generalSetting');
+if (adminSecuritySettingElem != null) {
+  const adminSecurityContainer = new AdminSecurityContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminSecurityContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <SecurityManagement />
+      </I18nextProvider>
+    </Provider>,
+    adminSecuritySettingElem,
   );
 }
 
