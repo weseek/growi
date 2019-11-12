@@ -1,6 +1,7 @@
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -14,6 +15,8 @@ const schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, required: true },
 });
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
+
 
 /**
  * UserGroupRelation Class

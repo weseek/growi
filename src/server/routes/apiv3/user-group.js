@@ -9,11 +9,16 @@ const router = express.Router();
 const { body, param, query } = require('express-validator/check');
 const { sanitizeQuery } = require('express-validator/filter');
 
-const validator = {};
+const mongoose = require('mongoose');
 
-const { ObjectId } = require('mongoose').Types;
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
+
+const validator = {};
+
+const { ObjectId } = mongoose.Types;
+
 
 /**
  * @swagger
@@ -27,7 +32,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const {
-    ErrorV3,
     UserGroup,
     UserGroupRelation,
     User,

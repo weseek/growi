@@ -22,12 +22,6 @@ const TYPES = {
  *  So, parameters of these are under consideration.
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
-  // ELASTICSEARCH_URI: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
   // FILE_UPLOAD: {
   //   ns:      ,
   //   key:     ,
@@ -135,6 +129,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:fileUploadTotalLimit',
     type:    TYPES.NUMBER,
     default: Infinity,
+  },
+  ELASTICSEARCH_URI: {
+    ns:      'crowi',
+    key:     'app:elasticsearchUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  SEARCHBOX_SSL_URL: {
+    ns:      'crowi',
+    key:     'app:searchboxSslUrl',
+    type:    TYPES.STRING,
+    default: null,
   },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
