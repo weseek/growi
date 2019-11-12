@@ -16,7 +16,7 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'security'} %}
     </div>
-    <div class="col-md-9">
+    <div class="col-md-9" id="admin-security-setting">
 
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
