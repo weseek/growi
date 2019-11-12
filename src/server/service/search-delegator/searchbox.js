@@ -13,7 +13,7 @@ class SearchboxDelegator extends ElasticsearchDelegator {
     const url = new URL(searchboxSslUrl);
 
     const indexName = 'crowi';
-    const host = `${url.protocol}//${url.auth}${url.hostname}:443`;
+    const host = `${url.protocol}//${url.username}:${url.password}@${url.host}:443`;
 
     return {
       host,
