@@ -46,21 +46,25 @@ class RevisionLoader extends React.Component {
     };
 
     // load data with REST API
-    const res = await this.props.appContainer.apiGet('/revisions.get', requestData);
-    this.setState({ isLoaded: true, isLoading: false });
+    try {
+      const res = await this.props.appContainer.apiGet('/revisions.get', requestData);
 
-    if (res != null && !res.ok) {
-      throw new Error(res.error);
+      this.setState({
+        markdown: res.revision.body,
+        error: null,
+      });
+
+      if (this.props.onRevisionLoaded != null) {
+        this.props.onRevisionLoaded(res.revision);
+      }
+    }
+    catch (error) {
+      this.setState({ error });
+    }
+    finally {
+      this.setState({ isLoaded: true, isLoading: false });
     }
 
-    this.setState({
-      markdown: res.revision.body,
-      error: null,
-    });
-
-    if (this.props.onRevisionLoaded != null) {
-      this.props.onRevisionLoaded(res.revision);
-    }
   }
 
   onWaypointChange(event) {
