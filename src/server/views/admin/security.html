@@ -16,7 +16,7 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'security'} %}
     </div>
-    <div class="col-md-9">
+    <div id="generalSetting" class="col-md-9">
 
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
@@ -36,7 +36,7 @@
       </div>
       {% endif %}
 
-      <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
+      <form action="/_api/admin/security/general" method="post" class="form-horizontal" role="form">
         <fieldset>
         <legend class="alert-anchor">{{ t('security_settings') }}</legend>
 
@@ -129,7 +129,7 @@
       </form>
 
       <!-- prevent XSS link -->
-      <div class="mt-5" id=generalSetting>
+      <div class="mt-5">
         <legend>{{ t('security_setting.xss_prevent_setting') }}</legend>
         <div class="text-center">
           <a class="flexbox" style="font-size: large;" href="/admin/markdown/#preventXSS">
@@ -139,7 +139,7 @@
        </div>
 
 
-      <div class="auth-mechanism-configurations m-t-10" id=genaralSetting>
+      <div class="auth-mechanism-configurations m-t-10">
 
         <legend>{{ t('security_setting.Authentication mechanism settings') }}</legend>
 

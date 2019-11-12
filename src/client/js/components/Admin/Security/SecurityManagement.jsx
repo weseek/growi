@@ -21,6 +21,7 @@ class SecurityManagement extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
+        {/* TODO GW-540 */}
         <fieldset>
           <legend className="alert-anchor">{ t('security_settings') }</legend>
           <div className="form-group">
@@ -89,7 +90,7 @@ class SecurityManagement extends React.Component {
               </p>
             </div>
           </div>
-
+          {/* TODO GW-540 */}
           <div className="form-group">
             <div className="col-xs-offset-3 col-xs-6">
               <input type="hidden" name="_csrf" value={this.props.csrf} />
@@ -160,6 +161,7 @@ class SecurityManagement extends React.Component {
         </div>
         <div>
           <script>
+            {/* TODO GW-542~GW-549 */}
           </script>
         </div>
       </Fragment>
