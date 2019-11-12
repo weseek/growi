@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -50,11 +51,10 @@ class CustomizeBehaviorSetting extends React.Component {
               onSelected={() => adminCustomizeContainer.switchBehaviorType('growi')}
               labelHtml={`GROWI Simplified Behavior <small class="text-success">${t('customize_page.recommended')}</small>`}
             >
-              {/* TODO i18n */}
               <ul>
-                <li>Both of <code>/page</code> and <code>/page/</code> shows the same page</li>
-                <li><code>/nonexistent_page</code> shows editing form</li>
-                <li>All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.growi_text1') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.growi_text2') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.growi_text3') }} /></li>
               </ul>
             </CustomizeBehaviorOption>
           </div>
@@ -66,15 +66,14 @@ class CustomizeBehaviorSetting extends React.Component {
               onSelected={() => adminCustomizeContainer.switchBehaviorType('crowi-plus')}
               labelHtml="Crowi Classic Behavior"
             >
-              {/* TODO i18n */}
               <ul>
-                <li><code>/page</code> shows the page</li>
-                <li><code>/page/</code> shows the list of sub pages</li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text1') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text2') }} /></li>
                 <ul>
-                  <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
+                  <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text3') }} /></li>
                 </ul>
-                <li><code>/nonexistent_page</code> shows editing form</li>
-                <li><code>/nonexistent_page/</code> the list of sub pages</li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text4') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text5') }} /></li>
               </ul>
             </CustomizeBehaviorOption>
           </div>
