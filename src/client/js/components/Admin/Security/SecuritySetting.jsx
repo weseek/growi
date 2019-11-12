@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminSecurityContainer from '../../../services/AdminSecurityContainer';
 
 class SecuritySetting extends React.Component {
 
@@ -13,7 +14,7 @@ class SecuritySetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, appContainer, adminSecurityContainer } = this.props;
     return (
       <Fragment>
         <fieldset>
@@ -100,6 +101,7 @@ class SecuritySetting extends React.Component {
 SecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminSecurityContainer: PropTypes.instanceOf(AdminSecurityContainer).isRequired,
   csrf: PropTypes.string,
 };
 
