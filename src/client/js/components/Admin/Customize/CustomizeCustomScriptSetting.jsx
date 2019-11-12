@@ -55,7 +55,7 @@ class CustomizeCustomScriptSetting extends React.Component {
           { t('customize_page.reflect_change') }
         </p>
 
-        <p className="help-block">
+        <div className="help-block">
           Placeholders:<br />
           (Available after <code>load</code> event)
           <dl className="dl-horizontal">
@@ -70,12 +70,12 @@ class CustomizeCustomScriptSetting extends React.Component {
             <dt><code>Crowi</code></dt>
             <dd>Crowi legacy instance (jQuery based)</dd>
           </dl>
-        </p>
+        </div>
 
-        <p className="help-block">
+        <div className="help-block">
           Examples:
           <pre className="hljs"><code>{this.getExampleCode()}</code></pre>
-        </p>
+        </div>
 
         <div className="form-group">
           <div className="col-xs-12">
