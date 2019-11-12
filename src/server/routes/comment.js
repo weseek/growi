@@ -121,10 +121,13 @@ module.exports = function(crowi, app) {
     }
 
     // update page
-    const page = await Page.findOneAndUpdate({ _id: pageId }, {
-      lastUpdateUser: req.user,
-      updatedAt: new Date(),
-    });
+    const page = await Page.findOneAndUpdate(
+      { _id: pageId },
+      {
+        lastUpdateUser: req.user,
+        updatedAt: new Date(),
+      },
+    );
 
     res.json(ApiResponse.success({ comment: createdComment }));
 

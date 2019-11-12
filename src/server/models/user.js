@@ -44,14 +44,14 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
-    // === The official settings
+    // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
     // === crowi-plus (>= 2.1.0, <2.3.0) settings
     // email: { type: String, required: true, unique: true },
-    introduction: { type: String },
+    introduction: String,
     password: String,
-    apiToken: String,
+    apiToken: { type: String, index: true },
     lang: {
       type: String,
       // eslint-disable-next-line no-eval

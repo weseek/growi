@@ -5,6 +5,7 @@ const flatMap = require('array.prototype.flatmap');
 
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -17,6 +18,7 @@ const schema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Page',
     required: true,
+    index: true,
   },
   relatedTag: {
     type: ObjectId,
@@ -24,7 +26,10 @@ const schema = new mongoose.Schema({
     required: true,
   },
 });
+// define unique compound index
+schema.index({ page: 1, user: 1 }, { unique: true });
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
 /**
  * PageTagRelation Class

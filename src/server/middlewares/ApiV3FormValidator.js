@@ -1,11 +1,11 @@
 const logger = require('@alias/logger')('growi:middlewares:ApiV3FormValidator');
 const { validationResult } = require('express-validator/check');
 
+const ErrorV3 = require('../models/vo/error-apiv3');
+
 class ApiV3FormValidator {
 
   constructor(crowi) {
-    const { ErrorV3 } = crowi.models;
-
     return (req, res, next) => {
       logger.debug('req.query', req.query);
       logger.debug('req.params', req.params);
