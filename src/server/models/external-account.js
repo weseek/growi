@@ -169,10 +169,7 @@ class ExternalAccount {
       options.limit = ExternalAccount.DEFAULT_LIMIT;
     }
 
-    return this.paginate(query, options)
-      .catch((err) => {
-        debug('Error on pagination:', err);
-      });
+    return this.paginate(query, options);
   }
 
 }
