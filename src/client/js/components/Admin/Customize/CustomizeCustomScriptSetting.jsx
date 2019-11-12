@@ -11,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import CustomScriptEditor from '../CustomScriptEditor';
 
 const logger = loggerFactory('growi:customizeScript');
 
@@ -44,7 +45,7 @@ class CustomizeCustomScriptSetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, appContainer, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -78,9 +79,11 @@ class CustomizeCustomScriptSetting extends React.Component {
 
         <div className="form-group">
           <div className="col-xs-12">
-            <div id="custom-script-editor" />
-            {/* TODO set value */}
-            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] | default('') }}" />
+            <CustomScriptEditor
+              // The value passed must be immutable
+              value={appContainer.config.customizeScript}
+              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
+            />
           </div>
           <div className="col-xs-12">
             <p className="help-block text-right">

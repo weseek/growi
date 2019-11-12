@@ -85,6 +85,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Change customize script
+   */
+  changeCustomizeScript(inpuValue) {
+    this.setState({ currentCustomizeScript: inpuValue });
+  }
+
+  /**
    * Update layout
    * @memberOf AdminCustomizeContainer
    * @return {Array} Appearance
