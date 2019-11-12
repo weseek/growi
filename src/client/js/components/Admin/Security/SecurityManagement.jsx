@@ -97,7 +97,7 @@ class SecurityManagement extends React.Component {
           <legend>{ t('security_setting.xss_prevent_setting') }</legend>
           <div className="text-center">
             <a className="flexbox" style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
-              <i className="fa-fw icon-login"></i> { t('security_setting.xss_prevent_setting_link') }}
+              <i className="fa-fw icon-login"></i> { t('security_setting.xss_prevent_setting_link') }
             </a>
           </div>
         </div>
