@@ -8,8 +8,11 @@
 * Support: Use SearchBox Elasticsearch Addon on Heroku
 * Support: Upgrade libs
     * cross-env
+    * eslint-plugin-jest
     * i18next
+    * i18next-browser-languagedetector
     * migrate-mongo
+    * react-i18next
     * validator
 
 ## 3.5.18
