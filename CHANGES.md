@@ -5,6 +5,7 @@
 * Improvement: Drop unnecessary MongoDB collection indexes
 * Improvement: Organize MongoDB collection indexes uniqueness
 * Fix: Search result or Timeline shows loading icon eternally when retrieving not accessible page
+* Support: Use SearchBox Elasticsearch Addon on Heroku
 
 ## 3.5.18
 
