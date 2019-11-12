@@ -694,6 +694,16 @@
       "crowi_text1":"Collapsible Sidebar",
       "crowi_text2":"Show and post comments in Sidebar",
       "crowi_text3":"Collapsible Table-of-contents"
+    },
+    "behavior_description":{
+      "growi_text1":"Both of <code>/page</code> and <code>/page/</code> shows the same page。",
+      "growi_text2":"<code>/nonexistent_page</code> shows editing form",
+      "growi_text3":"All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b>",
+      "crowi_text1":"<code>/page</code> shows the page",
+      "crowi_text2":"<code>/page/</code> shows the list of sub pages",
+      "crowi_text3":"If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown",
+      "crowi_text4":"<code>/nonexistent_page</code> shows editing form<",
+      "crowi_text5":"<code>/nonexistent_page/</code> the list of sub pages"
     }
   },
 
