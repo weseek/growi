@@ -20,6 +20,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
       currentCustomizeCss: appContainer.config.customizeCss,
+      currentCustomizeScript: appContainer.config.customizeScript,
     };
 
   }
@@ -92,6 +93,14 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Change customize script
+   */
+  changeCustomizeScript(inpuValue) {
+    this.setState({ currentCustomizeScript: inpuValue });
+  }
+
+
+  /**
    * Update layout
    * @memberOf AdminCustomizeContainer
    * @return {Array} Appearance
@@ -142,5 +151,15 @@ export default class AdminCustomizeContainer extends Container {
   async updateCustomizeCss() {
     // TODO GW-534 create apiV3
   }
+
+  /**
+   * Update customize script
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Scripts
+   */
+  async updateCustomizeScript() {
+    // TODO GW-538 create apiV3
+  }
+
 
 }

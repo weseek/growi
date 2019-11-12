@@ -10,6 +10,7 @@ import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeCssSetting from './CustomizeCssSetting';
+import CustomizeScriptSetting from './CustomizeScriptSetting';
 
 class Customize extends React.Component {
 
@@ -34,8 +35,9 @@ class Customize extends React.Component {
         <div className="my-3">
           <CustomizeCssSetting />
         </div>
-        <legend>{t('customize_page.Custom script')}</legend>
-        {/* カスタムスクリプトフォームの react componentをここで呼ぶ(GW-280) */}
+        <div className="my-3">
+          <CustomizeScriptSetting />
+        </div>
       </Fragment>
     );
   }
