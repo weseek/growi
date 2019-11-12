@@ -3,10 +3,10 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:UserGroupDetailContainer');
+const logger = loggerFactory('growi:services:AdminSecurityContainer');
 
 /**
- * Service container for admin users page (Users.jsx)
+ * Service container for admin security page (SecurityManagement.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminUsersContainer extends Container {

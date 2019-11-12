@@ -199,7 +199,7 @@ if (adminMarkDownSettingElem != null) {
   );
 }
 
-const adminSecuritySettingElem = document.getElementById('generalSetting');
+const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 if (adminSecuritySettingElem != null) {
   const adminSecurityContainer = new AdminSecurityContainer(appContainer);
   ReactDOM.render(
