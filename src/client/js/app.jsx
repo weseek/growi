@@ -40,7 +40,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
-import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
+import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
@@ -111,7 +111,6 @@ let componentMappings = {
 
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
-  'admin-external-account-setting': <ManageExternalAccount />,
 
   'staff-credit': <StaffCredit />,
   'admin-importer': <ImportDataPage />,
@@ -172,7 +171,7 @@ if (adminUsersElem != null) {
   );
 }
 
-const adminExternalAccountsElem = document.getElementById('admin-external-account');
+const adminExternalAccountsElem = document.getElementById('admin-external-account-setting');
 if (adminExternalAccountsElem != null) {
   const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
   ReactDOM.render(

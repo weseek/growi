@@ -354,23 +354,14 @@ module.exports = (crowi) => {
    */
   router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const page = parseInt(req.query.page) || 1;
-
     try {
-      const paginateResult = await ExternalAccount.paginate(
-        { status: { $ne: ExternalAccount.STATUS_DELETED } },
-        {
-          sort: { status: 1, username: 1, createdAt: 1 },
-          page,
-          limit: PAGE_ITEMS,
-        },
-      );
+      const paginateResult = await ExternalAccount.findAllWithPagination({ page });
       return res.apiv3({ paginateResult });
     }
     catch (err) {
-      const msg = 'Error occurred in fetching external-account list';
+      const msg = 'Error occurred in fetching external-account list  ';
       logger.error(msg, err);
-      const errMsg = Object.assign(msg, err.message);
-      return res.apiv3Err(new ErrorV3(errMsg, 'external-account-list-fetch-failed'));
+      return res.apiv3Err(new ErrorV3(msg + err.message, 'external-account-list-fetch-failed'), 500);
     }
   });
 
@@ -403,18 +394,17 @@ module.exports = (crowi) => {
    */
 
   router.delete('/external-accounts/:id/remove', loginRequiredStrictly, adminRequired, ApiV3FormValidator, async(req, res) => {
-    const { id: deleteExtenralAccountId } = req.params.id;
+    const { id } = req.params;
 
     try {
-      const externalAccount = await ExternalAccount.findByIdAndRemove(deleteExtenralAccountId);
+      const externalAccount = await ExternalAccount.findByIdAndRemove(id);
 
       return res.apiv3({ externalAccount });
     }
     catch (err) {
-      const msg = 'Error occurred in deleting a external account';
+      const msg = 'Error occurred in deleting a external account  ';
       logger.error(msg, err);
-      const errMsg = Object.assign(msg, err.message);
-      return res.apiv3Err(new ErrorV3(errMsg, 'extenral-account-delete-failed'));
+      return res.apiv3Err(new ErrorV3(msg + err.message, 'extenral-account-delete-failed'));
     }
   });
   return router;

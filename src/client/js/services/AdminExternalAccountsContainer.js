@@ -4,13 +4,13 @@ import loggerFactory from '@alias/logger';
 
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:UserGroupDetailContainer');
+const logger = loggerFactory('growi:services:AdminexternalaccountsContainer');
 
 /**
- * Service container for admin users page (Users.jsx)
+ * Service container for admin external-accounts page (ManageExternalAccountsContainer.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminExternalAccountContainer extends Container {
+export default class AdminExternalAccountsContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -18,7 +18,7 @@ export default class AdminExternalAccountContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      exteranalAccounts: [],
+      externalAccounts: [],
       totalAccounts: 0,
       activePage: 1,
       pagingLimit: Infinity,
@@ -33,21 +33,6 @@ export default class AdminExternalAccountContainer extends Container {
     return 'AdminExternalAccountsContainer';
   }
 
-  /**
-   * update external-account
-   *
-   * @memberOf AdminExternalAccountsContainer
-   * @param {object} param update param for external account
-   * @return {object} response object
-   */
-  async updateExternalAccount(param) {
-    const res = await this.appContainer.apiv3.put(`/users/external-account/${this.state.externalAccounts._id}`, param);
-    const { exteranalAccounts } = res.data;
-
-    await this.setState({ exteranalAccounts });
-
-    return res;
-  }
 
   /**
    * syncExternalAccounts of selectedPage
@@ -59,13 +44,12 @@ export default class AdminExternalAccountContainer extends Container {
     const params = { page: selectedPage };
     const { data } = await this.appContainer.apiv3.get('/users/external-accounts', params);
 
-
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');
     }
-    const { docs: exteranalAccounts, totalDocs: totalAccounts, limit: pagingLimit } = data.paginateResult;
+    const { docs: externalAccounts, totalDocs: totalAccounts, limit: pagingLimit } = data.paginateResult;
     this.setState({
-      exteranalAccounts,
+      externalAccounts,
       totalAccounts,
       pagingLimit,
       activePage: selectedPage,
