@@ -61,6 +61,7 @@ class CustomizeCssSetting extends React.Component {
             </p>
           </div>
         </div>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );
