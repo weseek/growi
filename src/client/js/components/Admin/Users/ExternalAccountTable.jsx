@@ -24,7 +24,7 @@ class ExternalAccountTable extends React.Component {
   async removeExtenalAccount(externalAccountId) {
     try {
       const externalAccountName = await this.props.adminExternalAccountsContainer.removeExternal(externalAccountId);
-      toastSuccess(`Removed "${externalAccountName}"`);
+      toastSuccess('Removed', externalAccountName);
     }
     catch (err) {
       toastError(err);
