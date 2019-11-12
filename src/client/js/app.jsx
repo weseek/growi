@@ -36,7 +36,6 @@ import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import CustomCssEditor from './components/Admin/CustomCssEditor';
-import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
@@ -220,16 +219,7 @@ if (customCssEditorElem != null) {
     customCssEditorElem,
   );
 }
-const customScriptEditorElem = document.getElementById('custom-script-editor');
-if (customScriptEditorElem != null) {
-  // get input[type=hidden] element
-  const customScriptInputElem = document.getElementById('inputCustomScript');
 
-  ReactDOM.render(
-    <CustomScriptEditor inputElem={customScriptInputElem} />,
-    customScriptEditorElem,
-  );
-}
 const customHeaderEditorElem = document.getElementById('custom-header-editor');
 if (customHeaderEditorElem != null) {
   // get input[type=hidden] element
