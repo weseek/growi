@@ -15,7 +15,7 @@ import CustomScriptEditor from '../CustomScriptEditor';
 
 const logger = loggerFactory('growi:customizeScript');
 
-class CustomizeCustomScriptSetting extends React.Component {
+class CustomizeScriptSetting extends React.Component {
 
   constructor(props) {
     super(props);
@@ -100,14 +100,14 @@ class CustomizeCustomScriptSetting extends React.Component {
 
 }
 
-const CustomizeCustomScriptSettingWrapper = (props) => {
-  return createSubscribedElement(CustomizeCustomScriptSetting, props, [AppContainer, AdminCustomizeContainer]);
+const CustomizeScriptSettingWrapper = (props) => {
+  return createSubscribedElement(CustomizeScriptSetting, props, [AppContainer, AdminCustomizeContainer]);
 };
 
-CustomizeCustomScriptSetting.propTypes = {
+CustomizeScriptSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
-export default withTranslation()(CustomizeCustomScriptSettingWrapper);
+export default withTranslation()(CustomizeScriptSettingWrapper);

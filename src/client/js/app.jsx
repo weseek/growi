@@ -35,7 +35,6 @@ import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
-import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
@@ -206,17 +205,6 @@ if (adminMarkDownSettingElem != null) {
       </I18nextProvider>
     </Provider>,
     adminMarkDownSettingElem,
-  );
-}
-
-const customCssEditorElem = document.getElementById('custom-css-editor');
-if (customCssEditorElem != null) {
-  // get input[type=hidden] element
-  const customCssInputElem = document.getElementById('inputCustomCss');
-
-  ReactDOM.render(
-    <CustomCssEditor inputElem={customCssInputElem} />,
-    customCssEditorElem,
   );
 }
 

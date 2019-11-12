@@ -19,6 +19,7 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
+      currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
     };
 
@@ -85,11 +86,19 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Change custom css
+   */
+  changeCustomCss(inputValue) {
+    this.setState({ currentCustomizeCss: inputValue });
+  }
+
+  /**
    * Change customize script
    */
   changeCustomizeScript(inpuValue) {
     this.setState({ currentCustomizeScript: inpuValue });
   }
+
 
   /**
    * Update layout
@@ -135,6 +144,15 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Update customCss
+   * @memberOf AdminCustomizeContainer
+   * @return {string} css
+   */
+  async updateCustomizeCss() {
+    // TODO GW-534 create apiV3
+  }
+
+  /**
    * Update customize script
    * @memberOf AdminCustomizeContainer
    * @return {string} Scripts
@@ -142,5 +160,6 @@ export default class AdminCustomizeContainer extends Container {
   async updateCustomizeScript() {
     // TODO GW-538 create apiV3
   }
+
 
 }

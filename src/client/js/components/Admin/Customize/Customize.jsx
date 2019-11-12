@@ -9,7 +9,8 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
-import CustomizeCustomScriptSetting from './CustomizeCustomScriptSetting';
+import CustomizeCssSetting from './CustomizeCssSetting';
+import CustomizeScriptSetting from './CustomizeScriptSetting';
 
 class Customize extends React.Component {
 
@@ -31,10 +32,11 @@ class Customize extends React.Component {
         {/* コードハイライトフォームの react componentをここで呼ぶ(GW-277) */}
         <legend>{t('customize_page.custom_title')}</legend>
         {/* カスタムタイトルフォームの react componentをここで呼ぶ(GW-278) */}
-        <legend>{t('customize_page.Custom CSS')}</legend>
-        {/* カスタムCSSフォームの react componentをここで呼ぶ(GW-279) */}
         <div className="my-3">
-          <CustomizeCustomScriptSetting />
+          <CustomizeCssSetting />
+        </div>
+        <div className="my-3">
+          <CustomizeScriptSetting />
         </div>
       </Fragment>
     );
