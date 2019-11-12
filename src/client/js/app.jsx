@@ -55,6 +55,7 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
+import AdminSecurityContainer from './services/AdminSecurityContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 
@@ -200,7 +201,15 @@ if (adminMarkDownSettingElem != null) {
 
 const adminSecuritySettingElem = document.getElementById('generalSetting');
 if (adminSecuritySettingElem != null) {
-
+  const adminSecurityContainer = new AdminSecurityContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminSecurityContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <SecurityManagement />
+      </I18nextProvider>
+    </Provider>,
+    adminSecuritySettingElem,
+  );
 }
 
 const customCssEditorElem = document.getElementById('custom-css-editor');

@@ -36,7 +36,7 @@ class SecurityManagement extends React.Component {
               <p className="alert alert-warning mt-2">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b>
-                { t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE', getConfig('crowi', 'security:wikiMode')) }<br></br>
+                { t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE') }<br></br>
               </p>
             </div>
           </div>
