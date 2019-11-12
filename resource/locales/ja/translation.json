@@ -681,13 +681,13 @@
     },
     "behavior_description":{
       "growi_text1":"<code>/page</code>と<code>/page/</code>どちらのパスも同じページを表示します。",
-      "growi_text2":"<code>/存在しないページ</code> では編集フォームを表示します",
+      "growi_text2":"<code>/nonexistent_page</code> では編集フォームを表示します",
       "growi_text3":"<b>GROWI Enhanced Layout</b>では全てのページが配下のページリストを表示します",
       "crowi_text1":"<code>/page</code> ではページを表示します。",
       "crowi_text2":"<code>/page/</code> では配下のページを表示します。",
       "crowi_text3":"<code>/page/</code>がポータルに適応している場合、ポータルページと配下のページリストを表示します。",
-      "crowi_text4":"<code>/存在しないページ</code> では編集フォームを表示します",
-      "crowi_text5":"<code>/存在しないページ</code> では配下のページリストを表示します。"
+      "crowi_text4":"<code>/nonexistent_page</code> では編集フォームを表示します",
+      "crowi_text5":"<code>/nonexistent_page</code> では配下のページリストを表示します。"
     }
   },
 
