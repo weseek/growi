@@ -17,7 +17,6 @@ class ExternalAccountTable extends React.Component {
     this.state = {
 
     };
-    this.xss = window.xss;
     this.removeExtenalAccount = this.removeExtenalAccount.bind(this);
   }
 
@@ -25,7 +24,7 @@ class ExternalAccountTable extends React.Component {
   async removeExtenalAccount(externalAccountId) {
     try {
       const externalAccountName = await this.props.adminExternalAccountsContainer.removeExternal(externalAccountId);
-      toastSuccess(`Removed "${this.xss.process(externalAccountName)}"`);
+      toastSuccess(`Removed "${externalAccountName}"`);
     }
     catch (err) {
       toastError(err);
