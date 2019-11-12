@@ -24,10 +24,10 @@ class CustomizeCustomScriptSetting extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     try {
-      // await adminCustomizeContainer.updateCustomizeFunction();
+      await adminCustomizeContainer.updateCustomizeScript();
       toastSuccess(t('customize_page.update_script_success'));
     }
     catch (err) {
