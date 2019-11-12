@@ -689,7 +689,7 @@
     "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
     "password_never_seen": "表示されたパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。",
     "reset_password": "パスワードの再発行",
-    "related_username": "関連付けられているユーザーの <code>%s</code>",
+    "related_username": "関連付けられているユーザーの ",
     "accept": "承認する",
     "deactivate_account": "アカウント停止",
     "your_own": "自分自身のアカウントを停止することはできません",
