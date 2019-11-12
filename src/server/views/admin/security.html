@@ -16,7 +16,7 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'security'} %}
     </div>
-    <div id="generalSetting" class="col-md-9">
+    <div class="col-md-9" id="admin-security-setting">
 
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
@@ -36,7 +36,7 @@
       </div>
       {% endif %}
 
-      <form action="/_api/admin/security/general" method="post" class="form-horizontal" role="form">
+      <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
         <fieldset>
         <legend class="alert-anchor">{{ t('security_settings') }}</legend>
 
