@@ -40,9 +40,8 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
     ],
-    // TDOO validator
     customizeCss: [
-
+      body('customizeCss').isString(),
     ],
   };
 
