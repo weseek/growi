@@ -719,7 +719,8 @@
     "remove_user_admin": "Remove {{username}} admin success",
     "activate_user_success": "Activating {{username}} success",
     "deactivate_user_success": "Deactivating {{username}} success",
-    "remove_user_success": "Removing {{username}} success"
+    "remove_user_success": "Removing {{username}} success",
+    "remove_external_user_success": "Succeeded to remove {{accountId}} "
   },
 
   "user_group_management": {

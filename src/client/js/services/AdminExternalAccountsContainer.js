@@ -65,14 +65,15 @@ export default class AdminExternalAccountsContainer extends Container {
    */
   async removeExternalAccountById(externalAccountId) {
     const res = await this.appContainer.apiv3.delete(`/users/external-accounts/${externalAccountId}/remove`);
-    const externalAccountData = res.data.externalAccount;
+    const deletedUserData = res.data.externalAccount;
 
     this.setState((prevState) => {
       return {
-        externalAccounts: prevState.externalAccounts.filter((user) => { return user._id !== externalAccountData._id }),
+        externalAccounts: prevState.externalAccounts.filter((user) => { return user._id !== deletedUserData._id }),
       };
     });
-    return externalAccountData;
+    // pass the accountId for display on the screen
+    return deletedUserData.accountId;
   }
 
 }
