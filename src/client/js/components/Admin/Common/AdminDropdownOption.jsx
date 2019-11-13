@@ -18,7 +18,7 @@ class AdminDropdownOption extends React.PureComponent {
       <div className="my-0 btn-group">
         <label>{this.props.label}</label>
         <div className="dropdown">
-          <button className="btn btn-default dropdown-toggle w-75" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span className="pull-left">{this.props.selectedValue}</span>
             <span className="bs-caret pull-right">
               <span className="caret" />
