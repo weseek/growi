@@ -42,6 +42,13 @@ export default class MarkDownSettingContainer extends Container {
   }
 
   /**
+   * Get PageBreakCustomSeparator
+   */
+  getPageBreakCustomSeparator(pageBreakCustomSeparator) {
+    this.setState({ pageBreakCustomSeparator });
+  }
+
+  /**
    * Switch enableXss
    */
   switchEnableXss() {
