@@ -666,6 +666,8 @@
     "update_behavior_success": "動作を更新しました",
     "update_function_success": "機能を更新しました",
     "update_highlight_success": "コードハイライトを更新しました",
+    "update_customCss_success": "カスタムCSSを更新しました",
+    "update_script_success": "カスタムスクリプトを更新しました",
     "layout_description":{
       "growi_title":"シンプル・明瞭",
       "growi_text1":"全画面レイアウトで、余白は少なくなります。",
@@ -679,6 +681,16 @@
       "crowi_text1":"サイドバーを開くと情報が表示されます。",
       "crowi_text2":"コメントはサイドバーに表示されます。",
       "crowi_text3":"ページ情報はサイドバーに表示されます。"
+    },
+    "behavior_description":{
+      "growi_text1":"<code>/page</code>と<code>/page/</code>どちらのパスも同じページを表示します。",
+      "growi_text2":"<code>/nonexistent_page</code> では編集フォームを表示します",
+      "growi_text3":"<b>GROWI Enhanced Layout</b>では全てのページが配下のページリストを表示します",
+      "crowi_text1":"<code>/page</code> ではページを表示します。",
+      "crowi_text2":"<code>/page/</code> では配下のページを表示します。",
+      "crowi_text3":"<code>/page/</code>がポータルに適応している場合、ポータルページと配下のページリストを表示します。",
+      "crowi_text4":"<code>/nonexistent_page</code> では編集フォームを表示します",
+      "crowi_text5":"<code>/nonexistent_page</code> では配下のページリストを表示します。"
     }
   },
 
