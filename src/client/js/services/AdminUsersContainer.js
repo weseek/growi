@@ -162,8 +162,15 @@ export default class AdminUsersContainer extends Container {
    */
   async removeUser(userId) {
     const response = await this.appContainer.apiv3.delete(`/users/${userId}/remove`);
-    const { username } = response.data.userData;
-    return username;
+    const removedUserData = response.data.userData;
+
+    this.setState((prevState) => {
+      return {
+        users: prevState.users.filter((user) => { return user._id !== removedUserData._id }),
+      };
+    });
+
+    return removedUserData.username;
   }
 
 }
