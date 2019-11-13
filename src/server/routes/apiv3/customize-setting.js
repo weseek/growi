@@ -40,6 +40,9 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
     ],
+    customizeScript: [
+      body('customizeScript').isString(),
+    ],
   };
 
   /**
@@ -181,6 +184,46 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
     }
   });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeScript:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeScript
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeScript:
+   *                    description: customize script
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update customize script
+   */
+  router.put('/customizeScript', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:script': req.body.customizeScript,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeScript';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
+    }
+  });
+
 
   return router;
 };
