@@ -185,7 +185,27 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO writte swagger
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeCss:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeCss
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeCss:
+   *                    description: customize css
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update customize css
+   */
   router.put('/customizeCss', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:css': req.body.customizeCss,
