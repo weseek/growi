@@ -9,7 +9,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
 
-const logger = loggerFactory('growi:presentation');
+const logger = loggerFactory('growi:markdown:presentation');
 
 class PresentationForm extends React.Component {
 
@@ -88,7 +88,6 @@ class PresentationForm extends React.Component {
               <input
                 className="form-control"
                 value={pageBreakCustomSeparator}
-                // onChange={(e) => { markDownSettingContainer.setState({ pageBreakCustomSeparator: e.target.value }) }}
                 onChange={(e) => { markDownSettingContainer.getPageBreakCustomSeparator(e.target.value) }}
               />
             </div>
