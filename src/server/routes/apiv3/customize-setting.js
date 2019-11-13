@@ -40,6 +40,10 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
     ],
+    // TDOO validator
+    customizeCss: [
+
+    ],
   };
 
   /**
@@ -179,6 +183,25 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
+  // TODO writte swagger
+  router.put('/customizeCss', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:css': req.body.customizeCss,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeCss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeCss-failed'));
     }
   });
 
