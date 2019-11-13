@@ -115,6 +115,7 @@ export default class AdminUsersContainer extends Container {
   async giveUserAdmin(userId) {
     const response = await this.appContainer.apiv3.put(`/users/${userId}/giveAdmin`);
     const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
   }
 
@@ -127,6 +128,7 @@ export default class AdminUsersContainer extends Container {
   async removeUserAdmin(userId) {
     const response = await this.appContainer.apiv3.put(`/users/${userId}/removeAdmin`);
     const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
   }
 
@@ -139,6 +141,7 @@ export default class AdminUsersContainer extends Container {
   async activateUser(userId) {
     const response = await this.appContainer.apiv3.put(`/users/${userId}/activate`);
     const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
   }
 
@@ -151,6 +154,7 @@ export default class AdminUsersContainer extends Container {
   async deactivateUser(userId) {
     const response = await this.appContainer.apiv3.put(`/users/${userId}/deactivate`);
     const { username } = response.data.userData;
+    await this.retrieveUsersByPagingNum(this.state.activePage);
     return username;
   }
 
@@ -163,13 +167,7 @@ export default class AdminUsersContainer extends Container {
   async removeUser(userId) {
     const response = await this.appContainer.apiv3.delete(`/users/${userId}/remove`);
     const removedUserData = response.data.userData;
-
-    this.setState((prevState) => {
-      return {
-        users: prevState.users.filter((user) => { return user._id !== removedUserData._id }),
-      };
-    });
-
+    await this.retrieveUsersByPagingNum(this.state.activePage);
     return removedUserData.username;
   }
 
