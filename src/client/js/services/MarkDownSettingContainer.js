@@ -96,6 +96,11 @@ export default class MarkDownSettingContainer extends Container {
       pageBreakCustomSeparator: this.state.pageBreakCustomSeparator,
     });
 
+    this.setState({
+      pageBreakSeparator: response.data.presentationParams.pageBreakSeparator,
+      pageBreakCustomSeparator: response.data.presentationParams.pageBreakCustomSeparator,
+    });
+    console.log(response.data);
     return response;
   }
 

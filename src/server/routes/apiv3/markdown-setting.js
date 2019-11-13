@@ -117,13 +117,17 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
 
-    const presentationParams = {
+    const requestPresentationParams = {
       'markdown:presentation:pageBreakSeparator': req.body.pageBreakSeparator,
       'markdown:presentation:pageBreakCustomSeparator': req.body.pageBreakCustomSeparator,
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', presentationParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestPresentationParams);
+      const presentationParams = {
+        pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
+        pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator') || '',
+      };
       return res.apiv3({ presentationParams });
     }
     catch (err) {
