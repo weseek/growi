@@ -119,8 +119,8 @@ module.exports = (crowi) => {
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, ApiV3FormValidator, async(req, res) => {
     try {
-      const emailList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
-      return res.apiv3({ emailList });
+      const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
+      return res.apiv3({ invitedUserList });
     }
     catch (err) {
       logger.error('Error', err);
