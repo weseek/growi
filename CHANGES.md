@@ -4,6 +4,17 @@
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 * Improvement: Organize MongoDB collection indexes uniqueness
+* Improvement: Reactify admin pages (External Account Management)
+* Fix: Search result or Timeline shows loading icon eternally when retrieving not accessible page
+* Support: Use SearchBox Elasticsearch Addon on Heroku
+* Support: Upgrade libs
+    * cross-env
+    * eslint-plugin-jest
+    * i18next
+    * i18next-browser-languagedetector
+    * migrate-mongo
+    * react-i18next
+    * validator
 
 ## 3.5.18
 
