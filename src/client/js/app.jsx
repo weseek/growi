@@ -155,45 +155,40 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
-const adminCustomizeElem = document.getElementById('admin-customize');
-if (adminCustomizeElem != null) {
-  const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, adminCustomizeContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <Customize />
-      </I18nextProvider>
-    </Provider>,
-    adminCustomizeElem,
-  );
-}
+const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
+const adminUsersContainer = new AdminUsersContainer(appContainer);
+const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
+const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
+const adminContainers = {
+  'admin-customize': adminCustomizeContainer,
+  'admin-user-page': adminUsersContainer,
+  'admin-external-account-setting': adminExternalAccountsContainer,
+  'admin-markdown-setting': markDownSettingContainer,
+  'admin-export-page': websocketContainer,
+};
 
-// render for admin
-const adminUsersElem = document.getElementById('admin-user-page');
-if (adminUsersElem != null) {
-  const adminUsersContainer = new AdminUsersContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, adminUsersContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <UserManagement />
-      </I18nextProvider>
-    </Provider>,
-    adminUsersElem,
-  );
-}
+const adminComponentMappings = {
+  'admin-customize': <Customize />,
+  'admin-user-page': <UserManagement />,
+  'admin-external-account-setting': <ManageExternalAccount />,
+  'admin-markdown-setting': <MarkdownSetting />,
+  'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
+};
 
-const adminExternalAccountsElem = document.getElementById('admin-external-account-setting');
-if (adminExternalAccountsElem != null) {
-  const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, adminExternalAccountsContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <ManageExternalAccount />
-      </I18nextProvider>
-    </Provider>,
-    adminExternalAccountsElem,
-  );
-}
+
+Object.keys(adminComponentMappings).forEach((key) => {
+  const adminElem = document.getElementById(key);
+  if (adminElem) {
+    ReactDOM.render(
+      <Provider inject={[injectableContainers, adminContainers[key]]}>
+        <I18nextProvider i18n={i18n}>
+          {adminComponentMappings[key]}
+        </I18nextProvider>
+      </Provider>,
+      adminElem,
+    );
+  }
+});
 
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
@@ -205,19 +200,6 @@ if (adminUserGroupDetailElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupDetailElem,
-  );
-}
-
-const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting');
-if (adminMarkDownSettingElem != null) {
-  const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, markDownSettingContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <MarkdownSetting />
-      </I18nextProvider>
-    </Provider>,
-    adminMarkDownSettingElem,
   );
 }
 
@@ -246,20 +228,6 @@ if (adminUserGroupPageElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupPageElem,
-  );
-}
-
-const adminExportPageElem = document.getElementById('admin-export-page');
-if (adminExportPageElem != null) {
-  ReactDOM.render(
-    <Provider inject={[appContainer, websocketContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <ExportArchiveDataPage
-          crowi={appContainer}
-        />
-      </I18nextProvider>
-    </Provider>,
-    adminExportPageElem,
   );
 }
 
