@@ -12,7 +12,6 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import AdminDropdownOption from '../Common/AdminDropdownOption';
 
 const logger = loggerFactory('growi:customizeHighlight');
 
@@ -77,16 +76,23 @@ class CustomizeHighlightSetting extends React.Component {
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">
-            <AdminDropdownOption
-              label={t('customize_page.Theme')}
-              selectedValue={adminCustomizeContainer.state.currentHighlightJsStyle}
-              onChangeValue={(value) => { adminCustomizeContainer.switchHighlightJsStyle(value) }}
-              // TODO GW-524 hand over theme option
-              options={[10, 30, 50]}
-            >
+            <div className="my-0 btn-group">
+              <label>{t('customize_page.Theme')}</label>
+              <div className="dropdown">
+                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span className="pull-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
+                  <span className="bs-caret pull-right">
+                    <span className="caret" />
+                  </span>
+                </button>
+                {/* TODO adjust dropdown after BS4 */}
+                <ul className="dropdown-menu" role="menu">
+                  {menuItem}
+                </ul>
+              </div>
               {/* eslint-disable-next-line react/no-danger */}
               <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
-            </AdminDropdownOption>
+            </div>
           </div>
         </div>
 
