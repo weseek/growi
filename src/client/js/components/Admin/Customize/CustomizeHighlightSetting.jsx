@@ -24,8 +24,14 @@ class CustomizeHighlightSetting extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  componentDidMount() {
-    // TODO GW-524 fetch highlightTheme option
+  async componentDidMount() {
+    try {
+      await this.props.adminCustomizeContainer.fetchHighLightTheme();
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   }
 
   async onClickSubmit() {
