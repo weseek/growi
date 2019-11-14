@@ -56,6 +56,20 @@ class CustomizeHighlightSetting extends React.Component {
 
   render() {
     const { t, adminCustomizeContainer } = this.props;
+    const options = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
+    const menuItem = [];
+
+    Object.keys(options).forEach((key) => {
+      const styleId = key;
+      const styleName = options[key].name;
+      const isBorderEnable = options[key].border;
+
+      menuItem.push(
+        <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
+          <a role="menuitem" tabIndex="-1">{styleName}</a>
+        </li>,
+      );
+    });
 
     return (
       <React.Fragment>
