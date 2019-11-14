@@ -31,6 +31,9 @@ export default class AdminCustomizeContainer extends Container {
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
+      highlightJsCssSelectorOptions: {
+
+      },
     };
 
     this.init();
@@ -63,8 +66,9 @@ export default class AdminCustomizeContainer extends Container {
    */
   async fetchHighLightTheme() {
     const response = await this.appContainer.apiv3.get('/customize-setting/');
-    console.log(response);
-
+    this.setState({
+      highlightJsCssSelectorOptions: response.data.highlightJsCssSelectorOptions,
+    });
   }
 
   /**
