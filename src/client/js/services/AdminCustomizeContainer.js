@@ -12,6 +12,7 @@ export default class AdminCustomizeContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      // TODO GW-575 set data from apiV3
       currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
       currentBehavior: appContainer.config.behaviorType,
@@ -25,6 +26,8 @@ export default class AdminCustomizeContainer extends Container {
       currentCustomizeScript: appContainer.config.customizeScript,
     };
 
+    this.init();
+
   }
 
   /**
@@ -32,6 +35,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   static getClassName() {
     return 'AdminCustomizeContainer';
+  }
+
+  /**
+   * retrieve customize data
+   */
+  init() {
+    // TODO GW-575 fetch data with apiV3
   }
 
   /**
