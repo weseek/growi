@@ -1,5 +1,12 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+// eslint-disable-next-line no-unused-vars
+const logger = loggerFactory('growi:services:AdminCustomizeContainer');
+
 /**
  * Service container for admin customize setting page (Customize.jsx)
  * @extends {Container} unstated Container
@@ -40,8 +47,15 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * retrieve customize data
    */
-  init() {
+  async init() {
     // TODO GW-575 fetch data with apiV3
+    try {
+      await this.fetchHighLightTheme();
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
   }
 
   /**

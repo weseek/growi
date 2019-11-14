@@ -24,16 +24,6 @@ class CustomizeHighlightSetting extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  async componentDidMount() {
-    try {
-      await this.props.adminCustomizeContainer.fetchHighLightTheme();
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  }
-
   async onClickSubmit() {
     const { t, adminCustomizeContainer } = this.props;
 
