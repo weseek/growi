@@ -19,6 +19,8 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
+      currentHighlightJsStyle: appContainer.config.highlightJsStyle,
+      isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
     };
@@ -86,6 +88,20 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Switch highlightJsStyle
+   */
+  switchHighlightJsStyle(value) {
+    this.setState({ currentHighlightJsStyle: value });
+  }
+
+  /**
+   * Switch highlightJsStyleBorder
+   */
+  switchHighlightJsStyleBorder() {
+    this.setState({ isHighlightJsStyleBorderEnabled: !this.state.isHighlightJsStyleBorderEnabled });
+  }
+
+  /**
    * Change custom css
    */
   changeCustomCss(inputValue) {
@@ -144,9 +160,19 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Update code highlight
+   * @memberOf AdminCustomizeContainer
+   * @return {Array} Code highlight
+   */
+  async updateHighlightJsStyle() {
+    // TODO GW-515 create apiV3
+  }
+
+
+  /**
    * Update customCss
    * @memberOf AdminCustomizeContainer
-   * @return {string} css
+   * @return {string} Customize css
    */
   async updateCustomizeCss() {
     // TODO GW-534 create apiV3
@@ -155,7 +181,7 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update customize script
    * @memberOf AdminCustomizeContainer
-   * @return {string} Scripts
+   * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
     // TODO GW-538 create apiV3
