@@ -155,18 +155,24 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
+// create unstated container instance for admin
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
-const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
+const adminMarkDownContainer = new MarkDownSettingContainer(appContainer);
 const adminContainers = {
   'admin-customize': adminCustomizeContainer,
   'admin-user-page': adminUsersContainer,
   'admin-external-account-setting': adminExternalAccountsContainer,
-  'admin-markdown-setting': markDownSettingContainer,
+  'admin-markdown-setting': adminMarkDownContainer,
   'admin-export-page': websocketContainer,
 };
 
+/**
+ * define components
+ *  key: id of element
+ *  value: React Element
+ */
 const adminComponentMappings = {
   'admin-customize': <Customize />,
   'admin-user-page': <UserManagement />,
