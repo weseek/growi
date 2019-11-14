@@ -27,7 +27,7 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
-      currentHighlightJsStyle: appContainer.config.highlightJsStyle,
+      currentHighlightJsStyleId: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
@@ -54,6 +54,8 @@ export default class AdminCustomizeContainer extends Container {
     // TODO GW-575 fetch data with apiV3
     try {
       await this.fetchHighLightTheme();
+      // search style name from object for display
+      this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[this.state.currentHighlightJsStyleId].name });
     }
     catch (err) {
       logger.error(err);
@@ -127,8 +129,11 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch highlightJsStyle
    */
-  switchHighlightJsStyle(value) {
-    this.setState({ currentHighlightJsStyle: value });
+  switchHighlightJsStyle(styleId, styleName, isBorderEnable) {
+    this.setState({ currentHighlightJsStyleId: styleId });
+    this.setState({ currentHighlightJsStyleName: styleName });
+    // recommended settings are applied
+    this.setState({ isHighlightJsStyleBorderEnabled: isBorderEnable });
   }
 
   /**
