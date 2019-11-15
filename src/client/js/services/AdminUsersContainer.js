@@ -74,9 +74,9 @@ export default class AdminUsersContainer extends Container {
       shapedEmailList,
       sendEmail,
     });
-    const { emailList } = response.data;
     await this.retrieveUsersByPagingNum(this.state.activePage);
-    return emailList;
+    const { invitedUserList } = response.data;
+    return invitedUserList;
   }
 
   /**
