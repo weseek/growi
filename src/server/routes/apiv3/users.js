@@ -350,7 +350,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    paginateResult:
-   *                      $ref: '#components/schemas/PaginateResult'
+   *                      $ref: '#/components/schemas/PaginateResult'
    */
   router.get('/external-accounts/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const page = parseInt(req.query.page) || 1;
