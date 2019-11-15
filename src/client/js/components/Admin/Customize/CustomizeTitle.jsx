@@ -54,7 +54,7 @@ class CustomizeTitle extends React.Component {
                   className="form-control"
                   id="customTitleSettingForm"
                   value={appContainer.config.customizeTitle}
-                  onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeTitle(inputValue) }}
+                  onChange={(e) => { adminCustomizeContainer.updateCustomizeTitle(e.target.value) }}
                 />
               </div>
             </div>
