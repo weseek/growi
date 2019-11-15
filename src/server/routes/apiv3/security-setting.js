@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:customize-setting');
+const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
 const express = require('express');
 
@@ -26,28 +26,18 @@ module.exports = (crowi) => {
   const { ApiV3FormValidator } = crowi.middlewares;
 
   const validator = {
-    layoutTheme: [
-      body('layoutType').isString(),
-      body('themeType').isString(),
-    ],
-    behavior: [
-      body('behaviorType').isString(),
-    ],
-    function: [
-      body('isEnabledTimeline').isBoolean(),
-      body('isSavedStatesOfTabChanges').isBoolean(),
-      body('isEnabledAttachTitleHeader').isBoolean(),
-      body('recentCreatedLimit').isInt(),
+    guestMode: [
+      body('restrictGuestMode').isString(),
     ],
   };
 
   /**
    * @swagger
    *
-   *    /customize-setting/layoutTheme:
+   *    /security-setting/guestMode:
    *      put:
-   *        tags: [CustomizeSetting]
-   *        description: Update layout and theme
+   *        tags: [SecuritySetting]
+   *        description: Get restrictGuestMode
    *        requestBody:
    *          required: true
    *          content:
@@ -55,17 +45,14 @@ module.exports = (crowi) => {
    *              schama:
    *                type: object
    *                properties:
-   *                  layoutType:
-   *                    description: type of layout
-   *                    type: string
-   *                  themeType:
-   *                    description: type of theme
+   *                  restructGuestMode:
+   *                    description: type of restrutGuestMode
    *                    type: string
    *      responses:
    *          200:
    *            description: Succeeded to update layout and theme
    */
-  router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
+  router.put('guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
