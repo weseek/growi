@@ -19,8 +19,9 @@ class UserRemoveButton extends React.Component {
     const { t } = this.props;
 
     try {
-      const username = await this.props.adminUsersContainer.removeUser(this.props.user._id);
-      toastSuccess(t('user_management.remove_user_success', { username }));
+      const userData = await this.props.adminUsersContainer.removeUser(this.props.user._id);
+      const userId = userData._id;
+      toastSuccess(t('user_management.remove_user_success', { userId }));
     }
     catch (err) {
       toastError(err);
