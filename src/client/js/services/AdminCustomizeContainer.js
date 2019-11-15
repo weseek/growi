@@ -15,6 +15,7 @@ export default class AdminCustomizeContainer extends Container {
       currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
       currentBehavior: appContainer.config.behaviorType,
+      currentTitle: appContainer.config.title,
     };
 
   }
@@ -81,6 +82,11 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeTitle() {
     // TODO create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeTitle', {
+      title: this.state.currentTitle,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
 }
