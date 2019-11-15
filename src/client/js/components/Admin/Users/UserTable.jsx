@@ -66,14 +66,12 @@ class UserTable extends React.Component {
 
     return (
       <Fragment>
-        <h2>{ t('User_Management') }</h2>
-
         <table className="table table-default table-bordered table-user-list">
           <thead>
             <tr>
               <th width="100px">#</th>
               <th>{ t('status') }</th>
-              <th><code>{ t('User') }</code></th>
+              <th><code>username</code></th>
               <th>{ t('Name') }</th>
               <th>{ t('Email') }</th>
               <th width="100px">{ t('Created') }</th>

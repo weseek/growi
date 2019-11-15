@@ -8,11 +8,11 @@ import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
 
-import GrowiZipImportSection from './Import/GrowiZipImportSection';
+import GrowiArchiveSection from './ImportData/GrowiArchiveSection';
 
 const logger = loggerFactory('growi:importer');
 
-class Importer extends React.Component {
+class ImportDataPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,6 +22,7 @@ class Importer extends React.Component {
       qiitaTeamName: '',
       qiitaAccessToken: '',
     };
+
     this.esaHandleSubmit = this.esaHandleSubmit.bind(this);
     this.esaHandleSubmitTest = this.esaHandleSubmitTest.bind(this);
     this.esaHandleSubmitUpdate = this.esaHandleSubmitUpdate.bind(this);
@@ -134,15 +135,15 @@ class Importer extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
-        <GrowiZipImportSection />
+        <GrowiArchiveSection />
 
         <form
-          className="form-horizontal"
+          className="form-horizontal mt-5"
           id="importerSettingFormEsa"
           role="form"
         >
           <fieldset>
-            <legend>{ t('importer_management.import_form_esa') }</legend>
+            <legend>{ t('importer_management.import_from', { from: 'esa.io' }) }</legend>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -232,7 +233,7 @@ class Importer extends React.Component {
           role="form"
         >
           <fieldset>
-            <legend>{ t('importer_management.import_form_qiita', 'Qiita:Team') }</legend>
+            <legend>{ t('importer_management.import_from', { from: 'Qiita:Team' }) }</legend>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -329,16 +330,18 @@ class Importer extends React.Component {
 
 }
 
+ImportDataPage.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+
 /**
  * Wrapper component for using unstated
  */
-const ImporterWrapper = (props) => {
-  return createSubscribedElement(Importer, props, [AppContainer]);
+const ImportDataPageWrapper = (props) => {
+  return createSubscribedElement(ImportDataPage, props, [AppContainer]);
 };
 
-Importer.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  t: PropTypes.func.isRequired, // i18next
-};
 
-export default withTranslation()(ImporterWrapper);
+export default withTranslation()(ImportDataPageWrapper);

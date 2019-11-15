@@ -10,7 +10,7 @@ const toastrOption = {
     newestOnTop: false,
     showDuration: '100',
     hideDuration: '100',
-    timeOut: '3000',
+    timeOut: '0',
   },
   success: {
     closeButton: true,

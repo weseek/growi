@@ -1,8 +1,10 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+const flatMap = require('array.prototype.flatmap');
+
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -58,6 +60,52 @@ class PageTagRelation {
   static async listTagNamesByPage(pageId) {
     const relations = await this.findByPageId(pageId);
     return relations.map((relation) => { return relation.relatedTag.name });
+  }
+
+  /**
+   * @return {object} key: Page._id, value: array of tag names
+   */
+  static async getIdToTagNamesMap(pageIds) {
+    /**
+     * @see https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pivot-data
+     *
+     * results will be:
+     * [
+     *   { _id: 58dca7b2c435b3480098dbbc, tagIds: [ 5da630f71a677515601e36d7, 5da77163ec786e4fe43e0e3e ]},
+     *   { _id: 58dca7b2c435b3480098dbbd, tagIds: [ ... ]},
+     *   ...
+     * ]
+     */
+    const results = await this.aggregate()
+      .match({ relatedPage: { $in: pageIds } })
+      .group({ _id: '$relatedPage', tagIds: { $push: '$relatedTag' } });
+
+    if (results.length === 0) {
+      return {};
+    }
+
+    results.flatMap = flatMap.shim(); // TODO: remove after upgrading to node v12
+
+    // extract distinct tag ids
+    const allTagIds = results
+      .flatMap(result => result.tagIds); // map + flatten
+    const distinctTagIds = Array.from(new Set(allTagIds));
+
+    // retrieve tag documents
+    const Tag = mongoose.model('Tag');
+    const tagIdToNameMap = await Tag.getIdToNameMap(distinctTagIds);
+
+    // convert to map
+    const idToTagNamesMap = {};
+    results.forEach((result) => {
+      const tagNames = result.tagIds
+        .map(tagId => tagIdToNameMap[tagId])
+        .filter(tagName => tagName != null); // filter null object
+
+      idToTagNamesMap[result._id] = tagNames;
+    });
+
+    return idToTagNamesMap;
   }
 
   static async updatePageTags(pageId, tags) {
