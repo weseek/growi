@@ -209,7 +209,30 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO writte swagger
+  /**
+   * @swagger
+   *
+   *    /customize-setting/highlight:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update highlight
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  highlightJsStyle:
+   *                    description: style name of highlight
+   *                    type: string
+   *                  highlightJsStyleBorder:
+   *                    description: enable border of highlight
+   *                    type: boolean
+   *      responses:
+   *          200:
+   *            description: Succeeded to update highlight
+   */
   router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:highlightJsStyle': req.body.highlightJsStyle,
