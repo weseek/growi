@@ -81,7 +81,7 @@
       <div class="form-group">
         <label for="settingForm[security:passport-ldap:bindDNPassword]" class="col-xs-3 control-label">{{ t("security_setting.ldap.bind_DN_password") }}</label>
         <div class="col-xs-6">
-          <input class="form-control passport-ldap-managerbind" type="text" {% if isUserBind %}style="display: none;"{% endif %}
+          <input class="form-control passport-ldap-managerbind" type="password" {% if isUserBind %}style="display: none;"{% endif %}
               name="settingForm[security:passport-ldap:bindDNPassword]" value="{{ getConfig('crowi', 'security:passport-ldap:bindDNPassword') | default('') }}">
           <p class="help-block passport-ldap-managerbind">
             <small>

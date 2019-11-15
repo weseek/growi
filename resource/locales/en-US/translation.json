@@ -705,7 +705,7 @@
     "send_new_password": "Please send the new password to the user.",
     "password_never_seen": "The temporary password can never be retrieved after this screen is closed.",
     "reset_password": "Reset Password",
-    "related_username": "Related user's <code>%s</code>",
+    "related_username": "Related user's ",
     "accept": "Accept",
     "deactivate_account":"Deactivate Account",
     "your_own":"You cannot deactivate your own account",
@@ -715,11 +715,12 @@
     "current_users": "Current users:",
     "valid_email": "Valid email address is required",
     "existing_email": "The following emails already exist",
-    "give_user_admin": "Give {{username}} admin success",
-    "remove_user_admin": "Remove {{username}} admin success",
-    "activate_user_success": "Activating {{username}} success",
-    "deactivate_user_success": "Deactivating {{username}} success",
-    "remove_user_success": "Removing {{username}} success"
+    "give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+    "activate_user_success": "Succeeded to activating {{username}}",
+    "deactivate_user_success": "Succeeded to deactivate {{username}}",
+    "remove_user_success": "Succeeded to removing {{username}} ",
+    "remove_external_user_success": "Succeeded to remove {{accountId}} "
   },
 
   "user_group_management": {
