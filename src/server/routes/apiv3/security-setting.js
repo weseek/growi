@@ -29,6 +29,13 @@ module.exports = (crowi) => {
     guestMode: [
       body('restrictGuestMode').isString(),
     ],
+    pageDeletion: [
+      body('pageCompleteDeletionAuthority').isString(),
+    ],
+    function: [
+      body('hideRestrictedByOwner').isBoolean(),
+      body('hideRestrictedByGroup').isBoolean(),
+    ],
   };
 
   /**
@@ -52,19 +59,17 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update layout and theme
    */
-  router.put('guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
+  router.put('/guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:layout': req.body.layoutType,
-      'customize:theme': req.body.themeType,
+      'security:restrictGuestMode': req.body.restrictGuestMode,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const customizedParams = {
-        layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
-        themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+      const guestModeParams = {
+        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
       };
-      return res.apiv3({ customizedParams });
+      return res.apiv3({ guestModeParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating layout and theme';
@@ -76,10 +81,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/behavior:
+   *    /security-setting/pageDeletion:
    *      put:
-   *        tags: [CustomizeSetting]
-   *        description: Update behavior
+   *        tags: [SecuritySetting]
+   *        description: Update pageDeletion Setting
    *        requestBody:
    *          required: true
    *          content:
@@ -87,38 +92,38 @@ module.exports = (crowi) => {
    *              schama:
    *                type: object
    *                properties:
-   *                  behaviorType:
-   *                    description: type of behavior
+   *                 pageCompleteDeletionAuthority:
+   *                    description: type of pageCompleteDeletionAuthority
    *                    type: string
    *      responses:
    *          200:
    *            description: Succeeded to update behavior
    */
-  router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
+  router.put('/pageDeletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:behavior': req.body.behaviorType,
+      'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const customizedParams = {
+      const pageDeletionParams = {
         behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
       };
-      return res.apiv3({ customizedParams });
+      return res.apiv3({ pageDeletionParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating behavior';
+      const msg = 'Error occurred in updating page-deletion-setting';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-behavior-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-page-deletion-setting-failed'));
     }
   });
 
   /**
    * @swagger
    *
-   *    /customize-setting/function:
+   *    /security-setting/function:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [SecuritySetting]
    *        description: Update function
    *        requestBody:
    *          required: true
@@ -127,39 +132,29 @@ module.exports = (crowi) => {
    *              schama:
    *                type: object
    *                properties:
-   *                  isEnabledTimeline:
-   *                    description: is enabled timeline
+   *                  hideRestrictedByOwner:
+   *                    description: is enabled hideRestrictedByOwner
    *                    type: boolean
-   *                  isSavedStatesOfTabChanges:
-   *                    description: is saved states of tabChanges
+   *                  ihideRestrictedByGroup:
+   *                    description: is enabled hideRestrictedBygroup
    *                    type: boolean
-   *                  isEnabledAttachTitleHeader:
-   *                    description: is enabled attach titleHeader
-   *                    type: boolean
-   *                  recentCreatedLimit:
-   *                    description: limit of recent created
-   *                    type: number
    *      responses:
    *          200:
    *            description: Succeeded to update function
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:isEnabledTimeline': req.body.isEnabledTimeline,
-      'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
-      'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
-      'customize:showRecentCreatedNumber': req.body.recentCreatedLimit,
+      'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
+      'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const customizedParams = {
-        isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-        isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
-        isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-        recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      const listPolicyParams = {
+        hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
+        hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'customize:security:list-policy:hideRestrictedByGroup'),
       };
-      return res.apiv3({ customizedParams });
+      return res.apiv3({ listPolicyParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating function';
