@@ -40,6 +40,9 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
     ],
+    highlight: [
+
+    ],
   };
 
   // TODO GW-575 writte swagger
@@ -202,6 +205,28 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
+  // TODO writte swagger
+  router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:highlightJsStyle': req.body.highlightJsStyle,
+      'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
+        styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating highlight';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-highlight-failed'));
     }
   });
 
