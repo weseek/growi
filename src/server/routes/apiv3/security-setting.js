@@ -44,7 +44,7 @@ module.exports = (crowi) => {
    *    /security-setting/guestMode:
    *      put:
    *        tags: [SecuritySetting]
-   *        description: Get restrictGuestMode
+   *        description: Update restrictGuestMode
    *        requestBody:
    *          required: true
    *          content:
