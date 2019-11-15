@@ -66,10 +66,10 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const guestModeParams = {
+      const securitySettingParams = {
         restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
       };
-      return res.apiv3({ guestModeParams });
+      return res.apiv3({ securitySettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating layout and theme';
@@ -106,10 +106,10 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const pageDeletionParams = {
-        behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      const securitySettingParams = {
+        pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
       };
-      return res.apiv3({ pageDeletionParams });
+      return res.apiv3({ securitySettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating page-deletion-setting';
@@ -150,11 +150,11 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const listPolicyParams = {
+      const securitySettingParams = {
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'customize:security:list-policy:hideRestrictedByGroup'),
       };
-      return res.apiv3({ listPolicyParams });
+      return res.apiv3({ securitySettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating function';
