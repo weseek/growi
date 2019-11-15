@@ -52,12 +52,12 @@ module.exports = (crowi) => {
    *              schama:
    *                type: object
    *                properties:
-   *                  restructGuestMode:
-   *                    description: type of restrutGuestMode
+   *                  restrictGuestMode:
+   *                    description: type of restrictGuestMode
    *                    type: string
    *      responses:
    *          200:
-   *            description: Succeeded to update layout and theme
+   *            description: Succeeded to update restrictGuestMode
    */
   router.put('/guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
