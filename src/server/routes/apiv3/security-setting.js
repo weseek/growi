@@ -25,7 +25,6 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TODO GW-533 implement accurate validation
   const validator = {
     layoutTheme: [
       body('layoutType').isString(),
