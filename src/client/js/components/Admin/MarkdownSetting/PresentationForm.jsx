@@ -88,7 +88,7 @@ class PresentationForm extends React.Component {
               <input
                 className="form-control"
                 value={pageBreakCustomSeparator}
-                onChange={(e) => { markDownSettingContainer.getPageBreakCustomSeparator(e.target.value) }}
+                onChange={(e) => { markDownSettingContainer.setPageBreakCustomSeparator(e.target.value) }}
               />
             </div>
           </label>

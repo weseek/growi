@@ -42,9 +42,9 @@ export default class MarkDownSettingContainer extends Container {
   }
 
   /**
-   * Get PageBreakCustomSeparator
+   * Set PageBreakCustomSeparator
    */
-  getPageBreakCustomSeparator(pageBreakCustomSeparator) {
+  setPageBreakCustomSeparator(pageBreakCustomSeparator) {
     this.setState({ pageBreakCustomSeparator });
   }
 
@@ -100,7 +100,6 @@ export default class MarkDownSettingContainer extends Container {
       pageBreakSeparator: response.data.presentationParams.pageBreakSeparator,
       pageBreakCustomSeparator: response.data.presentationParams.pageBreakCustomSeparator,
     });
-    console.log(response.data);
     return response;
   }
 
