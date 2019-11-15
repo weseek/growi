@@ -38,7 +38,27 @@ module.exports = (crowi) => {
     ],
   };
 
-
+  /**
+   * @swagger
+   *
+   *    /security-setting/guestMode:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update restrictGuestMode
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  restrictGuestMode:
+   *                    description: type of restrictGuestMode
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update restrictGuestMode
+   */
   router.put('/guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
@@ -58,7 +78,27 @@ module.exports = (crowi) => {
     }
   });
 
-
+  /**
+   * @swagger
+   *
+   *    /security-setting/pageDeletion:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update pageDeletion Setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                 pageCompleteDeletionAuthority:
+   *                    description: type of pageCompleteDeletionAuthority
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update behavior
+   */
   router.put('/pageDeletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
@@ -78,6 +118,30 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /security-setting/function:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update function
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  hideRestrictedByOwner:
+   *                    description: is enabled hideRestrictedByOwner
+   *                    type: boolean
+   *                  ihideRestrictedByGroup:
+   *                    description: is enabled hideRestrictedBygroup
+   *                    type: boolean
+   *      responses:
+   *          200:
+   *            description: Succeeded to update function
+   */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
