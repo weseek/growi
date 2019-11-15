@@ -38,21 +38,16 @@ class CustomizeTitle extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-4">
+        <div className="col-xs-12">
           <React.Fragment>
-            <h2>{t('customize_page.custom title')}</h2>
             <p className="well">
-              { t('customize_page.custom title') }<br />
-              { t('customize_page.custom title') }
+              { t('customize_page.custom_title_detail') }<br />
             </p>
             {/* TODO i18n */}
-            <h4>title</h4>
-
-            <ul>
-              <li>aaaaaaaaaaaaaaa</li>
-              <li>bbbbbbbbbbbbbbb</li>
-              <li>ccccccccccccccc</li>
-            </ul>
+            <p className="help-block">
+              Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code><br />
+              Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - { 'GROWI' }&lt;&#047;title&gt;</code></pre>
+            </p>
             <div className="form-group">
               <div className="col-xs-12">
                 <input
