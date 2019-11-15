@@ -46,14 +46,14 @@ export default class AdminSecurityContainer extends Container {
   /**
    * Switch restrictGuestMode
    */
-  switchLayoutType(restrictGuestModeLabel) {
+  switchRestrictGuestMode(restrictGuestModeLabel) {
     this.setState({ currentRestrictGuestMode: restrictGuestModeLabel });
   }
 
   /**
    * Switch pageCompleteDeletionAuthority
    */
-  switchThemeType(pageCompleteDeletionAuthorityLabel) {
+  switchPageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
     this.setState({ currentpageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
   }
 
