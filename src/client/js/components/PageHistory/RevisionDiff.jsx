@@ -34,6 +34,7 @@ export default class RevisionDiff extends React.Component {
     }
 
     const diffView = { __html: diffViewHTML };
+    // eslint-disable-next-line react/no-danger
     return <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />;
   }
 

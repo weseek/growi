@@ -6,6 +6,7 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
+const { getMongoUri } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
 
@@ -72,14 +73,6 @@ function Crowi(rootdir) {
     tag: new (require(`${self.eventsDir}tag`))(this),
     admin: new (require(`${self.eventsDir}admin`))(this),
   };
-}
-
-function getMongoUrl(env) {
-  return env.MONGOLAB_URI // for B.C.
-    || env.MONGODB_URI // MONGOLAB changes their env name
-    || env.MONGOHQ_URL
-    || env.MONGO_URI
-    || ((process.env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
 }
 
 Crowi.prototype.init = async function() {
@@ -202,10 +195,10 @@ Crowi.prototype.event = function(name, event) {
 };
 
 Crowi.prototype.setupDatabase = function() {
-  // mongoUri = mongodb://user:password@host/dbname
   mongoose.Promise = global.Promise;
 
-  const mongoUri = getMongoUrl(this.env);
+  // mongoUri = mongodb://user:password@host/dbname
+  const mongoUri = getMongoUri();
 
   return mongoose.connect(mongoUri, { useNewUrlParser: true });
 };
@@ -216,7 +209,7 @@ Crowi.prototype.setupSessionConfig = function() {
   const sessionAge = (1000 * 3600 * 24 * 30);
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
 
-  const mongoUrl = getMongoUrl(this.env);
+  const mongoUrl = getMongoUri();
   let sessionConfig;
 
   return new Promise(((resolve, reject) => {

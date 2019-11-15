@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
+// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:user-group');
 
 const express = require('express');
@@ -8,6 +8,8 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
+
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {};
 
@@ -22,10 +24,9 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  const {
-    ErrorV3,
-    Config,
-  } = crowi.models;
+  // const {
+  //   Config,
+  // } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
