@@ -41,7 +41,8 @@ module.exports = (crowi) => {
       body('recentCreatedLimit').isInt(),
     ],
     highlight: [
-
+      body('highlightJsStyle').isString(),
+      body('highlightJsStyleBorder').isBoolean(),
     ],
   };
 
