@@ -14,9 +14,10 @@ class SecuritySetting extends React.Component {
   }
 
   render() {
-    const { t, appContainer, adminSecurityContainer } = this.props;
+    const { t } = this.props;
     return (
       <Fragment>
+        {/* TODO GW-582 */}
         <fieldset>
           <legend className="alert-anchor">{ t('security_settings') }</legend>
           <div className="form-group">
