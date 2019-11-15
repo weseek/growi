@@ -14,7 +14,9 @@ export default class MarkDownSettingContainer extends Container {
     this.state = {
       isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
-      pageBreakOption: appContainer.config.pageBreakOption,
+      pageBreakSeparator: appContainer.config.pageBreakSeparator,
+      pageBreakCustomSeparator: appContainer.config.pageBreakCustomSeparator || '',
+      // pageBreakOption: appContainer.config.pageBreakOption,
       customRegularExpression: appContainer.config.customRegularExpression || '',
       isEnabledXss: (appContainer.config.xssOption != null),
       xssOption: appContainer.config.xssOption,
@@ -30,6 +32,20 @@ export default class MarkDownSettingContainer extends Container {
    */
   static getClassName() {
     return 'MarkDownSettingContainer';
+  }
+
+  /**
+   * Switch PageBreakSeparator
+   */
+  switchPageBreakSeparator(pageBreakSeparator) {
+    this.setState({ pageBreakSeparator });
+  }
+
+  /**
+   * Set PageBreakCustomSeparator
+   */
+  setPageBreakCustomSeparator(pageBreakCustomSeparator) {
+    this.setState({ pageBreakCustomSeparator });
   }
 
   /**
@@ -67,6 +83,23 @@ export default class MarkDownSettingContainer extends Container {
       attrWhiteList: this.state.attrWhiteList,
     });
 
+    return response;
+  }
+
+  /**
+   * Update Presentation Setting
+   */
+  async updatePresentationSetting() {
+
+    const response = await this.appContainer.apiv3.put('/markdown-setting/presentation', {
+      pageBreakSeparator: this.state.pageBreakSeparator,
+      pageBreakCustomSeparator: this.state.pageBreakCustomSeparator,
+    });
+
+    this.setState({
+      pageBreakSeparator: response.data.presentationParams.pageBreakSeparator,
+      pageBreakCustomSeparator: response.data.presentationParams.pageBreakCustomSeparator,
+    });
     return response;
   }
 

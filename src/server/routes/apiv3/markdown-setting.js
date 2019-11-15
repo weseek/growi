@@ -84,6 +84,61 @@ module.exports = (crowi) => {
 
   });
 
+  validator.presentationSetting = [
+    body('pageBreakSeparator').isInt().not().isEmpty(),
+  ];
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /_api/v3/markdown-setting/presentation:
+   *      put:
+   *        tags: [Users]
+   *        description: Update presentation
+   *        parameters:
+   *          - name: markdown:presentation:pageBreakSeparator
+   *            in: query
+   *            description: pageBreakSeparator
+   *            schema:
+   *              type: number
+   *        responses:
+   *          200:
+   *            description: Updating presentation success
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    presentationParams:
+   *                      type: object
+   *                      description: new presentation params
+   */
+  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
+    if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
+      return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
+    }
+
+    const requestPresentationParams = {
+      'markdown:presentation:pageBreakSeparator': req.body.pageBreakSeparator,
+      'markdown:presentation:pageBreakCustomSeparator': req.body.pageBreakCustomSeparator,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestPresentationParams);
+      const presentationParams = {
+        pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
+        pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator') || '',
+      };
+      return res.apiv3({ presentationParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating presentation';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
+    }
+
+  });
+
   validator.xssSetting = [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
