@@ -51,6 +51,7 @@ class CustomizeTitle extends React.Component {
             <div className="form-group">
               <div className="col-xs-12">
                 <input
+                  className="form-control"
                   id="customTitleSettingForm"
                   value={appContainer.config.customizeTitle}
                   onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeTitle(inputValue) }}
