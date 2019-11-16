@@ -206,7 +206,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update customize css
    */
-  router.put('/customizeCss', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:css': req.body.customizeCss,
     };
