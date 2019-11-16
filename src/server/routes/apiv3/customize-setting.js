@@ -251,7 +251,7 @@ module.exports = (crowi) => {
     }
   });
 
-    /**
+  /**
    * @swagger
    *
    *    /customize-setting/customizeScript:
