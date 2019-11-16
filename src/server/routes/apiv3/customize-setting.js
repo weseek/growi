@@ -66,8 +66,14 @@ module.exports = (crowi) => {
    *                    description: type of theme
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update layout and theme
+   *        200:
+   *          description: Succeeded to update layout and theme
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -108,8 +114,14 @@ module.exports = (crowi) => {
    *                    description: type of behavior
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update behavior
+   *        200:
+   *          description: Succeeded to update behavior
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -157,8 +169,14 @@ module.exports = (crowi) => {
    *                    description: limit of recent created
    *                    type: number
    *      responses:
-   *          200:
-   *            description: Succeeded to update function
+   *        200:
+   *          description: Succeeded to update function
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -203,8 +221,14 @@ module.exports = (crowi) => {
    *                    description: customize css
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update customize css
+   *        200:
+   *          description: Succeeded to update customize css
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
