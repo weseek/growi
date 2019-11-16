@@ -206,7 +206,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update customize script
    */
-  router.put('/customizeScript', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:script': req.body.customizeScript,
     };
