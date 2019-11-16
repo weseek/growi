@@ -175,7 +175,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize css
    */
   async updateCustomizeCss() {
-    // TODO GW-534 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeCss', {
+      customizeCss: this.state.currentCustomizeCss,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**

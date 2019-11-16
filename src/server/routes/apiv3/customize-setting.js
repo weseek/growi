@@ -40,6 +40,9 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
     ],
+    customizeCss: [
+      body('customizeCss').isString(),
+    ],
     customizeScript: [
       body('customizeScript').isString(),
     ],
@@ -66,8 +69,14 @@ module.exports = (crowi) => {
    *                    description: type of theme
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update layout and theme
+   *        200:
+   *          description: Succeeded to update layout and theme
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -108,8 +117,14 @@ module.exports = (crowi) => {
    *                    description: type of behavior
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update behavior
+   *        200:
+   *          description: Succeeded to update behavior
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -157,8 +172,14 @@ module.exports = (crowi) => {
    *                    description: limit of recent created
    *                    type: number
    *      responses:
-   *          200:
-   *            description: Succeeded to update function
+   *        200:
+   *          description: Succeeded to update function
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -186,6 +207,51 @@ module.exports = (crowi) => {
   });
 
   /**
+   * @swagger
+   *
+   *    /customize-setting/customizeCss:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeCss
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeCss:
+   *                    description: customize css
+   *                    type: string
+   *      responses:
+   *        200:
+   *          description: Succeeded to update customize css
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
+   */
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:css': req.body.customizeCss,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeCss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeCss-failed'));
+    }
+  });
+
+    /**
    * @swagger
    *
    *    /customize-setting/customizeScript:
@@ -229,7 +295,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
     }
   });
-
 
   return router;
 };
