@@ -163,7 +163,7 @@ export default class AdminUsersContainer extends Container {
    * remove user
    * @memberOf AdminUsersContainer
    * @param {string} userId
-   * @return {string} userData
+   * @return {object} removedUserData
    */
   async removeUser(userId) {
     const response = await this.appContainer.apiv3.delete(`/users/${userId}/remove`);
