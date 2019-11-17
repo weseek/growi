@@ -65,7 +65,7 @@ module.exports = function(crowi, app) {
     }
 
     // add headers before evaluating 'req.fresh'
-    setHeaderToRes(req, res, attachment, forceDownload);
+    setHeaderToRes(res, attachment, forceDownload);
 
     // return 304 if request is "fresh"
     // see: http://expressjs.com/en/5x/api.html#req.fresh
@@ -92,7 +92,7 @@ module.exports = function(crowi, app) {
    * @param {Attachment} attachment
    * @param {boolean} forceDownload
    */
-  function setHeaderToRes(req, res, attachment, forceDownload) {
+  function setHeaderToRes(res, attachment, forceDownload) {
     res.set({
       ETag: `Attachment-${attachment._id}`,
       'Last-Modified': attachment.createdAt,
