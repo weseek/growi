@@ -18,6 +18,35 @@ const validator = {};
  *    name: CustomizeSetting
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      CustomizeStatus:
+ *        type: object
+ *        properties:
+ *          layoutType:
+ *            type: string
+ *          themeType:
+ *            type: string
+ *          behaviorType
+ *            type: string
+ *          isEnabledTimeline:
+ *            type: boolean
+ *          isSavedStatesOfTabChanges:
+ *            type: boolean
+ *          isEnabledAttachTitleHeader:
+ *            type: boolean
+ *          recentCreatedLimit:
+ *            type: number
+ *          customizeCss:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
