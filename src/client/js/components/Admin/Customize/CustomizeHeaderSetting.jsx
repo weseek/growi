@@ -24,9 +24,10 @@ class CustomizeHeaderSetting extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     try {
+      await adminCustomizeContainer.updateCustomizeHeader();
       toastSuccess(t('customize_page.update_customHeader_success'));
     }
     catch (err) {

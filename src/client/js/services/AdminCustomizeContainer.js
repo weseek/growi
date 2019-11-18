@@ -176,6 +176,14 @@ export default class AdminCustomizeContainer extends Container {
     // TODO GW-515 create apiV3
   }
 
+  /**
+   * Update customHeader
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Customize html header
+   */
+  async updateCustomizeHeader() {
+    // TODO GW-601 create apiV3
+  }
 
   /**
    * Update customCss
@@ -202,6 +210,5 @@ export default class AdminCustomizeContainer extends Container {
     const { customizedParams } = response.data;
     return customizedParams;
   }
-
 
 }
