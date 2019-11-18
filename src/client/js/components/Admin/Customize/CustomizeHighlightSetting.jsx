@@ -58,10 +58,10 @@ class CustomizeHighlightSetting extends React.Component {
     const options = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
     const menuItem = [];
 
-    Object.keys(options).forEach((key) => {
-      const styleId = key;
-      const styleName = options[key].name;
-      const isBorderEnable = options[key].border;
+    Object.entries(options).forEach((option) => {
+      const styleId = option[0];
+      const styleName = option[1].name;
+      const isBorderEnable = option[1].border;
 
       menuItem.push(
         <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
