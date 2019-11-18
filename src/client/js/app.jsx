@@ -209,17 +209,6 @@ if (adminUserGroupDetailElem != null) {
   );
 }
 
-const customHeaderEditorElem = document.getElementById('custom-header-editor');
-if (customHeaderEditorElem != null) {
-  // get input[type=hidden] element
-  const customHeaderInputElem = document.getElementById('inputCustomHeader');
-
-  ReactDOM.render(
-    <CustomHeaderEditor inputElem={customHeaderInputElem} />,
-    customHeaderEditorElem,
-  );
-}
-
 const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
 if (adminUserGroupPageElem != null) {
   const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
