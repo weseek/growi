@@ -247,8 +247,8 @@
     "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
-    "node": ">=8.11.1 <11",
-    "npm": ">=5.6.0 <7",
-    "yarn": ">=1.5.1 <2"
+    "node": ">=10.17.0 <13",
+    "npm": ">=6.11.3 <7",
+    "yarn": ">=1.19.1 <2"
   }
 }

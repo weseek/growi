@@ -13,6 +13,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 ### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Support: Support Node.js v12
 * Support: Upgrade libs
     * growi-commons
 
