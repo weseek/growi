@@ -4,6 +4,7 @@
 
 ### BREAKING CHANGES
 
+* GROWI v3.6.0 no longer support Node.js v8.x
 * The name of database that is storing migrations meta data has been changed
     * This affects **only when `MONGO_URI` has parameters**
     * v3.5.x or above has a bug ([#1361](https://github.com/weseek/growi/issues/1361))
