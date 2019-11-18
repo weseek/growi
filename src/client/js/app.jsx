@@ -35,7 +35,6 @@ import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
-import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
