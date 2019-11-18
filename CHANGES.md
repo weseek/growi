@@ -16,6 +16,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 ## 3.5.21
 
+* Improvement: Cache control when retrieving attachment data
 * Fix: Inviting user doesn't work
     * Introduced by 3.5.20
 
