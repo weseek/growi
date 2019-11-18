@@ -14,6 +14,11 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 
+## 3.5.21
+
+* Fix: Inviting user doesn't work
+    * Introduced by 3.5.20
+
 ## 3.5.20
 
 * Improvement: Organize MongoDB collection indexes uniqueness
