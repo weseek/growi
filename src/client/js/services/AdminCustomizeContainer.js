@@ -188,7 +188,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
-    // TODO GW-538 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeScript', {
+      customizeScript: this.state.currentCustomizeScript,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
 

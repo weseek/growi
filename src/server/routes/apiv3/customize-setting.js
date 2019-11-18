@@ -18,6 +18,35 @@ const validator = {};
  *    name: CustomizeSetting
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      CustomizeStatus:
+ *        type: object
+ *        properties:
+ *          layoutType:
+ *            type: string
+ *          themeType:
+ *            type: string
+ *          behaviorType
+ *            type: string
+ *          isEnabledTimeline:
+ *            type: boolean
+ *          isSavedStatesOfTabChanges:
+ *            type: boolean
+ *          isEnabledAttachTitleHeader:
+ *            type: boolean
+ *          recentCreatedLimit:
+ *            type: number
+ *          customizeCss:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
@@ -42,6 +71,9 @@ module.exports = (crowi) => {
     ],
     customizeCss: [
       body('customizeCss').isString(),
+    ],
+    customizeScript: [
+      body('customizeScript').isString(),
     ],
   };
 
@@ -245,6 +277,51 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating customizeCss';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeCss-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeScript:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeScript
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeScript:
+   *                    description: customize script
+   *                    type: string
+   *      responses:
+   *        200:
+   *          description: Succeeded to update customize script
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
+   */
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:script': req.body.customizeScript,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeScript';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
     }
   });
 
