@@ -29,6 +29,7 @@ export default class AdminCustomizeContainer extends Container {
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
       currentHighlightJsStyleId: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
+      currentCustomizeHeader: appContainer.config.customizeHeader,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
       /* eslint-disable quote-props, no-multi-spaces */
@@ -154,9 +155,16 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Change custom css
+   * Change customize Html header
    */
-  changeCustomCss(inputValue) {
+  changeCustomizeHeader(inputValue) {
+    this.setState({ currentCustomizeHeader: inputValue });
+  }
+
+  /**
+   * Change customize css
+   */
+  changeCustomizeCss(inputValue) {
     this.setState({ currentCustomizeCss: inputValue });
   }
 
@@ -220,6 +228,14 @@ export default class AdminCustomizeContainer extends Container {
     // TODO GW-515 create apiV3
   }
 
+  /**
+   * Update customHeader
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Customize html header
+   */
+  async updateCustomizeHeader() {
+    // TODO GW-601 create apiV3
+  }
 
   /**
    * Update customCss
@@ -246,6 +262,5 @@ export default class AdminCustomizeContainer extends Container {
     const { customizedParams } = response.data;
     return customizedParams;
   }
-
 
 }
