@@ -31,9 +31,20 @@ export default class AdminCustomizeContainer extends Container {
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
+      /* eslint-disable quote-props, no-multi-spaces */
       highlightJsCssSelectorOptions: {
-
+        'github':           { name: '[Light] GitHub',         border: false },
+        'github-gist':      { name: '[Light] GitHub Gist',    border: true },
+        'atom-one-light':   { name: '[Light] Atom One Light', border: true },
+        'xcode':            { name: '[Light] Xcode',          border: true },
+        'vs':               { name: '[Light] Vs',             border: true },
+        'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
+        'hybrid':           { name: '[Dark] Hybrid',          border: false },
+        'monokai':          { name: '[Dark] Monokai',         border: false },
+        'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
+        'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
+      /* eslint-enable quote-props, no-multi-spaces */
     };
 
     this.init();
@@ -53,7 +64,6 @@ export default class AdminCustomizeContainer extends Container {
   async init() {
     // TODO GW-575 fetch data with apiV3
     try {
-      await this.fetchHighLightTheme();
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[this.state.currentHighlightJsStyleId].name });
     }
