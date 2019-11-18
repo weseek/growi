@@ -13,6 +13,8 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 ### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Support: Upgrade libs
+    * growi-commons
 
 ## 3.5.21
 
