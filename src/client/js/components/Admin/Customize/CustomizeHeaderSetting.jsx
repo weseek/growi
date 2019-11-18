@@ -11,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import CustomHeaderEditor from '../CustomHeaderEditor';
 
 const logger = loggerFactory('growi:Customize');
 
@@ -35,11 +36,40 @@ class CustomizeHeaderSetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, appContainer, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
         <h2>{t('customize_page.custom_header')}</h2>
+
+        <p
+          className="well"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('customize_page.custom_header_detail', '&lt;header&gt;', '&lt;script&gt;') }}
+        />
+
+        <div className="help-block">
+          { t('Example') }:
+          <pre className="hljs">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
+            <code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code>
+          </pre>
+        </div>
+
+        <div className="col-xs-12">
+          <CustomHeaderEditor
+              // The value passed must be immutable
+            value={appContainer.config.customizeHeader}
+            onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
+          />
+        </div>
+        <div className="col-xs-12">
+          <p className="help-block text-right">
+            <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+            { t('customize_page.ctrl_space') }
+          </p>
+        </div>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
       </React.Fragment>
     );

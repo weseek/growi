@@ -21,6 +21,7 @@ export default class AdminCustomizeContainer extends Container {
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
       currentHighlightJsStyle: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
+      currentCustomizeHeader: appContainer.config.customizeHeader,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
     };
@@ -99,6 +100,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchHighlightJsStyleBorder() {
     this.setState({ isHighlightJsStyleBorderEnabled: !this.state.isHighlightJsStyleBorderEnabled });
+  }
+
+  /**
+   * Change customize Html header
+   */
+  changeCustomizeHeader(inputValue) {
+    this.setState({ currentCustomizeHeader: inputValue });
   }
 
   /**
