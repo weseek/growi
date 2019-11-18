@@ -110,9 +110,9 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Change custom css
+   * Change customize css
    */
-  changeCustomCss(inputValue) {
+  changeCustomizeCss(inputValue) {
     this.setState({ currentCustomizeCss: inputValue });
   }
 
