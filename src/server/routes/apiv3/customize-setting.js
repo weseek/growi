@@ -77,6 +77,13 @@ module.exports = (crowi) => {
     ],
   };
 
+  // TODO GW-575 writte swagger
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    // TODO GW-575 return others customize settings
+    return res.apiv3();
+  });
+
   /**
    * @swagger
    *

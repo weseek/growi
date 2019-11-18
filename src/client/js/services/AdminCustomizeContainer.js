@@ -1,5 +1,12 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+// eslint-disable-next-line no-unused-vars
+const logger = loggerFactory('growi:services:AdminCustomizeContainer');
+
 /**
  * Service container for admin customize setting page (Customize.jsx)
  * @extends {Container} unstated Container
@@ -12,6 +19,7 @@ export default class AdminCustomizeContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      // TODO GW-575 set data from apiV3
       currentTheme: appContainer.config.themeType,
       currentLayout: appContainer.config.layoutType,
       currentBehavior: appContainer.config.behaviorType,
@@ -19,11 +27,27 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
-      currentHighlightJsStyle: appContainer.config.highlightJsStyle,
+      currentHighlightJsStyleId: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
+      /* eslint-disable quote-props, no-multi-spaces */
+      highlightJsCssSelectorOptions: {
+        'github':           { name: '[Light] GitHub',         border: false },
+        'github-gist':      { name: '[Light] GitHub Gist',    border: true },
+        'atom-one-light':   { name: '[Light] Atom One Light', border: true },
+        'xcode':            { name: '[Light] Xcode',          border: true },
+        'vs':               { name: '[Light] Vs',             border: true },
+        'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
+        'hybrid':           { name: '[Dark] Hybrid',          border: false },
+        'monokai':          { name: '[Dark] Monokai',         border: false },
+        'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
+        'vs2015':           { name: '[Dark] Vs 2015',         border: false },
+      },
+      /* eslint-enable quote-props, no-multi-spaces */
     };
+
+    this.init();
 
   }
 
@@ -32,6 +56,31 @@ export default class AdminCustomizeContainer extends Container {
    */
   static getClassName() {
     return 'AdminCustomizeContainer';
+  }
+
+  /**
+   * retrieve customize data
+   */
+  async init() {
+    // TODO GW-575 fetch data with apiV3
+    try {
+      // search style name from object for display
+      this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[this.state.currentHighlightJsStyleId].name });
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
+  }
+
+  /**
+   * Fetch highLight theme
+   */
+  async fetchHighLightTheme() {
+    const response = await this.appContainer.apiv3.get('/customize-setting/');
+    this.setState({
+      highlightJsCssSelectorOptions: response.data.highlightJsCssSelectorOptions,
+    });
   }
 
   /**
@@ -90,8 +139,11 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch highlightJsStyle
    */
-  switchHighlightJsStyle(value) {
-    this.setState({ currentHighlightJsStyle: value });
+  switchHighlightJsStyle(styleId, styleName, isBorderEnable) {
+    this.setState({ currentHighlightJsStyleId: styleId });
+    this.setState({ currentHighlightJsStyleName: styleName });
+    // recommended settings are applied
+    this.setState({ isHighlightJsStyleBorderEnabled: isBorderEnable });
   }
 
   /**
