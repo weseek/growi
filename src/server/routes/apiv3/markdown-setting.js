@@ -21,8 +21,8 @@ const validator = {
   ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').isArray(),
-    body('attrWhiteList').isArray(),
+    body('tagWhiteList').isString(),
+    body('attrWhiteList').isString(),
   ],
 };
 
