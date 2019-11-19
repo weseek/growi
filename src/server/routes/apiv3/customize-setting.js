@@ -348,7 +348,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+        customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       };
       return res.apiv3({ customizedParams });
     }
