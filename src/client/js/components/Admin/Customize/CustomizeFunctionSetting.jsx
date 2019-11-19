@@ -12,7 +12,6 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
-import AdminDropdownOption from '../Common/AdminDropdownOption';
 
 const logger = loggerFactory('growi:importer');
 
@@ -39,6 +38,14 @@ class CustomizeBehaviorSetting extends React.Component {
 
   render() {
     const { t, adminCustomizeContainer } = this.props;
+
+    const menuItem = [10, 30, 50].map((option) => {
+      return (
+        <li key={option} role="presentation" type="button" onClick={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}>
+          <a role="menuitem">{option}</a>
+        </li>
+      );
+    });
 
     return (
       <React.Fragment>
@@ -95,16 +102,24 @@ class CustomizeBehaviorSetting extends React.Component {
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">
-            <AdminDropdownOption
-              label={t('customize_page.recent_created__n_draft_num_desc')}
-              selectedValue={adminCustomizeContainer.state.currentRecentCreatedLimit}
-              onChangeValue={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
-              options={[10, 30, 50]}
-            >
+            <div className="my-0 btn-group">
+              <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
+              <div className="dropdown">
+                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span className="pull-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
+                  <span className="bs-caret pull-right">
+                    <span className="caret" />
+                  </span>
+                </button>
+                {/* TODO adjust dropdown after BS4 */}
+                <ul className="dropdown-menu" role="menu">
+                  {menuItem}
+                </ul>
+              </div>
               <p className="help-block">
                 { t('customize_page.recently_created_n_draft_num_desc') }
               </p>
-            </AdminDropdownOption>
+            </div>
           </div>
         </div>
 
