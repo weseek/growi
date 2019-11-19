@@ -91,8 +91,7 @@ module.exports = function(crowi, app) {
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
 
   // markdown admin
-  app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index); // TODO delete
-  app.post('/admin/markdown/presentationSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.markdownPresentation, admin.markdown.presentationSetting);
+  app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
 
   // markdown admin
   app.get('/admin/customize'                , loginRequiredStrictly , adminRequired , admin.customize.index);

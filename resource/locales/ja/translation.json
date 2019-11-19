@@ -708,7 +708,6 @@
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました "
-
   },
 
   "user_group_management": {

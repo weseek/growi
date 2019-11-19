@@ -17,22 +17,22 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         {/* Line Break Setting */}
-        <div className="row my-3">
-          <h2>{ t('markdown_setting.line_break_setting') }</h2>
+        <div className="row mb-5">
+          <h2 className="border-bottom">{ t('markdown_setting.line_break_setting') }</h2>
           <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
           <LineBreakForm />
         </div>
 
         {/* Presentation Setting */}
-        <div className="row my-3">
-          <h2>{ t('markdown_setting.presentation_setting') }</h2>
+        <div className="row mb-5">
+          <h2 className="border-bottom">{ t('markdown_setting.presentation_setting') }</h2>
           <p className="well">{ t('markdown_setting.presentation_setting_desc') }</p>
           <PresentationForm />
         </div>
 
         {/* XSS Setting */}
-        <div className="row my-3">
-          <h2>{ t('markdown_setting.XSS_setting') }</h2>
+        <div className="row mb-5">
+          <h2 className="border-bottom">{ t('markdown_setting.XSS_setting') }</h2>
           <p className="well">{ t('markdown_setting.XSS_setting_desc') }</p>
           <XssForm />
         </div>

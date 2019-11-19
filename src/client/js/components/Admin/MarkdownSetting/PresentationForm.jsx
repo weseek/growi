@@ -20,9 +20,11 @@ class PresentationForm extends React.Component {
   }
 
   async onClickSubmit() {
+    const { t } = this.props;
+
     try {
       await this.props.markDownSettingContainer.updatePresentationSetting();
-      toastSuccess('Success update Presentation setting');
+      toastSuccess(t('markdown_setting.updated_presentation'));
     }
     catch (err) {
       toastError(err);
