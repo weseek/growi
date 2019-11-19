@@ -4,7 +4,8 @@
     "./node_modules/prettier-stylelint/config.js"
   ],
   "ignoreFiles": [
-    "src/client/styles/scss/_override-bootstrap-variables.scss"
+    "src/client/styles/scss/_override-bootstrap-variables.scss",
+    "src/linter-checker/test.scss"
   ],
   "rules": {
     "indentation": 2,

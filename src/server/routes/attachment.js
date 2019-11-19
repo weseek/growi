@@ -47,19 +47,30 @@ module.exports = function(crowi, app) {
   /**
    * Common method to response
    *
+   * @param {Request} req
    * @param {Response} res
    * @param {User} user
    * @param {Attachment} attachment
    * @param {boolean} forceDownload
    */
-  async function responseForAttachment(res, user, attachment, forceDownload) {
+  async function responseForAttachment(req, res, attachment, forceDownload) {
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
+    const user = req.user;
     const isAccessible = await isAccessibleByViewer(user, attachment);
     if (!isAccessible) {
       return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+    }
+
+    // add headers before evaluating 'req.fresh'
+    setHeaderToRes(res, attachment, forceDownload);
+
+    // return 304 if request is "fresh"
+    // see: http://expressjs.com/en/5x/api.html#req.fresh
+    if (req.fresh) {
+      return res.sendStatus(304);
     }
 
     let fileStream;
@@ -71,7 +82,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(e.message));
     }
 
-    setHeaderToRes(res, attachment, forceDownload);
     return fileStream.pipe(res);
   }
 
@@ -83,14 +93,16 @@ module.exports = function(crowi, app) {
    * @param {boolean} forceDownload
    */
   function setHeaderToRes(res, attachment, forceDownload) {
+    res.set({
+      ETag: `Attachment-${attachment._id}`,
+      'Last-Modified': attachment.createdAt,
+    });
+
     // download
     if (forceDownload) {
-      const headers = {
-        'Content-Type': 'application/force-download',
-        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      };
-
-      res.writeHead(200, headers);
+      res.set({
+        'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+      });
     }
     // reference
     else {
@@ -134,7 +146,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
-    return responseForAttachment(res, req.user, attachment, true);
+    return responseForAttachment(req, res, attachment, true);
   };
 
   /**
@@ -149,7 +161,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
-    return responseForAttachment(res, req.user, attachment);
+    return responseForAttachment(req, res, attachment);
   };
 
   /**
