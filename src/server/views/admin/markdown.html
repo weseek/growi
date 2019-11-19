@@ -22,33 +22,6 @@
   </div>
 
 </div>
-
-<script>
-  // give a space between items in textarea(',' => ', ')
-  for (var i = 0; i < $('textarea.xss-list').length; i++) {
-    $($('textarea.xss-list')[i]).val($($('textarea.xss-list')[i]).val().replace(/,/g, ', '));
-  };
-
-  $('input[name="markdownSetting[markdown:xss:isEnabledPrevention]"]').change(function() {
-    if ($(this).val() === 'true') {
-      $('#xss-hide-when-disabled').slideDown();
-    }
-    else {
-      $('#xss-hide-when-disabled').slideUp();
-    }
-  });
-
-  $('#btn-import-tags').on('click', () => {
-    var $tagWhiteList = $('textarea[name="markdownSetting[markdown:xss:tagWhiteList]"]');
-    var $recommendedTagList = $('textarea[name="recommendedTags"]');
-    $tagWhiteList.val($recommendedTagList.val());
-  });
-  $('#btn-import-attrs').on('click', () => {
-    var $attrWhiteList = $('textarea[name="markdownSetting[markdown:xss:attrWhiteList]"]');
-    var $recommendedAttrList = $('textarea[name="recommendedAttrs"]');
-    $attrWhiteList.val($recommendedAttrList.val());
-  });
-</script>
 {% endblock content_main %}
 
 {% block content_footer %}

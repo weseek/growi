@@ -11,7 +11,21 @@ const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-const validator = {};
+const validator = {
+  lineBreak: [
+    body('isEnabledLinebreaks').isBoolean(),
+    body('isEnabledLinebreaksInComments').isBoolean(),
+  ],
+  presentationSetting: [
+    body('pageBreakSeparator').isInt().not().isEmpty(),
+  ],
+  xssSetting: [
+    body('isEnabledXss').isBoolean(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
+  ],
+};
+
 
 /**
  * @swagger
@@ -19,62 +33,103 @@ const validator = {};
  *    name: MarkDownSetting
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      LineBreakParams:
+ *        type: object
+ *        properties:
+ *          isEnabledLinebreaks:
+ *            type: boolean
+ *            description: enable lineBreak
+ *          isEnabledLinebreaksInComments:
+ *            type: boolean
+ *            description: enable lineBreak in comment
+ *      PresentationParams:
+ *        type: object
+ *        properties:
+ *          pageBreakSeparator:
+ *            type: number
+ *            description: number of pageBreakSeparator
+ *          pageBreakCustomSeparator:
+ *            type: string
+ *            description: string of pageBreakCustomSeparator
+ *      XssParams:
+ *        type: object
+ *        properties:
+ *          isEnabledPrevention:
+ *            type: boolean
+ *            description: enable xss
+ *          xssOption:
+ *            type: number
+ *            description: number of xss option
+ *          tagWhiteList:
+ *            type: array
+ *            description: array of tag whiteList
+ *            items:
+ *              type: string
+ *              description: tag whitelist
+ *          attrWhiteList:
+ *            type: array
+ *            description: array of attr whiteList
+ *            items:
+ *              type: string
+ *              description: attr whitelist
+ */
+
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
-  // const {
-  //   Config,
-  // } = crowi.models;
-
   const { ApiV3FormValidator } = crowi.middlewares;
-
-  validator.lineBreak = [
-    body('isEnabledLinebreaks').isBoolean(),
-    body('isEnabledLinebreaksInComments').isBoolean(),
-  ];
 
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/markdown-setting/lineBreak:
+   *    /markdown-setting/lineBreak:
    *      put:
    *        tags: [MarkDownSetting]
-   *        description: Update lineBreak
-   *        parameters:
-   *          - name: isEnabledLinebreaks
-   *            in: query
-   *            description: enable lineBreak
-   *            schema:
-   *              type: boolean
-   *          - name: isEnabledLinebreaksInComments
-   *            in: query
-   *            description: enable lineBreak in comment
-   *            schema:
-   *              type: boolean
+   *        description: Update lineBreak setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isEnabledLinebreaks:
+   *                    description: enable lineBreak
+   *                    type: boolean
+   *                  isEnabledLinebreaksInComments:
+   *                    description: enable lineBreak in comment
+   *                    type: boolean
    *        responses:
    *          200:
-   *            description: Updating lineBreak success
+   *            description: Succeeded to update lineBreak setting
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
-   *                    xssParams:
-   *                      type: object
-   *                      description: new lineBreak params
+   *                    status:
+   *                      $ref: '#/components/schemas/lineBreakParams'
    */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
-    const lineBreakParams = {
+    const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
       'markdown:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', lineBreakParams);
-      return res.apiv3({ lineBreakParams });
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestLineBreakParams);
+      const lineBreaksParams = {
+        isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments') || '',
+      };
+      return res.apiv3({ lineBreaksParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating lineBreak';
@@ -84,34 +139,35 @@ module.exports = (crowi) => {
 
   });
 
-  validator.presentationSetting = [
-    body('pageBreakSeparator').isInt().not().isEmpty(),
-  ];
-
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/markdown-setting/presentation:
+   *    /markdown-setting/presentation:
    *      put:
-   *        tags: [Users]
+   *        tags: [MarkDownSetting]
    *        description: Update presentation
-   *        parameters:
-   *          - name: markdown:presentation:pageBreakSeparator
-   *            in: query
-   *            description: pageBreakSeparator
-   *            schema:
-   *              type: number
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  pageBreakSeparator:
+   *                    description: number of pageBreakSeparator
+   *                    type: number
+   *                  pageBreakCustomSeparator:
+   *                    description: string of pageBreakCustomSeparator
+   *                    type: string
    *        responses:
    *          200:
-   *            description: Updating presentation success
+   *            description: Succeeded to update presentation setting
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
-   *                    presentationParams:
-   *                      type: object
-   *                      description: new presentation params
+   *                    status:
+   *                      $ref: '#/components/schemas/presentationParams'
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
@@ -139,64 +195,54 @@ module.exports = (crowi) => {
 
   });
 
-  validator.xssSetting = [
-    body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').isArray(),
-    body('attrWhiteList').isArray(),
-  ];
-
   /**
    * @swagger
    *
-   *  paths:
-   *    /_api/v3/markdown-setting/xss:
+   *    /markdown-setting/xss:
    *      put:
    *        tags: [MarkDownSetting]
    *        description: Update xss
-   *        parameters:
-   *          - name: isEnabledPrevention
-   *            in: query
-   *            description: enable xss
-   *            schema:
-   *              type: boolean
-   *          - name: option
-   *            in: query
-   *            description: xss option
-   *            schema:
-   *              type: number
-   *          - name: tagWhiteList
-   *            in: query
-   *            description: custom tag whitelist
-   *            schema:
-   *              type: array
-   *              items:
-   *                type: string
-   *                description: tag whitelist
-   *          - name: attrWhiteList
-   *            in: query
-   *            description: custom attr whitelist
-   *            schema:
-   *              type: array
-   *              items:
-   *                type: string
-   *                description: tag whitelist
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isEnabledPrevention:
+   *                    description: enable xss
+   *                    type: boolean
+   *                  xssOption:
+   *                    description: number of xss option
+   *                    type: number
+   *                  tagWhiteList:
+   *                    description: array of tag whiteList
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                      description: tag whitelist
+   *                  attrWhiteList:
+   *                    description: array of attr whiteList
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                      description: attr whitelist
    *        responses:
    *          200:
-   *            description: Updating xss success
+   *            description: Succeeded to update xss setting
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
-   *                    xssParams:
-   *                      type: object
-   *                      description: new xss params
+   *                    status:
+   *                      $ref: '#/components/schemas/xssParams'
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }
 
-    const xssParams = {
+    const reqestXssParams = {
       'markdown:xss:isEnabledPrevention': req.body.isEnabledXss,
       'markdown:xss:option': req.body.xssOption,
       'markdown:xss:tagWhiteList': req.body.tagWhiteList,
@@ -204,7 +250,13 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', xssParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', reqestXssParams);
+      const xssParams = {
+        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
+        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
+        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+      };
       return res.apiv3({ xssParams });
     }
     catch (err) {
