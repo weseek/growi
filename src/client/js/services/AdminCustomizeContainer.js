@@ -225,7 +225,12 @@ export default class AdminCustomizeContainer extends Container {
    * @return {Array} Code highlight
    */
   async updateHighlightJsStyle() {
-    // TODO GW-515 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
+      highlightJsStyle: this.state.currentHighlightJsStyleId,
+      highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**
