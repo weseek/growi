@@ -38,7 +38,7 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      lineBreakParams:
+ *      LineBreakParams:
  *        type: object
  *        properties:
  *          isEnabledLinebreaks:
@@ -47,7 +47,7 @@ const validator = {
  *          isEnabledLinebreaksInComments:
  *            type: boolean
  *            description: enable lineBreak in comment
- *      presentationParams:
+ *      PresentationParams:
  *        type: object
  *        properties:
  *          pageBreakSeparator:
@@ -56,7 +56,7 @@ const validator = {
  *          pageBreakCustomSeparator:
  *            type: string
  *            description: string of pageBreakCustomSeparator
- *      xssParams:
+ *      XssParams:
  *        type: object
  *        properties:
  *          isEnabledPrevention:
