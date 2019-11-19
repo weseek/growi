@@ -1,4 +1,4 @@
-box: node:10
+box: node:12-slim
 
 services:
   - mongo:3.6

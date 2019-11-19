@@ -1,8 +1,31 @@
 # CHANGES
 
-## 3.5.19-RC
+## 3.6.0-RC
+
+### BREAKING CHANGES
+
+* GROWI v3.6.0 no longer support Node.js v8.x
+* The name of database that is storing migrations meta data has been changed
+    * This affects **only when `MONGO_URI` has parameters**
+    * v3.5.x or above has a bug ([#1361](https://github.com/weseek/growi/issues/1361))
+
+Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
+
+### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Support: Support Node.js v12
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.5.21
+
+* Improvement: Cache control when retrieving attachment data
+* Fix: Inviting user doesn't work
+    * Introduced by 3.5.20
+
+## 3.5.20
+
 * Improvement: Organize MongoDB collection indexes uniqueness
 * Improvement: Reactify admin pages (External Account Management)
 * Fix: Search result or Timeline shows loading icon eternally when retrieving not accessible page
@@ -15,6 +38,8 @@
     * migrate-mongo
     * react-i18next
     * validator
+
+## 3.5.19 (Missing number)
 
 ## 3.5.18
 
@@ -182,7 +207,7 @@
 * The restriction mode of the root page (`/`) will be set 'Public'
 * The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
-Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
+Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/35x.html
 
 ### Updates
 
@@ -299,7 +324,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
 None.
 
-Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
+Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 
 ### Updates
 
