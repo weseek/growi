@@ -94,6 +94,7 @@ class SecurityManagement extends React.Component {
           </div>
         </fieldset>
 
+        {/* XSS configuration link */}
         <div className="mb-5">
           <h2 className="border-bottom">{ t('security_setting.xss_prevent_setting') }</h2>
           <div className="text-center">
