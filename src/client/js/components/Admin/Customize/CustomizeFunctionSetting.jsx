@@ -39,14 +39,6 @@ class CustomizeBehaviorSetting extends React.Component {
   render() {
     const { t, adminCustomizeContainer } = this.props;
 
-    const menuItem = [10, 30, 50].map((option) => {
-      return (
-        <li key={option} role="presentation" type="button" onClick={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}>
-          <a role="menuitem">{option}</a>
-        </li>
-      );
-    });
-
     return (
       <React.Fragment>
         <h2>{t('customize_page.Function')}</h2>
@@ -113,7 +105,15 @@ class CustomizeBehaviorSetting extends React.Component {
                 </button>
                 {/* TODO adjust dropdown after BS4 */}
                 <ul className="dropdown-menu" role="menu">
-                  {menuItem}
+                  <li key={10} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
+                    <a role="menuitem">10</a>
+                  </li>
+                  <li key={30} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
+                    <a role="menuitem">30</a>
+                  </li>
+                  <li key={50} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
+                    <a role="menuitem">50</a>
+                  </li>
                 </ul>
               </div>
               <p className="help-block">
