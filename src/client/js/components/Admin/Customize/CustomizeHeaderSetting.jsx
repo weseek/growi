@@ -59,7 +59,7 @@ class CustomizeHeaderSetting extends React.Component {
 
         <div className="col-xs-12">
           <CustomHeaderEditor
-              // The value passed must be immutable
+            // The value passed must be immutable
             value={appContainer.config.customizeHeader}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
