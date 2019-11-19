@@ -666,6 +666,7 @@
     "update_behavior_success": "動作を更新しました",
     "update_function_success": "機能を更新しました",
     "update_highlight_success": "コードハイライトを更新しました",
+    "update_customHeader_success": "カスタムHTMLヘッダーを更新しました",
     "update_customCss_success": "カスタムCSSを更新しました",
     "update_script_success": "カスタムスクリプトを更新しました",
     "layout_description":{

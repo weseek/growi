@@ -18,6 +18,35 @@ const validator = {};
  *    name: CustomizeSetting
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      CustomizeStatus:
+ *        type: object
+ *        properties:
+ *          layoutType:
+ *            type: string
+ *          themeType:
+ *            type: string
+ *          behaviorType
+ *            type: string
+ *          isEnabledTimeline:
+ *            type: boolean
+ *          isSavedStatesOfTabChanges:
+ *            type: boolean
+ *          isEnabledAttachTitleHeader:
+ *            type: boolean
+ *          recentCreatedLimit:
+ *            type: number
+ *          customizeCss:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
@@ -44,29 +73,19 @@ module.exports = (crowi) => {
       body('highlightJsStyle').isString(),
       body('highlightJsStyleBorder').isBoolean(),
     ],
+    customizeCss: [
+      body('customizeCss').isString(),
+    ],
+    customizeScript: [
+      body('customizeScript').isString(),
+    ],
   };
 
   // TODO GW-575 writte swagger
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     // TODO GW-575 return others customize settings
-
-    /* eslint-disable quote-props, no-multi-spaces */
-    const highlightJsCssSelectorOptions = {
-      'github':           { name: '[Light] GitHub',         border: false },
-      'github-gist':      { name: '[Light] GitHub Gist',    border: true },
-      'atom-one-light':   { name: '[Light] Atom One Light', border: true },
-      'xcode':            { name: '[Light] Xcode',          border: true },
-      'vs':               { name: '[Light] Vs',             border: true },
-      'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
-      'hybrid':           { name: '[Dark] Hybrid',          border: false },
-      'monokai':          { name: '[Dark] Monokai',         border: false },
-      'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
-      'vs2015':           { name: '[Dark] Vs 2015',         border: false },
-    };
-    /* eslint-enable quote-props, no-multi-spaces */
-
-    return res.apiv3({ highlightJsCssSelectorOptions });
+    return res.apiv3();
   });
 
   /**
@@ -90,8 +109,14 @@ module.exports = (crowi) => {
    *                    description: type of theme
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update layout and theme
+   *        200:
+   *          description: Succeeded to update layout and theme
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -132,8 +157,14 @@ module.exports = (crowi) => {
    *                    description: type of behavior
    *                    type: string
    *      responses:
-   *          200:
-   *            description: Succeeded to update behavior
+   *        200:
+   *          description: Succeeded to update behavior
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -181,8 +212,14 @@ module.exports = (crowi) => {
    *                    description: limit of recent created
    *                    type: number
    *      responses:
-   *          200:
-   *            description: Succeeded to update function
+   *        200:
+   *          description: Succeeded to update function
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -251,6 +288,96 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating highlight';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-highlight-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeCss:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeCss
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeCss:
+   *                    description: customize css
+   *                    type: string
+   *      responses:
+   *        200:
+   *          description: Succeeded to update customize css
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
+   */
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:css': req.body.customizeCss,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeCss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeCss-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeScript:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeScript
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeScript:
+   *                    description: customize script
+   *                    type: string
+   *      responses:
+   *        200:
+   *          description: Succeeded to update customize script
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
+   */
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:script': req.body.customizeScript,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeScript';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
     }
   });
 

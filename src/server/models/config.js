@@ -184,6 +184,7 @@ module.exports = function(crowi) {
       attrWhiteList: crowi.xssService.getAttrWhiteList(),
       highlightJsStyle: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      customizeHeader: crowi.configManager.getConfig('crowi', 'customize:header'),
       customizeCss: crowi.configManager.getConfig('crowi', 'customize:css'),
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),

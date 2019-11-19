@@ -35,7 +35,6 @@ import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
-import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
@@ -206,17 +205,6 @@ if (adminUserGroupDetailElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupDetailElem,
-  );
-}
-
-const customHeaderEditorElem = document.getElementById('custom-header-editor');
-if (customHeaderEditorElem != null) {
-  // get input[type=hidden] element
-  const customHeaderInputElem = document.getElementById('inputCustomHeader');
-
-  ReactDOM.render(
-    <CustomHeaderEditor inputElem={customHeaderInputElem} />,
-    customHeaderEditorElem,
   );
 }
 

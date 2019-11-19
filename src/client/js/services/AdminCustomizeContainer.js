@@ -29,11 +29,23 @@ export default class AdminCustomizeContainer extends Container {
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
       currentHighlightJsStyleId: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
+      currentCustomizeHeader: appContainer.config.customizeHeader,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
+      /* eslint-disable quote-props, no-multi-spaces */
       highlightJsCssSelectorOptions: {
-
+        'github':           { name: '[Light] GitHub',         border: false },
+        'github-gist':      { name: '[Light] GitHub Gist',    border: true },
+        'atom-one-light':   { name: '[Light] Atom One Light', border: true },
+        'xcode':            { name: '[Light] Xcode',          border: true },
+        'vs':               { name: '[Light] Vs',             border: true },
+        'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
+        'hybrid':           { name: '[Dark] Hybrid',          border: false },
+        'monokai':          { name: '[Dark] Monokai',         border: false },
+        'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
+        'vs2015':           { name: '[Dark] Vs 2015',         border: false },
       },
+      /* eslint-enable quote-props, no-multi-spaces */
     };
 
     this.init();
@@ -53,7 +65,6 @@ export default class AdminCustomizeContainer extends Container {
   async init() {
     // TODO GW-575 fetch data with apiV3
     try {
-      await this.fetchHighLightTheme();
       // search style name from object for display
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[this.state.currentHighlightJsStyleId].name });
     }
@@ -144,9 +155,16 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Change custom css
+   * Change customize Html header
    */
-  changeCustomCss(inputValue) {
+  changeCustomizeHeader(inputValue) {
+    this.setState({ currentCustomizeHeader: inputValue });
+  }
+
+  /**
+   * Change customize css
+   */
+  changeCustomizeCss(inputValue) {
     this.setState({ currentCustomizeCss: inputValue });
   }
 
@@ -215,6 +233,14 @@ export default class AdminCustomizeContainer extends Container {
     return customizedParams;
   }
 
+  /**
+   * Update customHeader
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Customize html header
+   */
+  async updateCustomizeHeader() {
+    // TODO GW-601 create apiV3
+  }
 
   /**
    * Update customCss
@@ -222,7 +248,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize css
    */
   async updateCustomizeCss() {
-    // TODO GW-534 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeCss', {
+      customizeCss: this.state.currentCustomizeCss,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**
@@ -231,8 +261,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
-    // TODO GW-538 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeScript', {
+      customizeScript: this.state.currentCustomizeScript,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
-
 
 }

@@ -12,6 +12,7 @@ import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
+import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 
 class Customize extends React.Component {
 
@@ -34,6 +35,9 @@ class Customize extends React.Component {
         </div>
         <legend>{t('customize_page.custom_title')}</legend>
         {/* カスタムタイトルフォームの react componentをここで呼ぶ(GW-278) */}
+        <div className="my-3">
+          <CustomizeHeaderSetting />
+        </div>
         <div className="my-3">
           <CustomizeCssSetting />
         </div>
