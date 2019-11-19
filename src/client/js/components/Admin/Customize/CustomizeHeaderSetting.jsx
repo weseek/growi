@@ -46,7 +46,7 @@ class CustomizeHeaderSetting extends React.Component {
         <p
           className="well"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('customize_page.custom_header_detail', '&lt;header&gt;', '&lt;script&gt;') }}
+          dangerouslySetInnerHTML={{ __html: t('customize_page.custom_header_detail') }}
         />
 
         <div className="help-block">

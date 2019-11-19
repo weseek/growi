@@ -239,7 +239,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize html header
    */
   async updateCustomizeHeader() {
-    // TODO GW-601 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
+      customizeHeader: this.state.currentCustomizeHeader,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**
@@ -248,7 +252,7 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize css
    */
   async updateCustomizeCss() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customizeCss', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
       customizeCss: this.state.currentCustomizeCss,
     });
     const { customizedParams } = response.data;
@@ -261,7 +265,7 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customizeScript', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
       customizeScript: this.state.currentCustomizeScript,
     });
     const { customizedParams } = response.data;

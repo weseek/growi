@@ -651,7 +651,7 @@
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>%s</code>タグのコンテンツをカスタマイズできます。<br><code>%s</code>がサイト名、<code>%s</code>がページ名またはページパスに置換されます。",
     "custom_header": "カスタム HTML Header",
-    "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>%s</code> タグ内の他の <code>%s</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
+    "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
     "Custom CSS": "カスタム CSS",
     "write_CSS": " システム全体に適用されるCSSを記述できます。",
     "reflect_change": "変更の反映はページの更新が必要です。",
