@@ -75,16 +75,6 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Fetch highLight theme
-   */
-  async fetchHighLightTheme() {
-    const response = await this.appContainer.apiv3.get('/customize-setting/');
-    this.setState({
-      highlightJsCssSelectorOptions: response.data.highlightJsCssSelectorOptions,
-    });
-  }
-
-  /**
    * Switch layoutType
    */
   switchLayoutType(lauoutName) {
