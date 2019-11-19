@@ -101,8 +101,23 @@ module.exports = (crowi) => {
   // TODO GW-575 writte swagger
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    // TODO GW-575 return others customize settings
-    return res.apiv3();
+    const customizeParams = {
+      layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
+      themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+      behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
+      isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
+      isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
+      recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
+      styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
+      customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+    };
+
+    return res.apiv3({ customizeParams });
   });
 
   /**
