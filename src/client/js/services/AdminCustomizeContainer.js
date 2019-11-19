@@ -243,7 +243,7 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize css
    */
   async updateCustomizeCss() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customizeCss', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
       customizeCss: this.state.currentCustomizeCss,
     });
     const { customizedParams } = response.data;
@@ -256,7 +256,7 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customizeScript', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
       customizeScript: this.state.currentCustomizeScript,
     });
     const { customizedParams } = response.data;
