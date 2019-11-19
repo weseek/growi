@@ -38,6 +38,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          recentCreatedLimit:
  *            type: number
+ *          customizeHeader:
+ *            type: string
  *          customizeCss:
  *            type: string
  *          customizeScript:
@@ -243,7 +245,33 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeHeader:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeHeader
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  customizeHeader:
+   *                    description: customize header
+   *                    type: string
+   *      responses:
+   *        200:
+   *          description: Succeeded to update customize header
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  customizedParams:
+   *                    $ref: '#/components/schemas/CustomizeStatus'
+   */
   router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, validator.customizeHeader, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:header': req.body.customizeHeader,
