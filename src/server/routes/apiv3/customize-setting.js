@@ -10,8 +10,6 @@ const router = express.Router();
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-const validator = {};
-
 /**
  * @swagger
  *  tags:
@@ -68,6 +66,9 @@ module.exports = (crowi) => {
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
+    ],
+    customizeHeader: [
+      body('customizeHeader').isString(),
     ],
     customizeCss: [
       body('customizeCss').isString(),
@@ -239,6 +240,25 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
+  // TODO swagger
+  router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, validator.customizeHeader, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:header': req.body.customizeHeader,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeHeader';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeHeader-failed'));
     }
   });
 

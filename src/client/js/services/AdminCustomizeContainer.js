@@ -234,7 +234,11 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize html header
    */
   async updateCustomizeHeader() {
-    // TODO GW-601 create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
+      customizeHeader: this.state.currentCustomizeHeader,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
   }
 
   /**
