@@ -69,6 +69,10 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt(),
     ],
+    highlight: [
+      body('highlightJsStyle').isString(),
+      body('highlightJsStyleBorder').isBoolean(),
+    ],
     customizeCss: [
       body('customizeCss').isString(),
     ],
@@ -239,6 +243,57 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/highlight:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update highlight
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schama:
+   *                type: object
+   *                properties:
+   *                  highlightJsStyle:
+   *                    description: style name of highlight
+   *                    type: string
+   *                  highlightJsStyleBorder:
+   *                    description: enable border of highlight
+   *                    type: boolean
+   *      responses:
+   *          200:
+   *            description: Succeeded to update highlight
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeStatus'
+   */
+  router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:highlightJsStyle': req.body.highlightJsStyle,
+      'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
+        styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating highlight';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-highlight-failed'));
     }
   });
 
