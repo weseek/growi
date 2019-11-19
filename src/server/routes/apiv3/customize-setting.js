@@ -269,6 +269,12 @@ module.exports = (crowi) => {
    *      responses:
    *          200:
    *            description: Succeeded to update highlight
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeStatus'
    */
   router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
