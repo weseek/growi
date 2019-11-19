@@ -50,7 +50,7 @@ class CustomizeCssSetting extends React.Component {
           <div className="col-xs-12">
             <CustomCssEditor
               // The value passed must be immutable
-              value={appContainer.config.customizeCss}
+              value={appContainer.config.customizeCss || ''}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
             />
           </div>

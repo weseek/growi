@@ -81,7 +81,7 @@ class CustomizeScriptSetting extends React.Component {
           <div className="col-xs-12">
             <CustomScriptEditor
               // The value passed must be immutable
-              value={appContainer.config.customizeScript}
+              value={appContainer.config.customizeScript || ''}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
             />
           </div>
