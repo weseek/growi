@@ -40,7 +40,6 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
-import ManageExternalAccount from './components/Admin/Users/ManageExternalAccount';
 import SecurityManagement from './components/Admin/Security/SecurityManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
