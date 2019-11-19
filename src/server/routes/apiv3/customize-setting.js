@@ -21,15 +21,19 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *
  *  components:
  *    schemas:
- *      CustomizeStatus:
+ *      CustomizeLayoutTheme:
  *        type: object
  *        properties:
  *          layoutType:
  *            type: string
  *          themeType:
  *            type: string
+ *      CustomizeBehavior:
+ *        type: object
  *          behaviorType
  *            type: string
+ *      CustomizeFunction:
+ *        type: object
  *          isEnabledTimeline:
  *            type: boolean
  *          isSavedStatesOfTabChanges:
@@ -38,12 +42,16 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          recentCreatedLimit:
  *            type: number
+ *      CustomizeHeader:
+ *        type: object
  *          customizeHeader:
  *            type: string
+ *      CustomizeCss:
+ *        type: object
  *          customizeCss:
  *            type: string
- *          customizeScript:
- *            type: string
+ *      CustomizeScript:
+ *        type: object
  *          customizeScript:
  *            type: string
  */
@@ -115,7 +123,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeStatus'
+   *                    $ref: '#/components/schemas/CustomizeLayoutTheme'
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -163,7 +171,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeStatus'
+   *                    $ref: '#/components/schemas/CustomizeBehavior'
    */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -218,7 +226,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeStatus'
+   *                    $ref: '#/components/schemas/CustomizeFunction'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -270,7 +278,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeStatus'
+   *                    $ref: '#/components/schemas/CustomizeHeader'
    */
   router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, validator.customizeHeader, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -315,7 +323,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeStatus'
+   *                    $ref: '#/components/schemas/CustomizeCss'
    */
   router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -360,7 +368,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeStatus'
+   *                    $ref: '#/components/schemas/CustomizeScript'
    */
   router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
