@@ -27,62 +27,86 @@ class MailSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="form-group">
-          <label htmlFor="settingForm[app:title]" className="col-xs-3 control-label">{t('app_setting.Site Name')}</label>
-          <div className="col-xs-6">
-            <input
-              className="form-control"
-              id="settingForm[app:title]"
-              type="text"
-              name="settingForm[app:title]"
-              value="{{ getConfig('crowi', 'app:title') | default('') }}"
-              placeholder="GROWI"
-            />
-            <p className="help-block">{t('app_setting.sitename_change')}</p>
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="settingForm[app:confidential]" className="col-xs-3 control-label">{t('app_setting.Confidential name')}</label>
-          <div className="col-xs-6">
-            <input
-              className="form-control"
-              id="settingForm[app:confidential]"
-              type="text"
-              name="settingForm[app:confidential]"
-              value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
-              placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}"
-            />
-            <p className="help-block">{t('app_setting.header_content')}</p>
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
-          <div className="col-xs-6">
-            <div className="checkbox checkbox-info">
-              <input
-                type="checkbox"
-                id="cbFileUpload"
-                name="settingForm[app:fileUpload]"
-                value="1"
-              />
-              <label htmlFor="cbFileUpload">
-                {t('app_setting.enable_files_except_image')}
-              </label>
+        <p className="well">{t('app_setting.SMTP_used')} {t('app_setting.SMTP_but_AWS')}<br />{t('app_setting.neihter_of')}</p>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <label htmlFor="settingForm[mail.from]" className="col-xs-3 control-label">{t('app_setting.From e-mail address')}</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  id="settingForm[mail.from]"
+                  type="text"
+                  name="settingForm[mail:from]"
+                  placeholder="{{ t('eg') }} mail@growi.org"
+                  value="{{ getConfig('crowi', 'mail:from') | default('') }}"
+                />
+              </div>
             </div>
-
-            <p className="help-block">
-              {t('app_setting.enable_files_except_image')}<br />
-              {t('app_setting.attach_enable')}
-            </p>
           </div>
         </div>
 
-        <div className="form-group">
-          <div className="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-            <button type="submit" className="btn btn-primary">{t('app_setting.Update')}</button>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <label className="col-xs-3 control-label">{ t('app_setting.SMTP settings') }</label>
+              <div className="col-xs-4">
+                <label>{ t('app_setting.Host') }</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="settingForm[mail:smtpHost]"
+                  value="{{ getConfig('crowi', 'mail:smtpHost') | default('') }}"
+                />
+              </div>
+              <div className="col-xs-2">
+                <label>{ t('app_setting.Port') }</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="settingForm[mail:smtpPort]"
+                  value="{{ getConfig('crowi', 'mail:smtpPort') | default('') }}"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <div className="col-xs-3 col-xs-offset-3">
+                <label>{ t('app_setting.User') }</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="settingForm[mail:smtpUser]"
+                  value="{{ getConfig('crowi', 'mail:smtpUser') | default('') }}"
+                />
+              </div>
+              <div className="col-xs-3">
+                <label>{ t('Password') }</label>
+                <input
+                  className="form-control"
+                  type="password"
+                  name="settingForm[mail:smtpPassword]"
+                  value="{{ getConfig('crowi', 'mail:smtpPassword') | default('') }}"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <div className="col-xs-offset-3 col-xs-6">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+                <button type="submit" className="btn btn-primary">
+                  {t('app_setting.Update')}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </React.Fragment>
