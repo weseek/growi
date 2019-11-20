@@ -25,70 +25,78 @@ class SecurityLocalSetting extends React.Component {
         </p>
         )}
 
-        <div className="col-xs-offset-3 col-xs-6">
-          <div className="checkbox checkbox-success">
-            <input
-              id="isLocalEnabled"
-              type="checkbox"
-              checked={adminSecurityContainer.state.isLocalEnabled}
-              onChange={() => { adminSecurityContainer.switchIsLocalEnabled() }}
-            />
-            <label htmlFor="isLocalEnabled">
-              <strong>{ t('security_setting.Local.name') }</strong>
-            </label>
+        <div className="row mb-5">
+          <strong className="col-xs-3 text-right">{ t('security_setting.Local.name') }</strong>
+          <div className="col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isLocalEnabled"
+                type="checkbox"
+                checked={adminSecurityContainer.state.isLocalEnabled}
+                onChange={() => { adminSecurityContainer.switchIsLocalEnabled() }}
+              />
+              <label htmlFor="isLocalEnabled">
+                { t('security_setting.Local.enable_local') }
+              </label>
+            </div>
           </div>
         </div>
 
         {adminSecurityContainer.state.isLocalEnabled && (
-        <div className="form-group">
-          <div className="col-xs-offset-3 col-xs-9 text-left mt-3">
-            <div className="my-0 btn-group">
-              <label>{ t('Register limitation') }</label>
-              <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">{t(`security_setting.registration_mode.${adminSecurityContainer.state.registrationMode}`)}</span>
-                  <span className="bs-caret pull-right">
-                    <span className="caret" />
-                  </span>
-                </button>
-                {/* TODO adjust dropdown after BS4 */}
-                <ul className="dropdown-menu" role="menu">
-                  <li key="open" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('open') }}>
-                    <a role="menuitem">{ t('security_setting.registration_mode.open') }</a>
-                  </li>
-                  <li key="restricted" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('restricted') }}>
-                    <a role="menuitem">{ t('security_setting.registration_mode.restricted') }</a>
-                  </li>
-                  <li key="closed" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('closed') }}>
-                    <a role="menuitem">{ t('security_setting.registration_mode.closed') }</a>
-                  </li>
-                </ul>
+          <div>
+            <div className="row mb-5">
+              <strong className="col-xs-3 text-right">{ t('Register limitation') }</strong>
+              <div className="col-xs-9 text-left">
+                <div className="my-0 btn-group">
+                  <div className="dropdown">
+                    <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span className="pull-left">{t(`security_setting.registration_mode.${adminSecurityContainer.state.registrationMode}`)}</span>
+                      <span className="bs-caret pull-right">
+                        <span className="caret" />
+                      </span>
+                    </button>
+                    {/* TODO adjust dropdown after BS4 */}
+                    <ul className="dropdown-menu" role="menu">
+                      <li key="open" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('open') }}>
+                        <a role="menuitem">{ t('security_setting.registration_mode.open') }</a>
+                      </li>
+                      <li key="restricted" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('restricted') }}>
+                        <a role="menuitem">{ t('security_setting.registration_mode.restricted') }</a>
+                      </li>
+                      <li key="closed" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('closed') }}>
+                        <a role="menuitem">{ t('security_setting.registration_mode.closed') }</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <p className="help-block">
+                    { t('security_setting.Register limitation desc') }
+                  </p>
+                </div>
               </div>
-              <p className="help-block">
-                { t('security_setting.Register limitation desc') }
-              </p>
+            </div>
+            <div className="row mb-5">
+              {/* eslint-disable-next-line react/no-danger */}
+              <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
+              <div className="col-xs-6">
+                <div>
+                  <textarea
+                    className="form-control"
+                    type="textarea"
+                    name="registrationWhiteList"
+                    placeholder={adminSecurityContainer.state.registrationWhiteList}
+                  />
+                  <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
+                    <code>@growi.org</code>{ t('security_setting.only_those') }<br />
+                    { t('security_setting.insert_single') }
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="col-xs-offset-3 col-xs-6 form-group mt-3">
-            <label htmlFor="registrationWhiteList" className="control-label">{ t('The whitelist of registration permission E-mail address') }</label>
-            <div>
-              <textarea
-                className="form-control"
-                type="textarea"
-                name="registrationWhiteList"
-                placeholder={adminSecurityContainer.state.registrationWhiteList}
-              />
-              <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
-                <code>@growi.org</code>{ t('security_setting.only_those') }<br />
-                { t('security_setting.insert_single') }
-              </p>
-            </div>
-          </div>
-        </div>
         )}
 
         {/*  TODO replace component */}
-        <div className="col-xs-offset-3 col-xs-6 my-5">
+        <div className="col-xs-offset-3 col-xs-6 mb-5">
           <button type="submit" className="btn btn-primary">{ t('Update') }</button>
         </div>
 
