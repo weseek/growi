@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import SecurityLocalSetting from './SecurityLocalSetting';
 
 class SecurityManagement extends React.Component {
 
@@ -139,7 +140,7 @@ class SecurityManagement extends React.Component {
             </ul>
             <div className="tab-content p-t-10">
               <div id="passport-local" className="tab-pane active" role="tabpanel">
-                {/* TODO GW-542 reactify local.html */}
+                <SecurityLocalSetting />
               </div>
               <div id="passport-ldap" className="tab-pane" role="tabpanel">
                 {/* TODO GW-543 reactify ldap.html */}
