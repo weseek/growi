@@ -84,7 +84,7 @@ module.exports = (crowi) => {
       body('recentCreatedLimit').isInt(),
     ],
     customizeTitle: [
-
+      body('customTitle').isString(),
     ],
     customizeHeader: [
       body('customizeHeader').isString(),

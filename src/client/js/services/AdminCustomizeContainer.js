@@ -235,6 +235,20 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Update customTitle
+   * @memberOf AdminCustomizeContainer
+   * @return
+   */
+  async updateCustomizeTitle() {
+    // TODO create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeTitle', {
+      title: this.state.currentTitle,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
+  }
+
+  /**
    * Update customHeader
    * @memberOf AdminCustomizeContainer
    * @return {string} Customize html header
@@ -268,20 +282,6 @@ export default class AdminCustomizeContainer extends Container {
   async updateCustomizeScript() {
     const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
       customizeScript: this.state.currentCustomizeScript,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
-  }
-
-  /**
-   * Update customTitle
-   * @memberOf AdminCustomizeContainer
-   * @return
-   */
-  async updateCustomizeTitle() {
-    // TODO create apiV3
-    const response = await this.appContainer.apiv3.put('/customize-setting/customizeTitle', {
-      title: this.state.currentTitle,
     });
     const { customizedParams } = response.data;
     return customizedParams;
