@@ -30,7 +30,7 @@ class SecurityLocalSetting extends React.Component {
               <input
                 id="nameForIsLocalEnabled"
                 type="checkbox"
-                checked
+                checked // TODO fetch config
               />
               <label htmlFor="nameForIsLocalEnabled">
                 <strong>{ t('security_setting.Local.name') }</strong>
@@ -41,7 +41,6 @@ class SecurityLocalSetting extends React.Component {
 
           <div className="form-group" id="btn-update">
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
-
           </div>
         </div>
 
