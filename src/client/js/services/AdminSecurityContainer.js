@@ -22,12 +22,14 @@ export default class AdminSecurityContainer extends Container {
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',
+      isLdapEnabled: true,
     };
 
     this.init();
 
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
+    this.switchIsLdapEnabled = this.switchIsLdapEnabled.bind(this);
   }
 
   init() {
@@ -54,6 +56,13 @@ export default class AdminSecurityContainer extends Container {
    */
   changeRegistrationMode(value) {
     this.setState({ registrationMode: value });
+  }
+
+  /**
+   * Switch local enabled
+   */
+  switchIsLdapEnabled() {
+    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
   }
 
 }

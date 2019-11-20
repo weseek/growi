@@ -498,6 +498,7 @@
       "enable_local": "enable ID/Password"
     },
     "ldap": {
+      "enable_ldap": "enable LDAP",
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
       "bind_manager": "Manager Bind",

@@ -10,7 +10,7 @@ import AdminSecurityContainer from '../../../services/AdminSecurityContainer';
 class SecurityLdapSetting extends React.Component {
 
   render() {
-    const { t } = this.props;
+    const { t, adminSecurityContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -18,6 +18,23 @@ class SecurityLdapSetting extends React.Component {
         <h2 className="alert-anchor border-bottom">
           LDAP { t('security_setting.configuration') }
         </h2>
+
+        <div className="row mb-5">
+          <strong className="col-xs-3 text-right">Use LDAP</strong>
+          <div className="col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isLdapEnabled"
+                type="checkbox"
+                checked={adminSecurityContainer.state.isLdapEnabled}
+                onChange={() => { adminSecurityContainer.switchIsLdapEnabled() }}
+              />
+              <label htmlFor="isLdapEnabled">
+                { t('security_setting.ldap.enable_ldap') }
+              </label>
+            </div>
+          </div>
+        </div>
 
       </React.Fragment>
     );
