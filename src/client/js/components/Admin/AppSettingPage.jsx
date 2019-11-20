@@ -8,6 +8,12 @@ import { toastSuccess, toastError } from '../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
 
+import AppSetting from './App/AppSetting';
+import SiteUrlSetting from './App/SiteUrlSetting';
+import MailSetting from './App/MailSetting';
+import AwsSetting from './App/AwsSetting';
+import PluginSetting from './App/PluginSetting';
+
 import GrowiArchiveSection from './ImportData/GrowiArchiveSection';
 
 const logger = loggerFactory('growi:importer');
@@ -27,99 +33,19 @@ class AppSettingPage extends React.Component {
       <Fragment>
         <fieldset>
           <legend>{t('App Settings')}</legend>
-          {/* App設定フォームの react componentをここで呼ぶ(GW-244) */}
+          <AppSetting />
+
           <legend>{t('Site URL settings')}</legend>
-          {/* サイトURL設定フォームの react componentをここで呼ぶ(GW-244) */}
+          {/* サイトURL設定フォームの react componentをここで呼ぶ(GW-260) */}
           <legend>{t('app_setting.Mail settings')}</legend>
-          {/* メール設定フォームの react componentをここで呼ぶ(GW-244) */}
+          {/* メール設定フォームの react componentをここで呼ぶ(GW-261) */}
           <legend>{t('app_setting.AWS settings')}</legend>
-          {/* AWS設定フォームの react componentをここで呼ぶ(GW-244) */}
+          {/* AWS設定フォームの react componentをここで呼ぶ(GW-262) */}
           <legend>{t('app_setting.Plugin settings')}</legend>
-          {/* プラグイン設定フォームの react componentをここで呼ぶ(GW-244) */}
+          {/* プラグイン設定フォームの react componentをここで呼ぶ(GW-263) */}
         </fieldset>
       </Fragment>
 
-    //     <form action="/_api/admin/settings/app" method="post" class="form-horizontal" id="appSettingForm" role="form">
-    //     <fieldset>
-    //       <legend>{{ t('App settings') }}</legend>
-    //       <div class="form-group">
-    //         <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Site Name') }}</label>
-    //         <div class="col-xs-6">
-    //           <input class="form-control"
-    //                 id="settingForm[app:title]"
-    //                 type="text"
-    //                 name="settingForm[app:title]"
-    //                 value="{{ getConfig('crowi', 'app:title') | default('') }}"
-    //                 placeholder="GROWI">
-    //           <p class="help-block">{{ t("app_setting.sitename_change") }}</p>
-    //         </div>
-    //       </div>
-
-    //       <div class="form-group">
-    //         <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
-    //         <div class="col-xs-6">
-    //           <input class="form-control"
-    //                 id="settingForm[app:confidential]"
-    //                 type="text"
-    //                 name="settingForm[app:confidential]"
-    //                 value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
-    //                 placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}">
-    //           <p class="help-block">{{ t("app_setting.header_content") }}</p>
-    //         </div>
-    //       </div>
-
-    //       <div class="form-group">
-    //         <label class="col-xs-3 control-label">{{ t('app_setting.Default Language for new users') }}</label>
-    //         <div class="col-xs-6">
-    //           <div class="radio radio-primary radio-inline">
-    //               <input type="radio"
-    //                     id="radioLangEn"
-    //                     name="settingForm[app:globalLang]"
-    //                     value="{{ consts.language.LANG_EN_US }}"
-    //                     {% if getConfig('crowi', 'app:globalLang') == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
-    //               <label for="radioLangEn">{{ t('English') }}</label>
-    //           </div>
-    //           <div class="radio radio-primary radio-inline">
-    //               <input type="radio"
-    //                     id="radioLangJa"
-    //                     name="settingForm[app:globalLang]"
-    //                     value="{{ consts.language.LANG_JA }}"
-    //                     {% if getConfig('crowi', 'app:globalLang') == consts.language.LANG_JA %}checked="checked"{% endif %}>
-    //               <label for="radioLangJa">{{ t('Japanese') }}</label>
-    //           </div>
-    //         </div>
-    //       </div>
-
-    //       <div class="form-group">
-    //         <label class="col-xs-3 control-label">{{ t('app_setting.File Uploading') }}</label>
-    //         <div class="col-xs-6">
-    //           <div class="checkbox checkbox-info">
-    //             <input type="checkbox"
-    //                   id="cbFileUpload"
-    //                   name="settingForm[app:fileUpload]"
-    //                   value="1"
-    //                   {% if getConfig('crowi', 'app:fileUpload') %}checked{% endif %}
-    //                   {% if not fileUploadService.getIsUploadable() %}disabled="disabled"{% endif %}>
-    //             <label for="cbFileUpload">
-    //               {{ t("app_setting.enable_files_except_image") }}
-    //             </label>
-    //           </div>
-
-    //             <p class="help-block">
-    //               {{ t("app_setting.enable_files_except_image") }}<br>
-    //               {{ t("app_setting.attach_enable") }}
-    //             </p>
-    //         </div>
-    //       </div>
-
-    //       <div class="form-group">
-    //         <div class="col-xs-offset-3 col-xs-6">
-    //           <input type="hidden" name="_csrf" value="{{ csrf() }}">
-    //           <button type="submit" class="btn btn-primary">{{ t('app_setting.Update') }}</button>
-    //         </div>
-    //       </div>
-    //     </fieldset>
-    //     </form>
 
     //     <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
     //       <fieldset>
