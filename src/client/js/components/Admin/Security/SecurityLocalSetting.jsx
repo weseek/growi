@@ -9,25 +9,8 @@ import AdminSecurityContainer from '../../../services/AdminSecurityContainer';
 
 class SecurityLocalSetting extends React.Component {
 
-  constructor(props) {
-    super();
-
-
-    this.state = {
-      isLocalEnabled: true,
-      // TODO show selected value at here
-      modeValue: 'open',
-    };
-
-    this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
-  }
-
-  switchIsLocalEnabled() {
-    this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
-  }
-
   render() {
-    const { t } = this.props;
+    const { t, adminSecurityContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -46,8 +29,8 @@ class SecurityLocalSetting extends React.Component {
             <input
               id="isLocalEnabled"
               type="checkbox"
-              checked={this.state.isLocalEnabled}
-              onChange={() => { this.switchIsLocalEnabled() }}
+              checked={adminSecurityContainer.state.isLocalEnabled}
+              onChange={() => { adminSecurityContainer.switchIsLocalEnabled() }}
             />
             <label htmlFor="isLocalEnabled">
               <strong>{ t('security_setting.Local.name') }</strong>
@@ -55,7 +38,7 @@ class SecurityLocalSetting extends React.Component {
           </div>
         </div>
 
-        {this.state.isLocalEnabled && (
+        {adminSecurityContainer.state.isLocalEnabled && (
 
         <div className="form-group">
           <div className="col-xs-offset-3 col-xs-6 text-left">
@@ -63,20 +46,20 @@ class SecurityLocalSetting extends React.Component {
               <label>{ t('Register limitation') }</label>
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">{t(`security_setting.registration_mode.${this.state.modeValue}`)}</span>
+                  <span className="pull-left">{t(`security_setting.registration_mode.${adminSecurityContainer.state.registrationMode}`)}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
                   </span>
                 </button>
                 {/* TODO adjust dropdown after BS4 */}
                 <ul className="dropdown-menu" role="menu">
-                  <li key="open" role="presentation" type="button" onClick={() => { this.setState({ modeValue: 'open' }) }}>
+                  <li key="open" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('open') }}>
                     <a role="menuitem">{ t('security_setting.registration_mode.open') }</a>
                   </li>
-                  <li key="restricted" role="presentation" type="button" onClick={() => { this.setState({ modeValue: 'restricted' }) }}>
+                  <li key="restricted" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('restricted') }}>
                     <a role="menuitem">{ t('security_setting.registration_mode.restricted') }</a>
                   </li>
-                  <li key="closed" role="presentation" type="button" onClick={() => { this.setState({ modeValue: 'closed' }) }}>
+                  <li key="closed" role="presentation" type="button" onClick={() => { adminSecurityContainer.changeRegistrationMode('closed') }}>
                     <a role="menuitem">{ t('security_setting.registration_mode.closed') }</a>
                   </li>
                 </ul>
@@ -87,7 +70,6 @@ class SecurityLocalSetting extends React.Component {
             </div>
           </div>
         </div>
-
         )}
 
 

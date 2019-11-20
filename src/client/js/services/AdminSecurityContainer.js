@@ -17,8 +17,13 @@ export default class AdminSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      // TODO show selected value at here
+      isLocalEnabled: true,
+      registrationMode: 'open',
     };
 
+    this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
+    this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
   }
 
 
@@ -27,6 +32,20 @@ export default class AdminSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminSecurityContainer';
+  }
+
+  /**
+   * Switch local enabled
+   */
+  switchIsLocalEnabled() {
+    this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
+  }
+
+  /**
+   * Change registration mode
+   */
+  changeRegistrationMode(value) {
+    this.setState({ registrationMode: value });
   }
 
 }
