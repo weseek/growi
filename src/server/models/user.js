@@ -627,7 +627,7 @@ module.exports = function(crowi) {
   userSchema.statics.createUsersByEmailList = async function(emailList) {
     const User = this;
 
-    // check exists and get list of tyr to create
+    // check exists and get list of try to create
     const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });

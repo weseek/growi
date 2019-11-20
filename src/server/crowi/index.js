@@ -330,19 +330,16 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const self = this;
-  const searcherUri = this.env.ELASTICSEARCH_URI
-    || this.env.BONSAI_URL
-    || null;
+  const SearchService = require('@server/service/search');
+  const searchService = new SearchService(this);
 
-  if (searcherUri) {
+  if (searchService.isAvailable) {
     try {
-      self.searcher = new (require(path.join(self.libDir, 'util', 'search')))(self, searcherUri);
-      self.searcher.initIndices();
+      this.searcher = searchService;
     }
     catch (e) {
       logger.error('Error on setup searcher', e);
-      self.searcher = null;
+      this.searcher = null;
     }
   }
 };

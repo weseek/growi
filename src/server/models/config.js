@@ -182,8 +182,13 @@ module.exports = function(crowi) {
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
       tagWhiteList: crowi.xssService.getTagWhiteList(),
       attrWhiteList: crowi.xssService.getAttrWhiteList(),
+      highlightJsStyle: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      customizeHeader: crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeCss: crowi.configManager.getConfig('crowi', 'customize:css'),
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
+      isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
+      customizeScript: crowi.configManager.getConfig('crowi', 'customize:script'),
       hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,

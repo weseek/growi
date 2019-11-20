@@ -8,7 +8,15 @@ import AppContainer from '../../../services/AppContainer';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
+<<<<<<< HEAD
 import CustomizeTitle from './CustomizeTitle';
+=======
+import CustomizeFunctionSetting from './CustomizeFunctionSetting';
+import CustomizeHighlightSetting from './CustomizeHighlightSetting';
+import CustomizeCssSetting from './CustomizeCssSetting';
+import CustomizeScriptSetting from './CustomizeScriptSetting';
+import CustomizeHeaderSetting from './CustomizeHeaderSetting';
+>>>>>>> origin/reactify-admin/CustomizePage
 
 class Customize extends React.Component {
 
@@ -23,19 +31,32 @@ class Customize extends React.Component {
         <div className="my-3">
           <CustomizeBehaviorSetting />
         </div>
-        <legend>{t('customize_page.Function')}</legend>
-        {/* 機能フォームの react componentをここで呼ぶ(GW-276) */}
-        <legend>{t('customize_page.Code Highlight')}</legend>
-        {/* コードハイライトフォームの react componentをここで呼ぶ(GW-277) */}
+        <div className="my-3">
+          <CustomizeFunctionSetting />
+        </div>
+        <div className="my-3">
+          <CustomizeHighlightSetting />
+        </div>
         <legend>{t('customize_page.custom_title')}</legend>
         {/* カスタムタイトルフォームの react componentをここで呼ぶ(GW-278) */}
         <div className="my-3">
+<<<<<<< HEAD
           <CustomizeTitle />
         </div>
         <legend>{t('customize_page.Custom CSS')}</legend>
         {/* カスタムCSSフォームの react componentをここで呼ぶ(GW-279) */}
         <legend>{t('customize_page.Custom script')}</legend>
         {/* カスタムスクリプトフォームの react componentをここで呼ぶ(GW-280) */}
+=======
+          <CustomizeHeaderSetting />
+        </div>
+        <div className="my-3">
+          <CustomizeCssSetting />
+        </div>
+        <div className="my-3">
+          <CustomizeScriptSetting />
+        </div>
+>>>>>>> origin/reactify-admin/CustomizePage
       </Fragment>
     );
   }

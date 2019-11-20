@@ -196,6 +196,7 @@ module.exports = function(crowi, app) {
   actions.customize.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'customize:');
 
+    // TODO delete after apiV3
     /* eslint-disable quote-props, no-multi-spaces */
     const highlightJsCssSelectorOptions = {
       'github':           { name: '[Light] GitHub',         border: false },
@@ -486,17 +487,7 @@ module.exports = function(crowi, app) {
 
   actions.externalAccount = {};
   actions.externalAccount.index = function(req, res) {
-    const page = parseInt(req.query.page) || 1;
-
-    ExternalAccount.findAllWithPagination({ page })
-      .then((result) => {
-        const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
-
-        return res.render('admin/external-accounts', {
-          accounts: result.docs,
-          pager,
-        });
-      });
+    return res.render('admin/external-accounts');
   };
 
   actions.externalAccount.remove = async function(req, res) {
