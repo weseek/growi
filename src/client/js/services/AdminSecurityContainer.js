@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:services:AdminSecurityContainer');
  * Service container for admin security page (SecurityManagement.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminUsersContainer extends Container {
+export default class AdminSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -19,6 +19,14 @@ export default class AdminUsersContainer extends Container {
     this.state = {
     };
 
+  }
+
+
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'AdminSecurityContainer';
   }
 
 }
