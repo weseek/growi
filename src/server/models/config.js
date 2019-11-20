@@ -178,7 +178,6 @@ module.exports = function(crowi) {
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
       isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-      isLocalEnabled: crowi.configManager.getConfig('security', 'security:passport-local:isEnabled'),
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
       tagWhiteList: crowi.xssService.getTagWhiteList(),
       attrWhiteList: crowi.xssService.getAttrWhiteList(),

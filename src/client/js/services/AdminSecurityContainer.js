@@ -17,13 +17,19 @@ export default class AdminSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO show selected value at here
+      // TODO GW-583 set value
       isLocalEnabled: true,
       registrationMode: 'open',
     };
 
+    this.init();
+
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
+  }
+
+  init() {
+    // TODO GW-583 fetch config value with api
   }
 
 
