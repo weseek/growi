@@ -4,6 +4,7 @@
 
 ### BREAKING CHANGES
 
+* GROWI v3.6.0 no longer support Node.js v8.x
 * The name of database that is storing migrations meta data has been changed
     * This affects **only when `MONGO_URI` has parameters**
     * v3.5.x or above has a bug ([#1361](https://github.com/weseek/growi/issues/1361))
@@ -13,6 +14,15 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 ### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Support: Support Node.js v12
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.5.21
+
+* Improvement: Cache control when retrieving attachment data
+* Fix: Inviting user doesn't work
+    * Introduced by 3.5.20
 
 ## 3.5.20
 
