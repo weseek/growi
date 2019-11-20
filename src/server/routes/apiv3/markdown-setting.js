@@ -127,7 +127,7 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestLineBreakParams);
       const lineBreaksParams = {
         isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments') || '',
+        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
       };
       return res.apiv3({ lineBreaksParams });
     }
