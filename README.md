@@ -181,6 +181,7 @@ Environment Variables
     * FILE_UPLOAD_TOTAL_LIMIT: Total capacity limit for uploads (bytes). default: `Infinity`
     * GCS_API_KEY_JSON_PATH: Path of the JSON file that contains [service account key to authenticate to GCP API](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
     * GCS_BUCKET: Name of the GCS bucket
+    * GCS_UPLOAD_NAMESPACE: Directory name to create in the bucket
     * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
         * MONGO_GRIDFS_TOTAL_LIMIT setting takes precedence over FILE_UPLOAD_TOTAL_LIMIT.
 * **Option to integrate with external systems**
