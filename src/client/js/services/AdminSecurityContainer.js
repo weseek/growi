@@ -18,8 +18,10 @@ export default class AdminSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
+      useOnlyEnvVarsForSomeOptions: true,
       isLocalEnabled: true,
       registrationMode: 'open',
+      registrationWhiteList: '',
     };
 
     this.init();

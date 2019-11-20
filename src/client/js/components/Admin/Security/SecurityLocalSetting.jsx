@@ -19,10 +19,11 @@ class SecurityLocalSetting extends React.Component {
           { t('security_setting.Local.name') } { t('security_setting.configuration') }
         </h2>
 
-        {/* TODO show or hide */}
+        {adminSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
         <p className="alert alert-info">
           { t('security_setting.Local.note for the only env option', 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS') }
         </p>
+        )}
 
         <div className="col-xs-offset-3 col-xs-6">
           <div className="checkbox checkbox-success">
@@ -39,9 +40,8 @@ class SecurityLocalSetting extends React.Component {
         </div>
 
         {adminSecurityContainer.state.isLocalEnabled && (
-
-        <div className="form-group">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+        <div className="row form-group">
+          <div className="col-xs-offset-3 col-xs-9 text-left mt-3">
             <div className="my-0 btn-group">
               <label>{ t('Register limitation') }</label>
               <div className="dropdown">
@@ -69,9 +69,23 @@ class SecurityLocalSetting extends React.Component {
               </p>
             </div>
           </div>
+          <div className="col-xs-offset-3 col-xs-6 form-group mt-3">
+            <label htmlFor="registrationWhiteList" className="control-label">{ t('The whitelist of registration permission E-mail address') }</label>
+            <div>
+              <textarea
+                className="form-control"
+                type="textarea"
+                name="registrationWhiteList"
+                placeholder={adminSecurityContainer.state.registrationWhiteList}
+              />
+              <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
+                <code>@growi.org</code>{ t('security_setting.only_those') }<br />
+                { t('security_setting.insert_single') }
+              </p>
+            </div>
+          </div>
         </div>
         )}
-
 
         {/*  TODO replace component */}
         <div className="col-xs-offset-3 col-xs-6 mt-5">
