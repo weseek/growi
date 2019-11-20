@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminSecurityContainer from '../../../services/AdminSecurityContainer';
 
 class SecurityLocalSetting extends React.Component {
 
@@ -22,7 +23,6 @@ class SecurityLocalSetting extends React.Component {
   }
 
   switchIsLocalEnabled() {
-    console.log('hogehoge');
     this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
   }
 
@@ -105,10 +105,11 @@ class SecurityLocalSetting extends React.Component {
 SecurityLocalSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminSecurityContainer: PropTypes.instanceOf(AdminSecurityContainer).isRequired,
 };
 
 const SecurityLocalSettingWrapper = (props) => {
-  return createSubscribedElement(SecurityLocalSetting, props, [AppContainer]);
+  return createSubscribedElement(SecurityLocalSetting, props, [AppContainer, AdminSecurityContainer]);
 };
 
 export default withTranslation()(SecurityLocalSettingWrapper);
