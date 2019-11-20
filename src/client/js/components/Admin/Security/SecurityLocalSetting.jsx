@@ -40,7 +40,7 @@ class SecurityLocalSetting extends React.Component {
         </div>
 
         {adminSecurityContainer.state.isLocalEnabled && (
-        <div className="row form-group">
+        <div className="form-group">
           <div className="col-xs-offset-3 col-xs-9 text-left mt-3">
             <div className="my-0 btn-group">
               <label>{ t('Register limitation') }</label>
@@ -88,7 +88,7 @@ class SecurityLocalSetting extends React.Component {
         )}
 
         {/*  TODO replace component */}
-        <div className="col-xs-offset-3 col-xs-6 mt-5">
+        <div className="col-xs-offset-3 col-xs-6 my-5">
           <button type="submit" className="btn btn-primary">{ t('Update') }</button>
         </div>
 
