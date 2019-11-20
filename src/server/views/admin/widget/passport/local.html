@@ -6,6 +6,7 @@
   {% set isLocalEnabled = getConfig('crowi', 'security:passport-local:isEnabled') %}
   {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions') %}
 
+  <!-- TODO delete file after reactify-admin -->
   {% if useOnlyEnvVars %}
     <p class="alert alert-info">
       {{ t("security_setting.Local.note for the only env option", "LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS") }}
