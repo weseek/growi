@@ -51,10 +51,10 @@
       {% include './widget/menu.html' with {current: 'customize'} %}
     </div>
     <div class="col-md-9">
-      <!-- TODO reactify admin -->
-      <!-- <div id="admin-customize"></div> -->
+      <div id="admin-customize"></div>
 
-      <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
+      <!-- TODO delete after reactify-admin -->
+      <!-- <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
         <div class="form-group">
@@ -522,7 +522,7 @@ window.addEventListener('load', (event) => {
         </div>
 
       </fieldset>
-      </form>
+      </form> -->
 
     </div>
   </div>
