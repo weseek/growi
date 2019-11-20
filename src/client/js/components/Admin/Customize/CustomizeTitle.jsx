@@ -10,7 +10,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-const logger = loggerFactory('growi:customizeTitle');
+const logger = loggerFactory('growi:Customize');
 
 class CustomizeTitle extends React.Component {
 
@@ -25,7 +25,7 @@ class CustomizeTitle extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeTitle();
-      toastSuccess(t('customize_page.update_title_success'));
+      toastSuccess(t('customize_page.update_customTitle_success'));
     }
     catch (err) {
       toastError(err);
@@ -34,34 +34,32 @@ class CustomizeTitle extends React.Component {
   }
 
   render() {
-    const { t, appContainer, adminCustomizeContainer } = this.props;
+    const { appContainer, adminCustomizeContainer } = this.props;
 
     return (
-      <div className="row">
-        <div className="col-xs-12">
-          <React.Fragment>
-            <p className="well">
-              { t('customize_page.custom_title_detail') }<br />
-            </p>
-            {/* TODO i18n */}
-            <p className="help-block">
-              Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code><br />
-              Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - { 'GROWI' }&lt;&#047;title&gt;</code></pre>
-            </p>
-            <div className="form-group">
-              <div className="col-xs-12">
-                <input
-                  className="form-control"
-                  id="customTitleSettingForm"
-                  value={appContainer.config.customizeTitle}
-                  onChange={(e) => { adminCustomizeContainer.updateCustomizeTitle(e.target.value) }}
-                />
-              </div>
-            </div>
-            <AdminUpdateButtonRow onClick={this.onClickSubmit} />
-          </React.Fragment>
+      <React.Fragment>
+        <p
+          className="well"
+          // eslint-disable-next-line react/no-danger, max-len
+          dangerouslySetInnerHTML={{ __html: '<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。<br><code>&#123;&#123;sitename&#125;&#125;</code>がサイト名、<code>&#123;&#123;page&#125;&#125;</code>がページ名またはページパスに置換されます。' }}
+        />
+        {/* TODO i18n */}
+        <p className="help-block">
+          Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
+          <br />
+          Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - { 'GROWI' }&lt;&#047;title&gt;</code></pre>
+        </p>
+        <div className="form-group">
+          <input
+            className="form-control"
+            id="customTitleSettingForm"
+            value={appContainer.config.customizeTitle}
+            onChange={(e) => { adminCustomizeContainer.updateCustomizeTitle(e.target.value) }}
+          />
         </div>
-      </div>
+
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} />
+      </React.Fragment>
     );
   }
 

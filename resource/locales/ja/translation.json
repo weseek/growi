@@ -648,7 +648,7 @@
     "by_invalidating": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
     "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
     "custom_title": "カスタム Title",
-    "custom_title_detail": "<code>%s</code>タグのコンテンツをカスタマイズできます。<br><code>%s</code>がサイト名、<code>%s</code>がページ名またはページパスに置換されます。",
+    "custom_title_detail": "<code><title></code>タグのコンテンツをカスタマイズできます。<br><code>{{sitename}}</code>がサイト名、<code>{{page}}</code>がページ名またはページパスに置換されます。",
     "custom_header": "カスタム HTML Header",
     "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>%s</code> タグ内の他の <code>%s</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
     "Custom CSS": "カスタム CSS",
@@ -662,7 +662,8 @@
     "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
     "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
     "update_layout_success": "レイアウトを更新しました",
-    "update_behavior_success": "挙動を更新しました"
+    "update_behavior_success": "挙動を更新しました",
+    "update_customTitle_success": "カスタム Titleを更新しました"
   },
 
   "user_management": {
