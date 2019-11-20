@@ -42,6 +42,7 @@ import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting'
 import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
+import AppSettingPage from './components/Admin/AppSettingPage';
 import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
 import ExportArchiveDataPage from './components/Admin/ExportArchiveDataPage';
