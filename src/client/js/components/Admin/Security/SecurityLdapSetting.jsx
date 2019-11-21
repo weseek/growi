@@ -176,6 +176,18 @@ class SecurityLdapSetting extends React.Component {
 
             </div>
 
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping ({ t('security_setting.optional') })
+            </h3>
+
+            {/* GW-617 create form */}
+
+            <h3 className="alert-anchor border-bottom">
+              { t('security_setting.ldap.group_search_filter') } ({ t('security_setting.optional') })
+            </h3>
+
+            {/* GW-617 create form */}
+
           </React.Fragment>
         )}
 
