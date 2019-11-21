@@ -36,6 +36,11 @@ class SecurityLdapSetting extends React.Component {
           </div>
         </div>
 
+
+        {adminSecurityContainer.state.isLdapEnabled && (
+        <p>hoge</p>
+        )}
+
       </React.Fragment>
     );
   }
