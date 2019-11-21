@@ -27,6 +27,7 @@ export default class AdminSecurityContainer extends Container {
         serverUrl: '',
         bindMode: 'manager',
         bindDN: '',
+        bindDNPassword: '',
       },
     };
 
@@ -99,6 +100,15 @@ export default class AdminSecurityContainer extends Container {
   changeBindDN(inputValue) {
     const newLdapConfig = this.state.ldapConfig;
     newLdapConfig.bindDN = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change bind DN password
+   */
+  changeBindDNPassword(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.bindDNPassword = inputValue;
     this.setState({ newLdapConfig });
   }
 

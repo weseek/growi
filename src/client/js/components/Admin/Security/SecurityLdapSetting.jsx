@@ -116,6 +116,20 @@ class SecurityLdapSetting extends React.Component {
                   </p>
                 )}
               </div>
+
+            </div>
+
+            <div className="row mb-5">
+              <label htmlFor="bindDNPassword" className="col-xs-3 control-label text-right">{ t('security_setting.ldap.bind_DN_password') }</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="bindDNPassword"
+                  value={ldapConfig.bindDNPassword}
+                  onChange={e => adminSecurityContainer.changeBindDNPassword(e.target.value)}
+                />
+              </div>
             </div>
 
           </React.Fragment>
