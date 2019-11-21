@@ -42,7 +42,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Behavior')}</h2>
+        <h2 className="border-bottom">{t('customize_page.Behavior')}</h2>
         <div className="row">
           <div className="col-xs-6">
             <CustomizeBehaviorOption

@@ -41,7 +41,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Function')}</h2>
+        <h2 className="border-bottom">{t('customize_page.Function')}</h2>
         <p className="well">{ t('customize_page.function_choose') }</p>
 
         <div className="form-group row">

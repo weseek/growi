@@ -54,9 +54,9 @@ class CustomizeLayoutSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Layout')}</h2>
+        <h2 className="border-bottom">{t('customize_page.Layout')}</h2>
         <CustomizeLayoutOptions />
-        <h2>{ t('customize_page.Theme') }</h2>
+        <h2 className="border-bottom">{ t('customize_page.Theme') }</h2>
         {this.renderDevAlert()}
         <CustomizeThemeOptions />
         <AdminUpdateButtonRow onClick={this.onClickSubmit} />
