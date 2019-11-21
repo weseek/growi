@@ -116,7 +116,6 @@ class SecurityLdapSetting extends React.Component {
                   </p>
                 )}
               </div>
-
             </div>
 
             <div className="row mb-5">
@@ -173,7 +172,6 @@ class SecurityLdapSetting extends React.Component {
                   </small>
                 </p>
               </div>
-
             </div>
 
             <h3 className="alert-anchor border-bottom">
