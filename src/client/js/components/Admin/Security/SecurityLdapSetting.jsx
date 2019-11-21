@@ -123,12 +123,25 @@ class SecurityLdapSetting extends React.Component {
               <label htmlFor="bindDNPassword" className="col-xs-3 control-label text-right">{ t('security_setting.ldap.bind_DN_password') }</label>
               <div className="col-xs-6">
                 <input
-                  className="form-control"
-                  type="text"
+                  className="form-control passport-ldap-managerbind"
+                  type="password"
                   name="bindDNPassword"
                   value={ldapConfig.bindDNPassword}
                   onChange={e => adminSecurityContainer.changeBindDNPassword(e.target.value)}
                 />
+                {(ldapConfig.bindMode === 'manager') ? (
+                  <p className="help-block passport-ldap-managerbind">
+                    <small>
+                      { t('security_setting.ldap.bind_DN_password_manager_detail') }
+                    </small>
+                  </p>
+                ) : (
+                  <p className="help-block passport-ldap-userbind">
+                    <small>
+                      { t('security_setting.ldap.bind_DN_password_user_detail') }
+                    </small>
+                  </p>
+                )}
               </div>
             </div>
 
