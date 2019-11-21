@@ -10,12 +10,22 @@ import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer
 
 class WhiteListInput extends React.Component {
 
-  renderRecommendBtn() {
-    const { t } = this.props;
+  renderRecommendTagBtn() {
+    const { t, markDownSettingContainer } = this.props;
 
     return (
-      <p id="btn-import-tags" className="btn btn-xs btn-primary">
+      <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { markDownSettingContainer.setState({ tagWhiteList: tags }) }}>
         { t('markdown_setting.import_recommended', 'tags') }
+      </p>
+    );
+  }
+
+  renderRecommendAttrBtn() {
+    const { t, markDownSettingContainer } = this.props;
+
+    return (
+      <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { markDownSettingContainer.setState({ attrWhiteList: attrs }) }}>
+        { t('markdown_setting.import_recommended', 'Attrs') }
       </p>
     );
   }
@@ -48,7 +58,7 @@ class WhiteListInput extends React.Component {
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag names') }
-            {customizable && this.renderRecommendBtn()}
+            {customizable && this.renderRecommendTagBtn()}
           </div>
           <textarea
             className="form-control xss-list"
@@ -63,7 +73,7 @@ class WhiteListInput extends React.Component {
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag attributes') }
-            {customizable && this.renderRecommendBtn()}
+            {customizable && this.renderRecommendAttrBtn()}
           </div>
           <textarea
             className="form-control xss-list"
