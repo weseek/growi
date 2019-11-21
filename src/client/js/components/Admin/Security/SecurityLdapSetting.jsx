@@ -63,7 +63,7 @@ class SecurityLdapSetting extends React.Component {
 
             <div className="row mb-5">
               <strong className="col-xs-3 text-right">{ t('security_setting.ldap.bind_mode') }</strong>
-              <div className="col-xs-9 text-left">
+              <div className="col-xs-6 text-left">
                 <div className="my-0 btn-group">
                   <div className="dropdown">
                     <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -96,7 +96,25 @@ class SecurityLdapSetting extends React.Component {
                   value={ldapConfig.bindDN}
                   onChange={e => adminSecurityContainer.changeBindDN(e.target.value)}
                 />
-                {(ldapConfig.bindMode === 'manager') ? <p>manager</p> : <p>user</p>}
+                {(ldapConfig.bindMode === 'manager') ? (
+                  <p className="help-block passport-ldap-managerbind">
+                    <small>
+                      { t('security_setting.ldap.bind_DN_manager_detail') }<br />
+                      { t('security_setting.example') }1: <code>uid=admin,dc=domain,dc=com</code><br />
+                      { t('security_setting.example') }2: <code>admin@domain.com</code>
+                    </small>
+                  </p>
+                ) : (
+                  <p className="help-block passport-ldap-userbind">
+                    <small>
+                      { t('security_setting.ldap.bind_DN_user_detail1')}<br />
+                      {/* eslint-disable-next-line react/no-danger */}
+                      <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.bind_DN_user_detail2') }} /><br />
+                      { t('security_setting.example') }1: <code>uid=username,dc=domain,dc=com</code><br />
+                      { t('security_setting.example') }2: <code>username@domain.com</code>
+                    </small>
+                  </p>
+                )}
               </div>
             </div>
 
