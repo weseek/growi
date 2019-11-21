@@ -26,6 +26,7 @@ export default class AdminSecurityContainer extends Container {
         isEnabled: true,
         serverUrl: '',
         bindMode: 'manager',
+        bindDN: '',
       },
     };
 
@@ -63,6 +64,8 @@ export default class AdminSecurityContainer extends Container {
     this.setState({ registrationMode: value });
   }
 
+  // LDAP function
+
   /**
    * Switch local enabled
    */
@@ -73,11 +76,29 @@ export default class AdminSecurityContainer extends Container {
   }
 
   /**
+   * Change server url
+   */
+  changeServerUrl(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.serverUrl = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
    * Change ldap bind mode
    */
   changeLdapBindMode(mode) {
     const newLdapConfig = this.state.ldapConfig;
     newLdapConfig.bindMode = mode;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change bind DN
+   */
+  changeBindDN(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.bindDN = inputValue;
     this.setState({ newLdapConfig });
   }
 

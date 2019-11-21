@@ -48,6 +48,7 @@ class SecurityLdapSetting extends React.Component {
                   type="text"
                   name="serverUrl"
                   value={ldapConfig.serverUrl}
+                  onChange={e => adminSecurityContainer.changeServerUrl(e.target.value)}
                 />
                 <small>
                   <p
@@ -81,8 +82,20 @@ class SecurityLdapSetting extends React.Component {
                       </li>
                     </ul>
                   </div>
-                  {/* TODO */}
                 </div>
+              </div>
+            </div>
+
+            <div className="row mb-5">
+              <strong className="col-xs-3 text-right">Bind DN</strong>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="bindDN"
+                  value={ldapConfig.bindDN}
+                  onChange={e => adminSecurityContainer.changeBindDN(e.target.value)}
+                />
               </div>
             </div>
 
