@@ -602,9 +602,9 @@
     "line_break_setting": "Line Break Setting",
     "line_break_setting_desc": "You can change line break settings.",
     "Enable Line Break": "Enable Line Break",
-    "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
+    "Enable Line Break desc": "Treat line break in the text page as<code>&lt;br&gt;</code>in HTML",
     "Enable Line Break for comment": "Enable Line Break in comment",
-    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
+    "Enable Line Break for comment desc": "Treat line break in comment as<code>&lt;br&gt;</code>in HTML",
     "presentation_setting": "Presentation Setting",
     "presentation_setting_desc": "You can change presentation settings.",
     "Page break setting": "Page break Setting",
@@ -625,7 +625,10 @@
     "Custom Whitelist": "Custom Whitelist",
     "Tag names":"Tag names",
     "Tag attributes":"Tag attributes",
-    "import_recommended": "Import recommended %s"
+    "import_recommended": "Import recommended %s",
+    "updated_lineBreak": "Succeeded to update line braek setting",
+    "updated_presentation": "Succeeded to update presentation setting",
+    "updated_xss": "Succeeded to update XSS setting"
   },
 
   "notification_setting": {
