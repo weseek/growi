@@ -110,8 +110,8 @@ class SecurityLdapSetting extends React.Component {
                       { t('security_setting.ldap.bind_DN_user_detail1')}<br />
                       {/* eslint-disable-next-line react/no-danger */}
                       <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.bind_DN_user_detail2') }} /><br />
-                      { t('security_setting.example') }1: <code>uid=username,dc=domain,dc=com</code><br />
-                      { t('security_setting.example') }2: <code>username@domain.com</code>
+                      { t('security_setting.example') }1: <code>uid={'{{ username }}'},dc=domain,dc=com</code><br />
+                      { t('security_setting.example') }2: <code>{'{{ username }}'}@domain.com</code>
                     </small>
                   </p>
                 )}
@@ -155,9 +155,27 @@ class SecurityLdapSetting extends React.Component {
                   value={ldapConfig.searchFilter}
                   onChange={e => adminSecurityContainer.changeSearchFilter(e.target.value)}
                 />
+                <p className="help-block">
+                  <small>
+                    { t('security_setting.ldap.search_filter_detail1') }<br />
+                    {/* eslint-disable-next-line react/no-danger */}
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.search_filter_detail2') }} /><br />
+                    {/* eslint-disable-next-line react/no-danger */}
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.search_filter_detail3') }} />
+                  </small>
+                </p>
+                <p className="help-block">
+                  <small>
+                    { t('security_setting.example') }1 - { t('security_setting.ldap.search_filter_example1') }:
+                    <code>(|(uid={'{{ username }}'})(mail={'{{ username }}'}))</code><br />
+                    { t('security_setting.example') }2 - { t('security_setting.ldap.search_filter_example2') }:
+                    <code>(sAMAccountName={'{{ username }}'})</code>
+                  </small>
+                </p>
               </div>
 
             </div>
+
 
           </React.Fragment>
         )}
