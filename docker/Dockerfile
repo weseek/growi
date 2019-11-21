@@ -8,11 +8,9 @@ ENV APP_VERSION v3.5.13
 ENV APP_DIR /opt/growi
 ARG ARCHIVE_NAME=${APP_VERSION}
 
-# update tar for '--strip-components' option
-# RUN apk add --no-cache --update tar
-# download GROWI archive from Github
-# RUN apk add --no-cache --virtual .dl-deps curl \
 RUN mkdir -p ${APP_DIR}
+
+# download GROWI archive from Github
 RUN curl -SL https://github.com/weseek/growi/archive/${ARCHIVE_NAME}.tar.gz \
     | tar -xz -C ${APP_DIR} --strip-components 1
 
