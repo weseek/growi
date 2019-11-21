@@ -36,8 +36,6 @@ export default class AdminSecurityContainer extends Container {
 
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
-    this.switchIsLdapEnabled = this.switchIsLdapEnabled.bind(this);
-    this.changeLdapBindMode = this.changeLdapBindMode.bind(this);
   }
 
   init() {
