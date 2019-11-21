@@ -176,7 +176,6 @@ class SecurityLdapSetting extends React.Component {
 
             </div>
 
-
           </React.Fragment>
         )}
 
