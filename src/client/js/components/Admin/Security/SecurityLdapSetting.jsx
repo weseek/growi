@@ -39,25 +39,45 @@ class SecurityLdapSetting extends React.Component {
 
 
         {ldapConfig.isEnabled && (
-        <div className="form-group">
-          <label htmlFor="serverUrl" className="col-xs-3 control-label text-right">Server URL</label>
-          <div className="col-xs-6">
-            <input
-              className="form-control"
-              type="text"
-              name="serverUrl"
-              value={ldapConfig.serverUrl}
-            />
-            <small>
-              <p
-                className="help-block"
-              // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.server_url_detail') }}
-              />
-              { t('security_setting.example') }: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
-            </small>
-          </div>
-        </div>
+          <React.Fragment>
+            <div className="row mb-5">
+              <label htmlFor="serverUrl" className="col-xs-3 control-label text-right">Server URL</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="serverUrl"
+                  value={ldapConfig.serverUrl}
+                />
+                <small>
+                  <p
+                    className="help-block"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.server_url_detail') }}
+                  />
+                  { t('security_setting.example') }: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
+                </small>
+              </div>
+            </div>
+
+            <div className="row mb-5">
+              <strong className="col-xs-3 text-right">{ t('security_setting.ldap.bind_mode') }</strong>
+              <div className="col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="isLdapEnabled"
+                    type="checkbox"
+                    checked={ldapConfig.isEnabled}
+                    onChange={() => { adminSecurityContainer.switchIsLdapEnabled() }}
+                  />
+                  <label htmlFor="isLdapEnabled">
+                    { t('security_setting.ldap.enable_ldap') }
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </React.Fragment>
         )}
 
       </React.Fragment>

@@ -65,7 +65,9 @@ export default class AdminSecurityContainer extends Container {
    * Switch local enabled
    */
   switchIsLdapEnabled() {
-    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.isEnabled = !this.state.ldapConfig.isEnabled;
+    this.setState({ newLdapConfig });
   }
 
 }
