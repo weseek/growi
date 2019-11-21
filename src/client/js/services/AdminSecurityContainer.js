@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:services:AdminSecurityContainer');
  * Service container for admin security page (SecurityManagement.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminUsersContainer extends Container {
+export default class AdminSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -17,8 +17,43 @@ export default class AdminUsersContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      // TODO GW-583 set value
+      useOnlyEnvVarsForSomeOptions: true,
+      isLocalEnabled: true,
+      registrationMode: 'open',
+      registrationWhiteList: '',
     };
 
+    this.init();
+
+    this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
+    this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
+  }
+
+  init() {
+    // TODO GW-583 fetch config value with api
+  }
+
+
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'AdminSecurityContainer';
+  }
+
+  /**
+   * Switch local enabled
+   */
+  switchIsLocalEnabled() {
+    this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
+  }
+
+  /**
+   * Change registration mode
+   */
+  changeRegistrationMode(value) {
+    this.setState({ registrationMode: value });
   }
 
 }
