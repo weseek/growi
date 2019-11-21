@@ -11,6 +11,7 @@ class SecurityLdapSetting extends React.Component {
 
   render() {
     const { t, adminSecurityContainer } = this.props;
+    const { ldapConfig } = adminSecurityContainer.state;
 
     return (
       <React.Fragment>
@@ -26,7 +27,7 @@ class SecurityLdapSetting extends React.Component {
               <input
                 id="isLdapEnabled"
                 type="checkbox"
-                checked={adminSecurityContainer.state.isLdapEnabled}
+                checked={ldapConfig.isEnabled}
                 onChange={() => { adminSecurityContainer.switchIsLdapEnabled() }}
               />
               <label htmlFor="isLdapEnabled">
@@ -37,8 +38,26 @@ class SecurityLdapSetting extends React.Component {
         </div>
 
 
-        {adminSecurityContainer.state.isLdapEnabled && (
-        <p>hoge</p>
+        {ldapConfig.isEnabled && (
+        <div className="form-group">
+          <label htmlFor="serverUrl" className="col-xs-3 control-label text-right">Server URL</label>
+          <div className="col-xs-6">
+            <input
+              className="form-control"
+              type="text"
+              name="serverUrl"
+              value={ldapConfig.serverUrl}
+            />
+            <small>
+              <p
+                className="help-block"
+              // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.server_url_detail') }}
+              />
+              { t('security_setting.example') }: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
+            </small>
+          </div>
+        </div>
         )}
 
       </React.Fragment>

@@ -22,7 +22,10 @@ export default class AdminSecurityContainer extends Container {
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',
-      isLdapEnabled: true,
+      ldapConfig: {
+        isEnabled: true,
+        serverUrl: '',
+      },
     };
 
     this.init();
