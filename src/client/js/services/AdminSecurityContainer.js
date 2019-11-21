@@ -28,6 +28,7 @@ export default class AdminSecurityContainer extends Container {
         bindMode: 'manager',
         bindDN: '',
         bindDNPassword: '',
+        searchFilter: '',
       },
     };
 
@@ -111,5 +112,15 @@ export default class AdminSecurityContainer extends Container {
     newLdapConfig.bindDNPassword = inputValue;
     this.setState({ newLdapConfig });
   }
+
+  /**
+   * Change search filter
+   */
+  changeSearchFilter(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.searchFilter = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
 
 }

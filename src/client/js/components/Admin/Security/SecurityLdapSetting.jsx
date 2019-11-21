@@ -145,6 +145,20 @@ class SecurityLdapSetting extends React.Component {
               </div>
             </div>
 
+            <div className="row mb-5">
+              <strong className="col-xs-3 text-right">{ t('security_setting.ldap.search_filter') }</strong>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="searchFilter"
+                  value={ldapConfig.searchFilter}
+                  onChange={e => adminSecurityContainer.changeSearchFilter(e.target.value)}
+                />
+              </div>
+
+            </div>
+
           </React.Fragment>
         )}
 
