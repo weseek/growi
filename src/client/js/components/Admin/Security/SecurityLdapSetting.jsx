@@ -96,6 +96,7 @@ class SecurityLdapSetting extends React.Component {
                   value={ldapConfig.bindDN}
                   onChange={e => adminSecurityContainer.changeBindDN(e.target.value)}
                 />
+                {(ldapConfig.bindMode === 'manager') ? <p>manager</p> : <p>user</p>}
               </div>
             </div>
 
