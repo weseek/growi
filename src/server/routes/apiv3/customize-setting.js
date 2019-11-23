@@ -82,7 +82,7 @@ module.exports = (crowi) => {
       body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
-      body('recentCreatedLimit').isInt().isIn([10, 30, 50]),
+      body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
     ],
     customizeHeader: [
       body('customizeHeader').isString(),
