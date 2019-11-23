@@ -22,6 +22,14 @@ export default class AdminSecurityContainer extends Container {
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',
+      ldapConfig: {
+        isEnabled: true,
+        serverUrl: '',
+        bindMode: 'manager',
+        bindDN: '',
+        bindDNPassword: '',
+        searchFilter: '',
+      },
     };
 
     this.init();
@@ -55,5 +63,62 @@ export default class AdminSecurityContainer extends Container {
   changeRegistrationMode(value) {
     this.setState({ registrationMode: value });
   }
+
+  // LDAP function
+
+  /**
+   * Switch local enabled
+   */
+  switchIsLdapEnabled() {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.isEnabled = !this.state.ldapConfig.isEnabled;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change server url
+   */
+  changeServerUrl(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.serverUrl = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change ldap bind mode
+   */
+  changeLdapBindMode(mode) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.bindMode = mode;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change bind DN
+   */
+  changeBindDN(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.bindDN = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change bind DN password
+   */
+  changeBindDNPassword(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.bindDNPassword = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change search filter
+   */
+  changeSearchFilter(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.searchFilter = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
 
 }

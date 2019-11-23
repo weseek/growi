@@ -493,6 +493,7 @@
       "enable_local": "ID/Password を有効にする"
     },
     "ldap": {
+      "enable_ldap": "LDAP を有効にする",
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
       "bind_manager": "管理者 Bind",
