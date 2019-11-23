@@ -20,7 +20,16 @@ class CustomizeCssSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      editorInputValue: '',
+    };
+
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { customizeCss } = this.props.appContainer.getConfig();
+    this.setState({ editorInputValue: customizeCss || '' });
   }
 
   async onClickSubmit() {
@@ -37,7 +46,7 @@ class CustomizeCssSetting extends React.Component {
   }
 
   render() {
-    const { t, appContainer, adminCustomizeContainer } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -50,7 +59,7 @@ class CustomizeCssSetting extends React.Component {
           <div className="col-xs-12">
             <CustomCssEditor
               // The value passed must be immutable
-              value={appContainer.config.customizeCss}
+              value={this.state.editorInputValue}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
             />
           </div>

@@ -21,45 +21,46 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *
  *  components:
  *    schemas:
- *      CustomizeLayoutTheme:
+ *      CustomizeParams:
  *        type: object
- *        properties:
- *          layoutType:
- *            type: string
- *          themeType:
- *            type: string
- *      CustomizeBehavior:
- *        type: object
- *          behaviorType
- *            type: string
- *      CustomizeFunction:
- *        type: object
- *          isEnabledTimeline:
- *            type: boolean
- *          isSavedStatesOfTabChanges:
- *            type: boolean
- *          isEnabledAttachTitleHeader:
- *            type: boolean
- *          recentCreatedLimit:
- *            type: number
- *      CustomizeHighlight:
- *        type: object
- *          styleName:
- *            type: string
- *          styleBorder:
- *            type: boolean
- *      CustomizeHeader:
- *        type: object
- *          customizeHeader:
- *            type: string
- *      CustomizeCss:
- *        type: object
- *          customizeCss:
- *            type: string
- *      CustomizeScript:
- *        type: object
- *          customizeScript:
- *            type: string
+ *          CustomizeLayoutTheme:
+ *            type: object
+ *              layoutType:
+ *                type: string
+ *              themeType:
+ *                type: string
+ *          CustomizeBehavior:
+ *            type: object
+ *              behaviorType
+ *                type: string
+ *          CustomizeFunction:
+ *            type: object
+ *              isEnabledTimeline:
+ *                type: boolean
+ *              isSavedStatesOfTabChanges:
+ *                type: boolean
+ *              isEnabledAttachTitleHeader:
+ *                type: boolean
+ *              recentCreatedLimit:
+ *                type: number
+ *          CustomizeHighlight:
+ *            type: object
+ *              styleName:
+ *                type: string
+ *              styleBorder:
+ *                type: boolean
+ *          CustomizeHeader:
+ *            type: object
+ *              customizeHeader:
+ *                type: string
+ *          CustomizeCss:
+ *            type: object
+ *              customizeCss:
+ *                type: string
+ *          CustomizeScript:
+ *            type: object
+ *              customizeScript:
+ *                type: string
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -101,11 +102,42 @@ module.exports = (crowi) => {
     ],
   };
 
-  // TODO GW-575 writte swagger
+  /**
+   * @swagger
+   *
+   *    /customize-setting/:
+   *      get:
+   *        tags: [CustomizeSetting]
+   *        description: Get customize paramators
+   *        responses:
+   *          200:
+   *            description: params of customize
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeParams'
+   */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    // TODO GW-575 return others customize settings
-    return res.apiv3();
+    const customizeParams = {
+      layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
+      themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+      behaviorType: await crowi.configManager.getConfig('crowi', 'customize:behavior'),
+      isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
+      isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
+      isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
+      recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
+      styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
+      customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+    };
+
+    return res.apiv3({ customizeParams });
   });
 
   /**
@@ -136,7 +168,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeLayoutTheme'
+   *                    $ref: '#/components/schemas/CustomizeParams/CustomizeLayoutTheme'
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -184,7 +216,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeBehavior'
+   *                    $ref: '#/components/schemas/CustomizeParams/CustomizeBehavior'
    */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -239,7 +271,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeFunction'
+   *                    $ref: '#/components/schemas/CustomizeParams/CustomizeFunction'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -294,7 +326,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    customizedParams:
-   *                      $ref: '#/components/schemas/CustomizeHighlight'
+   *                      $ref: '#/components/schemas/CustomizeParams/CustomizeHighlight'
    */
   router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -342,7 +374,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeHeader'
+   *                    $ref: '#/components/schemas/CustomizeParams/CustomizeHeader'
    */
   router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, validator.customizeHeader, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -351,7 +383,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+        customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       };
       return res.apiv3({ customizedParams });
     }
@@ -387,7 +419,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeCss'
+   *                    $ref: '#/components/schemas/CustomizeParams/CustomizeCss'
    */
   router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -432,7 +464,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  customizedParams:
-   *                    $ref: '#/components/schemas/CustomizeScript'
+   *                    $ref: '#/components/schemas/CustomizeParams/CustomizeScript'
    */
   router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
