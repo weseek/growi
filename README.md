@@ -26,9 +26,9 @@ GROWI
 
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
+    - [Heroku](#heroku)
+    - [docker-compose](#docker-compose)
     - [On-premise](#on-premise)
-    - [Using Heroku](#using-heroku)
-    - [Using docker-compose](#using-docker-compose)
 - [Environment Variables](#environment-variables)
 - [Documentation](#documentation)
 - [License](#license)
@@ -55,17 +55,15 @@ Features
 Quick Start for Production
 ===========================
 
-With Heroku
-----------
+### Heroku
 
 - [GROWI Docs: Launch on Heroku](https://docs.growi.org/en/admin-guide/getting-started/heroku.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/heroku.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/heroku.html))
 
-With docker-compose
------------------
+### docker-compose
 
 - [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
 
-Getting Start for On-premise
+### On-premise
 ===========================
 
 **[Migration Guide from Crowi](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))** is here.
