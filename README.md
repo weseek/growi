@@ -58,17 +58,17 @@ Quick Start for Production
 With Heroku
 ----------
 
-- [GROWI Docs: Launch on Heroku](https://docs.growi.org/en/admin-guide/getting-started/heroku.html)
+- [GROWI Docs: Launch on Heroku](https://docs.growi.org/en/admin-guide/getting-started/heroku.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/heroku.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/heroku.html))
 
 With docker-compose
 -----------------
 
-- [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)
+- [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
 
 Getting Start for On-premise
 ===========================
 
-[**Migration Guide from Crowi** is here](https://docs.growi.org/guide/migration-guide/from-crowi-onpremise.html).
+**[Migration Guide from Crowi](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))** is here.
 
 - [GROWI Docs: Install on Ubuntu Server](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
 - [GROWI Docs: Install on CentOS](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
@@ -80,7 +80,7 @@ Getting Start for On-premise
 - yarn
 - MongoDB 3.x
 
-See [confirmed versions](https://docs.growi.org/dev/startup/dev-env.html#versions-confirmed-to-work).
+See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
 
 ### Optional Dependencies
 
