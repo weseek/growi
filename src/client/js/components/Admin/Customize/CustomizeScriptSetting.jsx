@@ -58,7 +58,7 @@ class CustomizeScriptSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Custom script')}</h2>
+        <h2 className="admin-setting-header">{t('customize_page.Custom script')}</h2>
         <p className="well">
           { t('customize_page.write_java') }<br />
           { t('customize_page.reflect_change') }

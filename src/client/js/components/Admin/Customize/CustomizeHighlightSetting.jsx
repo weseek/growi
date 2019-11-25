@@ -72,7 +72,7 @@ class CustomizeHighlightSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Code Highlight')}</h2>
+        <h2 className="admin-setting-header">{t('customize_page.Code Highlight')}</h2>
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">

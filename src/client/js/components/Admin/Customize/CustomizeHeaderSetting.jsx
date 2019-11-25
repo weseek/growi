@@ -50,7 +50,7 @@ class CustomizeHeaderSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.custom_header')}</h2>
+        <h2 className="admin-setting-header">{t('customize_page.custom_header')}</h2>
 
         <p
           className="well"
