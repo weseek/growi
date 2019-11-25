@@ -25,7 +25,6 @@ $background-color: rgba(
   $color: $themelight,
   $alpha: 0.8,
 );
-$info: $subthemecolor;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
@@ -233,8 +232,4 @@ body:not(.on-edit) .nav.nav-tabs {
 
 .hljs-ln {
   background-color: transparent;
-}
-
-.progress > .progress-bar-info {
-  background-color: #009fbb;
 }
