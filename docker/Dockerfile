@@ -5,32 +5,49 @@ ARG flavor=default
 
 
 ##
-## setupper-default
+## deps-resolver
 ##
-FROM node:12-slim AS setupper-default
+FROM node:12-slim AS deps-resolver
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
-RUN mkdir -p ${appDir}
-RUN mv .* ${appDir}/
-
+COPY ./package.json ${appDir}/
+COPY ./yarn.lock ${appDir}/
 WORKDIR ${appDir}
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN yarn
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn
 # install official plugins
-RUN yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
 # install peerDependencies
-RUN yarn add -D react-images react-motion
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn add -D react-images react-motion
 
 
 
 ##
-## setupper-nocdn
+## prebuilder-default
 ##
-FROM setupper-default AS setupper-nocdn
+FROM node:12-slim AS prebuilder-default
+LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+
+ENV appDir /opt/growi
+
+COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
+COPY . ${appDir}/
+
+WORKDIR ${appDir}
+
+
+
+##
+## prebuilder-nocdn
+##
+FROM prebuilder-default AS prebuilder-nocdn
 
 # replace env.prod.js for NO_CDN
 COPY nocdn/env.prod.js config
@@ -40,18 +57,19 @@ COPY nocdn/env.prod.js config
 ##
 ## builder
 ##
-FROM setupper-${flavor} AS builder
+FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
 
 # build
 RUN yarn build:prod
 # shrink dependencies for production
-RUN yarn install --production
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn install --production
 
 # remove unnecessary files
 WORKDIR /tmp
-RUN --mount=target=. sh bin/remove-unnecessary-files.sh
+RUN --mount=target=. sh docker/bin/remove-unnecessary-files.sh
 WORKDIR ${appDir}
 
 
@@ -65,13 +83,14 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 ENV appDir /opt/growi
 
 # install tini
-RUN apk add --no-cache tini
+RUN --mount=type=cache,target=/var/cache/apk \
+  apk add tini
 
-COPY --from=builder ${appDir} ${appDir}
+COPY --from=builder --chown=node:node ${appDir} ${appDir}
 
 # create symlink for FILE_UPLOAD=local
 WORKDIR /tmp
-RUN --mount=target=. sh bin/symlink-for-uploading-to-local.sh
+RUN --mount=target=. sh docker/bin/symlink-for-uploading-to-local.sh
 WORKDIR ${appDir}
 
 USER node
