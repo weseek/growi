@@ -260,7 +260,26 @@ class SecurityLdapSetting extends React.Component {
               { t('security_setting.ldap.group_search_filter') } ({ t('security_setting.optional') })
             </h3>
 
-            {/* GW-617 create form */}
+            <div className="row mb-5">
+              <strong htmlFor="groupSearchBase" className="col-xs-3 text-right">{ t('security_setting.ldap.group_search_base_DN') }</strong>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="groupSearchBase"
+                  value={ldapConfig.groupSearchBase}
+                  onChange={e => adminSecurityContainer.changeGroupSearchBase(e.target.value)}
+                />
+                <p className="help-block">
+                  <small>
+                    {/* eslint-disable-next-line react/no-danger */}
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_base_DN_detail') }} /><br />
+                    { t('security_setting.example') }: <code>ou=groups,dc=domain,dc=com</code>
+                  </small>
+                </p>
+              </div>
+            </div>
+
 
           </React.Fragment>
         )}

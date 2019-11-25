@@ -33,6 +33,7 @@ export default class AdminSecurityContainer extends Container {
         cbSameUsernameTreatedAsIdenticalUser: true,
         attrMapMail: '',
         attrMapName: '',
+        groupSearchBase: '',
       },
     };
 
@@ -155,6 +156,15 @@ export default class AdminSecurityContainer extends Container {
   changeAttrMapName(inputValue) {
     const newLdapConfig = this.state.ldapConfig;
     newLdapConfig.attrMapName = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change group search base
+   */
+  changeGroupSearchBase(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.groupSearchBase = inputValue;
     this.setState({ newLdapConfig });
   }
 
