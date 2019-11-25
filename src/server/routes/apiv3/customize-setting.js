@@ -69,26 +69,29 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TODO GW-533 implement accurate validation
   const validator = {
     layoutTheme: [
-      body('layoutType').isString(),
-      body('themeType').isString(),
+      body('layoutType').isString().isIn(['growi', 'kibela', 'crowi']),
+      body('themeType').isString().isIn([
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween',
+      ]),
     ],
     behavior: [
-      body('behaviorType').isString(),
+      body('behaviorType').isString().isIn(['growi', 'crowi-plus']),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
-      body('recentCreatedLimit').isInt(),
+      body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
     ],
     customizeHeader: [
       body('customizeHeader').isString(),
     ],
     highlight: [
-      body('highlightJsStyle').isString(),
+      body('highlightJsStyle').isString().isIn([
+        'github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tororrow-night', 'vs2015',
+      ]),
       body('highlightJsStyleBorder').isBoolean(),
     ],
     customizeCss: [
