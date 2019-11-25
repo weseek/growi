@@ -22,7 +22,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',
-      isLdapConfigEnabled: true,
+      isLdapEnabled: true,
     };
 
     this.init();
@@ -63,7 +63,7 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch local enabled
    */
   switchIsLdapEnabled() {
-    this.setState({ isLdapConfigEnabled: !this.state.isLdapConfigEnabled });
+    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
   }
 
 }

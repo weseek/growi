@@ -12,7 +12,7 @@ class LdapSecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminLdapSecurityContainer } = this.props;
-    const { isLdapConfigEnabled } = adminGeneralSecurityContainer.state;
+    const { isLdapEnabled } = adminGeneralSecurityContainer.state;
 
     return (
       <React.Fragment>
@@ -28,7 +28,7 @@ class LdapSecuritySetting extends React.Component {
               <input
                 id="isLdapEnabled"
                 type="checkbox"
-                checked={isLdapConfigEnabled}
+                checked={isLdapEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsLdapEnabled() }}
               />
               <label htmlFor="isLdapEnabled">
@@ -39,7 +39,7 @@ class LdapSecuritySetting extends React.Component {
         </div>
 
 
-        {isLdapConfigEnabled && (
+        {isLdapEnabled && (
           <React.Fragment>
             <div className="row mb-5">
               <label htmlFor="serverUrl" className="col-xs-3 control-label text-right">Server URL</label>
