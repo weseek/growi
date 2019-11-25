@@ -47,10 +47,17 @@ COPY nocdn/env.prod.js config
 ##
 FROM setupper-${flavor} AS builder
 
+ENV appDir /opt/growi
+
 # build
 RUN yarn build:prod
 # shrink dependencies for production
 RUN yarn install --production
+
+# remove unnecessary files
+WORKDIR /tmp
+RUN --mount=target=. sh bin/remove-unnecessary-files.sh
+WORKDIR ${appDir}
 
 
 
@@ -67,10 +74,9 @@ RUN apk add --no-cache tini
 
 COPY --from=builder ${appDir} ${appDir}
 
+# create symlink for FILE_UPLOAD=local
 WORKDIR /tmp
-
 RUN --mount=target=. sh bin/symlink-for-uploading-to-local.sh
-
 WORKDIR ${appDir}
 
 USER node
