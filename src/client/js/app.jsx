@@ -55,7 +55,8 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
-import AdminSecurityContainer from './services/AdminSecurityContainer';
+import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
+import AdminLdapSecurityContainer from './services/AdminLdapSecurityContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
@@ -214,9 +215,11 @@ if (adminMarkDownSettingElem != null) {
 
 const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 if (adminSecuritySettingElem != null) {
-  const adminSecurityContainer = new AdminSecurityContainer(appContainer);
+  const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer(appContainer);
+  const adminLdapSecurityContainer = new AdminLdapSecurityContainer(appContainer);
+  const adminSecurityContainers = [adminGeneralSecurityContainer, adminLdapSecurityContainer];
   ReactDOM.render(
-    <Provider inject={[injectableContainers, adminSecurityContainer]}>
+    <Provider inject={[injectableContainers, adminSecurityContainers]}>
       <I18nextProvider i18n={i18n}>
         <SecurityManagement />
       </I18nextProvider>
