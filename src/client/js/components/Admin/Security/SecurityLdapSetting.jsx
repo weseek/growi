@@ -190,12 +190,34 @@ class SecurityLdapSetting extends React.Component {
                   onChange={e => adminSecurityContainer.changeAttrMapUsername(e.target.value)}
                 />
                 <p className="help-block">
-                  <small>
-                    { t('security_setting.ldap.username_detail') }
-                  </small>
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.username_detail') }} />
                 </p>
               </div>
             </div>
+
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="cbSameUsernameTreatedAsIdenticalUser"
+                    type="checkbox"
+                    checked={ldapConfig.cbSameUsernameTreatedAsIdenticalUser}
+                    onChange={() => { adminSecurityContainer.switchCbSameUsernameTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    htmlFor="cbSameUsernameTreatedAsIdenticalUser"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
+                  />
+                </div>
+                <p className="help-block">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
+                </p>
+              </div>
+            </div>
+
 
             <h3 className="alert-anchor border-bottom">
               { t('security_setting.ldap.group_search_filter') } ({ t('security_setting.optional') })
