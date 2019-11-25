@@ -29,6 +29,7 @@ export default class AdminSecurityContainer extends Container {
         bindDN: '',
         bindDNPassword: '',
         searchFilter: '',
+        attrMapUsername: '',
       },
     };
 
@@ -117,6 +118,15 @@ export default class AdminSecurityContainer extends Container {
   changeSearchFilter(inputValue) {
     const newLdapConfig = this.state.ldapConfig;
     newLdapConfig.searchFilter = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change attr map username
+   */
+  changeAttrMapUsername(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.attrMapUsername = inputValue;
     this.setState({ newLdapConfig });
   }
 

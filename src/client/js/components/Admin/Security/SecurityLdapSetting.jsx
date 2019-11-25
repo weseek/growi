@@ -178,7 +178,24 @@ class SecurityLdapSetting extends React.Component {
               Attribute Mapping ({ t('security_setting.optional') })
             </h3>
 
-            {/* GW-617 create form */}
+            <div className="row mb-5">
+              <label htmlFor="attrMapUsername" className="col-xs-3 text-right">{t('username')}</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Default: uid"
+                  name="attrMapUsername"
+                  value={ldapConfig.attrMapUsername}
+                  onChange={e => adminSecurityContainer.changeAttrMapUsername(e.target.value)}
+                />
+                <p className="help-block">
+                  <small>
+                    { t('security_setting.ldap.username_detail') }
+                  </small>
+                </p>
+              </div>
+            </div>
 
             <h3 className="alert-anchor border-bottom">
               { t('security_setting.ldap.group_search_filter') } ({ t('security_setting.optional') })
