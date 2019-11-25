@@ -35,6 +35,7 @@ export default class AdminSecurityContainer extends Container {
         attrMapName: '',
         groupSearchBase: '',
         groupSearchFilter: '',
+        groupDnProperty:''
       },
     };
 
@@ -175,6 +176,15 @@ export default class AdminSecurityContainer extends Container {
   changeGroupSearchFilter(inputValue) {
     const newLdapConfig = this.state.ldapConfig;
     newLdapConfig.groupSearchFilter = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change group dn property
+   */
+  changeGroupDnProperty(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.groupDnProperty = inputValue;
     this.setState({ newLdapConfig });
   }
 

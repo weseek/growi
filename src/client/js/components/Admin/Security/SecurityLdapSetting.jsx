@@ -280,8 +280,8 @@ class SecurityLdapSetting extends React.Component {
               </div>
             </div>
 
-            <div className="form-group">
-              <strong htmlFor="groupSearchFilter" className="col-xs-3 control-label">{ t('security_setting.ldap.group_search_filter') }</strong>
+            <div className="row mb-5">
+              <strong htmlFor="groupSearchFilter" className="col-xs-3 text-right">{ t('security_setting.ldap.group_search_filter') }</strong>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -296,17 +296,36 @@ class SecurityLdapSetting extends React.Component {
                     <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail1') }} /><br />
                     <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail2') }} /><br />
                     <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail3') }} />
-                    {/* eslint-eanable react/no-danger */}
+                    {/* eslint-enable react/no-danger */}
                   </small>
                 </p>
                 <p className="help-block">
                   <small>
-                    { t('security_setting.example') }: { t('security_setting.ldap.group_search_filter_detail4') }
+                    { t('security_setting.example') }:
+                    {/* eslint-disable-next-line react/no-danger */}
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail4') }} />
                   </small>
                 </p>
               </div>
             </div>
 
+            <div className="row mb-5">
+              <label htmlFor="groupDnProperty" className="col-xs-3 text-right">{ t('security_setting.ldap.group_search_user_DN_property') }</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Default: uid"
+                  name="groupDnProperty"
+                  value={ldapConfig.groupDnProperty}
+                  onChange={e => adminSecurityContainer.changeGroupDnProperty(e.target.value)}
+                />
+                <p className="help-block">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_user_DN_property_detail') }} />
+                </p>
+              </div>
+            </div>
 
           </React.Fragment>
         )}
