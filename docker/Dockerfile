@@ -10,6 +10,8 @@ ARG flavor=default
 FROM node:12-slim AS setupper-default
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
+ENV appDir /opt/growi
+
 RUN mkdir -p ${appDir}
 RUN mv .* ${appDir}/
 
