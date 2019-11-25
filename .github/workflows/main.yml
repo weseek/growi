@@ -1,6 +1,9 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - support/github-actions
 
 jobs:
   build:
@@ -9,10 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-      
+
     - name: Bump version
       run: sh ./bin/github-actions/bump-version.sh
-      
+
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v1.0.4
       with:
@@ -24,4 +27,4 @@ jobs:
         docker buildx build \
           --platform linux/amd64 \
           --output "type=image,push=false" \
-          --file ./docker/Dockerfile ./docker
+          --file ./docker/Dockerfile .

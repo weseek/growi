@@ -10,15 +10,8 @@ ARG flavor=default
 FROM node:12-slim AS setupper-default
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-ENV appVersion v3.5.13
-ARG archiveName=${appVersion}
-ENV appDir /opt/growi
-
 RUN mkdir -p ${appDir}
-
-# download GROWI archive from Github
-RUN curl -SL https://github.com/weseek/growi/archive/${archiveName}.tar.gz \
-    | tar -xz -C ${appDir} --strip-components 1
+RUN mv .* ${appDir}/
 
 WORKDIR ${appDir}
 
