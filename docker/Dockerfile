@@ -1,22 +1,26 @@
 # syntax = docker/dockerfile:experimental
 
+ARG flavor=default
+
+
+
 ##
 ## setupper-default
 ##
-FROM node:12-slim AS setupper
+FROM node:12-slim AS setupper-default
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-ENV APP_VERSION v3.5.13
-ENV APP_DIR /opt/growi
-ARG ARCHIVE_NAME=${APP_VERSION}
+ENV appVersion v3.5.13
+ARG archiveName=${appVersion}
+ENV appDir /opt/growi
 
-RUN mkdir -p ${APP_DIR}
+RUN mkdir -p ${appDir}
 
 # download GROWI archive from Github
-RUN curl -SL https://github.com/weseek/growi/archive/${ARCHIVE_NAME}.tar.gz \
-    | tar -xz -C ${APP_DIR} --strip-components 1
+RUN curl -SL https://github.com/weseek/growi/archive/${archiveName}.tar.gz \
+    | tar -xz -C ${appDir} --strip-components 1
 
-WORKDIR ${APP_DIR}
+WORKDIR ${appDir}
 
 # setup
 RUN yarn config set network-timeout 300000
@@ -27,36 +31,24 @@ RUN yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-att
 RUN yarn add -D react-images react-motion
 
 
+
 ##
 ## setupper-nocdn
 ##
-FROM node:12-slim AS setupper-nocdn
-
-ENV APP_DIR /opt/growi
-
-COPY --from=setupper ${APP_DIR} ${APP_DIR}
-
-WORKDIR ${APP_DIR}
+FROM setupper-default AS setupper-nocdn
 
 # replace env.prod.js for NO_CDN
 COPY nocdn/env.prod.js config
 
 
+
 ##
 ## builder
 ##
-FROM node:12-slim AS builder
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
-
-ENV APP_DIR /opt/growi
-ARG FLAVOR=default
-
-COPY --from=setupper-${FLAVOR} ${APP_DIR} ${APP_DIR}
-
-WORKDIR ${APP_DIR}
+FROM setupper-${flavor} AS builder
 
 # build
-RUN npm run build:prod
+RUN yarn build:prod
 # shrink dependencies for production
 RUN yarn install --production
 
@@ -68,21 +60,22 @@ RUN yarn install --production
 FROM node:12-alpine
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-ENV APP_DIR /opt/growi
+ENV appDir /opt/growi
 
 # install tini
 RUN apk add --no-cache tini
 
-USER node
+COPY --from=builder ${appDir} ${appDir}
 
-COPY --from=builder ${APP_DIR} ${APP_DIR}
-
-WORKDIR ${APP_DIR}
+WORKDIR /tmp
 
 RUN --mount=target=. sh bin/symlink-for-uploading-to-local.sh
 
+WORKDIR ${appDir}
+
+USER node
 VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/sbin/tini", "-e", "143", "--"]
-CMD ["npm", "run", "server:prod"]
+CMD ["yarn", "server:prod"]
