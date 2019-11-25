@@ -218,6 +218,25 @@ class SecurityLdapSetting extends React.Component {
               </div>
             </div>
 
+            <div className="row mb-5">
+              <label htmlFor="attrMapMail" className="col-xs-3 text-right">Mail</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Default: mail"
+                  name="attrMapMail"
+                  value={adminSecurityContainer.attrMapMail}
+                  onChange={e => adminSecurityContainer.changeAttrMapMail(e.target.value)}
+                />
+                <p className="help-block">
+                  <small>
+                    { t('security_setting.ldap.mail_detail') }
+                  </small>
+                </p>
+              </div>
+            </div>
+
 
             <h3 className="alert-anchor border-bottom">
               { t('security_setting.ldap.group_search_filter') } ({ t('security_setting.optional') })

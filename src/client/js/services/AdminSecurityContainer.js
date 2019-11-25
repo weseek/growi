@@ -31,6 +31,7 @@ export default class AdminSecurityContainer extends Container {
         searchFilter: '',
         attrMapUsername: '',
         cbSameUsernameTreatedAsIdenticalUser: true,
+        attrMapMail: '',
       },
     };
 
@@ -136,6 +137,15 @@ export default class AdminSecurityContainer extends Container {
    */
   switchCbSameUsernameTreatedAsIdenticalUser() {
     this.setState({ cbSameUsernameTreatedAsIdenticalUser: !this.state.cbSameUsernameTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Change attr map email
+   */
+  changeAttrMapMail(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.attrMapMail = inputValue;
+    this.setState({ newLdapConfig });
   }
 
 
