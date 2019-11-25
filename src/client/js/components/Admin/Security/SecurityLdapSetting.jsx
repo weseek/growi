@@ -219,7 +219,7 @@ class SecurityLdapSetting extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <strong htmlFor="attrMapMail" className="col-xs-3 text-right">Mail</strong>
+              <strong htmlFor="attrMapMail" className="col-xs-3 text-right">{ t('Email') }</strong>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -238,7 +238,7 @@ class SecurityLdapSetting extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <strong htmlFor="attrMapName" className="col-xs-3 text-right">Name</strong>
+              <strong htmlFor="attrMapName" className="col-xs-3 text-right">{ t('Name') }</strong>
               <div className="col-xs-6">
                 <input
                   className="form-control"
