@@ -34,6 +34,7 @@ export default class AdminSecurityContainer extends Container {
         attrMapMail: '',
         attrMapName: '',
         groupSearchBase: '',
+        groupSearchFilter: '',
       },
     };
 
@@ -165,6 +166,15 @@ export default class AdminSecurityContainer extends Container {
   changeGroupSearchBase(inputValue) {
     const newLdapConfig = this.state.ldapConfig;
     newLdapConfig.groupSearchBase = inputValue;
+    this.setState({ newLdapConfig });
+  }
+
+  /**
+   * Change group search filter
+   */
+  changeGroupSearchFilter(inputValue) {
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.groupSearchFilter = inputValue;
     this.setState({ newLdapConfig });
   }
 

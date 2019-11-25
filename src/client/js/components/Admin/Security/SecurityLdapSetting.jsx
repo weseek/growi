@@ -280,6 +280,33 @@ class SecurityLdapSetting extends React.Component {
               </div>
             </div>
 
+            <div className="form-group">
+              <strong htmlFor="groupSearchFilter" className="col-xs-3 control-label">{ t('security_setting.ldap.group_search_filter') }</strong>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="groupSearchFilter"
+                  value={ldapConfig.groupSearchFilter}
+                  onChange={e => adminSecurityContainer.changeGroupSearchFilter(e.target.value)}
+                />
+                <p className="help-block">
+                  <small>
+                    {/* eslint-disable react/no-danger */}
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail1') }} /><br />
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail2') }} /><br />
+                    <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail3') }} />
+                    {/* eslint-eanable react/no-danger */}
+                  </small>
+                </p>
+                <p className="help-block">
+                  <small>
+                    { t('security_setting.example') }: { t('security_setting.ldap.group_search_filter_detail4') }
+                  </small>
+                </p>
+              </div>
+            </div>
+
 
           </React.Fragment>
         )}
