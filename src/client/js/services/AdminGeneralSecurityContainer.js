@@ -3,13 +3,13 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:AdminSecurityContainer');
+const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
 
 /**
  * Service container for admin security page (SecurityManagement.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminSecurityContainer extends Container {
+export default class AdminGeneralSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -40,7 +40,7 @@ export default class AdminSecurityContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'AdminSecurityContainer';
+    return 'AdminGeneralSecurityContainer';
   }
 
   /**

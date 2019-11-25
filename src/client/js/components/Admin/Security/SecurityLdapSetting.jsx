@@ -5,14 +5,14 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import AdminSecurityContainer from '../../../services/AdminSecurityContainer';
-import AdminSecurityLdapContainer from '../../../services/AdminSecutityLdapContainer';
+import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
 class SecurityLdapSetting extends React.Component {
 
   render() {
-    const { t, adminSecurityContainer, adminSecurityLdapContainer } = this.props;
-    const { isLdapConfigEnabled } = adminSecurityContainer.state;
+    const { t, adminGeneralSecurityContainer, adminLdapSecurityContainer } = this.props;
+    const { isLdapConfigEnabled } = adminGeneralSecurityContainer.state;
 
     return (
       <React.Fragment>
@@ -29,7 +29,7 @@ class SecurityLdapSetting extends React.Component {
                 id="isLdapEnabled"
                 type="checkbox"
                 checked={isLdapConfigEnabled}
-                onChange={() => { adminSecurityContainer.switchIsLdapEnabled() }}
+                onChange={() => { adminGeneralSecurityContainer.switchIsLdapEnabled() }}
               />
               <label htmlFor="isLdapEnabled">
                 { t('security_setting.ldap.enable_ldap') }
@@ -48,8 +48,8 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control"
                   type="text"
                   name="serverUrl"
-                  value={adminSecurityLdapContainer.state.serverUrl}
-                  onChange={e => adminSecurityLdapContainer.changeServerUrl(e.target.value)}
+                  value={adminLdapSecurityContainer.state.serverUrl}
+                  onChange={e => adminLdapSecurityContainer.changeServerUrl(e.target.value)}
                 />
                 <small>
                   <p
@@ -68,17 +68,17 @@ class SecurityLdapSetting extends React.Component {
                 <div className="my-0 btn-group">
                   <div className="dropdown">
                     <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span className="pull-left">{t(`security_setting.ldap.bind_${adminSecurityLdapContainer.state.bindMode}`)}</span>
+                      <span className="pull-left">{t(`security_setting.ldap.bind_${adminLdapSecurityContainer.state.bindMode}`)}</span>
                       <span className="bs-caret pull-right">
                         <span className="caret" />
                       </span>
                     </button>
                     {/* TODO adjust dropdown after BS4 */}
                     <ul className="dropdown-menu" role="menu">
-                      <li key="manager" role="presentation" type="button" onClick={() => { adminSecurityLdapContainer.changeLdapBindMode('manager') }}>
+                      <li key="manager" role="presentation" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode('manager') }}>
                         <a role="menuitem">{ t('security_setting.ldap.bind_manager') }</a>
                       </li>
-                      <li key="user" role="presentation" type="button" onClick={() => { adminSecurityLdapContainer.changeLdapBindMode('user') }}>
+                      <li key="user" role="presentation" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode('user') }}>
                         <a role="menuitem">{ t('security_setting.ldap.bind_user') }</a>
                       </li>
                     </ul>
@@ -94,10 +94,10 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control"
                   type="text"
                   name="bindDN"
-                  value={adminSecurityLdapContainer.state.bindDN}
-                  onChange={e => adminSecurityLdapContainer.changeBindDN(e.target.value)}
+                  value={adminLdapSecurityContainer.state.bindDN}
+                  onChange={e => adminLdapSecurityContainer.changeBindDN(e.target.value)}
                 />
-                {(adminSecurityLdapContainer.state.bindMode === 'manager') ? (
+                {(adminLdapSecurityContainer.state.bindMode === 'manager') ? (
                   <p className="help-block passport-ldap-managerbind">
                     <small>
                       { t('security_setting.ldap.bind_DN_manager_detail') }<br />
@@ -126,10 +126,10 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control passport-ldap-managerbind"
                   type="password"
                   name="bindDNPassword"
-                  value={adminSecurityLdapContainer.state.bindDNPassword}
-                  onChange={e => adminSecurityLdapContainer.changeBindDNPassword(e.target.value)}
+                  value={adminLdapSecurityContainer.state.bindDNPassword}
+                  onChange={e => adminLdapSecurityContainer.changeBindDNPassword(e.target.value)}
                 />
-                {(adminSecurityLdapContainer.state.bindMode === 'manager') ? (
+                {(adminLdapSecurityContainer.state.bindMode === 'manager') ? (
                   <p className="help-block passport-ldap-managerbind">
                     <small>
                       { t('security_setting.ldap.bind_DN_password_manager_detail') }
@@ -152,8 +152,8 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control"
                   type="text"
                   name="searchFilter"
-                  value={adminSecurityLdapContainer.state.searchFilter}
-                  onChange={e => adminSecurityLdapContainer.changeSearchFilter(e.target.value)}
+                  value={adminLdapSecurityContainer.state.searchFilter}
+                  onChange={e => adminLdapSecurityContainer.changeSearchFilter(e.target.value)}
                 />
                 <p className="help-block">
                   <small>
@@ -187,8 +187,8 @@ class SecurityLdapSetting extends React.Component {
                   type="text"
                   placeholder="Default: uid"
                   name="attrMapUsername"
-                  value={adminSecurityLdapContainer.state.attrMapUsername}
-                  onChange={e => adminSecurityLdapContainer.changeAttrMapUsername(e.target.value)}
+                  value={adminLdapSecurityContainer.state.attrMapUsername}
+                  onChange={e => adminLdapSecurityContainer.changeAttrMapUsername(e.target.value)}
                 />
                 <p className="help-block">
                   {/* eslint-disable-next-line react/no-danger */}
@@ -203,8 +203,8 @@ class SecurityLdapSetting extends React.Component {
                   <input
                     id="cbSameUsernameTreatedAsIdenticalUser"
                     type="checkbox"
-                    checked={adminSecurityLdapContainer.state.cbSameUsernameTreatedAsIdenticalUser}
-                    onChange={() => { adminSecurityLdapContainer.switchCbSameUsernameTreatedAsIdenticalUser() }}
+                    checked={adminLdapSecurityContainer.state.cbSameUsernameTreatedAsIdenticalUser}
+                    onChange={() => { adminLdapSecurityContainer.switchCbSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
                     htmlFor="cbSameUsernameTreatedAsIdenticalUser"
@@ -227,8 +227,8 @@ class SecurityLdapSetting extends React.Component {
                   type="text"
                   placeholder="Default: mail"
                   name="attrMapMail"
-                  value={adminSecurityLdapContainer.state.attrMapMail}
-                  onChange={e => adminSecurityLdapContainer.changeAttrMapMail(e.target.value)}
+                  value={adminLdapSecurityContainer.state.attrMapMail}
+                  onChange={e => adminLdapSecurityContainer.changeAttrMapMail(e.target.value)}
                 />
                 <p className="help-block">
                   <small>
@@ -245,8 +245,8 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control"
                   type="text"
                   name="attrMapName"
-                  value={adminSecurityLdapContainer.state.attrMapName}
-                  onChange={e => adminSecurityLdapContainer.changeAttrMapName(e.target.value)}
+                  value={adminLdapSecurityContainer.state.attrMapName}
+                  onChange={e => adminLdapSecurityContainer.changeAttrMapName(e.target.value)}
                 />
                 <p className="help-block">
                   <small>
@@ -268,8 +268,8 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control"
                   type="text"
                   name="groupSearchBase"
-                  value={adminSecurityLdapContainer.state.groupSearchBase}
-                  onChange={e => adminSecurityLdapContainer.changeGroupSearchBase(e.target.value)}
+                  value={adminLdapSecurityContainer.state.groupSearchBase}
+                  onChange={e => adminLdapSecurityContainer.changeGroupSearchBase(e.target.value)}
                 />
                 <p className="help-block">
                   <small>
@@ -288,8 +288,8 @@ class SecurityLdapSetting extends React.Component {
                   className="form-control"
                   type="text"
                   name="groupSearchFilter"
-                  value={adminSecurityLdapContainer.state.groupSearchFilter}
-                  onChange={e => adminSecurityLdapContainer.changeGroupSearchFilter(e.target.value)}
+                  value={adminLdapSecurityContainer.state.groupSearchFilter}
+                  onChange={e => adminLdapSecurityContainer.changeGroupSearchFilter(e.target.value)}
                 />
                 <p className="help-block">
                   <small>
@@ -318,8 +318,8 @@ class SecurityLdapSetting extends React.Component {
                   type="text"
                   placeholder="Default: uid"
                   name="groupDnProperty"
-                  value={adminSecurityLdapContainer.state.groupDnProperty}
-                  onChange={e => adminSecurityLdapContainer.changeGroupDnProperty(e.target.value)}
+                  value={adminLdapSecurityContainer.state.groupDnProperty}
+                  onChange={e => adminLdapSecurityContainer.changeGroupDnProperty(e.target.value)}
                 />
                 <p className="help-block">
                   {/* eslint-disable-next-line react/no-danger */}
@@ -340,12 +340,12 @@ class SecurityLdapSetting extends React.Component {
 SecurityLdapSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminSecurityContainer: PropTypes.instanceOf(AdminSecurityContainer).isRequired,
-  adminSecurityLdapContainer: PropTypes.instanceOf(AdminSecurityLdapContainer).isRequired,
+  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
 const SecurityLdapSettingWrapper = (props) => {
-  return createSubscribedElement(SecurityLdapSetting, props, [AppContainer, AdminSecurityContainer, AdminSecurityLdapContainer]);
+  return createSubscribedElement(SecurityLdapSetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
 };
 
 export default withTranslation()(SecurityLdapSettingWrapper);
