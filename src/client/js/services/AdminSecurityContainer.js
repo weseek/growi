@@ -35,7 +35,7 @@ export default class AdminSecurityContainer extends Container {
         attrMapName: '',
         groupSearchBase: '',
         groupSearchFilter: '',
-        groupDnProperty:''
+        groupDnProperty: '',
       },
     };
 
@@ -140,7 +140,9 @@ export default class AdminSecurityContainer extends Container {
    * Switch cb same username treated as identical user
    */
   switchCbSameUsernameTreatedAsIdenticalUser() {
-    this.setState({ cbSameUsernameTreatedAsIdenticalUser: !this.state.cbSameUsernameTreatedAsIdenticalUser });
+    const newLdapConfig = this.state.ldapConfig;
+    newLdapConfig.cbSameUsernameTreatedAsIdenticalUser = !this.state.ldapConfig.cbSameUsernameTreatedAsIdenticalUser;
+    this.setState({ newLdapConfig });
   }
 
   /**
