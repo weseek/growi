@@ -179,7 +179,7 @@ class SecurityLdapSetting extends React.Component {
             </h3>
 
             <div className="row mb-5">
-              <label htmlFor="attrMapUsername" className="col-xs-3 text-right">{t('username')}</label>
+              <strong htmlFor="attrMapUsername" className="col-xs-3 text-right">{t('username')}</strong>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -219,19 +219,37 @@ class SecurityLdapSetting extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="attrMapMail" className="col-xs-3 text-right">Mail</label>
+              <strong htmlFor="attrMapMail" className="col-xs-3 text-right">Mail</strong>
               <div className="col-xs-6">
                 <input
                   className="form-control"
                   type="text"
                   placeholder="Default: mail"
                   name="attrMapMail"
-                  value={adminSecurityContainer.attrMapMail}
+                  value={ldapConfig.attrMapMail}
                   onChange={e => adminSecurityContainer.changeAttrMapMail(e.target.value)}
                 />
                 <p className="help-block">
                   <small>
                     { t('security_setting.ldap.mail_detail') }
+                  </small>
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5">
+              <strong htmlFor="attrMapName" className="col-xs-3 text-right">Name</strong>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="attrMapName"
+                  value={ldapConfig.attrMapName}
+                  onChange={e => adminSecurityContainer.changeAttrMapName(e.target.value)}
+                />
+                <p className="help-block">
+                  <small>
+                    { t('security_setting.ldap.name_detail') }
                   </small>
                 </p>
               </div>
