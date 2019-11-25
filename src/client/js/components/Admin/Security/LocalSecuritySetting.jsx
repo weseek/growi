@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
-class SecurityLocalSetting extends React.Component {
+class LocalSecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
@@ -121,14 +121,14 @@ class SecurityLocalSetting extends React.Component {
 
 }
 
-SecurityLocalSetting.propTypes = {
+LocalSecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const SecurityLocalSettingWrapper = (props) => {
-  return createSubscribedElement(SecurityLocalSetting, props, [AppContainer, AdminGeneralSecurityContainer]);
+const LocalSecuritySettingWrapper = (props) => {
+  return createSubscribedElement(LocalSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer]);
 };
 
-export default withTranslation()(SecurityLocalSettingWrapper);
+export default withTranslation()(LocalSecuritySettingWrapper);

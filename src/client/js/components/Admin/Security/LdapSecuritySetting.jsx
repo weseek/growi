@@ -8,7 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
-class SecurityLdapSetting extends React.Component {
+class LdapSecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminLdapSecurityContainer } = this.props;
@@ -337,15 +337,15 @@ class SecurityLdapSetting extends React.Component {
 
 }
 
-SecurityLdapSetting.propTypes = {
+LdapSecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
-const SecurityLdapSettingWrapper = (props) => {
-  return createSubscribedElement(SecurityLdapSetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
+const LdapSecuritySettingWrapper = (props) => {
+  return createSubscribedElement(LdapSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLdapSecurityContainer]);
 };
 
-export default withTranslation()(SecurityLdapSettingWrapper);
+export default withTranslation()(LdapSecuritySettingWrapper);
