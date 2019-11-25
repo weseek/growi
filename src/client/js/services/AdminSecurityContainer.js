@@ -22,21 +22,7 @@ export default class AdminSecurityContainer extends Container {
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',
-      ldapConfig: {
-        isEnabled: true,
-        serverUrl: '',
-        bindMode: 'manager',
-        bindDN: '',
-        bindDNPassword: '',
-        searchFilter: '',
-        attrMapUsername: '',
-        cbSameUsernameTreatedAsIdenticalUser: true,
-        attrMapMail: '',
-        attrMapName: '',
-        groupSearchBase: '',
-        groupSearchFilter: '',
-        groupDnProperty: '',
-      },
+      isLdapConfigEnabled: true,
     };
 
     this.init();
@@ -77,117 +63,7 @@ export default class AdminSecurityContainer extends Container {
    * Switch local enabled
    */
   switchIsLdapEnabled() {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.isEnabled = !this.state.ldapConfig.isEnabled;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change server url
-   */
-  changeServerUrl(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.serverUrl = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change ldap bind mode
-   */
-  changeLdapBindMode(mode) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.bindMode = mode;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change bind DN
-   */
-  changeBindDN(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.bindDN = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change bind DN password
-   */
-  changeBindDNPassword(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.bindDNPassword = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change search filter
-   */
-  changeSearchFilter(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.searchFilter = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change attr map username
-   */
-  changeAttrMapUsername(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.attrMapUsername = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Switch cb same username treated as identical user
-   */
-  switchCbSameUsernameTreatedAsIdenticalUser() {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.cbSameUsernameTreatedAsIdenticalUser = !this.state.ldapConfig.cbSameUsernameTreatedAsIdenticalUser;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change attr map email
-   */
-  changeAttrMapMail(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.attrMapMail = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change attr map name
-   */
-  changeAttrMapName(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.attrMapName = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change group search base
-   */
-  changeGroupSearchBase(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.groupSearchBase = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change group search filter
-   */
-  changeGroupSearchFilter(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.groupSearchFilter = inputValue;
-    this.setState({ newLdapConfig });
-  }
-
-  /**
-   * Change group dn property
-   */
-  changeGroupDnProperty(inputValue) {
-    const newLdapConfig = this.state.ldapConfig;
-    newLdapConfig.groupDnProperty = inputValue;
-    this.setState({ newLdapConfig });
+    this.setState({ isLdapConfigEnabled: !this.state.isLdapConfigEnabled });
   }
 
 }
