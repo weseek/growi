@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v1
       
     - name: Bump version
-      run: sh ./bin/bump-version.sh
+      run: sh ./bin/github-actions/bump-version.sh
       
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v1.0.4
