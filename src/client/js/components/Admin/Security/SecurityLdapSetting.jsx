@@ -119,7 +119,7 @@ class SecurityLdapSetting extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="bindDNPassword" className="col-xs-3 control-label text-right">{ t('security_setting.ldap.bind_DN_password') }</label>
+              <label htmlFor="bindDNPassword" className="col-xs-3 text-right">{ t('security_setting.ldap.bind_DN_password') }</label>
               <div className="col-xs-6">
                 <input
                   className="form-control passport-ldap-managerbind"
