@@ -12,7 +12,22 @@ import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityConta
 class SamlSecurityManagement extends React.Component {
 
   render() {
-    return <p>{this.props.adminSamlSecurityContainer.state.hoge}</p>;
+    const { t, adminGeneralSecurityContainer } = this.props;
+    return (
+      <React.Fragment>
+
+        {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
+        <p
+          className="alert alert-info"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS') }}
+        />
+        )}
+
+
+      </React.Fragment>
+    );
+
   }
 
 }
@@ -20,7 +35,7 @@ class SamlSecurityManagement extends React.Component {
 SamlSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  AdminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
