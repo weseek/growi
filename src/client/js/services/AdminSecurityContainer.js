@@ -87,7 +87,7 @@ export default class AdminSecurityContainer extends Container {
   /**
    * Update pageDeletion
    * @memberOf AdminSecurityContainer
-   * @return {string} Behavior
+   * @return {string} pageDeletion
    */
   async updatePageCompleteDeletionAuthority() {
     const response = await this.appContainer.apiv3.put('/security-setting/pageDeletion', {
