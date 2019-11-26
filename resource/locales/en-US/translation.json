@@ -590,14 +590,14 @@
       }
     },
     "form_item_name": {
-      "security:passport-saml:entryPoint": "Entry point",
-      "security:passport-saml:issuer": "Issuer",
-      "security:passport-saml:cert": "Certificate",
-      "security:passport-saml:attrMapId": "ID",
-      "security:passport-saml:attrMapUsername": "Username",
-      "security:passport-saml:attrMapMail": "Mail Address",
-      "security:passport-saml:attrMapFirstName": "First Name",
-      "security:passport-saml:attrMapLastName": "Last Name"
+      "entryPoint": "Entry point",
+      "issuer": "Issuer",
+      "cert": "Certificate",
+      "attrMapId": "ID",
+      "attrMapUsername": "Username",
+      "attrMapMail": "Mail Address",
+      "attrMapFirstName": "First Name",
+      "attrMapLastName": "Last Name"
     }
 	},
 

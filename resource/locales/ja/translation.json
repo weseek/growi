@@ -574,14 +574,14 @@
       }
     },
     "form_item_name": {
-      "security:passport-saml:entryPoint": "エントリーポイント",
-      "security:passport-saml:issuer": "発行者",
-      "security:passport-saml:cert": "証明書",
-      "security:passport-saml:attrMapId": "ID",
-      "security:passport-saml:attrMapUsername": "ユーザー名",
-      "security:passport-saml:attrMapMail": "メールアドレス",
-      "security:passport-saml:attrMapFirstName": "姓",
-      "security:passport-saml:attrMapLastName": "名"
+      "entryPoint": "エントリーポイント",
+      "issuer": "発行者",
+      "cert": "証明書",
+      "attrMapId": "ID",
+      "attrMapUsername": "ユーザー名",
+      "attrMapMail": "メールアドレス",
+      "attrMapFirstName": "姓",
+      "attrMapLastName": "名"
     }
   },
 

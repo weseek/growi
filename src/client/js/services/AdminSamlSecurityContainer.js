@@ -18,9 +18,16 @@ export default class AdminSamlSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
+      useOnlyEnvVars: false,
       appSiteUrl: false,
       callbackUrl: 'hoge.com',
       missingMandatoryConfigKeys: [],
+      samlDbEntryPoint: '',
+      samlEnvVarEntryPoint: '',
+      samlDbIssuer: '',
+      samlEnvVarIssuer: '',
+      samlDbCert: '',
+      samlEnvVarCert: '',
     };
 
     this.init();
@@ -37,6 +44,27 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminSamlSecurityContainer';
+  }
+
+  /**
+   * Change saml db entry point
+   */
+  changeSamlDbEntryPoint(inputValue) {
+    this.setState({ samlDbEntryPoint: inputValue });
+  }
+
+  /**
+   * Change saml db issuer
+   */
+  changeSamlDbIssuer(inputValue) {
+    this.setState({ samlDbIssuer: inputValue });
+  }
+
+  /**
+   * Change saml db Cert
+   */
+  changeSamlDbCert(inputValue) {
+    this.setState({ samlDbCert: inputValue });
   }
 
 }
