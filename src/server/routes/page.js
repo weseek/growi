@@ -72,9 +72,6 @@ module.exports = function(crowi, app) {
   }
 
   function generatePager(offset, limit, totalCount) {
-    let next = null;
-
-
     let prev = null;
 
     if (offset > 0) {
@@ -84,11 +81,9 @@ module.exports = function(crowi, app) {
       }
     }
 
-    if (totalCount < limit) {
+    let next = offset + limit;
+    if (totalCount < next) {
       next = null;
-    }
-    else {
-      next = offset + limit;
     }
 
     return {
@@ -164,7 +159,7 @@ module.exports = function(crowi, app) {
 
     const queryOptions = {
       offset,
-      limit: limit + 1,
+      limit,
       includeTrashed: path.startsWith('/trash/'),
       isRegExpEscapedFromPath,
     };
@@ -475,7 +470,7 @@ module.exports = function(crowi, app) {
 
     const queryOptions = {
       offset,
-      limit: limit + 1,
+      limit,
       includeTrashed: true,
     };
 
