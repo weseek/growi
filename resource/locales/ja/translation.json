@@ -526,6 +526,7 @@
     },
     "SAML": {
       "name": "SAML",
+      "enable_saml": "SAML を有効にする",
       "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
       "mapping_detail": "新規ユーザーの%sに関連付ける属性",

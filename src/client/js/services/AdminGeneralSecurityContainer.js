@@ -23,6 +23,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       registrationMode: 'open',
       registrationWhiteList: '',
       isLdapEnabled: true,
+      isSamlEnabled: true,
     };
 
     this.init();
@@ -57,13 +58,18 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.setState({ registrationMode: value });
   }
 
-  // LDAP function
-
   /**
-   * Switch local enabled
+   * Switch LDAP enabled
    */
   switchIsLdapEnabled() {
     this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
+  }
+
+  /**
+   * Switch SAML enabled
+   */
+  switchIsSamlEnabled() {
+    this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
   }
 
 }

@@ -24,6 +24,23 @@ class SamlSecurityManagement extends React.Component {
         />
         )}
 
+        <div className="row mb-5">
+          <strong className="col-xs-3 text-right">{ t('security_setting.SAML.name') }</strong>
+          <div className="col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isSamlEnabled"
+                type="checkbox"
+                checked={adminGeneralSecurityContainer.state.isSamlEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
+              />
+              <label htmlFor="isSamlEnabled">
+                { t('security_setting.SAML.enable_saml') }
+              </label>
+            </div>
+          </div>
+        </div>
+
 
       </React.Fragment>
     );
