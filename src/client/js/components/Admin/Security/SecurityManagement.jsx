@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import LdapSecuritySetting from './LdapSecuritySetting';
+import LocalSecuritySetting from './LocalSecuritySetting';
 
 class SecurityManagement extends React.Component {
 
@@ -17,7 +19,7 @@ class SecurityManagement extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
-        {/* TODO GW-540 */}
+        {/* TODO GW-582 reactify-admin */}
         <fieldset>
           <legend className="alert-anchor">{ t('security_settings') }</legend>
           <div className="form-group">
@@ -93,16 +95,20 @@ class SecurityManagement extends React.Component {
             </div>
           </div>
         </fieldset>
-        <div className="mt-5">
-          <legend>{ t('security_setting.xss_prevent_setting') }</legend>
+
+        {/* XSS configuration link */}
+        <div className="mb-5">
+          <h2 className="border-bottom">{ t('security_setting.xss_prevent_setting') }</h2>
           <div className="text-center">
-            <a className="flexbox" style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
+            <a style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
               <i className="fa-fw icon-login"></i> { t('security_setting.xss_prevent_setting_link') }
             </a>
           </div>
         </div>
+
+        {/* TODO 542~550 reactify-admin */}
         <div className="auth-mechanism-configurations m-t-10">
-          <legend>{ t('security_setting.Authentication mechanism settings') }</legend>
+          <h2 className="border-bottom">{ t('security_setting.Authentication mechanism settings') }</h2>
           <div className="passport-settings">
             <ul className="nav nav-tabs" role="tablist">
               <li className="active">
@@ -135,30 +141,34 @@ class SecurityManagement extends React.Component {
             </ul>
             <div className="tab-content p-t-10">
               <div id="passport-local" className="tab-pane active" role="tabpanel">
+                <LocalSecuritySetting />
               </div>
               <div id="passport-ldap" className="tab-pane" role="tabpanel">
+                <LdapSecuritySetting />
               </div>
               <div id="passport-saml" className="tab-pane" role="tabpanel">
+                {/* TODO GW-544 reactify saml.html */}
               </div>
               <div id="passport-oidc" className="tab-pane" role="tabpanel">
+                {/* TODO GW-545 reactify oidc.html */}
               </div>
               <div id="passport-basic" className="tab-pane" role="tabpanel">
+                {/* TODO GW-546 reactify basic.html */}
               </div>
               <div id="passport-google-oauth" className="tab-pane" role="tabpanel">
-              </div>
-              <div id="passport-facebook" className="tab-pane" role="tabpanel">
-              </div>
-              <div id="passport-twitter" className="tab-pane" role="tabpanel">
+                {/* TODO GW-547 reactify google-oauth.html */}
               </div>
               <div id="passport-github" className="tab-pane" role="tabpanel">
+                {/* TODO GW-548 reactify github.html */}
+              </div>
+              <div id="passport-twitter" className="tab-pane" role="tabpanel">
+                {/* TODO GW-549 reactify twitter.html */}
+              </div>
+              <div id="passport-facebook" className="tab-pane" role="tabpanel">
+                {/* TODO GW-550 reactify facebook.html */}
               </div>
             </div>
           </div>
-        </div>
-        <div>
-          <script>
-            {/* TODO GW-542~GW-549 */}
-          </script>
         </div>
       </Fragment>
     );

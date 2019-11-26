@@ -481,17 +481,19 @@
     },
     "configuration": "設定",
     "optional": "オプション",
-    "Treat username matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
-    "Treat username matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
+    "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
+    "Treat username matching as identical_warn": "警告: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "Treat email matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
     "Treat email matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
     "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
     "Local": {
-      "name": "ID/Password"
+      "name": "ID/Password",
+      "enable_local": "ID/Password を有効にする"
     },
     "ldap": {
+      "enable_ldap": "LDAP を有効にする",
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
       "bind_manager": "管理者 Bind",
@@ -609,7 +611,10 @@
     "Custom Whitelist": "カスタムホワイトリスト",
     "Tag names": "タグ名のホワイトリスト",
     "Tag attributes": "タグ属性のホワイトリスト",
-    "import_recommended": "おすすめをインポート"
+    "import_recommended": "おすすめをインポート",
+    "updated_lineBreak": "改行設定を更新しました",
+    "updated_presentation": "プレゼンテーション設定を更新しました",
+    "updated_xss": "XSS設定を更新しました"
   },
 
   "notification_setting": {
@@ -705,7 +710,6 @@
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました "
-
   },
 
   "user_group_management": {

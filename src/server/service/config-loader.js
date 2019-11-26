@@ -130,6 +130,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
+  FILE_UPLOAD_DISABLED: {
+    ns:      'crowi',
+    key:     'app:fileUploadDisabled',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   ELASTICSEARCH_URI: {
     ns:      'crowi',
     key:     'app:elasticsearchUri',
