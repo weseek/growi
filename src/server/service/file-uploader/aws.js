@@ -49,7 +49,7 @@ module.exports = function(crowi) {
     return filePath;
   }
 
-  lib.getIsUploadable = function() {
+  lib.isValidUploadSettings = function() {
     return this.configManager.getConfig('crowi', 'aws:accessKeyId') != null
       && this.configManager.getConfig('crowi', 'aws:secretAccessKey') != null
       && (

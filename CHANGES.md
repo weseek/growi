@@ -18,6 +18,10 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 * Support: Upgrade libs
     * growi-commons
 
+## 3.5.22
+
+* Improvement: Add `FILE_UPLOAD_DISABLED` env var
+
 ## 3.5.21
 
 * Improvement: Cache control when retrieving attachment data
