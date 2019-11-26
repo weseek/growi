@@ -82,7 +82,7 @@ module.exports = (crowi) => {
    *                  restrictGuestMode:
    *                    description: type of restrictGuestMode
    *                    type: string
-   *      responses:
+   *        responses:
    *          200:
    *            description: Succeeded to update restrictGuestMode
    *            content:
@@ -128,7 +128,7 @@ module.exports = (crowi) => {
    *                 pageCompleteDeletionAuthority:
    *                    description: type of pageCompleteDeletionAuthority
    *                    type: string
-   *      responses:
+   *        responses:
    *          200:
    *            description: Succeeded to update behavior
    *            content:
@@ -177,7 +177,7 @@ module.exports = (crowi) => {
    *                  ihideRestrictedByGroup:
    *                    description: is enabled hideRestrictedBygroup
    *                    type: boolean
-   *      responses:
+   *        responses:
    *          200:
    *            description: Succeeded to update function
    *            content:
