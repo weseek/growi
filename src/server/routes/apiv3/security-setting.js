@@ -18,6 +18,35 @@ const validator = {};
  *    name: SecuritySetting
  */
 
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      GuestModeParams:
+ *        type: object
+ *        properties:
+ *          restrictGuestMode:
+ *            type: string
+ *            description: type of restrictGuestMode
+ *      PageDeletionParams:
+ *        type: object
+ *        properties:
+ *          pageCompleteDeletionAuthority:
+ *            type: string
+ *            description: type of pageBreakSeparator
+ *      HideParams:
+ *        type: object
+ *        properties:
+ *          hideRestrictedByOwner:
+ *            type: boolean
+ *            description: enable hide by owner
+ *          hideRestrictedByGroup:
+ *            type: boolean
+ *            description: enable hide by group
+ */
+
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
@@ -49,7 +78,7 @@ module.exports = (crowi) => {
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
+   *              schema:
    *                type: object
    *                properties:
    *                  restrictGuestMode:
@@ -58,6 +87,12 @@ module.exports = (crowi) => {
    *      responses:
    *          200:
    *            description: Succeeded to update restrictGuestMode
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  status:
+   *                    $ref: '#/components/schemas/GuestModeParams'
    */
   router.put('/guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -89,7 +124,7 @@ module.exports = (crowi) => {
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
+   *              schema:
    *                type: object
    *                properties:
    *                 pageCompleteDeletionAuthority:
@@ -98,6 +133,12 @@ module.exports = (crowi) => {
    *      responses:
    *          200:
    *            description: Succeeded to update behavior
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  status:
+   *                    $ref: '#/components/schemas/PageDeletionParams'
    */
   router.put('/pageDeletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -129,7 +170,7 @@ module.exports = (crowi) => {
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
+   *              schema:
    *                type: object
    *                properties:
    *                  hideRestrictedByOwner:
@@ -141,6 +182,12 @@ module.exports = (crowi) => {
    *      responses:
    *          200:
    *            description: Succeeded to update function
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  status:
+   *                    $ref: '#/components/schemas/HideParams'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
