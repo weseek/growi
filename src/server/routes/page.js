@@ -464,7 +464,9 @@ module.exports = function(crowi, app) {
   };
 
   actions.deletedPageListShow = async function(req, res) {
-    const path = `/trash${getPathFromRequest(req)}`;
+    // normalizePath makes '/trash/' -> '/trash'
+    const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
+
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
 
