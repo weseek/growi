@@ -589,8 +589,11 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
 
+    // check whether path starts slash
+    const checkedPath = pathUtils.addHeadingSlash(pagePath);
+
     // check page existence
-    const isExist = await Page.count({ path: pagePath }) > 0;
+    const isExist = await Page.count({ path: checkedPath }) > 0;
     if (isExist) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
@@ -601,7 +604,7 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(pagePath, body, req.user, options);
+    const createdPage = await Page.create(checkedPath, body, req.user, options);
 
     let savedTags;
     if (pageTags != null) {
