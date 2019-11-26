@@ -130,7 +130,7 @@ Environment Variables
         * `mongodb` : MongoDB GridFS (Setting-less)
         * `local` : Server's Local file system (Setting-less)
         * `none` : Disable file uploading
-    * FILE_UPLOAD_DISABLED: If `true`, disabled file upload. However can view files. default: `false`
+    * FILE_UPLOAD_DISABLED: If `true`, file uploading will be disabled. However, the files can be still viewed. Default: `false`
     * MAX_FILE_SIZE: The maximum file size limit for uploads (bytes). default: `Infinity`
     * FILE_UPLOAD_TOTAL_LIMIT: Total capacity limit for uploads (bytes). default: `Infinity`
     * GCS_API_KEY_JSON_PATH: Path of the JSON file that contains [service account key to authenticate to GCP API](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
