@@ -18,6 +18,12 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 * Support: Upgrade libs
     * growi-commons
 
+
+
+## 3.5.23
+
+* Fix: Healthcheck API with `?connectToMiddlewares` returns error
+
 ## 3.5.22
 
 * Improvement: Add `FILE_UPLOAD_DISABLED` env var
