@@ -18,7 +18,10 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 ## 3.5.23
 
+* Fix: Global Notification failed to send e-mail
 * Fix: Healthcheck API with `?connectToMiddlewares` returns error
+* Support: Upgrade libs
+    * growi-commons
 
 ## 3.5.22
 
