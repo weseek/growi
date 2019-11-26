@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -12,15 +13,14 @@ import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityConta
 class SamlSecurityManagement extends React.Component {
 
   render() {
-    const { t, adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
     return (
       <React.Fragment>
 
         {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
         <p
           className="alert alert-info"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS') }}
+          dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
         />
         )}
 
@@ -38,6 +38,28 @@ class SamlSecurityManagement extends React.Component {
                 { t('security_setting.SAML.enable_saml') }
               </label>
             </div>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
+          <div className="col-xs-6">
+            <input
+              className="form-control"
+              type="text"
+              value={adminSamlSecurityContainer.state.callbackUrl}
+              readOnly
+            />
+            <p className="help-block small">{ t('security_setting.desc_of_callback_URL') }</p>
+            {!adminSamlSecurityContainer.state.appSiteUrl && (
+            <div className="alert alert-danger">
+              <i
+                className="icon-exclamation"
+                // eslint-disable-next-line max-len
+                dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+              />
+            </div>
+            )}
           </div>
         </div>
 

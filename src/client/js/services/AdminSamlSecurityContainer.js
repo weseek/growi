@@ -18,7 +18,8 @@ export default class AdminSamlSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
-      hoge: 'test',
+      appSiteUrl: false,
+      callbackUrl: 'hoge.com',
     };
 
     this.init();

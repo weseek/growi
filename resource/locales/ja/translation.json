@@ -463,11 +463,11 @@
     "anyone": "誰でも可能",
 
     "Authentication mechanism settings":"認証機構設定",
-    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。%s から設定してください。",
+    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting":"XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link":"マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
-    "desc_of_callback_URL": "%s プロバイダ側の設定で利用してください。",
+    "desc_of_callback_URL": "SAML Identity プロバイダ側の設定で利用してください。",
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
     "guest_mode": {
@@ -531,7 +531,7 @@
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
       "mapping_detail": "新規ユーザーの%sに関連付ける属性",
       "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
-      "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
+      "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{env}}</code> の値を利用します",
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
     },
     "Basic": {
