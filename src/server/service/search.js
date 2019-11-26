@@ -65,7 +65,7 @@ class SearchService {
   }
 
   getInfo() {
-    return this.delegator.info({});
+    return this.delegator.getInfo();
   }
 
   async buildIndex() {
