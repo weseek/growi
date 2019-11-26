@@ -3,7 +3,7 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminSamlSecurityLdapContainer');
+const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
 
 /**
  * Service container for admin security page (SecuritySamlSetting.jsx)
