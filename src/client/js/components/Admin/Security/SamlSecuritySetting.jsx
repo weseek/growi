@@ -41,7 +41,7 @@ class SamlSecurityManagement extends React.Component {
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="row mb-5">
           <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
           <div className="col-xs-6">
             <input
@@ -62,6 +62,23 @@ class SamlSecurityManagement extends React.Component {
             )}
           </div>
         </div>
+
+        {adminGeneralSecurityContainer.state.isSamlEnabled && (
+          <React.Fragment>
+
+            {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
+            <div className="alert alert-danger">
+              { t('security_setting.missing mandatory configs') }
+              <ul>
+                {/* TODO GW-583 show li after fetch data */}
+                {/* <li>{ t('security_setting.form_item_name.key') }</li> */}
+              </ul>
+            </div>
+          )}
+
+          </React.Fragment>
+
+        )}
 
 
       </React.Fragment>

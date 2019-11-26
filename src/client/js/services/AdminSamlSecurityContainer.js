@@ -20,6 +20,7 @@ export default class AdminSamlSecurityContainer extends Container {
       // TODO GW-583 set value
       appSiteUrl: false,
       callbackUrl: 'hoge.com',
+      missingMandatoryConfigKeys: [],
     };
 
     this.init();
