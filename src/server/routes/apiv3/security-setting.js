@@ -46,7 +46,7 @@ const validator = {
  *        properties:
  *          pageCompleteDeletionAuthority:
  *            type: string
- *            description: type of pageBreakSeparator
+ *            description: type of pageDeletionAuthority
  *      HideParams:
  *        type: object
  *        properties:
@@ -130,7 +130,7 @@ module.exports = (crowi) => {
    *                    type: string
    *        responses:
    *          200:
-   *            description: Succeeded to update behavior
+   *            description: Succeeded to update pageDeletion
    *            content:
    *              application/json:
    *                schema:
