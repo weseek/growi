@@ -11,6 +11,7 @@ class GlobalNotificationMailService {
     this.mailer = crowi.getMailer();
     this.type = crowi.model('GlobalNotificationSetting').TYPE.MAIL;
     this.event = crowi.model('GlobalNotificationSetting').EVENT;
+    this.defaultLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
   }
 
   /**
