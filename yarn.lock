@@ -5758,10 +5758,10 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-growi-commons@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.7.tgz#f9ff9c2f6afe3a9982b689d368e8e7a000d137e8"
-  integrity sha512-Ipku+WlfXsSqS+2fuDRfOeCP5Q8dBo/8XYlcjsPFdCvKa9lBr2OsSN2ac9dAXaL9bH4wc+Kz7UR/OLjAMlx0Iw==
+growi-commons@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.8.tgz#3040f2759f5eb13084b101e303c11028af2a8faf"
+  integrity sha512-AL/vm3R3LqiWwCbuEHPsDP8hapiz7ulKZXyW4399WHorx/7oEkSWb6sGdkvJiqSnRWxEcdPkfw6K0kgzilMpig==
 
 growly@^1.3.0:
   version "1.3.0"
