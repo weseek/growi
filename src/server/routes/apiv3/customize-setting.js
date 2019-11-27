@@ -85,6 +85,9 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
     ],
+    customizeTitle: [
+      body('customizeTitle').isString(),
+    ],
     customizeHeader: [
       body('customizeHeader').isString(),
     ],
@@ -370,7 +373,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update customizeTitle
    */
-  router.put('/customizeTitle', loginRequiredStrictly, adminRequired, csrf, validator.customizeTitle, ApiV3FormValidator, async(req, res) => {
+  router.put('/customize-title', loginRequiredStrictly, adminRequired, csrf, validator.customizeTitle, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:title': req.body.customizeTitle,
     };

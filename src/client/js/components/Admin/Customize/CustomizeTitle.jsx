@@ -34,10 +34,11 @@ class CustomizeTitle extends React.Component {
   }
 
   render() {
-    const { appContainer, adminCustomizeContainer } = this.props;
+    const { t, appContainer, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
+        <h2 className="admin-setting-header">{t('customize_page.custom_title')}</h2>
         <p
           className="well"
           // eslint-disable-next-line react/no-danger, max-len

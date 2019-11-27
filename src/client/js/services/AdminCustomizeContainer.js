@@ -255,7 +255,7 @@ export default class AdminCustomizeContainer extends Container {
    */
   async updateCustomizeTitle() {
     // TODO create apiV3
-    const response = await this.appContainer.apiv3.put('/customize-setting/customizeTitle', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
       customizeTitle: this.state.currentCustomizeTitle,
     });
     const { customizedParams } = response.data;
