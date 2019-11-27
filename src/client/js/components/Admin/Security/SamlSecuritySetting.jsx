@@ -52,7 +52,7 @@ class SamlSecurityManagement extends React.Component {
               value={adminSamlSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{ t('security_setting.desc_of_callback_URL') }</p>
+            <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' }) }</p>
             {!adminSamlSecurityContainer.state.appSiteUrl && (
             <div className="alert alert-danger">
               <i
