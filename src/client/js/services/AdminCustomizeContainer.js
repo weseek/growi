@@ -19,20 +19,19 @@ export default class AdminCustomizeContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-575 set data from apiV3
-      currentTheme: appContainer.config.themeType,
-      currentLayout: appContainer.config.layoutType,
-      currentBehavior: appContainer.config.behaviorType,
-      isEnabledTimeline: appContainer.config.isEnabledTimeline,
-      isSavedStatesOfTabChanges: appContainer.config.isSavedStatesOfTabChanges,
-      isEnabledAttachTitleHeader: appContainer.config.isEnabledAttachTitleHeader,
-      currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
-      currentHighlightJsStyleId: appContainer.config.highlightJsStyle,
-      isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
-      currentCustomizeTitle: appContainer.config.customizeTitle,
-      currentCustomizeHeader: appContainer.config.customizeHeader,
-      currentCustomizeCss: appContainer.config.customizeCss,
-      currentCustomizeScript: appContainer.config.customizeScript,
+      currentTheme: '',
+      currentLayout: '',
+      currentBehavior: '',
+      isEnabledTimeline: true,
+      isSavedStatesOfTabChanges: true,
+      isEnabledAttachTitleHeader: true,
+      currentRecentCreatedLimit: 10,
+      currentHighlightJsStyleId: '',
+      isHighlightJsStyleBorderEnabled: true,
+      currentCustomizeTitle: '',
+      currentCustomizeHeader: '',
+      currentCustomizeCss: '',
+      currentCustomizeScript: '',
       /* eslint-disable quote-props, no-multi-spaces */
       highlightJsCssSelectorOptions: {
         'github':           { name: '[Light] GitHub',         border: false },
@@ -64,25 +63,33 @@ export default class AdminCustomizeContainer extends Container {
    * retrieve customize data
    */
   async init() {
-    // TODO GW-575 fetch data with apiV3
     try {
+      const response = await this.appContainer.apiv3.get('/customize-setting/');
+      const { customizeParams } = response.data;
+
+      this.setState({
+        currentTheme: customizeParams.themeType,
+        currentLayout: customizeParams.layoutType,
+        currentBehavior: customizeParams.behaviorType,
+        isEnabledTimeline: customizeParams.isEnabledTimeline,
+        isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
+        isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
+        currentRecentCreatedLimit: customizeParams.recentCreatedLimit,
+        currentHighlightJsStyleId: customizeParams.styleName,
+        isHighlightJsStyleBorderEnabled: customizeParams.styleBorder,
+        currentCustomizeTitle: customizeParams.customizeTitle,
+        currentCustomizeHeader: customizeParams.customizeHeader,
+        currentCustomizeCss: customizeParams.customizeCss,
+        currentCustomizeScript: customizeParams.customizeScript,
+      });
+
       // search style name from object for display
-      this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[this.state.currentHighlightJsStyleId].name });
+      this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
     }
     catch (err) {
       logger.error(err);
       toastError(new Error('Failed to fetch data'));
     }
-  }
-
-  /**
-   * Fetch highLight theme
-   */
-  async fetchHighLightTheme() {
-    const response = await this.appContainer.apiv3.get('/customize-setting/');
-    this.setState({
-      highlightJsCssSelectorOptions: response.data.highlightJsCssSelectorOptions,
-    });
   }
 
   /**

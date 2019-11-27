@@ -20,7 +20,16 @@ class CustomizeScriptSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      editorInputValue: '',
+    };
+
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { customizeScript } = this.props.appContainer.getConfig();
+    this.setState({ editorInputValue: customizeScript || '' });
   }
 
   async onClickSubmit() {
@@ -45,11 +54,11 @@ class CustomizeScriptSetting extends React.Component {
   }
 
   render() {
-    const { t, appContainer, adminCustomizeContainer } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Custom script')}</h2>
+        <h2 className="admin-setting-header">{t('customize_page.Custom script')}</h2>
         <p className="well">
           { t('customize_page.write_java') }<br />
           { t('customize_page.reflect_change') }
@@ -81,7 +90,7 @@ class CustomizeScriptSetting extends React.Component {
           <div className="col-xs-12">
             <CustomScriptEditor
               // The value passed must be immutable
-              value={appContainer.config.customizeScript}
+              value={this.state.editorInputValue}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
             />
           </div>

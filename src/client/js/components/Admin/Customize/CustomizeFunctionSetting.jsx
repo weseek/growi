@@ -12,7 +12,6 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
-import AdminDropdownOption from '../Common/AdminDropdownOption';
 
 const logger = loggerFactory('growi:importer');
 
@@ -42,7 +41,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.Function')}</h2>
+        <h2 className="admin-setting-header">{t('customize_page.Function')}</h2>
         <p className="well">{ t('customize_page.function_choose') }</p>
 
         <div className="form-group row">
@@ -95,16 +94,32 @@ class CustomizeBehaviorSetting extends React.Component {
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">
-            <AdminDropdownOption
-              label={t('customize_page.recent_created__n_draft_num_desc')}
-              selectedValue={adminCustomizeContainer.state.currentRecentCreatedLimit}
-              onChangeValue={(value) => { adminCustomizeContainer.switchRecentCreatedLimit(value) }}
-              options={[10, 30, 50]}
-            >
+            <div className="my-0 btn-group">
+              <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
+              <div className="dropdown">
+                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span className="pull-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
+                  <span className="bs-caret pull-right">
+                    <span className="caret" />
+                  </span>
+                </button>
+                {/* TODO adjust dropdown after BS4 */}
+                <ul className="dropdown-menu" role="menu">
+                  <li key={10} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
+                    <a role="menuitem">10</a>
+                  </li>
+                  <li key={30} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
+                    <a role="menuitem">30</a>
+                  </li>
+                  <li key={50} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
+                    <a role="menuitem">50</a>
+                  </li>
+                </ul>
+              </div>
               <p className="help-block">
                 { t('customize_page.recently_created_n_draft_num_desc') }
               </p>
-            </AdminDropdownOption>
+            </div>
           </div>
         </div>
 

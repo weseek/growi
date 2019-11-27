@@ -20,7 +20,16 @@ class CustomizeHeaderSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      editorInputValue: '',
+    };
+
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { customizeHeader } = this.props.appContainer.getConfig();
+    this.setState({ editorInputValue: customizeHeader || '' });
   }
 
   async onClickSubmit() {
@@ -37,11 +46,11 @@ class CustomizeHeaderSetting extends React.Component {
   }
 
   render() {
-    const { t, appContainer, adminCustomizeContainer } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
 
     return (
       <React.Fragment>
-        <h2>{t('customize_page.custom_header')}</h2>
+        <h2 className="admin-setting-header">{t('customize_page.custom_header')}</h2>
 
         <p
           className="well"
@@ -59,8 +68,8 @@ class CustomizeHeaderSetting extends React.Component {
 
         <div className="col-xs-12">
           <CustomHeaderEditor
-              // The value passed must be immutable
-            value={appContainer.config.customizeHeader}
+            // The value passed must be immutable
+            value={this.state.editorInputValue}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
         </div>

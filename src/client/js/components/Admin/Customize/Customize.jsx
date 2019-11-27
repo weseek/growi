@@ -21,27 +21,27 @@ class Customize extends React.Component {
 
     return (
       <Fragment>
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeLayoutSetting />
         </div>
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeBehaviorSetting />
         </div>
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeFunctionSetting />
         </div>
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeHighlightSetting />
         </div>
         <legend>{t('customize_page.custom_title')}</legend>
         {/* カスタムタイトルフォームの react componentをここで呼ぶ(GW-278) */}
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeHeaderSetting />
         </div>
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeCssSetting />
         </div>
-        <div className="my-3">
+        <div className="mb-5">
           <CustomizeScriptSetting />
         </div>
       </Fragment>
