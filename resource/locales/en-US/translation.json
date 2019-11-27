@@ -465,14 +465,14 @@
     "anyone": "Anyone",
 
 		"Authentication mechanism settings": "Authentication Mechanism Settings",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",
     "providerName": "Provider Name",
     "issuerHost": "Issuer Host",
     "scope": "Scope",
-    "desc_of_callback_URL": "Use it in the setting of the %s provider",
+    "desc_of_callback_URL": "Use it in the setting of the {{AuthName}} Identity provider",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
     "guest_mode": {
@@ -531,12 +531,13 @@
     },
     "SAML": {
       "name": "SAML",
+      "enable_saml":"enable SAML",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "mapping_detail": "Specification of mappings for %s when creating new users",
       "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
-      "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
-      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
+      "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
+      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
     },
     "Basic": {
       "name": "Basic Authentication",
@@ -589,14 +590,14 @@
       }
     },
     "form_item_name": {
-      "security:passport-saml:entryPoint": "Entry point",
-      "security:passport-saml:issuer": "Issuer",
-      "security:passport-saml:cert": "Certificate",
-      "security:passport-saml:attrMapId": "ID",
-      "security:passport-saml:attrMapUsername": "Username",
-      "security:passport-saml:attrMapMail": "Mail Address",
-      "security:passport-saml:attrMapFirstName": "First Name",
-      "security:passport-saml:attrMapLastName": "Last Name"
+      "entryPoint": "Entry point",
+      "issuer": "Issuer",
+      "cert": "Certificate",
+      "attrMapId": "ID",
+      "attrMapUsername": "Username",
+      "attrMapMail": "Mail Address",
+      "attrMapFirstName": "First Name",
+      "attrMapLastName": "Last Name"
     }
 	},
 
