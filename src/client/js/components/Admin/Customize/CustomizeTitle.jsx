@@ -34,7 +34,8 @@ class CustomizeTitle extends React.Component {
   }
 
   render() {
-    const { t, appContainer, adminCustomizeContainer } = this.props;
+    const { t, adminCustomizeContainer } = this.props;
+    const { currentCustomizeTitle } = adminCustomizeContainer.state;
 
     return (
       <React.Fragment>
@@ -53,9 +54,8 @@ class CustomizeTitle extends React.Component {
         <div className="form-group">
           <input
             className="form-control"
-            id="customTitleSettingForm"
-            value={appContainer.config.customizeTitle}
-            onChange={(e) => { adminCustomizeContainer.updateCustomizeTitle(e.target.value) }}
+            value={currentCustomizeTitle}
+            onChange={(e) => { adminCustomizeContainer.changeCustomizeTitle(e.target.value) }}
           />
         </div>
 

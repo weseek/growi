@@ -49,6 +49,10 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *                type: string
  *              styleBorder:
  *                type: boolean
+ *          CustomizeTitle:
+ *            type: object
+ *              customizeTitle:
+ *                type: string
  *          CustomizeHeader:
  *            type: object
  *              customizeHeader:
