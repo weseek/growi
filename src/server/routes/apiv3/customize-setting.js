@@ -317,6 +317,46 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /customize-setting/customizeTitle:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeTitle
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  title:
+   *                    description: customized title
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update customizeTitle
+   */
+  router.put('/customizeTitle', loginRequiredStrictly, adminRequired, csrf, validator.customizeTitle, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:title': req.body.customizeTitle,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeTitle';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeTitle-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
    *    /customize-setting/customizeHeader:
    *      put:
    *        tags: [CustomizeSetting]

@@ -29,6 +29,7 @@ export default class AdminCustomizeContainer extends Container {
       currentRecentCreatedLimit: appContainer.config.recentCreatedLimit,
       currentHighlightJsStyleId: appContainer.config.highlightJsStyle,
       isHighlightJsStyleBorderEnabled: appContainer.config.highlightJsStyleBorder,
+      currentCustomizeTitle: appContainer.config.customizeTitle,
       currentCustomizeHeader: appContainer.config.customizeHeader,
       currentCustomizeCss: appContainer.config.customizeCss,
       currentCustomizeScript: appContainer.config.customizeScript,
@@ -155,6 +156,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Change customize Title
+   */
+  changeCustomizeTitle(inputValue) {
+    this.setState({ currentCustomizeTitle: inputValue });
+  }
+
+  /**
    * Change customize Html header
    */
   changeCustomizeHeader(inputValue) {
@@ -228,6 +236,20 @@ export default class AdminCustomizeContainer extends Container {
     const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
       highlightJsStyle: this.state.currentHighlightJsStyleId,
       highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
+  }
+
+  /**
+   * Update customTitle
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Customize title
+   */
+  async updateCustomizeTitle() {
+    // TODO create apiV3
+    const response = await this.appContainer.apiv3.put('/customize-setting/customizeTitle', {
+      customizeTitle: this.state.currentCustomizeTitle,
     });
     const { customizedParams } = response.data;
     return customizedParams;
