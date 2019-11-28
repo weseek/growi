@@ -209,7 +209,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      name="samlAttrMapId"
                       readOnly={useOnlyEnvVars}
                       value={adminSamlSecurityContainer.state.samlDbAttrMapId}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapId(e.target.value)}
@@ -238,7 +237,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      name="attrMapUsername"
                       readOnly={useOnlyEnvVars}
                       value={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapUserName(e.target.value)}
@@ -265,7 +263,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      name="attrMapMail"
                       readOnly={useOnlyEnvVars}
                       value={adminSamlSecurityContainer.state.samlDbAttrMapMail}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapMail(e.target.value)}
@@ -283,6 +280,37 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_MAIL' }) }} />
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapFirstName') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapFirstName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapFirstName(e.target.value)}
+                    />
+                    <p className="help-block">
+                      {/* eslint-disable-next-line max-len */}
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapFirstName') }) }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapFirstName}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small>
+                        {/* eslint-disable-next-line max-len */}
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} /><br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'firstName' }) }} />
+                      </small>
                     </p>
                   </td>
                 </tr>
