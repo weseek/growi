@@ -61,6 +61,7 @@ import WebsocketContainer from './services/WebsocketContainer';
 import MarkDownSettingContainer from './services/MarkDownSettingContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminSamlSecurityContainer from './services/AdminSamlSecurityContainer';
+import AdminOidcSecurityContainer from './services/AdminOidcSecurityContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -219,7 +220,8 @@ if (adminSecuritySettingElem != null) {
   const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer(appContainer);
   const adminLdapSecurityContainer = new AdminLdapSecurityContainer(appContainer);
   const adminSamlSecurityContainer = new AdminSamlSecurityContainer(appContainer);
-  const adminSecurityContainers = [adminGeneralSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer];
+  const adminOidcSecurityContainer = new AdminOidcSecurityContainer(appContainer);
+  const adminSecurityContainers = [adminGeneralSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer, adminOidcSecurityContainer];
   ReactDOM.render(
     <Provider inject={[injectableContainers, adminSecurityContainers]}>
       <I18nextProvider i18n={i18n}>
