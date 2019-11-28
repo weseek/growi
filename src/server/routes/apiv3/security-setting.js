@@ -11,6 +11,7 @@ const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
+  // TODO correct validator
   guestMode: [
     body('restrictGuestMode').isString(),
   ],
@@ -68,7 +69,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/guestMode:
+   *    /security-setting/guest-mode:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update restrictGuestMode
@@ -92,7 +93,7 @@ module.exports = (crowi) => {
    *                    status:
    *                      $ref: '#/components/schemas/GuestModeParams'
    */
-  router.put('/guestMode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
+  router.put('/guest-mode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
     };
@@ -105,16 +106,16 @@ module.exports = (crowi) => {
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating layout and theme';
+      const msg = 'Error occurred in updating restrict guest mode';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-restrictGuestMode-failed'));
     }
   });
 
   /**
    * @swagger
    *
-   *    /security-setting/pageDeletion:
+   *    /security-setting/page-deletion:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update pageDeletion Setting
@@ -138,7 +139,7 @@ module.exports = (crowi) => {
    *                    status:
    *                      $ref: '#/components/schemas/PageDeletionParams'
    */
-  router.put('/pageDeletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
+  router.put('/page-deletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
     };
