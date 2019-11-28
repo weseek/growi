@@ -36,6 +36,8 @@ export default class AdminSamlSecurityContainer extends Container {
       samlEnvVarAttrMapMail: '',
       samlDbAttrMapFirstName: '',
       samlEnvVarAttrMapFirstName: '',
+      samlDbAttrMapLastName: '',
+      samlEnvVarAttrMapLastName: '',
     };
 
     this.init();
@@ -101,6 +103,13 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   changeSamlDbAttrMapFirstName(inputValue) {
     this.setState({ samlDbAttrMapFirstName: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapLastName
+   */
+  changeSamlDbAttrMapLastName(inputValue) {
+    this.setState({ samlDbAttrMapLastName: inputValue });
   }
 
 }

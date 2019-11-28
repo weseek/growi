@@ -307,9 +307,40 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="help-block">
                       <small>
-                        {/* eslint-disable-next-line max-len */}
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} /><br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} />
+                        <br />
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'firstName' }) }} />
+                      </small>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapLastName') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapLastName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapLastName(e.target.value)}
+                    />
+                    <p className="help-block">
+                      {/* eslint-disable-next-line max-len */}
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { taregt: t('security_setting.form_item_name.security:passport-saml:attrMapLastName') }) }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapLastName}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small>
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_LAST_NAME' }) }} />
+                        <br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'lastName' }) }} />
                       </small>
                     </p>
                   </td>
