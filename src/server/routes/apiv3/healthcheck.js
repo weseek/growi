@@ -25,7 +25,7 @@ module.exports = (crowi) => {
    *      parameters:
    *        - name: connectToMiddlewares
    *          in: query
-   *          description: Check also MongoDB and Elasticsearch
+   *          description: Check also MongoDB and SearchService
    *          schema:
    *            type: boolean
    *      responses:
@@ -38,14 +38,13 @@ module.exports = (crowi) => {
    *                  mongo:
    *                    type: string
    *                    description: 'OK'
-   *                  esInfo:
+   *                  searchInfo:
    *                    type: object
-   *                    description: A result of `client.info()` of Elasticsearch Info API
    */
   router.get('/', helmet.noCache(), async(req, res) => {
     const connectToMiddlewares = req.query.connectToMiddlewares;
 
-    // return 200 w/o connecting to MongoDB and Elasticsearch
+    // return 200 w/o connecting to MongoDB and SearchService
     if (connectToMiddlewares == null) {
       res.status(200).send({ status: 'OK' });
       return;
@@ -57,9 +56,9 @@ module.exports = (crowi) => {
       await Config.findOne({});
       // connect to Elasticsearch
       const search = crowi.getSearcher();
-      const esInfo = await search.getInfo();
+      const searchInfo = await search.getInfo();
 
-      res.status(200).send({ mongo: 'OK', esInfo });
+      res.status(200).send({ mongo: 'OK', searchInfo });
     }
     catch (err) {
       res.status(503).send({ err });
