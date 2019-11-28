@@ -22,9 +22,13 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 
 
-## 3.5.23
+## 3.5.23-RC
 
+* Fix: Global Notification failed to send e-mail
+* Fix: Pagination is not working for trash list
 * Fix: Healthcheck API with `?connectToMiddlewares` returns error
+* Support: Upgrade libs
+    * growi-commons
 
 ## 3.5.22
 

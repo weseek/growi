@@ -156,7 +156,7 @@ module.exports = function(crowi, req, locals) {
 
   locals.isTrashPage = function() {
     const path = req.path || '';
-    if (path.match(/^\/trash\/.*/)) {
+    if (path.match(/^\/trash(\/.*)?$/)) {
       return true;
     }
 
