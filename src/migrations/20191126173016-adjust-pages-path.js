@@ -16,12 +16,16 @@ module.exports = {
     // retrieve target data
     const pages = await Page.find({ path: /^(?!\/)/ });
 
-    logger.info(pages);
 
     // create requests for bulkWrite
     const requests = pages.map((page) => {
-      // logger.info(page);
-      return pathUtils.addHeadingSlash(page.path);
+      const adjustedPath = pathUtils.addHeadingSlash(page.path);
+      return {
+        updateOne: {
+          filter: { _id: page._id },
+          update: { $set: { path: adjustedPath } },
+        },
+      };
     });
 
     if (requests.length > 0) {
