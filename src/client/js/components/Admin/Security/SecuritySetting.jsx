@@ -23,21 +23,29 @@ class SecuritySetting extends React.Component {
             >
               { t('security_setting.Guest Users Access') }
             </label>
-            <div className="col-xs-6">
-              <select
-                className="form-control selectpicker"
-                name="restrictGuestMode"
-                value={adminGeneralSecurityContainer.state.currentRestrictGuestMode}
-                onChange={e => adminGeneralSecurityContainer.switchRestrictGuestMode(e.target.value)}
-              >
-                <option value="{ t(modeValue) }">{ t('modeLabel') }</option>
-              </select>
-              <p className="alert alert-warning mt-2">
-                <i className="icon-exclamation icon-fw">
-                </i><b>FIXED</b>
-                { t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE') }<br></br>
-              </p>
-            </div>
+            {adminGeneralSecurityContainer.state.isForceWikiMode == false && (
+              <div className="col-xs-9 text-left">
+                <div className="my-0 btn-group">
+                  <div className="dropdown">
+                    <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
+                      <span className="bs-caret pull-right">
+                        <span className="caret" />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {adminGeneralSecurityContainer.state.isForceWikiMode && (
+              <div className="col-xs-6">
+                <p className="alert alert-warning mt-2">
+                  <i className="icon-exclamation icon-fw">
+                  </i><b>FIXED</b>
+                  { t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE') }<br></br>
+                </p>
+              </div>
+              )}
           </div>
           <div className="form-group">
             <label htmlFor="{{configName}}" className="col-xs-3 control-label">{ t('security_setting.page_listing_1') }</label>
