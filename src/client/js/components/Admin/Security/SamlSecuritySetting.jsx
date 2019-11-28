@@ -326,7 +326,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="help-block">
                       {/* eslint-disable-next-line max-len */}
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { taregt: t('security_setting.form_item_name.security:passport-saml:attrMapLastName') }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapLastName') }) }} />
                     </p>
                   </td>
                   <td>
