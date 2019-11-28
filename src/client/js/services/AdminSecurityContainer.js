@@ -77,7 +77,7 @@ export default class AdminSecurityContainer extends Container {
    * @return {string} Appearance
    */
   async updateRestrictGuestMode() {
-    const response = await this.appContainer.apiv3.put('/security-setting/guestMode', {
+    const response = await this.appContainer.apiv3.put('/security-setting/guest-mode', {
       restrictGuestMode: this.state.currentRestrictGuestMode,
     });
     const { securitySettingParams } = response.data;
@@ -90,7 +90,7 @@ export default class AdminSecurityContainer extends Container {
    * @return {string} pageDeletion
    */
   async updatePageCompleteDeletionAuthority() {
-    const response = await this.appContainer.apiv3.put('/security-setting/pageDeletion', {
+    const response = await this.appContainer.apiv3.put('/security-setting/page-deletion', {
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
     });
     const { securitySettingParams } = response.data;
