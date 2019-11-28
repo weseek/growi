@@ -18,7 +18,7 @@ class SecuritySetting extends React.Component {
           <legend className="alert-anchor">{ t('security_settings') }</legend>
           <div className="form-group">
             <label
-              htmlFor={adminGeneralSecurityContainer.state.currentRestrictGuestMode}
+              htmlFor="restrictGuestMode"
               className="col-xs-3 control-label"
             >
               { t('security_setting.Guest Users Access') }
@@ -26,8 +26,9 @@ class SecuritySetting extends React.Component {
             <div className="col-xs-6">
               <select
                 className="form-control selectpicker"
-                name="settingForm[security:restrictGuestMode]"
-                value="{ getConfig('crowi', 'security:restrictGuestMode') }"
+                name="restrictGuestMode"
+                value={adminGeneralSecurityContainer.state.currentRestrictGuestMode}
+                onChange={e => adminGeneralSecurityContainer.switchRestrictGuestMode(e.target.value)}
               >
                 <option value="{ t(modeValue) }">{ t('modeLabel') }</option>
               </select>
