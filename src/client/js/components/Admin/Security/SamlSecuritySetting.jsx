@@ -189,7 +189,208 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </tbody>
             </table>
 
-            {/* TODO GW-635 Attribute Mapping */}
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping
+            </h3>
+
+            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+              <colgroup>
+                <col className="item-name" />
+                <col className="from-db" />
+                <col className="from-env-vars" />
+              </colgroup>
+              <thead>
+                <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapId') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapId}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapId(e.target.value)}
+                    />
+                    <p className="help-block">
+                      <small>
+                        { t('security_setting.SAML.id_detail') }
+                      </small>
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapId}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_ID' }) }} />
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapUsername') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapUserName(e.target.value)}
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.username_detail') }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapUserName}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapMail') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapMail}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapMail(e.target.value)}
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: 'Email' }) }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapMail}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_MAIL' }) }} />
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapFirstName') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapFirstName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapFirstName(e.target.value)}
+                    />
+                    <p className="help-block">
+                      {/* eslint-disable-next-line max-len */}
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapFirstName') }) }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapFirstName}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small>
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} />
+                        <br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'firstName' }) }} />
+                      </small>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapLastName') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapLastName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapLastName(e.target.value)}
+                    />
+                    <p className="help-block">
+                      {/* eslint-disable-next-line max-len */}
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapLastName') }) }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapLastName}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small>
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_LAST_NAME' }) }} />
+                        <br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'lastName' }) }} />
+                      </small>
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping Options
+            </h3>
+
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="bindByUserName-SAML"
+                    type="checkbox"
+                    checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    htmlFor="bindByUserName-SAML"
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
+                  />
+                </div>
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="bindByEmail-SAML"
+                    type="checkbox"
+                    checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser}
+                    onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    htmlFor="bindByEmail-SAML"
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                  />
+                </div>
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
+                </p>
+              </div>
+            </div>
 
           </React.Fragment>
 

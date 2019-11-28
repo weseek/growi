@@ -28,6 +28,18 @@ export default class AdminSamlSecurityContainer extends Container {
       samlEnvVarIssuer: '',
       samlDbCert: '',
       samlEnvVarCert: '',
+      samlDbAttrMapId: '',
+      samlEnvVarAttrMapId: '',
+      samlDbAttrMapUserName: '',
+      samlEnvVarAttrMapUserName: '',
+      samlDbAttrMapMail: '',
+      samlEnvVarAttrMapMail: '',
+      samlDbAttrMapFirstName: '',
+      samlEnvVarAttrMapFirstName: '',
+      samlDbAttrMapLastName: '',
+      samlEnvVarAttrMapLastName: '',
+      isSameUsernameTreatedAsIdenticalUser: false,
+      isSameEmailTreatedAsIdenticalUser: false,
     };
 
     this.init();
@@ -47,24 +59,73 @@ export default class AdminSamlSecurityContainer extends Container {
   }
 
   /**
-   * Change saml db entry point
+   * Change samlDbEntryPoint
    */
   changeSamlDbEntryPoint(inputValue) {
     this.setState({ samlDbEntryPoint: inputValue });
   }
 
   /**
-   * Change saml db issuer
+   * Change samlDbIssuer
    */
   changeSamlDbIssuer(inputValue) {
     this.setState({ samlDbIssuer: inputValue });
   }
 
   /**
-   * Change saml db Cert
+   * Change samlDbCert
    */
   changeSamlDbCert(inputValue) {
     this.setState({ samlDbCert: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapId
+   */
+  changeSamlDbAttrMapId(inputValue) {
+    this.setState({ samlDbAttrMapId: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapUserName
+   */
+  changeSamlDbAttrMapUserName(inputValue) {
+    this.setState({ samlDbAttrMapUserName: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapMail
+   */
+  changeSamlDbAttrMapMail(inputValue) {
+    this.setState({ samlDbAttrMapMail: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapFirstName
+   */
+  changeSamlDbAttrMapFirstName(inputValue) {
+    this.setState({ samlDbAttrMapFirstName: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapLastName
+   */
+  changeSamlDbAttrMapLastName(inputValue) {
+    this.setState({ samlDbAttrMapLastName: inputValue });
+  }
+
+  /**
+   * Switch isSameUsernameTreatedAsIdenticalUser
+   */
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Switch isSameEmailTreatedAsIdenticalUser
+   */
+  switchIsSameEmailTreatedAsIdenticalUser() {
+    this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
   }
 
 }
