@@ -5,26 +5,32 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import AdminSecuritySettingContainer from '../../../services/AdminSecuritySettingContainer';
+import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class SecuritySetting extends React.Component {
 
   render() {
-    const { t, adminSecuritySettingContainer } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
+
     return (
       <React.Fragment>
         <fieldset>
           <legend className="alert-anchor">{ t('security_settings') }</legend>
           <div className="form-group">
-            <label htmlFor="settingForm[security:restrictGuestMode]" className="col-xs-3 control-label">{ t('security_setting.Guest Users Access') }</label>
+            <label
+              htmlFor={adminGeneralSecurityContainer.state.currentRestrictGuestMode}
+              className="col-xs-3 control-label"
+            >
+              { t('security_setting.Guest Users Access') }
+            </label>
             <div className="col-xs-6">
-              <input
-                id="restrictGuestMode"
-                type="checkbox"
-                checked={adminSecuritySettingContainer.state.currentRestrictGuestMode}
-                onChange={() => { adminSecuritySettingContainer.switchRestrictGuestMode() }}
-              />
-              <option value={adminSecuritySettingContainer.state.currentRestrictGuestMode}>{ t('modeLabel') }</option>
+              <select
+                className="form-control selectpicker"
+                name="settingForm[security:restrictGuestMode]"
+                value="{ getConfig('crowi', 'security:restrictGuestMode') }"
+              >
+                <option value="{ t(modeValue) }">{ t('modeLabel') }</option>
+              </select>
               <p className="alert alert-warning mt-2">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b>
@@ -98,11 +104,11 @@ SecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   csrf: PropTypes.string,
-  adminSecuritySettingContainer: PropTypes.instanceOf(AdminSecuritySettingContainer).isRequired,
+  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
 const SecuritySettingWrapper = (props) => {
-  return createSubscribedElement(SecuritySetting, props, [AppContainer, AdminSecuritySettingContainer]);
+  return createSubscribedElement(SecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer]);
 };
 
 export default withTranslation()(SecuritySettingWrapper);

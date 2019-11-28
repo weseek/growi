@@ -18,6 +18,10 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
+      currentRestrictGuestMode: ' ',
+      currentpageCompleteDeletionAuthority: ' ',
+      hideRestrictedByOwner: true,
+      hideRestrictedByGroup: true,
       useOnlyEnvVarsForSomeOptions: true,
       isLocalEnabled: true,
       registrationMode: 'open',
@@ -70,6 +74,74 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   switchIsSamlEnabled() {
     this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
+  }
+
+  /**
+   * Switch restrictGuestMode
+   */
+  switchRestrictGuestMode(restrictGuestModeLabel) {
+    this.setState({ currentRestrictGuestMode: restrictGuestModeLabel });
+  }
+
+  /**
+   * Switch pageCompleteDeletionAuthority
+   */
+  switchPageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
+    this.setState({ currentpageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
+  }
+
+  /**
+   * Switch hideRestrictedByOwner
+   */
+  switchHideRestrictedByOwner() {
+    this.setState({ hideRestrictedByOwner:  !this.state.hideRestrictedByOwner });
+  }
+
+  /**
+   * Switch hideRestrictedByGroup
+   */
+  switchHideRestrictedByGroup() {
+    this.setState({ hideRestrictedByGroup:  !this.state.hideRestrictedByGroup });
+  }
+
+  /**
+   * Update restrictGuestMode
+   * @memberOf AdminSecuritySettingContainer
+   * @return {string} Appearance
+   */
+  async updateRestrictGuestMode() {
+    const response = await this.appContainer.apiv3.put('/security-setting/guest-mode', {
+      restrictGuestMode: this.state.currentRestrictGuestMode,
+    });
+    const { securitySettingParams } = response.data;
+    return securitySettingParams;
+  }
+
+  /**
+   * Update pageDeletion
+   * @memberOf AdminSecuritySettingContainer
+   * @return {string} pageDeletion
+   */
+  async updatePageCompleteDeletionAuthority() {
+    const response = await this.appContainer.apiv3.put('/security-setting/page-deletion', {
+      pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
+    });
+    const { securitySettingParams } = response.data;
+    return securitySettingParams;
+  }
+
+  /**
+   * Update function
+   * @memberOf AdminSecucitySettingContainer
+   * @return {string} Functions
+   */
+  async updateSecurityFunction() {
+    const response = await this.appContainer.apiv3.put('/security-setting/function', {
+      hideRestrictedByGroup: this.state.hideRestrictedByGroup,
+      hideRestrictedByOwner: this.state.hideRestrictedByOwner,
+    });
+    const { securitySettingParams } = response.data;
+    return securitySettingParams;
   }
 
 }
