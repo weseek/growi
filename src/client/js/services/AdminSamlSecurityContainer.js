@@ -30,6 +30,8 @@ export default class AdminSamlSecurityContainer extends Container {
       samlEnvVarCert: '',
       samlDbAttrMapId: '',
       samlEnvVarAttrMapId: '',
+      samlDbAttrMapUserName: '',
+      samlEnvVarAttrMapUserName: '',
     };
 
     this.init();
@@ -74,6 +76,13 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   changeSamlDbAttrMapId(inputValue) {
     this.setState({ samlDbAttrMapId: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapUserName
+   */
+  changeSamlDbAttrMapUserName(inputValue) {
+    this.setState({ samlDbAttrMapUserName: inputValue });
   }
 
 }

@@ -232,9 +232,35 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     </p>
                   </td>
                 </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapUsername') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      name="attrMapUsername"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapUserName(e.target.value)}
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.username_detail') }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapUserName}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
+                    </p>
+                  </td>
+                </tr>
               </tbody>
             </table>
-
 
             <h3 className="alert-anchor border-bottom">
               Attribute Mapping Options
