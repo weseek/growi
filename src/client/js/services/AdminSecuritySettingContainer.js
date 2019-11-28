@@ -3,13 +3,13 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:AdminSecurityContainer');
+const logger = loggerFactory('growi:services:AdminSecuritySettingContainer');
 
 /**
  * Service container for admin security setting page (SecuritySetting.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminSecurityContainer extends Container {
+export default class AdminSecuritySettingContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -73,7 +73,7 @@ export default class AdminSecurityContainer extends Container {
 
   /**
    * Update restrictGuestMode
-   * @memberOf AdminSecurityContainer
+   * @memberOf AdminSecuritySettingContainer
    * @return {string} Appearance
    */
   async updateRestrictGuestMode() {
@@ -86,7 +86,7 @@ export default class AdminSecurityContainer extends Container {
 
   /**
    * Update pageDeletion
-   * @memberOf AdminSecurityContainer
+   * @memberOf AdminSecuritySettingContainer
    * @return {string} pageDeletion
    */
   async updatePageCompleteDeletionAuthority() {
@@ -99,7 +99,7 @@ export default class AdminSecurityContainer extends Container {
 
   /**
    * Update function
-   * @memberOf AdminSecucityContainer
+   * @memberOf AdminSecucitySettingContainer
    * @return {string} Functions
    */
   async updateSecurityFunction() {

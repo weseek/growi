@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminSecuritySettingContainer from '../../../services/AdminSecuritySettingContainer';
 
 class SecuritySetting extends React.Component {
 
@@ -14,7 +15,7 @@ class SecuritySetting extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminSecuritySettingContainer } = this.props;
     return (
       <Fragment>
         <fieldset>
@@ -102,10 +103,11 @@ SecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   csrf: PropTypes.string,
+  adminSecuritySettingContainer: PropTypes.instanceOf(AdminSecuritySettingContainer).isRequired,
 };
 
-const SecurityManagementWrapper = (props) => {
+const SecuritySettingWrapper = (props) => {
   return createSubscribedElement(SecuritySetting, props, [AppContainer]);
 };
 
-export default withTranslation()(SecurityManagementWrapper);
+export default withTranslation()(SecuritySettingWrapper);
