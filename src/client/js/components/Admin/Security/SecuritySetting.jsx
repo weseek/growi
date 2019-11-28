@@ -9,11 +9,6 @@ import AdminSecuritySettingContainer from '../../../services/AdminSecuritySettin
 
 class SecuritySetting extends React.Component {
 
-  constructor(props) {
-    super();
-
-  }
-
   render() {
     const { t, adminSecuritySettingContainer } = this.props;
     return (
@@ -23,13 +18,13 @@ class SecuritySetting extends React.Component {
           <div className="form-group">
             <label htmlFor="settingForm[security:restrictGuestMode]" className="col-xs-3 control-label">{ t('security_setting.Guest Users Access') }</label>
             <div className="col-xs-6">
-              <select
-                className="form-control selectpicker"
-                name="settingForm[security:restrictGuestMode]"
-                value="{ getConfig('crowi', 'security:restrictGuestMode') }"
-              >
-                <option value="{ t(modeValue) }">{ t('modeLabel') }</option>
-              </select>
+              <input
+                id="restrictGuestMode"
+                type="checkbox"
+                checked={adminSecuritySettingContainer.state.currentRestrictGuestMode}
+                onChange={() => { adminSecuritySettingContainer.switchRestrictGuestMode() }}
+              />
+              <option value={adminSecuritySettingContainer.state.currentRestrictGuestMode}>{ t('modeLabel') }</option>
               <p className="alert alert-warning mt-2">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b>

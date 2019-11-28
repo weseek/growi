@@ -8,6 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
+import SecuritySetting from './SecuritySetting';
 
 class SecurityManagement extends React.Component {
 
