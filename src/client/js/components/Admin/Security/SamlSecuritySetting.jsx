@@ -358,16 +358,36 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   <input
                     id="bindByUserName-SAML"
                     type="checkbox"
-                    checked={adminSamlSecurityContainer.state.isSamlEnabled}
+                    checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
                     htmlFor="bindByUserName-SAML"
-                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
                   />
                 </div>
                 <p className="help-block">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
+                </p>
+              </div>
+            </div>
+
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="bindByEmail-SAML"
+                    type="checkbox"
+                    checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser}
+                    onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    htmlFor="bindByEmail-SAML"
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                  />
+                </div>
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
                 </p>
               </div>
             </div>
