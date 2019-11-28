@@ -352,6 +352,26 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="bindByUserName-SAML"
+                    type="checkbox"
+                    checked={adminSamlSecurityContainer.state.isSamlEnabled}
+                    onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    htmlFor="bindByUserName-SAML"
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
+                  />
+                </div>
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
+                </p>
+              </div>
+            </div>
+
           </React.Fragment>
 
         )}

@@ -38,6 +38,7 @@ export default class AdminSamlSecurityContainer extends Container {
       samlEnvVarAttrMapFirstName: '',
       samlDbAttrMapLastName: '',
       samlEnvVarAttrMapLastName: '',
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
 
     this.init();
@@ -110,6 +111,13 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   changeSamlDbAttrMapLastName(inputValue) {
     this.setState({ samlDbAttrMapLastName: inputValue });
+  }
+
+  /**
+   * Switch isSameUsernameTreatedAsIdenticalUser
+   */
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
   }
 
 }
