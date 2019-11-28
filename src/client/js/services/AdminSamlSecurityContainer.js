@@ -73,7 +73,7 @@ export default class AdminSamlSecurityContainer extends Container {
   }
 
   /**
-   * Change SamlDbCert
+   * Change samlDbCert
    */
   changeSamlDbCert(inputValue) {
     this.setState({ samlDbCert: inputValue });
