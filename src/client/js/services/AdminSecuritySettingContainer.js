@@ -29,17 +29,18 @@ export default class AdminSecuritySettingContainer extends Container {
   }
 
   /**
-   * Workaround for the mangling in production build to break constructor.name
-   */
-  static getClassName() {
-    return 'AdminSecrityContainer';
-  }
-
-  /**
    * retrieve security data
    */
   async init() {
     // TODO GW-583 init state by apiv3
+  }
+
+
+  /**
+   * Workaround for the mangling in production build to break constructor.name
+   */
+  static getClassName() {
+    return 'AdminSecritySettingContainer';
   }
 
 

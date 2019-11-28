@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -12,7 +12,7 @@ class SecuritySetting extends React.Component {
   render() {
     const { t, adminSecuritySettingContainer } = this.props;
     return (
-      <Fragment>
+      <React.Fragment>
         <fieldset>
           <legend className="alert-anchor">{ t('security_settings') }</legend>
           <div className="form-group">
@@ -88,7 +88,7 @@ class SecuritySetting extends React.Component {
             </div>
           </div>
         </fieldset>
-      </Fragment>
+      </React.Fragment>
     );
   }
 
