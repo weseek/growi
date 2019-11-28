@@ -189,7 +189,56 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </tbody>
             </table>
 
-            {/* TODO GW-635 Attribute Mapping */}
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping
+            </h3>
+
+            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+              <colgroup>
+                <col className="item-name" />
+                <col className="from-db" />
+                <col className="from-env-vars" />
+              </colgroup>
+              <thead>
+                <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapId') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      name="samlAttrMapId"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapId}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapId(e.target.value)}
+                    />
+                    <p className="help-block">
+                      <small>
+                        { t('security_setting.SAML.id_detail') }
+                      </small>
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapId}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_ID' }) }} />
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+            <h3 className="alert-anchor border-bottom">
+              Attribute Mapping Options
+            </h3>
 
           </React.Fragment>
 

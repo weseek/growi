@@ -28,6 +28,8 @@ export default class AdminSamlSecurityContainer extends Container {
       samlEnvVarIssuer: '',
       samlDbCert: '',
       samlEnvVarCert: '',
+      samlDbAttrMapId: '',
+      samlEnvVarAttrMapId: '',
     };
 
     this.init();
@@ -47,24 +49,31 @@ export default class AdminSamlSecurityContainer extends Container {
   }
 
   /**
-   * Change saml db entry point
+   * Change samlDbEntryPoint
    */
   changeSamlDbEntryPoint(inputValue) {
     this.setState({ samlDbEntryPoint: inputValue });
   }
 
   /**
-   * Change saml db issuer
+   * Change samlDbIssuer
    */
   changeSamlDbIssuer(inputValue) {
     this.setState({ samlDbIssuer: inputValue });
   }
 
   /**
-   * Change saml db Cert
+   * Change SamlDbCert
    */
   changeSamlDbCert(inputValue) {
     this.setState({ samlDbCert: inputValue });
+  }
+
+  /**
+   * Change samlDbAttrMapId
+   */
+  changeSamlDbAttrMapId(inputValue) {
+    this.setState({ samlDbAttrMapId: inputValue });
   }
 
 }
