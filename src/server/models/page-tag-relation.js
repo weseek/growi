@@ -27,7 +27,7 @@ const schema = new mongoose.Schema({
   },
 });
 // define unique compound index
-schema.index({ page: 1, user: 1 }, { unique: true });
+schema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true });
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
