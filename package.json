@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.5.22-RC",
+  "version": "3.5.23-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -101,7 +101,7 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^4.0.7",
+    "growi-commons": "^4.0.8",
     "helmet": "^3.13.0",
     "i18next": "^19.0.0",
     "i18next-express-middleware": "^1.4.1",

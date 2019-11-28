@@ -14,6 +14,16 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 
+
+
+## 3.5.23-RC
+
+* Fix: Global Notification failed to send e-mail
+* Fix: Pagination is not working for trash list
+* Fix: Healthcheck API with `?connectToMiddlewares` returns error
+* Support: Upgrade libs
+    * growi-commons
+
 ## 3.5.22
 
 * Improvement: Add `FILE_UPLOAD_DISABLED` env var
