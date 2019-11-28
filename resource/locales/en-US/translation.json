@@ -545,6 +545,7 @@
       "desc_2": "User will be automatically generated if not exist."
     },
     "OAuth": {
+      "enable_oidc": "enable OIDC",
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {

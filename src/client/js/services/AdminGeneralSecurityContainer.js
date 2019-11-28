@@ -24,6 +24,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       registrationWhiteList: '',
       isLdapEnabled: true,
       isSamlEnabled: true,
+      isOidcEnabled: true,
     };
 
     this.init();
@@ -70,6 +71,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   switchIsSamlEnabled() {
     this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
+  }
+
+  /**
+   * Switch Oidc enabled
+   */
+  switchIsOidcEnabled() {
+    this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
   }
 
 }

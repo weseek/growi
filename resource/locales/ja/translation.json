@@ -540,6 +540,7 @@
       "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
     },
     "OAuth": {
+      "enable_oidc": "OIDC を有効にする",
       "register": "%sに登録",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
       "Google": {

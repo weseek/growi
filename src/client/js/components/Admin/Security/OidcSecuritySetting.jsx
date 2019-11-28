@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -12,8 +13,29 @@ import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityConta
 class OidcSecurityManagement extends React.Component {
 
   render() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+
     return (
-      <p>hoge</p>
+
+      <React.Fragment>
+
+        <div className="row mb-5">
+          <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.OIDC.name') }</strong>
+          <div className="col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isOidcEnabled"
+                type="checkbox"
+                checked={adminGeneralSecurityContainer.state.isOidcEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchIsOidcEnabled() }}
+              />
+              <label htmlFor="isOidcEnabled">
+                { t('security_setting.OAuth.enable_oidc') }
+              </label>
+            </div>
+          </div>
+        </div>
+      </React.Fragment>
     );
   }
 
