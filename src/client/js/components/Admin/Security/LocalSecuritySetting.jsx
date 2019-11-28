@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -20,9 +21,11 @@ class LocalSecuritySetting extends React.Component {
         </h2>
 
         {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
-        <p className="alert alert-info">
-          { t('security_setting.Local.note for the only env option', 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS') }
-        </p>
+        <p
+          className="alert alert-info"
+          // eslint-disable-next-line max-len
+          dangerouslySetInnerHTML={{ __html: t('security_setting.Local.note for the only env option', { env: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
+        />
         )}
 
         <div className="row mb-5">
@@ -90,7 +93,6 @@ class LocalSecuritySetting extends React.Component {
               </div>
             </div>
             <div className="row mb-5">
-              {/* eslint-disable-next-line react/no-danger */}
               <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
               <div className="col-xs-6">
                 <div>
