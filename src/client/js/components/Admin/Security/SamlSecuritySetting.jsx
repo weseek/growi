@@ -224,7 +224,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapId}
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapId}
                       readOnly
                     />
                     <p className="help-block">
@@ -256,6 +256,33 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>{ t('security_setting.form_item_name.attrMapMail') }</th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      name="attrMapMail"
+                      readOnly={useOnlyEnvVars}
+                      value={adminSamlSecurityContainer.state.samlDbAttrMapMail}
+                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapMail(e.target.value)}
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: 'Email' }) }} />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapMail}
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_MAIL' }) }} />
                     </p>
                   </td>
                 </tr>
