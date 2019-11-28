@@ -21,12 +21,8 @@ class ElasticsearchDelegator {
     this.configManager = configManager;
     this.searchEvent = searchEvent;
 
-    this.esNodeName = '-';
-    this.esNodeNames = [];
     this.esVersion = 'unknown';
-    this.esVersions = [];
-    this.esPlugin = [];
-    this.esPlugins = [];
+    this.esNodeInfos = {};
 
     this.client = null;
 
@@ -70,6 +66,13 @@ class ElasticsearchDelegator {
       // log: 'debug',
     });
     this.indexName = indexName;
+  }
+
+  getInfo() {
+    return {
+      esVersion: this.esVersion,
+      esNodeInfos: this.esNodeInfos,
+    };
   }
 
   /**
@@ -158,18 +161,26 @@ class ElasticsearchDelegator {
    */
   async checkESVersion() {
     try {
-      const nodes = await this.client.nodes.info();
-      if (!nodes._nodes || !nodes.nodes) {
+      const info = await this.client.nodes.info();
+      if (!info._nodes || !info.nodes) {
         throw new Error('no nodes info');
       }
 
-      for (const [nodeName, nodeInfo] of Object.entries(nodes.nodes)) {
-        this.esNodeName = nodeName;
-        this.esNodeNames.push(nodeName);
+      for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
         this.esVersion = nodeInfo.version;
-        this.esVersions.push(nodeInfo.version);
-        this.esPlugin = nodeInfo.plugins;
-        this.esPlugins.push(nodeInfo.plugins);
+
+        const filteredInfo = {
+          name: nodeInfo.name,
+          version: nodeInfo.version,
+          plugins: nodeInfo.plugins.map((pluginInfo) => {
+            return {
+              name: pluginInfo.name,
+              version: pluginInfo.version,
+            };
+          }),
+        };
+
+        this.esNodeInfos[nodeName] = filteredInfo;
       }
     }
     catch (error) {

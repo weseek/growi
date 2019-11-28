@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
-import SecuritySetting from './SecuritySetting';
+import SamlSecuritySetting from './SamlSecuritySetting';
 
 class SecurityManagement extends React.Component {
 
@@ -73,7 +73,7 @@ class SecurityManagement extends React.Component {
                 <LdapSecuritySetting />
               </div>
               <div id="passport-saml" className="tab-pane" role="tabpanel">
-                {/* TODO GW-544 reactify saml.html */}
+                <SamlSecuritySetting />
               </div>
               <div id="passport-oidc" className="tab-pane" role="tabpanel">
                 {/* TODO GW-545 reactify oidc.html */}
