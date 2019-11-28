@@ -18,10 +18,10 @@ export default class AdminSecuritySettingContainer extends Container {
 
     this.state = {
       // TODO GW-583 set Data from apiv3
-      currentRestrictGuestMode: appContainer.config.restrictGuestMode,
-      currentpageCompleteDeletionAuthority: appContainer.config.pageCompleteDeletionAuthority,
-      hideRestrictedByOwner: appContainer.config.hideRestrictedByOwner,
-      hideRestrictedByGroup: appContainer.config.hideRestrictedByGroup,
+      currentRestrictGuestMode: ' ',
+      currentpageCompleteDeletionAuthority: ' ',
+      hideRestrictedByOwner: true,
+      hideRestrictedByGroup: true,
     };
 
     this.init();

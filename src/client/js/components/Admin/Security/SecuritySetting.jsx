@@ -102,7 +102,7 @@ SecuritySetting.propTypes = {
 };
 
 const SecuritySettingWrapper = (props) => {
-  return createSubscribedElement(SecuritySetting, props, [AppContainer]);
+  return createSubscribedElement(SecuritySetting, props, [AppContainer, AdminSecuritySettingContainer]);
 };
 
 export default withTranslation()(SecuritySettingWrapper);
