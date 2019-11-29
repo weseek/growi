@@ -21,14 +21,17 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
+      id: cache
       uses: actions/cache@v1
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         yarn
     - name: install plugins
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
         yarn add -D react-images react-motion
