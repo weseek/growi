@@ -1,6 +1,5 @@
 name: Node CI
 
-# on: [push]
 on:
   push:
     branches:
