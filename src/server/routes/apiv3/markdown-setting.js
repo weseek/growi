@@ -114,7 +114,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/lineBreakParams'
+   *                      $ref: '#/components/schemas/LineBreakParams'
    */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
@@ -167,7 +167,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/presentationParams'
+   *                      $ref: '#/components/schemas/PresentationParams'
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
@@ -235,7 +235,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/xssParams'
+   *                      $ref: '#/components/schemas/XssParams'
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
