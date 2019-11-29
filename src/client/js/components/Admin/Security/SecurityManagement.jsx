@@ -10,6 +10,7 @@ import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
 import OidcSecuritySetting from './OidcSecuritySetting';
 import BasicSecuritySetting from './BasicSecuritySetting';
+import GoogleSecuritySetting from './GoogleSecuritySetting';
 
 class SecurityManagement extends React.Component {
 
@@ -159,7 +160,7 @@ class SecurityManagement extends React.Component {
                 <BasicSecuritySetting />
               </div>
               <div id="passport-google-oauth" className="tab-pane" role="tabpanel">
-                {/* TODO GW-547 reactify google-oauth.html */}
+                <GoogleSecuritySetting />
               </div>
               <div id="passport-github" className="tab-pane" role="tabpanel">
                 {/* TODO GW-548 reactify github.html */}
