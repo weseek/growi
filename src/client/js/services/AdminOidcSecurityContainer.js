@@ -18,7 +18,7 @@ export default class AdminOidcSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
-      hoge: 'hoge',
+      callbackUrl: '',
     };
 
     this.init();
