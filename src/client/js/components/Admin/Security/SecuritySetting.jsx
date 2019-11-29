@@ -99,26 +99,11 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="{{configName}}" className="col-xs-3 control-label">{ t('security_setting.complete_deletion') }</label>
-            <div className="col-xs-6">
-              <select className="form-control selectpicker" name="settingForm[security:pageCompleteDeletionAuthority]" value="{{ configValue }}">
-                <option value="anyOne">{ t('security_setting.anyone') }</option>
-                <option value="adminOnly">{ t('security_setting.admin_only') }</option>
-                <option value="adminAndAuthor">{ t('security_setting.admin_and_author') }</option>
-              </select>
-
-              <p className="help-block small">
-                { t('security_setting.complete_deletion_explain') }
-              </p>
-            </div>
-          </div>
           <div className="col-xs-9 text-left">
             <div className="my-0 btn-group">
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
+                  <span className="pull-left">{t('security_setting.complete_deletion')}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
                   </span>
@@ -131,7 +116,7 @@ class SecuritySetting extends React.Component {
                     type="button"
                     onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}
                   >
-                    <a role="menuitem">{ t('security_setting.guest_mode.anyone') }</a>
+                    <a role="menuitem">{ t('security_setting.anyone') }</a>
                   </li>
                   <li
                     key="admin_only"
@@ -139,7 +124,7 @@ class SecuritySetting extends React.Component {
                     type="button"
                     onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}
                   >
-                    <a role="menuitem">{ t('security_setting.guest_mode.admin_only') }</a>
+                    <a role="menuitem">{ t('security_setting.admin_only') }</a>
                   </li>
                   <li
                     key="admin_and_author"
@@ -147,9 +132,12 @@ class SecuritySetting extends React.Component {
                     type="button"
                     onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
                   >
-                    <a role="menuitem">{ t('security_setting.guest_mode.admin_only') }</a>
+                    <a role="menuitem">{ t('security_setting.admin_only') }</a>
                   </li>
                 </ul>
+                <p className="help-block small">
+                  { t('security_setting.complete_deletion_explain') }
+                </p>
               </div>
             </div>
           </div>
