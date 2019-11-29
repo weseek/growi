@@ -7,11 +7,12 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AdminGoogleSecurityContainer from '../../../services/AdminGoogleSecurityContainer';
 
 class GoogleSecurityManagement extends React.Component {
 
   render() {
-    const { t, adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer } = this.props;
     return (
 
       <React.Fragment>
@@ -39,7 +40,7 @@ class GoogleSecurityManagement extends React.Component {
 
         {adminGeneralSecurityContainer.state.isGoogleOAuthEnabled && (
           // TODO
-          <p>option</p>
+          <p>{adminGoogleSecurityContainer.state.hoge}</p>
         )}
 
       </React.Fragment>
@@ -55,10 +56,11 @@ GoogleSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
 const GoogleSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(GoogleSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer]);
+  return createSubscribedElement(GoogleSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGoogleSecurityContainer]);
 };
 
 export default withTranslation()(GoogleSecurityManagementWrapper);
