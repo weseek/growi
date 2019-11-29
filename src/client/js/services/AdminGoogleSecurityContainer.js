@@ -18,7 +18,7 @@ export default class AdminGoogleSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
-      hoge: 'google',
+      appSiteUrl: '',
     };
 
     this.init();
