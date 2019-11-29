@@ -573,7 +573,7 @@
         "id_detail": "OIDC claims で一意に識別可能な値を格納している属性",
         "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
-        "mapping_detail": "hoge",
+        "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
         "register_1": "hoge",
         "register_2": "hoge",
         "register_3": "hoge"

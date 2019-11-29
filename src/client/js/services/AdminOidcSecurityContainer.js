@@ -26,6 +26,7 @@ export default class AdminOidcSecurityContainer extends Container {
       oidcAttrMapId: '',
       oidcAttrMapUserName: '',
       oidcAttrMapName: '',
+      oidcAttrMapEmail: '',
     };
 
     this.init();
@@ -90,6 +91,13 @@ export default class AdminOidcSecurityContainer extends Container {
    */
   changeOidcAttrMapName(inputValue) {
     this.setState({ oidcAttrMapName: inputValue });
+  }
+
+  /**
+   * Change oidcAttrMapEmail
+   */
+  changeOidcAttrMapEmail(inputValue) {
+    this.setState({ oidcAttrMapEmail: inputValue });
   }
 
 }
