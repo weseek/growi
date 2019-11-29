@@ -22,7 +22,7 @@ module.exports = function(crowi) {
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
   AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
-  lib.getIsUploadable = function() {
+  lib.isValidUploadSettings = function() {
     return true;
   };
 

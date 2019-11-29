@@ -25,7 +25,7 @@ module.exports = function(crowi) {
     return filePath;
   }
 
-  lib.getIsUploadable = function() {
+  lib.isValidUploadSettings = function() {
     return true;
   };
 

@@ -47,12 +47,13 @@ class GlobalNotificationMailService {
    * @return  {{ subject: string, template: string, vars: object }}
    */
   generateOption(event, path, triggeredBy, { comment, oldPath }) {
+    const defaultLang = this.crowi.configManager.getConfig('crowi', 'app:globalLang');
     // validate for all events
     if (event == null || path == null || triggeredBy == null) {
       throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);
     }
 
-    const template = nodePath.join(this.crowi.localeDir, `${this.defaultLang}/notifications/${event}.txt`);
+    const template = nodePath.join(this.crowi.localeDir, `${defaultLang}/notifications/${event}.txt`);
     let subject;
     let vars = {
       appTitle: this.crowi.appService.getAppTitle(),
