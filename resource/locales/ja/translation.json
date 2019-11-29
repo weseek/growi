@@ -571,7 +571,7 @@
       "OIDC": {
         "name": "OpenID Connect",
         "id_detail": "OIDC claims で一意に識別可能な値を格納している属性",
-        "username_detail": "hoge",
+        "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
         "name_detail": "hoge",
         "mapping_detail": "hoge",
         "register_1": "hoge",
