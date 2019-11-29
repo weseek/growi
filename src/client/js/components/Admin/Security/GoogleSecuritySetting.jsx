@@ -11,8 +11,12 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 class GoogleSecurityManagement extends React.Component {
 
   render() {
+    const { t } = this.props;
     return (
-      <p>google</p>
+
+      <h2 className="alert-anchor border-bottom">
+        { t('security_setting.OAuth.Google.name') } { t('security_setting.configuration') }
+      </h2>
     );
   }
 
