@@ -61,6 +61,7 @@ class OidcSecurityManagement extends React.Component {
             )}
           </div>
         </div>
+
         {adminGeneralSecurityContainer.state.isOidcEnabled && (
         <React.Fragment>
 
@@ -190,6 +191,28 @@ class OidcSecurityManagement extends React.Component {
               <p className="help-block">
                 <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.mapping_detail', { target: t('Email') }) }} />
               </p>
+            </div>
+          </div>
+
+          <div className="row mb-5">
+            <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                value={adminOidcSecurityContainer.state.callbackUrl}
+                readOnly
+              />
+              <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' }) }</p>
+              {!adminGeneralSecurityContainer.state.appSiteUrl && (
+              <div className="alert alert-danger">
+                <i
+                  className="icon-exclamation"
+                // eslint-disable-next-line max-len
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                />
+              </div>
+            )}
             </div>
           </div>
 
