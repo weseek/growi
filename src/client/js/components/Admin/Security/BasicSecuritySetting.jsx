@@ -46,7 +46,25 @@ class BasicSecurityManagement extends React.Component {
 
         {adminGeneralSecurityContainer.state.isBasicEnabled && (
         <React.Fragment>
-          {adminBasicSecurityContainer.state.hoge}
+          <div className="row mb-5">
+            <div className="col-xs-offset-3 col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  id="bindByEmail-basic"
+                  type="checkbox"
+                  checked={adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                  onChange={() => { adminBasicSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                />
+                <label
+                  htmlFor="bindByEmail-basic"
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
+                />
+              </div>
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
+              </p>
+            </div>
+          </div>
         </React.Fragment>
         )}
 

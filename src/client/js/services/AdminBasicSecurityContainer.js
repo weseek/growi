@@ -18,7 +18,7 @@ export default class AdminBasicSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
-      hoge: 'hoge',
+      isSameUsernameTreatedAsIdenticalUser: 'hoge',
     };
 
     this.init();
@@ -35,6 +35,13 @@ export default class AdminBasicSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminBasicSecurityContainer';
+  }
+
+  /**
+   * Switch isSameUsernameTreatedAsIdenticalUser
+   */
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
   }
 
 }
