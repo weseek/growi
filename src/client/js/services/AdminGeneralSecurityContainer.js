@@ -7,6 +7,7 @@ const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
 
 /**
  * Service container for admin security page (SecurityManagement.jsx)
+ * Service container for admin security page (SecuritySetting.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminGeneralSecurityContainer extends Container {
@@ -85,7 +86,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
   /**
    * Update restrictGuestMode
-   * @memberOf AdminSecuritySettingContainer
+   * @memberOf AdminGeneralSecuritySContainer
    * @return {string} Appearance
    */
   async updateRestrictGuestMode() {
@@ -98,7 +99,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
   /**
    * Update pageDeletion
-   * @memberOf AdminSecuritySettingContainer
+   * @memberOf AdminGeneralSecurityContainer
    * @return {string} pageDeletion
    */
   async updatePageCompleteDeletionAuthority() {

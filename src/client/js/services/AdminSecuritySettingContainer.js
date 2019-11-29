@@ -18,14 +18,20 @@ export default class AdminSecuritySettingContainer extends Container {
 
     this.state = {
       // TODO GW-583 set Data from apiv3
-      currentRestrictGuestMode: ' ',
-      currentpageCompleteDeletionAuthority: ' ',
-      hideRestrictedByOwner: true,
-      hideRestrictedByGroup: true,
+      isWikiModeForced: false,
+      currentRestrictGuestMode: 'deny',
+      currentpageCompleteDeletionAuthority: 'anyone',
+      isHideRestrictedByOwner: true,
+      isHideRestrictedByGroup: true,
     };
 
     this.init();
 
+
+    this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
+    this.switchIsHideRestrictedByGroup = this.switchIsHideRestrictedByGroup.bind(this);
+    this.switchIsHideRestrictedByOwner = this.switchIsHideRestrictedByOwner.bind(this);
+    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
   }
 
   /**
@@ -35,41 +41,39 @@ export default class AdminSecuritySettingContainer extends Container {
     // TODO GW-583 init state by apiv3
   }
 
-
   /**
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'AdminSecritySettingContainer';
+    return 'AdminGeneralSecurityContainer';
   }
 
-
   /**
-   * Switch restrictGuestMode
+   * Change restrictGuestMode
    */
-  switchRestrictGuestMode(restrictGuestModeLabel) {
+  changeRestrictGuestMode(restrictGuestModeLabel) {
     this.setState({ currentRestrictGuestMode: restrictGuestModeLabel });
   }
 
   /**
-   * Switch pageCompleteDeletionAuthority
+   * Change pageCompleteDeletionAuthority
    */
-  switchPageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
+  changePageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
     this.setState({ currentpageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
   }
 
   /**
    * Switch hideRestrictedByOwner
    */
-  switchHideRestrictedByOwner() {
-    this.setState({ hideRestrictedByOwner:  !this.state.hideRestrictedByOwner });
+  switchIsHideRestrictedByOwner() {
+    this.setState({ isHideRestrictedByOwner:  !this.state.isHideRestrictedByOwner });
   }
 
   /**
    * Switch hideRestrictedByGroup
    */
-  switchHideRestrictedByGroup() {
-    this.setState({ hideRestrictedByGroup:  !this.state.hideRestrictedByGroup });
+  switchIsHideRestrictedByGroup() {
+    this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
   }
 
   /**
