@@ -545,6 +545,7 @@
       "register": "%sに登録",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
       "Google": {
+        "enable_google":"Google OAuth を有効にする",
         "name": "Google OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",

@@ -550,6 +550,7 @@
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
+        "enable_google":"enable Google OAuth",
         "name": "Google OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Create Project if no projects exist",

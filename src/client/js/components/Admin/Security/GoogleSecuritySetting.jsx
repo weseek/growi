@@ -11,12 +11,40 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 class GoogleSecurityManagement extends React.Component {
 
   render() {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
     return (
 
-      <h2 className="alert-anchor border-bottom">
-        { t('security_setting.OAuth.Google.name') } { t('security_setting.configuration') }
-      </h2>
+      <React.Fragment>
+
+        <h2 className="alert-anchor border-bottom">
+          { t('security_setting.OAuth.Google.name') } { t('security_setting.configuration') }
+        </h2>
+
+        <div className="row mb-5">
+          <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.Google.name') }</strong>
+          <div className="col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isGoogleEnabled"
+                type="checkbox"
+                checked={adminGeneralSecurityContainer.state.isGoogleOAuthEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
+              />
+              <label htmlFor="isGoogleEnabled">
+                { t('security_setting.OAuth.Google.enable_google') }
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {adminGeneralSecurityContainer.state.isGoogleOAuthEnabled && (
+          // TODO
+          <p>option</p>
+        )}
+
+      </React.Fragment>
+
+
     );
   }
 

@@ -27,6 +27,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isSamlEnabled: true,
       isOidcEnabled: true,
       isBasicEnabled: true,
+      isGoogleOAuthEnabled: true,
     };
 
     this.init();
@@ -87,6 +88,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   switchIsBasicEnabled() {
     this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
+  }
+
+  /**
+   * Switch GoogleOAuth enabled
+   */
+  switchIsGoogleOAuthEnabled() {
+    this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
   }
 
 }
