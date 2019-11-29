@@ -26,6 +26,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isLdapEnabled: true,
       isSamlEnabled: true,
       isOidcEnabled: true,
+      isBasicEnabled: true,
     };
 
     this.init();
@@ -79,6 +80,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   switchIsOidcEnabled() {
     this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
+  }
+
+  /**
+   * Switch Basic enabled
+   */
+  switchIsBasicEnabled() {
+    this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
   }
 
 }
