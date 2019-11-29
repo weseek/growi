@@ -29,16 +29,16 @@ test:
         yarn list --depth=0
 
     - script:
-      name: npm run lint
+      name: yarn lint
       code: |
-        npm run lint
+        yarn lint
 
     - script:
-      name: npm test
+      name: yarn test
       code: |
         export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/growi_test
         echo "export MONGO_URI=$MONGO_URI"
-        npm test
+        yarn test
 
   after-steps:
     - slack-notifier:
@@ -55,9 +55,9 @@ build-prod:
       code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
-      name: npm run build:prod:analyze
+      name: yarn build:prod:analyze
       code: |
-        npm run build:prod:analyze
+        yarn build:prod:analyze
 
     - script:
       name: shrink dependencies for production
@@ -65,11 +65,11 @@ build-prod:
         yarn install --production
 
     - script:
-      name: npm run server:prod:ci
+      name: yarn server:prod:ci
       code: |
         export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/growi
         echo "export MONGO_URI=$MONGO_URI"
-        npm run server:prod:ci
+        yarn server:prod:ci
 
   after-steps:
     - script:
@@ -91,9 +91,9 @@ build-dev:
       code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
-      name: npm run build:dev
+      name: yarn build:dev
       code: |
-        npm run build:dev
+        yarn build:dev
 
   after-steps:
     - slack-notifier:
