@@ -1,20 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+
+const logger = loggerFactory('growi:importer');
 
 class AppSetting extends React.Component {
 
   constructor(props) {
     super(props);
 
+    const { appContainer } = this.props;
+
     this.state = {
+      siteName: appContainer.config.crowi.title,
+      confidentialName: appContainer.config.confidential,
+      globalLang: appContainer.config.globalLang,
+      fileUpload: appContainer.config.fileUpload,
     };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
+  async onClickSubmit() {
+    const { t } = this.props;
+
+    const params = {
+      'app:title': this.state.siteName,
+      'app:confidential': this.state.confidentialName,
+      'app:globalLang': this.state.globalLang,
+      'app:fileUpload': this.state.fileUpload,
+    };
+
+    try {
+      await this.appContainer.apiPost('/admin/settings/app', params);
+      toastSuccess(t('app_setting.updated_app_setting'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t } = this.props;
