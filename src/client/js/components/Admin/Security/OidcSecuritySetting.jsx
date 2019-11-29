@@ -105,6 +105,28 @@ class OidcSecurityManagement extends React.Component {
             </div>
           </div>
 
+          <div className="row mb-5">
+            <label htmlFor="oidcClientSecret" className="col-xs-3 text-right">{ t('security_setting.client_secret') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                name="oidcClientSecret"
+                value={adminOidcSecurityContainer.state.oidcClientSecret}
+                onChange={e => adminOidcSecurityContainer.changeOidcClientSecret(e.target.value)}
+              />
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_SECRET' }) }} />
+              </p>
+            </div>
+          </div>
+
+          <h3 className="alert-anchor border-bottom">
+              Attribute Mapping ({ t('security_setting.optional') })
+          </h3>
+
+          {/* TODO GW-546 create mapping options */}
+
         </React.Fragment>
         )}
       </React.Fragment>
