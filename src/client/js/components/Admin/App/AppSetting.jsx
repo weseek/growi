@@ -106,11 +106,25 @@ class AppSetting extends React.Component {
           <label className="col-xs-3 control-label">{t('app_setting.Default Language for new users')}</label>
           <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
-              <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN_US }}" />
+              <input
+                type="radio"
+                id="radioLangEn"
+                name="globalLang"
+                value="en-US"
+                checked={this.state.globalLang === 'en-US'}
+                onClick={this.inputChangeHandler}
+              />
               <label>{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
-              <input type="radio" id="radioLangJa" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_JA }}" />
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="globalLang"
+                value="ja"
+                checked={this.state.globalLang === 'ja'}
+                onClick={this.inputChangeHandler}
+              />
               <label>{t('Japanese')}</label>
             </div>
           </div>
