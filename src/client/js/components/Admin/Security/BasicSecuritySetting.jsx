@@ -34,6 +34,12 @@ class BasicSecurityManagement extends React.Component {
                 { t('security_setting.Basic.enable_basic') }
               </label>
             </div>
+            <p className="help-block">
+              <small>
+                <span dangerouslySetInnerHTML={{ __html: t('security_setting.Basic.desc_1') }} /><br />
+                { t('security_setting.Basic.desc_2')}
+              </small>
+            </p>
           </div>
         </div>
 
