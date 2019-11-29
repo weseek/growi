@@ -1,0 +1,41 @@
+name: GitHub Release
+
+on:
+  push:
+    branches:
+      - support/github-actions
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Bump version
+      run: |
+        sh ./bin/github-actions/bump-version.sh
+        npm version patch
+
+    - name: Get RELEASE_VERSION
+      run: |
+        export RELEASE_VERSION=`npm run version --silent`
+        echo "export RELEASE_VERSION=$RELEASE_VERSION"
+
+    - name: Commit
+      run: |
+        git config --local user.name "GitHub Action"
+        git config --local user.email "info@weseek.co.jp"
+        git commit -m "Release $RELEASE_VERSION"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets. PERSONAL_ACCESS_TOKEN }}
+
+    - name: Get RELEASE_GIT_COMMIT
+      run: |
+        export RELEASE_GIT_COMMIT=`git rev-parse HEAD`
+        echo "export RELEASE_GIT_COMMIT=$RELEASE_GIT_COMMIT"
+
