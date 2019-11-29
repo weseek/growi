@@ -19,8 +19,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.state = {
       // TODO GW-583 set value
       isWikiModeForced: false,
-      currentRestrictGuestMode: 'Deny',
-      currentpageCompleteDeletionAuthority: 'adminOnly',
+      currentRestrictGuestMode: 'deny',
+      currentpageCompleteDeletionAuthority: 'anyone',
       isHideRestrictedByOwner: true,
       isHideRestrictedByGroup: true,
       useOnlyEnvVarsForSomeOptions: true,

@@ -23,40 +23,38 @@ class SecuritySetting extends React.Component {
             >
               { t('security_setting.Guest Users Access') }
             </label>
-            {adminGeneralSecurityContainer.state.isForceWikiMode === false && (
-              <div className="col-xs-9 text-left">
-                <div className="my-0 btn-group">
-                  <div className="dropdown">
-                    <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
-                      <span className="bs-caret pull-right">
-                        <span className="caret" />
-                      </span>
-                    </button>
-                    {/* TODO adjust dropdown after BS4 */}
-                    <ul className="dropdown-menu" role="menu">
-                      <li
-                        key="deny"
-                        role="presentation"
-                        type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}
-                      >
-                        <a role="menuitem">{ t('security_setting.guest_mode.deny') }</a>
-                      </li>
-                      <li
-                        key="Readonly"
-                        role="presentation"
-                        type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}
-                      >
-                        <a role="menuitem">{ t('security_setting.guest_mode.readonly') }</a>
-                      </li>
-                    </ul>
-                  </div>
+            <div className="col-xs-9 text-left">
+              <div className="my-0 btn-group">
+                <div className="dropdown">
+                  <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
+                    <span className="bs-caret pull-right">
+                      <span className="caret" />
+                    </span>
+                  </button>
+                  {/* TODO adjust dropdown after BS4 */}
+                  <ul className="dropdown-menu" role="menu">
+                    <li
+                      key="deny"
+                      role="presentation"
+                      type="button"
+                      onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('deny') }}
+                    >
+                      <a role="menuitem">{ t('security_setting.guest_mode.deny') }</a>
+                    </li>
+                    <li
+                      key="readonly"
+                      role="presentation"
+                      type="button"
+                      onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('readonly') }}
+                    >
+                      <a role="menuitem">{ t('security_setting.guest_mode.readonly') }</a>
+                    </li>
+                  </ul>
                 </div>
               </div>
-            )}
-            {adminGeneralSecurityContainer.state.isForceWikiMode && (
+            </div>
+            {adminGeneralSecurityContainer.state.isWikiModeForced && (
               <div className="col-xs-6">
                 <p className="alert alert-warning mt-2">
                   <i className="icon-exclamation icon-fw">
@@ -103,7 +101,7 @@ class SecuritySetting extends React.Component {
             <div className="my-0 btn-group">
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">{t('security_setting.complete_deletion')}</span>
+                  <span className="pull-left">{t(`security_setting.${adminGeneralSecurityContainer.state.currentpageCompleteDeletionAuthority}`)}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
                   </span>
@@ -114,7 +112,7 @@ class SecuritySetting extends React.Component {
                     key="anyone"
                     role="presentation"
                     type="button"
-                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}
+                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyone') }}
                   >
                     <a role="menuitem">{ t('security_setting.anyone') }</a>
                   </li>
@@ -122,7 +120,7 @@ class SecuritySetting extends React.Component {
                     key="admin_only"
                     role="presentation"
                     type="button"
-                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}
+                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_only') }}
                   >
                     <a role="menuitem">{ t('security_setting.admin_only') }</a>
                   </li>
@@ -130,9 +128,9 @@ class SecuritySetting extends React.Component {
                     key="admin_and_author"
                     role="presentation"
                     type="button"
-                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
+                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_and_author') }}
                   >
-                    <a role="menuitem">{ t('security_setting.admin_only') }</a>
+                    <a role="menuitem">{ t('security_setting.admin_and_author') }</a>
                   </li>
                 </ul>
                 <p className="help-block small">
