@@ -26,7 +26,14 @@ class SecuritySetting extends React.Component {
             <div className="col-xs-9 text-left">
               <div className="my-0 btn-group">
                 <div className="dropdown">
-                  <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button
+                    className="btn btn-default dropdown-toggle w-100"
+                    type="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
+                  >
                     <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />

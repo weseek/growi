@@ -56,39 +56,6 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch local enabled
-   */
-  switchIsLocalEnabled() {
-    this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
-  }
-
-  /**
-   * Change registration mode
-   */
-  changeRegistrationMode(value) {
-    this.setState({ registrationMode: value });
-  }
-
-  /**
-   * Switch LDAP enabled
-   */
-  switchIsLdapEnabled() {
-    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
-  }
-
-  /**
-   * Switch SAML enabled
-   */
-  switchIsSamlEnabled() {
-    this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
-  }
-
-  /**
-   * Switch Oidc enabled
-   */
-  switchIsOidcEnabled() {
-    this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
-  }
    * Change restrictGuestMode
    */
   changeRestrictGuestMode(restrictGuestModeLabel) {
@@ -156,5 +123,39 @@ export default class AdminGeneralSecurityContainer extends Container {
     return securitySettingParams;
   }
 
+  /**
+   * Switch local enabled
+   */
+  switchIsLocalEnabled() {
+    this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
+  }
+
+  /**
+   * Change registration mode
+   */
+  changeRegistrationMode(value) {
+    this.setState({ registrationMode: value });
+  }
+
+  /**
+   * Switch LDAP enabled
+   */
+  switchIsLdapEnabled() {
+    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
+  }
+
+  /**
+   * Switch SAML enabled
+   */
+  switchIsSamlEnabled() {
+    this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
+  }
+
+  /**
+   * Switch Oidc enabled
+   */
+  switchIsOidcEnabled() {
+    this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
+  }
 
 }
