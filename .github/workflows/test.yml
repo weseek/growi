@@ -1,9 +1,6 @@
 name: Node CI
 
-on:
-  push:
-    branches:
-      - support/github-actions
+on: [push]
 
 jobs:
 
@@ -65,7 +62,6 @@ jobs:
     - name: yarn lint
       run: |
         yarn lint
-
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
