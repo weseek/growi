@@ -11,7 +11,17 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 class BasicSecurityManagement extends React.Component {
 
   render() {
-    return <p>basic</p>;
+    const { t } = this.props;
+
+    return (
+      <React.Fragment>
+
+        <h2 className="alert-anchor border-bottom">
+          { t('security_setting.Basic.name') } { t('security_setting.configuration') }
+        </h2>
+
+      </React.Fragment>
+    );
   }
 
 }
