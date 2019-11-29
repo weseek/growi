@@ -1,0 +1,116 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+
+import AppContainer from '../../../services/AppContainer';
+
+class AppSetting extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+    };
+  }
+
+
+  render() {
+    const { t } = this.props;
+
+    return (
+      <React.Fragment>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <label htmlFor="settingForm[app:title]" className="col-xs-3 control-label">
+                {t('app_setting.Site Name')}
+              </label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  id="settingForm[app:title]"
+                  type="text"
+                  name="settingForm[app:title]"
+                  value="{{ getConfig('crowi', 'app:title') | default('') }}"
+                  placeholder="GROWI"
+                />
+                <p className="help-block">{t('app_setting.sitename_change')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <label htmlFor="settingForm[app:confidential]" className="col-xs-3 control-label">
+                {t('app_setting.Confidential name')}
+              </label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  id="settingForm[app:confidential]"
+                  type="text"
+                  name="settingForm[app:confidential]"
+                  value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
+                  placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}"
+                />
+                <p className="help-block">{t('app_setting.header_content')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
+              <div className="col-xs-6">
+                <div className="checkbox checkbox-info">
+                  <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1" />
+                  <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
+                </div>
+
+                <p className="help-block">
+                  {t('app_setting.enable_files_except_image')}
+                  <br />
+                  {t('app_setting.attach_enable')}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-12">
+            <div className="form-group">
+              <div className="col-xs-offset-3 col-xs-6">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+                <button type="submit" className="btn btn-primary">
+                  {t('app_setting.Update')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  }
+
+}
+
+/**
+ * Wrapper component for using unstated
+ */
+const AppSettingWrapper = (props) => {
+  return createSubscribedElement(AppSetting, props, [AppContainer]);
+};
+
+AppSetting.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default withTranslation()(AppSettingWrapper);

@@ -40,6 +40,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
+import AppSettingPage from './components/Admin/AppSettingPage';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -109,6 +110,7 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
+  'admin-app': <AppSettingPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
 
