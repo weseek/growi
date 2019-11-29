@@ -24,11 +24,13 @@ export default class AdminGeneralSecurityContainer extends Container {
       isHideRestrictedByOwner: true,
       isHideRestrictedByGroup: true,
       useOnlyEnvVarsForSomeOptions: true,
+      appSiteUrl: '',
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',
       isLdapEnabled: true,
       isSamlEnabled: true,
+      isOidcEnabled: true,
     };
 
     this.init();
@@ -82,6 +84,11 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch Oidc enabled
+   */
+  switchIsOidcEnabled() {
+    this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
+  }
    * Change restrictGuestMode
    */
   changeRestrictGuestMode(restrictGuestModeLabel) {
@@ -148,5 +155,6 @@ export default class AdminGeneralSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
     return securitySettingParams;
   }
+
 
 }

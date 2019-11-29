@@ -8,6 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
+import OidcSecuritySetting from './OidcSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 
 class SecurityManagement extends React.Component {
@@ -77,7 +78,7 @@ class SecurityManagement extends React.Component {
                 <SamlSecuritySetting />
               </div>
               <div id="passport-oidc" className="tab-pane" role="tabpanel">
-                {/* TODO GW-545 reactify oidc.html */}
+                <OidcSecuritySetting />
               </div>
               <div id="passport-basic" className="tab-pane" role="tabpanel">
                 {/* TODO GW-546 reactify basic.html */}

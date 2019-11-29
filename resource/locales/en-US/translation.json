@@ -438,7 +438,7 @@
     "Load plugins": "Load plugins",
     "Enable": "Enable",
     "Disable": "Disable",
-    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
+    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used."
   },
 
   "security_setting": {
@@ -490,8 +490,8 @@
     "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
     "Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
     "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
-    "Use env var if empty": "Use env var <code>%s</code> if empty",
-    "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
+    "Use env var if empty": "Use env var <code>{{env}}</code> if empty",
+    "Use default if both are empty": "If both ​​are empty, the default value <code>{{target}}</code> is used.",
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "Local": {
       "name": "ID/Password",
@@ -534,7 +534,7 @@
       "enable_saml":"enable SAML",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
-      "mapping_detail": "Specification of mappings for %s when creating new users",
+      "mapping_detail": "Specification of mappings for {{target}} when creating new users",
       "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
@@ -545,6 +545,7 @@
       "desc_2": "User will be automatically generated if not exist."
     },
     "OAuth": {
+      "enable_oidc": "enable OIDC",
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
