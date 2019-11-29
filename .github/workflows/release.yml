@@ -15,8 +15,8 @@ jobs:
 
     - name: Bump version
       run: |
-        sh ./bin/github-actions/bump-version.sh
         npm version patch
+        sh ./bin/github-actions/bump-version.sh
 
     - name: Get RELEASE_VERSION
       run: |
