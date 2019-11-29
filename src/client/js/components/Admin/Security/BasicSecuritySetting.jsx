@@ -7,11 +7,12 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AdminBasicSecurityContainer from '../../../services/AdminBasicSecurityContainer';
 
 class BasicSecurityManagement extends React.Component {
 
   render() {
-    const { t, adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminBasicSecurityContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -44,7 +45,9 @@ class BasicSecurityManagement extends React.Component {
         </div>
 
         {adminGeneralSecurityContainer.state.isBasicEnabled && (
-        <p>option</p>
+        <React.Fragment>
+          {adminBasicSecurityContainer.state.hoge}
+        </React.Fragment>
         )}
 
       </React.Fragment>
@@ -57,10 +60,11 @@ BasicSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  adminBasicSecurityContainer: PropTypes.instanceOf(AdminBasicSecurityContainer).isRequired,
 };
 
 const OidcSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(BasicSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer]);
+  return createSubscribedElement(BasicSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminBasicSecurityContainer]);
 };
 
 export default withTranslation()(OidcSecurityManagementWrapper);
