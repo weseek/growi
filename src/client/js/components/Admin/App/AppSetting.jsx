@@ -49,7 +49,10 @@ class AppSetting extends React.Component {
   }
 
   inputChangeHandler(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+
+    this.setState({ [event.target.name]: value });
   }
 
   render() {
@@ -104,11 +107,11 @@ class AppSetting extends React.Component {
           <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
               <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN_US }}" />
-              <label htmlFor="radioLangEn">{t('English')}</label>
+              <label>{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
               <input type="radio" id="radioLangJa" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_JA }}" />
-              <label htmlFor="radioLangJa">{t('Japanese')}</label>
+              <label>{t('Japanese')}</label>
             </div>
           </div>
         </div>
@@ -119,7 +122,13 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1" />
+                  <input
+                    type="checkbox"
+                    id="cbFileUpload"
+                    name="fileUpload"
+                    checked={this.state.fileUpload}
+                    onChange={this.inputChangeHandler}
+                  />
                   <label>{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
