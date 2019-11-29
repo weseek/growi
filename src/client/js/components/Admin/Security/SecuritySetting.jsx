@@ -23,7 +23,7 @@ class SecuritySetting extends React.Component {
             >
               { t('security_setting.Guest Users Access') }
             </label>
-            {adminGeneralSecurityContainer.state.isForceWikiMode == false && (
+            {adminGeneralSecurityContainer.state.isForceWikiMode === false && (
               <div className="col-xs-9 text-left">
                 <div className="my-0 btn-group">
                   <div className="dropdown">
@@ -33,6 +33,25 @@ class SecuritySetting extends React.Component {
                         <span className="caret" />
                       </span>
                     </button>
+                    {/* TODO adjust dropdown after BS4 */}
+                    <ul className="dropdown-menu" role="menu">
+                      <li
+                        key="deny"
+                        role="presentation"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}
+                      >
+                        <a role="menuitem">{ t('security_setting.guest_mode.deny') }</a>
+                      </li>
+                      <li
+                        key="Readonly"
+                        role="presentation"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}
+                      >
+                        <a role="menuitem">{ t('security_setting.guest_mode.readonly') }</a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -45,7 +64,7 @@ class SecuritySetting extends React.Component {
                   { t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE') }<br></br>
                 </p>
               </div>
-              )}
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="{{configName}}" className="col-xs-3 control-label">{ t('security_setting.page_listing_1') }</label>

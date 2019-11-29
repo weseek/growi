@@ -35,6 +35,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
+    this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
   }
 
   init() {
@@ -78,9 +79,9 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch restrictGuestMode
+   * Change restrictGuestMode
    */
-  switchRestrictGuestMode(restrictGuestModeLabel) {
+  changeRestrictGuestMode(restrictGuestModeLabel) {
     this.setState({ currentRestrictGuestMode: restrictGuestModeLabel });
   }
 
