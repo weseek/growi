@@ -547,10 +547,10 @@
       "Google": {
         "enable_google":"Google OAuth を有効にする",
         "name": "Google OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_1": "{{link}}へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
-        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録",
+        "register_4": "承認済みのリダイレクトURIを<code>{{url}}</code>としてGrowiを登録",
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "Facebook": {

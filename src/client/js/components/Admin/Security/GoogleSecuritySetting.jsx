@@ -66,6 +66,22 @@ class GoogleSecurityManagement extends React.Component {
           <p>{adminGoogleSecurityContainer.state.hoge}</p>
         )}
 
+        <hr />
+
+        <div style={{ minHeight: '300px' }}>
+          <h4>
+            <i className="icon-question" aria-hidden="true"></i>
+            <a href="#collapseHelpForGoogleOauth" data-toggle="collapse">{ t('security_setting.OAuth.how_to.google') }</a>
+          </h4>
+          <ol id="collapseHelpForGoogleOauth" className="collapse">
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_1', { link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>' }) }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_2') }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_3') }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_4', { url: adminGoogleSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_5') }} />
+          </ol>
+        </div>
+
       </React.Fragment>
 
 
