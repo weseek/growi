@@ -2,8 +2,8 @@ name: Release Docker Images
 
 on:
   push:
-    branches:
-      - support/github-actions
+    tags:
+      - v3.*
 
 jobs:
   build:
