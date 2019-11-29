@@ -43,6 +43,9 @@ class BasicSecurityManagement extends React.Component {
           </div>
         </div>
 
+        {adminGeneralSecurityContainer.state.isBasicEnabled && (
+        <p>option</p>
+        )}
 
       </React.Fragment>
     );
