@@ -11,7 +11,7 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 class BasicSecurityManagement extends React.Component {
 
   render() {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -19,6 +19,24 @@ class BasicSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.Basic.name') } { t('security_setting.configuration') }
         </h2>
+
+        <div className="row mb-5">
+          <strong className="col-xs-3 text-right">{ t('security_setting.Basic.name') }</strong>
+          <div className="col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isBasicEnabled"
+                type="checkbox"
+                checked={adminGeneralSecurityContainer.state.isBasicEnabled}
+                onChange={() => { adminGeneralSecurityContainer.switchIsBasicEnabled() }}
+              />
+              <label htmlFor="isBasicEnabled">
+                { t('security_setting.Basic.enable_basic') }
+              </label>
+            </div>
+          </div>
+        </div>
+
 
       </React.Fragment>
     );
