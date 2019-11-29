@@ -20,6 +20,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
     - name: install dependencies
       run: |
         yarn
@@ -39,6 +44,11 @@ jobs:
     needs: resolve-dependencies
 
     steps:
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
     - uses: actions/checkout@v1
     - name: yarn lint
       run: |
@@ -54,7 +64,11 @@ jobs:
       uses: wbari/start-mongoDB@v0.2
       with:
         mongoDBVersion: 3.6
-
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
     - name: yarn test
       run: |
         yarn test
@@ -67,6 +81,11 @@ jobs:
     needs: resolve-dependencies
 
     steps:
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
     - name: yarn build:dev
       run: |
         yarn build:dev
@@ -81,6 +100,14 @@ jobs:
       uses: wbari/start-mongoDB@v0.2
       with:
         mongoDBVersion: 3.6
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}-build-prod
+        restore-keys: |
+          ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}-build-prod
     - name: yarn build:prod:analyze
       run: |
         yarn build:prod:analyze
