@@ -19,6 +19,10 @@ class OidcSecurityManagement extends React.Component {
 
       <React.Fragment>
 
+        <h2 className="alert-anchor border-bottom">
+          { t('security_setting.OAuth.OIDC.name') } { t('security_setting.configuration') }
+        </h2>
+
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.OIDC.name') }</strong>
           <div className="col-xs-6 text-left">

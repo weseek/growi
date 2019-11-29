@@ -19,6 +19,10 @@ class SamlSecurityManagement extends React.Component {
     return (
       <React.Fragment>
 
+        <h2 className="alert-anchor border-bottom">
+          { t('security_setting.SAML.name') } { t('security_setting.configuration') }
+        </h2>
+
         {useOnlyEnvVars && (
         <p
           className="alert alert-info"
