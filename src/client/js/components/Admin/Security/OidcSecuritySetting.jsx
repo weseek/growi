@@ -57,9 +57,11 @@ class OidcSecurityManagement extends React.Component {
             )}
           </div>
         </div>
-
-        <p>{adminOidcSecurityContainer.state.hoge}</p>
-
+        {adminGeneralSecurityContainer.state.isOidcEnabled && (
+        <React.Fragment>
+          <p>hoge</p>
+        </React.Fragment>
+        )}
       </React.Fragment>
     );
   }
