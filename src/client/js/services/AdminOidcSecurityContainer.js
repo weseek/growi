@@ -19,6 +19,7 @@ export default class AdminOidcSecurityContainer extends Container {
     this.state = {
       // TODO GW-583 set value
       callbackUrl: '',
+      oidcProviderName: '',
     };
 
     this.init();
@@ -34,6 +35,13 @@ export default class AdminOidcSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminOidcSecurityContainer';
+  }
+
+  /**
+   * Change oidcProviderName
+   */
+  changeOidcProviderName(inputValue) {
+    this.setState({ oidcProviderName: inputValue });
   }
 
 }

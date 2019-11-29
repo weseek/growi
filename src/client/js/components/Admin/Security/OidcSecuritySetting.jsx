@@ -59,7 +59,18 @@ class OidcSecurityManagement extends React.Component {
         </div>
         {adminGeneralSecurityContainer.state.isOidcEnabled && (
         <React.Fragment>
-          <p>hoge</p>
+          <div className="row mb-5">
+            <label htmlFor="oidcProviderName" className="col-xs-3 text-right">{ t('security_setting.providerName') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                name="oidcProviderName"
+                value={adminOidcSecurityContainer.state.oidcProviderName}
+                onChange={e => adminOidcSecurityContainer.changeOidcProviderName(e.target.value)}
+              />
+            </div>
+          </div>
         </React.Fragment>
         )}
       </React.Fragment>
