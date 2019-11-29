@@ -161,6 +161,22 @@ class OidcSecurityManagement extends React.Component {
             </div>
           </div>
 
+          <div className="row mb-5">
+            <label htmlFor="oidcAttrMapName" className="col-xs-3 text-right">{ t('Name') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                name="oidcAttrMapName"
+                value={adminOidcSecurityContainer.state.oidcAttrMapName}
+                onChange={e => adminOidcSecurityContainer.changeOidcAttrMapName(e.target.value)}
+              />
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.name_detail') }} />
+              </p>
+            </div>
+          </div>
+
         </React.Fragment>
         )}
       </React.Fragment>
