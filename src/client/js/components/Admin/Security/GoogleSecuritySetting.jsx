@@ -74,6 +74,7 @@ class GoogleSecurityManagement extends React.Component {
             <a href="#collapseHelpForGoogleOauth" data-toggle="collapse">{ t('security_setting.OAuth.how_to.google') }</a>
           </h4>
           <ol id="collapseHelpForGoogleOauth" className="collapse">
+            {/* eslint-disable-next-line max-len */}
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_1', { link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>' }) }} />
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_2') }} />
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_3') }} />
