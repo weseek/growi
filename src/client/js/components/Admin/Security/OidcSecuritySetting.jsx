@@ -216,6 +216,46 @@ class OidcSecurityManagement extends React.Component {
             </div>
           </div>
 
+          <div className="row mb-3">
+            <div className="col-xs-offset-3 col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  id="bindByUserName-oidc"
+                  type="checkbox"
+                  checked={adminOidcSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                  onChange={() => { adminOidcSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                />
+                <label
+                  htmlFor="bindByUserName-oidc"
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
+                />
+              </div>
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
+              </p>
+            </div>
+          </div>
+
+          <div className="row mb-5">
+            <div className="col-xs-offset-3 col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  id="bindByEmail-oidc"
+                  type="checkbox"
+                  checked={adminOidcSecurityContainer.state.isSameEmailTreatedAsIdenticalUser}
+                  onChange={() => { adminOidcSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
+                />
+                <label
+                  htmlFor="bindByEmail-oidc"
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                />
+              </div>
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
+              </p>
+            </div>
+          </div>
+
         </React.Fragment>
         )}
       </React.Fragment>

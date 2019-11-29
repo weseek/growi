@@ -27,6 +27,8 @@ export default class AdminOidcSecurityContainer extends Container {
       oidcAttrMapUserName: '',
       oidcAttrMapName: '',
       oidcAttrMapEmail: '',
+      isSameUsernameTreatedAsIdenticalUser: true,
+      isSameEmailTreatedAsIdenticalUser: true,
     };
 
     this.init();
@@ -98,6 +100,20 @@ export default class AdminOidcSecurityContainer extends Container {
    */
   changeOidcAttrMapEmail(inputValue) {
     this.setState({ oidcAttrMapEmail: inputValue });
+  }
+
+  /**
+   * Switch sameUsernameTreatedAsIdenticalUser
+   */
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Switch sameEmailTreatedAsIdenticalUser
+   */
+  switchIsSameEmailTreatedAsIdenticalUser() {
+    this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
   }
 
 }
