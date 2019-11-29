@@ -24,7 +24,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: install dependencies
       run: |
         yarn
@@ -43,12 +43,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: resolve-dependencies
 
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
     steps:
+    - uses: actions/checkout@v1
     - name: Cache/Restore node_modules
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - uses: actions/checkout@v1
     - name: yarn lint
       run: |
@@ -59,16 +64,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: resolve-dependencies
 
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
     steps:
-    - name: Launch MongoDB
-      uses: wbari/start-mongoDB@v0.2
-      with:
-        mongoDBVersion: 3.6
+    - uses: actions/checkout@v1
     - name: Cache/Restore node_modules
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - name: Launch MongoDB
+      uses: wbari/start-mongoDB@v0.2
+      with:
+        mongoDBVersion: 3.6
     - name: yarn test
       run: |
         yarn test
@@ -80,12 +90,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: resolve-dependencies
 
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
     steps:
+    - uses: actions/checkout@v1
     - name: Cache/Restore node_modules
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: yarn build:dev
       run: |
         yarn build:dev
@@ -95,7 +110,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: resolve-dependencies
 
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
     steps:
+    - uses: actions/checkout@v1
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
@@ -104,10 +124,10 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}-build-prod
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-build-prod
         restore-keys: |
-          ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}
-          ${{ runner.OS }}-node_modules-${{ hashFiles('**/yarn.lock') }}-build-prod
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-build-prod
     - name: yarn build:prod:analyze
       run: |
         yarn build:prod:analyze
