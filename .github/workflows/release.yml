@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
 
     - name: Init Git
       run: |
@@ -30,7 +32,7 @@ jobs:
 
     - name: Commit
       run: |
-        git commit -m "Release $RELEASE_VERSION"
+        git commit -am "Release $RELEASE_VERSION"
 
     - name: Push changes
       uses: ad-m/github-push-action@master
