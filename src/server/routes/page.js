@@ -576,7 +576,7 @@ module.exports = function(crowi, app) {
    */
   api.create = async function(req, res) {
     const body = req.body.body || null;
-    const pagePath = req.body.path || null;
+    let pagePath = req.body.path || null;
     const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
@@ -590,10 +590,10 @@ module.exports = function(crowi, app) {
     }
 
     // check whether path starts slash
-    const checkedPath = pathUtils.addHeadingSlash(pagePath);
+    pagePath = pathUtils.addHeadingSlash(pagePath);
 
     // check page existence
-    const isExist = await Page.count({ path: checkedPath }) > 0;
+    const isExist = await Page.count({ path: pagePath }) > 0;
     if (isExist) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
@@ -604,7 +604,7 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(checkedPath, body, req.user, options);
+    const createdPage = await Page.create(pagePath, body, req.user, options);
 
     let savedTags;
     if (pageTags != null) {
