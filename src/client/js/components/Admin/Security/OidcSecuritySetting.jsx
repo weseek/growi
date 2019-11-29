@@ -87,7 +87,22 @@ class OidcSecurityManagement extends React.Component {
                 <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_ISSUER_HOST' }) }} />
               </p>
             </div>
+          </div>
 
+          <div className="row mb-5">
+            <label htmlFor="oidcClientId" className="col-xs-3 text-right">{ t('security_setting.clientID') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                name="oidcClientId"
+                value={adminOidcSecurityContainer.state.oidcClientId}
+                onChange={e => adminOidcSecurityContainer.changeOidcClientId(e.target.value)}
+              />
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_ID' }) }} />
+              </p>
+            </div>
           </div>
 
         </React.Fragment>
