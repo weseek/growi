@@ -59,6 +59,7 @@ class OidcSecurityManagement extends React.Component {
         </div>
         {adminGeneralSecurityContainer.state.isOidcEnabled && (
         <React.Fragment>
+
           <div className="row mb-5">
             <label htmlFor="oidcProviderName" className="col-xs-3 text-right">{ t('security_setting.providerName') }</label>
             <div className="col-xs-6">
@@ -71,6 +72,24 @@ class OidcSecurityManagement extends React.Component {
               />
             </div>
           </div>
+
+          <div className="row mb-5">
+            <label htmlFor="oidcIssuerHost" className="col-xs-3 text-right">{ t('security_setting.issuerHost') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                name="oidcIssuerHost"
+                value={adminOidcSecurityContainer.state.oidcIssuerHost}
+                onChange={e => adminOidcSecurityContainer.changeOidcIssuerHost(e.target.value)}
+              />
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_ISSUER_HOST' }) }} />
+              </p>
+            </div>
+
+          </div>
+
         </React.Fragment>
         )}
       </React.Fragment>

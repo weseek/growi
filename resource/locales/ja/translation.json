@@ -437,7 +437,7 @@
     "Load plugins": "プラグインを読み込む",
     "Enable": "有効",
     "Disable": "無効",
-    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します"
+    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{env}}</code> の値を利用します"
    },
 
   "security_setting": {
@@ -485,7 +485,7 @@
     "Treat username matching as identical_warn": "警告: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "Treat email matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
     "Treat email matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
-    "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
+    "Use env var if empty": "空の場合、環境変数 <code>{{env}}</code> を利用します",
     "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
     "Local": {
