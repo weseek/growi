@@ -13,6 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Init Git
+      run: |
+        git config --local user.name "GitHub Action"
+        git config --local user.email "info@weseek.co.jp"
+
     - name: Bump version
       run: |
         npm version patch
@@ -25,8 +30,6 @@ jobs:
 
     - name: Commit
       run: |
-        git config --local user.name "GitHub Action"
-        git config --local user.email "info@weseek.co.jp"
         git commit -m "Release $RELEASE_VERSION"
 
     - name: Push changes
