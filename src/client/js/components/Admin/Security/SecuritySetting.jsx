@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -11,7 +12,8 @@ class SecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
-
+    const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
+    const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
     return (
       <React.Fragment>
         <fieldset>
@@ -72,7 +74,7 @@ class SecuritySetting extends React.Component {
             )}
           </div>
           <div className="row mb-5">
-            <strong className="col-xs-3 text-right">{ t('security_setting.page_listing_1') }</strong>
+            <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={helpPageListingByOwner} />
             <div className="col-xs-6 text-left">
               <div className="checkbox checkbox-success">
                 <input
@@ -82,14 +84,14 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByOwner() }}
                 />
                 <label htmlFor="isHideRestrictedByOwner">
-                  { t('security_setting.page_listing_1_desc') }
+                  <p className="help-block small">{ t('security_setting.page_listing_1_desc') }</p>
                 </label>
               </div>
             </div>
           </div>
 
           <div className="row mb-5">
-            <strong className="col-xs-3 text-right">{ t('security_setting.page_listing_2') }</strong>
+            <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={helpPageListingByGroup} />
             <div className="col-xs-6 text-left">
               <div className="checkbox checkbox-success">
                 <input
@@ -98,8 +100,8 @@ class SecuritySetting extends React.Component {
                   checked={adminGeneralSecurityContainer.state.isHideRestrictedByGroup}
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByGroup() }}
                 />
-                <label htmlFor="isHideRestrictedByOwner">
-                  { t('security_setting.page_listing_2_desc') }
+                <label htmlFor="isHideRestrictedByGroup">
+                  <p className="help-block small">{ t('security_setting.page_listing_2_desc') }</p>
                 </label>
               </div>
             </div>
