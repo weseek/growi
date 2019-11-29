@@ -91,7 +91,7 @@ class AppSetting extends React.Component {
                   name="confidentialName"
                   value={this.state.confidentialName}
                   onChange={this.inputChangeHandler}
-                  placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}"
+                  placeholder={t('app_setting.ex) internal use only')}
                 />
                 <p className="help-block">{t('app_setting.header_content')}</p>
               </div>
@@ -100,25 +100,15 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="form-group">
-          <label className="col-xs-3 control-label">{ t('app_setting.Default Language for new users') }</label>
+          <label className="col-xs-3 control-label">{t('app_setting.Default Language for new users')}</label>
           <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
-              <input
-                type="radio"
-                id="radioLangEn"
-                name="settingForm[app:globalLang]"
-                value="{{ consts.language.LANG_EN_US }}"
-              />
-              <label htmlFor="radioLangEn">{ t('English') }</label>
+              <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN_US }}" />
+              <label htmlFor="radioLangEn">{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                name="settingForm[app:globalLang]"
-                value="{{ consts.language.LANG_JA }}"
-              />
-              <label htmlFor="radioLangJa">{ t('Japanese') }</label>
+              <input type="radio" id="radioLangJa" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_JA }}" />
+              <label htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
@@ -126,9 +116,7 @@ class AppSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label className="col-xs-3 control-label">
-                {t('app_setting.File Uploading')}
-              </label>
+              <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
                   <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1" />
