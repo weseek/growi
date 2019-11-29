@@ -129,7 +129,21 @@ class OidcSecurityManagement extends React.Component {
               Attribute Mapping ({ t('security_setting.optional') })
           </h3>
 
-          {/* TODO GW-546 create mapping options */}
+          <div className="row mb-5">
+            <label htmlFor="oidcAttrMapId" className="col-xs-3 text-right">Identifier</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="text"
+                name="oidcAttrMapId"
+                value={adminOidcSecurityContainer.state.oidcAttrMapId}
+                onChange={e => adminOidcSecurityContainer.changeOidcAttrMapId(e.target.value)}
+              />
+              <p className="help-block">
+                <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.id_detail') }} />
+              </p>
+            </div>
+          </div>
 
         </React.Fragment>
         )}

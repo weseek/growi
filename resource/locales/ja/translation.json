@@ -568,6 +568,16 @@
         "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
+      "OIDC": {
+        "name": "OpenID Connect",
+        "id_detail": "OIDC claims で一意に識別可能な値を格納している属性",
+        "username_detail": "hoge",
+        "name_detail": "hoge",
+        "mapping_detail": "hoge",
+        "register_1": "hoge",
+        "register_2": "hoge",
+        "register_3": "hoge"
+      },
       "how_to": {
         "google": "Google OAuth の設定方法",
         "github": "GitHub OAuth の設定方法",
