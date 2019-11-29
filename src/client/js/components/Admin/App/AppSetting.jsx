@@ -25,6 +25,7 @@ class AppSetting extends React.Component {
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.inputChangeHandler = this.inputChangeHandler.bind(this);
   }
 
   async onClickSubmit() {
@@ -47,6 +48,10 @@ class AppSetting extends React.Component {
     }
   }
 
+  inputChangeHandler(event) {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
   render() {
     const { t } = this.props;
 
@@ -55,16 +60,15 @@ class AppSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="settingForm[app:title]" className="col-xs-3 control-label">
-                {t('app_setting.Site Name')}
-              </label>
+              <label className="col-xs-3 control-label">{t('app_setting.Site Name')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
                   id="settingForm[app:title]"
                   type="text"
-                  name="settingForm[app:title]"
-                  value="{{ getConfig('crowi', 'app:title') | default('') }}"
+                  name="siteName"
+                  value={this.state.siteName}
+                  onChange={this.inputChangeHandler}
                   placeholder="GROWI"
                 />
                 <p className="help-block">{t('app_setting.sitename_change')}</p>
@@ -76,7 +80,7 @@ class AppSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="settingForm[app:confidential]" className="col-xs-3 control-label">
+              <label className="col-xs-3 control-label">
                 {t('app_setting.Confidential name')}
               </label>
               <div className="col-xs-6">
@@ -84,8 +88,9 @@ class AppSetting extends React.Component {
                   className="form-control"
                   id="settingForm[app:confidential]"
                   type="text"
-                  name="settingForm[app:confidential]"
-                  value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
+                  name="confidentialName"
+                  value={this.state.confidentialName}
+                  onChange={this.inputChangeHandler}
                   placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}"
                 />
                 <p className="help-block">{t('app_setting.header_content')}</p>
@@ -94,14 +99,40 @@ class AppSetting extends React.Component {
           </div>
         </div>
 
+        <div className="form-group">
+          <label className="col-xs-3 control-label">{ t('app_setting.Default Language for new users') }</label>
+          <div className="col-xs-6">
+            <div className="radio radio-primary radio-inline">
+              <input
+                type="radio"
+                id="radioLangEn"
+                name="settingForm[app:globalLang]"
+                value="{{ consts.language.LANG_EN_US }}"
+              />
+              <label htmlFor="radioLangEn">{ t('English') }</label>
+            </div>
+            <div className="radio radio-primary radio-inline">
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="settingForm[app:globalLang]"
+                value="{{ consts.language.LANG_JA }}"
+              />
+              <label htmlFor="radioLangJa">{ t('Japanese') }</label>
+            </div>
+          </div>
+        </div>
+
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
+              <label className="col-xs-3 control-label">
+                {t('app_setting.File Uploading')}
+              </label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
                   <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1" />
-                  <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
+                  <label>{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
                 <p className="help-block">
