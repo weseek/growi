@@ -66,38 +66,37 @@ class SecuritySetting extends React.Component {
               </div>
             )}
           </div>
-          <div className="form-group">
-            <label htmlFor="{{configName}}" className="col-xs-3 control-label">{ t('security_setting.page_listing_1') }</label>
-            <div className="col-xs-9">
-              <div className="btn-group btn-toggle" data-toggle="buttons">
-                <label className="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
-                  <input name="{{configName}}" value="false" type="radio"></input>
-                </label>
-                <label className="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
-                  <input name="{{configName}}" value="true" type="radio"></input>
+          <div className="row mb-5">
+            <strong className="col-xs-3 text-right">{ t('security_setting.page_listing_1') }</strong>
+            <div className="col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  id="isHideRestrictedByOwner"
+                  type="checkbox"
+                  checked={adminGeneralSecurityContainer.state.isHideRestrictedByOwner}
+                  onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByOwner() }}
+                />
+                <label htmlFor="isHideRestrictedByOwner">
+                  { t('security_setting.page_listing_1_desc') }
                 </label>
               </div>
-              <p className="help-block small">
-                { t('security_setting.page_listing_1_desc') }
-              </p>
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="{{configName}}" className="col-xs-3 control-label">{ t('security_setting.page_listing_2') }</label>
-            <div className="col-xs-9">
-              <div className="btn-group btn-toggle" data-toggle="buttons">
-                <label className="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
-                  <input name="{{configName}}" value="false" type="radio" />
-                </label>
-                <label className="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
-                  <input name="{{configName}}" value="true" type="radio" />
+          <div className="row mb-5">
+            <strong className="col-xs-3 text-right">{ t('security_setting.page_listing_2') }</strong>
+            <div className="col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  id="isHideRestrictedByGroup"
+                  type="checkbox"
+                  checked={adminGeneralSecurityContainer.state.isHideRestrictedByGroup}
+                  onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByGroup() }}
+                />
+                <label htmlFor="isHideRestrictedByOwner">
+                  { t('security_setting.page_listing_2_desc') }
                 </label>
               </div>
-
-              <p className="help-block small">
-                { t('security_setting.page_listing_2_desc') }
-              </p>
             </div>
           </div>
 
@@ -115,10 +114,50 @@ class SecuritySetting extends React.Component {
               </p>
             </div>
           </div>
+          <div className="col-xs-9 text-left">
+            <div className="my-0 btn-group">
+              <div className="dropdown">
+                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
+                  <span className="bs-caret pull-right">
+                    <span className="caret" />
+                  </span>
+                </button>
+                {/* TODO adjust dropdown after BS4 */}
+                <ul className="dropdown-menu" role="menu">
+                  <li
+                    key="anyone"
+                    role="presentation"
+                    type="button"
+                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}
+                  >
+                    <a role="menuitem">{ t('security_setting.guest_mode.anyone') }</a>
+                  </li>
+                  <li
+                    key="admin_only"
+                    role="presentation"
+                    type="button"
+                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}
+                  >
+                    <a role="menuitem">{ t('security_setting.guest_mode.admin_only') }</a>
+                  </li>
+                  <li
+                    key="admin_and_author"
+                    role="presentation"
+                    type="button"
+                    onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
+                  >
+                    <a role="menuitem">{ t('security_setting.guest_mode.admin_only') }</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
           {/* TODO GW-540 */}
           <div className="form-group">
             <div className="col-xs-offset-3 col-xs-6">
               <input type="hidden" name="_csrf" value={this.props.csrf} />
+              <button type="submit" className="btn btn-primary">{ t('Update') }</button>
             </div>
           </div>
         </fieldset>

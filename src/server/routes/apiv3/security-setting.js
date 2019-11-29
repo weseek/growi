@@ -139,7 +139,7 @@ module.exports = (crowi) => {
    *                    status:
    *                      $ref: '#/components/schemas/PageDeletionParams'
    */
-  router.put('/page-deletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
+  router.put('/page-deletion', loginRequiredStrictly, adminRequired, , validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
     };
