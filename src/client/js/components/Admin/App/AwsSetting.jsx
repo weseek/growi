@@ -1,21 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
-const logger = loggerFactory('growi:importer');
 
 class AwsSetting extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const { appContainer } = this.props;
 
     this.state = {
     };
