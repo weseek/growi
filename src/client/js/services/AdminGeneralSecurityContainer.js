@@ -28,6 +28,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: true,
       isBasicEnabled: true,
       isGoogleOAuthEnabled: true,
+      isGithubOAuthEnabled: true,
     };
 
     this.init();
@@ -95,6 +96,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   switchIsGoogleOAuthEnabled() {
     this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
+  }
+
+  /**
+   * Switch GithubOAuth enabled
+   */
+  switchIsGithubOAuthEnabled() {
+    this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
   }
 
 }

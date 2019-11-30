@@ -18,11 +18,11 @@ class GithubSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.OAuth.Github.name') } { t('security_setting.configuration') }
+          { t('security_setting.OAuth.GitHub.name') } { t('security_setting.configuration') }
         </h2>
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.Github.name') }</strong>
+          <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.GitHub.name') }</strong>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -32,7 +32,7 @@ class GithubSecurityManagement extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsGithubOAuthEnabled() }}
               />
               <label htmlFor="isGithubEnabled">
-                { t('security_setting.OAuth.Github.enable_github') }
+                { t('security_setting.OAuth.GitHub.enable_github') }
               </label>
             </div>
           </div>
