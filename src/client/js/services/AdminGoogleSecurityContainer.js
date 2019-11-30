@@ -20,6 +20,7 @@ export default class AdminGoogleSecurityContainer extends Container {
       // TODO GW-583 set value
       appSiteUrl: '',
       googleClientId: '',
+      googleClientSecret: '',
     };
 
     this.init();
@@ -42,6 +43,13 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   changeGoogleClientId(value) {
     this.setState({ googleClientId: value });
+  }
+
+  /**
+   * Change googleClientSecret
+   */
+  changeGoogleClientSecret(value) {
+    this.setState({ googleClientSecret: value });
   }
 
 }

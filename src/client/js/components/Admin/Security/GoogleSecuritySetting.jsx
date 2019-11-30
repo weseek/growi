@@ -80,6 +80,22 @@ class GoogleSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row mb-5">
+              <label htmlFor="googleClientSecret" className="col-xs-3 text-right">{ t('security_setting.client_secret') }</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="googleClientSecret"
+                  value={adminGoogleSecurityContainer.state.googleClientSecret}
+                  onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
+                />
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GOOGLE_CLIENT_SECRET' }) }} />
+                </p>
+              </div>
+            </div>
+
           </React.Fragment>
         )}
 
