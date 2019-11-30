@@ -550,11 +550,12 @@
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
+        "enable_google":"enable Google OAuth",
         "name": "Google OAuth",
-        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_1": "Access {{link}}",
         "register_2": "Create Project if no projects exist",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "Facebook": {
