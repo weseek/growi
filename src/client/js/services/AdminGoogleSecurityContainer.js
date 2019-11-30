@@ -19,6 +19,7 @@ export default class AdminGoogleSecurityContainer extends Container {
     this.state = {
       // TODO GW-583 set value
       appSiteUrl: '',
+      googleClientId: '',
     };
 
     this.init();
@@ -34,6 +35,13 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminGoogleSecurityContainer';
+  }
+
+  /**
+   * Change googleClientId
+   */
+  changeGoogleClientId(value) {
+    this.setState({ googleClientId: value });
   }
 
 }

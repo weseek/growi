@@ -62,8 +62,25 @@ class GoogleSecurityManagement extends React.Component {
 
 
         {adminGeneralSecurityContainer.state.isGoogleOAuthEnabled && (
-          // TODO
-          <p>{adminGoogleSecurityContainer.state.hoge}</p>
+          <React.Fragment>
+
+            <div className="row mb-5">
+              <label htmlFor="googleClientId" className="col-xs-3 text-right">{ t('security_setting.clientID') }</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="googleClientId"
+                  value={adminGoogleSecurityContainer.state.googleClientId}
+                  onChange={e => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
+                />
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GOOGLE_CLIENT_ID' }) }} />
+                </p>
+              </div>
+            </div>
+
+          </React.Fragment>
         )}
 
         <hr />
