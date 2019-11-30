@@ -21,6 +21,7 @@ export default class AdminGoogleSecurityContainer extends Container {
       appSiteUrl: '',
       googleClientId: '',
       googleClientSecret: '',
+      isSameUsernameTreatedAsIdenticalUser: true,
     };
 
     this.init();
@@ -50,6 +51,13 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   changeGoogleClientSecret(value) {
     this.setState({ googleClientSecret: value });
+  }
+
+  /**
+   * Switch isSameUsernameTreatedAsIdenticalUser
+   */
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
   }
 
 }

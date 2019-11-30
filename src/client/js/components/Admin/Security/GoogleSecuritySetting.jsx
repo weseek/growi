@@ -96,6 +96,26 @@ class GoogleSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="bindByUserNameGoogle"
+                    type="checkbox"
+                    checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    onChange={() => { adminGoogleSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    htmlFor="bindByUserNameGoogle"
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                  />
+                </div>
+                <p className="help-block">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
+                </p>
+              </div>
+            </div>
+
           </React.Fragment>
         )}
 
