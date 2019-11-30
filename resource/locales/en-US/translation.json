@@ -570,10 +570,10 @@
         "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "GitHub": {
-        "enable_github":"enable Github OAuth",
+        "enable_github":"enable GitHub OAuth",
         "name": "GitHub OAuth",
         "register_1": "Access {{link}}",
-        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code>",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "OIDC": {

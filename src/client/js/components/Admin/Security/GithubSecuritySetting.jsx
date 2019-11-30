@@ -128,9 +128,9 @@ class GithubSecurityManagement extends React.Component {
           </h4>
           <ol id="collapseHelpForGithubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Github.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Github.register_2') }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Github.register_3') }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.GitHub.register_2', { url: adminGithubSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.GitHub.register_3') }} />
           </ol>
         </div>
 
