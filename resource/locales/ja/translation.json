@@ -557,8 +557,9 @@
         "name": "Facebook OAuth"
       },
       "Twitter": {
+        "enable_twitter": "Twitter OAuth を有効にする",
         "name": "Twitter OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_1": "{{link}} へアクセス",
         "register_2": "Twitterにサインイン",
         "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
         "register_4": "Create your Twitter Applicationで作成",

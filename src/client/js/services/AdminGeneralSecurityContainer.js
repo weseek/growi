@@ -29,6 +29,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isBasicEnabled: true,
       isGoogleOAuthEnabled: true,
       isGithubOAuthEnabled: true,
+      isTwitterOAuthEnabled: true,
     };
 
     this.init();
@@ -104,5 +105,13 @@ export default class AdminGeneralSecurityContainer extends Container {
   switchIsGithubOAuthEnabled() {
     this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
   }
+
+  /**
+   * Switch TwitterOAuth enabled
+   */
+  switchIsTwitterOAuthEnabled() {
+    this.setState({ isTwitterOAuthEnabled: !this.state.isTwitterOAuthEnabled });
+  }
+
 
 }
