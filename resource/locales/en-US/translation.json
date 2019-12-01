@@ -562,6 +562,7 @@
         "name": "Facebook OAuth"
       },
       "Twitter": {
+        "enable_twitter": "enable Twitter OAuth",
         "name": "Twitter OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Sign in Twitter",

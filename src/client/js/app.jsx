@@ -65,6 +65,7 @@ import AdminOidcSecurityContainer from './services/AdminOidcSecurityContainer';
 import AdminBasicSecurityContainer from './services/AdminBasicSecurityContainer';
 import AdminGoogleSecurityContainer from './services/AdminGoogleSecurityContainer';
 import AdminGithubSecurityContainer from './services/AdminGithubSecurityConatainer';
+import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -227,9 +228,10 @@ if (adminSecuritySettingElem != null) {
   const adminBasicSecurityContainer = new AdminBasicSecurityContainer(appContainer);
   const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer(appContainer);
   const adminGithubSecurityContainer = new AdminGithubSecurityContainer(appContainer);
+  const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer(appContainer);
   const adminSecurityContainers = [
     adminGeneralSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer, adminOidcSecurityContainer, adminBasicSecurityContainer,
-    adminGoogleSecurityContainer, adminGithubSecurityContainer,
+    adminGoogleSecurityContainer, adminGithubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
     <Provider inject={[injectableContainers, adminSecurityContainers]}>
