@@ -16,7 +16,7 @@ jobs:
 
     - name: Get SemVer
       run: |
-        SEMVER=`npm run version --silent`
+        export SEMVER=`npm run version --silent`
 
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1
