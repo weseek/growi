@@ -124,13 +124,14 @@ class TwitterSecurityManagement extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForTwitterOauth" data-toggle="collapse">{ t('security_setting.OAuth.how_to.Twitter') }</a>
+            <a href="#collapseHelpForTwitterOauth" data-toggle="collapse"> { t('security_setting.OAuth.how_to.twitter') }</a>
           </h4>
           <ol id="collapseHelpForTwitterOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_1', { link: '<a href="https://console.cloud.Twitter.com/apis/credentials" target=_blank>Twitter Cloud Platform API Manager</a>' }) }} />
+            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_1', { link: '<a href="https://apps.twitter.com/" target=_blank>Twitter Application Management</a>' }) }} />
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_2') }} />
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_3') }} />
+            {/* eslint-disable-next-line max-len */}
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_4', { url: adminTwitterSecurityContainer.state.callbackUrl }) }} />
             <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_5') }} />
           </ol>
