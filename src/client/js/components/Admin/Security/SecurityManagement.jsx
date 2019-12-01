@@ -13,6 +13,7 @@ import BasicSecuritySetting from './BasicSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
 import GithubSecuritySetting from './GithubSecuritySetting';
 import TwitterSecuritySetting from './TwitterSecuritySetting';
+import FacebookSecuritySetting from './FacebookSecuritySetting';
 
 class SecurityManagement extends React.Component {
 
@@ -171,7 +172,7 @@ class SecurityManagement extends React.Component {
                 <TwitterSecuritySetting />
               </div>
               <div id="passport-facebook" className="tab-pane" role="tabpanel">
-                {/* TODO GW-550 reactify facebook.html */}
+                <FacebookSecuritySetting />
               </div>
             </div>
           </div>
