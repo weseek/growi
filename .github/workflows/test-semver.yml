@@ -1,0 +1,26 @@
+name: Test tagging
+
+on:
+  push:
+    branches:
+      - support/github-actions
+
+jobs:
+
+  build-rc:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Get SemVer
+      run: |
+        SEMVER=`npm run version --silent`
+
+    - name: Docker Tags by SemVer
+      uses: weseek/ghaction-docker-tags-by-semver@v1
+      with:
+        source: node
+        target: weseek/growi
+        semver: $SEMVER
