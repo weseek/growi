@@ -21,14 +21,14 @@ jobs:
     - name: Build Docker Image
       run: |
         docker buildx build \
-          --tag growi \
+          --tag growi:latest \
           --platform linux/amd64 \
           --output "type=image,push=false" \
           --file ./docker/Dockerfile .
 
     - name: Login to docker.io registry
       run: |
-        docker login --username wsmoogle --password ${{ secrets. DOCKER_REGISTRY_PASSWORD }}
+        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
 
     - name: Get SemVer
       run: |
@@ -38,6 +38,6 @@ jobs:
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1
       with:
-        source: growi
+        source: growi:latest
         target: weseek/growi
         semver: ${{ env.SEMVER }}
