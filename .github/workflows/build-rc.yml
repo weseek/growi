@@ -23,10 +23,10 @@ jobs:
       id: cache
       uses: actions/cache@v1
       with:
-        path: /var/cache/growi-builder
-        key: ${{ runner.OS }}-growi-builder-${{ hashFiles('**/docker/Dockerfile') }}
+        path: var/cache/growi-builder
+        key: ${{ runner.OS }}-growi-builder-${{ hashFiles('docker/Dockerfile') }}
         restore-keys: |
-          ${{ runner.OS }}-growi-builder-${{ hashFiles('**/docker/Dockerfile') }}
+          ${{ runner.OS }}-growi-builder-${{ hashFiles('docker/Dockerfile') }}
           ${{ runner.OS }}-growi-builder-
 
     - name: Build Docker Image
@@ -35,8 +35,8 @@ jobs:
           --tag growi \
           --platform linux/amd64 \
           --load \
-          --cache-from=type=local,src=/var/cache/growi-builder \
-          --cache-to=type=local,dest=/var/cache/growi-builder \
+          --cache-from=type=local,src=var/cache/growi-builder \
+          --cache-to=type=local,dest=var/cache/growi-builder \
           --file ./docker/Dockerfile .
 
     - name: Login to docker.io registry
