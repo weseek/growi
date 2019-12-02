@@ -19,7 +19,6 @@ class UserGroupUserFormByInput extends React.Component {
       applicableUsers: ['hoge', 'huga'],
       isLoading: false,
       searchError: null,
-      defaultSelected: [],
     };
 
     this.xss = window.xss;
@@ -85,8 +84,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   getEmptyLabel() {
-    return (this.state.searchError !== null) ? 'Error on searching.'
-      : this.props.t('search.search page bodies');
+    return (this.state.searchError !== null) && 'Error on searching.';
   }
 
   renderMenuItemChildren(option, props, index) {
@@ -124,7 +122,6 @@ class UserGroupUserFormByInput extends React.Component {
             onKeyDown={this.onKeyDown}
             renderMenuItemChildren={this.renderMenuItemChildren}
             caseSensitive={false}
-            defaultSelected={this.state.defaultSelected}
           />
         </div>
         <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('add') }</button>
