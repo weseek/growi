@@ -24,7 +24,7 @@ jobs:
         docker buildx build \
           --tag growi \
           --platform linux/amd64 \
-          --output "type=image,push=false" \
+          --load \
           --file ./docker/Dockerfile.dummy .
         sh ./bin/github-actions/docker-images.sh
 
