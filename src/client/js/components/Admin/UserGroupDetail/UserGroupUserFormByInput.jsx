@@ -16,7 +16,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.state = {
       input: '',
       // TDOO GW-665 fetch users
-      applicableUsers: [{ name: 'hoge' }, { name: 'huga' }],
+      applicableUsers: ['hoge', 'huga'],
       isLoading: false,
       searchError: null,
       defaultSelected: [],
@@ -27,6 +27,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.search = this.search.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
@@ -59,6 +60,11 @@ class UserGroupUserFormByInput extends React.Component {
     return this.state.username !== '';
   }
 
+  handleChange(input) {
+    // send tags to TagLabel Component when user add tag to form everytime
+    this.setState({ input });
+  }
+
   search(keyword) {
 
     if (keyword === '') {
@@ -87,7 +93,7 @@ class UserGroupUserFormByInput extends React.Component {
     const user = option;
     return (
       <span>
-        {user.name}
+        {user}
       </span>
     );
   }
@@ -112,6 +118,7 @@ class UserGroupUserFormByInput extends React.Component {
             emptyLabel={this.getEmptyLabel()}
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
             align="left"
+            onChange={this.handleChange}
             onSearch={this.search}
             onInputChange={this.onInputChange}
             onKeyDown={this.onKeyDown}
