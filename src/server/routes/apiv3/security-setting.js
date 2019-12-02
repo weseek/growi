@@ -262,7 +262,29 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /security-setting/twitter-oauth:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update twitter OAuth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update function
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    SecurityParams:
+   *                      $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
