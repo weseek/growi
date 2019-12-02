@@ -28,7 +28,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.search = this.search.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
   }
@@ -65,7 +65,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.setState({ input });
   }
 
-  search(keyword) {
+  handleSearch(keyword) {
 
     if (keyword === '') {
       return;
@@ -119,7 +119,7 @@ class UserGroupUserFormByInput extends React.Component {
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
             align="left"
             onChange={this.handleChange}
-            onSearch={this.search}
+            onSearch={this.handleSearch}
             onInputChange={this.onInputChange}
             onKeyDown={this.onKeyDown}
             renderMenuItemChildren={this.renderMenuItemChildren}
