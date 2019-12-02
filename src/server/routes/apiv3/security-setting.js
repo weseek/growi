@@ -23,6 +23,9 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  twitterOAuth: [
+
+  ],
 };
 
 /**
@@ -91,9 +94,9 @@ module.exports = (crowi) => {
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       twitterOAuth: {
-        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'settingForm[security:passport-twitter:consumerKey') || '',
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'settingForm[security:passport-twitter:consumerSecret') || '',
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser') || false,
+        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey') || '',
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret') || '',
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser') || false,
       },
     };
 
@@ -240,6 +243,30 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+    }
+  });
+
+  // TODO swagger
+  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-twitter:consumerKey': req.body.twitterConsumerId,
+      'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
+      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating twitterOAuth';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));
     }
   });
 

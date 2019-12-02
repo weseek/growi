@@ -95,7 +95,7 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerId"
-                  value={adminTwitterSecurityContainer.state.TwitterConsumerId}
+                  value={adminTwitterSecurityContainer.state.twitterConsumerId}
                   onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerId(e.target.value)}
                 />
                 <p className="help-block">
@@ -111,7 +111,7 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerSecret"
-                  value={adminTwitterSecurityContainer.state.TwitterConsumerSecret}
+                  value={adminTwitterSecurityContainer.state.twitterConsumerSecret}
                   onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerSecret(e.target.value)}
                 />
                 <p className="help-block">

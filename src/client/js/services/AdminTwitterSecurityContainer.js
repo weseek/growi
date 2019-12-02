@@ -74,20 +74,18 @@ export default class AdminTwitterSecurityContainer extends Container {
    */
   async updateTwitterSetting() {
 
-    console.log('ここはコンテナー');
+    const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', {
+      twitterConsumerId: this.state.twitterConsumerId,
+      twitterConsumerSecret: this.state.twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
 
-    // const response = await this.appContainer.apiv3.put('/security-setting/twitterOAuth', {
-    //   twitterConsumerId: this.state.twitterConsumerId,
-    //   twitterConsumerSecret: this.state.twitterConsumerSecret,
-    //   isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-    // });
-
-    // this.setState({
-    //   twitterConsumerId: this.state.twitterConsumerId,
-    //   twitterConsumerSecret: this.state.twitterConsumerSecret,
-    //   isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-    // });
-    // return response;
+    this.setState({
+      twitterConsumerId: this.state.twitterConsumerId,
+      twitterConsumerSecret: this.state.twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+    return response;
   }
 
 }
