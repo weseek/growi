@@ -57,7 +57,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   validateForm() {
-    return this.state.username !== '';
+    return this.state.input !== '';
   }
 
   handleChange(input) {
