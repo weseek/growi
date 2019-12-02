@@ -19,7 +19,7 @@ export default class AdminTwitterSecurityContainer extends Container {
 
     this.state = {
       callbackUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/twitter/callback`,
-      twitterConsumerId: '',
+      twitterConsumerKey: '',
       twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
     };
@@ -35,7 +35,7 @@ export default class AdminTwitterSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { twitterOAuth } = response.data.securityParams;
     this.setState({
-      twitterConsumerId: twitterOAuth.twitterConsumerId,
+      twitterConsumerKey: twitterOAuth.twitterConsumerKey,
       twitterConsumerSecret: twitterOAuth.twitterConsumerSecret,
       isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser,
     });
@@ -49,10 +49,10 @@ export default class AdminTwitterSecurityContainer extends Container {
   }
 
   /**
-   * Change twitterConsumerId
+   * Change twitterConsumerKey
    */
-  changeTwitterConsumerId(value) {
-    this.setState({ twitterConsumerId: value });
+  changeTwitterConsumerKey(value) {
+    this.setState({ twitterConsumerKey: value });
   }
 
   /**
@@ -75,13 +75,13 @@ export default class AdminTwitterSecurityContainer extends Container {
   async updateTwitterSetting() {
 
     const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', {
-      twitterConsumerId: this.state.twitterConsumerId,
+      twitterConsumerKey: this.state.twitterConsumerKey,
       twitterConsumerSecret: this.state.twitterConsumerSecret,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
     });
 
     this.setState({
-      twitterConsumerId: this.state.twitterConsumerId,
+      twitterConsumerKey: this.state.twitterConsumerKey,
       twitterConsumerSecret: this.state.twitterConsumerSecret,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
     });

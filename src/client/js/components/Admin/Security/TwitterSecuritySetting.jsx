@@ -95,8 +95,8 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerId"
-                  value={adminTwitterSecurityContainer.state.twitterConsumerId}
-                  onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerId(e.target.value)}
+                  value={adminTwitterSecurityContainer.state.twitterConsumerKey}
+                  onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerKey(e.target.value)}
                 />
                 <p className="help-block">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_TWITTER_CONSUMER_KEY' }) }} />

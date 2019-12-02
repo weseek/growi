@@ -24,7 +24,7 @@ const validator = {
     body('hideRestrictedByGroup').isBoolean(),
   ],
   twitterOAuth: [
-    body('twitterConsumerId').isString(),
+    body('twitterConsumerKey').isString(),
     body('twitterConsumerSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
@@ -42,27 +42,42 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      GuestModeParams:
+ *      SecurityParams:
  *        type: object
- *        properties:
- *          restrictGuestMode:
- *            type: string
- *            description: type of restrictGuestMode
- *      PageDeletionParams:
- *        type: object
- *        properties:
- *          pageCompleteDeletionAuthority:
- *            type: string
- *            description: type of pageDeletionAuthority
- *      HideParams:
- *        type: object
- *        properties:
- *          hideRestrictedByOwner:
- *            type: boolean
- *            description: enable hide by owner
- *          hideRestrictedByGroup:
- *            type: boolean
- *            description: enable hide by group
+ *          GeneralSetting:
+ *            type:object
+ *              GuestModeParams:
+ *                type: object
+ *                properties:
+ *                  restrictGuestMode:
+ *                    type: string
+ *                    description: type of restrictGuestMode
+ *              PageDeletionParams:
+ *                type: object
+ *                properties:
+ *                  pageCompleteDeletionAuthority:
+ *                    type: string
+ *                    description: type of pageDeletionAuthority
+ *              Function:
+ *                type: object
+ *                properties:
+ *                  hideRestrictedByOwner:
+ *                    type: boolean
+ *                    description: enable hide by owner
+ *                  hideRestrictedByGroup:
+ *                    type: boolean
+ *                    description: enable hide by group
+ *          TwitterOAuthSetting:
+ *            type:object
+ *              consumerKey:
+ *                type: string
+ *                description: key of comsumer
+ *              consumerSecret:
+ *                type: string
+ *                description: password of comsumer
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -91,11 +106,11 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const securityParams = {
-      general: {
+      generalAuth: {
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       twitterOAuth: {
-        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey') || '',
+        twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey') || '',
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret') || '',
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser') || false,
       },
@@ -224,7 +239,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/HideParams'
+   *                      $ref: '#/components/schemas/Function'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -250,7 +265,7 @@ module.exports = (crowi) => {
   // TODO swagger
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-twitter:consumerKey': req.body.twitterConsumerId,
+      'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
       'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
       'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
     };
@@ -259,7 +274,7 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
       return res.apiv3({ securitySettingParams });
