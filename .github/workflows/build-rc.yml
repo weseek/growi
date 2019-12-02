@@ -22,10 +22,14 @@ jobs:
     - name: Build Docker Image
       run: |
         docker buildx build \
-          --tag growi
+          --tag growi \
           --platform linux/amd64 \
           --output "type=image,push=false" \
           --file ./docker/Dockerfile.dummy .
+        sh /bin/github-actions/docker-images.sh
+
+    - name: List docker images
+      run: |
         sh /bin/github-actions/docker-images.sh
 
     - name: Login to docker.io registry
