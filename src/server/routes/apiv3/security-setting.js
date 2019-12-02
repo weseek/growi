@@ -24,7 +24,9 @@ const validator = {
     body('hideRestrictedByGroup').isBoolean(),
   ],
   twitterOAuth: [
-
+    body('twitterConsumerId').isString(),
+    body('twitterConsumerSecret').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
 };
 
@@ -62,7 +64,6 @@ const validator = {
  *            type: boolean
  *            description: enable hide by group
  */
-
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
