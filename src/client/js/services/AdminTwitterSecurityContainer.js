@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
-// import { pathUtils } from 'growi-commons';
+import { pathUtils } from 'growi-commons';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
@@ -18,7 +18,7 @@ export default class AdminTwitterSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // callbackUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/twitter/callback`,
+      callbackUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/twitter/callback`,
       twitterConsumerId: '',
       twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
