@@ -3,6 +3,7 @@ name: Release Docker Images for RC
 on:
   push:
     branches:
+      # FIXME: debug code
       # - rc/*
       - support/github-actions
 
@@ -22,8 +23,12 @@ jobs:
       run: |
         docker buildx build \
           --platform linux/amd64 \
-          --output "type=image,name=growi,push=false" \
-          --file ./docker/Dockerfile .
+          --output "type=image,push=false" \
+          # FIXME: debug code
+          # --file ./docker/Dockerfile .
+          --file ./docker/Dockerfile.dummy .
+        # FIXME: debug code
+        sh /bin/github-actions/docker-images.sh
 
     - name: Login to docker.io registry
       run: |
@@ -33,6 +38,9 @@ jobs:
       run: |
         semver=`npm run version --silent`
         echo ::set-env name=SEMVER::$(echo $semver)
+
+        # FIXME: debug code
+        sh /bin/github-actions/docker-images.sh
 
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1
