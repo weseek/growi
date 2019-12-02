@@ -281,9 +281,7 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    SecurityParams:
-   *                      $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *                  $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
    */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {

@@ -13,7 +13,6 @@ import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurit
 
 const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
-
 class TwitterSecurityManagement extends React.Component {
 
   constructor(props) {
