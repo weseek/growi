@@ -23,7 +23,7 @@ jobs:
         docker buildx build \
           --tag growi:latest \
           --platform linux/amd64 \
-          --output "type=image,push=false" \
+          --output "type=image,push=true" \
           --file ./docker/Dockerfile .
 
     - name: Login to docker.io registry
