@@ -25,12 +25,7 @@ jobs:
           --tag growi \
           --platform linux/amd64 \
           --load \
-          --file ./docker/Dockerfile.dummy .
-        sh ./bin/github-actions/docker-images.sh
-
-    - name: List docker images
-      run: |
-        sh ./bin/github-actions/docker-images.sh
+          --file ./docker/Dockerfile .
 
     - name: Login to docker.io registry
       run: |
@@ -40,7 +35,6 @@ jobs:
       run: |
         semver=`npm run version --silent`
         echo ::set-env name=SEMVER::$(echo $semver)
-        sh ./bin/github-actions/docker-images.sh
 
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1

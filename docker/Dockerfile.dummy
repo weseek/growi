@@ -1,2 +1,0 @@
-FROM node:12-slim
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
