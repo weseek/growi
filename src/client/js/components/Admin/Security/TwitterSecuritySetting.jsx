@@ -2,14 +2,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurityContainer';
 
+const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
+
+
 class TwitterSecurityManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t } = this.props;
+
+    try {
+      await this.props.adminTwitterSecurityContainer.updateTwitterSetting();
+      toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
@@ -118,6 +142,12 @@ class TwitterSecurityManagement extends React.Component {
 
           </React.Fragment>
         )}
+
+        <div className="form-group my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+          </div>
+        </div>
 
         <hr />
 
