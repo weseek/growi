@@ -21,9 +21,8 @@ jobs:
     - name: Build Docker Image
       run: |
         docker buildx build \
-          --tag growi:latest \
           --platform linux/amd64 \
-          --output "type=image,push=true" \
+          --output "type=image,name=growi,push=false" \
           --file ./docker/Dockerfile .
 
     - name: Login to docker.io registry
@@ -38,6 +37,6 @@ jobs:
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1
       with:
-        source: growi:latest
+        source: growi
         target: weseek/growi
         semver: ${{ env.SEMVER }}
