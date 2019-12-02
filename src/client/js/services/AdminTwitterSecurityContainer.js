@@ -1,6 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+// import { pathUtils } from 'growi-commons';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
@@ -17,10 +18,9 @@ export default class AdminTwitterSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      appSiteUrl: '',
-      TwitterConsumerId: '',
-      TwitterConsumerSecret: '',
+      // callbackUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/twitter/callback`,
+      twitterConsumerId: '',
+      twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
     };
 
@@ -28,8 +28,17 @@ export default class AdminTwitterSecurityContainer extends Container {
 
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async init() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { twitterOAuth } = response.data.securityParams;
+    this.setState({
+      twitterConsumerId: twitterOAuth.twitterConsumerId,
+      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser,
+    });
   }
 
   /**
@@ -40,17 +49,17 @@ export default class AdminTwitterSecurityContainer extends Container {
   }
 
   /**
-   * Change TwitterConsumerId
+   * Change twitterConsumerId
    */
   changeTwitterConsumerId(value) {
-    this.setState({ TwitterConsumerId: value });
+    this.setState({ twitterConsumerId: value });
   }
 
   /**
-   * Change TwitterConsumerSecret
+   * Change twitterConsumerSecret
    */
   changeTwitterConsumerSecret(value) {
-    this.setState({ TwitterConsumerSecret: value });
+    this.setState({ twitterConsumerSecret: value });
   }
 
   /**

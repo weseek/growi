@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
@@ -65,6 +66,39 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/:
+   *      get:
+   *        tags: [SecuritySetting]
+   *        description: Get security paramators
+   *        responses:
+   *          200:
+   *            description: params of security
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    securityParams:
+   *                      $ref: '#/components/schemas/SecurityParams'
+   */
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    const securityParams = {
+      general: {
+        isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      twitterOAuth: {
+        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'settingForm[security:passport-twitter:consumerKey') || '',
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'settingForm[security:passport-twitter:consumerSecret') || '',
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser') || false,
+      },
+    };
+
+    return res.apiv3({ securityParams });
+  });
 
   /**
    * @swagger
