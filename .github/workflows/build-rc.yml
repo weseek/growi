@@ -21,7 +21,7 @@ jobs:
     - name: Build Docker Image
       run: |
         docker buildx build \
-          --tag growi
+          --tag growi \
           --platform linux/amd64 \
           --output "type=image,push=false" \
           --file ./docker/Dockerfile .
