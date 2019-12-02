@@ -22,12 +22,10 @@ jobs:
     - name: Build Docker Image
       run: |
         docker buildx build \
+          --tag growi
           --platform linux/amd64 \
           --output "type=image,push=false" \
-          # FIXME: debug code
-          # --file ./docker/Dockerfile .
           --file ./docker/Dockerfile.dummy .
-        # FIXME: debug code
         sh /bin/github-actions/docker-images.sh
 
     - name: Login to docker.io registry
