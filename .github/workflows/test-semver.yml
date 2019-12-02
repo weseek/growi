@@ -16,11 +16,12 @@ jobs:
 
     - name: Get SemVer
       run: |
-        export SEMVER=`npm run version --silent`
+        semver=`npm run version --silent`
+        echo ::set-env name=SEMVER::$(echo $semver)
 
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1
       with:
         source: node
         target: weseek/growi
-        semver: $SEMVER
+        semver: ${{ env.SEMVER }}
