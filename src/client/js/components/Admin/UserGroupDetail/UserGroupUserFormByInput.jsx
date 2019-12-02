@@ -19,6 +19,7 @@ class UserGroupUserFormByInput extends React.Component {
       applicableUsers: [{ name: 'hoge' }, { name: 'huga' }],
       isLoading: false,
       searchError: null,
+      defaultSelected: [],
     };
 
     this.xss = window.xss;
@@ -27,6 +28,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.search = this.search.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
   }
 
@@ -94,9 +96,6 @@ class UserGroupUserFormByInput extends React.Component {
     const { t } = this.props;
 
     const inputProps = { autoComplete: 'off' };
-    const defaultSelected = (this.state.input !== '')
-      ? [{ path: this.state.username }]
-      : [];
 
     return (
       <form className="form-inline" onSubmit={this.addUserBySubmit}>
@@ -118,7 +117,7 @@ class UserGroupUserFormByInput extends React.Component {
             onKeyDown={this.onKeyDown}
             renderMenuItemChildren={this.renderMenuItemChildren}
             caseSensitive={false}
-            defaultSelected={defaultSelected}
+            defaultSelected={this.state.defaultSelected}
           />
         </div>
         <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('add') }</button>
