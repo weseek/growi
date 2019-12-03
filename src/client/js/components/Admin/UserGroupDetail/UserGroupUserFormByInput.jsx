@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { debounce } from 'throttle-debounce';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
@@ -30,6 +31,8 @@ class UserGroupUserFormByInput extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
+
+    this.searchUserDebounce = debounce(1000, this.searchUser);
   }
 
   onInputChange(text) {
@@ -59,8 +62,16 @@ class UserGroupUserFormByInput extends React.Component {
     return this.state.input !== '';
   }
 
+  searchUser() {
+    // TODO GW-665 fetch users
+    this.setState({ isLoading: false });
+  }
+
+  /**
+   * input user name to add to the group
+   * @param {string} input
+   */
   handleChange(input) {
-    // send tags to TagLabel Component when user add tag to form everytime
     this.setState({ input });
   }
 
@@ -71,13 +82,11 @@ class UserGroupUserFormByInput extends React.Component {
     }
 
     this.setState({ isLoading: true });
-
-    // TODO GW-665 fetch users
-
-    this.setState({ isLoading: false });
+    this.searchUserDebounce();
   }
 
   onKeyDown(event) {
+    // 13 is Enter key
     if (event.keyCode === 13) {
       this.addUserBySubmit();
     }
