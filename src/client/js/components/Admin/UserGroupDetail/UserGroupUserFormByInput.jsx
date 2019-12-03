@@ -31,7 +31,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
-    this.searchUserDebounce = debounce(1000, this.searchUser);
+    this.filterApplicableUsersDebounce = debounce(1000, this.filterApplicableUsers);
   }
 
   onInputChange(text) {
@@ -61,7 +61,7 @@ class UserGroupUserFormByInput extends React.Component {
     return this.state.input !== '';
   }
 
-  searchUser() {
+  filterApplicableUsers() {
     const applicableUsers = this.props.userGroupDetailContainer.state.unrelatedNames.filter((name) => {
       return name.indexOf(this.state.input !== -1);
     });
@@ -87,7 +87,7 @@ class UserGroupUserFormByInput extends React.Component {
     }
 
     this.setState({ isLoading: true });
-    this.searchUserDebounce();
+    this.filterApplicableUsersDebounce();
   }
 
   onKeyDown(event) {
