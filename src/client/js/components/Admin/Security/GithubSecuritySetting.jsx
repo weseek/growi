@@ -142,7 +142,7 @@ class GithubSecurityManagement extends React.Component {
           </React.Fragment>
         )}
 
-        <div className="form-group my-3">
+        <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
