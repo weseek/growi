@@ -475,6 +475,7 @@
     "desc_of_callback_URL": "Use it in the setting of the {{AuthName}} Identity provider",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
+    "updated_general_security_setting": "Succeeded to update security setting",
     "guest_mode": {
       "deny": "Deny (Registered Users Only)",
       "readonly": "Accept (Guests can read only)"
