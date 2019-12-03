@@ -32,6 +32,10 @@ export default class AdminGeneralSecurityContainer extends Container {
       isLdapEnabled: true,
       isSamlEnabled: true,
       isOidcEnabled: true,
+      isBasicEnabled: true,
+      isGoogleOAuthEnabled: true,
+      isGithubOAuthEnabled: true,
+      isTwitterOAuthEnabled: true,
     };
 
     this.init();
@@ -158,5 +162,34 @@ export default class AdminGeneralSecurityContainer extends Container {
   switchIsOidcEnabled() {
     this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
   }
+
+  /**
+   * Switch Basic enabled
+   */
+  switchIsBasicEnabled() {
+    this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
+  }
+
+  /**
+   * Switch GoogleOAuth enabled
+   */
+  switchIsGoogleOAuthEnabled() {
+    this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
+  }
+
+  /**
+   * Switch GithubOAuth enabled
+   */
+  switchIsGithubOAuthEnabled() {
+    this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
+  }
+
+  /**
+   * Switch TwitterOAuth enabled
+   */
+  switchIsTwitterOAuthEnabled() {
+    this.setState({ isTwitterOAuthEnabled: !this.state.isTwitterOAuthEnabled });
+  }
+
 
 }

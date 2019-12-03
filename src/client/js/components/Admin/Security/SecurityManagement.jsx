@@ -10,6 +10,11 @@ import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
 import OidcSecuritySetting from './OidcSecuritySetting';
 import SecuritySetting from './SecuritySetting';
+import BasicSecuritySetting from './BasicSecuritySetting';
+import GoogleSecuritySetting from './GoogleSecuritySetting';
+import GithubSecuritySetting from './GithubSecuritySetting';
+import TwitterSecuritySetting from './TwitterSecuritySetting';
+import FacebookSecuritySetting from './FacebookSecuritySetting';
 
 class SecurityManagement extends React.Component {
 
@@ -81,19 +86,19 @@ class SecurityManagement extends React.Component {
                 <OidcSecuritySetting />
               </div>
               <div id="passport-basic" className="tab-pane" role="tabpanel">
-                {/* TODO GW-546 reactify basic.html */}
+                <BasicSecuritySetting />
               </div>
               <div id="passport-google-oauth" className="tab-pane" role="tabpanel">
-                {/* TODO GW-547 reactify google-oauth.html */}
+                <GoogleSecuritySetting />
               </div>
               <div id="passport-github" className="tab-pane" role="tabpanel">
-                {/* TODO GW-548 reactify github.html */}
+                <GithubSecuritySetting />
               </div>
               <div id="passport-twitter" className="tab-pane" role="tabpanel">
-                {/* TODO GW-549 reactify twitter.html */}
+                <TwitterSecuritySetting />
               </div>
               <div id="passport-facebook" className="tab-pane" role="tabpanel">
-                {/* TODO GW-550 reactify facebook.html */}
+                <FacebookSecuritySetting />
               </div>
             </div>
           </div>

@@ -535,6 +535,7 @@
       "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
     },
     "Basic": {
+      "enable_basic":"Basic を有効にする",
       "name": "Basic 認証",
       "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
       "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
@@ -544,28 +545,31 @@
       "register": "%sに登録",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
       "Google": {
+        "enable_google":"Google OAuth を有効にする",
         "name": "Google OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_1": "{{link}}へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
-        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録",
+        "register_4": "承認済みのリダイレクトURIを<code>{{url}}</code>としてGrowiを登録",
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "Facebook": {
         "name": "Facebook OAuth"
       },
       "Twitter": {
+        "enable_twitter": "Twitter OAuth を有効にする",
         "name": "Twitter OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_1": "{{link}} へアクセス",
         "register_2": "Twitterにサインイン",
         "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
         "register_4": "Create your Twitter Applicationで作成",
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "GitHub": {
+        "enable_github":"GitHub OAuth を有効にする",
         "name": "GitHub OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
-        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録",
+        "register_1": "{{link}} へアクセス",
+        "register_2": "\"Authorization callback URL\"を<code>{{url}}</code>としてGrowiを登録",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "OIDC": {
