@@ -20,7 +20,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       // TODO GW-583 set value
       isWikiModeForced: false,
       currentRestrictGuestMode: 'deny',
-      currentpageCompleteDeletionAuthority: 'anyone',
+      currentPageCompleteDeletionAuthority: 'anyone',
       isHideRestrictedByOwner: true,
       isHideRestrictedByGroup: true,
       useOnlyEnvVarsForSomeOptions: true,
@@ -42,6 +42,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
     this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
+    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
     this.switchIsHideRestrictedByGroup = this.switchIsHideRestrictedByGroup.bind(this);
     this.switchIsHideRestrictedByOwner = this.switchIsHideRestrictedByOwner.bind(this);
     this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
@@ -70,7 +71,7 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Change pageCompleteDeletionAuthority
    */
   changePageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
-    this.setState({ currentpageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
+    this.setState({ currentPageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
   }
 
   /**
@@ -97,8 +98,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.put('/security-setting/general-setting', {
       restrictGuestMode: this.state.currentRestrictGuestMode,
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
-      hideRestrictedByGroup: this.state.hideRestrictedByGroup,
-      hideRestrictedByOwner: this.state.hideRestrictedByOwner,
+      hideRestrictedByGroup: this.state.isHideRestrictedByGroup,
+      hideRestrictedByOwner: this.state.isHideRestrictedByOwner,
     });
     const { securitySettingParams } = response.data;
     return securitySettingParams;
