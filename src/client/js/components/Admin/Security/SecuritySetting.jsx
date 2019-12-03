@@ -129,7 +129,7 @@ class SecuritySetting extends React.Component {
               <div className="my-0 btn-group">
                 <div className="dropdown">
                   <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span className="pull-left">{t(`security_setting.${adminGeneralSecurityContainer.state.currentpageCompleteDeletionAuthority}`)}</span>
+                    <span className="pull-left">{t(`security_setting.${adminGeneralSecurityContainer.state.currentPageCompleteDeletionAuthority}`)}</span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>
