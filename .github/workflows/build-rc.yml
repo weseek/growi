@@ -19,35 +19,12 @@ jobs:
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v1.0.4
 
-    - name: Cache/Restore node_modules
-      id: cache
-      uses: actions/cache@v1
-      with:
-        path: var/cache/growi-builder
-        key: ${{ runner.OS }}-growi-builder-${{ hashFiles('docker/Dockerfile') }}
-        restore-keys: |
-          ${{ runner.OS }}-growi-builder-${{ hashFiles('docker/Dockerfile') }}
-          ${{ runner.OS }}-growi-builder-
-
-    - name: install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        yarn
-
-    - name: install plugins
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
-        yarn add -D react-images react-motion
-
     - name: Build Docker Image
       run: |
         docker buildx build \
           --tag growi \
           --platform linux/amd64 \
           --load \
-          --cache-from=type=local,src=var/cache/growi-builder \
-          --cache-to=type=local,dest=var/cache/growi-builder \
           --file ./docker/Dockerfile .
 
     - name: Login to docker.io registry
