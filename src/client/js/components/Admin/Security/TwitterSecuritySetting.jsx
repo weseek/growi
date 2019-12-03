@@ -63,7 +63,7 @@ class TwitterSecurityManagement extends React.Component {
 
         {this.state.retrieveError != null && (
         <div className="alert alert-danger">
-          <p>{t('Error occurred')}</p>
+          <p>{t('Error occurred')} : {this.state.err}</p>
         </div>
         )}
 
