@@ -23,16 +23,16 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: install dependencies
+    - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         yarn
-    - name: install plugins
+    - name: Install plugins
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
         yarn add -D react-images react-motion
-    - name: print dependencies
+    - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
@@ -70,7 +70,16 @@ jobs:
         yarn test
       env:
         MONGO_URI: mongodb://localhost:27017/growi_test
-
+    - name: Slack Notification
+      uses: 8398a7/action-slack@v2
+      if: always()
+      with:
+        status: ${{ job.status }}
+        author_name: 'test' Job
+        channel: ci
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build-dev:
     runs-on: ubuntu-latest
@@ -94,6 +103,16 @@ jobs:
     - name: yarn build:dev
       run: |
         yarn build:dev
+    - name: Slack Notification
+      uses: 8398a7/action-slack@v2
+      if: always()
+      with:
+        status: ${{ job.status }}
+        author_name: 'build-dev' Job
+        channel: ci
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
   build-prod:
@@ -132,3 +151,13 @@ jobs:
         yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
+    - name: Slack Notification
+      uses: 8398a7/action-slack@v2
+      if: always()
+      with:
+        status: ${{ job.status }}
+        author_name: 'build-prod' Job
+        channel: ci
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
