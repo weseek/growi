@@ -6,7 +6,6 @@ import loggerFactory from '@alias/logger';
 const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
 
 /**
- * Service container for admin security page (SecurityManagement.jsx)
  * Service container for admin security page (SecuritySetting.jsx)
  * @extends {Container} unstated Container
  */
