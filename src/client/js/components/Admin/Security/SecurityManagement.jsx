@@ -22,7 +22,7 @@ class SecurityManagement extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
-        <SecuritySetting />
+        <div><SecuritySetting /></div>
 
         {/* XSS configuration link */}
         <div className="mb-5">

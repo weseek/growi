@@ -36,27 +36,31 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      GuestModeParams:
+ *      SecurityParams:
  *        type: object
- *        properties:
- *          restrictGuestMode:
- *            type: string
- *            description: type of restrictGuestMode
- *      PageDeletionParams:
- *        type: object
- *        properties:
- *          pageCompleteDeletionAuthority:
- *            type: string
- *            description: type of pageDeletionAuthority
- *      HideParams:
- *        type: object
- *        properties:
- *          hideRestrictedByOwner:
- *            type: boolean
- *            description: enable hide by owner
- *          hideRestrictedByGroup:
- *            type: boolean
- *            description: enable hide by group
+ *          GeneralSetting:
+ *            type:object
+ *              GuestModeParams:
+ *                type: object
+ *                properties:
+ *                  restrictGuestMode:
+ *                    type: string
+ *                    description: type of restrictGuestMode
+ *              PageDeletionParams:
+ *                type: object
+ *                properties:
+ *                  pageCompleteDeletionAuthority:
+ *                    type: string
+ *                    description: type of pageDeletionAuthority
+ *              Function:
+ *                type: object
+ *                properties:
+ *                  hideRestrictedByOwner:
+ *                    type: boolean
+ *                    description: enable hide by owner
+ *                  hideRestrictedByGroup:
+ *                    type: boolean
+ *                    description: enable hide by group
  */
 
 module.exports = (crowi) => {
@@ -69,7 +73,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/guest-mode:
+   *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update restrictGuestMode
@@ -91,9 +95,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/GuestModeParams'
+   *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting/GuestModeParams'
    */
-  router.put('/guest-mode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
     };
@@ -115,7 +119,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/page-deletion:
+   *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update pageDeletion Setting
@@ -137,9 +141,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/PageDeletionParams'
+   *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting/PageDeletionParams'
    */
-  router.put('/page-deletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
     };
@@ -161,7 +165,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/function:
+   *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update function
@@ -186,9 +190,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/HideParams'
+   *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting/Function'
    */
-  router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
