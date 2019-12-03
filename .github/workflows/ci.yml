@@ -71,15 +71,13 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:27017/growi_test
     - name: Slack Notification
-      uses: 8398a7/action-slack@v2
+      uses: homoluctus/slatify@master
       if: always()
       with:
-        status: ${{ job.status }}
-        author_name: 'test' Job
-        channel: ci
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        type: ${{ job.status }}
+        job_name: '*build-dev*'
+        channel: '#ci'
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build-dev:
     runs-on: ubuntu-latest
@@ -104,15 +102,13 @@ jobs:
       run: |
         yarn build:dev
     - name: Slack Notification
-      uses: 8398a7/action-slack@v2
+      uses: homoluctus/slatify@master
       if: always()
       with:
-        status: ${{ job.status }}
-        author_name: 'build-dev' Job
-        channel: ci
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        type: ${{ job.status }}
+        job_name: '*build-dev*'
+        channel: '#ci'
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
   build-prod:
@@ -152,12 +148,10 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:27017/growi
     - name: Slack Notification
-      uses: 8398a7/action-slack@v2
+      uses: homoluctus/slatify@master
       if: always()
       with:
-        status: ${{ job.status }}
-        author_name: 'build-prod' Job
-        channel: ci
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        type: ${{ job.status }}
+        job_name: '*build-dev*'
+        channel: '#ci'
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
