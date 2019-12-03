@@ -234,7 +234,7 @@ if (adminSecuritySettingElem != null) {
     adminGoogleSecurityContainer, adminGithubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
-    <Provider inject={[injectableContainers, adminSecurityContainers]}>
+    <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
       <I18nextProvider i18n={i18n}>
         <SecurityManagement />
       </I18nextProvider>

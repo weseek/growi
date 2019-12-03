@@ -6,7 +6,7 @@ import loggerFactory from '@alias/logger';
 const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
 
 /**
- * Service container for admin security page (SecurityManagement.jsx)
+ * Service container for admin security page (SecuritySetting.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminGeneralSecurityContainer extends Container {
@@ -18,6 +18,11 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
+      isWikiModeForced: false,
+      currentRestrictGuestMode: 'deny',
+      currentPageCompleteDeletionAuthority: 'anyone',
+      isHideRestrictedByOwner: true,
+      isHideRestrictedByGroup: true,
       useOnlyEnvVarsForSomeOptions: true,
       appSiteUrl: '',
       isLocalEnabled: true,
@@ -36,6 +41,11 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
+    this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
+    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
+    this.switchIsHideRestrictedByGroup = this.switchIsHideRestrictedByGroup.bind(this);
+    this.switchIsHideRestrictedByOwner = this.switchIsHideRestrictedByOwner.bind(this);
+    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
   }
 
   init() {
@@ -48,6 +58,51 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminGeneralSecurityContainer';
+  }
+
+  /**
+   * Change restrictGuestMode
+   */
+  changeRestrictGuestMode(restrictGuestModeLabel) {
+    this.setState({ currentRestrictGuestMode: restrictGuestModeLabel });
+  }
+
+  /**
+   * Change pageCompleteDeletionAuthority
+   */
+  changePageCompleteDeletionAuthority(pageCompleteDeletionAuthorityLabel) {
+    this.setState({ currentPageCompleteDeletionAuthority: pageCompleteDeletionAuthorityLabel });
+  }
+
+  /**
+   * Switch hideRestrictedByOwner
+   */
+  switchIsHideRestrictedByOwner() {
+    this.setState({ isHideRestrictedByOwner:  !this.state.isHideRestrictedByOwner });
+  }
+
+  /**
+   * Switch hideRestrictedByGroup
+   */
+  switchIsHideRestrictedByGroup() {
+    this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
+  }
+
+
+  /**
+   * Update restrictGuestMode
+   * @memberOf AdminGeneralSecuritySContainer
+   * @return {string} Appearance
+   */
+  async updateGeneralSecuritySetting() {
+    const response = await this.appContainer.apiv3.put('/security-setting/general-setting', {
+      restrictGuestMode: this.state.currentRestrictGuestMode,
+      pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
+      hideRestrictedByGroup: this.state.isHideRestrictedByGroup,
+      hideRestrictedByOwner: this.state.isHideRestrictedByOwner,
+    });
+    const { securitySettingParams } = response.data;
+    return securitySettingParams;
   }
 
   /**
