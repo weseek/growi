@@ -12,13 +12,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   // TODO correct validator
-  guestMode: [
+  generalSetting: [
     body('restrictGuestMode').isString(),
-  ],
-  pageDeletion: [
     body('pageCompleteDeletionAuthority').isString(),
-  ],
-  function: [
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
@@ -106,7 +102,7 @@ module.exports = (crowi) => {
    *                    status:
    *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, validator.pageDeletion, validator.function, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
