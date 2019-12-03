@@ -107,7 +107,13 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      githubOAuth: {
+        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId') || '',
+        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret') || '',
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser') || false,
       },
       twitterOAuth: {
         twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey') || '',

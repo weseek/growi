@@ -1,6 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { pathUtils } from 'growi-commons';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminGithubSecurityContainer');
@@ -17,8 +18,7 @@ export default class AdminGithubSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      appSiteUrl: '',
+      appSiteUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/github/callback`,
       githubClientId: '',
       githubClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
@@ -28,8 +28,14 @@ export default class AdminGithubSecurityContainer extends Container {
 
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  async init() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { githubOAuth } = response.data.securityParams;
+    this.setState({
+      githubClientId: githubOAuth.githubClientId,
+      githubClientSecret: githubOAuth.githubClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser,
+    });
   }
 
   /**

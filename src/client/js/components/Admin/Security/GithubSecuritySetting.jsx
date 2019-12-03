@@ -67,7 +67,7 @@ class GithubSecurityManagement extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminGithubSecurityContainer.state.callbackUrl}
+              value={adminGithubSecurityContainer.state.appSiteUrl}
               readOnly
             />
             <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' }) }</p>
