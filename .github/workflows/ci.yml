@@ -58,7 +58,6 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - uses: actions/checkout@v1
     - name: yarn lint
       run: |
         yarn lint
@@ -118,7 +117,6 @@ jobs:
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-build-prod
         restore-keys: |
           ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-build-prod
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
