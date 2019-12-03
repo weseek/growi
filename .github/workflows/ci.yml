@@ -139,7 +139,7 @@ jobs:
     - name: yarn build:prod:analyze
       run: |
         yarn build:prod:analyze
-    - name: shrink dependencies for production
+    - name: Shrink dependencies for production
       run: |
         yarn install --production
     - name: yarn server:prod:ci
