@@ -106,7 +106,7 @@ module.exports = (crowi) => {
    *                    status:
    *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, validator.pageDeletion, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
