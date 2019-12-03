@@ -23,6 +23,7 @@ export default class UserGroupDetailContainer extends Container {
       userGroup: JSON.parse(document.getElementById('admin-user-group-detail').getAttribute('data-user-group')),
       userGroupRelations: [],
       relatedPages: [],
+      unrelatedUsers: [],
       isUserGroupUserModalOpen: false,
     };
 
@@ -49,14 +50,17 @@ export default class UserGroupDetailContainer extends Container {
       const [
         userGroupRelations,
         relatedPages,
+        unrelatedUsers,
       ] = await Promise.all([
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
+        this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`).then((res) => { return res.data.users }),
       ]);
 
       await this.setState({
         userGroupRelations,
         relatedPages,
+        unrelatedUsers,
       });
     }
     catch (err) {
