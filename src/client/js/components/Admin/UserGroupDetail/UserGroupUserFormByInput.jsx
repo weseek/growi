@@ -36,7 +36,6 @@ class UserGroupUserFormByInput extends React.Component {
 
   onInputChange(text) {
     this.setState({ input: text });
-    // this.props.onInputChange(text);
     if (text === '') {
       this.setState({ applicableUsers: [] });
     }
@@ -126,7 +125,7 @@ class UserGroupUserFormByInput extends React.Component {
             isLoading={this.state.isLoading}
             labelKey="name"
             minLength={0}
-            options={this.state.applicableUsers} // Search result (Some page names)
+            options={this.state.applicableUsers} // Search result
             emptyLabel={this.getEmptyLabel()}
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
             align="left"
