@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+
+// eslint-disable-next-line no-unused-vars
+const logger = loggerFactory('growi:app:pluginSetting');
 
 class PluginSetting extends React.Component {
 
@@ -12,7 +17,29 @@ class PluginSetting extends React.Component {
     super(props);
 
     this.state = {
+      // TODO GW-690 fetch from db
+      isEnabledPlugins: true,
     };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.switchIsEnabledPlugins = this.switchIsEnabledPlugins.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t } = this.props;
+
+    try {
+      // TODO GW-690 post apiV3
+      toastSuccess(t('app_setting.update', { target: 'Plugin Setting' }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  switchIsEnabledPlugins() {
+    this.setState({ isEnabledPlugins: !this.state.isEnabledPlugins });
   }
 
 
@@ -21,52 +48,31 @@ class PluginSetting extends React.Component {
 
     return (
       <React.Fragment>
+
         <p className="well">{ t('app_setting.Enable plugin loading') }</p>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label className="col-xs-3 control-label">{ t('app_setting.Load plugins') }</label>
-              <div className="col-xs-6">
-
-                <div className="btn-group btn-toggle" data-toggle="buttons">
-                  <label
-                    className="btn btn-default btn-rounded btn-outline {% if getConfig('crowi', 'plugin:isEnabledPlugins') %}active{% endif %}"
-                    data-active-class="primary"
-                  >
-                    <input
-                      name="settingForm[plugin:isEnabledPlugins]"
-                      value="true"
-                      type="radio"
-                    />
-                    ON
-
-                  </label>
-                  <label
-                    className="btn btn-default btn-rounded btn-outline {% if !getConfig('crowi', 'plugin:isEnabledPlugins') %}active{% endif %}"
-                    data-active-class="default"
-                  >
-                    <input name="settingForm[plugin:isEnabledPlugins]" />
-                    OFF
-                  </label>
-                </div>
-              </div>
+        <div className="row mb-5">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isEnabledPlugins"
+                type="checkbox"
+                checked={this.state.isEnabledPlugins}
+                onChange={this.switchIsEnabledPlugins}
+              />
+              <label htmlFor="isEnabledPlugins">
+                { t('app_setting.Load plugins') }
+              </label>
             </div>
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <div className="col-xs-offset-3 col-xs-6">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                <button type="submit" className="btn btn-primary">
-                  {t('app_setting.Update')}
-                </button>
-              </div>
-            </div>
+        <div className="row my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
         </div>
+
       </React.Fragment>
     );
   }
