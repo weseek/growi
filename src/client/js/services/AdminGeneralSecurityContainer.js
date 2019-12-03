@@ -48,8 +48,15 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
   }
 
-  init() {
+  async init() {
     // TODO GW-583 fetch config value with api
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { localSetting } = response.data.securityParams;
+    this.setState({
+      isLocalEnabled: localSetting.LocalEnabledParams.isLocalEnabled,
+      registrationMode: localSetting.ModeParams.registrationMode,
+      registrationWhiteList: localSetting.WhiteListParams.registrationWhiteList,
+    });
   }
 
 
@@ -117,6 +124,19 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   changeRegistrationMode(value) {
     this.setState({ registrationMode: value });
+  }
+
+  /**
+  * update local security setting
+  */
+  async updateLocalSecuritySetting() {
+    const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
+      isLocalEnabled: this.state.isLocalEnabled,
+      registrationMode: this.state.registrationMode,
+      registrationWhiteList: this.state.registrationWhiteList,
+    });
+    const { localSecuritySettingParams } = response.data;
+    return localSecuritySettingParams;
   }
 
   /**

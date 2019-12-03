@@ -4,11 +4,23 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class LocalSecuritySetting extends React.Component {
+
+  async putLocalSecuritySetting() {
+    const { t } = this.props;
+    try {
+      await this.props.adminGeneralSecurityContainer.updateGeneralSecuritySetting();
+      toastSuccess(t('security_setting.updated_general_security_setting'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;

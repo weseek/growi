@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
@@ -17,6 +18,11 @@ const validator = {
     body('pageCompleteDeletionAuthority').isString(),
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
+  ],
+  localSetting: [
+    body('isLocalEnabled').boolean(),
+    body('registrationMode').isString(),
+    body('registrationWhiteList').isString(),
   ],
 };
 
@@ -57,6 +63,26 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          LocalSetting:
+ *            type: object
+ *              LocalEnabledParams:
+ *                type: object
+ *                properties:
+ *                  isLocalEnabled:
+ *                    type: boolean
+ *                    description: enable local
+ *              ModeParams:
+ *                type: object
+ *                properties:
+ *                  registrationMode:
+ *                    type:string
+ *                    description: type of registrationMode
+ *              WhiteListParams:
+ *                type: object
+ *                properties:
+ *                  registrationWhiteList:
+ *                    type:string
+ *                    description: type of registrationwhiteList
  */
 
 module.exports = (crowi) => {
@@ -65,6 +91,40 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
+  /**
+   * @swagger
+   *
+   *    /security-setting/:
+   *      get:
+   *        tags: [SecuritySetting]
+   *        description: Get security paramators
+   *        responses:
+   *          200:
+   *            description: params of security
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    securityParams:
+   *                      $ref: '#/components/schemas/SecurityParams'
+   */
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const securityParams = {
+      localSetting: {
+        LocalEnabledParams: {
+          isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled') || false,
+        },
+        ModeParams: {
+          registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode') || '',
+        },
+        WhiteListParams: {
+          registrationWhiteList: await crowi.configManage.getConfig('crowi', 'security:registrationWhiteList') || '',
+        },
+      },
+    };
+
+    return res.apiv3({ securityParams });
+  });
 
   /**
    * @swagger
@@ -124,6 +184,62 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/local-setting:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update LocalSetting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isLocalEnabled:
+   *                    description: enable local
+   *                    type: string
+   *                  registrationMode:
+   *                    type: string
+   *                    description: type of pageDeletionAuthority
+   *                  registrationWhiteList:
+   *                    type: string
+   *                    description: type of registrationWhiteList
+   *        responses:
+   *          200:
+   *            description: Succeeded to update local Setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    status:
+   *                      $ref: '#/components/schemas/SecurityParams/LocalSetting'
+   */
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-local:isEnabled': req.body.isLocalEnabled,
+      'security:registrationMode': req.body.registrationMode,
+      'security:registrationWhiteList': req.body.registrationWhiteList,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const localSecuritySettingParams = {
+        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+        registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
+        registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      };
+      return res.apiv3({ localSecuritySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating local security setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-local-secuirty-setting failed'));
     }
   });
 
