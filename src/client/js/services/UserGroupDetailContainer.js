@@ -24,6 +24,7 @@ export default class UserGroupDetailContainer extends Container {
       userGroupRelations: [],
       relatedPages: [],
       unrelatedUsers: [],
+      unrelatedNames: [],
       isUserGroupUserModalOpen: false,
     };
 
@@ -57,10 +58,13 @@ export default class UserGroupDetailContainer extends Container {
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`).then((res) => { return res.data.users }),
       ]);
 
+      const unrelatedNames = unrelatedUsers.map(user => user.name);
+
       await this.setState({
         userGroupRelations,
         relatedPages,
         unrelatedUsers,
+        unrelatedNames,
       });
     }
     catch (err) {
