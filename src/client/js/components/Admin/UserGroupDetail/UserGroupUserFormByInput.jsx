@@ -35,10 +35,14 @@ class UserGroupUserFormByInput extends React.Component {
     this.searchUserDebounce = debounce(1000, this.searchUser);
   }
 
-  onInputChange(text) {
-    this.setState({ input: text });
+  /**
+   * input user name to add to the group
+   * @param {string} input
+   */
+  onInputChange(input) {
+    this.setState({ input });
     // this.props.onInputChange(text);
-    if (text === '') {
+    if (input === '') {
       this.setState({ applicableUsers: [] });
     }
   }
@@ -68,7 +72,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   /**
-   * input user name to add to the group
+   * Reflect when forecast is clicked
    * @param {string} input
    */
   handleChange(input) {
