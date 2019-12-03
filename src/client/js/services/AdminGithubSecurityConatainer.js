@@ -28,6 +28,9 @@ export default class AdminGithubSecurityContainer extends Container {
 
   }
 
+  /**
+   * retrieve security data
+   */
   async init() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { githubOAuth } = response.data.securityParams;
