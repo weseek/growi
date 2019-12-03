@@ -23,7 +23,7 @@ const validator = {
 /**
  * @swagger
  *  tags:
- *    name: AppSetting
+ *    name: AppSettings
  */
 
 /**
@@ -61,8 +61,8 @@ module.exports = (crowi) => {
    *
    *    /app-setting/lineBreak:
    *      put:
-   *        tags: [AppSetting]
-   *        description: Update lineBreak setting
+   *        tags: [AppSettings]
+   *        description: Update app setting
    *        requestBody:
    *          required: true
    *          content:
@@ -70,21 +70,27 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    *                properties:
-   *                  isEnabledLinebreaks:
-   *                    description: enable lineBreak
+   *                  title:
+   *                    type: String
+   *                    description: site name show on page header and tilte of HTML
+   *                  confidential:
+   *                    type: String
+   *                    description: confidential show on page header
+   *                  globalLang:
+   *                    type: String
+   *                    description: language set when create user
+   *                  fileUpload:
    *                    type: boolean
-   *                  isEnabledLinebreaksInComments:
-   *                    description: enable lineBreak in comment
-   *                    type: boolean
+   *                    description: enable upload file except image file
    *        responses:
    *          200:
-   *            description: Succeeded to update lineBreak setting
+   *            description: Succeeded to update app setting
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/LineBreakParams'
+   *                      $ref: '#/components/schemas/appSettingParams'
    */
   router.put('/appSetting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
 

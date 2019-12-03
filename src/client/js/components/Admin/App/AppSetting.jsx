@@ -40,7 +40,7 @@ class AppSetting extends React.Component {
 
     try {
       await this.props.appContainer.apiv3.put('/app-settings/appSetting', params);
-      toastSuccess(t('app_setting.updated_app_setting'));
+      toastSuccess(t('Updated app setting'));
     }
     catch (err) {
       toastError(err);
