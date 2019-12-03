@@ -88,39 +88,16 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
   }
 
+
   /**
    * Update restrictGuestMode
    * @memberOf AdminGeneralSecuritySContainer
    * @return {string} Appearance
    */
-  async updateRestrictGuestMode() {
-    const response = await this.appContainer.apiv3.put('/security-setting/guest-mode', {
+  async updateGeneralSecuritySetting() {
+    const response = await this.appContainer.apiv3.put('/security-setting/general-setting', {
       restrictGuestMode: this.state.currentRestrictGuestMode,
-    });
-    const { securitySettingParams } = response.data;
-    return securitySettingParams;
-  }
-
-  /**
-   * Update pageDeletion
-   * @memberOf AdminGeneralSecurityContainer
-   * @return {string} pageDeletion
-   */
-  async updatePageCompleteDeletionAuthority() {
-    const response = await this.appContainer.apiv3.put('/security-setting/page-deletion', {
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
-    });
-    const { securitySettingParams } = response.data;
-    return securitySettingParams;
-  }
-
-  /**
-   * Update function
-   * @memberOf AdminSecucitySettingContainer
-   * @return {string} Functions
-   */
-  async updateSecurityFunction() {
-    const response = await this.appContainer.apiv3.put('/security-setting/function', {
       hideRestrictedByGroup: this.state.hideRestrictedByGroup,
       hideRestrictedByOwner: this.state.hideRestrictedByOwner,
     });

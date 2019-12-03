@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -8,6 +9,8 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+
+const logger = loggerFactory('growi:SecuritySetting');
 
 class SecuritySetting extends React.Component {
 
@@ -19,7 +22,14 @@ class SecuritySetting extends React.Component {
 
   async putSecuritySetting() {
     const { t } = this.props;
-
+    try {
+      await this.props.adminGeneralSecurityContainer.updateGeneralSecuritySetting();
+      toastSuccess(t('markdown_setting.updated_general_security_setting'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.err(err);
+    }
   }
 
   render() {
