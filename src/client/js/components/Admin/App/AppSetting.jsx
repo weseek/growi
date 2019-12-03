@@ -18,7 +18,7 @@ class AppSetting extends React.Component {
     const { appContainer } = this.props;
 
     this.state = {
-      siteName: appContainer.config.crowi.title,
+      title: appContainer.config.crowi.title,
       confidentialName: appContainer.config.confidential,
       globalLang: appContainer.config.globalLang,
       fileUpload: appContainer.config.fileUpload,
@@ -32,14 +32,14 @@ class AppSetting extends React.Component {
     const { t } = this.props;
 
     const params = {
-      'app:title': this.state.siteName,
-      'app:confidential': this.state.confidentialName,
-      'app:globalLang': this.state.globalLang,
-      'app:fileUpload': this.state.fileUpload,
+      title: this.state.title,
+      confidential: this.state.confidentialName,
+      globalLang: this.state.globalLang,
+      fileUpload: this.state.fileUpload,
     };
 
     try {
-      await this.props.appContainer.apiPost('/admin/settings/app', params);
+      await this.props.appContainer.apiv3.put('/app-settings/appSetting', params);
       toastSuccess(t('app_setting.updated_app_setting'));
     }
     catch (err) {
@@ -69,8 +69,8 @@ class AppSetting extends React.Component {
                   className="form-control"
                   id="settingForm[app:title]"
                   type="text"
-                  name="siteName"
-                  value={this.state.siteName}
+                  name="title"
+                  value={this.state.title}
                   onChange={this.inputChangeHandler}
                   placeholder="GROWI"
                 />
@@ -115,7 +115,14 @@ class AppSetting extends React.Component {
               <label>{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
-              <input type="radio" id="radioLangJa" name="globalLang" value="ja" checked={this.state.globalLang === 'ja'} onClick={this.inputChangeHandler} />
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="globalLang"
+                value="ja"
+                checked={this.state.globalLang === 'ja'}
+                onClick={this.inputChangeHandler}
+              />
               <label>{t('Japanese')}</label>
             </div>
           </div>
