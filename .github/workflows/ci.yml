@@ -70,6 +70,7 @@ jobs:
         yarn test
       env:
         MONGO_URI: mongodb://localhost:27017/growi_test
+
     - name: Slack Notification
       uses: homoluctus/slatify@master
       if: failure()
@@ -101,6 +102,7 @@ jobs:
     - name: yarn build:dev
       run: |
         yarn build:dev
+
     - name: Slack Notification
       uses: homoluctus/slatify@master
       if: failure()
@@ -145,6 +147,13 @@ jobs:
         yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
+
+    - name: Upload reports
+      uses: actions/upload-artifact@v1
+      if: success()
+      with:
+        name: report
+        path: report
     - name: Slack Notification
       uses: homoluctus/slatify@master
       if: failure()
