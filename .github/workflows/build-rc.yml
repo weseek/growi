@@ -19,6 +19,10 @@ jobs:
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v1.0.4
 
+    - name: Login to docker.io registry
+      run: |
+        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+
     - name: Build Docker Image
       run: |
         CACHE_REF=weseek/growi:3-cache
@@ -29,10 +33,6 @@ jobs:
           --cache-from=type=registry,ref=$CACHE_REF \
           --cache-to=type=registry,ref=$CACHE_REF,mode=max \
           --file ./docker/Dockerfile .
-
-    - name: Login to docker.io registry
-      run: |
-        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
 
     - name: Get SemVer
       run: |
