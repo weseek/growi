@@ -14,7 +14,7 @@ class LocalSecuritySetting extends React.Component {
   async putLocalSecuritySetting() {
     const { t } = this.props;
     try {
-      await this.props.adminGeneralSecurityContainer.updateGeneralSecuritySetting();
+      await this.props.adminGeneralSecurityContainer.updateLocalSecuritySetting();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -126,7 +126,7 @@ class LocalSecuritySetting extends React.Component {
 
         {/*  TODO replace component */}
         <div className="col-xs-offset-3 col-xs-6 mb-5">
-          <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+          <button type="submit" className="btn btn-primary" onClick={this.putLocalSecuritySetting}>{ t('Update') }</button>
         </div>
 
       </React.Fragment>
