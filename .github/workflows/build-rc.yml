@@ -31,7 +31,6 @@ jobs:
           --platform linux/amd64 \
           --load \
           --cache-from=type=registry,ref=$CACHE_REF \
-          --cache-to=type=registry,ref=$CACHE_REF,mode=max \
           --file ./docker/Dockerfile .
 
     - name: Get SemVer
