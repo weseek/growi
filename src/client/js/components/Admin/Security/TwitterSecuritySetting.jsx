@@ -18,18 +18,35 @@ class TwitterSecurityManagement extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      retrieveError: null,
+    };
+
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  async onClickSubmit() {
-    const { t } = this.props;
+  async componentDidMount() {
+    const { adminTwitterSecurityContainer } = this.props;
 
     try {
-      await this.props.adminTwitterSecurityContainer.updateTwitterSetting();
+      await adminTwitterSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t, adminTwitterSecurityContainer } = this.props;
+
+    try {
+      await adminTwitterSecurityContainer.updateTwitterSetting();
       toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
     }
     catch (err) {
       toastError(err);
+      this.setState({ retrieveError: err });
       logger.error(err);
     }
   }
@@ -43,6 +60,12 @@ class TwitterSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.OAuth.Twitter.name') } { t('security_setting.configuration') }
         </h2>
+
+        {this.state.retrieveError != null && (
+        <div className="alert alert-danger">
+          <p>{t('Error occurred')}</p>
+        </div>
+        )}
 
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.Twitter.name') }</strong>
