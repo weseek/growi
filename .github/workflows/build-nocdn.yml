@@ -26,6 +26,7 @@ jobs:
         CACHE_REF=weseek/growi-cache:3-nocdn
         docker buildx build \
           --tag growi \
+          --build-arg flavor=nocdn \
           --platform linux/amd64 \
           --load \
           --cache-from=type=registry,ref=$CACHE_REF \

@@ -1,4 +1,4 @@
-name: Release Docker Images for RC
+name: Release Docker Images (Default)
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
       - v3.*
     branches:
       - rc/*
-      - support/github-actions
 
 jobs:
 

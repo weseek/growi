@@ -1,10 +1,6 @@
 name: Node CI
 
-# on: [push]
-on:
-  push:
-    branches:
-      - dummy
+on: [push]
 
 jobs:
 
