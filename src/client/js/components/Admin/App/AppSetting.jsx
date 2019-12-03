@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 
-const logger = loggerFactory('growi:importer');
+const logger = loggerFactory('growi:appSettings');
 
 class AppSetting extends React.Component {
 
@@ -24,11 +24,11 @@ class AppSetting extends React.Component {
       fileUpload: appContainer.config.fileUpload,
     };
 
-    this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
   }
 
-  async onClickSubmit() {
+  async submitHandler() {
     const { t } = this.props;
 
     const params = {
@@ -39,7 +39,7 @@ class AppSetting extends React.Component {
     };
 
     try {
-      await this.appContainer.apiPost('/admin/settings/app', params);
+      await this.props.appContainer.apiPost('/admin/settings/app', params);
       toastSuccess(t('app_setting.updated_app_setting'));
     }
     catch (err) {
@@ -83,9 +83,7 @@ class AppSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label className="col-xs-3 control-label">
-                {t('app_setting.Confidential name')}
-              </label>
+              <label className="col-xs-3 control-label">{t('app_setting.Confidential name')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -117,14 +115,7 @@ class AppSetting extends React.Component {
               <label>{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                name="globalLang"
-                value="ja"
-                checked={this.state.globalLang === 'ja'}
-                onClick={this.inputChangeHandler}
-              />
+              <input type="radio" id="radioLangJa" name="globalLang" value="ja" checked={this.state.globalLang === 'ja'} onClick={this.inputChangeHandler} />
               <label>{t('Japanese')}</label>
             </div>
           </div>
@@ -136,13 +127,7 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input
-                    type="checkbox"
-                    id="cbFileUpload"
-                    name="fileUpload"
-                    checked={this.state.fileUpload}
-                    onChange={this.inputChangeHandler}
-                  />
+                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputChangeHandler} />
                   <label>{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
@@ -160,8 +145,7 @@ class AppSetting extends React.Component {
           <div className="col-md-12">
             <div className="form-group">
               <div className="col-xs-offset-3 col-xs-6">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" onClick={this.submitHandler}>
                   {t('app_setting.Update')}
                 </button>
               </div>
