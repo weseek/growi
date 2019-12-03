@@ -96,12 +96,12 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('app', requestAppSettingParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAppSettingParams);
       const appSettingParams = {
-        title: await crowi.configManager.getConfig('app', 'app:title'),
-        confidential: await crowi.configManager.getConfig('app', 'app:confidenaial'),
-        globalLang: await crowi.configManager.getConfig('app', 'app:globalLang'),
-        fileUpload: await crowi.configManager.getConfig('app', 'app:fileUpload'),
+        title: await crowi.configManager.getConfig('crowi', 'app:title'),
+        confidential: await crowi.configManager.getConfig('crowi', 'app:confidenaial'),
+        globalLang: await crowi.configManager.getConfig('crowi', 'app:globalLang'),
+        fileUpload: await crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
       return res.apiv3({ appSettingParams });
     }
