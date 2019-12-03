@@ -33,6 +33,7 @@ class TwitterSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
+      this.setState({ retrieveError: err });
       logger.error(err);
     }
   }
@@ -46,7 +47,6 @@ class TwitterSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
       logger.error(err);
     }
   }
@@ -167,7 +167,7 @@ class TwitterSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError == null} onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>
         </div>
 
