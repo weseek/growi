@@ -16,8 +16,7 @@ class UserGroupUserFormByInput extends React.Component {
 
     this.state = {
       input: '',
-      // TDOO GW-665 fetch users
-      applicableUsers: ['hoge', 'huga'],
+      applicableUsers: [],
       isLoading: false,
       searchError: null,
     };
@@ -63,8 +62,14 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   searchUser() {
-    // TODO GW-665 fetch users
-    this.setState({ isLoading: false });
+    const applicableUsers = this.props.userGroupDetailContainer.state.unrelatedNames.filter((name) => {
+      return name.indexOf(this.state.input !== -1);
+    });
+
+    this.setState({
+      applicableUsers,
+      isLoading: false,
+    });
   }
 
   /**

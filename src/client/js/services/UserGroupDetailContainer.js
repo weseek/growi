@@ -58,7 +58,7 @@ export default class UserGroupDetailContainer extends Container {
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`).then((res) => { return res.data.users }),
       ]);
 
-      const unrelatedNames = unrelatedUsers.map(user => user.name);
+      const unrelatedNames = unrelatedUsers.map(user => user.username);
 
       await this.setState({
         userGroupRelations,
