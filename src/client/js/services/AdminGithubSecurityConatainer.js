@@ -69,4 +69,23 @@ export default class AdminGithubSecurityContainer extends Container {
     this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
   }
 
+  /**
+   * Update githubSetting
+   */
+  async updateGitHubSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/github-oauth', {
+      githubClientId: this.state.githubClientId,
+      githubClientSecret: this.state.githubClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+
+    this.setState({
+      githubClientId: this.state.githubClientId,
+      githubClientSecret: this.state.githubClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+    return response;
+  }
+
 }

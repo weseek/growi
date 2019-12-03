@@ -25,7 +25,7 @@ class GithubSecurityManagement extends React.Component {
     const { t } = this.props;
 
     try {
-      // await this.props.adminGithubSecurityContainer.updateTwitterSetting();
+      await this.props.adminGithubSecurityContainer.updateGitHubSetting();
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
