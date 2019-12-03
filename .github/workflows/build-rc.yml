@@ -49,8 +49,9 @@ jobs:
         echo ::set-env name=SEMVER::$(echo $semver)
 
     - name: Docker Tags by SemVer
-      uses: weseek/ghaction-docker-tags-by-semver@v1
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
       with:
         source: growi
         target: weseek/growi
         semver: ${{ env.SEMVER }}
+        publish: true
