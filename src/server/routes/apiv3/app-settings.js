@@ -87,7 +87,7 @@ module.exports = (crowi) => {
   router.get('/app-setting', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const appSettingParams = {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
-      confidential: crowi.configManager.getConfig('crowi', 'app:confidenaial'),
+      confidential: crowi.configManager.getConfig('crowi', 'app:confidenial'),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
     };
