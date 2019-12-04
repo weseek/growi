@@ -24,7 +24,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isHideRestrictedByOwner: true,
       isHideRestrictedByGroup: true,
       useOnlyEnvVarsForSomeOptions: true,
-      appSiteUrl: '',
+      appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: true,
       registrationMode: 'open',
       registrationWhiteList: '',

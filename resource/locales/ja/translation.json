@@ -564,7 +564,8 @@
         "register_2": "Twitterにサインイン",
         "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
         "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_twitter": "Twitter OAuth を更新しました"
       },
       "GitHub": {
         "enable_github":"GitHub OAuth を有効にする",

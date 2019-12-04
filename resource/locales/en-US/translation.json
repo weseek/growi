@@ -569,7 +569,8 @@
         "register_2": "Sign in Twitter",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
         "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above"
+        "register_5": "Copy and paste your ClientID and Client Secret above",
+        "updated_twitter": "Succeeded to update Twitter OAuth setting"
       },
       "GitHub": {
         "enable_github":"enable GitHub OAuth",
