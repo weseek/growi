@@ -254,7 +254,6 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize title
    */
   async updateCustomizeTitle() {
-    // TODO create apiV3
     const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
       customizeTitle: this.state.currentCustomizeTitle,
     });
