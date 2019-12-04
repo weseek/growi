@@ -14,9 +14,23 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 ### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Fix: Appending tag is failed by wrong index of PageTagRelation
+    * Introduced by 3.5.20
 * Support: Support Node.js v12
 * Support: Upgrade libs
     * growi-commons
+
+## 3.5.23
+
+* Fix: Global Notification failed to send e-mail
+* Fix: Pagination is not working for trash list
+* Fix: Healthcheck API with `?connectToMiddlewares` returns error
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.5.22
+
+* Improvement: Add `FILE_UPLOAD_DISABLED` env var
 
 ## 3.5.21
 
