@@ -15,17 +15,30 @@ class AppSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
     this.state = {
-      title: appContainer.config.crowi.title,
-      confidentialName: appContainer.config.confidential,
-      globalLang: appContainer.config.globalLang,
-      fileUpload: appContainer.config.fileUpload,
+      title: '',
+      confidential: '',
+      globalLang: 'en-US',
+      fileUpload: false,
     };
 
     this.submitHandler = this.submitHandler.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
+  }
+
+  /*
+   * retrieve security data
+   */
+  async componentDidMount() {
+    const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
+    const appSettingParams = response.data.appSettingParams;
+
+    this.setState({
+      title: appSettingParams.title || '',
+      confidential: appSettingParams.confidential || '',
+      globalLang: appSettingParams.globalLang || 'en-US',
+      fileUpload: appSettingParams.fileUpload || false,
+    });
   }
 
   async submitHandler() {
@@ -33,13 +46,13 @@ class AppSetting extends React.Component {
 
     const params = {
       title: this.state.title,
-      confidential: this.state.confidentialName,
+      confidential: this.state.confidential,
       globalLang: this.state.globalLang,
       fileUpload: this.state.fileUpload,
     };
 
     try {
-      await this.props.appContainer.apiv3.put('/app-settings/appSetting', params);
+      await this.props.appContainer.apiv3.put('/app-settings/app-setting', params);
       toastSuccess(t('Updated app setting'));
     }
     catch (err) {
@@ -89,8 +102,8 @@ class AppSetting extends React.Component {
                   className="form-control"
                   id="settingForm[app:confidential]"
                   type="text"
-                  name="confidentialName"
-                  value={this.state.confidentialName}
+                  name="confidential"
+                  value={this.state.confidential}
                   onChange={this.inputChangeHandler}
                   placeholder={t('app_setting.ex) internal use only')}
                 />
@@ -115,14 +128,7 @@ class AppSetting extends React.Component {
               <label>{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
-              <input
-                type="radio"
-                id="radioLangJa"
-                name="globalLang"
-                value="ja"
-                checked={this.state.globalLang === 'ja'}
-                onClick={this.inputChangeHandler}
-              />
+              <input type="radio" id="radioLangJa" name="globalLang" value="ja" checked={this.state.globalLang === 'ja'} onClick={this.inputChangeHandler} />
               <label>{t('Japanese')}</label>
             </div>
           </div>
