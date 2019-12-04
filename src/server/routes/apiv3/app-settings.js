@@ -49,17 +49,57 @@ const validator = {
  */
 
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
+  const loginRequired = require('../../middleware/login-required')(crowi);
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  /**
+   * @swagger
+   *
+   *    /app-settings/app-setting:
+   *      get:
+   *        tags: [AppSettings]
+   *        description: get app setting params
+   *        responses:
+   *          200:
+   *            description: Resources are available
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    title:
+   *                      type: String
+   *                      description: site name show on page header and tilte of HTML
+   *                    confidential:
+   *                      type: String
+   *                      description: confidential show on page header
+   *                    globalLang:
+   *                      type: String
+   *                      description: language set when create user
+   *                    fileUpload:
+   *                      type: boolean
+   *                      description: enable upload file except image file
+   */
+  router.get('/app-setting', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    const appSettingParams = {
+      title: crowi.configManager.getConfig('crowi', 'app:title'),
+      confidential: crowi.configManager.getConfig('crowi', 'app:confidenaial'),
+      globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+      fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+    };
+    return res.apiv3({ appSettingParams });
+
+  });
+
 
   /**
    * @swagger
    *
-   *    /app-setting/lineBreak:
+   *    /app-settings/app-setting:
    *      put:
    *        tags: [AppSettings]
    *        description: Update app setting
@@ -92,7 +132,7 @@ module.exports = (crowi) => {
    *                    status:
    *                      $ref: '#/components/schemas/appSettingParams'
    */
-  router.put('/appSetting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
 
     const requestAppSettingParams = {
       'app:title': req.body.title,
@@ -104,10 +144,10 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAppSettingParams);
       const appSettingParams = {
-        title: await crowi.configManager.getConfig('crowi', 'app:title'),
-        confidential: await crowi.configManager.getConfig('crowi', 'app:confidenaial'),
-        globalLang: await crowi.configManager.getConfig('crowi', 'app:globalLang'),
-        fileUpload: await crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+        title: crowi.configManager.getConfig('crowi', 'app:title'),
+        confidential: crowi.configManager.getConfig('crowi', 'app:confidenaial'),
+        globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+        fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
       return res.apiv3({ appSettingParams });
     }
