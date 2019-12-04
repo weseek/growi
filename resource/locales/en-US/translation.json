@@ -685,6 +685,7 @@
     "update_behavior_success": "Succeeded to update behavior",
     "update_function_success": "Succeeded to update function",
     "update_highlight_success": "Succeeded to update code highlight",
+    "update_customTitle_success": "Succeeded to update customize title",
     "update_customHeader_success": "Succeeded to update customize html header",
     "update_customCss_success": "Succeeded to update customize css",
     "update_script_success": "Succeeded to update custom script",

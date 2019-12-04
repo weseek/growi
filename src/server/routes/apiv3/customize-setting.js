@@ -49,6 +49,10 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *                type: string
  *              styleBorder:
  *                type: boolean
+ *          CustomizeTitle:
+ *            type: object
+ *              customizeTitle:
+ *                type: string
  *          CustomizeHeader:
  *            type: object
  *              customizeHeader:
@@ -84,6 +88,9 @@ module.exports = (crowi) => {
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
+    ],
+    customizeTitle: [
+      body('customizeTitle').isString(),
     ],
     customizeHeader: [
       body('customizeHeader').isString(),
@@ -346,6 +353,46 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating highlight';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-highlight-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customizeTitle:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        description: Update customizeTitle
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  title:
+   *                    description: customized title
+   *                    type: string
+   *      responses:
+   *          200:
+   *            description: Succeeded to update customizeTitle
+   */
+  router.put('/customize-title', loginRequiredStrictly, adminRequired, csrf, validator.customizeTitle, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:title': req.body.customizeTitle,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating customizeTitle';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeTitle-failed'));
     }
   });
 

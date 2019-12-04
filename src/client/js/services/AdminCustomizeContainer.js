@@ -163,6 +163,13 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
+   * Change customize Title
+   */
+  changeCustomizeTitle(inputValue) {
+    this.setState({ currentCustomizeTitle: inputValue });
+  }
+
+  /**
    * Change customize Html header
    */
   changeCustomizeHeader(inputValue) {
@@ -236,6 +243,19 @@ export default class AdminCustomizeContainer extends Container {
     const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
       highlightJsStyle: this.state.currentHighlightJsStyleId,
       highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
+    });
+    const { customizedParams } = response.data;
+    return customizedParams;
+  }
+
+  /**
+   * Update customTitle
+   * @memberOf AdminCustomizeContainer
+   * @return {string} Customize title
+   */
+  async updateCustomizeTitle() {
+    const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
+      customizeTitle: this.state.currentCustomizeTitle,
     });
     const { customizedParams } = response.data;
     return customizedParams;
