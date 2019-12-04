@@ -1,9 +1,7 @@
-name: Release Docker Images (Default)
+name: Release Docker Images for RC
 
 on:
   push:
-    tags:
-      - v3.*
     branches:
       - rc/*
 
@@ -37,7 +35,7 @@ jobs:
     - name: Get SemVer
       run: |
         semver=`npm run version --silent`
-        echo ::set-env name=SEMVER::$(echo $semver)
+        echo ::set-env name=SEMVER::$semver
 
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
