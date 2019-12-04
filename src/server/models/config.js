@@ -196,8 +196,6 @@ module.exports = function(crowi) {
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
-      fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
-      confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
     };
 
     return localConfig;
