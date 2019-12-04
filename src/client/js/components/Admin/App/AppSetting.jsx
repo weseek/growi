@@ -24,11 +24,9 @@ class AppSetting extends React.Component {
 
     this.submitHandler = this.submitHandler.bind(this);
     this.inputChangeHandler = this.inputChangeHandler.bind(this);
+    this.inputCheckBoxChangeHandler = this.inputCheckBoxChangeHandler.bind(this);
   }
 
-  /*
-   * retrieve security data
-   */
   async componentDidMount() {
     const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
     const appSettingParams = response.data.appSettingParams;
@@ -63,9 +61,12 @@ class AppSetting extends React.Component {
 
   inputChangeHandler(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({ [target.name]: target.value });
+  }
 
-    this.setState({ [event.target.name]: value });
+  inputCheckBoxChangeHandler(event) {
+    const target = event.target;
+    this.setState({ [target.name]: target.checked });
   }
 
   render() {
@@ -140,7 +141,7 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputChangeHandler} />
+                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputCheckBoxChangeHandler} />
                   <label>{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
