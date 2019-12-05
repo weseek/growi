@@ -2,14 +2,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '../../../services/AdminGoogleSecurityContainer';
 
+const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
+
 class GoogleSecurityManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+    };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    const { adminGoogleSecurityContainer } = this.props;
+
+    try {
+      await adminGoogleSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer } = this.props;
@@ -20,6 +47,12 @@ class GoogleSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.OAuth.Google.name') } { t('security_setting.configuration') }
         </h2>
+
+        {this.state.retrieveError != null && (
+        <div className="alert alert-danger">
+          <p>{t('Error occurred')} : {this.state.err}</p>
+        </div>
+        )}
 
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.Google.name') }</strong>
@@ -71,7 +104,7 @@ class GoogleSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="googleClientId"
-                  value={adminGoogleSecurityContainer.state.googleClientId}
+                  defaultValue={adminGoogleSecurityContainer.state.googleClientId}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
                 />
                 <p className="help-block">
@@ -87,7 +120,7 @@ class GoogleSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="googleClientSecret"
-                  value={adminGoogleSecurityContainer.state.googleClientSecret}
+                  defaultValue={adminGoogleSecurityContainer.state.googleClientSecret}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
                 />
                 <p className="help-block">
@@ -118,6 +151,12 @@ class GoogleSecurityManagement extends React.Component {
 
           </React.Fragment>
         )}
+
+        <div className="row my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</button>
+          </div>
+        </div>
 
         <hr />
 
