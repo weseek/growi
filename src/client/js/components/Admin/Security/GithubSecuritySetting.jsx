@@ -18,14 +18,31 @@ class GithubSecurityManagement extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      retrieveError: null,
+    };
+
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  async onClickSubmit() {
-    const { t } = this.props;
+  async componentDidMount() {
+    const { adminGithubSecurityContainer } = this.props;
 
     try {
-      await this.props.adminGithubSecurityContainer.updateGitHubSetting();
+      await adminGithubSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t, adminGithubSecurityContainer } = this.props;
+
+    try {
+      await adminGithubSecurityContainer.updateGitHubSetting();
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
@@ -43,6 +60,12 @@ class GithubSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.OAuth.GitHub.name') } { t('security_setting.configuration') }
         </h2>
+
+        {this.state.retrieveError != null && (
+        <div className="alert alert-danger">
+          <p>{t('Error occurred')} : {this.state.err}</p>
+        </div>
+        )}
 
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.GitHub.name') }</strong>
@@ -110,7 +133,7 @@ class GithubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
-                  value={adminGithubSecurityContainer.state.githubClientSecret}
+                  defaultValue={adminGithubSecurityContainer.state.githubClientSecret}
                   onChange={e => adminGithubSecurityContainer.changeGithubClientSecret(e.target.value)}
                 />
                 <p className="help-block">
@@ -144,7 +167,7 @@ class GithubSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+            <div className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</div>
           </div>
         </div>
 

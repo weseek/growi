@@ -123,9 +123,9 @@ module.exports = (crowi) => {
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       githubOAuth: {
-        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId') || '',
-        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret') || '',
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser') || false,
+        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
+        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
       twitterOAuth: {
         twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),

@@ -3,6 +3,8 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 import { pathUtils } from 'growi-commons';
 
+import urljoin from 'url-join';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminGithubSecurityContainer');
 
@@ -18,26 +20,24 @@ export default class AdminGithubSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      appSiteUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/github/callback`,
+      appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
       githubClientId: '',
       githubClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
     };
-
-    this.init();
 
   }
 
   /**
    * retrieve security data
    */
-  async init() {
+  async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { githubOAuth } = response.data.securityParams;
     this.setState({
-      githubClientId: githubOAuth.githubClientId,
-      githubClientSecret: githubOAuth.githubClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser,
+      githubClientId: githubOAuth.githubClientId || '',
+      githubClientSecret: githubOAuth.githubClientSecret || '',
+      isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser || false,
     });
   }
 
