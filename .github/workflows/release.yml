@@ -1,0 +1,37 @@
+name: GitHub Release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Init Git
+      run: |
+        git config --local user.name "GitHub Action"
+        git config --local user.email "info@weseek.co.jp"
+
+    - name: Bump version
+      run: |
+        npm version patch
+        sh ./bin/github-actions/bump-version.sh
+
+    - name: Commit
+      run: |
+        git commit -am "Release $RELEASE_VERSION"
+
+    - name: Push tag
+      uses: ad-m/github-push-action@master
+      with:
+        branch: null
+        github_token: ${{ secrets. GITHUB_TOKEN }}
+
