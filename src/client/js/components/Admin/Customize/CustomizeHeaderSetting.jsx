@@ -80,7 +80,7 @@ class CustomizeHeaderSetting extends React.Component {
           </p>
         </div>
 
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} />
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }

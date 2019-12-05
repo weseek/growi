@@ -10,7 +10,7 @@ class AdminUpdateButtonRow extends React.PureComponent {
     return (
       <div className="row my-3">
         <div className="col-xs-offset-4 col-xs-5">
-          <button type="button" className="btn btn-primary" onClick={this.props.onClick}>{ t('Update') }</button>
+          <button type="button" className="btn btn-primary" onClick={this.props.onClick} disabled={this.props.disabled}>{ t('Update') }</button>
         </div>
       </div>
     );
@@ -22,6 +22,7 @@ AdminUpdateButtonRow.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(AdminUpdateButtonRow);
