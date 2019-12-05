@@ -79,6 +79,17 @@ const validator = {
  *              isSameUsernameTreatedAsIdenticalUser
  *                type: boolean
  *                description: local account automatically linked the email matched
+ *          GoogleOAuthSetting:
+ *            type:object
+ *              googleClientId:
+ *                type: string
+ *                description: key of comsumer
+ *              googleClientSecret:
+ *                type: string
+ *                description: password of comsumer
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  *          TwitterOAuthSetting:
  *            type:object
  *              twitterConsumerKey:
@@ -119,8 +130,14 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      googleOAuth: {
+        googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
+        googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
       },
       githubOAuth: {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
