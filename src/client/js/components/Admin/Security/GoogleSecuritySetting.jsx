@@ -43,7 +43,7 @@ class GoogleSecurityManagement extends React.Component {
 
     try {
       await adminGoogleSecurityContainer.updateGoogleSetting();
-      toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
+      toastSuccess(t('security_setting.OAuth.Google.updated_google'));
     }
     catch (err) {
       toastError(err);
@@ -166,7 +166,7 @@ class GoogleSecurityManagement extends React.Component {
         )}
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="col-xs-offset-3 col-xs-5">
             <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>
         </div>
