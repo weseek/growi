@@ -19,6 +19,7 @@ export default class AdminCustomizeContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       currentTheme: '',
       currentLayout: '',
       currentBehavior: '',
@@ -48,8 +49,6 @@ export default class AdminCustomizeContainer extends Container {
       /* eslint-enable quote-props, no-multi-spaces */
     };
 
-    this.init();
-
   }
 
   /**
@@ -62,7 +61,7 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * retrieve customize data
    */
-  async init() {
+  async retrieveCustomizeData() {
     try {
       const response = await this.appContainer.apiv3.get('/customize-setting/');
       const { customizeParams } = response.data;

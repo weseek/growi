@@ -3,9 +3,14 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
 import AppContainer from '../../../services/AppContainer';
+import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
+
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
@@ -15,7 +20,23 @@ import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
 
+const logger = loggerFactory('growi:Customize');
+
 class Customize extends React.Component {
+
+  async componentDidMount() {
+    const { adminCustomizeContainer } = this.props;
+
+    try {
+      await adminCustomizeContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      adminCustomizeContainer.setState({ retrieveError: err });
+      logger.error(err);
+    }
+
+  }
 
   render() {
 
@@ -52,12 +73,13 @@ class Customize extends React.Component {
 }
 
 const CustomizeWrapper = (props) => {
-  return createSubscribedElement(Customize, props, [AppContainer]);
+  return createSubscribedElement(Customize, props, [AppContainer, AdminCustomizeContainer]);
 };
 
 Customize.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
 export default withTranslation()(CustomizeWrapper);
