@@ -137,21 +137,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
-  actions.markdown.presentationSetting = async function(req, res) {
-    const markdownSetting = req.form.markdownSetting;
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
-      req.flash('successMessage', ['Successfully updated!']);
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-    }
-
-    return res.redirect('/admin/markdown');
-  };
-
   // app.get('/admin/customize' , admin.customize.index);
   actions.customize = {};
   actions.customize.index = function(req, res) {
