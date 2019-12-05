@@ -19,6 +19,11 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  githubOAuth: [
+    body('githubClientId').isString(),
+    body('githubClientSecret').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+  ],
   twitterOAuth: [
     body('twitterConsumerKey').isString(),
     body('twitterConsumerSecret').isString(),
@@ -63,12 +68,23 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
- *          TwitterOAuthSetting:
+ *          GitHubOAuthSetting:
  *            type:object
- *              consumerKey:
+ *              githubClientId:
  *                type: string
  *                description: key of comsumer
- *              consumerSecret:
+ *              githubClientSecret:
+ *                type: string
+ *                description: password of comsumer
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
+ *          TwitterOAuthSetting:
+ *            type:object
+ *              twitterConsumerKey:
+ *                type: string
+ *                description: key of comsumer
+ *              twitterConsumerSecret:
  *                type: string
  *                description: password of comsumer
  *              isSameUsernameTreatedAsIdenticalUser
@@ -103,7 +119,13 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      githubOAuth: {
+        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
+        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
       twitterOAuth: {
         twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
@@ -173,6 +195,50 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/github-oauth:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update github OAuth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update function
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   */
+  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-github:clientId': req.body.githubClientId,
+      'security:passport-github:clientSecret': req.body.githubClientSecret,
+      'security:passport-github:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
+        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating githubOAuth';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
     }
   });
 

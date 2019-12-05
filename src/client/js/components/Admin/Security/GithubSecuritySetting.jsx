@@ -2,14 +2,54 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminGithubSecurityContainer from '../../../services/AdminGithubSecurityConatainer';
 
+const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
+
 class GithubSecurityManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+    };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    const { adminGithubSecurityContainer } = this.props;
+
+    try {
+      await adminGithubSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t, adminGithubSecurityContainer } = this.props;
+
+    try {
+      await adminGithubSecurityContainer.updateGitHubSetting();
+      toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminGithubSecurityContainer } = this.props;
@@ -20,6 +60,12 @@ class GithubSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.OAuth.GitHub.name') } { t('security_setting.configuration') }
         </h2>
+
+        {this.state.retrieveError != null && (
+        <div className="alert alert-danger">
+          <p>{t('Error occurred')} : {this.state.err}</p>
+        </div>
+        )}
 
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.GitHub.name') }</strong>
@@ -44,7 +90,7 @@ class GithubSecurityManagement extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminGithubSecurityContainer.state.callbackUrl}
+              value={adminGithubSecurityContainer.state.appSiteUrl}
               readOnly
             />
             <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' }) }</p>
@@ -87,7 +133,7 @@ class GithubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
-                  value={adminGithubSecurityContainer.state.githubClientSecret}
+                  defaultValue={adminGithubSecurityContainer.state.githubClientSecret}
                   onChange={e => adminGithubSecurityContainer.changeGithubClientSecret(e.target.value)}
                 />
                 <p className="help-block">
@@ -118,6 +164,12 @@ class GithubSecurityManagement extends React.Component {
 
           </React.Fragment>
         )}
+
+        <div className="row my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <div className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</div>
+          </div>
+        </div>
 
         <hr />
 

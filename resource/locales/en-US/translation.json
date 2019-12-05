@@ -577,7 +577,8 @@
         "name": "GitHub OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
-        "register_3": "Copy and paste your ClientID and Client Secret above"
+        "register_3": "Copy and paste your ClientID and Client Secret above",
+        "updated_github": "Succeeded to update GitHub OAuth setting"
       },
       "OIDC": {
         "name": "OpenID Connect",
