@@ -1,0 +1,95 @@
+name: Node CI
+
+# on: [push]
+on:
+  push:
+    branches:
+      - support/github-actions
+
+jobs:
+
+  resolve-dependencies:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: install dependencies
+      run: |
+        yarn
+    - name: install plugins
+      run: |
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+        yarn add -D react-images react-motion
+    - name: print dependencies
+      run: |
+        echo -n "node " && node -v
+        echo -n "npm " && npm -v
+        yarn list --depth=0
+
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: resolve-dependencies
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: yarn lint
+      run: |
+        yarn lint
+
+
+  test:
+    runs-on: ubuntu-latest
+    needs: resolve-dependencies
+
+    steps:
+    - name: Launch MongoDB
+      uses: wbari/start-mongoDB@v0.2
+      with:
+        mongoDBVersion: 3.6
+
+    - name: yarn test
+      run: |
+        yarn test
+      env:
+        MONGO_URI: mongodb://localhost:27017/growi_test
+
+
+  build-dev:
+    runs-on: ubuntu-latest
+    needs: resolve-dependencies
+
+    steps:
+    - name: yarn build:dev
+      run: |
+        yarn build:dev
+
+
+  build-prod:
+    runs-on: ubuntu-latest
+    needs: resolve-dependencies
+
+    steps:
+    - name: Launch MongoDB
+      uses: wbari/start-mongoDB@v0.2
+      with:
+        mongoDBVersion: 3.6
+    - name: yarn build:prod:analyze
+      run: |
+        yarn build:prod:analyze
+    - name: shrink dependencies for production
+      run: |
+        yarn install --production
+    - name: yarn server:prod:ci
+      run: |
+        yarn server:prod:ci
+      env:
+        MONGO_URI: mongodb://localhost:27017/growi

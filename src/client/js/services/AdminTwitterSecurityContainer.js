@@ -3,6 +3,8 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 import { pathUtils } from 'growi-commons';
 
+import urljoin from 'url-join';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
@@ -18,26 +20,24 @@ export default class AdminTwitterSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      callbackUrl: `${pathUtils.removeTrailingSlash(appContainer.config.crowi.url)}/passport/twitter/callback`,
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/twitter/callback'),
       twitterConsumerKey: '',
       twitterConsumerSecret: '',
-      isSameUsernameTreatedAsIdenticalUser: true,
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
-
-    this.init();
 
   }
 
   /**
    * retrieve security data
    */
-  async init() {
+  async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { twitterOAuth } = response.data.securityParams;
     this.setState({
-      twitterConsumerKey: twitterOAuth.twitterConsumerKey,
-      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret,
-      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser,
+      twitterConsumerKey: twitterOAuth.twitterConsumerKey || '',
+      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret || '',
+      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser || false,
     });
   }
 

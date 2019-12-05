@@ -470,6 +470,7 @@
     "desc_of_callback_URL": "{{AuthName}} プロバイダ側の設定で利用してください。",
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
+    "updated_general_security_setting": "セキュリティ設定を更新しました。",
     "guest_mode": {
       "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
       "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"

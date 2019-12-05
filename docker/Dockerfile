@@ -5,51 +5,85 @@ ARG flavor=default
 
 
 ##
-## setupper-default
+## deps-resolver
 ##
-FROM node:12-slim AS setupper-default
+FROM node:12-slim AS deps-resolver
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-RUN mkdir -p ${appDir}
-RUN mv .* ${appDir}/
+ENV appDir /opt/growi
 
+COPY ./package.json ${appDir}/
+COPY ./yarn.lock ${appDir}/
 WORKDIR ${appDir}
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN yarn
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn
 # install official plugins
-RUN yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
 # install peerDependencies
-RUN yarn add -D react-images react-motion
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn add -D react-images react-motion
 
 
 
 ##
-## setupper-nocdn
+## deps-resolver-prod
 ##
-FROM setupper-default AS setupper-nocdn
+FROM deps-resolver AS deps-resolver-prod
+
+# shrink dependencies for production
+RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
+  yarn install --production
+
+
+
+##
+## prebuilder-default
+##
+FROM node:12-slim AS prebuilder-default
+LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+
+ENV appDir /opt/growi
+
+COPY . ${appDir}
+
+
+
+##
+## prebuilder-nocdn
+##
+FROM prebuilder-default AS prebuilder-nocdn
 
 # replace env.prod.js for NO_CDN
-COPY nocdn/env.prod.js config
+COPY docker/nocdn/env.prod.js ${appDir}/config/
+
+
+
+##
+## prebuilder (alias)
+##
+FROM prebuilder-${flavor} AS prebuilder
 
 
 
 ##
 ## builder
 ##
-FROM setupper-${flavor} AS builder
+FROM deps-resolver AS builder
 
 ENV appDir /opt/growi
 
+COPY --from=prebuilder ${appDir} ${appDir}
+
 # build
 RUN yarn build:prod
-# shrink dependencies for production
-RUN yarn install --production
 
-# remove unnecessary files
+# remove except artifacts
 WORKDIR /tmp
-RUN --mount=target=. sh bin/remove-unnecessary-files.sh
+RUN --mount=target=. sh docker/bin/remove-except-artifacts.sh
 WORKDIR ${appDir}
 
 
@@ -63,18 +97,21 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 ENV appDir /opt/growi
 
 # install tini
-RUN apk add --no-cache tini
+RUN --mount=type=cache,target=/var/cache/apk \
+  apk add tini su-exec
 
-COPY --from=builder ${appDir} ${appDir}
+COPY docker/docker-entrypoint.sh /
+RUN chmod 700 /docker-entrypoint.sh
 
-# create symlink for FILE_UPLOAD=local
-WORKDIR /tmp
-RUN --mount=target=. sh bin/symlink-for-uploading-to-local.sh
+COPY --from=deps-resolver-prod --chown=node:node \
+  ${appDir}/node_modules ${appDir}/node_modules
+COPY --from=builder --chown=node:node \
+  ${appDir} ${appDir}
+
 WORKDIR ${appDir}
 
-USER node
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/sbin/tini", "-e", "143", "--"]
+ENTRYPOINT ["/sbin/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
 CMD ["yarn", "server:prod"]

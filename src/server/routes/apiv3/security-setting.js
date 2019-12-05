@@ -13,13 +13,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   // TODO correct validator
-  guestMode: [
+  generalSetting: [
     body('restrictGuestMode').isString(),
-  ],
-  pageDeletion: [
     body('pageCompleteDeletionAuthority').isString(),
-  ],
-  function: [
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
@@ -132,9 +128,9 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser') || false,
       },
       twitterOAuth: {
-        twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey') || '',
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret') || '',
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser') || false,
+        twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
 
@@ -144,10 +140,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/guest-mode:
+   *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
-   *        description: Update restrictGuestMode
+   *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
    *          content:
@@ -158,113 +154,29 @@ module.exports = (crowi) => {
    *                  restrictGuestMode:
    *                    description: type of restrictGuestMode
    *                    type: string
+   *                  pageCompleteDeletionAuthority:
+   *                    type: string
+   *                    description: type of pageDeletionAuthority
+   *                  hideRestrictedByOwner:
+   *                    type: boolean
+   *                    description: enable hide by owner
+   *                  hideRestrictedByGroup:
+   *                    type: boolean
+   *                    description: enable hide by group
    *        responses:
    *          200:
-   *            description: Succeeded to update restrictGuestMode
+   *            description: Succeeded to update general Setting
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/GuestModeParams'
+   *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting'
    */
-  router.put('/guest-mode', loginRequiredStrictly, adminRequired, csrf, validator.guestMode, ApiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const securitySettingParams = {
-        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
-      };
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating restrict guest mode';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-restrictGuestMode-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /security-setting/page-deletion:
-   *      put:
-   *        tags: [SecuritySetting]
-   *        description: Update pageDeletion Setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                type: object
-   *                properties:
-   *                 pageCompleteDeletionAuthority:
-   *                    description: type of pageCompleteDeletionAuthority
-   *                    type: string
-   *        responses:
-   *          200:
-   *            description: Succeeded to update pageDeletion
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/PageDeletionParams'
-   */
-  router.put('/page-deletion', loginRequiredStrictly, adminRequired, csrf, validator.pageDeletion, ApiV3FormValidator, async(req, res) => {
-    const requestParams = {
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const securitySettingParams = {
-        pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
-      };
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating page-deletion-setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-page-deletion-setting-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /security-setting/function:
-   *      put:
-   *        tags: [SecuritySetting]
-   *        description: Update function
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                type: object
-   *                properties:
-   *                  hideRestrictedByOwner:
-   *                    description: is enabled hideRestrictedByOwner
-   *                    type: boolean
-   *                  ihideRestrictedByGroup:
-   *                    description: is enabled hideRestrictedBygroup
-   *                    type: boolean
-   *        responses:
-   *          200:
-   *            description: Succeeded to update function
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/Function'
-   */
-  router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
-    const requestParams = {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
@@ -272,15 +184,17 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
-        hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'customize:security:list-policy:hideRestrictedByGroup'),
+        hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
       };
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating function';
+      const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
     }
   });
 
