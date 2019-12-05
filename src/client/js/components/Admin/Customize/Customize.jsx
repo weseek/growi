@@ -28,7 +28,7 @@ class Customize extends React.Component {
     const { adminCustomizeContainer } = this.props;
 
     try {
-      await adminCustomizeContainer.retrieveSecurityData();
+      await adminCustomizeContainer.retrieveCustomizeData();
     }
     catch (err) {
       toastError(err);
