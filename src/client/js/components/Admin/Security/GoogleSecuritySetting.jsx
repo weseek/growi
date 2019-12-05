@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
@@ -34,6 +34,19 @@ class GoogleSecurityManagement extends React.Component {
     catch (err) {
       toastError(err);
       this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t, adminGoogleSecurityContainer } = this.props;
+
+    try {
+      await adminGoogleSecurityContainer.updateGoogleSetting();
+      toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
+    }
+    catch (err) {
+      toastError(err);
       logger.error(err);
     }
   }

@@ -20,7 +20,7 @@ export default class AdminGoogleSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
       googleClientId: '',
       googleClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
@@ -36,8 +36,8 @@ export default class AdminGoogleSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { googleOAuth } = response.data.securityParams;
     this.setState({
-      twitterConsumerKey: googleOAuth.twitterConsumerKey || '',
-      twitterConsumerSecret: googleOAuth.twitterConsumerSecret || '',
+      googleClientId: googleOAuth.googleClientId || '',
+      googleClientSecret: googleOAuth.googleClientSecret || '',
       isSameUsernameTreatedAsIdenticalUser: googleOAuth.isSameUsernameTreatedAsIdenticalUser || false,
     });
   }
@@ -68,6 +68,27 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   switchIsSameUsernameTreatedAsIdenticalUser() {
     this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Update googleSetting
+   */
+  async updateGoogleSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/google-oauth', {
+      googleClientId: this.state.googleClientId,
+      googleClientSecret: this.state.googleClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      googleClientId: securitySettingParams.googleClientId,
+      googleClientSecret: securitySettingParams.googleClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
+    });
+    return response;
   }
 
 }
