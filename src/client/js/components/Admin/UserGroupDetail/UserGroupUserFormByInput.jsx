@@ -40,7 +40,6 @@ class UserGroupUserFormByInput extends React.Component {
    */
   onInputChange(input) {
     this.setState({ input });
-    // this.props.onInputChange(text);
     if (input === '') {
       this.setState({ applicableUsers: [] });
     }
