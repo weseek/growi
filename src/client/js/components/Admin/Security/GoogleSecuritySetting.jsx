@@ -11,7 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '../../../services/AdminGoogleSecurityContainer';
 
-const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
+const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
 
 class GoogleSecurityManagement extends React.Component {
 
