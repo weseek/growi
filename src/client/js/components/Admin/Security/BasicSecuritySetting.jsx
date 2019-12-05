@@ -39,10 +39,10 @@ class BasicSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminBasicSecurityContainer } = this.props;
 
     try {
-      // await adminTwitterSecurityContainer.updateTwitterSetting();
+      await adminBasicSecurityContainer.updateBasicSetting();
       toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
     }
     catch (err) {
