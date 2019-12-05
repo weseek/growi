@@ -2,14 +2,54 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminBasicSecurityContainer from '../../../services/AdminBasicSecurityContainer';
 
+const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
+
 class BasicSecurityManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+    };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    const { adminBasicSecurityContainer } = this.props;
+
+    try {
+      await adminBasicSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t } = this.props;
+
+    try {
+      // await adminTwitterSecurityContainer.updateTwitterSetting();
+      toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminBasicSecurityContainer } = this.props;
@@ -20,6 +60,12 @@ class BasicSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.Basic.name') } { t('security_setting.configuration') }
         </h2>
+
+        {this.state.retrieveError != null && (
+        <div className="alert alert-danger">
+          <p>{t('Error occurred')} : {this.state.err}</p>
+        </div>
+        )}
 
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{ t('security_setting.Basic.name') }</strong>
@@ -67,6 +113,12 @@ class BasicSecurityManagement extends React.Component {
           </div>
         </React.Fragment>
         )}
+
+        <div className="row my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</button>
+          </div>
+        </div>
 
       </React.Fragment>
     );

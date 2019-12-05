@@ -17,18 +17,21 @@ export default class AdminBasicSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      isSameUsernameTreatedAsIdenticalUser: 'hoge',
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
 
-    this.init();
-
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { basic } = response.data.securityParams;
+    this.setState({
+      isSameUsernameTreatedAsIdenticalUser: basic.isSameUsernameTreatedAsIdenticalUser || false,
+    });
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
