@@ -102,7 +102,7 @@ class CustomizeScriptSetting extends React.Component {
           </div>
         </div>
 
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} />
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
