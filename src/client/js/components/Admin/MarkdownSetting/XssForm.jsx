@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
+import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 import WhiteListInput from './WhiteListInput';
 
@@ -25,7 +25,7 @@ class XssForm extends React.Component {
     const { t } = this.props;
 
     try {
-      await this.props.markDownSettingContainer.updateXssSetting();
+      await this.props.adminMarkDownContainer.updateXssSetting();
       toastSuccess(t('markdown_setting.updated_xss'));
     }
     catch (err) {
@@ -35,8 +35,8 @@ class XssForm extends React.Component {
   }
 
   xssOptions() {
-    const { t, markDownSettingContainer } = this.props;
-    const { xssOption } = markDownSettingContainer.state;
+    const { t, adminMarkDownContainer } = this.props;
+    const { xssOption } = adminMarkDownContainer.state;
 
     return (
       <fieldset className="form-group col-xs-12 my-3">
@@ -46,7 +46,7 @@ class XssForm extends React.Component {
             id="xssOption1"
             name="XssOption"
             checked={xssOption === 1}
-            onChange={() => { markDownSettingContainer.setState({ xssOption: 1 }) }}
+            onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
           />
           <label htmlFor="xssOption1">
             <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
@@ -62,7 +62,7 @@ class XssForm extends React.Component {
             id="xssOption2"
             name="XssOption"
             checked={xssOption === 2}
-            onChange={() => { markDownSettingContainer.setState({ xssOption: 2 }) }}
+            onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
           />
           <label htmlFor="xssOption2">
             <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
@@ -76,7 +76,7 @@ class XssForm extends React.Component {
             id="xssOption3"
             name="XssOption"
             checked={xssOption === 3}
-            onChange={() => { markDownSettingContainer.setState({ xssOption: 3 }) }}
+            onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
           />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
@@ -88,8 +88,8 @@ class XssForm extends React.Component {
   }
 
   render() {
-    const { t, markDownSettingContainer } = this.props;
-    const { isEnabledXss } = markDownSettingContainer.state;
+    const { t, adminMarkDownContainer } = this.props;
+    const { isEnabledXss } = adminMarkDownContainer.state;
 
     return (
       <React.Fragment>
@@ -103,7 +103,7 @@ class XssForm extends React.Component {
                   className="form-check-input"
                   name="isEnabledXss"
                   checked={isEnabledXss}
-                  onChange={markDownSettingContainer.switchEnableXss}
+                  onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label htmlFor="XssEnable">
                   { t('markdown_setting.Enable XSS prevention') }
@@ -125,13 +125,13 @@ class XssForm extends React.Component {
 }
 
 const XssFormWrapper = (props) => {
-  return createSubscribedElement(XssForm, props, [AppContainer, MarkDownSettingContainer]);
+  return createSubscribedElement(XssForm, props, [AppContainer, AdminMarkDownContainer]);
 };
 
 XssForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
+  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
 export default withTranslation()(XssFormWrapper);
