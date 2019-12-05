@@ -43,7 +43,7 @@ class BasicSecurityManagement extends React.Component {
 
     try {
       await adminBasicSecurityContainer.updateBasicSetting();
-      toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
+      toastSuccess(t('security_setting.Basic.updated_basic'));
     }
     catch (err) {
       toastError(err);
