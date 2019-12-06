@@ -51,20 +51,14 @@ export default class UserGroupDetailContainer extends Container {
       const [
         userGroupRelations,
         relatedPages,
-        unrelatedUsers,
       ] = await Promise.all([
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
         this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
-        this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`).then((res) => { return res.data.users }),
       ]);
-
-      const unrelatedNames = unrelatedUsers.map(user => user.username);
 
       await this.setState({
         userGroupRelations,
         relatedPages,
-        unrelatedUsers,
-        unrelatedNames,
       });
     }
     catch (err) {
@@ -106,6 +100,15 @@ export default class UserGroupDetailContainer extends Container {
   async closeUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: false });
   }
+
+  /**
+   * search user for invitation
+   * @param {string} username username of the user to be searched
+   */
+  async fetchApplicableUsers() {
+    console.log('ここはサーチ');
+  }
+
 
   /**
    * update user group

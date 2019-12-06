@@ -31,7 +31,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
-    this.filterApplicableUsersDebounce = debounce(1000, this.filterApplicableUsers);
+    this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
 
   /**
@@ -64,15 +64,9 @@ class UserGroupUserFormByInput extends React.Component {
     return this.state.input !== '';
   }
 
-  filterApplicableUsers() {
-    const applicableUsers = this.props.userGroupDetailContainer.state.unrelatedNames.filter((name) => {
-      return name.indexOf(this.state.input !== -1);
-    });
+  searhApplicableUsers() {
+    this.props.userGroupDetailContainer.searhApplicableUsers();
 
-    this.setState({
-      applicableUsers,
-      isLoading: false,
-    });
   }
 
   /**
@@ -90,7 +84,7 @@ class UserGroupUserFormByInput extends React.Component {
     }
 
     this.setState({ isLoading: true });
-    this.filterApplicableUsersDebounce();
+    this.searhApplicableUsersDebounce();
   }
 
   onKeyDown(event) {
@@ -141,7 +135,7 @@ class UserGroupUserFormByInput extends React.Component {
             caseSensitive={false}
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('add') }</button>
+        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{t('add')}</button>
       </form>
     );
   }
