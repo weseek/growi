@@ -40,7 +40,7 @@ export default class AdminMarkDownContainer extends Container {
     return 'AdminMarkDownContainer';
   }
 
-  /**
+/**
  * retrieve markdown data
  */
   async retrieveMarkdownData() {
