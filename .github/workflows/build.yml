@@ -1,4 +1,4 @@
-name: Release Docker Images (NOCDN)
+name: Release Docker Images
 
 on:
   push:
@@ -7,12 +7,21 @@ on:
 
 jobs:
 
-  build-rc:
+  build:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        flavor: [default, nocdn]
+
     steps:
     - uses: actions/checkout@v1
+
+    - name: Determine suffix
+      run: |
+        [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
+        echo ::set-env name=SUFFIX::$suffix
 
     - name: Set up Docker Buildx
       uses: crazy-max/ghaction-docker-buildx@v1.0.4
@@ -23,27 +32,29 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        CACHE_REF=weseek/growi-cache:3-nocdn
+        CACHE_REF=weseek/growi-cache:3${{ env.SUFFIX }}
         docker buildx build \
           --tag growi \
-          --build-arg flavor=nocdn \
+          --build-arg flavor=${{ matrix.flavor }} \
           --platform linux/amd64 \
           --load \
           --cache-from=type=registry,ref=$CACHE_REF \
+          --cache-to=type=registry,ref=$CACHE_REF,mode=max \
           --file ./docker/Dockerfile .
 
     - name: Get SemVer
       run: |
         semver=`npm run version --silent`
-        echo ::set-env name=SEMVER::$(echo $semver)
+        echo ::set-env name=SEMVER::$semver
 
     - name: Docker Tags by SemVer
-      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.5
       with:
         source: growi
         target: weseek/growi
         semver: ${{ env.SEMVER }}
-        suffix: -nocdn
+        suffix: ${{ env.SUFFIX }}
+        additional-tags: 'latest'
         publish: true
 
   publish-desc:
