@@ -16,7 +16,6 @@ module.exports = function(crowi, app) {
     configManager,
     aclService,
     slackNotificationService,
-    customizeService,
     exportService,
   } = crowi;
 
