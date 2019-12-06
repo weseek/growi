@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -12,9 +12,15 @@ class SiteUrlSetting extends React.Component {
     super(props);
 
     this.state = {
+      siteUrl: '',
     };
+
+    this.inputSiteUrlChangeHandler = this.inputSiteUrlChangeHandler.bind(this);
   }
 
+  inputSiteUrlChangeHandler(event) {
+    this.setState({ siteUrl: event.target.value });
+  }
 
   render() {
     const { t } = this.props;
@@ -35,7 +41,10 @@ class SiteUrlSetting extends React.Component {
                   <col className="from-env-vars" />
                 </colgroup>
                 <thead>
-                  <tr><th>Database</th><th>Environment variables</th></tr>
+                  <tr>
+                    <th>Database</th>
+                    <th>Environment variables</th>
+                  </tr>
                 </thead>
                 <tbody>
                   <tr>
@@ -44,20 +53,20 @@ class SiteUrlSetting extends React.Component {
                         className="form-control"
                         type="text"
                         name="settingForm[app:siteUrl]"
-                        value="{{ getConfigFromDB('crowi', 'app:siteUrl') | default('') }}"
+                        value={this.state.siteUrl}
+                        onChange={this.inputSiteUrlChangeHandler}
                         placeholder="e.g. https://my.growi.org"
                       />
-                      <p className="help-block">{t('app_setting.siteurl_help')}</p>
+                      <p className="help-block">
+                        {/* eslint-disable-next-line react/no-danger */}
+                        <div dangerouslySetInnerHTML={{ __html: t('app_setting.siteurl_help') }} />
+                      </p>
                     </td>
                     <td>
-                      <input
-                        className="form-control"
-                        type="text"
-                        value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}"
-                        readOnly
-                      />
+                      <input className="form-control" type="text" value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}" readOnly />
                       <p className="help-block">
-                        {t('app_setting.Use env var if empty', 'APP_SITE_URL')}
+                        {/* eslint-disable-next-line react/no-danger */}
+                        <div dangerouslySetInnerHTML={{ __html: t('app_setting.Use env var if empty', { variable: 'APP_SITE_URL' }) }} />
                       </p>
                     </td>
                   </tr>
@@ -73,7 +82,7 @@ class SiteUrlSetting extends React.Component {
               <div className="col-xs-offset-3 col-xs-6">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}" />
                 <button type="submit" className="btn btn-primary">
-                  {t('app_setting.Update')}
+                  { t('app_setting.Update') }
                 </button>
               </div>
             </div>

@@ -438,7 +438,7 @@
     "Load plugins": "Load plugins",
     "Enable": "Enable",
     "Disable": "Disable",
-    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
+    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used."
   },
 
   "security_setting": {

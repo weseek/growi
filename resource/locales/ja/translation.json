@@ -437,7 +437,7 @@
     "Load plugins": "プラグインを読み込む",
     "Enable": "有効",
     "Disable": "無効",
-    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します"
+    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します"
    },
 
   "security_setting": {
