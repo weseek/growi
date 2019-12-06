@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+
+const logger = loggerFactory('growi:appSettings');
 
 class SiteUrlSetting extends React.Component {
 
@@ -13,9 +17,43 @@ class SiteUrlSetting extends React.Component {
 
     this.state = {
       siteUrl: '',
+      envSiteUrl: '',
     };
 
     this.inputSiteUrlChangeHandler = this.inputSiteUrlChangeHandler.bind(this);
+  }
+
+  async componentDidMount() {
+    try {
+      const response = await this.props.appContainer.apiv3.get('/app-settings/site-url-setting');
+      const appSettingParams = response.data.appSettingParams;
+
+      this.setState({
+        siteUrl: appSettingParams.siteUrl || '',
+        envSiteUrl: appSettingParams.envSiteUrl || '',
+      });
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  async submitHandler() {
+    const { t } = this.props;
+
+    const params = {
+      siteUrl: this.state.siteUrl,
+    };
+
+    try {
+      await this.props.appContainer.apiv3.put('/app-settings/site-url-setting', params);
+      toastSuccess(t('Updated_site_url'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   }
 
   inputSiteUrlChangeHandler(event) {
@@ -63,7 +101,7 @@ class SiteUrlSetting extends React.Component {
                       </p>
                     </td>
                     <td>
-                      <input className="form-control" type="text" value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}" readOnly />
+                      <input className="form-control" type="text" value={this.state.envSiteUrl} readOnly />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
                         <div dangerouslySetInnerHTML={{ __html: t('app_setting.Use env var if empty', { variable: 'APP_SITE_URL' }) }} />
@@ -82,7 +120,7 @@ class SiteUrlSetting extends React.Component {
               <div className="col-xs-offset-3 col-xs-6">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}" />
                 <button type="submit" className="btn btn-primary">
-                  { t('app_setting.Update') }
+                  {t('app_setting.Update')}
                 </button>
               </div>
             </div>
