@@ -28,15 +28,21 @@ class AppSetting extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
-    const appSettingParams = response.data.appSettingParams;
+    try {
+      const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
+      const appSettingParams = response.data.appSettingParams;
 
-    this.setState({
-      title: appSettingParams.title || '',
-      confidential: appSettingParams.confidential || '',
-      globalLang: appSettingParams.globalLang || 'en-US',
-      fileUpload: appSettingParams.fileUpload || false,
-    });
+      this.setState({
+        title: appSettingParams.title || '',
+        confidential: appSettingParams.confidential || '',
+        globalLang: appSettingParams.globalLang || 'en-US',
+        fileUpload: appSettingParams.fileUpload || false,
+      });
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   }
 
   async submitHandler() {
