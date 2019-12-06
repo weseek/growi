@@ -26,7 +26,7 @@ class LineBreakForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateLineBreakSetting();
-      toastSuccess(t('markdown_setting.updated_lineBreak'));
+      toastSuccess( t('markdown_setting.updated_lineBreak') );
     }
     catch (err) {
       toastError(err);
@@ -103,7 +103,7 @@ class LineBreakForm extends React.Component {
               onClick={this.onClickSubmit}
               disabled={adminMarkDownContainer.state.retrieveError != null}
             >
-              {t('Update')}
+              { t('Update') }
             </button>
           </div>
         </div>
