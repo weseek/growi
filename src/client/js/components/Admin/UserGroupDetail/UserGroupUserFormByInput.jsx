@@ -65,8 +65,12 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   searhApplicableUsers() {
-    this.props.userGroupDetailContainer.searhApplicableUsers();
-
+    try {
+      this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.input);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**

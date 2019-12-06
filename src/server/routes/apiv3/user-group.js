@@ -318,12 +318,14 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: user objects
    */
+  // TODO rewrite swagger
   router.get('/:id/unrelated-users', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
+    const { searchWord } = req.query;
 
     try {
       const userGroup = await UserGroup.findById(id);
-      const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup);
+      const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup, searchWord);
 
       return res.apiv3({ users });
     }
