@@ -70,27 +70,6 @@ class SiteUrlSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="settingForm[app:confidential]" className="col-xs-3 control-label">
-                {t('app_setting.Confidential name')}
-              </label>
-              <div className="col-xs-6">
-                <input
-                  className="form-control"
-                  id="settingForm[app:confidential]"
-                  type="text"
-                  name="settingForm[app:confidential]"
-                  value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
-                  placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}"
-                />
-                <p className="help-block">{t('app_setting.header_content')}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
