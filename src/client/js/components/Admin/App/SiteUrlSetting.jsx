@@ -66,9 +66,7 @@ class SiteUrlSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.Site URL desc')}</p>
-        {/* {% if !getConfig('crowi', 'app:siteUrl') %}
-              <p class="alert alert-danger"><i class="icon-exclamation"></i> {{ t('app_setting.Site URL warn') }}</p>
-        {% endif %} */}
+        {this.state.siteUrl === '' && (<p className="alert alert-danger"><i className="icon-exclamation"></i> { t('app_setting.Site URL warn') }</p>)}
 
         <div className="row">
           <div className="col-md-12">
