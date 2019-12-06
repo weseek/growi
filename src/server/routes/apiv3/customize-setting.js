@@ -70,6 +70,8 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
+  const { customizeService } = crowi;
+
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
@@ -387,6 +389,7 @@ module.exports = (crowi) => {
       const customizedParams = {
         customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       };
+      customizeService.initCustomTitle();
       return res.apiv3({ customizedParams });
     }
     catch (err) {
@@ -477,6 +480,7 @@ module.exports = (crowi) => {
       const customizedParams = {
         customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       };
+      customizeService.initCustomCss();
       return res.apiv3({ customizedParams });
     }
     catch (err) {
