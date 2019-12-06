@@ -26,7 +26,7 @@ class LineBreakForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateLineBreakSetting();
-      toastSuccess( t('markdown_setting.updated_lineBreak') );
+      toastSuccess(t('markdown_setting.updated_lineBreak'));
     }
     catch (err) {
       toastError(err);
@@ -51,7 +51,7 @@ class LineBreakForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
             />
             <label htmlFor="isEnabledLinebreaks">
-              { t('markdown_setting.Enable Line Break') }
+              {t('markdown_setting.Enable Line Break')}
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
@@ -77,7 +77,7 @@ class LineBreakForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
             />
             <label htmlFor="isEnabledLinebreaksInComments">
-              { t('markdown_setting.Enable Line Break for comment') }
+              {t('markdown_setting.Enable Line Break for comment')}
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
@@ -103,7 +103,7 @@ class LineBreakForm extends React.Component {
               onClick={this.onClickSubmit}
               disabled={adminMarkDownContainer.state.retrieveError != null}
             >
-              { t('Update') }
+              {t('Update')}
             </button>
           </div>
         </div>

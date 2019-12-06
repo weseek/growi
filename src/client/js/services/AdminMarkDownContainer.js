@@ -39,9 +39,9 @@ export default class AdminMarkDownContainer extends Container {
     return 'AdminMarkDownContainer';
   }
 
-/**
- * retrieve markdown data
- */
+  /**
+   * retrieve markdown data
+   */
   async retrieveMarkdownData() {
     try {
       const response = await this.appContainer.apiv3.get('/markdown-setting/');
