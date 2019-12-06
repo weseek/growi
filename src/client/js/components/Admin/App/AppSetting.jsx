@@ -140,7 +140,7 @@ class AppSetting extends React.Component {
                 checked={this.state.globalLang === 'en-US'}
                 onClick={this.inputGlobalLangChangeHandler}
               />
-              <label>{t('English')}</label>
+              <label htmlFor="radioLangEn">{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
               <input
@@ -151,7 +151,7 @@ class AppSetting extends React.Component {
                 checked={this.state.globalLang === 'ja'}
                 onClick={this.inputGlobalLangChangeHandler}
               />
-              <label>{t('Japanese')}</label>
+              <label htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
@@ -162,14 +162,8 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input
-                    type="checkbox"
-                    id="cbFileUpload"
-                    name="fileUpload"
-                    checked={this.state.fileUpload}
-                    onChange={this.inputFileUploadChangeHandler}
-                  />
-                  <label>{t('app_setting.enable_files_except_image')}</label>
+                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputFileUploadChangeHandler} />
+                  <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
                 <p className="help-block">
