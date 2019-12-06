@@ -194,7 +194,7 @@ class UserGroupRelation {
    * @returns {Promise<User>}
    * @memberof UserGroupRelation
    */
-  static findUserByNotRelatedGroup(userGroup) {
+  static findUserByNotRelatedGroup(userGroup, queryOptions) {
     const User = UserGroupRelation.crowi.model('User');
 
     return this.findAllRelationForUserGroup(userGroup)
@@ -202,7 +202,11 @@ class UserGroupRelation {
         const relatedUserIds = relations.map((relation) => {
           return relation.relatedUser.id;
         });
-        const query = { _id: { $nin: relatedUserIds }, status: User.STATUS_ACTIVE };
+        const query = {
+          _id: { $nin: relatedUserIds },
+          status: User.STATUS_ACTIVE,
+          username: `/${queryOptions.searchWord}/`,
+        };
 
         debug('findUserByNotRelatedGroup ', query);
         return User.find(query).exec();
