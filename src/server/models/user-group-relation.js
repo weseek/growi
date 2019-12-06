@@ -214,20 +214,6 @@ class UserGroupRelation {
   }
 
   /**
-   * find all "not" related user for UserGroup
-   *
-   * @static
-   * @param {UserGroup} userGroup for find users not related
-   * @returns {Promise<User>}
-   * @memberof UserGroupRelation
-   */
-  static queryUserByNotRelatedGroup(userGroup, query) {
-
-    console.log('relation');
-
-  }
-
-  /**
    * get if the user has relation for group
    *
    * @static
