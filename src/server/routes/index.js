@@ -95,15 +95,6 @@ module.exports = function(crowi, app) {
 
   // customize admin
   app.get('/admin/customize'                , loginRequiredStrictly , adminRequired , admin.customize.index);
-  app.post('/_api/admin/customize/css'      , loginRequiredStrictly , adminRequired , csrf, form.admin.customcss, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/script'   , loginRequiredStrictly , adminRequired , csrf, form.admin.customscript, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/header'   , loginRequiredStrictly , adminRequired , csrf, form.admin.customheader, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/theme'    , loginRequiredStrictly , adminRequired , csrf, form.admin.customtheme, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/title'    , loginRequiredStrictly , adminRequired , csrf, form.admin.customtitle, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/behavior' , loginRequiredStrictly , adminRequired , csrf, form.admin.custombehavior, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/layout'   , loginRequiredStrictly , adminRequired , csrf, form.admin.customlayout, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/features' , loginRequiredStrictly , adminRequired , csrf, form.admin.customfeatures, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/highlightJsStyle' , loginRequiredStrictly , adminRequired , csrf, form.admin.customhighlightJsStyle, admin.api.customizeSetting);
 
   // search admin
   app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);

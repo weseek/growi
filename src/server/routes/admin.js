@@ -868,20 +868,6 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
-  actions.api.customizeSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      customizeService.initCustomCss();
-      customizeService.initCustomTitle();
-
-      return res.json({ status: true });
-    }
-
-    return res.json({ status: false, message: req.form.errors.join('\n') });
-  };
 
   // app.post('/_api/admin/notifications.add'    , admin.api.notificationAdd);
   actions.api.notificationAdd = function(req, res) {
