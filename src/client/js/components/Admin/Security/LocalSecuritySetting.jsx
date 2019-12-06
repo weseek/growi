@@ -11,6 +11,12 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 
 class LocalSecuritySetting extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.putLocalSecuritySetting = this.putLocalSecuritySetting.bind(this);
+  }
+
   async putLocalSecuritySetting() {
     const { t } = this.props;
     try {

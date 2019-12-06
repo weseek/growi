@@ -20,9 +20,9 @@ const validator = {
     body('hideRestrictedByGroup').isBoolean(),
   ],
   localSetting: [
-    body('isLocalEnabled').boolean(),
+    body('isLocalEnabled').isBoolean(),
     body('registrationMode').isString(),
-    body('registrationWhiteList').isString(),
+    body('registrationWhiteList').toArray(),
   ],
 };
 
@@ -118,7 +118,7 @@ module.exports = (crowi) => {
           registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode') || '',
         },
         WhiteListParams: {
-          registrationWhiteList: await crowi.configManage.getConfig('crowi', 'security:registrationWhiteList') || '',
+          registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList') || '',
         },
       },
     };
