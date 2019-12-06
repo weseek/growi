@@ -91,6 +91,38 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /markdown-setting/:
+   *      get:
+   *        tags: [MarkDownSettind]
+   *        description: Get markdown paramators
+   *        responses:
+   *          200:
+   *            description: params of markdown
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    markdonwParams:
+   *                      $ref: '#/components/schemas/CustomizeParams'
+   */
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const markdownParams = {
+      isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+      isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+      pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
+      pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
+      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
+      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
+      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+    };
+
+    return res.apiv3({ markdownParams });
+  });
+
+  /**
+   * @swagger
+   *
    *    /markdown-setting/lineBreak:
    *      put:
    *        tags: [MarkDownSetting]
