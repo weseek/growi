@@ -50,7 +50,7 @@ export default class AdminMarkDownContainer extends Container {
       this.setState({
         isEnabledLinebreaks: markdownParams.isEnabledLinebreaks,
         isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
-        pageBreakSeparator: markdownParams.pageBreakSeparator || 1,
+        pageBreakSeparator: markdownParams.pageBreakSeparator,
         pageBreakCustomSeparator: markdownParams.pageBreakCustomSeparator || '',
         isEnabledXss: markdownParams.isEnabledXss,
         xssOption: markdownParams.xssOption,
