@@ -64,9 +64,10 @@ class UserGroupUserFormByInput extends React.Component {
     return this.state.input !== '';
   }
 
-  searhApplicableUsers() {
+  async searhApplicableUsers() {
     try {
-      this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.input);
+      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.input);
+      this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
       toastError(err);
