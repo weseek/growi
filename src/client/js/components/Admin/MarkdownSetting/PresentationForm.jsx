@@ -89,7 +89,7 @@ class PresentationForm extends React.Component {
               { t('markdown_setting.Custom separator desc') }
               <input
                 className="form-control"
-                value={pageBreakCustomSeparator}
+                defaultValue={pageBreakCustomSeparator}
                 onChange={(e) => { adminMarkDownContainer.setPageBreakCustomSeparator(e.target.value) }}
               />
             </div>
@@ -98,7 +98,7 @@ class PresentationForm extends React.Component {
 
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+            <div className="btn btn-primary" onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null}>{t('Update')}</div>
           </div>
         </div>
 

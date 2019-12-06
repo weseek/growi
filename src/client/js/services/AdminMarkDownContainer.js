@@ -19,6 +19,7 @@ export default class AdminMarkDownContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       isEnabledLinebreaks: false,
       isEnabledLinebreaksInComments: false,
       pageBreakSeparator: 1,
