@@ -206,7 +206,7 @@ class UserGroupRelation {
         const query = {
           _id: { $nin: relatedUserIds },
           status: User.STATUS_ACTIVE,
-          username: `/${queryOptions.searchWord}/`,
+          username: new RegExp(`${queryOptions.searchWord}`),
         };
 
         debug('findUserByNotRelatedGroup ', query);

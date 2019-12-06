@@ -113,7 +113,12 @@ export default class UserGroupDetailContainer extends Container {
     });
 
     const { users } = res.data;
-    return users;
+
+    const applicableUsers = users.map((user) => {
+      return user.username;
+    });
+
+    return applicableUsers;
   }
 
 
