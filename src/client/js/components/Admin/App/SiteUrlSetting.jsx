@@ -61,20 +61,14 @@ class SiteUrlSetting extends React.Component {
     this.setState({ siteUrl: event.target.value });
   }
 
-  renderWarningMessage() {
-    const { t } = this.props;
-
-    if (this.state.siteUrl) {
-      return (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>);
-    }
-  }
-
   render() {
     const { t } = this.props;
 
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.Site URL desc')}</p>
+        {!this.state.siteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
+
         <div className="row">
           <div className="col-md-12">
             <div className="col-xs-offset-3">
