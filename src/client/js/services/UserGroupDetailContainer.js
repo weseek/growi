@@ -23,8 +23,6 @@ export default class UserGroupDetailContainer extends Container {
       userGroup: JSON.parse(document.getElementById('admin-user-group-detail').getAttribute('data-user-group')),
       userGroupRelations: [],
       relatedPages: [],
-      unrelatedUsers: [],
-      unrelatedNames: [],
       isUserGroupUserModalOpen: false,
     };
 
@@ -108,7 +106,7 @@ export default class UserGroupDetailContainer extends Container {
   async fetchApplicableUsers(searchWord) {
     const res = await this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
       searchWord,
-      // TODO switch value
+      // TODO GW-716 switch value
       isForwardMatch: false,
       isAlsoNameSearched: false,
       isAlsoMailSearched: false,

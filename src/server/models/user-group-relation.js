@@ -202,6 +202,7 @@ class UserGroupRelation {
         const relatedUserIds = relations.map((relation) => {
           return relation.relatedUser.id;
         });
+        // TODO GW-717 set query option
         const query = {
           _id: { $nin: relatedUserIds },
           status: User.STATUS_ACTIVE,
