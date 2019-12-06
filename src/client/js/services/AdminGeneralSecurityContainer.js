@@ -18,7 +18,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.state = {
       // TODO GW-583 set value
-      isWikiModeForced: false,
+      isWikiModeForced: true,
       currentRestrictGuestMode: 'deny',
       currentPageCompleteDeletionAuthority: 'anyone',
       isHideRestrictedByOwner: true,
@@ -37,8 +37,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isTwitterOAuthEnabled: true,
     };
 
-    this.init();
-
     this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
     this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
     this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
@@ -48,8 +46,15 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  async retriveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { generalSetting } = response.data.securityParams;
+    this.setState({
+      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
+      currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
+      isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
+      isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
+    });
   }
 
 
