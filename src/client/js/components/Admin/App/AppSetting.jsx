@@ -23,8 +23,10 @@ class AppSetting extends React.Component {
     };
 
     this.submitHandler = this.submitHandler.bind(this);
-    this.inputChangeHandler = this.inputChangeHandler.bind(this);
-    this.inputCheckBoxChangeHandler = this.inputCheckBoxChangeHandler.bind(this);
+    this.inputTitleChangeHandler = this.inputTitleChangeHandler.bind(this);
+    this.inputConfidentialChangeHandler = this.inputConfidentialChangeHandler.bind(this);
+    this.inputGlobalLangChangeHandler = this.inputGlobalLangChangeHandler.bind(this);
+    this.inputFileUploadChangeHandler = this.inputFileUploadChangeHandler.bind(this);
   }
 
   async componentDidMount() {
@@ -65,14 +67,20 @@ class AppSetting extends React.Component {
     }
   }
 
-  inputChangeHandler(event) {
-    const target = event.target;
-    this.setState({ [target.name]: target.value });
+  inputTitleChangeHandler(event) {
+    this.setState({ title: event.target.value });
   }
 
-  inputCheckBoxChangeHandler(event) {
-    const target = event.target;
-    this.setState({ [target.name]: target.checked });
+  inputConfidentialChangeHandler(event) {
+    this.setState({ confidential: event.target.value });
+  }
+
+  inputGlobalLangChangeHandler(event) {
+    this.setState({ globalLang: event.target.value });
+  }
+
+  inputFileUploadChangeHandler(event) {
+    this.setState({ fileUpload: event.target.checked });
   }
 
   render() {
@@ -91,7 +99,7 @@ class AppSetting extends React.Component {
                   type="text"
                   name="title"
                   value={this.state.title}
-                  onChange={this.inputChangeHandler}
+                  onChange={this.inputTitleChangeHandler}
                   placeholder="GROWI"
                 />
                 <p className="help-block">{t('app_setting.sitename_change')}</p>
@@ -111,7 +119,7 @@ class AppSetting extends React.Component {
                   type="text"
                   name="confidential"
                   value={this.state.confidential}
-                  onChange={this.inputChangeHandler}
+                  onChange={this.inputConfidentialChangeHandler}
                   placeholder={t('app_setting.ex) internal use only')}
                 />
                 <p className="help-block">{t('app_setting.header_content')}</p>
@@ -130,12 +138,19 @@ class AppSetting extends React.Component {
                 name="globalLang"
                 value="en-US"
                 checked={this.state.globalLang === 'en-US'}
-                onClick={this.inputChangeHandler}
+                onClick={this.inputGlobalLangChangeHandler}
               />
               <label>{t('English')}</label>
             </div>
             <div className="radio radio-primary radio-inline">
-              <input type="radio" id="radioLangJa" name="globalLang" value="ja" checked={this.state.globalLang === 'ja'} onClick={this.inputChangeHandler} />
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="globalLang"
+                value="ja"
+                checked={this.state.globalLang === 'ja'}
+                onClick={this.inputGlobalLangChangeHandler}
+              />
               <label>{t('Japanese')}</label>
             </div>
           </div>
@@ -147,7 +162,13 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputCheckBoxChangeHandler} />
+                  <input
+                    type="checkbox"
+                    id="cbFileUpload"
+                    name="fileUpload"
+                    checked={this.state.fileUpload}
+                    onChange={this.inputFileUploadChangeHandler}
+                  />
                   <label>{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
