@@ -31,7 +31,7 @@ class AppSetting extends React.Component {
 
   async componentDidMount() {
     try {
-      const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
+      const response = await this.props.appContainer.apiv3.get('/app-settings/');
       const appSettingParams = response.data.appSettingParams;
 
       this.setState({

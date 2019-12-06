@@ -20,12 +20,13 @@ class SiteUrlSetting extends React.Component {
       envSiteUrl: '',
     };
 
+    this.submitHandler = this.submitHandler.bind(this);
     this.inputSiteUrlChangeHandler = this.inputSiteUrlChangeHandler.bind(this);
   }
 
   async componentDidMount() {
     try {
-      const response = await this.props.appContainer.apiv3.get('/app-settings/site-url-setting');
+      const response = await this.props.appContainer.apiv3.get('/app-settings/');
       const appSettingParams = response.data.appSettingParams;
 
       this.setState({
@@ -48,7 +49,7 @@ class SiteUrlSetting extends React.Component {
 
     try {
       await this.props.appContainer.apiv3.put('/app-settings/site-url-setting', params);
-      toastSuccess(t('Updated_site_url'));
+      toastSuccess(t('app_setting.updated_site_url'));
     }
     catch (err) {
       toastError(err);
@@ -60,14 +61,20 @@ class SiteUrlSetting extends React.Component {
     this.setState({ siteUrl: event.target.value });
   }
 
+  renderWarningMessage() {
+    const { t } = this.props;
+
+    if (this.state.siteUrl) {
+      return (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>);
+    }
+  }
+
   render() {
     const { t } = this.props;
 
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.Site URL desc')}</p>
-        {this.state.siteUrl === '' && (<p className="alert alert-danger"><i className="icon-exclamation"></i> { t('app_setting.Site URL warn') }</p>)}
-
         <div className="row">
           <div className="col-md-12">
             <div className="col-xs-offset-3">
@@ -116,8 +123,7 @@ class SiteUrlSetting extends React.Component {
           <div className="col-md-12">
             <div className="form-group">
               <div className="col-xs-offset-3 col-xs-6">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" onClick={this.submitHandler}>
                   {t('app_setting.Update')}
                 </button>
               </div>

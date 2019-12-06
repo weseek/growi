@@ -17,6 +17,9 @@ const validator = {
     body('globalLang').isIn(['en-US', 'ja']),
     body('fileUpload').isBoolean(),
   ],
+  siteUrlSetting: [
+    body('siteUrl').trim(),
+  ],
 };
 
 
@@ -46,6 +49,12 @@ const validator = {
  *          fileUpload:
  *            type: boolean
  *            description: enable upload file except image file
+ *          siteUrl:
+ *            type: String
+ *            description: Site URL. e.g. https://example.com, https://example.com:8080
+ *          envSiteUrl:
+ *            type: String
+ *            description: environment variable 'APP_SITE_URL'
  */
 
 module.exports = (crowi) => {
@@ -60,7 +69,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/app-setting:
+   *    /app-settings/:
    *      get:
    *        tags: [AppSettings]
    *        description: get app setting params
@@ -83,13 +92,21 @@ module.exports = (crowi) => {
    *                    fileUpload:
    *                      type: boolean
    *                      description: enable upload file except image file
+   *                    siteUrl:
+   *                      type: String
+   *                      description: Site URL. e.g. https://example.com, https://example.com:8080
+   *                    envSiteUrl:
+   *                      type: String
+   *                      description: environment variable 'APP_SITE_URL'
    */
-  router.get('/app-setting', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const appSettingParams = {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
       confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+      siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
+      envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
     };
     return res.apiv3({ appSettingParams });
 
@@ -155,6 +172,54 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating app setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-appSetting-failed'));
+    }
+
+  });
+
+  /**
+ * @swagger
+ *
+ *    /app-settings/site-url-setting:
+ *      put:
+ *        tags: [AppSettings]
+ *        description: Update site url setting
+ *        requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  siteUrl:
+ *                    type: String
+ *                    description: Site URL. e.g. https://example.com, https://example.com:8080
+ *        responses:
+ *          200:
+ *            description: Succeeded to update site url setting
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  properties:
+ *                    status:
+ *                      $ref: '#/components/schemas/appSettingParams'
+ */
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
+
+    const requestSiteUrlSettingParams = {
+      'app:siteUrl': req.body.siteUrl,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestSiteUrlSettingParams);
+      const appSettingParams = {
+        siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
+      };
+      return res.apiv3({ appSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating site url setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-failed'));
     }
 
   });
