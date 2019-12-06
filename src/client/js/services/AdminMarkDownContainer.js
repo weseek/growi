@@ -4,7 +4,6 @@ import loggerFactory from '@alias/logger';
 
 import { toastError } from '../util/apiNotification';
 
-// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminMarkdownContainer');
 
 /**
