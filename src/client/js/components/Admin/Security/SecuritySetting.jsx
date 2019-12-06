@@ -24,7 +24,7 @@ class SecuritySetting extends React.Component {
     const { adminGeneralSecurityContainer } = this.props;
 
     try {
-      await adminGeneralSecurityContainer.retriveSecurityData();
+      await adminGeneralSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       toastError(err);
@@ -47,7 +47,8 @@ class SecuritySetting extends React.Component {
     const { t, adminGeneralSecurityContainer } = this.props;
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
-    const helpForceWikiMode = { __html: t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE') };
+    // eslint-disable-next-line max-len
+    const helpForceWikiMode = { __html: t('security_setting.Fixed by env var', { forcewikimode: 'FORCE_WIKI_MODE' }, { wikimode: adminGeneralSecurityContainer.state.wikiMode }) };
 
 
     return (
@@ -103,11 +104,12 @@ class SecuritySetting extends React.Component {
           </div>
           {adminGeneralSecurityContainer.state.isWikiModeForced && (
             <div className="row mb-5">
-              <div className="col-xs-6">
-                <p className="alert alert-warning mt-2">
-                  <i className="icon-exclamation icon-fw" dangerouslySetInnerHTML={helpForceWikiMode}>
-                  </i><b>FIXED</b>
-                  <br></br>
+              <div className="col-xs-3 text-right" />
+              <div className="col-xs-9 text-left">
+                <p className="alert alert-warning mt-2 text-left">
+                  <i className="icon-exclamation icon-fw">
+                  </i><b>FIXED</b><br />
+                  { <b dangerouslySetInnerHTML={helpForceWikiMode} /> }
                 </p>
               </div>
             </div>

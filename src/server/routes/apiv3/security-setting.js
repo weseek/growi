@@ -18,6 +18,7 @@ const validator = {
     body('pageCompleteDeletionAuthority').isString(),
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
+    body('wikiMode').isString(),
   ],
   githubOAuth: [
     body('githubClientId').isString(),
@@ -59,6 +60,12 @@ const validator = {
  *                  pageCompleteDeletionAuthority:
  *                    type: string
  *                    description: type of pageDeletionAuthority
+ *              WikiModeParams:
+ *                type: object
+ *                properties:
+ *                  wikiMode:
+ *                    type: string
+ *                    description: type of wikiMode
  *              Function:
  *                type: object
  *                properties:
@@ -137,6 +144,7 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
+        wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
       },
     };
 
@@ -185,6 +193,7 @@ module.exports = (crowi) => {
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
+      'security:wikiMode': req.body.wikiMode,
     };
 
     try {
@@ -194,6 +203,7 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
+        wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
       };
       return res.apiv3({ securitySettingParams });
     }

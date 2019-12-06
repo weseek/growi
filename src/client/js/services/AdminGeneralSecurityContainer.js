@@ -17,8 +17,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      isWikiModeForced: true,
+      isWikiModeForced: false,
+      wikiMode: '',
       currentRestrictGuestMode: 'deny',
       currentPageCompleteDeletionAuthority: 'anyone',
       isHideRestrictedByOwner: true,
@@ -44,16 +44,19 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.switchIsHideRestrictedByGroup = this.switchIsHideRestrictedByGroup.bind(this);
     this.switchIsHideRestrictedByOwner = this.switchIsHideRestrictedByOwner.bind(this);
     this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
+    this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
   }
 
-  async retriveSecurityData() {
+  async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { generalSetting } = response.data.securityParams;
+    this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
+      wikiMode: generalSetting.wikiMode || '',
     });
   }
 
@@ -93,6 +96,15 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
   }
 
+  onIsWikiModeForced() {
+    if (this.state.wikiMode === 'private') {
+      this.setState({ isWikiModeForced: true });
+    }
+    else {
+      this.setState({ isWikiModeForced: false });
+    }
+  }
+
 
   /**
    * Update restrictGuestMode
@@ -105,6 +117,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       hideRestrictedByGroup: this.state.isHideRestrictedByGroup,
       hideRestrictedByOwner: this.state.isHideRestrictedByOwner,
+      wikiMode: this.state.wikiMode,
     });
     const { securitySettingParams } = response.data;
     return securitySettingParams;
