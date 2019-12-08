@@ -57,7 +57,7 @@ class UploadForm extends React.Component {
                 type="file"
                 name="file"
                 className="form-control-file"
-                accept=".growi.zip"
+                accept=".zip"
                 ref={this.inputRef}
                 onChange={this.changeFileName}
               />
