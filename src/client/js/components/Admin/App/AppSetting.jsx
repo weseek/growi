@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+
+const logger = loggerFactory('growi:appSettings');
 
 class AppSetting extends React.Component {
 
@@ -12,9 +16,72 @@ class AppSetting extends React.Component {
     super(props);
 
     this.state = {
+      title: '',
+      confidential: '',
+      globalLang: 'en-US',
+      fileUpload: false,
     };
+
+    this.submitHandler = this.submitHandler.bind(this);
+    this.inputTitleChangeHandler = this.inputTitleChangeHandler.bind(this);
+    this.inputConfidentialChangeHandler = this.inputConfidentialChangeHandler.bind(this);
+    this.inputGlobalLangChangeHandler = this.inputGlobalLangChangeHandler.bind(this);
+    this.inputFileUploadChangeHandler = this.inputFileUploadChangeHandler.bind(this);
   }
 
+  async componentDidMount() {
+    try {
+      const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
+      const appSettingParams = response.data.appSettingParams;
+
+      this.setState({
+        title: appSettingParams.title || '',
+        confidential: appSettingParams.confidential || '',
+        globalLang: appSettingParams.globalLang || 'en-US',
+        fileUpload: appSettingParams.fileUpload || false,
+      });
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  async submitHandler() {
+    const { t } = this.props;
+
+    const params = {
+      title: this.state.title,
+      confidential: this.state.confidential,
+      globalLang: this.state.globalLang,
+      fileUpload: this.state.fileUpload,
+    };
+
+    try {
+      await this.props.appContainer.apiv3.put('/app-settings/app-setting', params);
+      toastSuccess(t('Updated app setting'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  inputTitleChangeHandler(event) {
+    this.setState({ title: event.target.value });
+  }
+
+  inputConfidentialChangeHandler(event) {
+    this.setState({ confidential: event.target.value });
+  }
+
+  inputGlobalLangChangeHandler(event) {
+    this.setState({ globalLang: event.target.value });
+  }
+
+  inputFileUploadChangeHandler(event) {
+    this.setState({ fileUpload: event.target.checked });
+  }
 
   render() {
     const { t } = this.props;
@@ -24,16 +91,15 @@ class AppSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="settingForm[app:title]" className="col-xs-3 control-label">
-                {t('app_setting.Site Name')}
-              </label>
+              <label className="col-xs-3 control-label">{t('app_setting.Site Name')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
                   id="settingForm[app:title]"
                   type="text"
-                  name="settingForm[app:title]"
-                  value="{{ getConfig('crowi', 'app:title') | default('') }}"
+                  name="title"
+                  value={this.state.title}
+                  onChange={this.inputTitleChangeHandler}
                   placeholder="GROWI"
                 />
                 <p className="help-block">{t('app_setting.sitename_change')}</p>
@@ -45,20 +111,47 @@ class AppSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="settingForm[app:confidential]" className="col-xs-3 control-label">
-                {t('app_setting.Confidential name')}
-              </label>
+              <label className="col-xs-3 control-label">{t('app_setting.Confidential name')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
                   id="settingForm[app:confidential]"
                   type="text"
-                  name="settingForm[app:confidential]"
-                  value="{{ getConfig('crowi', 'app:confidential') | default('') }}"
-                  placeholder="{{ t('app_setting. ex&rpar;: internal use only') }}"
+                  name="confidential"
+                  value={this.state.confidential}
+                  onChange={this.inputConfidentialChangeHandler}
+                  placeholder={t('app_setting.ex) internal use only')}
                 />
                 <p className="help-block">{t('app_setting.header_content')}</p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label className="col-xs-3 control-label">{t('app_setting.Default Language for new users')}</label>
+          <div className="col-xs-6">
+            <div className="radio radio-primary radio-inline">
+              <input
+                type="radio"
+                id="radioLangEn"
+                name="globalLang"
+                value="en-US"
+                checked={this.state.globalLang === 'en-US'}
+                onClick={this.inputGlobalLangChangeHandler}
+              />
+              <label htmlFor="radioLangEn">{t('English')}</label>
+            </div>
+            <div className="radio radio-primary radio-inline">
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="globalLang"
+                value="ja"
+                checked={this.state.globalLang === 'ja'}
+                onClick={this.inputGlobalLangChangeHandler}
+              />
+              <label htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
@@ -69,7 +162,7 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1" />
+                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputFileUploadChangeHandler} />
                   <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
@@ -87,8 +180,7 @@ class AppSetting extends React.Component {
           <div className="col-md-12">
             <div className="form-group">
               <div className="col-xs-offset-3 col-xs-6">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" onClick={this.submitHandler}>
                   {t('app_setting.Update')}
                 </button>
               </div>
