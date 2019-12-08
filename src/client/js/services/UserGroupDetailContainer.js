@@ -100,6 +100,29 @@ export default class UserGroupDetailContainer extends Container {
   }
 
   /**
+   * search user for invitation
+   * @param {string} username username of the user to be searched
+   */
+  async fetchApplicableUsers(searchWord) {
+    const res = await this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
+      searchWord,
+      // TODO GW-716 switch value
+      isForwardMatch: false,
+      isAlsoNameSearched: false,
+      isAlsoMailSearched: false,
+    });
+
+    const { users } = res.data;
+
+    const applicableUsers = users.map((user) => {
+      return user.username;
+    });
+
+    return applicableUsers;
+  }
+
+
+  /**
    * update user group
    *
    * @memberOf UserGroupDetailContainer

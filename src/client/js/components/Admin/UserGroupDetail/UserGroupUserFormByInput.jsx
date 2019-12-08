@@ -16,8 +16,7 @@ class UserGroupUserFormByInput extends React.Component {
 
     this.state = {
       input: '',
-      // TDOO GW-665 fetch users
-      applicableUsers: ['hoge', 'huga'],
+      applicableUsers: [],
       isLoading: false,
       searchError: null,
     };
@@ -32,7 +31,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
-    this.searchUserDebounce = debounce(1000, this.searchUser);
+    this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
 
   /**
@@ -41,7 +40,6 @@ class UserGroupUserFormByInput extends React.Component {
    */
   onInputChange(input) {
     this.setState({ input });
-    // this.props.onInputChange(text);
     if (input === '') {
       this.setState({ applicableUsers: [] });
     }
@@ -66,9 +64,14 @@ class UserGroupUserFormByInput extends React.Component {
     return this.state.input !== '';
   }
 
-  searchUser() {
-    // TODO GW-665 fetch users
-    this.setState({ isLoading: false });
+  async searhApplicableUsers() {
+    try {
+      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.input);
+      this.setState({ applicableUsers: users, isLoading: false });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
@@ -86,7 +89,7 @@ class UserGroupUserFormByInput extends React.Component {
     }
 
     this.setState({ isLoading: true });
-    this.searchUserDebounce();
+    this.searhApplicableUsersDebounce();
   }
 
   onKeyDown(event) {
@@ -125,7 +128,7 @@ class UserGroupUserFormByInput extends React.Component {
             isLoading={this.state.isLoading}
             labelKey="name"
             minLength={0}
-            options={this.state.applicableUsers} // Search result (Some page names)
+            options={this.state.applicableUsers} // Search result
             emptyLabel={this.getEmptyLabel()}
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
             align="left"
@@ -137,7 +140,7 @@ class UserGroupUserFormByInput extends React.Component {
             caseSensitive={false}
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('add') }</button>
+        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{t('add')}</button>
       </form>
     );
   }
