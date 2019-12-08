@@ -51,7 +51,7 @@ class LineBreakForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
             />
             <label htmlFor="isEnabledLinebreaks">
-              { t('markdown_setting.Enable Line Break') }
+              {t('markdown_setting.Enable Line Break')}
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
@@ -77,7 +77,7 @@ class LineBreakForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
             />
             <label htmlFor="isEnabledLinebreaksInComments">
-              { t('markdown_setting.Enable Line Break for comment') }
+              {t('markdown_setting.Enable Line Break for comment')}
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
@@ -87,7 +87,7 @@ class LineBreakForm extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminMarkDownContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -97,7 +97,14 @@ class LineBreakForm extends React.Component {
         </fieldset>
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={adminMarkDownContainer.state.retrieveError != null}
+            >
+              {t('Update')}
+            </button>
           </div>
         </div>
       </React.Fragment>

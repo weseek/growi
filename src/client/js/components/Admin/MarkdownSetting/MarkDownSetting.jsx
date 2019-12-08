@@ -2,14 +2,34 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
+import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+
+const logger = loggerFactory('growi:MarkDown');
 
 class MarkdownSetting extends React.Component {
+
+  async componentDidMount() {
+    const { adminMarkDownContainer } = this.props;
+
+    try {
+      await adminMarkDownContainer.retrieveMarkdownData();
+    }
+    catch (err) {
+      toastError(err);
+      adminMarkDownContainer.setState({ retrieveError: err });
+      logger.error(err);
+    }
+
+  }
 
   render() {
     const { t } = this.props;
@@ -43,12 +63,13 @@ class MarkdownSetting extends React.Component {
 }
 
 const MarkdownSettingWrapper = (props) => {
-  return createSubscribedElement(MarkdownSetting, props, [AppContainer]);
+  return createSubscribedElement(MarkdownSetting, props, [AppContainer, AdminMarkDownContainer]);
 };
 
 MarkdownSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
 };
 

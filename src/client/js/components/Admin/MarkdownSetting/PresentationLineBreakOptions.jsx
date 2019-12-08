@@ -60,7 +60,7 @@ class PresentationLineBreakOptions extends React.Component {
               { t('markdown_setting.Custom separator desc') }
               <input
                 className="form-control"
-                value={customRegularExpression}
+                defaultValue={customRegularExpression}
                 onChange={(e) => { adminMarkDownContainer.setState({ customRegularExpression: e.target.value }) }}
               />
             </div>
