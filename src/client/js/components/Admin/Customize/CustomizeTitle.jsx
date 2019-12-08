@@ -49,12 +49,12 @@ class CustomizeTitle extends React.Component {
         <p className="help-block">
           Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
           <br />
-          Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - { 'GROWI' }&lt;&#047;title&gt;</code></pre>
+          Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>
         </p>
         <div className="form-group">
           <input
             className="form-control"
-            value={currentCustomizeTitle}
+            defaultValue={currentCustomizeTitle}
             onChange={(e) => { adminCustomizeContainer.changeCustomizeTitle(e.target.value) }}
           />
         </div>
