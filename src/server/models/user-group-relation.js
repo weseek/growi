@@ -218,15 +218,15 @@ class UserGroupRelation {
    * get if the user has relation for group
    *
    * @static
-   * @param {User} userData
    * @param {UserGroup} userGroup
+   * @param {User} user
    * @returns {Promise<boolean>} is user related for group(or not)
    * @memberof UserGroupRelation
    */
-  static isRelatedUserForGroup(userData, userGroup) {
+  static isRelatedUserForGroup(userGroup, user) {
     const query = {
       relatedGroup: userGroup.id,
-      relatedUser: userData.id,
+      relatedUser: user.id,
     };
 
     return this
