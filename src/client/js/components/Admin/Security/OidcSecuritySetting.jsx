@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
@@ -22,7 +22,7 @@ class OidcSecurityManagement extends React.Component {
       retrieveError: null,
     };
 
-    // this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   async componentDidMount() {
@@ -34,6 +34,19 @@ class OidcSecurityManagement extends React.Component {
     catch (err) {
       toastError(err);
       this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t, adminOidcSecurityContainer } = this.props;
+
+    try {
+      await adminOidcSecurityContainer.updateGoogleSetting();
+      toastSuccess(t('security_setting.OAuth.OIDC.updated_oidc'));
+    }
+    catch (err) {
+      toastError(err);
       logger.error(err);
     }
   }
