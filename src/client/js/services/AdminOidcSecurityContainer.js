@@ -29,16 +29,30 @@ export default class AdminOidcSecurityContainer extends Container {
       oidcAttrMapUserName: '',
       oidcAttrMapName: '',
       oidcAttrMapEmail: '',
-      isSameUsernameTreatedAsIdenticalUser: true,
-      isSameEmailTreatedAsIdenticalUser: true,
+      isSameUsernameTreatedAsIdenticalUser: false,
+      isSameEmailTreatedAsIdenticalUser: false,
     };
-
-    this.init();
 
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { oidcAuth } = response.data.securityParams;
+    this.setState({
+      oidcProviderName: oidcAuth.oidcProviderName || '',
+      oidcIssuerHost: oidcAuth.oidcIssuerHost || '',
+      oidcClientId: oidcAuth.oidcClientId || '',
+      oidcClientSecret: oidcAuth.oidcClientSecret || '',
+      oidcAttrMapId: oidcAuth.oidcAttrMapId || '',
+      oidcAttrMapUserName: oidcAuth.oidcAttrMapUserName || '',
+      oidcAttrMapName: oidcAuth.oidcAttrMapName || '',
+      oidcAttrMapEmail: oidcAuth.oidcAttrMapEmail || '',
+      isSameUsernameTreatedAsIdenticalUser: oidcAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: oidcAuth.isSameEmailTreatedAsIdenticalUser || false,
+    });
   }
 
   /**
