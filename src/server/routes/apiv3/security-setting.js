@@ -19,6 +19,18 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  oidcAuth: [
+    body('oidcProviderName').isString(),
+    body('oidcIssuerHost').isString(),
+    body('oidcClientId').isString(),
+    body('oidcClientSecret').isString(),
+    body('oidcAttrMapId').isString(),
+    body('oidcAttrMapUserName').isString(),
+    body('oidcAttrMapEmail').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
+
+  ],
   basicAuth: [
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
@@ -298,8 +310,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
    */
-  // TODO validate
-  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, ApiV3FormValidator, async(req, res) => {
+  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-oidc:providerName': req.body.oidcProviderName,
       'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
