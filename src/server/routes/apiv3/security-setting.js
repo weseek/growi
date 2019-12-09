@@ -280,6 +280,65 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /security-setting/oidc:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update OpenID Connect setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update OpenID Connect setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
+   */
+  // TODO validate
+  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-oidc:providerName': req.body.oidcProviderName,
+      'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
+      'security:passport-oidc:clientId': req.body.oidcClientId,
+      'security:passport-oidc:clientSecret': req.body.oidcClientSecret,
+      'security:passport-oidc:attrMapId': req.body.oidcAttrMapId,
+      'security:passport-oidc:attrMapUserName': req.body.oidcAttrMapUserName,
+      'security:passport-oidc:attrMapName': req.body.oidcAttrMapName,
+      'security:passport-oidc:attrMapMail': req.body.oidcAttrMapEmail,
+      'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-oidc:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
+        oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
+        oidcClientId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
+        oidcClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
+        oidcAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
+        oidcAttrMapUserName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
+        oidcAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
+        oidcAttrMapEmail: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating OpenIDConnect';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-OpenIDConnect-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
    *    /security-setting/basic:
    *      put:
    *        tags: [SecuritySetting]
