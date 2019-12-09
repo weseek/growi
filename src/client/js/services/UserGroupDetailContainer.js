@@ -24,10 +24,14 @@ export default class UserGroupDetailContainer extends Container {
       userGroupRelations: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
+      isAlsoMailSearched: false,
+      isAlsoNameSearched: false,
     };
 
     this.init();
 
+    this.switchIsAlsoMailSearched = this.switchIsAlsoMailSearched.bind(this);
+    this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
     this.addUserByUsername = this.addUserByUsername.bind(this);
@@ -63,6 +67,20 @@ export default class UserGroupDetailContainer extends Container {
       logger.error(err);
       toastError(new Error('Failed to fetch data'));
     }
+  }
+
+  /**
+   * switch isAlsoMailSearched
+   */
+  switchIsAlsoMailSearched() {
+    this.setState({ isAlsoMailSearched: !this.state.isAlsoMailSearched });
+  }
+
+  /**
+   * switch isAlsoNameSearched
+   */
+  switchIsAlsoNameSearched() {
+    this.setState({ isAlsoNameSearched: !this.state.isAlsoNameSearched });
   }
 
   /**
@@ -108,8 +126,8 @@ export default class UserGroupDetailContainer extends Container {
       searchWord,
       // TODO GW-716 switch value
       isForwardMatch: false,
-      isAlsoNameSearched: false,
-      isAlsoMailSearched: false,
+      isAlsoMailSearched: this.state.isAlsoMailSearched,
+      isAlsoNameSearched: this.state.isAlsoNameSearched,
     });
 
     const { users } = res.data;

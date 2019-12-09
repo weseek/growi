@@ -23,30 +23,30 @@ class UserGroupUserModal extends React.Component {
           <div className="row mt-4">
             <div className="col-xs-12">
               <legend>検索時に有効にする</legend>
-              <div className="col-xs-6 my-1" key="isEmailForSearchEnabled">
+              <div className="col-xs-6 my-1" key="isAlsoMailSearched">
                 <div className="checkbox checkbox-info">
                   <input
                     type="checkbox"
-                    id="isEmailForSearchEnabled"
+                    id="isAlsoMailSearched"
                     className="form-check-input"
-                    checked={userGroupDetailContainer.state.isEmailForSearchEnabled}
-                    onChange={userGroupDetailContainer.switchIsEmailEnabled}
+                    checked={userGroupDetailContainer.state.isAlsoMailSearched}
+                    onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
                   />
-                  <label className="text-capitalize form-check-label ml-3" htmlFor="isEmailForSearchEnabled">
-                    Email
+                  <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoMailSearched">
+                    Mail
                   </label>
                 </div>
               </div>
-              <div className="col-xs-6 my-1" key="isNameForSearchEnabled">
+              <div className="col-xs-6 my-1" key="isAlsoNameSearched">
                 <div className="checkbox checkbox-info">
                   <input
                     type="checkbox"
-                    id="isNameForSearchEnabled"
+                    id="isAlsoNameSearched"
                     className="form-check-input"
-                    checked={userGroupDetailContainer.state.isNameForSearchEnabled}
-                    onChange={userGroupDetailContainer.switchIsEmailEnabled}
+                    checked={userGroupDetailContainer.state.isAlsoNameSearched}
+                    onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
                   />
-                  <label className="text-capitalize form-check-label ml-3" htmlFor="isNameForSearchEnabled">
+                  <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoNameSearched">
                     Name
                   </label>
                 </div>
