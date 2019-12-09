@@ -29,7 +29,6 @@ const validator = {
     body('oidcAttrMapEmail').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
     body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
-
   ],
   basicAuth: [
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
