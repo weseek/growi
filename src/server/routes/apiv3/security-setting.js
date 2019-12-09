@@ -102,12 +102,12 @@ const validator = {
  *              oidcAttrMapMail:
  *                type: string
  *                description: attr map mail for oidc
- *              isSameEmailTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
  *              isSameUsernameTreatedAsIdenticalUser
  *                type: boolean
  *                description: local account automatically linked the user name matched
+ *              isSameEmailTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  *          BasicAuthSetting:
  *            type:object
  *              isSameUsernameTreatedAsIdenticalUser
@@ -190,8 +190,8 @@ module.exports = (crowi) => {
         oidcAttrMapUserName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
         oidcAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
         oidcAttrMapEmail: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
-        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       },
       basicAuth: {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
