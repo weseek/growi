@@ -16,10 +16,43 @@ class UserGroupUserModal extends React.Component {
     return (
       <Modal show={userGroupDetailContainer.state.isUserGroupUserModalOpen} onHide={userGroupDetailContainer.closeUserGroupUserModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{ t('user_group_management.add_user') }</Modal.Title>
+          <Modal.Title>{t('user_group_management.add_user')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <UserGroupUserFormByInput />
+          <div className="row mt-4">
+            <div className="col-xs-12">
+              <legend>検索時に有効にする</legend>
+              <div className="col-xs-6 my-1" key="isEmailForSearchEnabled">
+                <div className="checkbox checkbox-info">
+                  <input
+                    type="checkbox"
+                    id="isEmailForSearchEnabled"
+                    className="form-check-input"
+                    checked={userGroupDetailContainer.state.isEmailForSearchEnabled}
+                    onChange={userGroupDetailContainer.switchIsEmailEnabled}
+                  />
+                  <label className="text-capitalize form-check-label ml-3" htmlFor="isEmailForSearchEnabled">
+                    Email
+                  </label>
+                </div>
+              </div>
+              <div className="col-xs-6 my-1" key="isNameForSearchEnabled">
+                <div className="checkbox checkbox-info">
+                  <input
+                    type="checkbox"
+                    id="isNameForSearchEnabled"
+                    className="form-check-input"
+                    checked={userGroupDetailContainer.state.isNameForSearchEnabled}
+                    onChange={userGroupDetailContainer.switchIsEmailEnabled}
+                  />
+                  <label className="text-capitalize form-check-label ml-3" htmlFor="isNameForSearchEnabled">
+                    Name
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
         </Modal.Body>
       </Modal>
     );
