@@ -280,10 +280,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/google-oauth:
+   *    /security-setting/basic:
    *      put:
    *        tags: [SecuritySetting]
-   *        description: Update google OAuth
+   *        description: Update basic
    *        requestBody:
    *          required: true
    *          content:
@@ -292,7 +292,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/SecurityParams/BasicAuthSetting'
    *        responses:
    *          200:
-   *            description: Succeeded to google OAuth
+   *            description: Succeeded to update basic
    *            content:
    *              application/json:
    *                schema:
