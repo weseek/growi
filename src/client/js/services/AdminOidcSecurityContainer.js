@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { pathUtils } from 'growi-commons';
+
+import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminOidcSecurityContainer');
@@ -17,8 +20,7 @@ export default class AdminOidcSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      callbackUrl: '',
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/oidc/callback'),
       oidcProviderName: '',
       oidcIssuerHost: '',
       oidcClientId: '',
