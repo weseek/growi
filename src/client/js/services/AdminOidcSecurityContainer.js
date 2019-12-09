@@ -132,4 +132,39 @@ export default class AdminOidcSecurityContainer extends Container {
     this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
   }
 
+  /**
+   * Update OpenID Connect
+   */
+  async updateOidcSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/oidc', {
+      oidcProviderName: this.state.oidcProviderName,
+      oidcIssuerHost: this.state.oidcIssuerHost,
+      oidcClientId: this.state.oidcClientId,
+      oidcClientSecret: this.state.oidcClientSecret,
+      oidcAttrMapId: this.state.oidcAttrMapId,
+      oidcAttrMapUserName: this.state.oidcAttrMapUserName,
+      oidcAttrMapName: this.state.oidcAttrMapName,
+      oidcAttrMapEmail: this.state.oidcAttrMapEmail,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      oidcProviderName: securitySettingParams.oidcProviderName || '',
+      oidcIssuerHost: securitySettingParams.oidcIssuerHost || '',
+      oidcClientId: securitySettingParams.oidcClientId || '',
+      oidcClientSecret: securitySettingParams.oidcClientSecret || '',
+      oidcAttrMapId: securitySettingParams.oidcAttrMapId || '',
+      oidcAttrMapUserName: securitySettingParams.oidcAttrMapUserName || '',
+      oidcAttrMapName: securitySettingParams.oidcAttrMapName || '',
+      oidcAttrMapEmail: securitySettingParams.oidcAttrMapEmail || '',
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser || false,
+    });
+    return response;
+  }
+
 }

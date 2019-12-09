@@ -42,7 +42,7 @@ class OidcSecurityManagement extends React.Component {
     const { t, adminOidcSecurityContainer } = this.props;
 
     try {
-      await adminOidcSecurityContainer.updateGoogleSetting();
+      await adminOidcSecurityContainer.updateOidcSetting();
       toastSuccess(t('security_setting.OAuth.OIDC.updated_oidc'));
     }
     catch (err) {
