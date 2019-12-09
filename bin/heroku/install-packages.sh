@@ -1,3 +1,3 @@
 #!/bin/sh
 
-yarn add -D $ADDITIONAL_PACKAGES
+yarn add $ADDITIONAL_PACKAGES
