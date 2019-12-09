@@ -20,6 +20,10 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 * Support: Upgrade libs
     * growi-commons
 
+## 3.5.24
+
+* Fix: Plugins are not working on Heroku
+
 ## 3.5.23
 
 * Fix: Global Notification failed to send e-mail
