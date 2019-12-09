@@ -76,6 +76,38 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          OidcAuthSetting:
+ *            type:object
+ *              oidcProviderName:
+ *                type: string
+ *                description: provider name for oidc
+ *              oidcIssuerHost:
+ *                type: string
+ *                description: issuer host for oidc
+ *              oidcClientId:
+ *                type: string
+ *                description: client id for oidc
+ *              oidcClientSecret:
+ *                type: string
+ *                description: client secret for oidc
+ *              oidcAttrMapId:
+ *                type: string
+ *                description: attr map id for oidc
+ *              oidcAttrMapUserName:
+ *                type: string
+ *                description: attr map username for oidc
+ *              oidcAttrMapName:
+ *                type: string
+ *                description: attr map name for oidc
+ *              oidcAttrMapMail:
+ *                type: string
+ *                description: attr map mail for oidc
+ *              isSameEmailTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the user name matched
  *          BasicAuthSetting:
  *            type:object
  *              isSameUsernameTreatedAsIdenticalUser
