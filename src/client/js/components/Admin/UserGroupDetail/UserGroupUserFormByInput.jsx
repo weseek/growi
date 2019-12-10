@@ -29,7 +29,6 @@ class UserGroupUserFormByInput extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
     this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
@@ -103,23 +102,14 @@ class UserGroupUserFormByInput extends React.Component {
     return (this.state.searchError !== null) && 'Error on searching.';
   }
 
-  renderMenuItemChildren(option, props, index) {
-    const user = option;
-    return (
-      <span>
-        {user}
-      </span>
-    );
-  }
-
   render() {
     const { t } = this.props;
 
     const inputProps = { autoComplete: 'off' };
 
     return (
-      <form className="form-inline" onSubmit={this.addUserBySubmit}>
-        <div className="form-group">
+      <div className="row">
+        <div className="col-xs-8 pr-0">
           <AsyncTypeahead
             {...this.props}
             id="name-typeahead-asynctypeahead"
@@ -136,12 +126,13 @@ class UserGroupUserFormByInput extends React.Component {
             onSearch={this.handleSearch}
             onInputChange={this.onInputChange}
             onKeyDown={this.onKeyDown}
-            renderMenuItemChildren={this.renderMenuItemChildren}
             caseSensitive={false}
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{t('add')}</button>
-      </form>
+        <div className="col-xs-2 pl-0">
+          <button type="button" className="btn btn-sm btn-success" disabled={!this.validateForm()} onClick={this.addUserBySubmit}>{t('add')}</button>
+        </div>
+      </div>
     );
   }
 
