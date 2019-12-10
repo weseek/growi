@@ -35,7 +35,7 @@ class UserGroupUserModal extends React.Component {
                   Mailも有効にする
                 </label>
               </div>
-              <div className="checkbox checkbox-info" key="isAlsoNameSearched">
+              <div className="checkbox checkbox-info mb-5" key="isAlsoNameSearched">
                 <input
                   type="checkbox"
                   id="isAlsoNameSearched"
@@ -58,10 +58,10 @@ class UserGroupUserModal extends React.Component {
                   onChange={() => { userGroupDetailContainer.switchSearchType('forward') }}
                 />
                 <label className="text-capitalize form-check-label ml-3" htmlFor="forwardMatch">
-                  全文検索
+                  前方一致
                 </label>
               </div>
-              <div className="radio" key="partialMatch">
+              <div className="radio mb-5" key="partialMatch">
                 <input
                   type="radio"
                   id="partialMatch"
@@ -70,7 +70,19 @@ class UserGroupUserModal extends React.Component {
                   onChange={() => { userGroupDetailContainer.switchSearchType('partial') }}
                 />
                 <label className="text-capitalize form-check-label ml-3" htmlFor="partialMatch">
-                  全文検索
+                  部分一致
+                </label>
+              </div>
+              <div className="radio mb-5" key="backwardMatch">
+                <input
+                  type="radio"
+                  id="backwardMatch"
+                  className="form-check-radio"
+                  checked={userGroupDetailContainer.state.searchType === 'backward'}
+                  onChange={() => { userGroupDetailContainer.switchSearchType('backward') }}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor="backwardMatch">
+                  後方一致
                 </label>
               </div>
             </div>
