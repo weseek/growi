@@ -18,8 +18,10 @@ class SiteUrlSetting extends React.Component {
     this.state = {
       siteUrl: '',
       envSiteUrl: '',
+      isSettingSiteUrl: true,
     };
 
+    this.envSiteUrl = '';
     this.submitHandler = this.submitHandler.bind(this);
     this.inputSiteUrlChangeHandler = this.inputSiteUrlChangeHandler.bind(this);
   }
@@ -30,8 +32,9 @@ class SiteUrlSetting extends React.Component {
       const appSettingParams = response.data.appSettingParams;
 
       this.setState({
-        siteUrl: appSettingParams.siteUrl || '',
+        siteUrl: appSettingParams.siteUrl || appSettingParams.envSiteUrl || '',
         envSiteUrl: appSettingParams.envSiteUrl || '',
+        isSettingSiteUrl: !!appSettingParams.siteUrl,
       });
     }
     catch (err) {
@@ -67,7 +70,7 @@ class SiteUrlSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.Site URL desc')}</p>
-        {!this.state.siteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
+        {!this.state.isSettingSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
 
         <div className="row">
           <div className="col-md-12">
