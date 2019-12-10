@@ -47,7 +47,7 @@ class UserGroupUserFormByInput extends React.Component {
 
   async addUserBySubmit(e) {
     e.preventDefault();
-    const { input } = this.state;
+    const input = e.target.defaultValue;
 
     try {
       await this.props.userGroupDetailContainer.addUserByUsername(input);
@@ -94,7 +94,7 @@ class UserGroupUserFormByInput extends React.Component {
   onKeyDown(event) {
     // 13 is Enter key
     if (event.keyCode === 13) {
-      this.addUserBySubmit();
+      this.addUserBySubmit(event);
     }
   }
 
