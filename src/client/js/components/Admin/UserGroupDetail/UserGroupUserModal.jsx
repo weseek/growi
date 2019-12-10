@@ -22,7 +22,7 @@ class UserGroupUserModal extends React.Component {
           <div className="p-3">
             <UserGroupUserFormByInput />
           </div>
-          <h2 className="border-bottom mt-3">検索オプション</h2>
+          <h2 className="border-bottom">検索オプション</h2>
           <div className="row mt-4">
             <div className="col-xs-6">
               <div className="checkbox checkbox-info mb-5" key="isAlsoMailSearched">
