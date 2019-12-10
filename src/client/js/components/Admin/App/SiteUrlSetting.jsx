@@ -15,32 +15,16 @@ class SiteUrlSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    const currentValues = props;
+
     this.state = {
-      siteUrl: '',
-      envSiteUrl: '',
-      isSettingSiteUrl: true,
+      siteUrl: currentValues.siteUrl,
+      envSiteUrl: currentValues.envSiteUrl,
+      isSetSiteUrl: currentValues.isSetSiteUrl,
     };
 
-    this.envSiteUrl = '';
     this.submitHandler = this.submitHandler.bind(this);
     this.inputSiteUrlChangeHandler = this.inputSiteUrlChangeHandler.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      const response = await this.props.appContainer.apiv3.get('/app-settings/');
-      const appSettingParams = response.data.appSettingParams;
-
-      this.setState({
-        siteUrl: appSettingParams.siteUrl || appSettingParams.envSiteUrl || '',
-        envSiteUrl: appSettingParams.envSiteUrl || '',
-        isSettingSiteUrl: !!appSettingParams.siteUrl,
-      });
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
   }
 
   async submitHandler() {
@@ -70,7 +54,7 @@ class SiteUrlSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.Site URL desc')}</p>
-        {!this.state.isSettingSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
+        {!this.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
 
         <div className="row">
           <div className="col-md-12">

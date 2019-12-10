@@ -15,11 +15,13 @@ class AppSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    const currentValues = props;
+
     this.state = {
-      title: '',
-      confidential: '',
-      globalLang: 'en-US',
-      fileUpload: false,
+      title: currentValues.title,
+      confidential: currentValues.confidential,
+      globalLang: currentValues.globalLang,
+      fileUpload: currentValues.fileUpload,
     };
 
     this.submitHandler = this.submitHandler.bind(this);
@@ -27,24 +29,6 @@ class AppSetting extends React.Component {
     this.inputConfidentialChangeHandler = this.inputConfidentialChangeHandler.bind(this);
     this.inputGlobalLangChangeHandler = this.inputGlobalLangChangeHandler.bind(this);
     this.inputFileUploadChangeHandler = this.inputFileUploadChangeHandler.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      const response = await this.props.appContainer.apiv3.get('/app-settings/');
-      const appSettingParams = response.data.appSettingParams;
-
-      this.setState({
-        title: appSettingParams.title || '',
-        confidential: appSettingParams.confidential || '',
-        globalLang: appSettingParams.globalLang || 'en-US',
-        fileUpload: appSettingParams.fileUpload || false,
-      });
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
   }
 
   async submitHandler() {
