@@ -20,36 +20,58 @@ class UserGroupUserModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <UserGroupUserFormByInput />
+          <h2 className="border-bottom mt-3">検索オプション</h2>
           <div className="row mt-4">
-            <div className="col-xs-12">
-              <legend>検索時に有効にする</legend>
-              <div className="col-xs-6 my-1" key="isAlsoMailSearched">
-                <div className="checkbox checkbox-info">
-                  <input
-                    type="checkbox"
-                    id="isAlsoMailSearched"
-                    className="form-check-input"
-                    checked={userGroupDetailContainer.state.isAlsoMailSearched}
-                    onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
-                  />
-                  <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoMailSearched">
-                    Mail
-                  </label>
-                </div>
+            <div className="col-xs-6">
+              <div className="checkbox checkbox-info mb-5" key="isAlsoMailSearched">
+                <input
+                  type="checkbox"
+                  id="isAlsoMailSearched"
+                  className="form-check-input"
+                  checked={userGroupDetailContainer.state.isAlsoMailSearched}
+                  onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoMailSearched">
+                  Mailも有効にする
+                </label>
               </div>
-              <div className="col-xs-6 my-1" key="isAlsoNameSearched">
-                <div className="checkbox checkbox-info">
-                  <input
-                    type="checkbox"
-                    id="isAlsoNameSearched"
-                    className="form-check-input"
-                    checked={userGroupDetailContainer.state.isAlsoNameSearched}
-                    onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
-                  />
-                  <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoNameSearched">
-                    Name
-                  </label>
-                </div>
+              <div className="checkbox checkbox-info" key="isAlsoNameSearched">
+                <input
+                  type="checkbox"
+                  id="isAlsoNameSearched"
+                  className="form-check-input"
+                  checked={userGroupDetailContainer.state.isAlsoNameSearched}
+                  onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoNameSearched">
+                  Nameも有効にする
+                </label>
+              </div>
+            </div>
+            <div className="col-xs-6">
+              <div className="radio mb-5" key="forwardMatch">
+                <input
+                  type="radio"
+                  id="forwardMatch"
+                  className="form-check-radio"
+                  checked={userGroupDetailContainer.state.searchType === 'forward'}
+                  onChange={() => { userGroupDetailContainer.switchSearchType('forward') }}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor="forwardMatch">
+                  全文検索
+                </label>
+              </div>
+              <div className="radio" key="partialMatch">
+                <input
+                  type="radio"
+                  id="partialMatch"
+                  className="form-check-radio"
+                  checked={userGroupDetailContainer.state.searchType === 'partial'}
+                  onChange={() => { userGroupDetailContainer.switchSearchType('partial') }}
+                />
+                <label className="text-capitalize form-check-label ml-3" htmlFor="partialMatch">
+                  全文検索
+                </label>
               </div>
             </div>
           </div>

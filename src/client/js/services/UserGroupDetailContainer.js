@@ -24,6 +24,7 @@ export default class UserGroupDetailContainer extends Container {
       userGroupRelations: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
+      searchType: 'partial',
       isAlsoMailSearched: false,
       isAlsoNameSearched: false,
     };
@@ -81,6 +82,13 @@ export default class UserGroupDetailContainer extends Container {
    */
   switchIsAlsoNameSearched() {
     this.setState({ isAlsoNameSearched: !this.state.isAlsoNameSearched });
+  }
+
+  /**
+   * switch searchType
+   */
+  switchSearchType(searchType) {
+    this.setState({ searchType });
   }
 
   /**
