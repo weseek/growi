@@ -113,7 +113,7 @@ class ImportService {
     // Model
     if (schema != null) {
       // ObjectID
-      if (schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
+      if (schema[propertyName] != null && schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
         _value = ObjectId(value);
       }
     }
