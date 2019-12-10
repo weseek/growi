@@ -18,7 +18,6 @@ const validator = {
     body('pageCompleteDeletionAuthority').isString(),
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
-    body('wikiMode').isString(),
   ],
   googleOAuth: [
     body('googleClientId').isString(),
@@ -169,9 +168,6 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
-    if (securityParams.generalSetting.wikimode === 'private') {
-      delete securityParams.generalSetting.restrictGuestMode;
-    }
     return res.apiv3({ securityParams });
   });
 
@@ -218,7 +214,11 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
-
+    const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
+    if (wikiMode === 'private') {
+      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
+      delete requestParams['security:restrictGuestMode'];
+    }
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
