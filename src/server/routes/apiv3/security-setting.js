@@ -19,6 +19,11 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  localSetting: [
+    body('isLocalEnabled').isBoolean(),
+    body('registrationMode').isString(),
+    body('registrationwhiteList').isString(),
+  ],
   googleOAuth: [
     body('googleClientId').isString(),
     body('googleClientSecret').isString(),
@@ -73,6 +78,17 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          LocalSetting:
+ *            type:object
+ *              isLocalEnabled:
+ *                type: boolean
+ *                description: enable local mode
+ *              registrationMode:
+ *                type: string
+ *                description: type of registrationMode
+ *              registrationWhiteList:
+ *                type: string
+ *                desription: type of registrationWhiteList
  *          GitHubOAuthSetting:
  *            type:object
  *              githubClientId:
@@ -153,6 +169,11 @@ module.exports = (crowi) => {
         twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
+      },
+      localSetting: {
+        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+        registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
+        registrationwhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       },
     };
 
@@ -276,7 +297,7 @@ module.exports = (crowi) => {
     }
   });
 
-   *    /security-setting/google-oauth:
+  /**    /security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update google OAuth
