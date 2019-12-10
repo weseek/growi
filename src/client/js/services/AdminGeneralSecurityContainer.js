@@ -37,13 +37,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isTwitterOAuthEnabled: true,
     };
 
-    this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
-    this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
-    this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
-    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
-    this.switchIsHideRestrictedByGroup = this.switchIsHideRestrictedByGroup.bind(this);
-    this.switchIsHideRestrictedByOwner = this.switchIsHideRestrictedByOwner.bind(this);
-    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
   }
 
