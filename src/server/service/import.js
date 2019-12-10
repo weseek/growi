@@ -2,6 +2,9 @@ const logger = require('@alias/logger')('growi:services:ImportService'); // esli
 const fs = require('fs');
 const path = require('path');
 
+const isIsoDate = require('is-iso-date');
+const parseISO = require('date-fns/parseISO');
+
 const { Writable, Transform } = require('stream');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
@@ -92,16 +95,27 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {any} value value from imported document
-   * @param {{ document: object, schema: object, key: string }}
+   * @param {{ document: object, schema: object, propertyName: string }}
    * @return {any} new value for the document
    */
   keepOriginal(value, { document, schema, propertyName }) {
-    let _value;
-    if (schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
+    let _value = value;
+
+    // _id
+    if (propertyName === '_id' && ObjectId.isValid(value)) {
       _value = ObjectId(value);
     }
-    else {
-      _value = value;
+    // Date
+    else if (isIsoDate(value)) {
+      _value = parseISO(value);
+    }
+
+    // Model
+    if (schema != null) {
+      // ObjectID
+      if (schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
+        _value = ObjectId(value);
+      }
     }
 
     return _value;
@@ -398,14 +412,17 @@ class ImportService {
     const schema = (Model != null) ? Model.schema.paths : null;
     const convertMap = this.convertMap[collectionName];
 
-    let _document;
+    const _document = {};
 
+    // not Mongoose Model
     if (convertMap == null) {
-      _document = Object.assign({}, document);
+      // apply keepOriginal to all of properties
+      Object.entries(document).forEach(([propertyName, value]) => {
+        _document[propertyName] = this.keepOriginal(value, { document, propertyName });
+      });
     }
+    // Mongoose Model
     else {
-      _document = {};
-
       // assign value from documents being imported
       Object.entries(convertMap).forEach(([propertyName, convertedValue]) => {
         const value = document[propertyName];
