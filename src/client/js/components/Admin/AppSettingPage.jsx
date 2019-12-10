@@ -21,6 +21,7 @@ class AppSettingPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: true,
       title: '',
       confidential: '',
       globalLang: '',
@@ -38,6 +39,7 @@ class AppSettingPage extends React.Component {
       const appSettingParams = response.data.appSettingParams;
 
       this.setState({
+        isLoading: false,
         title: appSettingParams.title || '',
         confidential: appSettingParams.confidential || '',
         globalLang: appSettingParams.globalLang || 'en-US',
@@ -56,7 +58,7 @@ class AppSettingPage extends React.Component {
   render() {
     const { t } = this.props;
 
-    return (
+    return !this.state.isLoading ? (
       <Fragment>
         <div className="row">
           <div className="col-md-12">
@@ -102,7 +104,7 @@ class AppSettingPage extends React.Component {
           </div>
         </div>
       </Fragment>
-    );
+    ) : null;
   }
 
 }
