@@ -17,8 +17,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
       isWikiModeForced: false,
+      wikiMode: '',
       currentRestrictGuestMode: 'deny',
       currentPageCompleteDeletionAuthority: 'anyone',
       isHideRestrictedByOwner: true,
@@ -37,25 +37,19 @@ export default class AdminGeneralSecurityContainer extends Container {
       isTwitterOAuthEnabled: true,
     };
 
-    this.init();
-
-    this.switchIsLocalEnabled = this.switchIsLocalEnabled.bind(this);
-    this.changeRegistrationMode = this.changeRegistrationMode.bind(this);
-    this.changeRestrictGuestMode = this.changeRestrictGuestMode.bind(this);
-    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
-    this.switchIsHideRestrictedByGroup = this.switchIsHideRestrictedByGroup.bind(this);
-    this.switchIsHideRestrictedByOwner = this.switchIsHideRestrictedByOwner.bind(this);
-    this.changePageCompleteDeletionAuthority = this.changePageCompleteDeletionAuthority.bind(this);
+    this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
   }
 
-  async init() {
-    // TODO GW-583 fetch config value with api
+  async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { localSetting } = response.data.securityParams;
+    const { generalSetting } = response.data.securityParams;
+    this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
-      isLocalEnabled: localSetting.LocalEnabledParams.isLocalEnabled,
-      registrationMode: localSetting.ModeParams.registrationMode,
-      registrationWhiteList: localSetting.WhiteListParams.registrationWhiteList,
+      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
+      currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
+      isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
+      isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
+      wikiMode: generalSetting.wikiMode || '',
     });
   }
 
@@ -93,6 +87,15 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   switchIsHideRestrictedByGroup() {
     this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
+  }
+
+  onIsWikiModeForced() {
+    if (this.state.wikiMode === 'private') {
+      this.setState({ isWikiModeForced: true });
+    }
+    else {
+      this.setState({ isWikiModeForced: false });
+    }
   }
 
 

@@ -69,6 +69,12 @@ const validator = {
  *                  pageCompleteDeletionAuthority:
  *                    type: string
  *                    description: type of pageDeletionAuthority
+ *              WikiModeParams:
+ *                type: object
+ *                properties:
+ *                  wikiMode:
+ *                    type: string
+ *                    description: type of wikiMode
  *              Function:
  *                type: object
  *                properties:
@@ -150,6 +156,13 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const securityParams = {
+      generalSetting: {
+        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
+        hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
+        hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
+        wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
+      },
       generalAuth: {
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
@@ -176,7 +189,6 @@ module.exports = (crowi) => {
         registrationwhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       },
     };
-
     return res.apiv3({ securityParams });
   });
 
@@ -223,7 +235,11 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
-
+    const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
+    if (wikiMode === 'private') {
+      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
+      delete requestParams['security:restrictGuestMode'];
+    }
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {

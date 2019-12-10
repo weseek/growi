@@ -14,7 +14,22 @@ class SecuritySetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      retrieveError: null,
+    };
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
+  }
+
+  async componentDidMount() {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    try {
+      await adminGeneralSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+    }
   }
 
   async putSecuritySetting() {
@@ -32,10 +47,19 @@ class SecuritySetting extends React.Component {
     const { t, adminGeneralSecurityContainer } = this.props;
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
+    // eslint-disable-next-line max-len
+    const helpForceWikiMode = { __html: t('security_setting.Fixed by env var', { forcewikimode: 'FORCE_WIKI_MODE' }, { wikimode: adminGeneralSecurityContainer.state.wikiMode }) };
+
+
     return (
       <React.Fragment>
         <fieldset>
           <legend className="alert-anchor">{ t('security_settings') }</legend>
+          {this.state.retrieveError != null && (
+            <div className="alert alert-danger">
+              <p>{t('Error occurred')} : {this.state.err}</p>
+            </div>
+          )}
           {/* TODO adjust layout */}
           <div className="row mb-5">
             <strong className="col-xs-3 text-right"> { t('security_setting.Guest Users Access') } </strong>
@@ -80,11 +104,12 @@ class SecuritySetting extends React.Component {
           </div>
           {adminGeneralSecurityContainer.state.isWikiModeForced && (
             <div className="row mb-5">
-              <div className="col-xs-6">
-                <p className="alert alert-warning mt-2">
+              <div className="col-xs-3 text-right" />
+              <div className="col-xs-9 text-left">
+                <p className="alert alert-warning mt-2 text-left">
                   <i className="icon-exclamation icon-fw">
-                  </i><b>FIXED</b>
-                  { t('security_setting.Fixed by env var', 'FORCE_WIKI_MODE') }<br></br>
+                  </i><b>FIXED</b><br />
+                  { <b dangerouslySetInnerHTML={helpForceWikiMode} /> }
                 </p>
               </div>
             </div>
