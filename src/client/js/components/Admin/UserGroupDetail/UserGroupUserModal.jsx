@@ -7,6 +7,7 @@ import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
+import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
 
 class UserGroupUserModal extends React.Component {
 
@@ -51,42 +52,9 @@ class UserGroupUserModal extends React.Component {
               </div>
             </div>
             <div className="col-xs-6">
-              <div className="radio mb-5" key="forwardMatch">
-                <input
-                  type="radio"
-                  id="forwardMatch"
-                  className="form-check-radio"
-                  checked={userGroupDetailContainer.state.searchType === 'forward'}
-                  onChange={() => { userGroupDetailContainer.switchSearchType('forward') }}
-                />
-                <label className="text-capitalize form-check-label ml-3" htmlFor="forwardMatch">
-                  前方一致
-                </label>
-              </div>
-              <div className="radio mb-5" key="partialMatch">
-                <input
-                  type="radio"
-                  id="partialMatch"
-                  className="form-check-radio"
-                  checked={userGroupDetailContainer.state.searchType === 'partial'}
-                  onChange={() => { userGroupDetailContainer.switchSearchType('partial') }}
-                />
-                <label className="text-capitalize form-check-label ml-3" htmlFor="partialMatch">
-                  部分一致
-                </label>
-              </div>
-              <div className="radio mb-5" key="backwardMatch">
-                <input
-                  type="radio"
-                  id="backwardMatch"
-                  className="form-check-radio"
-                  checked={userGroupDetailContainer.state.searchType === 'backward'}
-                  onChange={() => { userGroupDetailContainer.switchSearchType('backward') }}
-                />
-                <label className="text-capitalize form-check-label ml-3" htmlFor="backwardMatch">
-                  後方一致
-                </label>
-              </div>
+              <RadioButtonForSerchUserOption searchType="forward" />
+              <RadioButtonForSerchUserOption searchType="partial" />
+              <RadioButtonForSerchUserOption searchType="baclward" />
             </div>
           </div>
         </Modal.Body>
@@ -103,8 +71,8 @@ UserGroupUserModal.propTypes = {
 };
 
 /**
- * Wrapper component for using unstated
- */
+* Wrapper component for using unstated
+*/
 const UserGroupUserModalWrapper = (props) => {
   return createSubscribedElement(UserGroupUserModal, props, [AppContainer, UserGroupDetailContainer]);
 };
