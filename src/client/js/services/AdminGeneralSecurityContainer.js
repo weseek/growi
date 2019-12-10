@@ -110,7 +110,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       hideRestrictedByGroup: this.state.isHideRestrictedByGroup,
       hideRestrictedByOwner: this.state.isHideRestrictedByOwner,
-      wikiMode: this.state.wikiMode,
     });
     const { securitySettingParams } = response.data;
     return securitySettingParams;
