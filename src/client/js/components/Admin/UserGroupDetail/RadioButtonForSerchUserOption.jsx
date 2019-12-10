@@ -10,7 +10,7 @@ import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer
 class RadioButtonForSerchUserOption extends React.Component {
 
   render() {
-    const { userGroupDetailContainer, searchType } = this.props;
+    const { t, userGroupDetailContainer, searchType } = this.props;
     return (
       <div className="radio mb-5" key={`${searchType}Match`}>
         <input
@@ -21,7 +21,7 @@ class RadioButtonForSerchUserOption extends React.Component {
           onChange={() => { userGroupDetailContainer.switchSearchType(searchType) }}
         />
         <label className="text-capitalize form-check-label ml-3" htmlFor={`${searchType}Match`}>
-          前方一致
+          {t(`user_group_management.${searchType}_match`)}
         </label>
       </div>
     );

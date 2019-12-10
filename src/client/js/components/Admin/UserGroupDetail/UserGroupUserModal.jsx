@@ -23,7 +23,7 @@ class UserGroupUserModal extends React.Component {
           <div className="p-3">
             <UserGroupUserFormByInput />
           </div>
-          <h2 className="border-bottom">検索オプション</h2>
+          <h2 className="border-bottom">{t('user_group_management.search_option')}</h2>
           <div className="row mt-4">
             <div className="col-xs-6">
               <div className="checkbox checkbox-info mb-5" key="isAlsoMailSearched">
@@ -35,7 +35,7 @@ class UserGroupUserModal extends React.Component {
                   onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
                 />
                 <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoMailSearched">
-                  Mailも有効にする
+                  {t('user_group_management.enable_option', { option: 'mail' })}
                 </label>
               </div>
               <div className="checkbox checkbox-info mb-5" key="isAlsoNameSearched">
@@ -47,14 +47,14 @@ class UserGroupUserModal extends React.Component {
                   onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
                 />
                 <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoNameSearched">
-                  Nameも有効にする
+                  {t('user_group_management.enable_option', { option: 'name' })}
                 </label>
               </div>
             </div>
             <div className="col-xs-6">
               <RadioButtonForSerchUserOption searchType="forward" />
               <RadioButtonForSerchUserOption searchType="partial" />
-              <RadioButtonForSerchUserOption searchType="baclward" />
+              <RadioButtonForSerchUserOption searchType="backward" />
             </div>
           </div>
         </Modal.Body>
