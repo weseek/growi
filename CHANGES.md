@@ -14,8 +14,12 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 
+## 3.5.25
 
-## 3.5.24-RC
+* Fix: Exported data of empty collection is broken
+* Fix: Some components crash after when the page with attachment has exported/imported
+
+## 3.5.24
 
 * Fix: Plugins are not working on Heroku
 
