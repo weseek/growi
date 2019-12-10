@@ -19,7 +19,9 @@ class UserGroupUserModal extends React.Component {
           <Modal.Title>{t('user_group_management.add_user')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <UserGroupUserFormByInput />
+          <div className="p-3">
+            <UserGroupUserFormByInput />
+          </div>
           <h2 className="border-bottom mt-3">検索オプション</h2>
           <div className="row mt-4">
             <div className="col-xs-6">
