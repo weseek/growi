@@ -8,6 +8,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
+import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 
 class UserGroupUserModal extends React.Component {
 
@@ -26,35 +27,33 @@ class UserGroupUserModal extends React.Component {
           <h2 className="border-bottom">{t('user_group_management.search_option')}</h2>
           <div className="row mt-4">
             <div className="col-xs-6">
-              <div className="checkbox checkbox-info mb-5" key="isAlsoMailSearched">
-                <input
-                  type="checkbox"
-                  id="isAlsoMailSearched"
-                  className="form-check-input"
-                  checked={userGroupDetailContainer.state.isAlsoMailSearched}
-                  onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
-                />
-                <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoMailSearched">
-                  {t('user_group_management.enable_option', { option: 'mail' })}
-                </label>
-              </div>
-              <div className="checkbox checkbox-info mb-5" key="isAlsoNameSearched">
-                <input
-                  type="checkbox"
-                  id="isAlsoNameSearched"
-                  className="form-check-input"
-                  checked={userGroupDetailContainer.state.isAlsoNameSearched}
-                  onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
-                />
-                <label className="text-capitalize form-check-label ml-3" htmlFor="isAlsoNameSearched">
-                  {t('user_group_management.enable_option', { option: 'name' })}
-                </label>
-              </div>
+              <CheckBoxForSerchUserOption
+                option="Mail"
+                checked={userGroupDetailContainer.state.isAlsoMailSearched}
+                onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
+              />
+              <CheckBoxForSerchUserOption
+                option="Name"
+                checked={userGroupDetailContainer.state.isAlsoNameSearched}
+                onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
+              />
             </div>
             <div className="col-xs-6">
-              <RadioButtonForSerchUserOption searchType="forward" />
-              <RadioButtonForSerchUserOption searchType="partial" />
-              <RadioButtonForSerchUserOption searchType="backward" />
+              <RadioButtonForSerchUserOption
+                searchType="forward"
+                checked={userGroupDetailContainer.state.searchType === 'forward'}
+                onChange={() => { userGroupDetailContainer.switchSearchType('forward') }}
+              />
+              <RadioButtonForSerchUserOption
+                searchType="partial"
+                checked={userGroupDetailContainer.state.searchType === 'partial'}
+                onChange={() => { userGroupDetailContainer.switchSearchType('partial') }}
+              />
+              <RadioButtonForSerchUserOption
+                searchType="backward"
+                checked={userGroupDetailContainer.state.searchType === 'backword'}
+                onChange={() => { userGroupDetailContainer.switchSearchType('backword') }}
+              />
             </div>
           </div>
         </Modal.Body>
