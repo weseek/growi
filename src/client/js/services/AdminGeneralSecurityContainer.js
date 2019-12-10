@@ -50,6 +50,9 @@ export default class AdminGeneralSecurityContainer extends Container {
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
+      isLocalEnabled: generalSetting.registrationMode || 'true',
+      registrationMode: generalSetting.registrationMode || 'open',
+      registrationWhiteList: generalSetting.registrationWhiteList || '',
     });
   }
 
