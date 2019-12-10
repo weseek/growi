@@ -552,7 +552,8 @@
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
         "register_4": "承認済みのリダイレクトURIを<code>{{url}}</code>としてGrowiを登録",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_google": "Google OAuth を更新しました"
       },
       "Facebook": {
         "name": "Facebook OAuth"
@@ -564,14 +565,16 @@
         "register_2": "Twitterにサインイン",
         "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
         "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_twitter": "Twitter OAuth を更新しました"
       },
       "GitHub": {
         "enable_github":"GitHub OAuth を有効にする",
         "name": "GitHub OAuth",
         "register_1": "{{link}} へアクセス",
         "register_2": "\"Authorization callback URL\"を<code>{{url}}</code>としてGrowiを登録",
-        "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_github": "GitHub OAuth を更新しました"
       },
       "OIDC": {
         "name": "OpenID Connect",

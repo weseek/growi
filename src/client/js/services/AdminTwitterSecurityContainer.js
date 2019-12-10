@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { pathUtils } from 'growi-commons';
+
+import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
@@ -17,19 +20,25 @@ export default class AdminTwitterSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      appSiteUrl: '',
-      TwitterConsumerId: '',
-      TwitterConsumerSecret: '',
-      isSameUsernameTreatedAsIdenticalUser: true,
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/twitter/callback'),
+      twitterConsumerKey: '',
+      twitterConsumerSecret: '',
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
-
-    this.init();
 
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { twitterOAuth } = response.data.securityParams;
+    this.setState({
+      twitterConsumerKey: twitterOAuth.twitterConsumerKey || '',
+      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret || '',
+      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser || false,
+    });
   }
 
   /**
@@ -40,17 +49,17 @@ export default class AdminTwitterSecurityContainer extends Container {
   }
 
   /**
-   * Change TwitterConsumerId
+   * Change twitterConsumerKey
    */
-  changeTwitterConsumerId(value) {
-    this.setState({ TwitterConsumerId: value });
+  changeTwitterConsumerKey(value) {
+    this.setState({ twitterConsumerKey: value });
   }
 
   /**
-   * Change TwitterConsumerSecret
+   * Change twitterConsumerSecret
    */
   changeTwitterConsumerSecret(value) {
-    this.setState({ TwitterConsumerSecret: value });
+    this.setState({ twitterConsumerSecret: value });
   }
 
   /**
@@ -58,6 +67,25 @@ export default class AdminTwitterSecurityContainer extends Container {
    */
   switchIsSameUsernameTreatedAsIdenticalUser() {
     this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Update twitterSetting
+   */
+  async updateTwitterSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', {
+      twitterConsumerKey: this.state.twitterConsumerKey,
+      twitterConsumerSecret: this.state.twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+
+    this.setState({
+      twitterConsumerKey: this.state.twitterConsumerKey,
+      twitterConsumerSecret: this.state.twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+    return response;
   }
 
 }

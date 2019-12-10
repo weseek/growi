@@ -19,10 +19,20 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
-  localSetting: [
-    body('isLocalEnabled').isBoolean(),
-    body('registrationMode').isString(),
-    body('registrationWhiteList').toArray(),
+  googleOAuth: [
+    body('googleClientId').isString(),
+    body('googleClientSecret').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+  ],
+  githubOAuth: [
+    body('githubClientId').isString(),
+    body('githubClientSecret').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+  ],
+  twitterOAuth: [
+    body('twitterConsumerKey').isString(),
+    body('twitterConsumerSecret').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
 };
 
@@ -63,34 +73,47 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
- *          LocalSetting:
- *            type: object
- *              LocalEnabledParams:
- *                type: object
- *                properties:
- *                  isLocalEnabled:
- *                    type: boolean
- *                    description: enable local
- *              ModeParams:
- *                type: object
- *                properties:
- *                  registrationMode:
- *                    type:string
- *                    description: type of registrationMode
- *              WhiteListParams:
- *                type: object
- *                properties:
- *                  registrationWhiteList:
- *                    type:string
- *                    description: type of registrationwhiteList
+ *          GitHubOAuthSetting:
+ *            type:object
+ *              githubClientId:
+ *                type: string
+ *                description: key of comsumer
+ *              githubClientSecret:
+ *                type: string
+ *                description: password of comsumer
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
+ *          GoogleOAuthSetting:
+ *            type:object
+ *              googleClientId:
+ *                type: string
+ *                description: key of comsumer
+ *              googleClientSecret:
+ *                type: string
+ *                description: password of comsumer
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
+ *          TwitterOAuthSetting:
+ *            type:object
+ *              twitterConsumerKey:
+ *                type: string
+ *                description: key of comsumer
+ *              twitterConsumerSecret:
+ *                type: string
+ *                description: password of comsumer
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  */
-
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
   /**
    * @swagger
    *
@@ -109,17 +132,27 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/SecurityParams'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+
     const securityParams = {
-      localSetting: {
-        LocalEnabledParams: {
-          isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled') || false,
-        },
-        ModeParams: {
-          registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode') || '',
-        },
-        WhiteListParams: {
-          registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList') || '',
-        },
+      generalAuth: {
+        isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
+        isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+        isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      googleOAuth: {
+        googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
+        googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
+      },
+      githubOAuth: {
+        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
+        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+      },
+      twitterOAuth: {
+        twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
 
@@ -240,6 +273,135 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating local security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-local-secuirty-setting failed'));
+    }
+  });
+
+   *    /security-setting/google-oauth:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update google OAuth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/GoogleOAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to google OAuth
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/GoogleOAuthSetting'
+   */
+  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-google:clientId': req.body.googleClientId,
+      'security:passport-google:clientSecret': req.body.googleClientSecret,
+      'security:passport-google:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
+        googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating googleOAuth';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-googleOAuth-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/github-oauth:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update github OAuth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to github OAuth
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   */
+  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-github:clientId': req.body.githubClientId,
+      'security:passport-github:clientSecret': req.body.githubClientSecret,
+      'security:passport-github:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
+        githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating githubOAuth';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/twitter-oauth:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update twitter OAuth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update twitter OAuth
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   */
+  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
+      'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
+      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
+        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating twitterOAuth';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));
     }
   });
 
