@@ -119,7 +119,6 @@ class UserGroupUserFormByInput extends React.Component {
             labelKey="name"
             minLength={0}
             options={this.state.applicableUsers} // Search result
-            emptyLabel={this.getEmptyLabel()}
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
             align="left"
             onChange={this.handleChange}
@@ -130,7 +129,14 @@ class UserGroupUserFormByInput extends React.Component {
           />
         </div>
         <div className="col-xs-2 pl-0">
-          <button type="button" className="btn btn-sm btn-success" disabled={!this.validateForm()} onClick={this.addUserBySubmit}>{t('add')}</button>
+          <button
+            type="button"
+            className="btn btn-sm btn-success"
+            disabled={!this.validateForm()}
+            onClick={event => this.addUserBySubmit(event)}
+          >
+            {t('add')}
+          </button>
         </div>
       </div>
     );
