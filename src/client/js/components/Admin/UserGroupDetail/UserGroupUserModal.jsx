@@ -70,8 +70,8 @@ UserGroupUserModal.propTypes = {
 };
 
 /**
-* Wrapper component for using unstated
-*/
+ * Wrapper component for using unstated
+ */
 const UserGroupUserModalWrapper = (props) => {
   return createSubscribedElement(UserGroupUserModal, props, [AppContainer, UserGroupDetailContainer]);
 };
