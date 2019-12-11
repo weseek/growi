@@ -19,6 +19,9 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  basicAuth: [
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+  ],
   googleOAuth: [
     body('googleClientId').isString(),
     body('googleClientSecret').isString(),
@@ -73,6 +76,11 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          BasicAuthSetting:
+ *            type:object
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  *          GitHubOAuthSetting:
  *            type:object
  *              githubClientId:
@@ -135,9 +143,13 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      basicAuth: {
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       },
       googleOAuth: {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
@@ -217,6 +229,46 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/google-oauth:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update google OAuth
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/BasicAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to google OAuth
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/BasicAuthSetting'
+   */
+  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating basicAuth';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-basicOAuth-failed'));
     }
   });
 
