@@ -44,14 +44,27 @@ export default class AdminSamlSecurityContainer extends Container {
       isSameEmailTreatedAsIdenticalUser: false,
     };
 
-    this.init();
-
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { samlAuth } = response.data.securityParams;
+    this.setState({
+      samlDbEntryPoint: samlAuth.samlDbEntryPoint || '',
+      samlDbIssuer: samlAuth.samlDbIssuer || '',
+      samlDbCert: samlAuth.samlDbCert || '',
+      samlDbAttrMapId: samlAuth.samlDbAttrMapId || '',
+      samlDbAttrMapUserName: samlAuth.samlDbAttrMapUserName || '',
+      samlDbAttrMapMail: samlAuth.samlDbAttrMapMail || '',
+      samlDbAttrMapFirstName: samlAuth.samlDbAttrMapFirstName || '',
+      samlDbAttrMapLastName: samlAuth.samlDbAttrMapLastName || '',
+      isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser || false,
+    });
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name

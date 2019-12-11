@@ -2,15 +2,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
 
+const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
 
 class SamlSecurityManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+    };
+
+  }
+
+  async componentDidMount() {
+    const { adminSamlSecurityContainer } = this.props;
+
+    try {
+      await adminSamlSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
@@ -20,18 +45,18 @@ class SamlSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.SAML.name') } { t('security_setting.configuration') }
+          {t('security_setting.SAML.name')} {t('security_setting.configuration')}
         </h2>
 
         {useOnlyEnvVars && (
-        <p
-          className="alert alert-info"
-          dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
-        />
+          <p
+            className="alert alert-info"
+            dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
+          />
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.SAML.name') }</strong>
+          <strong className="col-xs-3 text-right">{t('security_setting.SAML.name')}</strong>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -41,14 +66,14 @@ class SamlSecurityManagement extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
               />
               <label htmlFor="isSamlEnabled">
-                { t('security_setting.SAML.enable_saml') }
+                {t('security_setting.SAML.enable_saml')}
               </label>
             </div>
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
+          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -56,15 +81,15 @@ class SamlSecurityManagement extends React.Component {
               value={adminSamlSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' }) }</p>
-            {!adminSamlSecurityContainer.state.appSiteUrl && (
-            <div className="alert alert-danger">
-              <i
-                className="icon-exclamation"
-                // eslint-disable-next-line max-len
-                dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
-              />
-            </div>
+            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
+            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+              <div className="alert alert-danger">
+                <i
+                  className="icon-exclamation"
+                  // eslint-disable-next-line max-len
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -73,14 +98,14 @@ class SamlSecurityManagement extends React.Component {
           <React.Fragment>
 
             {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
-            <div className="alert alert-danger">
-              { t('security_setting.missing mandatory configs') }
-              <ul>
-                {/* TODO GW-583 show li after fetch data */}
-                {/* <li>{ t('security_setting.form_item_name.key') }</li> */}
-              </ul>
-            </div>
-          )}
+              <div className="alert alert-danger">
+                {t('security_setting.missing mandatory configs')}
+                <ul>
+                  {/* TODO GW-583 show li after fetch data */}
+                  {/* <li>{ t('security_setting.form_item_name.key') }</li> */}
+                </ul>
+              </div>
+            )}
 
 
             <h3 className="alert-anchor border-bottom">
@@ -98,7 +123,7 @@ class SamlSecurityManagement extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.entryPoint') }</th>
+                  <th>{t('security_setting.form_item_name.entryPoint')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -122,7 +147,7 @@ class SamlSecurityManagement extends React.Component {
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.issuer') }</th>
+                  <th>{t('security_setting.form_item_name.issuer')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -146,7 +171,7 @@ class SamlSecurityManagement extends React.Component {
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.cert') }</th>
+                  <th>{t('security_setting.form_item_name.cert')}</th>
                   <td>
                     <textarea
                       className="form-control input-sm"
@@ -159,12 +184,12 @@ class SamlSecurityManagement extends React.Component {
                     />
                     <p className="help-block">
                       <small>
-                        { t('security_setting.SAML.cert_detail') }
+                        {t('security_setting.SAML.cert_detail')}
                       </small>
                     </p>
                     <div>
                       <small>
-                      e.g.
+                        e.g.
                         <pre>{`-----BEGIN CERTIFICATE-----
 MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
 UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
@@ -208,7 +233,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </thead>
               <tbody>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapId') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapId')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -219,7 +244,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="help-block">
                       <small>
-                        { t('security_setting.SAML.id_detail') }
+                        {t('security_setting.SAML.id_detail')}
                       </small>
                     </p>
                   </td>
@@ -236,7 +261,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapUsername') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapUsername')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -262,7 +287,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapMail') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapMail')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -288,7 +313,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapFirstName') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapFirstName')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -319,7 +344,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapLastName') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapLastName')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -399,6 +424,12 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
           </React.Fragment>
 
         )}
+
+        <div className="row my-3">
+          <div className="col-xs-offset-3 col-xs-5">
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+          </div>
+        </div>
 
 
       </React.Fragment>
