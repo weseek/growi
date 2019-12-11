@@ -539,7 +539,8 @@
       "enable_basic":"Basic を有効にする",
       "name": "Basic 認証",
       "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
-      "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
+      "desc_2": "ユーザーが存在しなかった場合は自動生成します。",
+      "updated_basic": "Basic認証 を更新しました"
     },
     "OAuth": {
       "enable_oidc": "OIDC を有効にする",

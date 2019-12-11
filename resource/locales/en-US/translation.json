@@ -544,7 +544,8 @@
       "enable_basic":"enable Basic",
       "name": "Basic Authentication",
       "desc_1": "Login with <code>username</code> in Authorization header.",
-      "desc_2": "User will be automatically generated if not exist."
+      "desc_2": "User will be automatically generated if not exist.",
+      "updated_basic": "Succeeded to update Basic setting"
     },
     "OAuth": {
       "enable_oidc": "enable OIDC",

@@ -17,18 +17,21 @@ export default class AdminBasicSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      isSameUsernameTreatedAsIdenticalUser: 'hoge',
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
 
-    this.init();
-
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { basicAuth } = response.data.securityParams;
+    this.setState({
+      isSameUsernameTreatedAsIdenticalUser: basicAuth.isSameUsernameTreatedAsIdenticalUser || false,
+    });
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
@@ -42,6 +45,23 @@ export default class AdminBasicSecurityContainer extends Container {
    */
   switchIsSameUsernameTreatedAsIdenticalUser() {
     this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Update basicSetting
+   */
+  async updateBasicSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/basic', {
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
+    });
+    return response;
   }
 
 }
