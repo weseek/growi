@@ -62,6 +62,12 @@ class OidcSecurityManagement extends React.Component {
           {t('security_setting.OAuth.OIDC.name')} {t('security_setting.configuration')}
         </h2>
 
+        {this.state.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
+        )}
+
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{t('security_setting.OAuth.OIDC.name')}</strong>
           <div className="col-xs-6 text-left">

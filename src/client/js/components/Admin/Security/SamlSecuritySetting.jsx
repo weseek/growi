@@ -48,6 +48,12 @@ class SamlSecurityManagement extends React.Component {
           {t('security_setting.SAML.name')} {t('security_setting.configuration')}
         </h2>
 
+        {this.state.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
+        )}
+
         {useOnlyEnvVars && (
           <p
             className="alert alert-info"
