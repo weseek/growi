@@ -19,20 +19,11 @@ const logger = loggerFactory('growi:appSettings');
 
 class AppSettingPage extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
-    };
-
-  }
-
   async componentDidMount() {
     const { adminAppContainer } = this.props;
 
     try {
       await adminAppContainer.retrieveAppSettingsData();
-      this.setState({ isLoading: false });
     }
     catch (err) {
       toastError(err);
@@ -44,7 +35,7 @@ class AppSettingPage extends React.Component {
   render() {
     const { t } = this.props;
 
-    return !this.state.isLoading ? (
+    return (
       <Fragment>
         <div className="row">
           <div className="col-md-12">
@@ -81,7 +72,7 @@ class AppSettingPage extends React.Component {
           </div>
         </div>
       </Fragment>
-    ) : null;
+    );
   }
 
 }
