@@ -55,27 +55,19 @@ const validator = {
  *        type: object
  *          GeneralSetting:
  *            type:object
- *              GuestModeParams:
- *                type: object
- *                properties:
- *                  restrictGuestMode:
- *                    type: string
- *                    description: type of restrictGuestMode
- *              PageDeletionParams:
- *                type: object
- *                properties:
- *                  pageCompleteDeletionAuthority:
- *                    type: string
- *                    description: type of pageDeletionAuthority
- *              Function:
- *                type: object
- *                properties:
- *                  hideRestrictedByOwner:
- *                    type: boolean
- *                    description: enable hide by owner
- *                  hideRestrictedByGroup:
- *                    type: boolean
- *                    description: enable hide by group
+ *            properties:
+ *              restrictGuestMode:
+ *                type: string
+ *                description: type of restrictGuestMode
+ *              pageCompleteDeletionAuthority:
+ *                type: string
+ *                description: type of pageDeletionAuthority
+ *              hideRestrictedByOwner:
+ *                type: boolean
+ *                description: enable hide by owner
+ *              hideRestrictedByGroup:
+ *                 type: boolean
+ *                 description: enable hide by group
  *          BasicAuthSetting:
  *            type:object
  *              isSameUsernameTreatedAsIdenticalUser
