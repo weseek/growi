@@ -20,6 +20,13 @@ const validator = {
   siteUrlSetting: [
     body('siteUrl').trim(),
   ],
+  mailSetting: [
+    body('fromAddress').trim(),
+    body('smtpHost').trim(),
+    body('smtpPort').trim(),
+    body('smtpUser').trim(),
+    body('smtpPassword').trim(),
+  ],
 };
 
 
@@ -34,27 +41,44 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      AppSettingParams:
+ *      AppSettingsParams:
  *        type: object
- *        properties:
- *          title:
- *            type: String
- *            description: site name show on page header and tilte of HTML
- *          confidential:
- *            type: String
- *            description: confidential show on page header
- *          globalLang:
- *            type: String
- *            description: language set when create user
- *          fileUpload:
- *            type: boolean
- *            description: enable upload file except image file
- *          siteUrl:
- *            type: String
- *            description: Site URL. e.g. https://example.com, https://example.com:8080
- *          envSiteUrl:
- *            type: String
- *            description: environment variable 'APP_SITE_URL'
+ *          AppSettingParams:
+ *            type: object
+ *              title:
+ *                type: String
+ *                description: site name show on page header and tilte of HTML
+ *              confidential:
+ *                type: String
+ *                description: confidential show on page header
+ *              globalLang:
+ *                type: boolean
+ *                description: enable upload file except image file
+ *          SiteUrlSettingParams:
+ *            type: object
+ *              siteUrl:
+ *                type: String
+ *                description: Site URL. e.g. https://example.com, https://example.com:8080
+ *              envSiteUrl:
+ *                type: String
+ *                description: environment variable 'APP_SITE_URL'
+ *          mailSettingParams:
+ *            type: object
+ *              fromAddress:
+ *                type: String
+ *                description: e-mail address used as from address of mail which sent from GROWI app
+ *              smtpHost:
+ *                type: String
+ *                description: host name of client's smtp server
+ *              smtpPort:
+ *                type: String
+ *                description: port of client's smtp server
+ *              smtpUser:
+ *                type: String
+ *                description: user name of client's smtp server
+ *              smtpPassword:
+ *                type: String
+ *                description: password of client's smtp server
  */
 
 module.exports = (crowi) => {
@@ -80,24 +104,8 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    title:
-   *                      type: String
-   *                      description: site name show on page header and tilte of HTML
-   *                    confidential:
-   *                      type: String
-   *                      description: confidential show on page header
-   *                    globalLang:
-   *                      type: String
-   *                      description: language set when create user
-   *                    fileUpload:
-   *                      type: boolean
-   *                      description: enable upload file except image file
-   *                    siteUrl:
-   *                      type: String
-   *                      description: Site URL. e.g. https://example.com, https://example.com:8080
-   *                    envSiteUrl:
-   *                      type: String
-   *                      description: environment variable 'APP_SITE_URL'
+   *                    AppSettingsParams:
+   *                      $ref: '#/components/schemas/AppSettingsParams'
    */
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const appSettingParams = {
@@ -107,6 +115,11 @@ module.exports = (crowi) => {
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
+      fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
+      smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
+      smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
+      smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
+      smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
     };
     return res.apiv3({ appSettingParams });
 
@@ -127,18 +140,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    *                properties:
-   *                  title:
-   *                    type: String
-   *                    description: site name show on page header and tilte of HTML
-   *                  confidential:
-   *                    type: String
-   *                    description: confidential show on page header
-   *                  globalLang:
-   *                    type: String
-   *                    description: language set when create user
-   *                  fileUpload:
-   *                    type: boolean
-   *                    description: enable upload file except image file
+   *                  $ref: '#/components/schemas/AppSettingsParams/AppSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update app setting
@@ -147,7 +149,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/appSettingParams'
+   *                      $ref: '#/components/schemas/appSettingParams/AppSettingParams'
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
@@ -176,32 +178,30 @@ module.exports = (crowi) => {
   });
 
   /**
- * @swagger
- *
- *    /app-settings/site-url-setting:
- *      put:
- *        tags: [AppSettings]
- *        description: Update site url setting
- *        requestBody:
- *          required: true
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  siteUrl:
- *                    type: String
- *                    description: Site URL. e.g. https://example.com, https://example.com:8080
- *        responses:
- *          200:
- *            description: Succeeded to update site url setting
- *            content:
- *              application/json:
- *                schema:
- *                  properties:
- *                    status:
- *                      $ref: '#/components/schemas/appSettingParams'
- */
+   * @swagger
+   *
+   *    /app-settings/site-url-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        description: Update site url setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  $ref: '#/components/schemas/AppSettingsParams/SiteUrlSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update site url setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    status:
+   *                      $ref: '#/components/schemas/appSettingParams/SiteUrlSettingParams'
+   */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
@@ -210,15 +210,69 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestSiteUrlSettingParams);
-      const appSettingParams = {
+      const siteUrlSettingParams = {
         siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       };
-      return res.apiv3({ appSettingParams });
+      return res.apiv3({ siteUrlSettingParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating site url setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-failed'));
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/site-url-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        description: Update site url setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  $ref: '#/components/schemas/AppSettingsParams/MailSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update site url setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    status:
+   *                      $ref: '#/components/schemas/appSettingParams/MailSettingParams'
+   */
+  router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
+
+    const requestMailSettingParams = {
+      'mail:from': req.body.fromAddress,
+      'mail:smtpHost': req.body.smtpHost,
+      'mail:smtpPort': req.body.smtpPort,
+      'mail:smtpUser': req.body.smtpUser,
+      'mail:smtpPassword': req.body.smtpPassword,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams);
+      const mailSettingParams = {
+        fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
+        smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
+        smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
+        smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
+        smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
+      };
+      return res.apiv3({ mailSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating mail setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
     }
 
   });

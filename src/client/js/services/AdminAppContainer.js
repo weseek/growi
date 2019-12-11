@@ -176,8 +176,8 @@ export default class AdminAppContainer extends Container {
     const response = await this.appContainer.apiv3.put('/app-settings/site-url-setting', {
       siteUrl: this.state.siteUrl,
     });
-    const { appSettingParams } = response.data;
-    return appSettingParams;
+    const { siteUrlSettingParams } = response.data;
+    return siteUrlSettingParams;
   }
 
   /**
@@ -193,8 +193,8 @@ export default class AdminAppContainer extends Container {
       smtpUser: this.state.smtpUser,
       smtpPassword: this.state.smtpPassword,
     });
-    const { appSettingParams } = response.data;
-    return appSettingParams;
+    const { mailSettingParams } = response.data;
+    return mailSettingParams;
   }
 
 }
