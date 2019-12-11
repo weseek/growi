@@ -54,13 +54,21 @@ export default class AdminSamlSecurityContainer extends Container {
     const { samlAuth } = response.data.securityParams;
     this.setState({
       samlDbEntryPoint: samlAuth.samlDbEntryPoint || '',
+      samlEnvVarEntryPoint: samlAuth.samlEnvVarEntryPoint || '',
       samlDbIssuer: samlAuth.samlDbIssuer || '',
+      samlEnvVarIssuer: samlAuth.samlEnvVarIssuer || '',
       samlDbCert: samlAuth.samlDbCert || '',
+      samlEnvVarCert: samlAuth.samlEnvVarCert || '',
       samlDbAttrMapId: samlAuth.samlDbAttrMapId || '',
+      samlEnvVarAttrMapId: samlAuth.samlEnvVarAttrMapId || '',
       samlDbAttrMapUserName: samlAuth.samlDbAttrMapUserName || '',
+      samlEnvVarAttrMapUserName: samlAuth.samlEnvVarAttrMapUserName || '',
       samlDbAttrMapMail: samlAuth.samlDbAttrMapMail || '',
+      samlEnvVarAttrMapMail: samlAuth.samlEnvVarAttrMapMail || '',
       samlDbAttrMapFirstName: samlAuth.samlDbAttrMapFirstName || '',
+      samlEnvVarAttrMapFirstName: samlAuth.samlEnvVarAttrMapFirstName || '',
       samlDbAttrMapLastName: samlAuth.samlDbAttrMapLastName || '',
+      samlEnvVarAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName || '',
       isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser || false,
       isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser || false,
     });
