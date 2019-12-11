@@ -33,9 +33,9 @@ class SecuritySetting extends React.Component {
   }
 
   async putSecuritySetting() {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
     try {
-      await this.props.adminGeneralSecurityContainer.updateGeneralSecuritySetting();
+      await adminGeneralSecurityContainer.updateGeneralSecuritySetting();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -48,7 +48,7 @@ class SecuritySetting extends React.Component {
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
     // eslint-disable-next-line max-len
-    const helpForceWikiMode = { __html: t('security_setting.Fixed by env var', { forcewikimode: 'FORCE_WIKI_MODE' }, { wikimode: adminGeneralSecurityContainer.state.wikiMode }) };
+    const helpForceWikiMode = { __html: t('security_setting.Fixed by env var', { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }) };
 
 
     return (

@@ -92,8 +92,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
   }
 
-  onIsWikiModeForced() {
-    if (this.state.wikiMode === 'private') {
+  onIsWikiModeForced(wikiModeSetting) {
+    if (wikiModeSetting === 'private') {
       this.setState({ isWikiModeForced: true });
     }
     else {
