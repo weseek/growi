@@ -52,33 +52,21 @@ const validator = {
  *        type: object
  *          GeneralSetting:
  *            type:object
- *              GuestModeParams:
- *                type: object
- *                properties:
- *                  restrictGuestMode:
- *                    type: string
- *                    description: type of restrictGuestMode
- *              PageDeletionParams:
- *                type: object
- *                properties:
- *                  pageCompleteDeletionAuthority:
- *                    type: string
- *                    description: type of pageDeletionAuthority
- *              WikiModeParams:
- *                type: object
- *                properties:
- *                  wikiMode:
- *                    type: string
- *                    description: type of wikiMode
- *              Function:
- *                type: object
- *                properties:
- *                  hideRestrictedByOwner:
- *                    type: boolean
- *                    description: enable hide by owner
- *                  hideRestrictedByGroup:
- *                    type: boolean
- *                    description: enable hide by group
+ *              restrictGuestMode:
+ *                type: string
+ *                description: type of restrictGuestMode
+ *              pageCompleteDeletionAuthority:
+ *                type: string
+ *                description: type of pageDeletionAuthority
+ *              wikiMode:
+ *                type: string
+ *                description: type of wikiMode
+ *              hideRestrictedByOwner:
+ *                type: boolean
+ *                description: enable hide by owner
+ *              hideRestrictedByGroup:
+ *                type: boolean
+ *                description: enable hide by group
  *          GitHubOAuthSetting:
  *            type:object
  *              githubClientId:
