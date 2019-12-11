@@ -137,22 +137,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  // app.post('/admin/markdown/lineBreaksSetting' , admin.markdown.lineBreaksSetting);
-  actions.markdown.lineBreaksSetting = async function(req, res) {
-
-    const markdownSetting = req.form.markdownSetting;
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
-      req.flash('successMessage', ['Successfully updated!']);
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-    }
-    return res.redirect('/admin/markdown');
-
-  };
-
   // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
   actions.markdown.presentationSetting = async function(req, res) {
     const markdownSetting = req.form.markdownSetting;
@@ -166,29 +150,6 @@ module.exports = function(crowi, app) {
     }
 
     return res.redirect('/admin/markdown');
-  };
-
-  // app.post('/admin/markdown/xss-setting' , admin.markdown.xssSetting);
-  actions.markdown.xssSetting = async function(req, res) {
-    const xssSetting = req.form.markdownSetting;
-
-    xssSetting['markdown:xss:tagWhiteList'] = csvToArray(xssSetting['markdown:xss:tagWhiteList']);
-    xssSetting['markdown:xss:attrWhiteList'] = csvToArray(xssSetting['markdown:xss:attrWhiteList']);
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', xssSetting);
-      req.flash('successMessage', ['Successfully updated!']);
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-    }
-
-    return res.redirect('/admin/markdown');
-  };
-
-  const csvToArray = (string) => {
-    const array = string.split(',');
-    return array.map((item) => { return item.trim() });
   };
 
   // app.get('/admin/customize' , admin.customize.index);
@@ -486,17 +447,7 @@ module.exports = function(crowi, app) {
 
   actions.externalAccount = {};
   actions.externalAccount.index = function(req, res) {
-    const page = parseInt(req.query.page) || 1;
-
-    ExternalAccount.findAllWithPagination({ page })
-      .then((result) => {
-        const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
-
-        return res.render('admin/external-accounts', {
-          accounts: result.docs,
-          pager,
-        });
-      });
+    return res.render('admin/external-accounts');
   };
 
   actions.externalAccount.remove = async function(req, res) {

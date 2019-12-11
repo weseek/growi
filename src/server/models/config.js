@@ -1,21 +1,22 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
-
-/* eslint-disable no-use-before-define */
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 module.exports = function(crowi) {
-  const mongoose = require('mongoose');
 
   const configSchema = new mongoose.Schema({
-    ns: { type: String, required: true, index: true },
-    key: { type: String, required: true, index: true },
+    ns: { type: String, required: true },
+    key: { type: String, required: true },
     value: { type: String, required: true },
   });
+  // define unique compound index
+  configSchema.index({ ns: 1, key: 1 }, { unique: true });
+  configSchema.plugin(uniqueValidator);
 
   /**
    * default values when GROWI is cleanly installed
    */
   function getConfigsForInstalling() {
+    // eslint-disable-next-line no-use-before-define
     const config = getDefaultCrowiConfigs();
 
     // overwrite
@@ -175,6 +176,8 @@ module.exports = function(crowi) {
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+      pageBreakSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
+      pageBreakCustomSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
       isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),

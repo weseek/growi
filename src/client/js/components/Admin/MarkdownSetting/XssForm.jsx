@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
 
 import WhiteListInput from './WhiteListInput';
+
+const logger = loggerFactory('growi:importer');
 
 class XssForm extends React.Component {
 
@@ -18,7 +22,16 @@ class XssForm extends React.Component {
   }
 
   async onClickSubmit() {
-    // TODO GW-303 create apiV3 of update setting
+    const { t } = this.props;
+
+    try {
+      await this.props.markDownSettingContainer.updateXssSetting();
+      toastSuccess(t('markdown_setting.updated_xss'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   }
 
   xssOptions() {
@@ -82,9 +95,16 @@ class XssForm extends React.Component {
       <React.Fragment>
         <form className="row">
           <div className="form-group">
-            <div className="col-xs-4 text-right">
-              <div className="checkbox checkbox-success" onChange={markDownSettingContainer.switchEnableXss}>
-                <input type="checkbox" id="XssEnable" className="form-check-input" name="isEnabledXss" checked={isEnabledXss} />
+            <div className="col-xs-offset-4 col-xs-4 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  type="checkbox"
+                  id="XssEnable"
+                  className="form-check-input"
+                  name="isEnabledXss"
+                  checked={isEnabledXss}
+                  onChange={markDownSettingContainer.switchEnableXss}
+                />
                 <label htmlFor="XssEnable">
                   { t('markdown_setting.Enable XSS prevention') }
                 </label>

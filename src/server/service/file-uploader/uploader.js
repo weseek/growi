@@ -9,6 +9,10 @@ class Uploader {
   }
 
   getIsUploadable() {
+    return !this.configManager.getConfig('crowi', 'app:fileUploadDisabled') && this.isValidUploadSettings();
+  }
+
+  isValidUploadSettings() {
     throw new Error('Implement this');
   }
 

@@ -44,14 +44,14 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
-    // === The official settings
+    // === Crowi settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
     // === crowi-plus (>= 2.1.0, <2.3.0) settings
     // email: { type: String, required: true, unique: true },
-    introduction: { type: String },
+    introduction: String,
     password: String,
-    apiToken: String,
+    apiToken: { type: String, index: true },
     lang: {
       type: String,
       // eslint-disable-next-line no-eval
@@ -627,7 +627,7 @@ module.exports = function(crowi) {
   userSchema.statics.createUsersByEmailList = async function(emailList) {
     const User = this;
 
-    // check exists and get list of tyr to create
+    // check exists and get list of try to create
     const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });

@@ -72,9 +72,6 @@ module.exports = function(crowi, app) {
   }
 
   function generatePager(offset, limit, totalCount) {
-    let next = null;
-
-
     let prev = null;
 
     if (offset > 0) {
@@ -84,11 +81,9 @@ module.exports = function(crowi, app) {
       }
     }
 
-    if (totalCount < limit) {
+    let next = offset + limit;
+    if (totalCount < next) {
       next = null;
-    }
-    else {
-      next = offset + limit;
     }
 
     return {
@@ -164,7 +159,7 @@ module.exports = function(crowi, app) {
 
     const queryOptions = {
       offset,
-      limit: limit + 1,
+      limit,
       includeTrashed: path.startsWith('/trash/'),
       isRegExpEscapedFromPath,
     };
@@ -469,13 +464,15 @@ module.exports = function(crowi, app) {
   };
 
   actions.deletedPageListShow = async function(req, res) {
-    const path = `/trash${getPathFromRequest(req)}`;
+    // normalizePath makes '/trash/' -> '/trash'
+    const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
+
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
 
     const queryOptions = {
       offset,
-      limit: limit + 1,
+      limit,
       includeTrashed: true,
     };
 
@@ -576,7 +573,7 @@ module.exports = function(crowi, app) {
    */
   api.create = async function(req, res) {
     const body = req.body.body || null;
-    const pagePath = req.body.path || null;
+    let pagePath = req.body.path || null;
     const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
@@ -588,6 +585,9 @@ module.exports = function(crowi, app) {
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
+
+    // check whether path starts slash
+    pagePath = pathUtils.addHeadingSlash(pagePath);
 
     // check page existence
     const isExist = await Page.count({ path: pagePath }) > 0;
@@ -1067,7 +1067,7 @@ module.exports = function(crowi, app) {
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
-    const newPagePath = pathUtils.normalizePath(req.body.new_path);
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
     const options = {
       createRedirectPage: (req.body.create_redirect != null),
       updateMetadata: (req.body.remain_metadata == null),
@@ -1078,6 +1078,9 @@ module.exports = function(crowi, app) {
     if (!Page.isCreatableName(newPagePath)) {
       return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
     }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
@@ -1133,13 +1136,16 @@ module.exports = function(crowi, app) {
    */
   api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
-    const newPagePath = pathUtils.normalizePath(req.body.new_path);
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
     await page.populateDataToShowRevision();
     const originTags = await page.findRelatedTagsById();

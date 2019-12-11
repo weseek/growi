@@ -4,17 +4,18 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import ProgressBar from './Common/ProgressBar';
 import { createSubscribedElement } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import WebsocketContainer from '../../services/WebsocketContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+import AppContainer from '../../services/AppContainer';
+import WebsocketContainer from '../../services/WebsocketContainer';
 
-import ExportZipFormModal from './ExportData/ExportZipFormModal';
-import ZipFileTable from './ExportData/ZipFileTable';
+import ProgressBar from './Common/ProgressBar';
 
-class ExportDataPage extends React.Component {
+import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
+import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
+
+class ExportArchiveDataPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -86,7 +87,7 @@ class ExportDataPage extends React.Component {
       });
 
       // TODO: toastSuccess, toastError
-      toastr.success(undefined, `New Exported Data '${addedZipFileStat.fileName}' is added`, {
+      toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
         closeButton: true,
         progressBar: true,
         newestOnTop: false,
@@ -201,15 +202,15 @@ class ExportDataPage extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('Export Data')}</h2>
+        <h2>{t('Export Archive Data')}</h2>
 
         <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
-          {t('export_management.create_new_exported_data')}
+          {t('export_management.create_new_archive_data')}
         </button>
 
         { showExportingData && (
           <div className="mt-5">
-            <h3>{t('export_management.exporting_data_list')}</h3>
+            <h3>{t('export_management.exporting_collection_list')}</h3>
             { this.renderProgressBarsForCollections() }
             { this.renderProgressBarForZipping() }
           </div>
@@ -217,13 +218,13 @@ class ExportDataPage extends React.Component {
 
         <div className="mt-5">
           <h3>{t('export_management.exported_data_list')}</h3>
-          <ZipFileTable
+          <ArchiveFilesTable
             zipFileStats={this.state.zipFileStats}
             onZipFileStatRemove={this.onZipFileStatRemove}
           />
         </div>
 
-        <ExportZipFormModal
+        <SelectCollectionsModal
           isOpen={this.state.isExportModalOpen}
           onExportingRequested={this.exportingRequestedHandler}
           onClose={this.closeExportModal}
@@ -235,7 +236,7 @@ class ExportDataPage extends React.Component {
 
 }
 
-ExportDataPage.propTypes = {
+ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
@@ -244,8 +245,8 @@ ExportDataPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ExportDataPageFormWrapper = (props) => {
-  return createSubscribedElement(ExportDataPage, props, [AppContainer, WebsocketContainer]);
+const ExportArchiveDataPageWrapper = (props) => {
+  return createSubscribedElement(ExportArchiveDataPage, props, [AppContainer, WebsocketContainer]);
 };
 
-export default withTranslation()(ExportDataPageFormWrapper);
+export default withTranslation()(ExportArchiveDataPageWrapper);

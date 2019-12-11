@@ -7,53 +7,24 @@ const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
 
-
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
+const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
-class ExportingProgress {
+class ExportProgressingStatus extends CollectionProgressingStatus {
 
-  constructor(collectionName, totalCount) {
-    this.collectionName = collectionName;
-    this.currentCount = 0;
-    this.totalCount = totalCount;
+  async init() {
+    // retrieve total document count from each collections
+    const promises = this.progressList.map(async(collectionProgress) => {
+      const collection = mongoose.connection.collection(collectionProgress.collectionName);
+      collectionProgress.totalCount = await collection.count();
+    });
+    await Promise.all(promises);
+
+    this.recalculateTotalCount();
   }
 
 }
-
-class ExportingStatus {
-
-  constructor() {
-    this.totalCount = 0;
-
-    this.progressList = null;
-    this.progressMap = {};
-  }
-
-  async init(collections) {
-    const promisesForCreatingInstance = collections.map(async(collectionName) => {
-      const collection = mongoose.connection.collection(collectionName);
-      const totalCount = await collection.count();
-      return new ExportingProgress(collectionName, totalCount);
-    });
-    this.progressList = await Promise.all(promisesForCreatingInstance);
-
-    // collection name to instance mapping
-    this.progressList.forEach((p) => {
-      this.progressMap[p.collectionName] = p;
-      this.totalCount += p.totalCount;
-    });
-  }
-
-  get currentCount() {
-    return this.progressList.reduce(
-      (acc, crr) => acc + crr.currentCount,
-      0,
-    );
-  }
-
-}
-
 
 class ExportService {
 
@@ -68,14 +39,14 @@ class ExportService {
 
     this.adminEvent = crowi.event('admin');
 
-    this.currentExportingStatus = null;
+    this.currentProgressingStatus = null;
   }
 
   /**
    * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {object} info for zip files and whether currentExportingStatus exists
+   * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
@@ -87,12 +58,12 @@ class ExportService {
     // filter null object (broken zip)
     const filtered = zipFileStats.filter(element => element != null);
 
-    const isExporting = this.currentExportingStatus != null;
+    const isExporting = this.currentProgressingStatus != null;
 
     return {
       zipFileStats: filtered,
       isExporting,
-      progressList: isExporting ? this.currentExportingStatus.progressList : null,
+      progressList: isExporting ? this.currentProgressingStatus.progressList : null,
     };
   }
 
@@ -123,7 +94,7 @@ class ExportService {
 
   /**
    *
-   * @param {ExportProguress} exportProgress
+   * @param {ExportProgress} exportProgress
    * @return {Transform}
    */
   generateLogStream(exportProgress) {
@@ -196,7 +167,7 @@ class ExportService {
     const transformStream = this.generateTransformStream();
 
     // log configuration
-    const exportProgress = this.currentExportingStatus.progressMap[collectionName];
+    const exportProgress = this.currentProgressingStatus.progressMap[collectionName];
     const logStream = this.generateLogStream(exportProgress);
 
     // create WritableStream
@@ -246,18 +217,18 @@ class ExportService {
   }
 
   async export(collections) {
-    if (this.currentExportingStatus != null) {
+    if (this.currentProgressingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
 
-    this.currentExportingStatus = new ExportingStatus();
-    await this.currentExportingStatus.init(collections);
+    this.currentProgressingStatus = new ExportProgressingStatus(collections);
+    await this.currentProgressingStatus.init();
 
     try {
       await this.exportCollectionsToZippedJson(collections);
     }
     finally {
-      this.currentExportingStatus = null;
+      this.currentProgressingStatus = null;
     }
 
   }
@@ -267,14 +238,14 @@ class ExportService {
    *
    * @memberOf ExportService
    *
-   * @param {ExportProgress} exportProgress
+   * @param {CollectionProgress} collectionProgress
    * @param {number} currentCount number of items exported
    */
-  logProgress(exportProgress, currentCount) {
-    const output = `${exportProgress.collectionName}: ${currentCount}/${exportProgress.totalCount} written`;
+  logProgress(collectionProgress, currentCount) {
+    const output = `${collectionProgress.collectionName}: ${currentCount}/${collectionProgress.totalCount} written`;
 
     // update exportProgress.currentCount
-    exportProgress.currentCount = currentCount;
+    collectionProgress.currentCount = currentCount;
 
     // output every this.per items
     if (currentCount % this.per === 0) {
@@ -282,7 +253,7 @@ class ExportService {
       this.emitProgressEvent();
     }
     // output last item
-    else if (currentCount === exportProgress.totalCount) {
+    else if (currentCount === collectionProgress.totalCount) {
       logger.info(output);
       this.emitProgressEvent();
     }
@@ -290,10 +261,9 @@ class ExportService {
 
   /**
    * emit progress event
-   * @param {ExportProgress} exportProgress
    */
-  emitProgressEvent(exportProgress) {
-    const { currentCount, totalCount, progressList } = this.currentExportingStatus;
+  emitProgressEvent() {
+    const { currentCount, totalCount, progressList } = this.currentProgressingStatus;
     const data = {
       currentCount,
       totalCount,
@@ -331,7 +301,7 @@ class ExportService {
     const configs = toArrayIfNot(_configs);
     const appTitle = this.appService.getAppTitle();
     const timeStamp = (new Date()).getTime();
-    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.zip`);
+    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.growi.zip`);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });

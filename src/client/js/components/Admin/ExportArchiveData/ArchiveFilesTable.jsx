@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
-import ExportTableMenu from './ExportTableMenu';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-class ZipFileTable extends React.Component {
+import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
+
+class ArchiveFilesTable extends React.Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
@@ -26,15 +27,15 @@ class ZipFileTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.zipFileStats.map(({ meta, fileName, fileStats }) => {
+          {this.props.zipFileStats.map(({ meta, fileName, innerFileStats }) => {
             return (
               <tr key={fileName}>
                 <th>{fileName}</th>
                 <td>{meta.version}</td>
-                <td className="text-capitalize">{fileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
+                <td className="text-capitalize">{innerFileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
                 <td>{meta.exportedAt ? format(new Date(meta.exportedAt), 'yyyy/MM/dd HH:mm:ss') : ''}</td>
                 <td>
-                  <ExportTableMenu
+                  <ArchiveFilesTableMenu
                     fileName={fileName}
                     onZipFileStatRemove={this.props.onZipFileStatRemove}
                   />
@@ -49,7 +50,7 @@ class ZipFileTable extends React.Component {
 
 }
 
-ZipFileTable.propTypes = {
+ArchiveFilesTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
@@ -60,8 +61,8 @@ ZipFileTable.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ZipFileTableWrapper = (props) => {
-  return createSubscribedElement(ZipFileTable, props, [AppContainer]);
+const ArchiveFilesTableWrapper = (props) => {
+  return createSubscribedElement(ArchiveFilesTable, props, [AppContainer]);
 };
 
-export default withTranslation()(ZipFileTableWrapper);
+export default withTranslation()(ArchiveFilesTableWrapper);
