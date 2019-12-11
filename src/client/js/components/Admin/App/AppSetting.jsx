@@ -7,6 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -15,13 +16,13 @@ class AppSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const currentValues = props;
+    const { adminAppContainer } = this.props;
 
     this.state = {
-      title: currentValues.title,
-      confidential: currentValues.confidential,
-      globalLang: currentValues.globalLang,
-      fileUpload: currentValues.fileUpload,
+      title: adminAppContainer.state.title,
+      confidential: adminAppContainer.state.confidential,
+      globalLang: adminAppContainer.state.globalLang,
+      fileUpload: adminAppContainer.state.fileUpload,
     };
 
     this.submitHandler = this.submitHandler.bind(this);
@@ -181,12 +182,13 @@ class AppSetting extends React.Component {
  * Wrapper component for using unstated
  */
 const AppSettingWrapper = (props) => {
-  return createSubscribedElement(AppSetting, props, [AppContainer]);
+  return createSubscribedElement(AppSetting, props, [AppContainer, AdminAppContainer]);
 };
 
 AppSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(AppSettingWrapper);

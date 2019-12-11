@@ -7,6 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -15,12 +16,12 @@ class SiteUrlSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const currentValues = props;
+    const { adminAppContainer } = this.props;
 
     this.state = {
-      siteUrl: currentValues.siteUrl,
-      envSiteUrl: currentValues.envSiteUrl,
-      isSetSiteUrl: currentValues.isSetSiteUrl,
+      siteUrl: adminAppContainer.state.siteUrl,
+      envSiteUrl: adminAppContainer.state.envSiteUrl,
+      isSetSiteUrl: adminAppContainer.state.isSetSiteUrl,
     };
 
     this.submitHandler = this.submitHandler.bind(this);
@@ -121,12 +122,13 @@ class SiteUrlSetting extends React.Component {
  * Wrapper component for using unstated
  */
 const SiteUrlSettingWrapper = (props) => {
-  return createSubscribedElement(SiteUrlSetting, props, [AppContainer]);
+  return createSubscribedElement(SiteUrlSetting, props, [AppContainer, AdminAppContainer]);
 };
 
 SiteUrlSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(SiteUrlSettingWrapper);
