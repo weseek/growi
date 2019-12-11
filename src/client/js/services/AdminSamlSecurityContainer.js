@@ -151,4 +151,55 @@ export default class AdminSamlSecurityContainer extends Container {
     this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
   }
 
+  /**
+   * Update saml option
+   */
+  async updateSamlSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/saml', {
+      samlDbEntryPoint: this.state.samlDbEntryPoint,
+      samlEnvVarEntryPoint: this.state.samlEnvVarEntryPoint,
+      samlDbIssuer: this.state.samlDbIssuer,
+      samlEnvVarIssuer: this.state.samlEnvVarIssuer,
+      samlDbCert: this.state.samlDbCert,
+      samlEnvVarCert: this.state.samlEnvVarCert,
+      samlDbAttrMapId: this.state.samlDbAttrMapId,
+      samlEnvVarAttrMapId: this.state.samlEnvVarAttrMapId,
+      samlDbAttrMapUserName: this.state.samlDbAttrMapUserName,
+      samlEnvVarAttrMapUserName: this.state.samlEnvVarAttrMapUserName,
+      samlDbAttrMapMail: this.state.samlDbAttrMapMail,
+      samlEnvVarAttrMapMail: this.state.samlEnvVarAttrMapMail,
+      samlDbAttrMapFirstName: this.state.samlDbAttrMapFirstName,
+      samlEnvVarAttrMapFirstName: this.state.samlEnvVarAttrMapFirstName,
+      samlDbAttrMapLastName: this.state.samlDbAttrMapLastName,
+      samlEnvVarAttrMapLastName: this.state.samlEnvVarAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser || false,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      samlDbEntryPoint: securitySettingParams.samlDbEntryPoint || '',
+      samlEnvVarEntryPoint: securitySettingParams.samlEnvVarEntryPoint || '',
+      samlDbIssuer: securitySettingParams.samlDbIssuer || '',
+      samlEnvVarIssuer: securitySettingParams.samlEnvVarIssuer || '',
+      samlDbCert: securitySettingParams.samlDbCert || '',
+      samlEnvVarCert: securitySettingParams.samlEnvVarCert || '',
+      samlDbAttrMapId: securitySettingParams.samlDbAttrMapId || '',
+      samlEnvVarAttrMapId: securitySettingParams.samlEnvVarAttrMapId || '',
+      samlDbAttrMapUserName: securitySettingParams.samlDbAttrMapUserName || '',
+      samlEnvVarAttrMapUserName: securitySettingParams.samlEnvVarAttrMapUserName || '',
+      samlDbAttrMapMail: securitySettingParams.samlDbAttrMapMail || '',
+      samlEnvVarAttrMapMail: securitySettingParams.samlEnvVarAttrMapMail || '',
+      samlDbAttrMapFirstName: securitySettingParams.samlDbAttrMapFirstName || '',
+      samlEnvVarAttrMapFirstName: securitySettingParams.samlEnvVarAttrMapFirstName || '',
+      samlDbAttrMapLastName: securitySettingParams.samlDbAttrMapLastName || '',
+      samlEnvVarAttrMapLastName: securitySettingParams.samlEnvVarAttrMapLastName || '',
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser || false,
+    });
+    return response;
+  }
+
 }
