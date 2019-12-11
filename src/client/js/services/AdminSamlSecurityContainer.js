@@ -156,23 +156,16 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   async updateSamlSetting() {
 
+    // If the value in the database is empty, the value of the environment variable is used
     const response = await this.appContainer.apiv3.put('/security-setting/saml', {
-      samlDbEntryPoint: this.state.samlDbEntryPoint,
-      samlEnvVarEntryPoint: this.state.samlEnvVarEntryPoint,
-      samlDbIssuer: this.state.samlDbIssuer,
-      samlEnvVarIssuer: this.state.samlEnvVarIssuer,
-      samlDbCert: this.state.samlDbCert,
-      samlEnvVarCert: this.state.samlEnvVarCert,
-      samlDbAttrMapId: this.state.samlDbAttrMapId,
-      samlEnvVarAttrMapId: this.state.samlEnvVarAttrMapId,
-      samlDbAttrMapUserName: this.state.samlDbAttrMapUserName,
-      samlEnvVarAttrMapUserName: this.state.samlEnvVarAttrMapUserName,
-      samlDbAttrMapMail: this.state.samlDbAttrMapMail,
-      samlEnvVarAttrMapMail: this.state.samlEnvVarAttrMapMail,
-      samlDbAttrMapFirstName: this.state.samlDbAttrMapFirstName,
-      samlEnvVarAttrMapFirstName: this.state.samlEnvVarAttrMapFirstName,
-      samlDbAttrMapLastName: this.state.samlDbAttrMapLastName,
-      samlEnvVarAttrMapLastName: this.state.samlEnvVarAttrMapLastName,
+      samlEntryPoint: (this.state.samlDbEntryPoint === '') ? this.state.samlEnvVarEntryPoint : this.state.samlDbEntryPoint,
+      samlIssuer: (this.state.samlDbIssuer === '') ? this.state.samlEnvVarIssuer : this.state.samlDbIssuer,
+      samlCert: (this.state.samlDbCert === '') ? this.state.samlEnvVarCert : this.state.samlDbCert,
+      samlAttrMapId: (this.state.samlDbAttrMapId === '') ? this.state.samlEnvVarAttrMapId : this.state.samlDbAttrMapId,
+      samlAttrMapUserName: (this.state.samlDbAttrMapUserName === '') ? this.state.samlEnvVarAttrMapUserName : this.state.samlDbAttrMapUserName,
+      samlAttrMapMail: (this.state.samlDbAttrMapMail === '') ? this.state.samlEnvVarAttrMapMail : this.state.samlDbAttrMapMail,
+      samlAttrMapFirstName: (this.state.samlDbAttrMapFirstName === '') ? this.state.samlEnvVarAttrMapFirstName : this.state.samlDbAttrMapFirstName,
+      samlAttrMapLastName: (this.state.samlDbAttrMapLastName === '') ? this.state.samlEnvVarAttrMapLastName : this.state.samlDbAttrMapLastName,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser || false,
       isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser || false,
     });
