@@ -8,7 +8,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
+import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 const logger = loggerFactory('growi:importer');
 
@@ -25,7 +25,7 @@ class LineBreakForm extends React.Component {
     const { t } = this.props;
 
     try {
-      await this.props.markDownSettingContainer.updateLineBreakSetting();
+      await this.props.adminMarkDownContainer.updateLineBreakSetting();
       toastSuccess(t('markdown_setting.updated_lineBreak'));
     }
     catch (err) {
@@ -35,8 +35,8 @@ class LineBreakForm extends React.Component {
   }
 
   renderLineBreakOption() {
-    const { t, markDownSettingContainer } = this.props;
-    const { isEnabledLinebreaks } = markDownSettingContainer.state;
+    const { t, adminMarkDownContainer } = this.props;
+    const { isEnabledLinebreaks } = adminMarkDownContainer.state;
 
     const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
 
@@ -48,10 +48,10 @@ class LineBreakForm extends React.Component {
               type="checkbox"
               id="isEnabledLinebreaks"
               checked={isEnabledLinebreaks}
-              onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
+              onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
             />
             <label htmlFor="isEnabledLinebreaks">
-              { t('markdown_setting.Enable Line Break') }
+              {t('markdown_setting.Enable Line Break')}
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
@@ -61,8 +61,8 @@ class LineBreakForm extends React.Component {
   }
 
   renderLineBreakInCommentOption() {
-    const { t, markDownSettingContainer } = this.props;
-    const { isEnabledLinebreaksInComments } = markDownSettingContainer.state;
+    const { t, adminMarkDownContainer } = this.props;
+    const { isEnabledLinebreaksInComments } = adminMarkDownContainer.state;
 
     const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
 
@@ -74,10 +74,10 @@ class LineBreakForm extends React.Component {
               type="checkbox"
               id="isEnabledLinebreaksInComments"
               checked={isEnabledLinebreaksInComments}
-              onChange={() => { markDownSettingContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
+              onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
             />
             <label htmlFor="isEnabledLinebreaksInComments">
-              { t('markdown_setting.Enable Line Break for comment') }
+              {t('markdown_setting.Enable Line Break for comment')}
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
@@ -87,7 +87,7 @@ class LineBreakForm extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminMarkDownContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -97,7 +97,14 @@ class LineBreakForm extends React.Component {
         </fieldset>
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={adminMarkDownContainer.state.retrieveError != null}
+            >
+              {t('Update')}
+            </button>
           </div>
         </div>
       </React.Fragment>
@@ -110,13 +117,13 @@ class LineBreakForm extends React.Component {
  * Wrapper component for using unstated
  */
 const LineBreakFormWrapper = (props) => {
-  return createSubscribedElement(LineBreakForm, props, [AppContainer, MarkDownSettingContainer]);
+  return createSubscribedElement(LineBreakForm, props, [AppContainer, AdminMarkDownContainer]);
 };
 
 LineBreakForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
+  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
 export default withTranslation()(LineBreakFormWrapper);
