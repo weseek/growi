@@ -58,7 +58,7 @@ import AdminUsersContainer from './services/AdminUsersContainer';
 import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from './services/AdminLdapSecurityContainer';
 import WebsocketContainer from './services/WebsocketContainer';
-import MarkDownSettingContainer from './services/MarkDownSettingContainer';
+import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminSamlSecurityContainer from './services/AdminSamlSecurityContainer';
 import AdminOidcSecurityContainer from './services/AdminOidcSecurityContainer';
@@ -208,7 +208,7 @@ if (adminUserGroupDetailElem != null) {
 
 const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting');
 if (adminMarkDownSettingElem != null) {
-  const markDownSettingContainer = new MarkDownSettingContainer(appContainer);
+  const markDownSettingContainer = new AdminMarkDownContainer(appContainer);
   ReactDOM.render(
     <Provider inject={[injectableContainers, markDownSettingContainer]}>
       <I18nextProvider i18n={i18n}>
