@@ -7,6 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -15,51 +16,15 @@ class AppSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      title: '',
-      confidential: '',
-      globalLang: 'en-US',
-      fileUpload: false,
-    };
-
     this.submitHandler = this.submitHandler.bind(this);
-    this.inputTitleChangeHandler = this.inputTitleChangeHandler.bind(this);
-    this.inputConfidentialChangeHandler = this.inputConfidentialChangeHandler.bind(this);
-    this.inputGlobalLangChangeHandler = this.inputGlobalLangChangeHandler.bind(this);
-    this.inputFileUploadChangeHandler = this.inputFileUploadChangeHandler.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      const response = await this.props.appContainer.apiv3.get('/app-settings/app-setting');
-      const appSettingParams = response.data.appSettingParams;
-
-      this.setState({
-        title: appSettingParams.title || '',
-        confidential: appSettingParams.confidential || '',
-        globalLang: appSettingParams.globalLang || 'en-US',
-        fileUpload: appSettingParams.fileUpload || false,
-      });
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
   }
 
   async submitHandler() {
-    const { t } = this.props;
-
-    const params = {
-      title: this.state.title,
-      confidential: this.state.confidential,
-      globalLang: this.state.globalLang,
-      fileUpload: this.state.fileUpload,
-    };
+    const { t, adminAppContainer } = this.props;
 
     try {
-      await this.props.appContainer.apiv3.put('/app-settings/app-setting', params);
-      toastSuccess(t('Updated app setting'));
+      await adminAppContainer.updateAppSettingHandler();
+      toastSuccess(t('app_setting.updated_app_setting'));
     }
     catch (err) {
       toastError(err);
@@ -67,24 +32,8 @@ class AppSetting extends React.Component {
     }
   }
 
-  inputTitleChangeHandler(event) {
-    this.setState({ title: event.target.value });
-  }
-
-  inputConfidentialChangeHandler(event) {
-    this.setState({ confidential: event.target.value });
-  }
-
-  inputGlobalLangChangeHandler(event) {
-    this.setState({ globalLang: event.target.value });
-  }
-
-  inputFileUploadChangeHandler(event) {
-    this.setState({ fileUpload: event.target.checked });
-  }
-
   render() {
-    const { t } = this.props;
+    const { t, adminAppContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -98,8 +47,8 @@ class AppSetting extends React.Component {
                   id="settingForm[app:title]"
                   type="text"
                   name="title"
-                  value={this.state.title}
-                  onChange={this.inputTitleChangeHandler}
+                  defaultValue={adminAppContainer.state.title}
+                  onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
                   placeholder="GROWI"
                 />
                 <p className="help-block">{t('app_setting.sitename_change')}</p>
@@ -118,8 +67,8 @@ class AppSetting extends React.Component {
                   id="settingForm[app:confidential]"
                   type="text"
                   name="confidential"
-                  value={this.state.confidential}
-                  onChange={this.inputConfidentialChangeHandler}
+                  defaultValue={adminAppContainer.state.confidential}
+                  onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
                   placeholder={t('app_setting.ex) internal use only')}
                 />
                 <p className="help-block">{t('app_setting.header_content')}</p>
@@ -137,8 +86,8 @@ class AppSetting extends React.Component {
                 id="radioLangEn"
                 name="globalLang"
                 value="en-US"
-                checked={this.state.globalLang === 'en-US'}
-                onClick={this.inputGlobalLangChangeHandler}
+                checked={adminAppContainer.state.globalLang === 'en-US'}
+                onClick={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
               />
               <label htmlFor="radioLangEn">{t('English')}</label>
             </div>
@@ -148,8 +97,8 @@ class AppSetting extends React.Component {
                 id="radioLangJa"
                 name="globalLang"
                 value="ja"
-                checked={this.state.globalLang === 'ja'}
-                onClick={this.inputGlobalLangChangeHandler}
+                checked={adminAppContainer.state.globalLang === 'ja'}
+                onClick={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
               />
               <label htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
@@ -162,7 +111,13 @@ class AppSetting extends React.Component {
               <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
               <div className="col-xs-6">
                 <div className="checkbox checkbox-info">
-                  <input type="checkbox" id="cbFileUpload" name="fileUpload" checked={this.state.fileUpload} onChange={this.inputFileUploadChangeHandler} />
+                  <input
+                    type="checkbox"
+                    id="cbFileUpload"
+                    name="fileUpload"
+                    checked={adminAppContainer.state.fileUpload}
+                    onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
+                  />
                   <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
                 </div>
 
@@ -197,12 +152,13 @@ class AppSetting extends React.Component {
  * Wrapper component for using unstated
  */
 const AppSettingWrapper = (props) => {
-  return createSubscribedElement(AppSetting, props, [AppContainer]);
+  return createSubscribedElement(AppSetting, props, [AppContainer, AdminAppContainer]);
 };
 
 AppSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(AppSettingWrapper);

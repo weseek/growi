@@ -437,8 +437,10 @@
     "Load plugins": "プラグインを読み込む",
     "Enable": "有効",
     "Disable": "無効",
-    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します"
-   },
+    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
+    "updated_app_setting": "アプリ設定を更新しました",
+    "updated_site_url": "サイトURLを更新しました"
+  },
 
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",

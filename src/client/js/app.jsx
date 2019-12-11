@@ -40,7 +40,7 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
-import AppSettingPage from './components/Admin/AppSettingPage';
+import AppSettingPage from './components/Admin/App/AppSettingPage';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -55,6 +55,7 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
+import AdminAppContainer from './services/AdminAppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
@@ -110,7 +111,6 @@ let componentMappings = {
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
 
-  'admin-app': <AppSettingPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-customize': <Customize />,
 
@@ -160,6 +160,19 @@ Object.keys(componentMappings).forEach((key) => {
 });
 
 // render for admin
+const adminAppElem = document.getElementById('admin-app');
+if (adminAppElem != null) {
+  const adminAppContainer = new AdminAppContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminAppContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <AppSettingPage />
+      </I18nextProvider>
+    </Provider>,
+    adminAppElem,
+  );
+}
+
 const adminUsersElem = document.getElementById('admin-user-page');
 if (adminUsersElem != null) {
   const adminUsersContainer = new AdminUsersContainer(appContainer);
