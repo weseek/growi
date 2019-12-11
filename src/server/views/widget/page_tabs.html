@@ -38,7 +38,7 @@
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
     <li class="nav-item">
-      <a class="btn btn-default nav-link dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" {% endif %}>
+      <a class="btn nav-link dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" {% endif %}>
         <i class="icon-options-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
