@@ -25,6 +25,11 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
+      fromAddress: '',
+      smtpHost: '',
+      smtpPort: '',
+      smtpUser: '',
+      smtpPassword: '',
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -32,8 +37,14 @@ export default class AdminAppContainer extends Container {
     this.changeGlobalLang = this.changeGlobalLang.bind(this);
     this.changeFileUpload = this.changeFileUpload.bind(this);
     this.changeSiteUrl = this.changeSiteUrl.bind(this);
+    this.changeFromAddress = this.changeFromAddress.bind(this);
+    this.changeSmtpHost = this.changeSmtpHost.bind(this);
+    this.changeSmtpPort = this.changeSmtpPort.bind(this);
+    this.changeSmtpUser = this.changeSmtpUser.bind(this);
+    this.changeSmtpPassword = this.changeSmtpPassword.bind(this);
     this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
     this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
+    this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
   }
 
   /**
@@ -103,6 +114,42 @@ export default class AdminAppContainer extends Container {
     this.setState({ siteUrl });
   }
 
+
+  /**
+   * Change from address
+   */
+  changeFromAddress(fromAddress) {
+    this.setState({ fromAddress });
+  }
+
+  /**
+   * Change smtp host
+   */
+  changeSmtpHost(smtpHost) {
+    this.setState({ smtpHost });
+  }
+
+  /**
+   * Change smtp port
+   */
+  changeSmtpPort(smtpPort) {
+    this.setState({ smtpPort });
+  }
+
+  /**
+   * Change smtp user
+   */
+  changeSmtpUser(smtpUser) {
+    this.setState({ smtpUser });
+  }
+
+  /**
+   * Change smtp password
+   */
+  changeSmtpPassword(smtpPassword) {
+    this.setState({ smtpPassword });
+  }
+
   /**
    * Update app setting
    * @memberOf AdminAppContainer
@@ -128,6 +175,23 @@ export default class AdminAppContainer extends Container {
   async updateSiteUrlSettingHandler() {
     const response = await this.appContainer.apiv3.put('/app-settings/site-url-setting', {
       siteUrl: this.state.siteUrl,
+    });
+    const { appSettingParams } = response.data;
+    return appSettingParams;
+  }
+
+  /**
+   * Update mail setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateMailSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
+      fromAddress: this.state.fromAddress,
+      smtpHost: this.state.smtpHost,
+      smtpPort: this.state.smtpPort,
+      smtpUser: this.state.smtpUser,
+      smtpPassword: this.state.smtpPassword,
     });
     const { appSettingParams } = response.data;
     return appSettingParams;
