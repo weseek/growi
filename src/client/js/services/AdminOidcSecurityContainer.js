@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { pathUtils } from 'growi-commons';
+
+import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminOidcSecurityContainer');
@@ -17,8 +20,7 @@ export default class AdminOidcSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
-      callbackUrl: '',
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/oidc/callback'),
       oidcProviderName: '',
       oidcIssuerHost: '',
       oidcClientId: '',
@@ -27,16 +29,30 @@ export default class AdminOidcSecurityContainer extends Container {
       oidcAttrMapUserName: '',
       oidcAttrMapName: '',
       oidcAttrMapEmail: '',
-      isSameUsernameTreatedAsIdenticalUser: true,
-      isSameEmailTreatedAsIdenticalUser: true,
+      isSameUsernameTreatedAsIdenticalUser: false,
+      isSameEmailTreatedAsIdenticalUser: false,
     };
-
-    this.init();
 
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { oidcAuth } = response.data.securityParams;
+    this.setState({
+      oidcProviderName: oidcAuth.oidcProviderName || '',
+      oidcIssuerHost: oidcAuth.oidcIssuerHost || '',
+      oidcClientId: oidcAuth.oidcClientId || '',
+      oidcClientSecret: oidcAuth.oidcClientSecret || '',
+      oidcAttrMapId: oidcAuth.oidcAttrMapId || '',
+      oidcAttrMapUserName: oidcAuth.oidcAttrMapUserName || '',
+      oidcAttrMapName: oidcAuth.oidcAttrMapName || '',
+      oidcAttrMapEmail: oidcAuth.oidcAttrMapEmail || '',
+      isSameUsernameTreatedAsIdenticalUser: oidcAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: oidcAuth.isSameEmailTreatedAsIdenticalUser || false,
+    });
   }
 
   /**
@@ -114,6 +130,41 @@ export default class AdminOidcSecurityContainer extends Container {
    */
   switchIsSameEmailTreatedAsIdenticalUser() {
     this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Update OpenID Connect
+   */
+  async updateOidcSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/oidc', {
+      oidcProviderName: this.state.oidcProviderName,
+      oidcIssuerHost: this.state.oidcIssuerHost,
+      oidcClientId: this.state.oidcClientId,
+      oidcClientSecret: this.state.oidcClientSecret,
+      oidcAttrMapId: this.state.oidcAttrMapId,
+      oidcAttrMapUserName: this.state.oidcAttrMapUserName,
+      oidcAttrMapName: this.state.oidcAttrMapName,
+      oidcAttrMapEmail: this.state.oidcAttrMapEmail,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      oidcProviderName: securitySettingParams.oidcProviderName || '',
+      oidcIssuerHost: securitySettingParams.oidcIssuerHost || '',
+      oidcClientId: securitySettingParams.oidcClientId || '',
+      oidcClientSecret: securitySettingParams.oidcClientSecret || '',
+      oidcAttrMapId: securitySettingParams.oidcAttrMapId || '',
+      oidcAttrMapUserName: securitySettingParams.oidcAttrMapUserName || '',
+      oidcAttrMapName: securitySettingParams.oidcAttrMapName || '',
+      oidcAttrMapEmail: securitySettingParams.oidcAttrMapEmail || '',
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser || false,
+    });
+    return response;
   }
 
 }

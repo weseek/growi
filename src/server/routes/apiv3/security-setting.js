@@ -19,6 +19,17 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  oidcAuth: [
+    body('oidcProviderName').isString(),
+    body('oidcIssuerHost').isString(),
+    body('oidcClientId').isString(),
+    body('oidcClientSecret').isString(),
+    body('oidcAttrMapId').isString(),
+    body('oidcAttrMapUserName').isString(),
+    body('oidcAttrMapEmail').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
+  ],
   basicAuth: [
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
@@ -76,6 +87,38 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          OidcAuthSetting:
+ *            type:object
+ *              oidcProviderName:
+ *                type: string
+ *                description: provider name for oidc
+ *              oidcIssuerHost:
+ *                type: string
+ *                description: issuer host for oidc
+ *              oidcClientId:
+ *                type: string
+ *                description: client id for oidc
+ *              oidcClientSecret:
+ *                type: string
+ *                description: client secret for oidc
+ *              oidcAttrMapId:
+ *                type: string
+ *                description: attr map id for oidc
+ *              oidcAttrMapUserName:
+ *                type: string
+ *                description: attr map username for oidc
+ *              oidcAttrMapName:
+ *                type: string
+ *                description: attr map name for oidc
+ *              oidcAttrMapMail:
+ *                type: string
+ *                description: attr map mail for oidc
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the user name matched
+ *              isSameEmailTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  *          BasicAuthSetting:
  *            type:object
  *              isSameUsernameTreatedAsIdenticalUser
@@ -143,10 +186,23 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      oidcAuth: {
+        oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
+        oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
+        oidcClientId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
+        oidcClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
+        oidcAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
+        oidcAttrMapUserName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
+        oidcAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
+        oidcAttrMapEmail: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       },
       basicAuth: {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
@@ -235,10 +291,68 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/google-oauth:
+   *    /security-setting/oidc:
    *      put:
    *        tags: [SecuritySetting]
-   *        description: Update google OAuth
+   *        description: Update OpenID Connect setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update OpenID Connect setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
+   */
+  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-oidc:providerName': req.body.oidcProviderName,
+      'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
+      'security:passport-oidc:clientId': req.body.oidcClientId,
+      'security:passport-oidc:clientSecret': req.body.oidcClientSecret,
+      'security:passport-oidc:attrMapId': req.body.oidcAttrMapId,
+      'security:passport-oidc:attrMapUserName': req.body.oidcAttrMapUserName,
+      'security:passport-oidc:attrMapName': req.body.oidcAttrMapName,
+      'security:passport-oidc:attrMapMail': req.body.oidcAttrMapEmail,
+      'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-oidc:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
+        oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
+        oidcClientId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
+        oidcClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
+        oidcAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
+        oidcAttrMapUserName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
+        oidcAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
+        oidcAttrMapEmail: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating OpenIDConnect';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-OpenIDConnect-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/basic:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update basic
    *        requestBody:
    *          required: true
    *          content:
@@ -247,7 +361,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/SecurityParams/BasicAuthSetting'
    *        responses:
    *          200:
-   *            description: Succeeded to google OAuth
+   *            description: Succeeded to update basic
    *            content:
    *              application/json:
    *                schema:
