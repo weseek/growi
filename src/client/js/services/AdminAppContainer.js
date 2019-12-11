@@ -27,6 +27,13 @@ export default class AdminAppContainer extends Container {
       isSetSiteUrl: true,
     };
 
+    this.changeTitle = this.changeTitle.bind(this);
+    this.changeConfidential = this.changeConfidential.bind(this);
+    this.changeGlobalLang = this.changeGlobalLang.bind(this);
+    this.changeFileUpload = this.changeFileUpload.bind(this);
+    this.changeSiteUrl = this.changeSiteUrl.bind(this);
+    this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
+    this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
   }
 
   /**
@@ -61,21 +68,69 @@ export default class AdminAppContainer extends Container {
     }
   }
 
-
-  inputTitleChangeHandler(event) {
-    this.setState({ title: event.target.value });
+  /**
+   * Change title
+   */
+  changeTitle(title) {
+    this.setState({ title });
   }
 
-  inputConfidentialChangeHandler(event) {
-    this.setState({ confidential: event.target.value });
+  /**
+   * Change confidential
+   */
+  changeConfidential(confidential) {
+    this.setState({ confidential });
   }
 
-  inputGlobalLangChangeHandler(event) {
-    this.setState({ globalLang: event.target.value });
+  /**
+   * Change globalLang
+   */
+  changeGlobalLang(globalLang) {
+    this.setState({ globalLang });
   }
 
-  inputFileUploadChangeHandler(event) {
-    this.setState({ fileUpload: event.target.checked });
+  /**
+   * Change fileUpload
+   */
+  changeFileUpload(fileUpload) {
+    this.setState({ fileUpload });
+  }
+
+  /**
+   * Change site url
+   */
+  changeSiteUrl(siteUrl) {
+    this.setState({ siteUrl });
+  }
+
+  /**
+   * Update app setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateAppSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/app-setting', {
+      title: this.state.title,
+      confidential: this.state.confidential,
+      globalLang: this.state.globalLang,
+      fileUpload: this.state.fileUpload,
+    });
+    const { appSettingParams } = response.data;
+    return appSettingParams;
+  }
+
+
+  /**
+   * Update site url setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateSiteUrlSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/site-url-setting', {
+      siteUrl: this.state.siteUrl,
+    });
+    const { appSettingParams } = response.data;
+    return appSettingParams;
   }
 
 }

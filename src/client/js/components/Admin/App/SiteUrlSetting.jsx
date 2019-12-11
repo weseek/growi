@@ -16,27 +16,14 @@ class SiteUrlSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    const { adminAppContainer } = this.props;
-
-    this.state = {
-      siteUrl: adminAppContainer.state.siteUrl,
-      envSiteUrl: adminAppContainer.state.envSiteUrl,
-      isSetSiteUrl: adminAppContainer.state.isSetSiteUrl,
-    };
-
     this.submitHandler = this.submitHandler.bind(this);
-    this.inputSiteUrlChangeHandler = this.inputSiteUrlChangeHandler.bind(this);
   }
 
   async submitHandler() {
-    const { t } = this.props;
-
-    const params = {
-      siteUrl: this.state.siteUrl,
-    };
+    const { t, adminAppContainer } = this.props;
 
     try {
-      await this.props.appContainer.apiv3.put('/app-settings/site-url-setting', params);
+      await adminAppContainer.updateSiteUrlSettingHandler();
       toastSuccess(t('app_setting.updated_site_url'));
     }
     catch (err) {
@@ -45,17 +32,13 @@ class SiteUrlSetting extends React.Component {
     }
   }
 
-  inputSiteUrlChangeHandler(event) {
-    this.setState({ siteUrl: event.target.value });
-  }
-
   render() {
-    const { t } = this.props;
+    const { t, adminAppContainer } = this.props;
 
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.Site URL desc')}</p>
-        {!this.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
+        {!adminAppContainer.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
 
         <div className="row">
           <div className="col-md-12">
@@ -78,8 +61,8 @@ class SiteUrlSetting extends React.Component {
                         className="form-control"
                         type="text"
                         name="settingForm[app:siteUrl]"
-                        value={this.state.siteUrl}
-                        onChange={this.inputSiteUrlChangeHandler}
+                        defaultValue={adminAppContainer.state.siteUrl}
+                        onChange={(e) => { adminAppContainer.changeSiteUrl(e.target.value) }}
                         placeholder="e.g. https://my.growi.org"
                       />
                       <p className="help-block">
@@ -88,7 +71,7 @@ class SiteUrlSetting extends React.Component {
                       </p>
                     </td>
                     <td>
-                      <input className="form-control" type="text" value={this.state.envSiteUrl} readOnly />
+                      <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl} readOnly />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
                         <div dangerouslySetInnerHTML={{ __html: t('app_setting.Use env var if empty', { variable: 'APP_SITE_URL' }) }} />
