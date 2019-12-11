@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { pathUtils } from 'growi-commons';
+
+import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
@@ -19,8 +22,7 @@ export default class AdminSamlSecurityContainer extends Container {
     this.state = {
       // TODO GW-583 set value
       useOnlyEnvVars: false,
-      appSiteUrl: false,
-      callbackUrl: 'hoge.com',
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
       samlDbEntryPoint: '',
       samlEnvVarEntryPoint: '',
