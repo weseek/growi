@@ -19,6 +19,18 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  samlAuth: [
+    body('samlEntryPoint').isString(),
+    body('samlIssuer').isString(),
+    body('samlCert').isString(),
+    body('samlAttrMapId').isString(),
+    body('samlAttrMapUserName').isString(),
+    body('samlAttrMapMail').isString(),
+    body('samlAttrMapFirstName').isString(),
+    body('samlAttrMapLastName').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
+  ],
   oidcAuth: [
     body('oidcProviderName').isString(),
     body('oidcIssuerHost').isString(),
@@ -362,8 +374,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SecurityParams/SamlAuthSetting'
    */
-  // TODO validator
-  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-saml:entryPoint': req.body.samlEntryPoint,
       'security:passport-saml:issuer': req.body.samlIssuer,
