@@ -186,11 +186,24 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      samlAuth: {
+        samlDbEntryPoint: await crowi.configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
+        samlDbIssuer: await crowi.configManager.getConfig('crowi', 'security:passport-saml:issuer'),
+        samlDbCert: await crowi.configManager.getConfig('crowi', 'security:passport-saml:cert'),
+        samlDbAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapId'),
+        samlDbAttrMapUserName: await crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapUsername'),
+        samlDbAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
+        samlDbAttrMapFirstName: await crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapFirstName'),
+        samlDbAttrMapLastName: await crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapLastName'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
       },
       oidcAuth: {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
