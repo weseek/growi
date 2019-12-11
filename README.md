@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://growi.org">
-    <img src="https://user-images.githubusercontent.com/42988650/70407506-f154e000-1a87-11ea-8fd1-f137ceee29cf.gif" width="240px">
+    <img src="https://user-images.githubusercontent.com/42988650/70596967-7c6ddb80-1c2a-11ea-8009-c0ef016b5ae0.gif" width="240px">
   </a>
 </p>
 <p align="center">
