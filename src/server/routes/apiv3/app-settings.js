@@ -108,7 +108,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/AppSettingsParams'
    */
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    const appSettingParams = {
+    const appSettingsParams = {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
       confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
@@ -121,7 +121,7 @@ module.exports = (crowi) => {
       smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
     };
-    return res.apiv3({ appSettingParams });
+    return res.apiv3({ appSettingsParams });
 
   });
 

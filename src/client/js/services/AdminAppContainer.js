@@ -60,16 +60,21 @@ export default class AdminAppContainer extends Container {
   async retrieveAppSettingsData() {
     try {
       const response = await this.appContainer.apiv3.get('/app-settings/');
-      const { appSettingParams } = response.data;
+      const { appSettingsParams } = response.data;
 
       this.setState({
-        title: appSettingParams.title,
-        confidential: appSettingParams.confidential,
-        globalLang: appSettingParams.globalLang,
-        fileUpload: appSettingParams.fileUpload,
-        siteUrl: appSettingParams.siteUrl,
-        envSiteUrl: appSettingParams.envSiteUrl,
-        isSetSiteUrl: !!appSettingParams.siteUrl,
+        title: appSettingsParams.title,
+        confidential: appSettingsParams.confidential,
+        globalLang: appSettingsParams.globalLang,
+        fileUpload: appSettingsParams.fileUpload,
+        siteUrl: appSettingsParams.siteUrl,
+        envSiteUrl: appSettingsParams.envSiteUrl,
+        isSetSiteUrl: !!appSettingsParams.siteUrl,
+        fromAddress: appSettingsParams.fromAddress,
+        smtpHost: appSettingsParams.smtpHost,
+        smtpPort: appSettingsParams.smtpPort,
+        smtpUser: appSettingsParams.smtpUser,
+        smtpPassword: appSettingsParams.smtpPassword,
       });
 
     }
