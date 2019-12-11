@@ -20,6 +20,12 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 * Support: Upgrade libs
     * growi-commons
 
+## 3.5.25
+
+* Improvement: Disable ESC key to close Handsontable Modal
+* Fix: Exported data of empty collection is broken
+* Fix: Some components crash after when the page with attachment has exported/imported
+
 ## 3.5.24
 
 * Fix: Plugins are not working on Heroku
