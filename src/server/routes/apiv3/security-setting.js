@@ -87,6 +87,38 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          SamlAuthSetting:
+ *            type:object
+ *              samlDbEntryPoint:
+ *                type: string
+ *                description: entry point for saml
+ *              samlDbIssuer:
+ *                type: string
+ *                description: issuer for saml
+ *              samlDbCert:
+ *                type: string
+ *                description: certificate for saml
+ *              samlDbAttrMapId:
+ *                type: string
+ *                description: attribute mapping id for saml
+ *              samlDbAttrMapUserName:
+ *                type: string
+ *                description: attribute mapping user name for saml
+ *              samlDbAttrMapMail:
+ *                type: string
+ *                description: attribute mapping mail for saml
+ *              samlDbAttrMapFirstName:
+ *                type: string
+ *                description: attribute mapping first name for saml
+ *              samlDbAttrMapLastName:
+ *                type: string
+ *                description: attribute mapping last name for saml
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the user name matched
+ *              isSameEmailTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  *          OidcAuthSetting:
  *            type:object
  *              oidcProviderName:
