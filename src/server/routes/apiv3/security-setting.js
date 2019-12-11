@@ -22,7 +22,7 @@ const validator = {
   localSetting: [
     body('isLocalEnabled').isBoolean(),
     body('registrationMode').isString(),
-    body('registrationwhiteList').isString(),
+    body('registrationwhiteList').toArray(),
   ],
   googleOAuth: [
     body('googleClientId').isString(),
@@ -93,7 +93,7 @@ const validator = {
  *                type: string
  *                description: type of registrationMode
  *              registrationWhiteList:
- *                type: string
+ *                type: array
  *                desription: type of registrationWhiteList
  *          GitHubOAuthSetting:
  *            type:object
@@ -278,7 +278,7 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: type of pageDeletionAuthority
    *                  registrationWhiteList:
-   *                    type: string
+   *                    type: array
    *                    description: type of registrationWhiteList
    *        responses:
    *          200:

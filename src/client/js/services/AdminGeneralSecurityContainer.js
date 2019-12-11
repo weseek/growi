@@ -27,7 +27,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: true,
       registrationMode: 'open',
-      registrationWhiteList: '',
+      registrationWhiteList: [],
       isLdapEnabled: true,
       isSamlEnabled: true,
       isOidcEnabled: true,
@@ -43,6 +43,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { generalSetting } = response.data.securityParams;
+    const { localSetting } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
@@ -50,9 +51,9 @@ export default class AdminGeneralSecurityContainer extends Container {
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
-      isLocalEnabled: generalSetting.registrationMode || 'true',
-      registrationMode: generalSetting.registrationMode || 'open',
-      registrationWhiteList: generalSetting.registrationWhiteList || '',
+      isLocalEnabled: localSetting.isLocalEnabled || 'true',
+      registrationMode: localSetting.registrationMode || 'open',
+      registrationWhiteList: localSetting.registrationWhiteList || '',
     });
   }
 
@@ -130,6 +131,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   changeRegistrationMode(value) {
     this.setState({ registrationMode: value });
+  }
+
+  /**
+   * Change registration white list
+   */
+  changeRegistrationWhiteList(value) {
+    this.setState({ registrationWhiteList: value });
   }
 
   /**

@@ -14,13 +14,29 @@ class LocalSecuritySetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      retrieveError: null,
+    };
     this.putLocalSecuritySetting = this.putLocalSecuritySetting.bind(this);
   }
 
-  async putLocalSecuritySetting() {
-    const { t } = this.props;
+  async componentDidMount() {
+    const { adminGeneralSecurityContainer } = this.props;
+
     try {
-      await this.props.adminGeneralSecurityContainer.updateLocalSecuritySetting();
+      await adminGeneralSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+    }
+  }
+
+
+  async putLocalSecuritySetting() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    try {
+      await adminGeneralSecurityContainer.updateLocalSecuritySetting();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -33,7 +49,11 @@ class LocalSecuritySetting extends React.Component {
 
     return (
       <React.Fragment>
-
+        {this.state.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
+        )}
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.Local.name') } { t('security_setting.configuration') }
         </h2>
@@ -119,6 +139,8 @@ class LocalSecuritySetting extends React.Component {
                     type="textarea"
                     name="registrationWhiteList"
                     placeholder={adminGeneralSecurityContainer.state.registrationWhiteList}
+                    value={adminGeneralSecurityContainer.state.registrationWhiteList}
+                    onChange={e => adminGeneralSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
                   <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
                     <code>@growi.org</code>{ t('security_setting.only_those') }<br />
