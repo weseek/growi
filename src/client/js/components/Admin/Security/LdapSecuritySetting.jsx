@@ -94,18 +94,20 @@ class LdapSecuritySetting extends React.Component {
                 <div className="my-0 btn-group">
                   <div className="dropdown">
                     <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span className="pull-left">{t(`security_setting.ldap.bind_${adminLdapSecurityContainer.state.bindMode}`)}</span>
+                      {adminLdapSecurityContainer.state.isUserBind
+                        ? <span className="pull-left">{t('security_setting.ldap.bind_user')}</span>
+                        : <span className="pull-left">{t('security_setting.ldap.bind_manager')}</span>}
                       <span className="bs-caret pull-right">
                         <span className="caret" />
                       </span>
                     </button>
                     {/* TODO adjust dropdown after BS4 */}
                     <ul className="dropdown-menu" role="menu">
-                      <li key="manager" role="presentation" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode('manager') }}>
-                        <a role="menuitem">{t('security_setting.ldap.bind_manager')}</a>
-                      </li>
-                      <li key="user" role="presentation" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode('user') }}>
+                      <li key="user" role="presentation" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(true) }}>
                         <a role="menuitem">{t('security_setting.ldap.bind_user')}</a>
+                      </li>
+                      <li key="manager" role="presentation" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(false) }}>
+                        <a role="menuitem">{t('security_setting.ldap.bind_manager')}</a>
                       </li>
                     </ul>
                   </div>

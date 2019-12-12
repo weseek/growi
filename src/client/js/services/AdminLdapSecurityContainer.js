@@ -72,8 +72,8 @@ export default class AdminLdapSecurityContainer extends Container {
   /**
    * Change ldap bind mode
    */
-  changeLdapBindMode(mode) {
-    this.setState({ bindMode: mode });
+  changeLdapBindMode(isUserBind) {
+    this.setState({ isUserBind });
   }
 
   /**
