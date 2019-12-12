@@ -39,14 +39,14 @@ class SamlSecurityManagement extends React.Component {
     try {
       const samlAuth = await adminSamlSecurityContainer.retrieveSecurityData();
       this.setState({
-        envEntryPoint: samlAuth.envEntryPoint || '',
-        envIssuer: samlAuth.envIssuer || '',
-        envCert: samlAuth.envCert || '',
-        envAttrMapId: samlAuth.envAttrMapId || '',
-        envAttrMapUserName: samlAuth.envAttrMapUserName || '',
-        envAttrMapMail: samlAuth.envAttrMapMail || '',
-        envAttrMapFirstName: samlAuth.envAttrMapFirstName || '',
-        envAttrMapLastName: samlAuth.envAttrMapLastName || '',
+        envEntryPoint: samlAuth.samlEnvVarEntryPoint || '',
+        envIssuer: samlAuth.samlEnvVarIssuer || '',
+        envCert: samlAuth.samlEnvVarCert || '',
+        envAttrMapId: samlAuth.samlEnvVarAttrMapId || '',
+        envAttrMapUserName: samlAuth.samlEnvVarAttrMapUserName || '',
+        envAttrMapMail: samlAuth.samlEnvVarAttrMapMail || '',
+        envAttrMapFirstName: samlAuth.samlEnvVarAttrMapFirstName || '',
+        envAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName || '',
       });
     }
     catch (err) {
