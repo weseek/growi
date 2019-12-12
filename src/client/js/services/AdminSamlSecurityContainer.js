@@ -20,7 +20,6 @@ export default class AdminSamlSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
       useOnlyEnvVars: false,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
