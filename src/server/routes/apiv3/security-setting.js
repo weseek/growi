@@ -19,6 +19,18 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  samlAuth: [
+    body('samlEntryPoint').isString(),
+    body('samlIssuer').isString(),
+    body('samlCert').isString(),
+    body('samlAttrMapId').isString(),
+    body('samlAttrMapUserName').isString(),
+    body('samlAttrMapMail').isString(),
+    body('samlAttrMapFirstName').isString(),
+    body('samlAttrMapLastName').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
+  ],
   oidcAuth: [
     body('oidcProviderName').isString(),
     body('oidcIssuerHost').isString(),
@@ -87,6 +99,38 @@ const validator = {
  *                  hideRestrictedByGroup:
  *                    type: boolean
  *                    description: enable hide by group
+ *          SamlAuthSetting:
+ *            type:object
+ *              samlEntryPoint:
+ *                type: string
+ *                description: entry point for saml
+ *              samlIssuer:
+ *                type: string
+ *                description: issuer for saml
+ *              samlCert:
+ *                type: string
+ *                description: certificate for saml
+ *              samlAttrMapId:
+ *                type: string
+ *                description: attribute mapping id for saml
+ *              samlAttrMapUserName:
+ *                type: string
+ *                description: attribute mapping user name for saml
+ *              samlAttrMapMail:
+ *                type: string
+ *                description: attribute mapping mail for saml
+ *              samlAttrMapFirstName:
+ *                type: string
+ *                description: attribute mapping first name for saml
+ *              samlAttrMapLastName:
+ *                type: string
+ *                description: attribute mapping last name for saml
+ *              isSameUsernameTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the user name matched
+ *              isSameEmailTreatedAsIdenticalUser
+ *                type: boolean
+ *                description: local account automatically linked the email matched
  *          OidcAuthSetting:
  *            type:object
  *              oidcProviderName:
@@ -186,11 +230,32 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      samlAuth: {
+        samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
+        samlEnvVarEntryPoint: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
+        samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
+        samlEnvVarIssuer: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:issuer'),
+        samlCert: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
+        samlEnvVarCert: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:cert'),
+        samlAttrMapId: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
+        samlEnvVarAttrMapId: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapId'),
+        samlAttrMapUserName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
+        samlEnvVarAttrMapUserName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapUsername'),
+        samlAttrMapMail: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
+        samlEnvVarAttrMapMail: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapMail'),
+        samlAttrMapFirstName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
+        samlEnvVarAttrMapFirstName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapFirstName'),
+        samlAttrMapLastName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
+        samlEnvVarAttrMapLastName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
       },
       oidcAuth: {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
@@ -285,6 +350,64 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /security-setting/saml:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update SAML setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SecurityParams/SamlAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update SAML setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SecurityParams/SamlAuthSetting'
+   */
+  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-saml:entryPoint': req.body.samlEntryPoint,
+      'security:passport-saml:issuer': req.body.samlIssuer,
+      'security:passport-saml:cert': req.body.samlCert,
+      'security:passport-saml:attrMapId': req.body.samlAttrMapId,
+      'security:passport-saml:attrMapUsername': req.body.samlAttrMapUserName,
+      'security:passport-saml:attrMapMail': req.body.samlAttrMapMail,
+      'security:passport-saml:attrMapFirstName': req.body.samlAttrMapFirstName,
+      'security:passport-saml:attrMapLastName': req.body.samlAttrMapLastName,
+      'security:passport-saml:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-saml:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
+        samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
+        samlCert: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
+        samlAttrMapId: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
+        samlAttrMapUserName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
+        samlAttrMapMail: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
+        samlAttrMapFirstName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
+        samlAttrMapLastName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating SAML setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-SAML-failed'));
     }
   });
 

@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { pathUtils } from 'growi-commons';
+
+import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
@@ -17,39 +20,43 @@ export default class AdminSamlSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
       useOnlyEnvVars: false,
-      appSiteUrl: false,
-      callbackUrl: 'hoge.com',
+      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
-      samlDbEntryPoint: '',
-      samlEnvVarEntryPoint: '',
-      samlDbIssuer: '',
-      samlEnvVarIssuer: '',
-      samlDbCert: '',
-      samlEnvVarCert: '',
-      samlDbAttrMapId: '',
-      samlEnvVarAttrMapId: '',
-      samlDbAttrMapUserName: '',
-      samlEnvVarAttrMapUserName: '',
-      samlDbAttrMapMail: '',
-      samlEnvVarAttrMapMail: '',
-      samlDbAttrMapFirstName: '',
-      samlEnvVarAttrMapFirstName: '',
-      samlDbAttrMapLastName: '',
-      samlEnvVarAttrMapLastName: '',
+      samlEntryPoint: '',
+      samlIssuer: '',
+      samlCert: '',
+      samlAttrMapId: '',
+      samlAttrMapUserName: '',
+      samlAttrMapMail: '',
+      samlAttrMapFirstName: '',
+      samlAttrMapLastName: '',
       isSameUsernameTreatedAsIdenticalUser: false,
       isSameEmailTreatedAsIdenticalUser: false,
     };
 
-    this.init();
-
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { samlAuth } = response.data.securityParams;
+    this.setState({
+      samlEntryPoint: samlAuth.samlEntryPoint || '',
+      samlIssuer: samlAuth.samlIssuer || '',
+      samlCert: samlAuth.samlCert || '',
+      samlAttrMapId: samlAuth.samlAttrMapId || '',
+      samlAttrMapUserName: samlAuth.samlAttrMapUserName || '',
+      samlAttrMapMail: samlAuth.samlAttrMapMail || '',
+      samlAttrMapFirstName: samlAuth.samlAttrMapFirstName || '',
+      samlAttrMapLastName: samlAuth.samlAttrMapLastName || '',
+      isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser || false,
+    });
+    return samlAuth;
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
@@ -59,59 +66,59 @@ export default class AdminSamlSecurityContainer extends Container {
   }
 
   /**
-   * Change samlDbEntryPoint
+   * Change samlEntryPoint
    */
-  changeSamlDbEntryPoint(inputValue) {
-    this.setState({ samlDbEntryPoint: inputValue });
+  changeSamlEntryPoint(inputValue) {
+    this.setState({ samlEntryPoint: inputValue });
   }
 
   /**
-   * Change samlDbIssuer
+   * Change samlIssuer
    */
-  changeSamlDbIssuer(inputValue) {
-    this.setState({ samlDbIssuer: inputValue });
+  changeSamlIssuer(inputValue) {
+    this.setState({ samlIssuer: inputValue });
   }
 
   /**
-   * Change samlDbCert
+   * Change samlCert
    */
-  changeSamlDbCert(inputValue) {
-    this.setState({ samlDbCert: inputValue });
+  changeSamlCert(inputValue) {
+    this.setState({ samlCert: inputValue });
   }
 
   /**
-   * Change samlDbAttrMapId
+   * Change samlAttrMapId
    */
-  changeSamlDbAttrMapId(inputValue) {
-    this.setState({ samlDbAttrMapId: inputValue });
+  changeSamlAttrMapId(inputValue) {
+    this.setState({ samlAttrMapId: inputValue });
   }
 
   /**
-   * Change samlDbAttrMapUserName
+   * Change samlAttrMapUserName
    */
-  changeSamlDbAttrMapUserName(inputValue) {
-    this.setState({ samlDbAttrMapUserName: inputValue });
+  changeSamlAttrMapUserName(inputValue) {
+    this.setState({ samlAttrMapUserName: inputValue });
   }
 
   /**
-   * Change samlDbAttrMapMail
+   * Change samlAttrMapMail
    */
-  changeSamlDbAttrMapMail(inputValue) {
-    this.setState({ samlDbAttrMapMail: inputValue });
+  changeSamlAttrMapMail(inputValue) {
+    this.setState({ samlAttrMapMail: inputValue });
   }
 
   /**
-   * Change samlDbAttrMapFirstName
+   * Change samlAttrMapFirstName
    */
-  changeSamlDbAttrMapFirstName(inputValue) {
-    this.setState({ samlDbAttrMapFirstName: inputValue });
+  changeSamlAttrMapFirstName(inputValue) {
+    this.setState({ samlAttrMapFirstName: inputValue });
   }
 
   /**
-   * Change samlDbAttrMapLastName
+   * Change samlAttrMapLastName
    */
-  changeSamlDbAttrMapLastName(inputValue) {
-    this.setState({ samlDbAttrMapLastName: inputValue });
+  changeSamlAttrMapLastName(inputValue) {
+    this.setState({ samlAttrMapLastName: inputValue });
   }
 
   /**
@@ -126,6 +133,41 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   switchIsSameEmailTreatedAsIdenticalUser() {
     this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
+  }
+
+  /**
+   * Update saml option
+   */
+  async updateSamlSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/saml', {
+      samlEntryPoint: this.state.samlEntryPoint,
+      samlIssuer: this.state.samlIssuer,
+      samlCert: this.state.samlCert,
+      samlAttrMapId: this.state.samlAttrMapId,
+      samlAttrMapUserName: this.state.samlAttrMapUserName,
+      samlAttrMapMail: this.state.samlAttrMapMail,
+      samlAttrMapFirstName: this.state.samlAttrMapFirstName,
+      samlAttrMapLastName: this.state.samlAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      samlEntryPoint: securitySettingParams.samlEntryPoint || '',
+      samlIssuer: securitySettingParams.samlIssuer || '',
+      samlCert: securitySettingParams.samlCert || '',
+      samlAttrMapId: securitySettingParams.samlAttrMapId || '',
+      samlAttrMapUserName: securitySettingParams.samlAttrMapUserName || '',
+      samlAttrMapMail: securitySettingParams.samlAttrMapMail || '',
+      samlAttrMapFirstName: securitySettingParams.samlAttrMapFirstName || '',
+      samlAttrMapLastName: securitySettingParams.samlAttrMapLastName || '',
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser || false,
+    });
+    return response;
   }
 
 }

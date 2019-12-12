@@ -538,7 +538,8 @@
       "mapping_detail": "Specification of mappings for {{target}} when creating new users",
       "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
-      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
+      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
+      "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
       "enable_basic":"enable Basic",
