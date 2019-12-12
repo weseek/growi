@@ -40,45 +40,45 @@ const validator = {
  *    schemas:
  *      CustomizeParams:
  *        type: object
- *          LineBreakParams:
- *            type: object
- *            properties:
- *              isEnabledLinebreaks:
- *                type: boolean
- *                description: enable lineBreak
- *              isEnabledLinebreaksInComments:
- *                type: boolean
- *                description: enable lineBreak in comment
- *          PresentationParams:
- *            type: object
- *            properties:
- *              pageBreakSeparator:
- *                type: number
- *                description: number of pageBreakSeparator
- *              pageBreakCustomSeparator:
- *                type: string
- *                description: string of pageBreakCustomSeparator
- *          XssParams:
- *            type: object
- *            properties:
- *              isEnabledPrevention:
- *                type: boolean
- *                description: enable xss
- *              xssOption:
- *                type: number
- *                description: number of xss option
- *              tagWhiteList:
- *                type: array
- *                description: array of tag whiteList
- *                items:
- *                  type: string
- *                  description: tag whitelist
- *              attrWhiteList:
- *                type: array
- *                description: array of attr whiteList
- *                items:
- *                  type: string
- *                  description: attr whitelist
+ *      LineBreakParams:
+ *        type: object
+ *        properties:
+ *          isEnabledLinebreaks:
+ *            type: boolean
+ *            description: enable lineBreak
+ *          isEnabledLinebreaksInComments:
+ *            type: boolean
+ *            description: enable lineBreak in comment
+ *      PresentationParams:
+ *        type: object
+ *        properties:
+ *          pageBreakSeparator:
+ *            type: number
+ *            description: number of pageBreakSeparator
+ *          pageBreakCustomSeparator:
+ *            type: string
+ *            description: string of pageBreakCustomSeparator
+ *      XssParams:
+ *        type: object
+ *        properties:
+ *          isEnabledPrevention:
+ *            type: boolean
+ *            description: enable xss
+ *          xssOption:
+ *            type: number
+ *            description: number of xss option
+ *          tagWhiteList:
+ *            type: array
+ *            description: array of tag whiteList
+ *            items:
+ *              type: string
+ *              description: tag whitelist
+ *          attrWhiteList:
+ *            type: array
+ *            description: array of attr whiteList
+ *            items:
+ *              type: string
+ *              description: attr whitelist
  */
 
 module.exports = (crowi) => {
@@ -132,17 +132,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/CustomizeParams/LineBreakParams'
+   *                $ref: '#/components/schemas/LineBreakParams'
    *        responses:
    *          200:
    *            description: Succeeded to update lineBreak setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    $ref: '#/components/schemas/CustomizeParams/LineBreakParams'
+  *                   $ref: '#/components/schemas/LineBreakParams'
    */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
@@ -179,17 +176,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/CustomizeParams/PresentationParams'
+   *                $ref: '#/components/schemas/PresentationParams'
    *        responses:
    *          200:
    *            description: Succeeded to update presentation setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    $ref: '#/components/schemas/CustomizeParams/PresentationParams'
+   *                  $ref: '#/components/schemas/PresentationParams'
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
@@ -229,17 +223,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/CustomizeParams/XssParams'
+   *                $ref: '#/components/schemas/XssParams'
    *        responses:
    *          200:
    *            description: Succeeded to update xss setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    $ref: '#/components/schemas/CustomizeParams/XssParams'
+   *                  $ref: '#/components/schemas/XssParams'
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
