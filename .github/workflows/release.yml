@@ -19,6 +19,7 @@ jobs:
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "info@weseek.co.jp"
+        git remote add origin "https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITHUB_REPOSITORY }}"
 
     - name: Bump version
       run: |
@@ -34,10 +35,9 @@ jobs:
 
     - name: Push tag
       run: |
-        ORIGIN="https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITHUB_REPOSITORY }}"
         TMP_RELEASE_BRANCH=tmp/release-${{ env.RELEASE_VERSION }}
-        git push $ORIGIN HEAD:$TMP_RELEASE_BRANCH --follow-tags
-        git push --delete $ORIGIN $TMP_RELEASE_BRANCH
+        git push origin HEAD:$TMP_RELEASE_BRANCH --follow-tags
+        git push --delete origin $TMP_RELEASE_BRANCH
 
     - name: Upload release notes
       uses: Roang-zero1/github-create-release-action@master
