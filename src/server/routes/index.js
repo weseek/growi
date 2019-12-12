@@ -59,9 +59,6 @@ module.exports = function(crowi, app) {
 
   app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
-  app.post('/_api/admin/settings/app'       , loginRequiredStrictly , adminRequired , csrf, form.admin.app, admin.api.appSetting);
-  app.post('/_api/admin/settings/siteUrl'   , loginRequiredStrictly , adminRequired , csrf, form.admin.siteUrl, admin.api.asyncAppSetting);
-  app.post('/_api/admin/settings/mail'      , loginRequiredStrictly , adminRequired , csrf, form.admin.mail, admin.api.appSetting);
   app.post('/_api/admin/settings/aws'       , loginRequiredStrictly , adminRequired , csrf, form.admin.aws, admin.api.appSetting);
   app.post('/_api/admin/settings/plugin'    , loginRequiredStrictly , adminRequired , csrf, form.admin.plugin, admin.api.appSetting);
 
