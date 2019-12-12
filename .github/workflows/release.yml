@@ -41,8 +41,8 @@ jobs:
         git push --delete origin $TMP_RELEASE_BRANCH
 
     - name: Upload release notes
-        uses: Roang-zero1/github-create-release-action@master
-        with:
-          created_tag: v${{ env.RELEASE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: Roang-zero1/github-create-release-action@master
+      with:
+        created_tag: v${{ env.RELEASE_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
