@@ -35,6 +35,7 @@ jobs:
     - name: Push tag
       run: |
         TMP_RELEASE_BRANCH=tmp/release-${{ env.RELEASE_VERSION }}
+        git remote set-url origin "https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITHUB_REPOSITORY }}"
         git push origin HEAD:$TMP_RELEASE_BRANCH --follow-tags
         git push --delete origin $TMP_RELEASE_BRANCH
 
