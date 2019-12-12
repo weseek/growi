@@ -19,10 +19,14 @@
 GROWI 
 ===========
 
-[![wercker status](https://app.wercker.com/status/595b761d0e26796ddb304679f7bf27de/s/master "wercker status")](https://app.wercker.com/project/byKey/595b761d0e26796ddb304679f7bf27de)
+[![Actions Status](https://github.com/weseek/growi/workflows/Node%20CI/badge.svg)](https://github.com/weseek/growi/actions)
 [![dependencies status](https://david-dm.org/weseek/growi.svg)](https://david-dm.org/weseek/growi)
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
+
+| demonstration |
+| :-: |
+|![sample image](https://user-images.githubusercontent.com/42988650/70600974-6b29cc80-1c34-11ea-94ef-33c39c6a00dc.gif)|
 
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
@@ -32,7 +36,6 @@ GROWI
 - [Environment Variables](#environment-variables)
 - [Documentation](#documentation)
 - [License](#license)
-
 
 Features
 ========

@@ -14,11 +14,24 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 ### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Improvement: Accessibility of Antarctic theme
 * Fix: Appending tag is failed by wrong index of PageTagRelation
     * Introduced by 3.5.20
+* Fix: Pages without heading slash is invalid but creatable
+* Fix: Connect to Elasticsearch with `httpAuth` param
 * Support: Support Node.js v12
 * Support: Upgrade libs
     * growi-commons
+
+## 3.5.25
+
+* Improvement: Disable ESC key to close Handsontable Modal
+* Fix: Exported data of empty collection is broken
+* Fix: Some components crash after when the page with attachment has exported/imported
+
+## 3.5.24
+
+* Fix: Plugins are not working on Heroku
 
 ## 3.5.23
 
