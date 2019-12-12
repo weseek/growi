@@ -393,7 +393,8 @@ module.exports = (crowi) => {
       const isRelatedUserForGroup = await UserGroupRelation.isRelatedUserForGroup(userGroup, user);
 
       if (isRelatedUserForGroup) {
-        throw new Error('The user is already joined');
+        logger.warn('The user is already joined');
+        return res.apiv3();
       }
 
       const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);

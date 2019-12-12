@@ -130,6 +130,10 @@ export default class UserGroupDetailContainer extends Container {
    */
   async addUserByUsername(username) {
     const res = await this.appContainer.apiv3.post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
+
+    // do not add users for ducaplicate
+    if (res.data.userGroupRelation == null) { return }
+
     const { userGroupRelation } = res.data;
 
     this.setState((prevState) => {
