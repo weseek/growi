@@ -33,7 +33,7 @@ jobs:
         TMP_RELEASE_BRANCH=tmp/release-${{ env.RELEASE_VERSION }}
         git checkout -B $TMP_RELEASE_BRANCH
         git commit -am "Release v${{ env.RELEASE_VERSION }}"
-        git tag -am v${{ env.RELEASE_VERSION }}
+        git tag -a v${{ env.RELEASE_VERSION }} -m "v${{ env.RELEASE_VERSION }}"
         git push --follow-tags origin $TMP_RELEASE_BRANCH
         git push --delete origin $TMP_RELEASE_BRANCH
 
