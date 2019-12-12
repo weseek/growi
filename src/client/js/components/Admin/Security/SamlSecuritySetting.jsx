@@ -122,7 +122,7 @@ class SamlSecurityManagement extends React.Component {
               <div className="alert alert-danger">
                 {t('security_setting.missing mandatory configs')}
                 <ul>
-                  {/* TODO GW-583 show li after fetch data */}
+                  {/* TODO GW-750 show li after fetch data */}
                   {/* <li>{ t('security_setting.form_item_name.key') }</li> */}
                 </ul>
               </div>
