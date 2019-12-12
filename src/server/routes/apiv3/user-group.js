@@ -389,6 +389,14 @@ module.exports = (crowi) => {
         User.findUserByUsername(username),
       ]);
 
+      // check for duplicate users in groups
+      const isRelatedUserForGroup = await UserGroupRelation.isRelatedUserForGroup(userGroup, user);
+
+      if (isRelatedUserForGroup) {
+        logger.warn('The user is already joined');
+        return res.apiv3();
+      }
+
       const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
       await userGroupRelation.populate('relatedUser', User.USER_PUBLIC_FIELDS).execPopulate();
 
