@@ -7,10 +7,10 @@ describe('config/migrate.js', () => {
 
   /* eslint-disable indent */
   describe.each`
-    MONGO_URI                                         | expectedUrl                                     | expectedDbName
-    ${'mongodb://example.com/growi'}                  | ${'mongodb://example.com'}                      | ${'growi'}
-    ${'mongodb://user:pass@example.com/growi'}        | ${'mongodb://user:pass@example.com'}            | ${'growi'}
-    ${'mongodb://example.com/growi?replicaSet=mySet'} | ${'mongodb://example.com?replicaSet=mySet'}     | ${'growi'}
+    MONGO_URI                                         | expectedUrl                                       | expectedDbName
+    ${'mongodb://example.com/growi'}                  | ${'mongodb://example.com/growi'}                  | ${'growi'}
+    ${'mongodb://user:pass@example.com/growi'}        | ${'mongodb://user:pass@example.com/growi'}        | ${'growi'}
+    ${'mongodb://example.com/growi?replicaSet=mySet'} | ${'mongodb://example.com/growi?replicaSet=mySet'} | ${'growi'}
   `('returns', ({ MONGO_URI, expectedUrl, expectedDbName }) => {
     test(`when 'MONGO_URI' is '${MONGO_URI}`, () => {
 
