@@ -1,6 +1,11 @@
 name: Node CI
 
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - release/**
+    tags-ignore:
+      - v*.*.*
 
 jobs:
 

@@ -3,7 +3,7 @@ name: Release Docker Images
 on:
   push:
     tags:
-      - v3.*
+      - v3.*.*
 
 jobs:
 
