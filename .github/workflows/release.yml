@@ -33,8 +33,8 @@ jobs:
         TMP_RELEASE_BRANCH=tmp/release-${{ env.RELEASE_VERSION }}
         git checkout -B $TMP_RELEASE_BRANCH
         git commit -am "Release v${{ env.RELEASE_VERSION }}"
-        git tag v${{ env.RELEASE_VERSION }} HEAD
-        git push --follow-tags origin HEAD:$TMP_RELEASE_BRANCH
+        git tag v${{ env.RELEASE_VERSION }}
+        git push --follow-tags origin $TMP_RELEASE_BRANCH
         git push --delete origin $TMP_RELEASE_BRANCH
 
     - name: Upload release notes
