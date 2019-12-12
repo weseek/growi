@@ -33,5 +33,5 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         branch: null
-        github_token: ${{ secrets. GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
