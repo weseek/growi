@@ -19,17 +19,17 @@ export default class AdminLdapSecurityContainer extends Container {
     this.state = {
       // TODO GW-583 set value
       serverUrl: '',
-      bindMode: 'manager',
-      bindDN: '',
-      bindDNPassword: '',
-      searchFilter: '',
-      attrMapUsername: '',
-      cbSameUsernameTreatedAsIdenticalUser: true,
-      attrMapMail: '',
-      attrMapName: '',
-      groupSearchBase: '',
-      groupSearchFilter: '',
-      groupDnProperty: '',
+      ldapBindMode: 'manager',
+      ldapBindDN: '',
+      ldapBindDNPassword: '',
+      ldapSearchFilter: '',
+      ldapAttrMapUsername: '',
+      cbSameUsernameTreatedAsIdenticalUser: false,
+      ldapAttrMapMail: '',
+      ldapAttrMapName: '',
+      ldapGroupSearchBase: '',
+      ldapGroupSearchFilter: '',
+      ldapGroupDnProperty: '',
     };
 
     this.init();
