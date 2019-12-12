@@ -6,7 +6,7 @@ on:
       - release/**
 
 jobs:
-  build:
+  release:
 
     runs-on: ubuntu-latest
 
@@ -23,17 +23,15 @@ jobs:
 
     - name: Bump version
       run: |
-        npm version patch
+        npm --no-git-tag-version version patch
         export RELEASE_VERSION=`npm run version --silent`
+        sh ./bin/github-actions/update-readme.sh
         echo ::set-env name=RELEASE_VERSION::$RELEASE_VERSION
 
-    - name: Update README.md
-      run: |
-        sh ./bin/github-actions/update-readme.sh
-
-    - name: Commit
+    - name: Commit and Tag
       run: |
         git commit -am "Release v${{ env.RELEASE_VERSION }}"
+        git tag v${{ env.RELEASE_VERSION }} HEAD
 
     - name: Push tag
       run: |
