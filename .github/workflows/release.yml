@@ -19,19 +19,31 @@ jobs:
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "info@weseek.co.jp"
+        git remote set-url origin "https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.${{ env.RELEASE_VERSION }} }}"
 
     - name: Bump version
       run: |
         npm version patch
-        sh ./bin/github-actions/bump-version.sh
+        export RELEASE_VERSION=`npm run version --silent`
+        echo ::set-env name=RELEASE_VERSION::$RELEASE_VERSION
+
+    - name: Update README.md
+      run: |
+        sh ./bin/github-actions/update-readme.sh
 
     - name: Commit
       run: |
-        git commit -am "Release $RELEASE_VERSION"
+        git commit -am "Release v${{ env.RELEASE_VERSION }}"
 
     - name: Push tag
-      uses: ad-m/github-push-action@master
-      with:
-        branch: null
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TMP_RELEASE_BRANCH=tmp/release-${{ env.RELEASE_VERSION }}
+        git push origin HEAD:$TMP_RELEASE_BRANCH --follow-tags
+        git push --delete origin $TMP_RELEASE_BRANCH
 
+    - name: Upload release notes
+      uses: Roang-zero1/github-create-release-action@master
+      with:
+        created_tag: v${{ env.RELEASE_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
