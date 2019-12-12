@@ -6,49 +6,59 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
-import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
+import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 class WhiteListInput extends React.Component {
 
-  renderRecommendBtn() {
-    const { t } = this.props;
+  renderRecommendTagBtn() {
+    const { t, adminMarkDownContainer } = this.props;
 
     return (
-      <p id="btn-import-tags" className="btn btn-xs btn-primary">
+      <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ tagWhiteList: tags }) }}>
         { t('markdown_setting.import_recommended', 'tags') }
       </p>
     );
   }
 
+  renderRecommendAttrBtn() {
+    const { t, adminMarkDownContainer } = this.props;
+
+    return (
+      <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ attrWhiteList: attrs }) }}>
+        { t('markdown_setting.import_recommended', 'Attrs') }
+      </p>
+    );
+  }
+
   renderTagValue() {
-    const { customizable, markDownSettingContainer } = this.props;
+    const { customizable, adminMarkDownContainer } = this.props;
 
     if (customizable) {
-      return markDownSettingContainer.state.tagWhiteList;
+      return adminMarkDownContainer.state.tagWhiteList;
     }
 
     return tags;
   }
 
   renderAttrValue() {
-    const { customizable, markDownSettingContainer } = this.props;
+    const { customizable, adminMarkDownContainer } = this.props;
 
     if (customizable) {
-      return markDownSettingContainer.state.attrWhiteList;
+      return adminMarkDownContainer.state.attrWhiteList;
     }
 
     return attrs;
   }
 
   render() {
-    const { t, customizable, markDownSettingContainer } = this.props;
+    const { t, customizable, adminMarkDownContainer } = this.props;
 
     return (
       <>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag names') }
-            {customizable && this.renderRecommendBtn()}
+            {customizable && this.renderRecommendTagBtn()}
           </div>
           <textarea
             className="form-control xss-list"
@@ -56,14 +66,14 @@ class WhiteListInput extends React.Component {
             rows="6"
             cols="40"
             readOnly={!customizable}
-            value={this.renderTagValue()}
-            onChange={(e) => { markDownSettingContainer.setState({ tagWhiteList: e.target.value }) }}
+            defaultValue={this.renderTagValue()}
+            onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
           />
         </div>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             { t('markdown_setting.Tag attributes') }
-            {customizable && this.renderRecommendBtn()}
+            {customizable && this.renderRecommendAttrBtn()}
           </div>
           <textarea
             className="form-control xss-list"
@@ -71,8 +81,8 @@ class WhiteListInput extends React.Component {
             rows="6"
             cols="40"
             readOnly={!customizable}
-            value={this.renderAttrValue()}
-            onChange={(e) => { markDownSettingContainer.setState({ attrWhiteList: e.target.value }) }}
+            defaultValue={this.renderAttrValue()}
+            onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
           />
         </div>
       </>
@@ -82,13 +92,13 @@ class WhiteListInput extends React.Component {
 }
 
 const WhiteListWrapper = (props) => {
-  return createSubscribedElement(WhiteListInput, props, [AppContainer, MarkDownSettingContainer]);
+  return createSubscribedElement(WhiteListInput, props, [AppContainer, AdminMarkDownContainer]);
 };
 
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
+  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
   customizable: PropTypes.bool.isRequired,
 };

@@ -91,8 +91,8 @@ class ElasticsearchDelegator {
       host = `${url.protocol}//${url.host}`;
       indexName = url.pathname.substring(1); // omit heading slash
 
-      if (url.auth != null) {
-        httpAuth = url.auth;
+      if (url.username != null && url.password != null) {
+        httpAuth = `${url.username}:${url.password}`;
       }
     }
 

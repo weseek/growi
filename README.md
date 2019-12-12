@@ -19,74 +19,74 @@
 GROWI 
 ===========
 
-[![wercker status](https://app.wercker.com/status/595b761d0e26796ddb304679f7bf27de/s/master "wercker status")](https://app.wercker.com/project/byKey/595b761d0e26796ddb304679f7bf27de)
+[![Actions Status](https://github.com/weseek/growi/workflows/Node%20CI/badge.svg)](https://github.com/weseek/growi/actions)
 [![dependencies status](https://david-dm.org/weseek/growi.svg)](https://david-dm.org/weseek/growi)
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
+| demonstration |
+| :-: |
+|![sample image](https://user-images.githubusercontent.com/42988650/70600974-6b29cc80-1c34-11ea-94ef-33c39c6a00dc.gif)|
+
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
+    - [Heroku](#heroku)
+    - [docker-compose](#docker-compose)
     - [On-premise](#on-premise)
-    - [Using Heroku](#using-heroku)
-    - [Using docker-compose](#using-docker-compose)
 - [Environment Variables](#environment-variables)
 - [Documentation](#documentation)
 - [License](#license)
 
-
 Features
 ========
 
-* **Pluggable**
-  * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
 * **Features**
-  * Create hierarchical pages with markdown
+  * Create hierarchical pages with markdown -> [HERE](https://docs.growi.org/en/guide/getting-started/five_minutes.html) is 5 minutes tutorial
   * Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
+      * [GROWI Docs: HackMD(CodiMD) Integration](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   * Support Authentication with LDAP / Active Directory, OAuth
   * SSO(Single Sign On) with SAML
   * Slack/Mattermost, IFTTT Integration
-  * [Miscellaneous features](https://github.com/weseek/growi/wiki/Additional-Features)
+  * [GROWI Docs: Features](https://docs.growi.org/en/guide/features/page_layout.html)
+* **Pluggable**
+  * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
-  * [Multiple sites example](https://github.com/weseek/growi-docker-compose/tree/master/examples/multi-app)
-  * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/growi-docker-compose/tree/master/examples/https-portal)
-* Support IE11 (Experimental)
+  * [GROWI Docs: Multiple sites](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
+  * [GROWI Docs: HTTPS(with Let's Encrypt) proxy integration](https://docs.growi.org/en/admin-guide/admin-cookbook/lets-encrypt.html)
 
 Quick Start for Production
 ===========================
 
-Using Heroku
-------------
+### Heroku
 
-1. Go to https://heroku.com/deploy
-2. (Optional) Input INSTALL_PLUGINS to install plugins
+- [GROWI Docs: Launch on Heroku](https://docs.growi.org/en/admin-guide/getting-started/heroku.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/heroku.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/heroku.html))
 
-Using docker-compose
----------------------
+### docker-compose
 
-```bash
-git clone https://github.com/weseek/growi-docker-compose.git growi
-cd growi
-docker-compose up
-```
+- [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
 
-See also [weseek/growi-docker-compose][docker-compose]
+### On-premise
 
-On-premise
-----------
+**[Migration Guide from Crowi](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))** is here.
 
-[**Migration Guide from Crowi** is here](https://docs.growi.org/guide/migration-guide/from-crowi-onpremise.html).
+- [GROWI Docs: Install on Ubuntu Server](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
+- [GROWI Docs: Install on CentOS](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
 
-### Dependencies
+
+Development
+==========
+
+## Dependencies
 
 - Node.js v10.x (DON'T USE 11.x)
 - npm 6.x
 - yarn
 - MongoDB 3.x
 
-See [confirmed versions](https://docs.growi.org/dev/startup/dev-env.html#versions-confirmed-to-work).
+See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
 
-#### Optional Dependencies
+### Optional Dependencies
 
 - Redis 3.x
 - ElasticSearch 6.x (needed when using Full-text search)
@@ -94,30 +94,7 @@ See [confirmed versions](https://docs.growi.org/dev/startup/dev-env.html#version
       - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
       - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
 
-### How to start
-
-#### Build and run the app
-
-```bash
-git clone https://github.com/weseek/growi.git
-cd growi
-yarn
-MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi npm start
-```
-
-**DO NOT USE `npm install`**, use `yarn` instead.
-
-If you launch growi with ElasticSearch, add environment variables before `npm start` like following:
-
-```
-export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi
-export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/growi
-npm start
-```
-
-For more info, see [Developers Guide](https://docs.growi.org/dev/).
-
-#### Command details
+## Command details
 
 |command|desc|
 |--|--|
@@ -125,28 +102,7 @@ For more info, see [Developers Guide](https://docs.growi.org/dev/).
 |`npm run server:prod`|Launch the server|
 |`npm start`|Invoke `npm run build:prod` and `npm run server:prod`|
 
-### How to upgrade
-
-```bash
-git pull
-yarn
-npm start
-```
-
-### How to install plugins
-
-* Stop server if server is running
-* `yarn add` to install plugin or `npm install`
-* `npm start` to build client app and start server
-
-#### Examples
-
-```bash
-yarn add growi-plugin-lsx
-npm start
-```
-
-For more info, see [Developers Guide](https://docs.growi.org/dev/) on docs.growi.org.
+For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup/launch.html#list-of-npm-commands).
 
 
 Environment Variables
@@ -182,6 +138,7 @@ Environment Variables
     * FILE_UPLOAD_TOTAL_LIMIT: Total capacity limit for uploads (bytes). default: `Infinity`
     * GCS_API_KEY_JSON_PATH: Path of the JSON file that contains [service account key to authenticate to GCP API](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
     * GCS_BUCKET: Name of the GCS bucket
+    * GCS_UPLOAD_NAMESPACE: Directory name to create in the bucket
     * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
         * MONGO_GRIDFS_TOTAL_LIMIT setting takes precedence over FILE_UPLOAD_TOTAL_LIMIT.
 * **Option to integrate with external systems**
@@ -238,16 +195,6 @@ Repository. If you would like to *implement* a new feature, firstly please submi
 * For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed.  
 It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
 * **Small Features** can be created and directly [submitted as a Pull Request][pulls].
-
-Translation
---------------
-
-We have some Transifex Projects.
-
-* [GROWI (Internationalize)](https://www.transifex.com/weseek-inc/growi)
-* [GROWI Docs (Internationalize)](https://www.transifex.com/weseek-inc/growi-docs)
-
-Please join to our team!
 
 
 Language on GitHub
