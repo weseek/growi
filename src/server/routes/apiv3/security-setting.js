@@ -101,28 +101,28 @@ const validator = {
  *                    description: enable hide by group
  *          SamlAuthSetting:
  *            type:object
- *              samlDbEntryPoint:
+ *              samlEntryPoint:
  *                type: string
  *                description: entry point for saml
- *              samlDbIssuer:
+ *              samlIssuer:
  *                type: string
  *                description: issuer for saml
- *              samlDbCert:
+ *              samlCert:
  *                type: string
  *                description: certificate for saml
- *              samlDbAttrMapId:
+ *              samlAttrMapId:
  *                type: string
  *                description: attribute mapping id for saml
- *              samlDbAttrMapUserName:
+ *              samlAttrMapUserName:
  *                type: string
  *                description: attribute mapping user name for saml
- *              samlDbAttrMapMail:
+ *              samlAttrMapMail:
  *                type: string
  *                description: attribute mapping mail for saml
- *              samlDbAttrMapFirstName:
+ *              samlAttrMapFirstName:
  *                type: string
  *                description: attribute mapping first name for saml
- *              samlDbAttrMapLastName:
+ *              samlAttrMapLastName:
  *                type: string
  *                description: attribute mapping last name for saml
  *              isSameUsernameTreatedAsIdenticalUser

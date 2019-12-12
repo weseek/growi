@@ -149,10 +149,10 @@ class SamlSecurityManagement extends React.Component {
                     <input
                       className="form-control"
                       type="text"
-                      name="samlDbEntryPoint"
+                      name="samlEntryPoint"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbEntryPoint}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbEntryPoint(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlEntryPoint}
+                      onChange={e => adminSamlSecurityContainer.changeSamlEntryPoint(e.target.value)}
                     />
                   </td>
                   <td>
@@ -175,8 +175,8 @@ class SamlSecurityManagement extends React.Component {
                       type="text"
                       name="samlEnvVarissuer"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbIssuer}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbIssuer(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlIssuer}
+                      onChange={e => adminSamlSecurityContainer.changeSamlIssuer(e.target.value)}
                     />
                   </td>
                   <td>
@@ -198,10 +198,10 @@ class SamlSecurityManagement extends React.Component {
                       className="form-control input-sm"
                       type="text"
                       rows="5"
-                      name="samlDbCert"
+                      name="samlCert"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbcert}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbCert(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlcert}
+                      onChange={e => adminSamlSecurityContainer.changeSamlCert(e.target.value)}
                     />
                     <p className="help-block">
                       <small>
@@ -260,8 +260,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapId}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapId(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapId}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapId(e.target.value)}
                     />
                     <p className="help-block">
                       <small>
@@ -288,8 +288,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapUserName(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapUserName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.username_detail') }} />
@@ -314,8 +314,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapMail}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapMail(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapMail}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: 'Email' }) }} />
@@ -340,8 +340,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapFirstName}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapFirstName(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapFirstName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapFirstName(e.target.value)}
                     />
                     <p className="help-block">
                       {/* eslint-disable-next-line max-len */}
@@ -371,8 +371,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapLastName}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapLastName(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapLastName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapLastName(e.target.value)}
                     />
                     <p className="help-block">
                       {/* eslint-disable-next-line max-len */}
