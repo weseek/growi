@@ -28,13 +28,11 @@
   "Page Path": "Page Path",
   "Category": "Category",
   "User": "User",
-  "status":"Status",
+  "status": "Status",
   "account_id": "Account Id",
-
   "Update": "Update",
   "Update Page": "Update Page",
   "Warning": "Warning",
-
   "Sign in": "Sign in",
   "Sign up is here": "Sign up",
   "Sign in is here": "Sign in",
@@ -44,30 +42,23 @@
   "Sign up with this Google Account": "Sign up with this Google Account",
   "Example": "Example",
   "Taro Yamada": "John Doe",
-
   "List View": "List",
   "Timeline View": "Timeline",
   "History": "History",
   "Presentation Mode": "Presentation",
-
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
   "Last_Login": "Last Login",
-
   "Share": "Share",
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
-
   "Create/Edit Template": "Create/Edit Template Page",
-
   "Unportalize": "Unportalize",
-
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
   "Shrink versions that have no diffs": "Shrink versions that have no diffs",
-
   "User ID": "User ID",
   "Home": "Home",
   "User Settings": "User Settings",
@@ -89,19 +80,15 @@
   "Show": "Show",
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
-
   "page exists": "this page already exists",
   "Error occurred": "Error occurred",
-
   "Create today's": "Create today's ...",
   "Memo": "memo",
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New Page",
   "Create under": "Create page under below:",
-
   "Table of Contents": "Table of Contents",
-
   "Management Wiki Home": "Management Wiki Home",
   "App Settings": "App Settings",
   "Site URL settings": "Site URL settings",
@@ -129,30 +116,24 @@
   "Add tags for this page": "Add tags for this page",
   "Edit tags for this page": "Edit tags for this page",
   "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
-
   "Show latest": "Show latest",
   "Load latest": "Load latest",
   "edited this page": "edited this page.",
-
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
-
   "form_validation": {
     "required": "<code>%s</code> is required"
   },
-
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
     "unavaliable_user_id": "This 'User ID' is unavailable."
   },
-
   "breaking_changes": {
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
-
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",
@@ -164,7 +145,6 @@
       "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
-
   "page_me": {
     "form_help": {
       "profile_image1": "Image upload settings not completed.",
@@ -177,10 +157,8 @@
       "update_token1": "You can update to generate a new API Token.",
       "update_token2": "You will need to update the API Token in any existing processes."
     },
-    "form_help": {
-    }
+    "form_help": {}
   },
-
   "Password": "Password",
   "Password Settings": "Password Settings",
   "Set new Password": "Set new Password",
@@ -189,14 +167,11 @@
   "New password": "New password",
   "Re-enter new password": "Re-enter new password",
   "Password is not set": "Password is not set",
-
   "security_settings": "Security Settings",
-
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",
   "Current API Token": "Current API Token",
   "Update API Token": "Update API Token",
-
   "header_search_box": {
     "label": {
       "This tree": "This tree"
@@ -205,7 +180,6 @@
       "This tree": "Only children of this tree"
     }
   },
-
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
@@ -213,7 +187,6 @@
     "Page path and parmanent link": "Page path and parmanent link",
     "Markdown link": "Markdown link"
   },
-
   "search_help": {
     "title": "Searching Help",
     "and": {
@@ -243,7 +216,6 @@
   "search": {
     "search page bodies": "Hit [Enter] key to full-text search"
   },
-
   "page_page": {
     "notice": {
       "version": "This is not the current version.",
@@ -254,7 +226,6 @@
       "restricted": "Access to this page is restricted"
     }
   },
-
   "page_edit": {
     "Show active line": "Show active line",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
@@ -262,14 +233,12 @@
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
     }
   },
-
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "New page is already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete completely"
   },
-
   "modal_rename": {
     "label": {
       "Move/Rename page": "Move/Rename page",
@@ -285,10 +254,8 @@
       "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
-
   "Put Back": "Put Back",
   "Delete Completely": "Delete Completely",
-
   "modal_delete": {
     "delete_page": "Delete Page",
     "deleting_page": "Deleting Page",
@@ -298,7 +265,6 @@
     "recursively": "Delete children of under <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
-
   "modal_duplicate": {
     "label": {
       "Duplicate page": "Duplicate page",
@@ -306,7 +272,6 @@
       "Current page name": "Current page name"
     }
   },
-
   "modal_putback": {
     "label": {
       "Put Back Page": "Put Back Page",
@@ -316,7 +281,6 @@
       "recursively": "Put Back children of under <code>%s</code> recursively"
     }
   },
-
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
@@ -339,7 +303,6 @@
       "Post": "Post"
     }
   },
-
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit Template Page",
@@ -358,7 +321,6 @@
       "desc": "Applies to all decendant pages"
     }
   },
-
   "sandbox": {
     "header": "Header",
     "header_x": "Header {{index}}",
@@ -390,7 +352,6 @@
     "insert_image": "inserts an image",
     "open_sandbox": "Open Sandbox"
   },
-
   "admin_top": {
     "Management Wiki": "Management Wiki",
     "System Information": "System Information",
@@ -401,7 +362,6 @@
     "Specified version": "Specified version",
     "Installed version": "Installed version"
   },
-
   "app_setting": {
     "Site Name": "Site name",
     "sitename_change": "You can change Site Name which is used for header and HTML title.",
@@ -411,7 +371,7 @@
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
-    "ex): internal use only":"ex): internal use only",
+    "ex): internal use only": "ex): internal use only",
     "File Uploading": "File Uploading",
     "enable_files_except_image": "Enable file upload other than image files.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
@@ -421,7 +381,7 @@
     "SMTP_but_AWS": "If you do not have SMTP settings but AWS settings,  e-mails will be sent by SES.",
     "neihter_of": "If you do not of neither of these, e-mails will not be sent.",
     "From e-mail address": "From e-mail address",
-    "SMTP settings": "SMTP settings"  ,
+    "SMTP settings": "SMTP settings",
     "Host": "Host",
     "Port": "Port",
     "User": "User",
@@ -440,19 +400,18 @@
     "Disable": "Disable",
     "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
   },
-
   "security_setting": {
-		"Security settings": "Security settings",
+    "Security settings": "Security settings",
     "Guest Users Access": "Guest Users Access",
     "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
     "Register limitation": "Register limitation",
     "Register limitation desc": "Restricts ways to register new user.",
-		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-		"users_without_account": "Users without account is not accessible",
+    "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
+    "users_without_account": "Users without account is not accessible",
     "example": "Example",
     "restrict_emails": "You can restrict registerable e-mail address.",
-		"for_instance": " For instance, if you use growi within a company, you can write ",
-		"only_those": " Only those whose e-mail address including the company address can register.",
+    "for_instance": " For instance, if you use growi within a company, you can write ",
+    "only_those": " Only those whose e-mail address including the company address can register.",
     "insert_single": "Please insert single e-mail address per line.",
     "page_listing_1": "Page listing/searching<br>restricted by 'Just Me'",
     "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing/searching",
@@ -463,11 +422,10 @@
     "admin_only": "Admin Only",
     "admin_and_author": "Admin and Author",
     "anyone": "Anyone",
-
-		"Authentication mechanism settings": "Authentication Mechanism Settings",
+    "Authentication mechanism settings": "Authentication Mechanism Settings",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
-    "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
-    "xss_prevent_setting_link":"Go to Markdown settings",
+    "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
+    "xss_prevent_setting_link": "Go to Markdown settings",
     "callback_URL": "Callback URL",
     "providerName": "Provider Name",
     "issuerHost": "Issuer Host",
@@ -596,8 +554,7 @@
       "security:passport-saml:attrMapFirstName": "First Name",
       "security:passport-saml:attrMapLastName": "Last Name"
     }
-	},
-
+  },
   "markdown_setting": {
     "line_break_setting": "Line Break Setting",
     "line_break_setting_desc": "You can change line break settings.",
@@ -623,14 +580,13 @@
     "Ignore all tags desc": "Stripe all HTML tags and attributes",
     "Recommended setting": "Recommended Setting",
     "Custom Whitelist": "Custom Whitelist",
-    "Tag names":"Tag names",
-    "Tag attributes":"Tag attributes",
+    "Tag names": "Tag names",
+    "Tag attributes": "Tag attributes",
     "import_recommended": "Import recommended %s",
     "updated_lineBreak": "Succeeded to update line braek setting",
     "updated_presentation": "Succeeded to update presentation setting",
     "updated_xss": "Succeeded to update XSS setting"
   },
-
   "notification_setting": {
     "notification_list": "List of Notification Settings",
     "add_notification": "Add New",
@@ -650,7 +606,6 @@
       "ifttt_link": "Create a new IFTTT applet with Email trigger"
     }
   },
-
   "customize_page": {
     "Behavior": "Behavior",
     "Layout": "Layout",
@@ -681,7 +636,6 @@
     "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
     "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page"
   },
-
   "user_management": {
     "target_user": "Target User",
     "new_password": "New Password",
@@ -710,10 +664,10 @@
     "reset_password": "Reset Password",
     "related_username": "Related user's ",
     "accept": "Accept",
-    "deactivate_account":"Deactivate Account",
-    "your_own":"You cannot deactivate your own account",
-    "administrator_menu":"Administrator Menu",
-    "cannot_remove":"You cannot remove yourself from administrator",
+    "deactivate_account": "Deactivate Account",
+    "your_own": "You cannot deactivate your own account",
+    "administrator_menu": "Administrator Menu",
+    "cannot_remove": "You cannot remove yourself from administrator",
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
     "current_users": "Current users:",
     "valid_email": "Valid email address is required",
@@ -725,7 +679,6 @@
     "remove_user_success": "Succeeded to removing {{username}} ",
     "remove_external_user_success": "Succeeded to remove {{accountId}} "
   },
-
   "user_group_management": {
     "group_list": "Group List",
     "back_to_list": "Go Back to Group List",
@@ -748,7 +701,6 @@
     "no_pages": "There are no pages the group has view permission",
     "remove_from_group": "Remove this user"
   },
-
   "importer_management": {
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
@@ -807,13 +759,12 @@
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
     "Directory_hierarchy_tag": "Directory Hierarchy Tag"
   },
-
-  "full_text_search_management":{
-    "elasticsearch_management":"Elasticsearch Management",
-    "build_button":"Rebuild Index",
-    "rebuild_description_1":"Force rebuild index.",
-    "rebuild_description_2":"Click 'Build Now' to delete and create mapping file and add all pages.",
-    "rebuild_description_3":"This may take a while."
+  "full_text_search_management": {
+    "elasticsearch_management": "Elasticsearch Management",
+    "build_button": "Rebuild Index",
+    "rebuild_description_1": "Force rebuild index.",
+    "rebuild_description_2": "Click 'Build Now' to delete and create mapping file and add all pages.",
+    "rebuild_description_3": "This may take a while."
   },
   "export_management": {
     "exporting_collection_list": "Exporting Collection List",
