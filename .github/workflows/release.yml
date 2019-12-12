@@ -34,8 +34,8 @@ jobs:
         git checkout -B $TMP_RELEASE_BRANCH
         git commit -am "Release v${{ env.RELEASE_VERSION }}"
         git tag v${{ env.RELEASE_VERSION }} $TMP_RELEASE_BRANCH
-        git push --follow-tags origin $TMP_RELEASE_BRANCH
-        # git push --delete origin $TMP_RELEASE_BRANCH
+        git push origin $TMP_RELEASE_BRANCH --follow-tags
+        git push --delete origin $TMP_RELEASE_BRANCH
 
     # - name: Upload release notes
     #   uses: Roang-zero1/github-create-release-action@master
