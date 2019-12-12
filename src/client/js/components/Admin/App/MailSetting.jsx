@@ -55,7 +55,7 @@ class MailSetting extends React.Component {
                   type="text"
                   name="settingForm[mail:from]"
                   placeholder={`${t('eg')} mail@growi.org`}
-                  dafalutValue={adminAppContainer.state.fromAddress}
+                  defaultValue={adminAppContainer.state.fromAddress}
                   onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
                 />
               </div>
