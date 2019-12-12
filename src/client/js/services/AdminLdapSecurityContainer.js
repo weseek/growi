@@ -18,7 +18,7 @@ export default class AdminLdapSecurityContainer extends Container {
 
     this.state = {
       serverUrl: '',
-      ldapBindMode: 'manager',
+      isUserBind: false,
       ldapBindDN: '',
       ldapBindDNPassword: '',
       ldapSearchFilter: '',
@@ -40,7 +40,7 @@ export default class AdminLdapSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { ldapAuth } = response.data.securityParams;
     this.setState({
-      // ldapBindMode: 'manager',
+      isUserBind: ldapAuth.isUserBind,
       ldapBindDN: ldapAuth.ldapBindDN,
       ldapBindDNPassword: ldapAuth.ldapBindDNPassword,
       ldapSearchFilter: ldapAuth.ldapSearchFilter,
