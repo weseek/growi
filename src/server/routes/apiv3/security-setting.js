@@ -230,12 +230,26 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalAuth: {
+        isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      ldapAuth: {
+        ldapBindMode: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+        ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
+        ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+        ldapAttrMapUsername: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
       },
       samlAuth: {
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
