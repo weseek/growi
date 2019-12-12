@@ -28,6 +28,7 @@ jobs:
         echo ::set-env name=RELEASE_VERSION::$RELEASE_VERSION
 
     - name: Update README.md
+      run: |
         sh ./bin/github-actions/update-readme.sh
 
     - name: Commit
