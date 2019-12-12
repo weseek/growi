@@ -17,14 +17,13 @@ export default class AdminLdapSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
       serverUrl: '',
       ldapBindMode: 'manager',
       ldapBindDN: '',
       ldapBindDNPassword: '',
       ldapSearchFilter: '',
       ldapAttrMapUsername: '',
-      cbSameUsernameTreatedAsIdenticalUser: false,
+      isSameUsernameTreatedAsIdenticalUser: false,
       ldapAttrMapMail: '',
       ldapAttrMapName: '',
       ldapGroupSearchBase: '',
@@ -32,12 +31,27 @@ export default class AdminLdapSecurityContainer extends Container {
       ldapGroupDnProperty: '',
     };
 
-    this.init();
-
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { ldapAuth } = response.data.securityParams;
+    this.setState({
+      // ldapBindMode: 'manager',
+      ldapBindDN: ldapAuth.ldapBindDN,
+      ldapBindDNPassword: ldapAuth.ldapBindDNPassword,
+      ldapSearchFilter: ldapAuth.ldapSearchFilter,
+      ldapAttrMapUsername: ldapAuth.ldapAttrMapUsername,
+      isSameUsernameTreatedAsIdenticalUser: ldapAuth.isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail: ldapAuth.ldapAttrMapMail,
+      ldapAttrMapName: ldapAuth.ldapAttrMapName,
+      ldapGroupSearchBase: ldapAuth.ldapGroupSearchBase,
+      ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter,
+      ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty,
+    });
   }
 
 
@@ -91,10 +105,10 @@ export default class AdminLdapSecurityContainer extends Container {
   }
 
   /**
-   * Switch cb same username treated as identical user
+   * Switch is same username treated as identical user
    */
-  switchCbSameUsernameTreatedAsIdenticalUser() {
-    this.setState({ cbSameUsernameTreatedAsIdenticalUser: !this.state.cbSameUsernameTreatedAsIdenticalUser });
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
   }
 
   /**

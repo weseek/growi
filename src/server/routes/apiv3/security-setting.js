@@ -239,7 +239,7 @@ module.exports = (crowi) => {
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       ldapAuth: {
-        ldapBindMode: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+        // ldapBindMode: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
         ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
         ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
