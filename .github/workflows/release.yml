@@ -19,7 +19,7 @@ jobs:
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "info@weseek.co.jp"
-        git remote set-url origin "https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.${{ env.RELEASE_VERSION }} }}"
+        git remote set-url origin "https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.RELEASE_VERSION }}"
 
     - name: Bump version
       run: |
