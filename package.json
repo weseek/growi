@@ -107,6 +107,7 @@
     "i18next-express-middleware": "^1.4.1",
     "i18next-node-fs-backend": "^2.1.0",
     "i18next-sprintf-postprocessor": "^0.2.2",
+    "is-iso-date": "^0.0.1",
     "md5": "^2.2.1",
     "method-override": "^3.0.0",
     "migrate-mongo": "^7.0.1",
