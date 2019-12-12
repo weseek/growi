@@ -174,21 +174,13 @@ export default class AdminSamlSecurityContainer extends Container {
 
     this.setState({
       samlDbEntryPoint: securitySettingParams.samlDbEntryPoint || '',
-      samlEnvVarEntryPoint: securitySettingParams.samlEnvVarEntryPoint || '',
       samlDbIssuer: securitySettingParams.samlDbIssuer || '',
-      samlEnvVarIssuer: securitySettingParams.samlEnvVarIssuer || '',
       samlDbCert: securitySettingParams.samlDbCert || '',
-      samlEnvVarCert: securitySettingParams.samlEnvVarCert || '',
       samlDbAttrMapId: securitySettingParams.samlDbAttrMapId || '',
-      samlEnvVarAttrMapId: securitySettingParams.samlEnvVarAttrMapId || '',
       samlDbAttrMapUserName: securitySettingParams.samlDbAttrMapUserName || '',
-      samlEnvVarAttrMapUserName: securitySettingParams.samlEnvVarAttrMapUserName || '',
       samlDbAttrMapMail: securitySettingParams.samlDbAttrMapMail || '',
-      samlEnvVarAttrMapMail: securitySettingParams.samlEnvVarAttrMapMail || '',
       samlDbAttrMapFirstName: securitySettingParams.samlDbAttrMapFirstName || '',
-      samlEnvVarAttrMapFirstName: securitySettingParams.samlEnvVarAttrMapFirstName || '',
       samlDbAttrMapLastName: securitySettingParams.samlDbAttrMapLastName || '',
-      samlEnvVarAttrMapLastName: securitySettingParams.samlEnvVarAttrMapLastName || '',
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
       isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser || false,
     });
