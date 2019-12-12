@@ -99,7 +99,7 @@ class SamlSecurityManagement extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminSamlSecurityContainer.state.callbackUrl}
+              defaultValue={adminSamlSecurityContainer.state.callbackUrl}
               readOnly
             />
             <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
@@ -151,7 +151,7 @@ class SamlSecurityManagement extends React.Component {
                       type="text"
                       name="samlDbEntryPoint"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbEntryPoint}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbEntryPoint}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbEntryPoint(e.target.value)}
                     />
                   </td>
@@ -175,7 +175,7 @@ class SamlSecurityManagement extends React.Component {
                       type="text"
                       name="samlEnvVarissuer"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbIssuer}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbIssuer}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbIssuer(e.target.value)}
                     />
                   </td>
@@ -200,7 +200,7 @@ class SamlSecurityManagement extends React.Component {
                       rows="5"
                       name="samlDbCert"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbcert}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbcert}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbCert(e.target.value)}
                     />
                     <p className="help-block">
@@ -260,7 +260,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapId}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapId}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapId(e.target.value)}
                     />
                     <p className="help-block">
@@ -288,7 +288,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapUserName(e.target.value)}
                     />
                     <p className="help-block">
@@ -314,7 +314,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapMail}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapMail}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapMail(e.target.value)}
                     />
                     <p className="help-block">
@@ -340,7 +340,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapFirstName}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapFirstName}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapFirstName(e.target.value)}
                     />
                     <p className="help-block">
@@ -371,7 +371,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapLastName}
+                      defaultValue={adminSamlSecurityContainer.state.samlDbAttrMapLastName}
                       onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapLastName(e.target.value)}
                     />
                     <p className="help-block">
