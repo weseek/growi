@@ -20,6 +20,14 @@ class SamlSecurityManagement extends React.Component {
 
     this.state = {
       retrieveError: null,
+      envEntryPoint: '',
+      envIssuer: '',
+      envCert: '',
+      envAttrMapId: '',
+      envAttrMapUserName: '',
+      envAttrMapMail: '',
+      envAttrMapFirstName: '',
+      envAttrMapLastName: '',
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -29,7 +37,17 @@ class SamlSecurityManagement extends React.Component {
     const { adminSamlSecurityContainer } = this.props;
 
     try {
-      await adminSamlSecurityContainer.retrieveSecurityData();
+      const samlAuth = await adminSamlSecurityContainer.retrieveSecurityData();
+      this.setState({
+        envEntryPoint: samlAuth.envEntryPoint || '',
+        envIssuer: samlAuth.envIssuer || '',
+        envCert: samlAuth.envCert || '',
+        envAttrMapId: samlAuth.envAttrMapId || '',
+        envAttrMapUserName: samlAuth.envAttrMapUserName || '',
+        envAttrMapMail: samlAuth.envAttrMapMail || '',
+        envAttrMapFirstName: samlAuth.envAttrMapFirstName || '',
+        envAttrMapLastName: samlAuth.envAttrMapLastName || '',
+      });
     }
     catch (err) {
       toastError(err);
@@ -54,7 +72,6 @@ class SamlSecurityManagement extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
-    const { env } = this.props.appContainer.getConfig();
 
     return (
       <React.Fragment>
@@ -159,7 +176,7 @@ class SamlSecurityManagement extends React.Component {
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ENTRY_POINT || ''}
+                      value={this.state.envEntryPoint}
                       readOnly
                     />
                     <p className="help-block">
@@ -183,7 +200,7 @@ class SamlSecurityManagement extends React.Component {
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ISSUER || ''}
+                      value={this.state.envIssuer}
                       readOnly
                     />
                     <p className="help-block">
@@ -229,7 +246,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       type="text"
                       rows="5"
                       readOnly
-                      value={env.SAML_CERT || ''}
+                      value={this.state.envCert}
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_CERT' }) }} />
@@ -273,7 +290,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ATTR_MAPPING_ID || ''}
+                      value={this.state.envAttrMapId}
                       readOnly
                     />
                     <p className="help-block">
@@ -299,7 +316,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ATTR_MAPPING_USERNAME || ''}
+                      value={this.state.envAttrMapUserName}
                       readOnly
                     />
                     <p className="help-block">
@@ -325,7 +342,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ATTR_MAPPING_MAIL || ''}
+                      value={this.state.envAttrMapMail}
                       readOnly
                     />
                     <p className="help-block">
@@ -352,7 +369,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ATTR_MAPPING_FIRST_NAME || ''}
+                      value={this.state.envAttrMapFirstName}
                       readOnly
                     />
                     <p className="help-block">
@@ -383,7 +400,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={env.SAML_ATTR_MAPPING_LAST_NAME || ''}
+                      value={this.state.envAttrMapLastName}
                       readOnly
                     />
                     <p className="help-block">

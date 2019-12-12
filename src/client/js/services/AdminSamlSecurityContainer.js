@@ -56,6 +56,7 @@ export default class AdminSamlSecurityContainer extends Container {
       isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser || false,
       isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser || false,
     });
+    return samlAuth;
   }
 
   /**
