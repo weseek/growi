@@ -156,18 +156,17 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   async updateSamlSetting() {
 
-    // If the value in the database is empty, the value of the environment variable is used
     const response = await this.appContainer.apiv3.put('/security-setting/saml', {
-      samlEntryPoint: (this.state.samlDbEntryPoint === '') ? this.state.samlEnvVarEntryPoint : this.state.samlDbEntryPoint,
-      samlIssuer: (this.state.samlDbIssuer === '') ? this.state.samlEnvVarIssuer : this.state.samlDbIssuer,
-      samlCert: (this.state.samlDbCert === '') ? this.state.samlEnvVarCert : this.state.samlDbCert,
-      samlAttrMapId: (this.state.samlDbAttrMapId === '') ? this.state.samlEnvVarAttrMapId : this.state.samlDbAttrMapId,
-      samlAttrMapUserName: (this.state.samlDbAttrMapUserName === '') ? this.state.samlEnvVarAttrMapUserName : this.state.samlDbAttrMapUserName,
-      samlAttrMapMail: (this.state.samlDbAttrMapMail === '') ? this.state.samlEnvVarAttrMapMail : this.state.samlDbAttrMapMail,
-      samlAttrMapFirstName: (this.state.samlDbAttrMapFirstName === '') ? this.state.samlEnvVarAttrMapFirstName : this.state.samlDbAttrMapFirstName,
-      samlAttrMapLastName: (this.state.samlDbAttrMapLastName === '') ? this.state.samlEnvVarAttrMapLastName : this.state.samlDbAttrMapLastName,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser || false,
-      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser || false,
+      samlEntryPoint: this.state.samlDbEntryPoint,
+      samlIssuer: this.state.samlDbIssuer,
+      samlCert: this.state.samlDbCert,
+      samlAttrMapId: this.state.samlDbAttrMapId,
+      samlAttrMapUserName: this.state.samlDbAttrMapUserName,
+      samlAttrMapMail: this.state.samlDbAttrMapMail,
+      samlAttrMapFirstName: this.state.samlDbAttrMapFirstName,
+      samlAttrMapLastName: this.state.samlDbAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
     });
 
     const { securitySettingParams } = response.data;
