@@ -2,6 +2,8 @@
 
 ## 3.6.2-RC
 
+* Improvement: Reactify admin pages (Customize)
+
 ## 3.6.1
 
 ### BREAKING CHANGES
@@ -17,6 +19,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 * Improvement: Accessibility of Antarctic theme
+* Improvement: Reactify admin pages (Markdown Settings)
 * Fix: Appending tag is failed by wrong index of PageTagRelation
     * Introduced by 3.5.20
 * Fix: Pages without heading slash is invalid but creatable
