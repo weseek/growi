@@ -27,10 +27,12 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        yarn
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -78,10 +80,12 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        yarn
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -115,13 +119,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
-      id: cache
+      id: cache-dependencies
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-dev-with-plugins-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-prod-${{ matrix.node-version }}-$GITHUB_SHA
+        restore-keys: |
+          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
@@ -129,59 +135,33 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:prod:analyze
+    - name: Store env vars for the key of cache-public
       run: |
-        yarn build:prod:analyze
-
-    - name: Upload reports
-      uses: actions/upload-artifact@v1
-      if: success()
-      with:
-        name: report
-        path: report
-
-    - name: Slack Notification
-      uses: homoluctus/slatify@master
-      if: failure()
-      with:
-        type: ${{ job.status }}
-        job_name: '*build-prod (${{ matrix.node-version }})*'
-        channel: '#ci'
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-
-  server-prod:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x]
-
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache
+        GIT_BRANCH=`echo $GITHUB_REF | sed 's/refs\/heads\///g'`
+        GIT_BRANCH=`echo $GIT_BRANCH | sed 's/\//-/g'`
+        TODAY=`date '+%Y%m%d'`
+        echo ::set-env name=GIT_BRANCH::$GIT_BRANCH
+        echo ::set-env name=TODAY::$TODAY
+    - name: Cache/Restore public
+      id: cache-public
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-prod-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Install dependencies
+        key: ${{ runner.OS }}-public-prod-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-${{ env.TODAY }}
+        restore-keys: |
+          ${{ runner.OS }}-public-prod-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-
+    - name: yarn build:prod
+      if: steps.cache-public.outputs.cache-hit != 'true'
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
-      env:
-        NODE_ENV: production
+        yarn build:prod
+    - name: yarn install --production
+      run: |
+        yarn install --production
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: Create dummy manifest file
-      run: |
-        echo "{}" > public/manifest.json
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
