@@ -42,7 +42,7 @@ class LdapSecuritySetting extends React.Component {
 
     try {
       await adminLdapSecurityContainer.updateLdapSetting();
-      toastSuccess(t('security_setting.SAML.updated_saml'));
+      toastSuccess(t('security_setting.ldap.updated_ldap'));
     }
     catch (err) {
       toastError(err);
