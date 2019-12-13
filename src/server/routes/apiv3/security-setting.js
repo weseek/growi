@@ -97,6 +97,41 @@ const validator = {
  *              hideRestrictedByGroup:
  *                type: boolean
  *                description: enable hide by group
+ *      LdapSetting:
+ *        type:object
+ *          isUserBind:
+ *            type: boolean
+ *            description: enable user bind
+ *          ldapBindDN:
+ *            type: string
+ *            description: the query used to bind with the directory service
+ *          ldapBindDNPassword:
+ *            type: string
+ *            description: the password that is entered in the login page will be used to bind
+ *          ldapSearchFilter:
+ *            type: string
+ *            description: the query used to locate the authenticated user
+ *          ldapAttrMapUsername:
+ *            type: string
+ *            description: specification of mappings for username when creating new users
+ *          isSameUsernameTreatedAsIdenticalUser:
+ *            type: boolean
+ *            description: local account automatically linked the user name matched
+ *          ldapAttrMapMail:
+ *            type: string
+ *            description: specification of mappings for mail address when creating new users
+ *          ldapAttrMapName:
+ *            type: string
+ *            description: Specification of mappings for full name address when creating new users
+ *          ldapGroupSearchBase:
+ *            type: string
+ *            description: the base DN from which to search for groups.
+ *          ldapGroupSearchFilter:
+ *            type: string
+ *            description: the query used to filter for groups
+ *          ldapGroupDnProperty:
+ *            type: string
+ *            description: The property of user object to use in dn interpolation of Group Search Filter
  *      SamlAuthSetting:
  *        type:object
  *          samlEntryPoint:
@@ -221,6 +256,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  $ref: '#/components/schemas/GeneralSetting'
+   *                  $ref: '#/components/schemas/ldapAuthSetting'
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    *                  $ref: '#/components/schemas/OidcAuthSetting'
    *                  $ref: '#/components/schemas/BasicAuthSetting'
@@ -244,7 +280,7 @@ module.exports = (crowi) => {
         isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
         ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
         ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
-        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
         ldapAttrMapUsername: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
         ldapAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
