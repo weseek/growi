@@ -45,9 +45,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
 
-  async addUserBySubmit(e) {
-    e.preventDefault();
-    const input = e.target.defaultValue;
+  async addUserBySubmit(input) {
 
     try {
       await this.props.userGroupDetailContainer.addUserByUsername(input);
@@ -92,9 +90,10 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   onKeyDown(event) {
+    const input = event.target.defaultValue;
     // 13 is Enter key
     if (event.keyCode === 13) {
-      this.addUserBySubmit(event);
+      this.addUserBySubmit(input);
     }
   }
 
@@ -133,7 +132,7 @@ class UserGroupUserFormByInput extends React.Component {
             type="button"
             className="btn btn-sm btn-success"
             disabled={!this.validateForm()}
-            onClick={event => this.addUserBySubmit(event)}
+            onClick={event => this.addUserBySubmit(event.target.value)}
           >
             {t('add')}
           </button>
