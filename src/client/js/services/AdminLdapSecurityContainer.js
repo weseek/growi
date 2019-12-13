@@ -40,6 +40,7 @@ export default class AdminLdapSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { ldapAuth } = response.data.securityParams;
     this.setState({
+      serverUrl: ldapAuth.serverUrl || '',
       isUserBind: ldapAuth.isUserBind || false,
       ldapBindDN: ldapAuth.ldapBindDN || '',
       ldapBindDNPassword: ldapAuth.ldapBindDNPassword || '',
@@ -152,6 +153,7 @@ export default class AdminLdapSecurityContainer extends Container {
   async updateLdapSetting() {
 
     const response = await this.appContainer.apiv3.put('/security-setting/ldap', {
+      serverUrl: this.state.serverUrl,
       isUserBind: this.state.isUserBind,
       ldapBindDN: this.state.ldapBindDN,
       ldapBindDNPassword: this.state.ldapBindDNPassword,
@@ -168,6 +170,7 @@ export default class AdminLdapSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
 
     this.setState({
+      serverUrl: securitySettingParams.serverUrl || '',
       isUserBind: securitySettingParams.isUserBind || false,
       ldapBindDN: securitySettingParams.ldapBindDN || '',
       ldapBindDNPassword: securitySettingParams.ldapBindDNPassword || '',

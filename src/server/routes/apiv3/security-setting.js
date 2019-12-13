@@ -99,6 +99,9 @@ const validator = {
  *                description: enable hide by group
  *      LdapAuthSetting:
  *        type:object
+ *          serverUrl:
+ *            type: string
+ *            description: server url for ldap
  *          isUserBind:
  *            type: boolean
  *            description: enable user bind
@@ -277,6 +280,7 @@ module.exports = (crowi) => {
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       ldapAuth: {
+        serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
         isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
         ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
         ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
@@ -414,6 +418,7 @@ module.exports = (crowi) => {
   // validation
   router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
+      'security:passport-ldap:serverUrl': req.body.serverUrl,
       'security:passport-ldap:isUserBind': req.body.isUserBind,
       'security:passport-ldap:bindDN': req.body.ldapBindDN,
       'security:passport-ldap:bindDNPassword': req.body.ldapBindDNPassword,
@@ -430,6 +435,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
         isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
         ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
         ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
