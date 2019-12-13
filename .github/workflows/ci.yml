@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
-      id: cache
+      id: cache-dependencies
       uses: actions/cache@v1
       with:
         path: node_modules
@@ -30,7 +30,7 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
@@ -66,7 +66,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
-      id: cache
+      id: cache-dependencies
       uses: actions/cache@v1
       with:
         path: node_modules
@@ -74,7 +74,7 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
@@ -116,7 +116,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Cache/Restore node_modules
-      id: cache
+      id: cache-dependencies
       uses: actions/cache@v1
       with:
         path: node_modules
@@ -124,7 +124,7 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
