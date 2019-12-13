@@ -38,71 +38,73 @@ class PresentationForm extends React.Component {
     const { pageBreakSeparator, pageBreakCustomSeparator } = markDownSettingContainer.state;
 
     return (
-      <fieldset className="form-group row my-2">
+      <React.Fragment>
+        <fieldset className="form-group row mx-auto my-2 w-100">
 
-        <label className="col-xs-3 control-label text-right">
-          { t('markdown_setting.Page break setting') }
-        </label>
-
-        <div className="col-xs-3 radio radio-primary">
-          <input
-            type="radio"
-            id="pageBreakOption1"
-            checked={pageBreakSeparator === 1}
-            onChange={() => markDownSettingContainer.switchPageBreakSeparator(1)}
-          />
-          <label htmlFor="pageBreakOption1">
-            <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
-            <div className="mt-3">
-              { t('markdown_setting.Preset one separator desc') }
-              <pre><code>{ t('markdown_setting.Preset one separator value') }</code></pre>
-            </div>
+          <label className="col-xs-3 control-label text-left">
+            { t('markdown_setting.Page break setting') }
           </label>
-        </div>
 
-        <div className="col-xs-3 radio radio-primary mt-3">
-          <input
-            type="radio"
-            id="pageBreakOption2"
-            checked={pageBreakSeparator === 2}
-            onChange={() => markDownSettingContainer.switchPageBreakSeparator(2)}
-          />
-          <label htmlFor="pageBreakOption2">
-            <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
-            <div className="mt-3">
-              { t('markdown_setting.Preset two separator desc') }
-              <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
-            </div>
-          </label>
-        </div>
-
-        <div className="col-xs-3 radio radio-primary mt-3">
-          <input
-            type="radio"
-            id="pageBreakOption3"
-            checked={pageBreakSeparator === 3}
-            onChange={() => markDownSettingContainer.switchPageBreakSeparator(3)}
-          />
-          <label htmlFor="pageBreakOption3">
-            <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
-            <div className="mt-3">
-              { t('markdown_setting.Custom separator desc') }
+          <div className="form-group form-check-inline col-xs-12 my-3">
+            <div className="col-xs-3 radio radio-primary mt-3">
               <input
-                className="form-control"
-                value={pageBreakCustomSeparator}
-                onChange={(e) => { markDownSettingContainer.setPageBreakCustomSeparator(e.target.value) }}
+                type="radio"
+                id="pageBreakOption1"
+                checked={pageBreakSeparator === 1}
+                onChange={() => markDownSettingContainer.switchPageBreakSeparator(1)}
               />
+              <label htmlFor="pageBreakOption1">
+                <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
+                <div className="mt-3">
+                  { t('markdown_setting.Preset one separator desc') }
+                  <pre><code>{ t('markdown_setting.Preset one separator value') }</code></pre>
+                </div>
+              </label>
             </div>
-          </label>
-        </div>
 
-        <div className="form-group my-3">
+            <div className="col-xs-3 radio radio-primary mt-3">
+              <input
+                type="radio"
+                id="pageBreakOption2"
+                checked={pageBreakSeparator === 2}
+                onChange={() => markDownSettingContainer.switchPageBreakSeparator(2)}
+              />
+              <label htmlFor="pageBreakOption2">
+                <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
+                <div className="mt-3">
+                  { t('markdown_setting.Preset two separator desc') }
+                  <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
+                </div>
+              </label>
+            </div>
+
+            <div className="col-xs-3 radio radio-primary mt-3">
+              <input
+                type="radio"
+                id="pageBreakOption3"
+                checked={pageBreakSeparator === 3}
+                onChange={() => markDownSettingContainer.switchPageBreakSeparator(3)}
+              />
+              <label htmlFor="pageBreakOption3">
+                <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
+                <div className="mt-3">
+                  { t('markdown_setting.Custom separator desc') }
+                  <input
+                    className="form-control"
+                    value={pageBreakCustomSeparator}
+                    onChange={(e) => { markDownSettingContainer.setPageBreakCustomSeparator(e.target.value) }}
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+        </fieldset>
+        <div className="form-group mx-auto my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+            <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>
         </div>
-
-      </fieldset>
+      </React.Fragment>
     );
   }
 

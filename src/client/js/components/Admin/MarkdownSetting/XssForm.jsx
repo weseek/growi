@@ -39,8 +39,8 @@ class XssForm extends React.Component {
     const { xssOption } = markDownSettingContainer.state;
 
     return (
-      <fieldset className="form-group col-xs-12 my-3">
-        <div className="col-xs-4 radio radio-primary">
+      <div className="form-group form-check-inline col-xs-12 my-3">
+        <div className="col-xs-4 align-self-start radio radio-primary">
           <input
             type="radio"
             id="xssOption1"
@@ -56,7 +56,7 @@ class XssForm extends React.Component {
           </label>
         </div>
 
-        <div className="col-xs-4 radio radio-primary">
+        <div className="col-xs-4 align-self-start radio radio-primary">
           <input
             type="radio"
             id="xssOption2"
@@ -70,7 +70,7 @@ class XssForm extends React.Component {
           </label>
         </div>
 
-        <div className="col-xs-4 radio radio-primary">
+        <div className="col-xs-4 align-self-start radio radio-primary">
           <input
             type="radio"
             id="xssOption3"
@@ -83,7 +83,7 @@ class XssForm extends React.Component {
             <WhiteListInput customizable />
           </label>
         </div>
-      </fieldset>
+      </div>
     );
   }
 
@@ -93,31 +93,28 @@ class XssForm extends React.Component {
 
     return (
       <React.Fragment>
-        <form className="row">
-          <div className="form-group">
-            <div className="col-xs-offset-4 col-xs-4 text-left">
-              <div className="checkbox checkbox-success">
-                <input
-                  type="checkbox"
-                  id="XssEnable"
-                  className="form-check-input"
-                  name="isEnabledXss"
-                  checked={isEnabledXss}
-                  onChange={markDownSettingContainer.switchEnableXss}
-                />
-                <label htmlFor="XssEnable">
-                  { t('markdown_setting.Enable XSS prevention') }
-                </label>
-              </div>
-            </div>
-            {isEnabledXss && this.xssOptions()}
-          </div>
-          <div className="form-group my-3">
-            <div className="col-xs-offset-4 col-xs-5">
-              <div className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</div>
+        <fieldset className="row form-group my-3 mx-auto w-100">
+          <div className="col-xs-offset-4 col-xs-6 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                type="checkbox"
+                id="XssEnable"
+                name="isEnabledXss"
+                checked={isEnabledXss}
+                onChange={markDownSettingContainer.switchEnableXss}
+              />
+              <label htmlFor="XssEnable">
+                { t('markdown_setting.Enable XSS prevention') }
+              </label>
             </div>
           </div>
-        </form>
+          {isEnabledXss && this.xssOptions()}
+        </fieldset>
+        <div className="form-group row mx-auto my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
+          </div>
+        </div>
       </React.Fragment>
     );
   }
