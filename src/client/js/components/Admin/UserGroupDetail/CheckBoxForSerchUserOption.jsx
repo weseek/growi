@@ -11,7 +11,7 @@ class CheckBoxForSerchUserOption extends React.Component {
   render() {
     const { t, option } = this.props;
     return (
-      <div className="checkbox checkbox-info mb-5" key={`isAlso${option}Searched`}>
+      <div className="checkbox checkbox-info" key={`isAlso${option}Searched`}>
         <input
           type="checkbox"
           id={`isAlso${option}Searched`}

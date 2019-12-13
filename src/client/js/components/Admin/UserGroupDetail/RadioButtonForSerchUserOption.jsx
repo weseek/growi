@@ -11,7 +11,7 @@ class RadioButtonForSerchUserOption extends React.Component {
   render() {
     const { t, searchType } = this.props;
     return (
-      <div className="radio mb-5" key={`${searchType}Match`}>
+      <div className="radio" key={`${searchType}Match`}>
         <input
           type="radio"
           id={`${searchType}Match`}
