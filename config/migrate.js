@@ -17,7 +17,7 @@ const mongoUri = getMongoUri();
 const url = new URL(mongoUri);
 
 const mongodb = {
-  url: `${url.protocol}//${url.host}`,
+  url: mongoUri,
   databaseName: url.pathname.substring(1), // omit heading slash
   options: {
     useNewUrlParser: true, // removes a deprecation warning when connecting

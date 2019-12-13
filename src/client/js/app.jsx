@@ -53,7 +53,7 @@ import AdminCustomizeContainer from './services/AdminCustomizeContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
-import MarkDownSettingContainer from './services/MarkDownSettingContainer';
+import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 
 const logger = loggerFactory('growi:app');
@@ -118,17 +118,17 @@ if (pageContainer.state.pageId != null) {
   componentMappings = Object.assign({
     'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
-    'page-attachment':  <PageAttachment />,
-    'page-timeline':  <PageTimeline />,
-    'page-comment-write':  <CommentEditorLazyRenderer />,
+    'page-attachment': <PageAttachment />,
+    'page-timeline': <PageTimeline />,
+    'page-comment-write': <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
-    'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
-    'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
-    'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-    'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+    'bookmark-button': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
+    'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
+    'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+    'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
@@ -136,7 +136,7 @@ if (pageContainer.state.path != null) {
     // eslint-disable-next-line quote-props
     'page': <Page />,
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
-    'tag-label':  <TagLabels />,
+    'tag-label': <TagLabels />,
   }, componentMappings);
 }
 

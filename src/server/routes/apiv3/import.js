@@ -5,9 +5,6 @@ const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-lin
 const path = require('path');
 const multer = require('multer');
 
-// eslint-disable-next-line no-unused-vars
-const { ObjectId } = require('mongoose').Types;
-
 const express = require('express');
 
 const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
@@ -54,6 +51,8 @@ const generateOverwriteParams = (collectionName, req, options) => {
       return require('./overwrite-params/pages')(req, options);
     case 'revisions':
       return require('./overwrite-params/revisions')(req, options);
+    case 'attachmentFiles.chunks':
+      return require('./overwrite-params/attachmentFiles.chunks')(req, options);
     default:
       return {};
   }
