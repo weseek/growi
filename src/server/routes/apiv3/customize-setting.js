@@ -23,16 +23,19 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *    schemas:
  *      CustomizeLayoutTheme:
  *        type: object
+ *        properties:
  *          layoutType:
  *            type: string
  *          themeType:
  *            type: string
  *      CustomizeBehavior:
  *        type: object
- *          behaviorType
+ *        properties:
+ *          behaviorType:
  *            type: string
  *      CustomizeFunction:
  *        type: object
+ *        properties:
  *          isEnabledTimeline:
  *            type: boolean
  *          isSavedStatesOfTabChanges:
@@ -43,24 +46,29 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: number
  *      CustomizeHighlight:
  *        type: object
+ *        properties:
  *          styleName:
  *            type: string
  *          styleBorder:
  *            type: boolean
  *      CustomizeTitle:
  *        type: object
+ *        properties:
  *          customizeTitle:
  *            type: string
  *      CustomizeHeader:
  *        type: object
+ *        properties:
  *          customizeHeader:
  *            type: string
  *      CustomizeCss:
  *        type: object
+ *        properties:
  *          customizeCss:
  *            type: string
  *      CustomizeScript:
  *        type: object
+ *        properties:
  *          customizeScript:
  *            type: string
  */
