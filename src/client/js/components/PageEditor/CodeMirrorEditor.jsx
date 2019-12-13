@@ -250,6 +250,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  replaceLine(text) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceRange(text, this.getBol(), this.getEol());
+  }
+
+  /**
+   * @inheritDoc
+   */
   insertText(text) {
     const editor = this.getCodeMirror();
     editor.getDoc().replaceSelection(text);

@@ -11,9 +11,10 @@ class MarkdownTableUtil {
     this.tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
     // https://regex101.com/r/7BN2fR/10
     this.linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
+    // https://regex101.com/r/1UuWBJ/3
+    this.emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
     this.getEot = this.getEot.bind(this);
-    this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
     this.isInTable = this.isInTable.bind(this);
@@ -64,14 +65,6 @@ class MarkdownTableUtil {
     const eotLine = Math.min(line - 1, lastLine);
     const lineLength = editor.getDoc().getLine(eotLine).length;
     return { line: eotLine, ch: lineLength };
-  }
-
-  /**
-   * return the postion of the BOL(beginning of line)
-   */
-  getBol(editor) {
-    const curPos = editor.getCursor();
-    return { line: curPos.line, ch: 0 };
   }
 
   /**
