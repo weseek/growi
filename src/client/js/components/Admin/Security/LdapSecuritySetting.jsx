@@ -139,7 +139,7 @@ class LdapSecuritySetting extends React.Component {
                   value={adminLdapSecurityContainer.state.bindDN}
                   onChange={e => adminLdapSecurityContainer.changeBindDN(e.target.value)}
                 />
-                {(adminLdapSecurityContainer.state.bindMode === 'manager') ? (
+                {(adminLdapSecurityContainer.state.isUserBind === false) ? (
                   <p className="help-block passport-ldap-managerbind">
                     <small>
                       {t('security_setting.ldap.bind_DN_manager_detail')}<br />
