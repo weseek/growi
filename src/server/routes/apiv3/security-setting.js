@@ -97,7 +97,7 @@ const validator = {
  *              hideRestrictedByGroup:
  *                type: boolean
  *                description: enable hide by group
- *      LdapSetting:
+ *      LdapAuthSetting:
  *        type:object
  *          isUserBind:
  *            type: boolean
@@ -256,7 +256,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  $ref: '#/components/schemas/GeneralSetting'
-   *                  $ref: '#/components/schemas/ldapAuthSetting'
+   *                  $ref: '#/components/schemas/LdapAuthSetting'
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    *                  $ref: '#/components/schemas/OidcAuthSetting'
    *                  $ref: '#/components/schemas/BasicAuthSetting'
