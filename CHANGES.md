@@ -3,6 +3,7 @@
 ## 3.6.2-RC
 
 * Improvement: Reactify admin pages (Customize)
+* Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
 * Fix: Emoji Autocomplete window does not float correctly
     * Introduced by 3.5.0
 
