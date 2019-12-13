@@ -158,7 +158,7 @@ Object.keys(componentMappings).forEach((key) => {
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
-const adminMarkDownContainer = new MarkDownSettingContainer(appContainer);
+const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminContainers = {
   'admin-customize': adminCustomizeContainer,
   'admin-user-page': adminUsersContainer,
