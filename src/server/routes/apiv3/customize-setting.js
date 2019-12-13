@@ -122,9 +122,14 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    customizedParams:
-   *                      $ref: '#/components/schemas/CustomizeParams'
+   *                  $ref: '#/components/schemas/CustomizeLayoutTheme'
+   *                  $ref: '#/components/schemas/CustomizeBehavior'
+   *                  $ref: '#/components/schemas/CustomizeFunction'
+   *                  $ref: '#/components/schemas/CustomizeHighlight'
+   *                  $ref: '#/components/schemas/CustomizeTitle'
+   *                  $ref: '#/components/schemas/CustomizeHeader'
+   *                  $ref: '#/components/schemas/CustomizeCss'
+   *                  $ref: '#/components/schemas/CustomizeScript'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
