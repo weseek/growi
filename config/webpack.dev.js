@@ -6,7 +6,6 @@
  * Webpack Plugins
  */
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const helpers = require('../src/lib/util/helpers');
 
@@ -57,14 +56,6 @@ module.exports = require('./webpack.common')({
     new MiniCssExtractPlugin({
       filename: '[name].bundle.css',
     }),
-
-    new HardSourceWebpackPlugin(),
-    new HardSourceWebpackPlugin.ExcludeModulePlugin([
-      {
-        // see https://github.com/mzgoddard/hard-source-webpack-plugin/blob/master/README.md#excludemoduleplugin
-        test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
-      },
-    ]),
 
     new BundleAnalyzerPlugin({
       analyzerMode: ANALYZE ? 'server' : 'disabled',
