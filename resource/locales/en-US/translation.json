@@ -680,6 +680,11 @@
     "remove_external_user_success": "Succeeded to remove {{accountId}} "
   },
   "user_group_management": {
+    "search_option": "Search Option",
+    "enable_option": "Enable {{option}}",
+    "forward_match": "forword match",
+    "partial_match": "partial match",
+    "backward_match": "backward match",
     "group_list": "Group List",
     "back_to_list": "Go Back to Group List",
     "basic_info": "Basic Info",

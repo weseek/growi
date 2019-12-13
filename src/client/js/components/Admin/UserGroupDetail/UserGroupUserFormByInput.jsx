@@ -29,7 +29,6 @@ class UserGroupUserFormByInput extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
     this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
@@ -46,9 +45,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
 
-  async addUserBySubmit(e) {
-    e.preventDefault();
-    const { input } = this.state;
+  async addUserBySubmit(input) {
 
     try {
       await this.props.userGroupDetailContainer.addUserByUsername(input);
@@ -93,23 +90,15 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   onKeyDown(event) {
+    const input = event.target.defaultValue;
     // 13 is Enter key
     if (event.keyCode === 13) {
-      this.addUserBySubmit();
+      this.addUserBySubmit(input);
     }
   }
 
   getEmptyLabel() {
     return (this.state.searchError !== null) && 'Error on searching.';
-  }
-
-  renderMenuItemChildren(option, props, index) {
-    const user = option;
-    return (
-      <span>
-        {user}
-      </span>
-    );
   }
 
   render() {
@@ -118,8 +107,8 @@ class UserGroupUserFormByInput extends React.Component {
     const inputProps = { autoComplete: 'off' };
 
     return (
-      <form className="form-inline" onSubmit={this.addUserBySubmit}>
-        <div className="form-group">
+      <div className="row">
+        <div className="col-xs-8 pr-0">
           <AsyncTypeahead
             {...this.props}
             id="name-typeahead-asynctypeahead"
@@ -129,19 +118,26 @@ class UserGroupUserFormByInput extends React.Component {
             labelKey="name"
             minLength={0}
             options={this.state.applicableUsers} // Search result
-            emptyLabel={this.getEmptyLabel()}
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
             align="left"
             onChange={this.handleChange}
             onSearch={this.handleSearch}
             onInputChange={this.onInputChange}
             onKeyDown={this.onKeyDown}
-            renderMenuItemChildren={this.renderMenuItemChildren}
             caseSensitive={false}
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{t('add')}</button>
-      </form>
+        <div className="col-xs-2 pl-0">
+          <button
+            type="button"
+            className="btn btn-sm btn-success"
+            disabled={!this.validateForm()}
+            onClick={event => this.addUserBySubmit(event.target.value)}
+          >
+            {t('add')}
+          </button>
+        </div>
+      </div>
     );
   }
 

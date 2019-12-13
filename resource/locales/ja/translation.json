@@ -664,6 +664,11 @@
     "remove_external_user_success": "{{accountId}}を削除しました "
   },
   "user_group_management": {
+    "search_option": "検索オプション",
+    "enable_option": "{{option}}を有効にする",
+    "forward_match": "前方一致",
+    "partial_match": "部分一致",
+    "backward_match": "後方一致",
     "group_list": "グループ一覧",
     "back_to_list": "グループ一覧に戻る",
     "basic_info": "基本情報",
