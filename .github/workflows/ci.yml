@@ -201,27 +201,13 @@ jobs:
           ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+        yarn add -D react-images react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: Store env vars for the key of cache-public
-      run: |
-        GIT_BRANCH=`echo $GITHUB_REF | sed 's/refs\/heads\///g'`
-        GIT_BRANCH=`echo $GIT_BRANCH | sed 's/\//-/g'`
-        TODAY=`date '+%Y%m%d'`
-        echo ::set-env name=GIT_BRANCH::$GIT_BRANCH
-        echo ::set-env name=TODAY::$TODAY
-    - name: Cache/Restore public
-      id: cache-public
-      uses: actions/cache@v1
-      with:
-        path: public
-        key: ${{ runner.OS }}-public-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-${{ env.TODAY }}
-        restore-keys: |
-          ${{ runner.OS }}-public-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-
     - name: yarn build:prod
       if: steps.cache-public.outputs.cache-hit != 'true'
       run: |
@@ -233,7 +219,7 @@ jobs:
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
-        yarn list --depth=0
+        yarn list --production --depth=0
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
