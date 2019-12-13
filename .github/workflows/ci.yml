@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -58,12 +58,13 @@ jobs:
         channel: '#ci'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+
   build-dev:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v1
@@ -170,6 +171,7 @@ jobs:
         key: ${{ runner.OS }}-node_modules-prod-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
+      run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
     - name: Print dependencies
       run: |
