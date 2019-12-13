@@ -393,6 +393,67 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /security-setting/ldap:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update LDAP setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/LdapAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update LDAP setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/LdapAuthSetting'
+   */
+  // validation
+  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-ldap:isUserBind': req.body.isUserBind,
+      'security:passport-ldap:bindDN': req.body.ldapBindDN,
+      'security:passport-ldap:bindDNPassword': req.body.ldapBindDNPassword,
+      'security:passport-ldap:searchFilter': req.body.ldapSearchFilter,
+      'security:passport-ldap:attrMapUsername': req.body.ldapAttrMapUserName,
+      'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-ldap:attrMapMail': req.body.ldapAttrMapMail,
+      'security:passport-ldap:attrMapName': req.body.ldapAttrMapName,
+      'security:passport-ldap:groupSearchBase': req.body.ldapGroupSearchBase,
+      'security:passport-ldap:groupSearchFilter': req.body.ldapGroupSearchFilter,
+      'security:passport-ldap:groupDnProperty': req.body.ldapGroupDnProperty,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
+        ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
+        ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
+        ldapAttrMapUsername: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating SAML setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-SAML-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
    *    /security-setting/saml:
    *      put:
    *        tags: [SecuritySetting]
