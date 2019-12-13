@@ -27,8 +27,17 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - name: Get yarn cache
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      id: cache-yarn
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.cache-yarn.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
@@ -71,8 +80,17 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - name: Get yarn cache
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      id: cache-yarn
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.cache-yarn.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
@@ -121,8 +139,17 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - name: Get yarn cache
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      id: cache-yarn
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.cache-yarn.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
@@ -159,17 +186,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v1
+    - name: Get yarn cache
+      id: cache-yarn
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
       with:
-        path: node_modules
-        key: $GITHUB_SHA
+        path: ${{ steps.cache-yarn.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
