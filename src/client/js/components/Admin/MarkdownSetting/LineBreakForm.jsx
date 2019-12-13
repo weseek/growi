@@ -1,11 +1,13 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+import { } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 
 import AppContainer from '../../../services/AppContainer';
 import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
@@ -41,7 +43,7 @@ class LineBreakForm extends React.Component {
     const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
 
     return (
-      <div className="form-group row">
+      <div className="form-group row my-3">
         <div className="col-xs-offset-4 col-xs-6 text-left">
           <div className="checkbox checkbox-success">
             <input
@@ -67,7 +69,7 @@ class LineBreakForm extends React.Component {
     const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
 
     return (
-      <div className="form-group row">
+      <div className="form-group row my-3">
         <div className="col-xs-offset-4 col-xs-6 text-left">
           <div className="checkbox checkbox-success">
             <input
@@ -91,7 +93,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="row">
+        <fieldset className="row mx-auto">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
