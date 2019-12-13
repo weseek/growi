@@ -182,7 +182,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findOne({ filePath });
 
-    return responseForAttachment(res, req.user, attachment);
+    return responseForAttachment(req, res, attachment);
   };
 
   /**
