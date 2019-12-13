@@ -26,9 +26,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
@@ -70,9 +70,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
@@ -120,9 +120,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
@@ -164,11 +164,12 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-prod-${{ matrix.node-version }}-$GITHUB_SHA
+        key: $GITHUB_SHA
         restore-keys: |
-          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          ${{ runner.OS }}-node_modules-dev-${{ matrix.node-version }}-
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-
     - name: Install dependencies
+      if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion
     - name: Print dependencies
@@ -187,10 +188,10 @@ jobs:
       id: cache-public
       uses: actions/cache@v1
       with:
-        path: node_modules
-        key: ${{ runner.OS }}-public-prod-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-${{ env.TODAY }}
+        path: public
+        key: ${{ runner.OS }}-public-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-${{ env.TODAY }}
         restore-keys: |
-          ${{ runner.OS }}-public-prod-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-
+          ${{ runner.OS }}-public-${{ matrix.node-version }}-${{ env.GIT_BRANCH }}-
     - name: yarn build:prod
       if: steps.cache-public.outputs.cache-hit != 'true'
       run: |
