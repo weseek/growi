@@ -9,10 +9,9 @@ class MarkdownTableUtil {
     // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
     this.tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
-    // https://regex101.com/r/7BN2fR/8
-    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$/; // own idea
+    // https://regex101.com/r/7BN2fR/10
+    this.linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
 
-    this.getBot = this.getBot.bind(this);
     this.getEot = this.getEot.bind(this);
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
