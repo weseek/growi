@@ -35,7 +35,7 @@ jobs:
         git commit -am "Release v${{ env.RELEASE_VERSION }}"
         git tag -a v${{ env.RELEASE_VERSION }} -m "v${{ env.RELEASE_VERSION }}"
         git push --follow-tags origin $TMP_RELEASE_BRANCH
-        echo ::set-env name=TMP_RELEASE_BRANCH::$TMP_RELEASE_BRANCH
+        git push --delete origin ${{ env.TMP_RELEASE_BRANCH }}
 
     - name: Upload release notes
       uses: Roang-zero1/github-create-release-action@master
@@ -43,7 +43,3 @@ jobs:
         created_tag: v${{ env.RELEASE_VERSION }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Remove temporary branch
-      run: |
-        git push --delete origin ${{ env.TMP_RELEASE_BRANCH }}

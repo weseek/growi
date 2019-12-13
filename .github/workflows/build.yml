@@ -1,9 +1,8 @@
 name: Release Docker Images
 
 on:
-  push:
-    branches:
-      - tmp/release-v3*
+  release:
+    types: [published]
 
 jobs:
 
