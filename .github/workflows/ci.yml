@@ -27,12 +27,13 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache
+    - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
+    - name: Cache/Restore yarn cache
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -80,12 +81,13 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache
+    - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
+    - name: Cache/Restore yarn cache
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -139,12 +141,13 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache
+    - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
+    - name: Cache/Restore yarn cache
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -186,10 +189,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Get yarn cache
+    - name: Get yarn cache dir
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
+    - name: Cache/Restore yarn cache
+      uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
