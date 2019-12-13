@@ -19,6 +19,20 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  ldapAuth: [
+    body('serverUrl').isString(),
+    body('isUserBind').isBoolean(),
+    body('ldapBindDN').isString(),
+    body('ldapBindDNPassword').isString(),
+    body('ldapSearchFilter').isString(),
+    body('ldapAttrMapUsername').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('ldapAttrMapMail').isString(),
+    body('ldapAttrMapName').isString(),
+    body('ldapGroupSearchBase').isString(),
+    body('ldapGroupSearchFilter').isString(),
+    body('ldapGroupDnProperty').isString(),
+  ],
   samlAuth: [
     body('samlEntryPoint').isString(),
     body('samlIssuer').isString(),
@@ -74,133 +88,169 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      SecurityParams:
- *        type: object
- *          GeneralSetting:
- *            type:object
- *              GuestModeParams:
- *                type: object
- *                properties:
- *                  restrictGuestMode:
- *                    type: string
- *                    description: type of restrictGuestMode
- *              PageDeletionParams:
- *                type: object
- *                properties:
- *                  pageCompleteDeletionAuthority:
- *                    type: string
- *                    description: type of pageDeletionAuthority
- *              Function:
- *                type: object
- *                properties:
- *                  hideRestrictedByOwner:
- *                    type: boolean
- *                    description: enable hide by owner
- *                  hideRestrictedByGroup:
- *                    type: boolean
- *                    description: enable hide by group
- *          SamlAuthSetting:
- *            type:object
- *              samlEntryPoint:
+ *      GeneralSetting:
+ *        type:object
+ *          GuestModeParams:
+ *            type: object
+ *            properties:
+ *              restrictGuestMode:
  *                type: string
- *                description: entry point for saml
- *              samlIssuer:
+ *                description: type of restrictGuestMode
+ *          PageDeletionParams:
+ *            type: object
+ *            properties:
+ *              pageCompleteDeletionAuthority:
  *                type: string
- *                description: issuer for saml
- *              samlCert:
- *                type: string
- *                description: certificate for saml
- *              samlAttrMapId:
- *                type: string
- *                description: attribute mapping id for saml
- *              samlAttrMapUserName:
- *                type: string
- *                description: attribute mapping user name for saml
- *              samlAttrMapMail:
- *                type: string
- *                description: attribute mapping mail for saml
- *              samlAttrMapFirstName:
- *                type: string
- *                description: attribute mapping first name for saml
- *              samlAttrMapLastName:
- *                type: string
- *                description: attribute mapping last name for saml
- *              isSameUsernameTreatedAsIdenticalUser
+ *                description: type of pageDeletionAuthority
+ *          Function:
+ *            type: object
+ *            properties:
+ *              hideRestrictedByOwner:
  *                type: boolean
- *                description: local account automatically linked the user name matched
- *              isSameEmailTreatedAsIdenticalUser
+ *                description: enable hide by owner
+ *              hideRestrictedByGroup:
  *                type: boolean
- *                description: local account automatically linked the email matched
- *          OidcAuthSetting:
- *            type:object
- *              oidcProviderName:
- *                type: string
- *                description: provider name for oidc
- *              oidcIssuerHost:
- *                type: string
- *                description: issuer host for oidc
- *              oidcClientId:
- *                type: string
- *                description: client id for oidc
- *              oidcClientSecret:
- *                type: string
- *                description: client secret for oidc
- *              oidcAttrMapId:
- *                type: string
- *                description: attr map id for oidc
- *              oidcAttrMapUserName:
- *                type: string
- *                description: attr map username for oidc
- *              oidcAttrMapName:
- *                type: string
- *                description: attr map name for oidc
- *              oidcAttrMapMail:
- *                type: string
- *                description: attr map mail for oidc
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the user name matched
- *              isSameEmailTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
- *          BasicAuthSetting:
- *            type:object
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
- *          GitHubOAuthSetting:
- *            type:object
- *              githubClientId:
- *                type: string
- *                description: key of comsumer
- *              githubClientSecret:
- *                type: string
- *                description: password of comsumer
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
- *          GoogleOAuthSetting:
- *            type:object
- *              googleClientId:
- *                type: string
- *                description: key of comsumer
- *              googleClientSecret:
- *                type: string
- *                description: password of comsumer
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
- *          TwitterOAuthSetting:
- *            type:object
- *              twitterConsumerKey:
- *                type: string
- *                description: key of comsumer
- *              twitterConsumerSecret:
- *                type: string
- *                description: password of comsumer
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
+ *                description: enable hide by group
+ *      LdapAuthSetting:
+ *        type:object
+ *          serverUrl:
+ *            type: string
+ *            description: server url for ldap
+ *          isUserBind:
+ *            type: boolean
+ *            description: enable user bind
+ *          ldapBindDN:
+ *            type: string
+ *            description: the query used to bind with the directory service
+ *          ldapBindDNPassword:
+ *            type: string
+ *            description: the password that is entered in the login page will be used to bind
+ *          ldapSearchFilter:
+ *            type: string
+ *            description: the query used to locate the authenticated user
+ *          ldapAttrMapUsername:
+ *            type: string
+ *            description: specification of mappings for username when creating new users
+ *          isSameUsernameTreatedAsIdenticalUser:
+ *            type: boolean
+ *            description: local account automatically linked the user name matched
+ *          ldapAttrMapMail:
+ *            type: string
+ *            description: specification of mappings for mail address when creating new users
+ *          ldapAttrMapName:
+ *            type: string
+ *            description: Specification of mappings for full name address when creating new users
+ *          ldapGroupSearchBase:
+ *            type: string
+ *            description: the base DN from which to search for groups.
+ *          ldapGroupSearchFilter:
+ *            type: string
+ *            description: the query used to filter for groups
+ *          ldapGroupDnProperty:
+ *            type: string
+ *            description: The property of user object to use in dn interpolation of Group Search Filter
+ *      SamlAuthSetting:
+ *        type:object
+ *          samlEntryPoint:
+ *            type: string
+ *            description: entry point for saml
+ *          samlIssuer:
+ *            type: string
+ *            description: issuer for saml
+ *          samlCert:
+ *            type: string
+ *            description: certificate for saml
+ *          samlAttrMapId:
+ *            type: string
+ *            description: attribute mapping id for saml
+ *          samlAttrMapUserName:
+ *            type: string
+ *            description: attribute mapping user name for saml
+ *          samlAttrMapMail:
+ *            type: string
+ *            description: attribute mapping mail for saml
+ *          samlAttrMapFirstName:
+ *            type: string
+ *            description: attribute mapping first name for saml
+ *          samlAttrMapLastName:
+ *            type: string
+ *            description: attribute mapping last name for saml
+ *          isSameUsernameTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the user name matched
+ *          isSameEmailTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the email matched
+ *      OidcAuthSetting:
+ *        type:object
+ *          oidcProviderName:
+ *            type: string
+ *            description: provider name for oidc
+ *          oidcIssuerHost:
+ *            type: string
+ *            description: issuer host for oidc
+ *          oidcClientId:
+ *            type: string
+ *            description: client id for oidc
+ *          oidcClientSecret:
+ *            type: string
+ *            description: client secret for oidc
+ *          oidcAttrMapId:
+ *            type: string
+ *            description: attr map id for oidc
+ *          oidcAttrMapUserName:
+ *            type: string
+ *            description: attr map username for oidc
+ *          oidcAttrMapName:
+ *            type: string
+ *            description: attr map name for oidc
+ *          oidcAttrMapMail:
+ *            type: string
+ *            description: attr map mail for oidc
+ *          isSameUsernameTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the user name matched
+ *          isSameEmailTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the email matched
+ *      BasicAuthSetting:
+ *        type:object
+ *          isSameUsernameTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the email matched
+ *      GitHubOAuthSetting:
+ *        type:object
+ *          githubClientId:
+ *            type: string
+ *            description: key of comsumer
+ *          githubClientSecret:
+ *            type: string
+ *            description: password of comsumer
+ *          isSameUsernameTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the email matched
+ *      GoogleOAuthSetting:
+ *        type:object
+ *          googleClientId:
+ *            type: string
+ *            description: key of comsumer
+ *          googleClientSecret:
+ *            type: string
+ *            description: password of comsumer
+ *          isSameUsernameTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the email matched
+ *      TwitterOAuthSetting:
+ *        type:object
+ *          twitterConsumerKey:
+ *            type: string
+ *            description: key of comsumer
+ *          twitterConsumerSecret:
+ *            type: string
+ *            description: password of comsumer
+ *          isSameUsernameTreatedAsIdenticalUser
+ *            type: boolean
+ *            description: local account automatically linked the email matched
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -222,20 +272,40 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    securityParams:
-   *                      $ref: '#/components/schemas/SecurityParams'
+   *                  $ref: '#/components/schemas/GeneralSetting'
+   *                  $ref: '#/components/schemas/LdapAuthSetting'
+   *                  $ref: '#/components/schemas/SamlAuthSetting'
+   *                  $ref: '#/components/schemas/OidcAuthSetting'
+   *                  $ref: '#/components/schemas/BasicAuthSetting'
+   *                  $ref: '#/components/schemas/GitHubOAuthSetting'
+   *                  $ref: '#/components/schemas/GoogleOAuthSetting'
+   *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const securityParams = {
       generalAuth: {
+        isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      ldapAuth: {
+        serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
+        isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
+        ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
+        ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
+        ldapAttrMapUsername: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
       },
       samlAuth: {
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
@@ -304,29 +374,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  restrictGuestMode:
-   *                    description: type of restrictGuestMode
-   *                    type: string
-   *                  pageCompleteDeletionAuthority:
-   *                    type: string
-   *                    description: type of pageDeletionAuthority
-   *                  hideRestrictedByOwner:
-   *                    type: boolean
-   *                    description: enable hide by owner
-   *                  hideRestrictedByGroup:
-   *                    type: boolean
-   *                    description: enable hide by group
+   *                $ref: '#/components/schemas/GeneralSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update general Setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting'
+   *                  $ref: '#/components/schemas/GeneralSetting'
    */
   router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -356,6 +411,68 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /security-setting/ldap:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update LDAP setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/LdapAuthSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update LDAP setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/LdapAuthSetting'
+   */
+  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, validator.ldapAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-ldap:serverUrl': req.body.serverUrl,
+      'security:passport-ldap:isUserBind': req.body.isUserBind,
+      'security:passport-ldap:bindDN': req.body.ldapBindDN,
+      'security:passport-ldap:bindDNPassword': req.body.ldapBindDNPassword,
+      'security:passport-ldap:searchFilter': req.body.ldapSearchFilter,
+      'security:passport-ldap:attrMapUsername': req.body.ldapAttrMapUserName,
+      'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-ldap:attrMapMail': req.body.ldapAttrMapMail,
+      'security:passport-ldap:attrMapName': req.body.ldapAttrMapName,
+      'security:passport-ldap:groupSearchBase': req.body.ldapGroupSearchBase,
+      'security:passport-ldap:groupSearchFilter': req.body.ldapGroupSearchFilter,
+      'security:passport-ldap:groupDnProperty': req.body.ldapGroupDnProperty,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const securitySettingParams = {
+        serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
+        isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
+        ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
+        ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
+        ldapAttrMapUsername: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating SAML setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-SAML-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
    *    /security-setting/saml:
    *      put:
    *        tags: [SecuritySetting]
@@ -365,14 +482,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/SamlAuthSetting'
+   *                $ref: '#/components/schemas/SamlAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update SAML setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/SamlAuthSetting'
+   *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -423,14 +540,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
+   *                $ref: '#/components/schemas/OidcAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update OpenID Connect setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/OidcAuthSetting'
+   *                  $ref: '#/components/schemas/OidcAuthSetting'
    */
   router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -481,14 +598,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/BasicAuthSetting'
+   *                $ref: '#/components/schemas/BasicAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update basic
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/BasicAuthSetting'
+   *                  $ref: '#/components/schemas/BasicAuthSetting'
    */
   router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -521,14 +638,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/GoogleOAuthSetting'
+   *                $ref: '#/components/schemas/GoogleOAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to google OAuth
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/GoogleOAuthSetting'
+   *                  $ref: '#/components/schemas/GoogleOAuthSetting'
    */
   router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -565,14 +682,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   *                $ref: '#/components/schemas/GitHubOAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to github OAuth
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   *                  $ref: '#/components/schemas/GitHubOAuthSetting'
    */
   router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -609,14 +726,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *                $ref: '#/components/schemas/TwitterOAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update twitter OAuth
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
