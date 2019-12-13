@@ -3,6 +3,8 @@
 ## 3.6.2-RC
 
 * Improvement: Reactify admin pages (Customize)
+* Fix: Emoji Autocomplete window does not float correctly
+    * Introduced by 3.5.0
 
 ## 3.6.1
 
