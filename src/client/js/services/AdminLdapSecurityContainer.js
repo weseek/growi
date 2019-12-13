@@ -63,45 +63,45 @@ export default class AdminLdapSecurityContainer extends Container {
   }
 
   /**
-   * Change server url
+   * Change serverUrl
    */
-  changeServerUrl(inputValue) {
-    this.setState({ serverUrl: inputValue });
+  changeServerUrl(serverUrl) {
+    this.setState({ serverUrl });
   }
 
   /**
-   * Change ldap bind mode
+   * Change ldapBindMode
    */
-  changeLdapBindMode(isUserBind) {
-    this.setState({ isUserBind });
+  changeLdapBindMode() {
+    this.setState({ isUserBind: !this.state.isUserBind });
   }
 
   /**
-   * Change bind DN
+   * Change bindDN
    */
-  changeBindDN(inputValue) {
-    this.setState({ bindDN: inputValue });
+  changeBindDN(ldapBindDN) {
+    this.setState({ ldapBindDN });
   }
 
   /**
-   * Change bind DN password
+   * Change bindDNPassword
    */
-  changeBindDNPassword(inputValue) {
-    this.setState({ bindDNPassword: inputValue });
+  changeBindDNPassword(ldapBindDNPassword) {
+    this.setState({ ldapBindDNPassword });
   }
 
   /**
-   * Change search filter
+   * Change ldapSearchFilter
    */
-  changeSearchFilter(inputValue) {
-    this.setState({ searchFilter: inputValue });
+  changeSearchFilter(ldapSearchFilter) {
+    this.setState({ ldapSearchFilter });
   }
 
   /**
-   * Change attr map username
+   * Change ldapAttrMapUsername
    */
-  changeAttrMapUsername(inputValue) {
-    this.setState({ attrMapUsername: inputValue });
+  changeAttrMapUsername(ldapAttrMapUsername) {
+    this.setState({ ldapAttrMapUsername });
   }
 
   /**
@@ -112,38 +112,38 @@ export default class AdminLdapSecurityContainer extends Container {
   }
 
   /**
-   * Change attr map email
+   * Change ldapAttrMapMail
    */
-  changeAttrMapMail(inputValue) {
-    this.setState({ attrMapMail: inputValue });
+  changeAttrMapMail(ldapAttrMapMail) {
+    this.setState({ ldapAttrMapMail });
   }
 
   /**
-   * Change attr map name
+   * Change ldapAttrMapName
    */
-  changeAttrMapName(inputValue) {
-    this.setState({ attrMapName: inputValue });
+  changeAttrMapName(ldapAttrMapName) {
+    this.setState({ ldapAttrMapName });
   }
 
   /**
-   * Change group search base
+   * Change ldapGroupSearchBase
    */
-  changeGroupSearchBase(inputValue) {
-    this.setState({ groupSearchBase: inputValue });
+  changeGroupSearchBase(ldapGroupSearchBase) {
+    this.setState({ ldapGroupSearchBase });
   }
 
   /**
-   * Change group search filter
+   * Change ldapGroupSearchFilter
    */
-  changeGroupSearchFilter(inputValue) {
-    this.setState({ groupSearchFilter: inputValue });
+  changeGroupSearchFilter(ldapGroupSearchFilter) {
+    this.setState({ ldapGroupSearchFilter });
   }
 
   /**
-   * Change group dn property
+   * Change ldapGroupDnProperty
    */
-  changeGroupDnProperty(inputValue) {
-    this.setState({ groupDnProperty: inputValue });
+  changeGroupDnProperty(ldapGroupDnProperty) {
+    this.setState({ ldapGroupDnProperty });
   }
 
   /**
