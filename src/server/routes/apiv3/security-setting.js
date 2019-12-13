@@ -19,6 +19,20 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  ldapAuth: [
+    body('serverUrl').isString(),
+    body('isUserBind').isBoolean(),
+    body('ldapBindDN').isString(),
+    body('ldapBindDNPassword').isString(),
+    body('ldapSearchFilter').isString(),
+    body('ldapAttrMapUsername').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('ldapAttrMapMail').isString(),
+    body('ldapAttrMapName').isString(),
+    body('ldapGroupSearchBase').isString(),
+    body('ldapGroupSearchFilter').isString(),
+    body('ldapGroupDnProperty').isString(),
+  ],
   samlAuth: [
     body('samlEntryPoint').isString(),
     body('samlIssuer').isString(),
@@ -415,8 +429,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LdapAuthSetting'
    */
-  // validation
-  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, validator.ldapAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-ldap:serverUrl': req.body.serverUrl,
       'security:passport-ldap:isUserBind': req.body.isUserBind,
