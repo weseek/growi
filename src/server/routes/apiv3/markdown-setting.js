@@ -38,8 +38,6 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      CustomizeParams:
- *        type: object
  *      LineBreakParams:
  *        type: object
  *        properties:
@@ -103,7 +101,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    markdonwParams:
-   *                      $ref: '#/components/schemas/CustomizeParams'
+   *                      $ref: '#/components/schemas/LineBreakParams'
+   *                      $ref: '#/components/schemas/PresentationParams'
+   *                      $ref: '#/components/schemas/XssParams'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
