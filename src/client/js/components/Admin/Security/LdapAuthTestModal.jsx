@@ -10,6 +10,16 @@ import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityConta
 
 class LdapAuthTestModal extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.testLdapCredentials = this.testLdapCredentials.bind(this);
+  }
+
+  testLdapCredentials() {
+    // TODO GW-770 implement auth test
+  }
+
   render() {
     const { t } = this.props;
 
@@ -33,14 +43,13 @@ class LdapAuthTestModal extends React.Component {
               <input className="form-control" type="password" name="password" />
             </div>
           </div>
-
           <div>
             <h5>Logs</h5>
             <textarea id="taLogs" className="col-xs-12" rows="4" readOnly />
           </div>
         </Modal.Body>
-        <Modal.Footer className="d-flex">
-
+        <Modal.Footer>
+          <button type="button" className="btn btn-default mt-3 col-xs-offset-5 col-xs-2" onClick={this.testLdapCredentials}>{t('Test')}</button>
         </Modal.Footer>
       </Modal>
     );
