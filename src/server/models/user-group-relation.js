@@ -196,17 +196,25 @@ class UserGroupRelation {
    */
   static findUserByNotRelatedGroup(userGroup, queryOptions) {
     const User = UserGroupRelation.crowi.model('User');
+    let searchWord = `${queryOptions.searchWord}`;
+    switch (queryOptions.searchType) {
+      case 'forward':
+        searchWord = `^${queryOptions.searchWord}`;
+        break;
+      case 'backword':
+        searchWord = `${queryOptions.searchWord}$`;
+        break;
+    }
 
     return this.findAllRelationForUserGroup(userGroup)
       .then((relations) => {
         const relatedUserIds = relations.map((relation) => {
           return relation.relatedUser.id;
         });
-        // TODO GW-717 set query option
         const query = {
           _id: { $nin: relatedUserIds },
           status: User.STATUS_ACTIVE,
-          [queryOptions.searchField]: new RegExp(`${queryOptions.searchWord}`),
+          [queryOptions.searchField]: new RegExp(`${searchWord}`),
         };
 
         debug('findUserByNotRelatedGroup ', query);
