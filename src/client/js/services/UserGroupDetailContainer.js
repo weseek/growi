@@ -138,6 +138,7 @@ export default class UserGroupDetailContainer extends Container {
    * @memberOf UserGroupDetailContainer
    * @param {string} username username of the user to be added to the group
    */
+  // TODO GW-767 Enable to add by email
   async addUserByUsername(username) {
     const res = await this.appContainer.apiv3.post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
 
