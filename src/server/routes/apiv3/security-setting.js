@@ -308,6 +308,7 @@ module.exports = (crowi) => {
         ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
       },
       samlAuth: {
+        missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
         samlEnvVarEntryPoint: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
         samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
@@ -508,6 +509,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
         samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
         samlCert: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
