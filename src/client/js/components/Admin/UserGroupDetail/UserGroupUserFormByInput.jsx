@@ -102,7 +102,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, userGroupDetailContainer } = this.props;
 
     const inputProps = { autoComplete: 'off' };
 
@@ -115,7 +115,7 @@ class UserGroupUserFormByInput extends React.Component {
             ref={(c) => { this.typeahead = c }}
             inputProps={inputProps}
             isLoading={this.state.isLoading}
-            labelKey="name"
+            labelKey={userGroupDetailContainer.state.searchField}
             minLength={0}
             options={this.state.applicableUsers} // Search result
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
