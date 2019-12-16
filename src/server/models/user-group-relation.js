@@ -205,6 +205,11 @@ class UserGroupRelation {
         searchWord = `${queryOptions.searchWord}$`;
         break;
     }
+    const searthField = [
+      { username: new RegExp(`${queryOptions.searchWord}`) },
+    ];
+    if (queryOptions.isAlsoMailSearched) { searthField.push({ email: new RegExp(`${searchWord}`) }) }
+    if (queryOptions.isAlsoNameSearched) { searthField.push({ name: new RegExp(`${searchWord}`) }) }
 
     return this.findAllRelationForUserGroup(userGroup)
       .then((relations) => {
@@ -214,7 +219,7 @@ class UserGroupRelation {
         const query = {
           _id: { $nin: relatedUserIds },
           status: User.STATUS_ACTIVE,
-          username: new RegExp(`${searchWord}`),
+          $or: searthField,
         };
 
         debug('findUserByNotRelatedGroup ', query);
