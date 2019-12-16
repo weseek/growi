@@ -47,15 +47,16 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
 
-  async addUserBySubmit(input) {
+  async addUserBySubmit() {
+    const userName = this.state.input[0].username;
 
     try {
-      await this.props.userGroupDetailContainer.addUserByUsername(input);
-      toastSuccess(`Added "${this.xss.process(input)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
+      await this.props.userGroupDetailContainer.addUserByUsername(userName);
+      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
       this.setState({ input: '' });
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${this.xss.process(input)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
     }
   }
 
@@ -92,10 +93,9 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   onKeyDown(event) {
-    const input = event.target.defaultValue;
     // 13 is Enter key
     if (event.keyCode === 13) {
-      this.addUserBySubmit(input);
+      this.addUserBySubmit();
     }
   }
 
@@ -148,7 +148,7 @@ class UserGroupUserFormByInput extends React.Component {
             type="button"
             className="btn btn-sm btn-success"
             disabled={!this.validateForm()}
-            onClick={event => this.addUserBySubmit(event.target.value)}
+            onClick={this.addUserBySubmit}
           >
             {t('add')}
           </button>
