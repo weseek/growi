@@ -8,6 +8,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import UserPicture from '../../User/UserPicture';
 
 class UserGroupUserFormByInput extends React.Component {
 
@@ -29,6 +30,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
     this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
@@ -97,6 +99,19 @@ class UserGroupUserFormByInput extends React.Component {
     }
   }
 
+  renderMenuItemChildren(option) {
+    const { userGroupDetailContainer } = this.props;
+    const user = option;
+    return (
+      <React.Fragment>
+        <UserPicture user={user} size="sm" withoutLink />
+        <span className="ml-2">{user.username}</span>
+        {userGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
+        {userGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+      </React.Fragment>
+    );
+  }
+
   getEmptyLabel() {
     return (this.state.searchError !== null) && 'Error on searching.';
   }
@@ -119,6 +134,7 @@ class UserGroupUserFormByInput extends React.Component {
             minLength={0}
             options={this.state.applicableUsers} // Search result
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
+            renderMenuItemChildren={this.renderMenuItemChildren}
             align="left"
             onChange={this.handleChange}
             onSearch={this.handleSearch}
