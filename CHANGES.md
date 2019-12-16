@@ -1,10 +1,18 @@
 # CHANGES
 
-## 3.6.0-RC
+## 3.6.2-RC
+
+* Improvement: Reactify admin pages (Customize)
+* Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
+* Improvement: Enter key behavior in markdown table
+* Fix: Emoji Autocomplete window does not float correctly
+    * Introduced by 3.5.0
+
+## 3.6.1
 
 ### BREAKING CHANGES
 
-* GROWI v3.6.0 no longer support Node.js v8.x
+* GROWI v3.6.x no longer support Node.js v8.x
 * The name of database that is storing migrations meta data has been changed
     * This affects **only when `MONGO_URI` has parameters**
     * v3.5.x or above has a bug ([#1361](https://github.com/weseek/growi/issues/1361))
@@ -14,11 +22,24 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 ### Updates
 
 * Improvement: Drop unnecessary MongoDB collection indexes
+* Improvement: Accessibility of Antarctic theme
+* Improvement: Reactify admin pages (Markdown Settings)
 * Fix: Appending tag is failed by wrong index of PageTagRelation
     * Introduced by 3.5.20
+* Fix: Pages without heading slash is invalid but creatable
+* Fix: Connect to Elasticsearch with `httpAuth` param
 * Support: Support Node.js v12
+* Support: Optimize build in dev with hard-source-webpack-plugin
 * Support: Upgrade libs
     * growi-commons
+
+## 3.6.0 (Missing number)
+
+## 3.5.25
+
+* Improvement: Disable ESC key to close Handsontable Modal
+* Fix: Exported data of empty collection is broken
+* Fix: Some components crash after when the page with attachment has exported/imported
 
 ## 3.5.24
 

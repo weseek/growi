@@ -11,26 +11,9 @@ const unzipper = require('unzipper');
 class GrowiBridgeService {
 
   constructor(crowi) {
+    this.crowi = crowi;
     this.encoding = 'utf-8';
     this.metaFileName = 'meta.json';
-
-    // { pages: Page, users: User, ... }
-    this.collectionMap = {};
-    this.initCollectionMap(crowi.models);
-  }
-
-  /**
-   * initialize collection map
-   *
-   * @memberOf GrowiBridgeService
-   * @param {object} models from models/index.js
-   */
-  initCollectionMap(models) {
-    for (const model of Object.values(models)) {
-      if (model.collection != null) {
-        this.collectionMap[model.collection.name] = model;
-      }
-    }
   }
 
   /**
@@ -61,11 +44,9 @@ class GrowiBridgeService {
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {
-    const Model = this.collectionMap[collectionName];
-
-    if (Model == null) {
-      throw new Error(`cannot find a model for collection name "${collectionName}"`);
-    }
+    const Model = Object.values(this.crowi.models).find((m) => {
+      return m.collection != null && m.collection.name === collectionName;
+    });
 
     return Model;
   }
