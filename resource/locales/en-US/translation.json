@@ -682,8 +682,8 @@
   "user_group_management": {
     "search_option": "Search Option",
     "enable_option": "Enable {{option}}",
-    "user_match": "display matching name",
-    "mail_match": "display matching mail",
+    "name_match": "display matching name",
+    "email_match": "display matching email",
     "username_match": "display matching username",
     "forward_match": "forword match",
     "partial_match": "partial match",

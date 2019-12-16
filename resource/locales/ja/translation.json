@@ -666,8 +666,8 @@
   "user_group_management": {
     "search_option": "検索オプション",
     "enable_option": "{{option}}を有効にする",
-    "user_match": "該当の名前を表示する",
-    "mail_match": "該当のメールを表示する",
+    "name_match": "該当の名前を表示する",
+    "email_match": "該当のメールを表示する",
     "username_match": "該当のユーザーネームを表示する",
     "forward_match": "前方一致",
     "partial_match": "部分一致",
