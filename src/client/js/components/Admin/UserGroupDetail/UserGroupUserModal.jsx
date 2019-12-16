@@ -8,7 +8,6 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
-import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 
 class UserGroupUserModal extends React.Component {
 
@@ -28,17 +27,24 @@ class UserGroupUserModal extends React.Component {
           <div className="row mt-4">
             <div className="col-xs-6">
               <div className="mb-5">
-                <CheckBoxForSerchUserOption
-                  option="Mail"
-                  checked={userGroupDetailContainer.state.isAlsoMailSearched}
-                  onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
+                <RadioButtonForSerchUserOption
+                  searchType="user"
+                  checked={userGroupDetailContainer.state.searchField === 'user'}
+                  onChange={() => { userGroupDetailContainer.switchSearchField('user') }}
                 />
               </div>
               <div className="mb-5">
-                <CheckBoxForSerchUserOption
-                  option="Name"
-                  checked={userGroupDetailContainer.state.isAlsoNameSearched}
-                  onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
+                <RadioButtonForSerchUserOption
+                  searchType="mail"
+                  checked={userGroupDetailContainer.state.searchField === 'mail'}
+                  onChange={() => { userGroupDetailContainer.switchSearchField('mail') }}
+                />
+              </div>
+              <div className="mb-5">
+                <RadioButtonForSerchUserOption
+                  searchType="username"
+                  checked={userGroupDetailContainer.state.searchField === 'username'}
+                  onChange={() => { userGroupDetailContainer.switchSearchField('username') }}
                 />
               </div>
             </div>

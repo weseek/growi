@@ -24,15 +24,12 @@ export default class UserGroupDetailContainer extends Container {
       userGroupRelations: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
+      searchField: 'user',
       searchType: 'partial',
-      isAlsoMailSearched: false,
-      isAlsoNameSearched: false,
     };
 
     this.init();
 
-    this.switchIsAlsoMailSearched = this.switchIsAlsoMailSearched.bind(this);
-    this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
     this.addUserByUsername = this.addUserByUsername.bind(this);
@@ -71,17 +68,10 @@ export default class UserGroupDetailContainer extends Container {
   }
 
   /**
-   * switch isAlsoMailSearched
+   * switch searchField
    */
-  switchIsAlsoMailSearched() {
-    this.setState({ isAlsoMailSearched: !this.state.isAlsoMailSearched });
-  }
-
-  /**
-   * switch isAlsoNameSearched
-   */
-  switchIsAlsoNameSearched() {
-    this.setState({ isAlsoNameSearched: !this.state.isAlsoNameSearched });
+  switchSearchField(searchField) {
+    this.setState({ searchField });
   }
 
   /**
@@ -127,14 +117,13 @@ export default class UserGroupDetailContainer extends Container {
 
   /**
    * search user for invitation
-   * @param {string} username username of the user to be searched
+   * @param {string} searchWord word for search user
    */
   async fetchApplicableUsers(searchWord) {
     const res = await this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
       searchWord,
-      isForwardMatch: this.state.searchType,
-      isAlsoMailSearched: this.state.isAlsoMailSearched,
-      isAlsoNameSearched: this.state.isAlsoNameSearched,
+      searchField: this.state.searchField,
+      searchType: this.state.searchType,
     });
 
     const { users } = res.data;
