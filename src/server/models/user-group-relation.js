@@ -197,12 +197,6 @@ class UserGroupRelation {
   static findUserByNotRelatedGroup(userGroup, queryOptions) {
     const User = UserGroupRelation.crowi.model('User');
 
-    const searthField = [
-      { username: new RegExp(`${queryOptions.searchWord}`) },
-    ];
-    if (queryOptions.isAlsoMailSearched) { searthField.push({ email: new RegExp(`${queryOptions.searchWord}`) }) }
-    if (queryOptions.isAlsoNameSearched) { searthField.push({ name: new RegExp(`${queryOptions.searchWord}`) }) }
-
     return this.findAllRelationForUserGroup(userGroup)
       .then((relations) => {
         const relatedUserIds = relations.map((relation) => {
@@ -212,7 +206,7 @@ class UserGroupRelation {
         const query = {
           _id: { $nin: relatedUserIds },
           status: User.STATUS_ACTIVE,
-          $or: searthField,
+          [queryOptions.searchField]: new RegExp(`${queryOptions.searchWord}`),
         };
 
         debug('findUserByNotRelatedGroup ', query);
