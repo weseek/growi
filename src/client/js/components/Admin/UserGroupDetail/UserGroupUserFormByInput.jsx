@@ -105,7 +105,7 @@ class UserGroupUserFormByInput extends React.Component {
     return (
       <React.Fragment>
         <UserPicture user={user} size="sm" withoutLink />
-        <span className="ml-2">{user.username}</span>
+        <strong className="ml-2">{user.username}</strong>
         {userGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
         {userGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
       </React.Fragment>
