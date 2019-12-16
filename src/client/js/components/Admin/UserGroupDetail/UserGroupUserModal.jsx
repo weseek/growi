@@ -28,9 +28,9 @@ class UserGroupUserModal extends React.Component {
             <div className="col-xs-6">
               <div className="mb-5">
                 <RadioButtonForSerchUserOption
-                  searchType="user"
-                  checked={userGroupDetailContainer.state.searchField === 'user'}
-                  onChange={() => { userGroupDetailContainer.switchSearchField('user') }}
+                  searchType="name"
+                  checked={userGroupDetailContainer.state.searchField === 'name'}
+                  onChange={() => { userGroupDetailContainer.switchSearchField('name') }}
                 />
               </div>
               <div className="mb-5">

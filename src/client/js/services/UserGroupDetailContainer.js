@@ -24,7 +24,7 @@ export default class UserGroupDetailContainer extends Container {
       userGroupRelations: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
-      searchField: 'user',
+      searchField: 'name',
       searchType: 'partial',
     };
 
