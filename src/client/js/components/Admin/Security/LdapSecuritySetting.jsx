@@ -378,6 +378,9 @@ class LdapSecuritySetting extends React.Component {
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
             <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+            {adminGeneralSecurityContainer.state.isLdapEnabled
+              && <button type="button" className="btn btn-default ml-2">{t('security_setting.ldap.test_config')}</button>
+            }
           </div>
         </div>
 
