@@ -9,6 +9,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
+import LdapAuthTestModal from './LdapAuthTestModal';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
@@ -19,9 +20,12 @@ class LdapSecuritySetting extends React.Component {
 
     this.state = {
       retrieveError: null,
+      isLdapAuthTestModalShown: false,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.openLdapAuthTestModal = this.openLdapAuthTestModal.bind(this);
+    this.closeLdapAuthTestModal = this.closeLdapAuthTestModal.bind(this);
   }
 
   async componentDidMount() {
@@ -48,6 +52,14 @@ class LdapSecuritySetting extends React.Component {
       toastError(err);
       logger.error(err);
     }
+  }
+
+  openLdapAuthTestModal() {
+    this.setState({ isLdapAuthTestModalShown: true });
+  }
+
+  closeLdapAuthTestModal() {
+    this.setState({ isLdapAuthTestModalShown: false });
   }
 
   render() {
@@ -379,10 +391,12 @@ class LdapSecuritySetting extends React.Component {
           <div className="col-xs-offset-3 col-xs-5">
             <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
             {adminGeneralSecurityContainer.state.isLdapEnabled
-              && <button type="button" className="btn btn-default ml-2">{t('security_setting.ldap.test_config')}</button>
+              && <button type="button" className="btn btn-default ml-2" onClick={this.openLdapAuthTestModal}>{t('security_setting.ldap.test_config')}</button>
             }
           </div>
         </div>
+
+        <LdapAuthTestModal isOpen={this.state.isLdapAuthTestModalShown} onClose={this.closeLdapAuthTestModal} />
 
       </React.Fragment>
     );
