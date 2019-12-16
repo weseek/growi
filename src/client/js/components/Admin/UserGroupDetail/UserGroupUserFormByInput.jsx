@@ -8,6 +8,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import UserPicture from '../../User/UserPicture';
 
 class UserGroupUserFormByInput extends React.Component {
 
@@ -29,6 +30,7 @@ class UserGroupUserFormByInput extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
 
     this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
@@ -45,15 +47,16 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
 
-  async addUserBySubmit(input) {
+  async addUserBySubmit() {
+    const userName = this.state.input[0].username;
 
     try {
-      await this.props.userGroupDetailContainer.addUserByUsername(input);
-      toastSuccess(`Added "${this.xss.process(input)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
+      await this.props.userGroupDetailContainer.addUserByUsername(userName);
+      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
       this.setState({ input: '' });
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${this.xss.process(input)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
     }
   }
 
@@ -90,11 +93,23 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   onKeyDown(event) {
-    const input = event.target.defaultValue;
     // 13 is Enter key
     if (event.keyCode === 13) {
-      this.addUserBySubmit(input);
+      this.addUserBySubmit();
     }
+  }
+
+  renderMenuItemChildren(option) {
+    const { userGroupDetailContainer } = this.props;
+    const user = option;
+    return (
+      <React.Fragment>
+        <UserPicture user={user} size="sm" withoutLink />
+        <strong className="ml-2">{user.username}</strong>
+        {userGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
+        {userGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+      </React.Fragment>
+    );
   }
 
   getEmptyLabel() {
@@ -115,10 +130,11 @@ class UserGroupUserFormByInput extends React.Component {
             ref={(c) => { this.typeahead = c }}
             inputProps={inputProps}
             isLoading={this.state.isLoading}
-            labelKey="name"
+            labelKey={user => `${user.username} ${user.name} ${user.email}`}
             minLength={0}
             options={this.state.applicableUsers} // Search result
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
+            renderMenuItemChildren={this.renderMenuItemChildren}
             align="left"
             onChange={this.handleChange}
             onSearch={this.handleSearch}
@@ -132,7 +148,7 @@ class UserGroupUserFormByInput extends React.Component {
             type="button"
             className="btn btn-sm btn-success"
             disabled={!this.validateForm()}
-            onClick={event => this.addUserBySubmit(event.target.value)}
+            onClick={this.addUserBySubmit}
           >
             {t('add')}
           </button>
