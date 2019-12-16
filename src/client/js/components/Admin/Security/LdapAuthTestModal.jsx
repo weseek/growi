@@ -33,6 +33,11 @@ class LdapAuthTestModal extends React.Component {
               <input className="form-control" type="password" name="password" />
             </div>
           </div>
+
+          <div>
+            <h5>Logs</h5>
+            <textarea id="taLogs" className="col-xs-12" rows="4" readOnly />
+          </div>
         </Modal.Body>
         <Modal.Footer className="d-flex">
 
