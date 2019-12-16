@@ -72,10 +72,9 @@ export default class AdminTwitterSecurityContainer extends Container {
   /**
    * Update twitterSetting
    */
-  async updateTwitterSetting(isTwitterOAuthEnabled) {
+  async updateTwitterSetting() {
 
     const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', {
-      isTwitterOAuthEnabled,
       twitterConsumerKey: this.state.twitterConsumerKey,
       twitterConsumerSecret: this.state.twitterConsumerSecret,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
