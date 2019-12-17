@@ -3,8 +3,16 @@ import PropTypes from 'prop-types';
 
 export default class Username extends React.Component {
 
+  renderForNull() {
+    return <span>anyone</span>;
+  }
+
   render() {
     const { user } = this.props;
+
+    if (user == null) {
+      return this.renderForNull();
+    }
 
     const name = user.name || '(no name)';
     const username = user.username;
@@ -18,5 +26,5 @@ export default class Username extends React.Component {
 }
 
 Username.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // Possibility of receiving a string of 'null'
 };
