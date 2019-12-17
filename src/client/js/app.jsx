@@ -35,6 +35,7 @@ import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
+import NotificationSetting from './components/Admin/Notification/NotificationSetting';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
@@ -55,7 +56,6 @@ import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
-import NotificationSetting from './components/Admin/Notification/NotificationSetting';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
 
 const logger = loggerFactory('growi:app');
