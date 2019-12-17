@@ -300,14 +300,16 @@ module.exports = (crowi) => {
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
     // テストメール送信によるバリデート
-    await validateMailSetting(req);
-    console.log(')))))))))))))');
-    // debug('Error validate mail setting: ', err, data);
+    try {
+      await validateMailSetting(req);
+    }
+    catch (err) {
+      const msg = 'SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。';
+      logger.error('Error', err);
+      debug('Error validate mail setting: ', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+    }
 
-    // if (err) {
-    //   req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
-    //   return res.json({ status: false, message: req.form.errors.join('\n') });
-    // }
 
     const requestMailSettingParams = {
       'mail:from': req.body.fromAddress,
