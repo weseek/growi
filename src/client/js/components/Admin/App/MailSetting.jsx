@@ -37,17 +37,11 @@ class MailSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">
-          {t('app_setting.SMTP_used')} {t('app_setting.SMTP_but_AWS')}
-          <br />
-          {t('app_setting.neihter_of')}
-        </p>
+        <p className="well">{t('app_setting.SMTP_used')} {t('app_setting.SMTP_but_AWS')}<br />{t('app_setting.neihter_of')}</p>
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label htmlFor="settingForm[mail.from]" className="col-xs-3 control-label">
-                {t('app_setting.From e-mail address')}
-              </label>
+              <label htmlFor="settingForm[mail.from]" className="col-xs-3 control-label">{t('app_setting.From e-mail address')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -66,9 +60,9 @@ class MailSetting extends React.Component {
         <div className="row">
           <div className="col-md-12">
             <div className="form-group">
-              <label className="col-xs-3 control-label">{t('app_setting.SMTP settings')}</label>
+              <label className="col-xs-3 control-label">{ t('app_setting.SMTP settings') }</label>
               <div className="col-xs-4">
-                <label>{t('app_setting.Host')}</label>
+                <label>{ t('app_setting.Host') }</label>
                 <input
                   className="form-control"
                   type="text"
@@ -78,7 +72,7 @@ class MailSetting extends React.Component {
                 />
               </div>
               <div className="col-xs-2">
-                <label>{t('app_setting.Port')}</label>
+                <label>{ t('app_setting.Port') }</label>
                 <input
                   className="form-control"
                   type="text"
@@ -95,7 +89,7 @@ class MailSetting extends React.Component {
           <div className="col-md-12">
             <div className="form-group">
               <div className="col-xs-3 col-xs-offset-3">
-                <label>{t('app_setting.User')}</label>
+                <label>{ t('app_setting.User') }</label>
                 <input
                   className="form-control"
                   type="text"
@@ -105,7 +99,7 @@ class MailSetting extends React.Component {
                 />
               </div>
               <div className="col-xs-3">
-                <label>{t('Password')}</label>
+                <label>{ t('Password') }</label>
                 <input
                   className="form-control"
                   type="password"
