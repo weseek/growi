@@ -41,6 +41,7 @@ class UserGroupUserFormByInput extends React.Component {
     try {
       await this.props.userGroupDetailContainer.addUserByUsername(userName);
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
+      this.setState({ inputUser: '' });
     }
     catch (err) {
       toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
