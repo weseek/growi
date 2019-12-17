@@ -35,9 +35,6 @@ import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
-import CustomCssEditor from './components/Admin/CustomCssEditor';
-import CustomScriptEditor from './components/Admin/CustomScriptEditor';
-import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
@@ -52,6 +49,7 @@ import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import AdminCustomizeContainer from './services/AdminCustomizeContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
@@ -110,7 +108,6 @@ let componentMappings = {
   'user-draft-list': <MyDraftList />,
 
   'admin-full-text-search-management': <FullTextSearchManagement />,
-  'admin-customize': <Customize />,
 
   'staff-credit': <StaffCredit />,
   'admin-importer': <ImportDataPage />,
@@ -121,17 +118,17 @@ if (pageContainer.state.pageId != null) {
   componentMappings = Object.assign({
     'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
-    'page-attachment':  <PageAttachment />,
-    'page-timeline':  <PageTimeline />,
-    'page-comment-write':  <CommentEditorLazyRenderer />,
+    'page-attachment': <PageAttachment />,
+    'page-timeline': <PageTimeline />,
+    'page-comment-write': <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
-    'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
-    'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
-    'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-    'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+    'bookmark-button': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
+    'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
+    'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+    'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
@@ -139,7 +136,7 @@ if (pageContainer.state.path != null) {
     // eslint-disable-next-line quote-props
     'page': <Page />,
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
-    'tag-label':  <TagLabels />,
+    'tag-label': <TagLabels />,
   }, componentMappings);
 }
 
@@ -157,32 +154,46 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
-// render for admin
-const adminUsersElem = document.getElementById('admin-user-page');
-if (adminUsersElem != null) {
-  const adminUsersContainer = new AdminUsersContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, adminUsersContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <UserManagement />
-      </I18nextProvider>
-    </Provider>,
-    adminUsersElem,
-  );
-}
+// create unstated container instance for admin
+const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
+const adminUsersContainer = new AdminUsersContainer(appContainer);
+const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
+const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
+const adminContainers = {
+  'admin-customize': adminCustomizeContainer,
+  'admin-user-page': adminUsersContainer,
+  'admin-external-account-setting': adminExternalAccountsContainer,
+  'admin-markdown-setting': adminMarkDownContainer,
+  'admin-export-page': websocketContainer,
+};
 
-const adminExternalAccountsElem = document.getElementById('admin-external-account-setting');
-if (adminExternalAccountsElem != null) {
-  const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, adminExternalAccountsContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <ManageExternalAccount />
-      </I18nextProvider>
-    </Provider>,
-    adminExternalAccountsElem,
-  );
-}
+/**
+ * define components
+ *  key: id of element
+ *  value: React Element
+ */
+const adminComponentMappings = {
+  'admin-customize': <Customize />,
+  'admin-user-page': <UserManagement />,
+  'admin-external-account-setting': <ManageExternalAccount />,
+  'admin-markdown-setting': <MarkdownSetting />,
+  'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
+};
+
+
+Object.keys(adminComponentMappings).forEach((key) => {
+  const adminElem = document.getElementById(key);
+  if (adminElem) {
+    ReactDOM.render(
+      <Provider inject={[injectableContainers, adminContainers[key]]}>
+        <I18nextProvider i18n={i18n}>
+          {adminComponentMappings[key]}
+        </I18nextProvider>
+      </Provider>,
+      adminElem,
+    );
+  }
+});
 
 const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 if (adminUserGroupDetailElem != null) {
@@ -194,50 +205,6 @@ if (adminUserGroupDetailElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupDetailElem,
-  );
-}
-
-const adminMarkDownSettingElem = document.getElementById('admin-markdown-setting');
-if (adminMarkDownSettingElem != null) {
-  const markDownSettingContainer = new AdminMarkDownContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, markDownSettingContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <MarkdownSetting />
-      </I18nextProvider>
-    </Provider>,
-    adminMarkDownSettingElem,
-  );
-}
-
-const customCssEditorElem = document.getElementById('custom-css-editor');
-if (customCssEditorElem != null) {
-  // get input[type=hidden] element
-  const customCssInputElem = document.getElementById('inputCustomCss');
-
-  ReactDOM.render(
-    <CustomCssEditor inputElem={customCssInputElem} />,
-    customCssEditorElem,
-  );
-}
-const customScriptEditorElem = document.getElementById('custom-script-editor');
-if (customScriptEditorElem != null) {
-  // get input[type=hidden] element
-  const customScriptInputElem = document.getElementById('inputCustomScript');
-
-  ReactDOM.render(
-    <CustomScriptEditor inputElem={customScriptInputElem} />,
-    customScriptEditorElem,
-  );
-}
-const customHeaderEditorElem = document.getElementById('custom-header-editor');
-if (customHeaderEditorElem != null) {
-  // get input[type=hidden] element
-  const customHeaderInputElem = document.getElementById('inputCustomHeader');
-
-  ReactDOM.render(
-    <CustomHeaderEditor inputElem={customHeaderInputElem} />,
-    customHeaderEditorElem,
   );
 }
 
@@ -255,20 +222,6 @@ if (adminUserGroupPageElem != null) {
       </I18nextProvider>
     </Provider>,
     adminUserGroupPageElem,
-  );
-}
-
-const adminExportPageElem = document.getElementById('admin-export-page');
-if (adminExportPageElem != null) {
-  ReactDOM.render(
-    <Provider inject={[appContainer, websocketContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <ExportArchiveDataPage
-          crowi={appContainer}
-        />
-      </I18nextProvider>
-    </Provider>,
-    adminExportPageElem,
   );
 }
 
