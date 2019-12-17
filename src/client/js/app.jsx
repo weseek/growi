@@ -55,6 +55,8 @@ import AdminUsersContainer from './services/AdminUsersContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
+import NotificationSetting from './components/Admin/Notification/NotificationSetting';
+import AdminNotificationContainer from './services/AdminNotificationContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -158,11 +160,13 @@ Object.keys(componentMappings).forEach((key) => {
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
+const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminContainers = {
   'admin-customize': adminCustomizeContainer,
   'admin-user-page': adminUsersContainer,
   'admin-external-account-setting': adminExternalAccountsContainer,
+  'admin-notification-setting': adminNotificationContainer,
   'admin-markdown-setting': adminMarkDownContainer,
   'admin-export-page': websocketContainer,
 };
@@ -176,6 +180,7 @@ const adminComponentMappings = {
   'admin-customize': <Customize />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
+  'admin-notification-setting': <NotificationSetting />,
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
 };
