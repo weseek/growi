@@ -108,7 +108,7 @@ For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/
 Environment Variables
 ======================
 
-- [GROWI Docs Environment Variables](https://docs.growi.org/en/dev/tips/env-vars.html)
+- [GROWI Docs Environment Variables](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)
 
 Documentation
 ==============
