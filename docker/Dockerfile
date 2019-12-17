@@ -48,7 +48,14 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
+COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
+
+# copy all files except the files listed in Dockerfile.dockerignore
 COPY . ${appDir}
+
+# overwirte package.json and yarn.lock
+COPY --from=deps-resolver ${appDir}/package.json ${appDir}/package.json
+COPY --from=deps-resolver ${appDir}/yarn.lock ${appDir}/yarn.lock
 
 
 
@@ -63,20 +70,11 @@ COPY docker/nocdn/env.prod.js ${appDir}/config/
 
 
 ##
-## prebuilder (alias)
-##
-FROM prebuilder-${flavor} AS prebuilder
-
-
-
-##
 ## builder
 ##
-FROM deps-resolver AS builder
+FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
-
-COPY --from=prebuilder ${appDir} ${appDir}
 
 # build
 RUN yarn build:prod
