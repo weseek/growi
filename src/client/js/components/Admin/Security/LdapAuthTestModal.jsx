@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import Modal from 'react-bootstrap/es/Modal';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
+
+const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
 class LdapAuthTestModal extends React.Component {
 
@@ -16,8 +20,14 @@ class LdapAuthTestModal extends React.Component {
     this.testLdapCredentials = this.testLdapCredentials.bind(this);
   }
 
-  testLdapCredentials() {
-    // TODO GW-770 implement auth test
+  async testLdapCredentials() {
+    try {
+      toastSuccess('success');
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   }
 
   render() {
