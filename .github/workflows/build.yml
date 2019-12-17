@@ -1,9 +1,8 @@
 name: Release Docker Images
 
 on:
-  push:
-    tags:
-      - v3.*
+  release:
+    types: [published]
 
 jobs:
 
@@ -34,7 +33,7 @@ jobs:
       run: |
         CACHE_REF=weseek/growi-cache:3${{ env.SUFFIX }}
         docker buildx build \
-          --tag growi \
+          --tag growi${{ env.SUFFIX }} \
           --build-arg flavor=${{ matrix.flavor }} \
           --platform linux/amd64 \
           --load \
@@ -50,7 +49,7 @@ jobs:
     - name: Docker Tags by SemVer
       uses: weseek/ghaction-docker-tags-by-semver@v1.0.5
       with:
-        source: growi
+        source: growi${{ env.SUFFIX }}
         target: weseek/growi
         semver: ${{ env.SEMVER }}
         suffix: ${{ env.SUFFIX }}

@@ -139,6 +139,10 @@ class ExportService {
         callback();
       },
       final(callback) {
+        // write beginning brace
+        if (isFirst) {
+          this.push('[');
+        }
         // write ending brace
         this.push(']');
         callback();
