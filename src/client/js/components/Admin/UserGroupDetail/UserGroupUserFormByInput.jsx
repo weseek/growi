@@ -35,6 +35,7 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   async addUserBySubmit() {
+    if (this.state.inputUser.length === 0) { return }
     const userName = this.state.inputUser[0].username;
 
     try {
