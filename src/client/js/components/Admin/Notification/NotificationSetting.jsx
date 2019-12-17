@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
 class NotificationSetting extends React.Component {
 
@@ -43,13 +42,12 @@ class NotificationSetting extends React.Component {
 }
 
 const NotificationSettingWrapper = (props) => {
-  return createSubscribedElement(NotificationSetting, props, [AppContainer, AdminNotificationContainer]);
+  return createSubscribedElement(NotificationSetting, props, [AppContainer]);
 };
 
 NotificationSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
 
