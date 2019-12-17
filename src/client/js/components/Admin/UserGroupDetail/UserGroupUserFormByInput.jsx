@@ -63,7 +63,7 @@ class UserGroupUserFormByInput extends React.Component {
 
   /**
    * Reflect when forecast is clicked
-   * @param {string} inputUser
+   * @param {object} inputUser
    */
   handleChange(inputUser) {
     this.setState({ inputUser });
