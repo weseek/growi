@@ -31,7 +31,7 @@ RadioButtonForSerchUserOption.propTypes = {
 
   searchType: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
-  onChange: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(RadioButtonForSerchUserOption);
