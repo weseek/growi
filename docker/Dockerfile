@@ -79,7 +79,8 @@ ENV appDir /opt/growi
 WORKDIR ${appDir}
 
 # build
-RUN yarn build:prod
+RUN --mount=type=cache,target=./node_modules/.cache \
+  yarn build:prod
 
 # remove except artifacts
 WORKDIR /tmp
