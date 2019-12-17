@@ -225,7 +225,26 @@ module.exports = (crowi) => {
 
   });
 
-  function validateMailSetting(req, callback) {
+  /**
+   * send mail (Promise wrapper)
+   */
+  async function sendMailPromiseWrapper(smtpClient, options) {
+    return new Promise((resolve, reject) => {
+      smtpClient.sendMail(options, (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(res);
+        }
+      });
+    });
+  }
+
+  /**
+   * validate mail setting send test mail
+   */
+  async function validateMailSetting(req) {
     const mailer = crowi.mailer;
     const option = {
       host: req.body.smtpHost,
@@ -244,15 +263,14 @@ module.exports = (crowi) => {
     const smtpClient = mailer.createSMTPClient(option);
     debug('mailer setup for validate SMTP setting', smtpClient);
 
-    smtpClient.sendMail(
-      {
-        from: req.body.fromAddress,
-        to: req.user.email,
-        subject: 'Wiki管理設定のアップデートによるメール通知',
-        text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-      },
-      callback,
-    );
+    const mailOptions = {
+      from: req.body.fromAddress,
+      to: req.user.email,
+      subject: 'Wiki管理設定のアップデートによるメール通知',
+      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
+    };
+
+    await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
   /**
@@ -281,38 +299,40 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/appSettingParams/MailSettingParams'
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
-    validateMailSetting(req, async(err, data) => {
-      debug('Error validate mail setting: ', err, data);
-      if (err) {
-        req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
-        return res.json({ status: false, message: req.form.errors.join('\n') });
-      }
+    // テストメール送信によるバリデート
+    await validateMailSetting(req);
+    console.log(')))))))))))))');
+    // debug('Error validate mail setting: ', err, data);
 
-      const requestMailSettingParams = {
-        'mail:from': req.body.fromAddress,
-        'mail:smtpHost': req.body.smtpHost,
-        'mail:smtpPort': req.body.smtpPort,
-        'mail:smtpUser': req.body.smtpUser,
-        'mail:smtpPassword': req.body.smtpPassword,
+    // if (err) {
+    //   req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
+    //   return res.json({ status: false, message: req.form.errors.join('\n') });
+    // }
+
+    const requestMailSettingParams = {
+      'mail:from': req.body.fromAddress,
+      'mail:smtpHost': req.body.smtpHost,
+      'mail:smtpPort': req.body.smtpPort,
+      'mail:smtpUser': req.body.smtpUser,
+      'mail:smtpPassword': req.body.smtpPassword,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams);
+      const mailSettingParams = {
+        fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
+        smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
+        smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
+        smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
+        smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
       };
-
-      try {
-        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestMailSettingParams);
-        const mailSettingParams = {
-          fromAddress: crowi.configManager.getConfig('crowi', 'mail:from'),
-          smtpHost: crowi.configManager.getConfig('crowi', 'mail:smtpHost'),
-          smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
-          smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
-          smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
-        };
-        return res.apiv3({ mailSettingParams });
-      }
-      catch (err) {
-        const msg = 'Error occurred in updating mail setting';
-        logger.error('Error', err);
-        return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
-      }
-    });
+      return res.apiv3({ mailSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating mail setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-mailSetting-failed'));
+    }
   });
 
   return router;
