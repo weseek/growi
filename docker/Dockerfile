@@ -76,6 +76,8 @@ FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
 
+WORKDIR ${appDir}
+
 # build
 RUN yarn build:prod
 
