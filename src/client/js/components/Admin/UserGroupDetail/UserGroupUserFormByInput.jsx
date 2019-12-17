@@ -127,6 +127,7 @@ class UserGroupUserFormByInput extends React.Component {
             onSearch={this.handleSearch}
             onKeyDown={this.onKeyDown}
             caseSensitive={false}
+            clearButton
           />
         </div>
         <div className="col-xs-2 pl-0">
