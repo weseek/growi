@@ -1,23 +1,35 @@
 import React, { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
-import { createSubscribedElement } from '../UnstatedUtils';
+import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 
-import AppSetting from './App/AppSetting';
-import SiteUrlSetting from './App/SiteUrlSetting';
-import MailSetting from './App/MailSetting';
-import AwsSetting from './App/AwsSetting';
-import PluginSetting from './App/PluginSetting';
+import AppSetting from './AppSetting';
+import SiteUrlSetting from './SiteUrlSetting';
+import MailSetting from './MailSetting';
+import AwsSetting from './AwsSetting';
+import PluginSetting from './PluginSetting';
+
+const logger = loggerFactory('growi:appSettings');
 
 class AppSettingPage extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
+  async componentDidMount() {
+    const { adminAppContainer } = this.props;
+
+    try {
+      await adminAppContainer.retrieveAppSettingsData();
+    }
+    catch (err) {
+      toastError(err);
+      adminAppContainer.setState({ retrieveError: err });
+      logger.error(err);
+    }
   }
 
   render() {
@@ -68,13 +80,14 @@ class AppSettingPage extends React.Component {
 AppSettingPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
 const AppSettingPageWrapper = (props) => {
-  return createSubscribedElement(AppSettingPage, props, [AppContainer]);
+  return createSubscribedElement(AppSettingPage, props, [AppContainer, AdminAppContainer]);
 };
 
 
