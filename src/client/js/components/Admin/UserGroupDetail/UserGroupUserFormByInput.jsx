@@ -16,7 +16,7 @@ class UserGroupUserFormByInput extends React.Component {
     super(props);
 
     this.state = {
-      input: '',
+      inputUser: '',
       applicableUsers: [],
       isLoading: false,
       searchError: null,
@@ -24,7 +24,6 @@ class UserGroupUserFormByInput extends React.Component {
 
     this.xss = window.xss;
 
-    this.onInputChange = this.onInputChange.bind(this);
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -35,25 +34,14 @@ class UserGroupUserFormByInput extends React.Component {
     this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
 
-  /**
-   * input user name to add to the group
-   * @param {string} input
-   */
-  onInputChange(input) {
-    this.setState({ input });
-    if (input === '') {
-      this.setState({ applicableUsers: [] });
-    }
-  }
-
-
   async addUserBySubmit() {
-    const userName = this.state.input[0].username;
+    if (this.state.inputUser.length === 0) { return }
+    const userName = this.state.inputUser[0].username;
 
     try {
       await this.props.userGroupDetailContainer.addUserByUsername(userName);
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
-      this.setState({ input: '' });
+      this.setState({ inputUser: '' });
     }
     catch (err) {
       toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
@@ -61,12 +49,12 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   validateForm() {
-    return this.state.input !== '';
+    return this.state.inputUser !== '';
   }
 
   async searhApplicableUsers() {
     try {
-      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.input);
+      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.inputUser);
       this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
@@ -76,10 +64,10 @@ class UserGroupUserFormByInput extends React.Component {
 
   /**
    * Reflect when forecast is clicked
-   * @param {string} input
+   * @param {object} inputUser
    */
-  handleChange(input) {
-    this.setState({ input });
+  handleChange(inputUser) {
+    this.setState({ inputUser });
   }
 
   handleSearch(keyword) {
@@ -138,9 +126,9 @@ class UserGroupUserFormByInput extends React.Component {
             align="left"
             onChange={this.handleChange}
             onSearch={this.handleSearch}
-            onInputChange={this.onInputChange}
             onKeyDown={this.onKeyDown}
             caseSensitive={false}
+            clearButton
           />
         </div>
         <div className="col-xs-2 pl-0">
