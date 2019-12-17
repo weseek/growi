@@ -44,6 +44,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          recentCreatedLimit:
  *            type: number
+ *          isEnabledStaleNotification:
+ *            type: boolean
  *      CustomizeHighlight:
  *        type: object
  *        properties:
@@ -96,6 +98,7 @@ module.exports = (crowi) => {
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
+      body('isEnabledStaleNotification').isBoolean(),
     ],
     customizeTitle: [
       body('customizeTitle').isString(),
@@ -149,6 +152,7 @@ module.exports = (crowi) => {
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
@@ -269,6 +273,7 @@ module.exports = (crowi) => {
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       'customize:showRecentCreatedNumber': req.body.recentCreatedLimit,
+      'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
     };
 
     try {
@@ -278,6 +283,7 @@ module.exports = (crowi) => {
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+        isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       };
       return res.apiv3({ customizedParams });
     }
