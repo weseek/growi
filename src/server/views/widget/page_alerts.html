@@ -14,18 +14,18 @@
     {% endif %}
 
     {% if getConfig('crowi', 'customize:isEnabledStaleNotification') %}
-    {% if page && page.updatedAt && page.isStale() > 0 %}
-    {% if page.isStale() == 1 %}
-    <div class="alert alert-info">
-    {% elseif page.isStale() == 2 %}
-    <div class="alert alert-warning">
-    {% else %}
-    <div class="alert alert-danger">
-    {% endif %}
-      <i class="icon-fw icon-hourglass"></i>
-      <strong>{{ t('page_page.notice.stale', { count: page.isStale() }) }}</strong>
-    </div>
-    {% endif %}
+      {% if page && page.updatedAt && page.isStale() > 0 %}
+        {% if page.isStale() == 1 %}
+        <div class="alert alert-info">
+        {% elseif page.isStale() == 2 %}
+        <div class="alert alert-warning">
+        {% else %}
+        <div class="alert alert-danger">
+        {% endif %}
+          <i class="icon-fw icon-hourglass"></i>
+          <strong>{{ t('page_page.notice.stale', { count: page.isStale() }) }}</strong>
+        </div>
+      {% endif %}
     {% endif %}
 
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
