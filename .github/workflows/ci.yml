@@ -209,7 +209,6 @@ jobs:
         echo -n "npm " && npm -v
         yarn list --depth=0
     - name: yarn build:prod
-      if: steps.cache-public.outputs.cache-hit != 'true'
       run: |
         yarn build:prod
     - name: yarn install --production
