@@ -40,48 +40,57 @@ class XssForm extends React.Component {
 
     return (
       <div className="form-group form-check-inline col-xs-12 my-3">
-        <div className="col-xs-4 align-self-start radio radio-primary">
-          <input
-            type="radio"
-            id="xssOption1"
-            name="XssOption"
-            checked={xssOption === 1}
-            onChange={() => { markDownSettingContainer.setState({ xssOption: 1 }) }}
-          />
-          <label htmlFor="xssOption1">
-            <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
-            <div className="mt-4">
-              { t('markdown_setting.Ignore all tags desc') }
-            </div>
-          </label>
+        <div className="col-xs-4 align-self-start">
+          <div className="custom-control custom-radio ">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="xssOption1"
+              name="XssOption"
+              checked={xssOption === 1}
+              onChange={() => { markDownSettingContainer.setState({ xssOption: 1 }) }}
+            />
+            <label className="custom-control-label" htmlFor="xssOption1">
+              <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
+              <div className="mt-4">
+                { t('markdown_setting.Ignore all tags desc') }
+              </div>
+            </label>
+          </div>
         </div>
 
-        <div className="col-xs-4 align-self-start radio radio-primary">
-          <input
-            type="radio"
-            id="xssOption2"
-            name="XssOption"
-            checked={xssOption === 2}
-            onChange={() => { markDownSettingContainer.setState({ xssOption: 2 }) }}
-          />
-          <label htmlFor="xssOption2">
-            <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
-            <WhiteListInput customizable={false} />
-          </label>
+        <div className="col-xs-4 align-self-start">
+          <div className="custom-control custom-radio">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="xssOption2"
+              name="XssOption"
+              checked={xssOption === 2}
+              onChange={() => { markDownSettingContainer.setState({ xssOption: 2 }) }}
+            />
+            <label className="custom-control-label" htmlFor="xssOption2">
+              <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
+              <WhiteListInput customizable={false} />
+            </label>
+          </div>
         </div>
 
-        <div className="col-xs-4 align-self-start radio radio-primary">
-          <input
-            type="radio"
-            id="xssOption3"
-            name="XssOption"
-            checked={xssOption === 3}
-            onChange={() => { markDownSettingContainer.setState({ xssOption: 3 }) }}
-          />
-          <label htmlFor="xssOption3">
-            <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <WhiteListInput customizable />
-          </label>
+        <div className="col-xs-4 align-self-start">
+          <div className="custom-control custom-radio">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="xssOption3"
+              name="XssOption"
+              checked={xssOption === 3}
+              onChange={() => { markDownSettingContainer.setState({ xssOption: 3 }) }}
+            />
+            <label className="custom-control-label" htmlFor="xssOption3">
+              <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
+              <WhiteListInput customizable />
+            </label>
+          </div>
         </div>
       </div>
     );
