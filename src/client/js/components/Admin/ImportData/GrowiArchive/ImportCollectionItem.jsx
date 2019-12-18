@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 // import ProgressBar from 'react-bootstrap/es/ProgressBar';
+import { Progress } from 'reactstrap';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
@@ -166,11 +167,11 @@ export default class ImportCollectionItem extends React.Component {
     const total = insertedCount + modifiedCount + errorsCount;
 
     return (
-      <ProgressBar className="mb-0">
-        <ProgressBar max={total} striped={isImporting} active={isImporting} now={insertedCount} bsStyle="info" />
-        <ProgressBar max={total} striped={isImporting} active={isImporting} now={modifiedCount} bsStyle="success" />
-        <ProgressBar max={total} striped={isImporting} active={isImporting} now={errorsCount} bsStyle="danger" />
-      </ProgressBar>
+      <Progress className="mb-0">
+        <Progress max={total} striped={isImporting} active={isImporting} now={insertedCount} bsStyle="info" />
+        <Progress max={total} striped={isImporting} active={isImporting} now={modifiedCount} bsStyle="success" />
+        <Progress max={total} striped={isImporting} active={isImporting} now={errorsCount} bsStyle="danger" />
+      </Progress>
     );
   }
 
