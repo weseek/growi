@@ -39,11 +39,11 @@ class PresentationForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="form-group row mx-auto my-2 w-100">
+        <fieldset className="form-group mx-auto my-2">
 
-          <label className="col-xs-3 control-label text-left">
+          <p className="col-xs-3 control-label text-left">
             { t('markdown_setting.Page break setting') }
-          </label>
+          </p>
 
           <div className="form-group form-check-inline col-xs-12 my-3">
             <div className="col-xs-3 radio radio-primary mt-3">
@@ -99,7 +99,7 @@ class PresentationForm extends React.Component {
             </div>
           </div>
         </fieldset>
-        <div className="form-group mx-auto my-3">
+        <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>

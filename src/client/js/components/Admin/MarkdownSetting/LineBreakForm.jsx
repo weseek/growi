@@ -93,11 +93,11 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="row mx-auto w-100">
+        <fieldset className="mx-auto">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
-        <div className="form-group row mx-auto my-3">
+        <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>
