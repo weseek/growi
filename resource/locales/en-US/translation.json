@@ -648,7 +648,8 @@
     "event_comment": "When someone \"COMMENTS\" on page",
     "email": {
       "ifttt_link": "Create a new IFTTT applet with Email trigger"
-    }
+    },
+    "updated_slackApp": "Succeeded to update Slack App Configuration setting"
   },
 
   "customize_page": {

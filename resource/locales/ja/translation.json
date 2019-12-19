@@ -632,7 +632,8 @@
     "event_comment": "コメントが投稿されたとき",
     "email": {
       "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
-    }
+    },
+    "updated_slackApp": "SlackApp設定を更新しました"
   },
 
   "customize_page": {
