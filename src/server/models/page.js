@@ -9,6 +9,7 @@ const urljoin = require('url-join');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
+const differenceInYears = require('date-fns/differenceInYears')
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
@@ -489,7 +490,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.getContentAge = function() {
-    return Math.max(0, new Date(new Date() - this.updatedAt).getUTCFullYear() - 1970)
+    return differenceInYears(new Date(), this.updatedAt)
   }
 
 
