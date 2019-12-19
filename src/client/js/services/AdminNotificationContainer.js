@@ -64,4 +64,12 @@ export default class AdminNotificationContainer extends Container {
 
   }
 
+  /**
+   * Add notificationPattern
+   * @memberOf SlackAppConfiguration
+   */
+  async addNotificationPattern() {
+    // TODO GW-794 create apiV3 addNotificationPattern
+  }
+
 }

@@ -48,10 +48,10 @@ class UserTriggerNotification extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminNotificationContainer } = this.props;
 
     try {
-      // await adminNotificationContainer.updateSlackAppConfiguration();
+      await adminNotificationContainer.addNotificationPattern();
       toastSuccess(t('notification_setting.add_notification_pattern'));
       this.setState({ pathPattern: '', channel: '' });
     }
@@ -84,7 +84,7 @@ class UserTriggerNotification extends React.Component {
                   className="form-control"
                   type="text"
                   name="pathPattern"
-                  defaultValue=""
+                  value={this.state.pathPattern}
                   placeholder="e.g. /projects/xxx/MTG/*"
                   onChange={(e) => { this.changePathPattern(e.target.value) }}
                 />
@@ -97,7 +97,7 @@ class UserTriggerNotification extends React.Component {
                   className="form-control form-inline"
                   type="text"
                   name="channel"
-                  defaultValue=""
+                  value={this.state.channel}
                   placeholder="e.g. project-xxx"
                   onChange={(e) => { this.changeChannel(e.target.value) }}
                 />
