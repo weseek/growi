@@ -17,7 +17,7 @@ class SlackAppConfiguration extends React.Component {
     return (
       <React.Fragment>
         <div className="row mb-5">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="col-xs-6 text-left">
             <div className="my-0 btn-group">
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -79,7 +79,6 @@ class SlackAppConfiguration extends React.Component {
             <React.Fragment>
               <h2 className="border-bottom mb-5">Slack App Configuration</h2>
 
-
               <div className="well">
                 <i className="icon-fw icon-exclamation text-danger"></i><span className="text-danger">NOT RECOMMENDED</span>
                 <br /><br />
@@ -97,12 +96,18 @@ class SlackAppConfiguration extends React.Component {
                 instead.
               </div>
 
-              <div className="form-group">
-                <label htmlFor="slackSetting[slack:token]" className="col-xs-3 control-label">OAuth Access Token</label>
+              <div className="row mb-5">
+                <label className="col-xs-3 text-right">OAuth Access Token</label>
                 <div className="col-xs-6">
-                  <input className="form-control" type="text" name="slackSetting[slack:token]" value="{{ slackSetting['slack:token'] || '' }}" />
+                  <input
+                    className="form-control"
+                    type="text"
+                    defaultValue={adminNotificationContainer.state.slackToken}
+                    onChange={e => adminNotificationContainer.changeSlackToken(e.target.value)}
+                  />
                 </div>
               </div>
+
             </React.Fragment>
           )
         }
