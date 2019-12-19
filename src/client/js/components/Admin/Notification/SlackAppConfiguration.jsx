@@ -16,13 +16,11 @@ class SlackAppConfiguration extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="border-bottom mb-5">Slack Incoming Webhooks Configuration</h2>
-
         <div className="row mb-5">
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <div className="my-0 btn-group">
               <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button className="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span className="pull-left">Slack {adminNotificationContainer.state.selectSlackOption}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
@@ -30,8 +28,12 @@ class SlackAppConfiguration extends React.Component {
                 </button>
                 {/* TODO adjust dropdown after BS4 */}
                 <ul className="dropdown-menu" role="menu">
-                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>Slack Incoming Webhooks</li>
-                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</li>
+                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
+                    <a role="menuitem">Slack Incoming Webhooks</a>
+                  </li>
+                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>
+                    <a role="menuitem">Slack App</a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -39,6 +41,8 @@ class SlackAppConfiguration extends React.Component {
         </div>
         {adminNotificationContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
           <React.Fragment>
+            <h2 className="border-bottom mb-5">Slack Incoming Webhooks Configuration</h2>
+
             <div className="row mb-5">
               <label className="col-xs-3 text-right">Webhook URL</label>
               <div className="col-xs-6">
@@ -70,9 +74,38 @@ class SlackAppConfiguration extends React.Component {
               </div>
             </div>
           </React.Fragment>
-        ) : (
-          <p>hoge</p>
-          )}
+        )
+          : (
+            <React.Fragment>
+              <h2 className="border-bottom mb-5">Slack App Configuration</h2>
+
+
+              <div className="well">
+                <i className="icon-fw icon-exclamation text-danger"></i><span className="text-danger">NOT RECOMMENDED</span>
+                <br /><br />
+                This is the way that compatible with Crowi,<br />
+                but not recommended in GROWI because it is <strong>too complex</strong>.
+                <br /><br />
+                Please use
+                <a
+                  href="#slack-incoming-webhooks"
+                  data-toggle="tab"
+                  onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}
+                >
+                  Slack incomming webhooks Configuration
+                </a>
+                instead.
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="slackSetting[slack:token]" className="col-xs-3 control-label">OAuth Access Token</label>
+                <div className="col-xs-6">
+                  <input className="form-control" type="text" name="slackSetting[slack:token]" value="{{ slackSetting['slack:token'] || '' }}" />
+                </div>
+              </div>
+            </React.Fragment>
+          )
+        }
 
         <AdminUpdateButtonRow />
 
