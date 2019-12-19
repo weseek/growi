@@ -24,7 +24,9 @@ class UserTriggerNotification extends React.Component {
 
     this.changePathPattern = this.changePathPattern.bind(this);
     this.changeChannel = this.changeChannel.bind(this);
+    this.validateForm = this.validateForm.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
+
   }
 
   /**
@@ -41,12 +43,17 @@ class UserTriggerNotification extends React.Component {
     this.setState({ channel });
   }
 
+  validateForm() {
+    return this.state.pathPattern !== '' && this.state.channel;
+  }
+
   async onClickSubmit() {
-    const { t, adminNotificationContainer } = this.props;
+    const { t } = this.props;
 
     try {
       // await adminNotificationContainer.updateSlackAppConfiguration();
       toastSuccess(t('notification_setting.add_notification_pattern'));
+      this.setState({ pathPattern: '', channel: '' });
     }
     catch (err) {
       toastError(err);
@@ -99,7 +106,7 @@ class UserTriggerNotification extends React.Component {
                 </p>
               </td>
               <td>
-                <button type="button" className="btn btn-primary" onClick={this.onClickSubmit}>{t('add')}</button>
+                <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
               </td>
             </tr>
           </tbody>
