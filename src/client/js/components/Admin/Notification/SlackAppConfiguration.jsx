@@ -51,6 +51,30 @@ class SlackAppConfiguration extends React.Component {
 
         <AdminUpdateButtonRow />
 
+        <hr />
+
+        <h3>
+          <i className="icon-question" aria-hidden="true"></i>
+          <a href="#collapseHelpForIwh" data-toggle="collapse">How to configure Incoming Webhooks?</a>
+        </h3>
+
+        <ol id="collapseHelpForIwh" className="collapse">
+          <li>
+            (At Workspace) Add a hook
+            <ol>
+              <li>Go to <a href="https://slack.com/services/new/incoming-webhook">Incoming Webhooks Configuration page</a>.</li>
+              <li>Choose the default channel to post.</li>
+              <li>Add.</li>
+            </ol>
+          </li>
+          <li>
+            (At GROWI admin page) Set Webhook URL
+            <ol>
+              <li>Input &rdquo;Webhook URL&rdquo; and submit on this page.</li>
+            </ol>
+          </li>
+        </ol>
+
       </React.Fragment>
     );
   }
