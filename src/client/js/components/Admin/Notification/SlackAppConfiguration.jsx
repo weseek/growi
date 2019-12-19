@@ -11,7 +11,9 @@ class SlackAppConfiguration extends React.Component {
 
   render() {
     return (
-      <p>hoge</p>
+      <React.Fragment>
+        <h2 className="border-bottom">Slack Incoming Webhooks Configuration</h2>
+      </React.Fragment>
     );
   }
 
