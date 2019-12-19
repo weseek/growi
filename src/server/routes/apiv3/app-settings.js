@@ -52,6 +52,9 @@ const validator = {
  *            type: String
  *            description: confidential show on page header
  *          globalLang:
+ *            type: String
+ *            description: language set when create user
+ *          fileUpload:
  *            type: boolean
  *            description: enable upload file except image file
  *          siteUrl:
