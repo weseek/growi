@@ -37,37 +37,42 @@ class SlackAppConfiguration extends React.Component {
             </div>
           </div>
         </div>
-
-        <div className="row mb-5">
-          <label className="col-xs-3 text-right">Webhook URL</label>
-          <div className="col-xs-6">
-            <input
-              className="form-control"
-              type="text"
-              defaultValue={adminNotificationContainer.state.webhookUrl}
-              onChange={e => adminNotificationContainer.changeWebhookUrl(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="row mb-5">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
-              <input
-                id="cbPrioritizeIWH"
-                type="checkbox"
-                checked={adminNotificationContainer.state.isIncomingWebhookPrioritized}
-                onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
-              />
-              <label htmlFor="cbPrioritizeIWH">
-                Prioritize Incoming Webhook than Slack App
-              </label>
+        {adminNotificationContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
+          <React.Fragment>
+            <div className="row mb-5">
+              <label className="col-xs-3 text-right">Webhook URL</label>
+              <div className="col-xs-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  defaultValue={adminNotificationContainer.state.webhookUrl}
+                  onChange={e => adminNotificationContainer.changeWebhookUrl(e.target.value)}
+                />
+              </div>
             </div>
-            <p className="help-block">
-              Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.
-            </p>
-          </div>
-        </div>
+
+            <div className="row mb-5">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
+                <div className="checkbox checkbox-success">
+                  <input
+                    id="cbPrioritizeIWH"
+                    type="checkbox"
+                    checked={adminNotificationContainer.state.isIncomingWebhookPrioritized}
+                    onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
+                  />
+                  <label htmlFor="cbPrioritizeIWH">
+                    Prioritize Incoming Webhook than Slack App
+                  </label>
+                </div>
+                <p className="help-block">
+                  Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.
+                </p>
+              </div>
+            </div>
+          </React.Fragment>
+        ) : (
+          <p>hoge</p>
+          )}
 
         <AdminUpdateButtonRow />
 
