@@ -43,7 +43,7 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      AppSettingsParams:
+ *      AppSettingParams:
  *        type: object
  *          title:
  *            type: String
@@ -57,12 +57,16 @@ const validator = {
  *          fileUpload:
  *            type: boolean
  *            description: enable upload file except image file
+ *     SiteUrlSettingParams:
+ *        type: object
  *          siteUrl:
  *            type: String
  *            description: Site URL. e.g. https://example.com, https://example.com:8080
  *          envSiteUrl:
  *            type: String
  *            description: environment variable 'APP_SITE_URL'
+ *     MailSettingParams:
+ *        type: object
  *          fromAddress:
  *            type: String
  *            description: e-mail address used as from address of mail which sent from GROWI app
@@ -103,8 +107,10 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    AppSettingsParams:
-   *                      $ref: '#/components/schemas/AppSettingsParams'
+   *                    schema:
+   *                      $ref: '#/components/schemas/AppSettingParams'
+   *                      $ref: '#/components/schemas/SiteUrlSettingParams'
+   *                      $ref: '#/components/schemas/MailSettingParams'
    */
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const appSettingsParams = {
@@ -139,7 +145,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    *                properties:
-   *                  $ref: '#/components/schemas/AppSettingsParams/AppSettingParams'
+   *                  $ref: '#/components/schemas/AppSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update app setting
@@ -148,7 +154,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/appSettingParams/AppSettingParams'
+   *                      $ref: '#/components/schemas/AppSettingParams'
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
@@ -190,7 +196,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    *                properties:
-   *                  $ref: '#/components/schemas/AppSettingsParams/SiteUrlSettingParams'
+   *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update site url setting
@@ -199,7 +205,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/appSettingParams/SiteUrlSettingParams'
+   *                      $ref: '#/components/schemas/SiteUrlSettingParams'
    */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
 
@@ -284,7 +290,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    *                properties:
-   *                  $ref: '#/components/schemas/AppSettingsParams/MailSettingParams'
+   *                  $ref: '#/components/schemas/MailSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update site url setting
@@ -293,7 +299,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    status:
-   *                      $ref: '#/components/schemas/appSettingParams/MailSettingParams'
+   *                      $ref: '#/components/schemas/MailSettingParams'
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
     // テストメール送信によるバリデート
