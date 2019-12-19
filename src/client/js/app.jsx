@@ -37,7 +37,7 @@ import TableOfContents from './components/TableOfContents';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
-import AppSettingPage from './components/Admin/App/AppSettingPage';
+import AppSettingsPage from './components/Admin/App/AppSettingsPage';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -176,7 +176,7 @@ if (adminAppElem != null) {
   ReactDOM.render(
     <Provider inject={[injectableContainers, adminAppContainer]}>
       <I18nextProvider i18n={i18n}>
-        <AppSettingPage />
+        <AppSettingsPage />
       </I18nextProvider>
     </Provider>,
     adminAppElem,
