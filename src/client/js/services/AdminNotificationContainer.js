@@ -12,6 +12,7 @@ export default class AdminNotificationContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      selectSlackOption: 'incoming',
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
     };
@@ -23,6 +24,13 @@ export default class AdminNotificationContainer extends Container {
    */
   static getClassName() {
     return 'AdminNotificationContainer';
+  }
+
+  /**
+   * Switch slackOption
+   */
+  switchSlackOption(slackOption) {
+    this.setState({ selectSlackOption: slackOption });
   }
 
   /**

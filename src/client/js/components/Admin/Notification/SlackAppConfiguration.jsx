@@ -19,6 +19,26 @@ class SlackAppConfiguration extends React.Component {
         <h2 className="border-bottom mb-5">Slack Incoming Webhooks Configuration</h2>
 
         <div className="row mb-5">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
+            <div className="my-0 btn-group">
+              <div className="dropdown">
+                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span className="pull-left">Slack {adminNotificationContainer.state.selectSlackOption}</span>
+                  <span className="bs-caret pull-right">
+                    <span className="caret" />
+                  </span>
+                </button>
+                {/* TODO adjust dropdown after BS4 */}
+                <ul className="dropdown-menu" role="menu">
+                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>Slack Incoming Webhooks</li>
+                  <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-5">
           <label className="col-xs-3 text-right">Webhook URL</label>
           <div className="col-xs-6">
             <input
@@ -55,7 +75,7 @@ class SlackAppConfiguration extends React.Component {
 
         <h3>
           <i className="icon-question" aria-hidden="true"></i>
-          <a href="#collapseHelpForIwh" data-toggle="collapse">How to configure Incoming Webhooks?</a>
+          <a href="#collapseHelpForIwh" data-toggle="collapse"> How to configure Incoming Webhooks?</a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse">
