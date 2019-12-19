@@ -488,7 +488,7 @@ module.exports = function(crowi) {
     }
   };
 
-  pageSchema.methods.isStale = function() {
+  pageSchema.methods.getContentAge = function() {
     return Math.max(0, new Date(new Date() - this.updatedAt).getUTCFullYear() - 1970)
   }
 
