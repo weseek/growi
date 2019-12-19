@@ -45,42 +45,36 @@ const validator = {
  *    schemas:
  *      AppSettingsParams:
  *        type: object
- *          AppSettingParams:
- *            type: object
- *              title:
- *                type: String
- *                description: site name show on page header and tilte of HTML
- *              confidential:
- *                type: String
- *                description: confidential show on page header
- *              globalLang:
- *                type: boolean
- *                description: enable upload file except image file
- *          SiteUrlSettingParams:
- *            type: object
- *              siteUrl:
- *                type: String
- *                description: Site URL. e.g. https://example.com, https://example.com:8080
- *              envSiteUrl:
- *                type: String
- *                description: environment variable 'APP_SITE_URL'
- *          mailSettingParams:
- *            type: object
- *              fromAddress:
- *                type: String
- *                description: e-mail address used as from address of mail which sent from GROWI app
- *              smtpHost:
- *                type: String
- *                description: host name of client's smtp server
- *              smtpPort:
- *                type: String
- *                description: port of client's smtp server
- *              smtpUser:
- *                type: String
- *                description: user name of client's smtp server
- *              smtpPassword:
- *                type: String
- *                description: password of client's smtp server
+ *          title:
+ *            type: String
+ *            description: site name show on page header and tilte of HTML
+ *          confidential:
+ *            type: String
+ *            description: confidential show on page header
+ *          globalLang:
+ *            type: boolean
+ *            description: enable upload file except image file
+ *          siteUrl:
+ *            type: String
+ *            description: Site URL. e.g. https://example.com, https://example.com:8080
+ *          envSiteUrl:
+ *            type: String
+ *            description: environment variable 'APP_SITE_URL'
+ *          fromAddress:
+ *            type: String
+ *            description: e-mail address used as from address of mail which sent from GROWI app
+ *          smtpHost:
+ *            type: String
+ *            description: host name of client's smtp server
+ *          smtpPort:
+ *            type: String
+ *            description: port of client's smtp server
+ *          smtpUser:
+ *            type: String
+ *            description: user name of client's smtp server
+ *          smtpPassword:
+ *            type: String
+ *            description: password of client's smtp server
  */
 
 module.exports = (crowi) => {
