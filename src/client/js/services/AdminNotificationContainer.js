@@ -55,4 +55,13 @@ export default class AdminNotificationContainer extends Container {
     this.setState({ slackToken });
   }
 
+  /**
+   * Update slackAppConfiguration
+   * @memberOf SlackAppConfiguration
+   */
+  async updateSlackAppConfiguration() {
+    // TODO GW-794 create apiV3 updateSlackAppConfiguration
+
+  }
+
 }

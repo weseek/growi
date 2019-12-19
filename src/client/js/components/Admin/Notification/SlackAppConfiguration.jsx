@@ -2,13 +2,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
+const logger = loggerFactory('growi:slackAppConfiguration');
+
 class SlackAppConfiguration extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+    };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t, adminNotificationContainer } = this.props;
+
+    try {
+      await adminNotificationContainer.updateSlackAppConfiguration();
+      toastSuccess(t('notification_setting.updated_slackApp'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   // TODO GW-788 i18n
   render() {
@@ -21,7 +49,7 @@ class SlackAppConfiguration extends React.Component {
             <div className="my-0 btn-group">
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">Slack {adminNotificationContainer.state.selectSlackOption}</span>
+                  <span className="pull-left">Slack {adminNotificationContainer.state.selectSlackOption} </span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
                   </span>
@@ -112,7 +140,10 @@ class SlackAppConfiguration extends React.Component {
           )
         }
 
-        <AdminUpdateButtonRow />
+        <AdminUpdateButtonRow
+          onClick={this.onClickSubmit}
+          disabled={this.state.retrieveError != null}
+        />
 
         <hr />
 
