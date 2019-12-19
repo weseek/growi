@@ -12,7 +12,8 @@ export default class AdminNotificationContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-
+      webhookUrl: '',
+      isIncomingWebhookPrioritized: false,
     };
 
   }
@@ -22,6 +23,20 @@ export default class AdminNotificationContainer extends Container {
    */
   static getClassName() {
     return 'AdminNotificationContainer';
+  }
+
+  /**
+   * Change webhookUrl
+   */
+  changeWebhookUrl(inputValue) {
+    this.setState({ webhookUrl: inputValue });
+  }
+
+  /**
+   * Switch incomingWebhookPrioritized
+   */
+  switchIsIncomingWebhookPrioritized() {
+    this.setState({ isIncomingWebhookPrioritized: !this.state.isIncomingWebhookPrioritized });
   }
 
 }
