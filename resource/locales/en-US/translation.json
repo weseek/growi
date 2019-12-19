@@ -649,7 +649,8 @@
     "email": {
       "ifttt_link": "Create a new IFTTT applet with Email trigger"
     },
-    "updated_slackApp": "Succeeded to update Slack App Configuration setting"
+    "updated_slackApp": "Succeeded to update Slack App Configuration setting",
+    "add_notification_pattern": "Add user trigger notification patterns"
   },
 
   "customize_page": {
