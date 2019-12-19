@@ -5,14 +5,15 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
-import SlackAppConfiguration from './SlackAppConfiguration';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
 class UserTriggerNotification extends React.Component {
 
   render() {
     return (
-      <p>hoge</p>
+      <React.Fragment>
+        <h2 className="border-bottom mb-5">Default Notification Settings for Patterns</h2>
+      </React.Fragment>
     );
   }
 
@@ -21,7 +22,7 @@ class UserTriggerNotification extends React.Component {
 
 
 const UserTriggerNotificationWrapper = (props) => {
-  return createSubscribedElement(SlackAppConfiguration, props, [AppContainer, AdminNotificationContainer]);
+  return createSubscribedElement(UserTriggerNotification, props, [AppContainer, AdminNotificationContainer]);
 };
 
 UserTriggerNotification.propTypes = {
