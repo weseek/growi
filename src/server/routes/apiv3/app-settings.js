@@ -29,6 +29,13 @@ const validator = {
     body('smtpUser').trim(),
     body('smtpPassword').trim(),
   ],
+  awsSetting: [
+    body('region').trim(),
+    body('customEndpoint').trim(),
+    body('bucket').trim(),
+    body('accessKeyId').trim(),
+    body('secretKey').trim(),
+  ],
 };
 
 
@@ -82,6 +89,23 @@ const validator = {
  *          smtpPassword:
  *            type: String
  *            description: password of client's smtp server
+ *      AwsSettingParams:
+ *        type: object
+ *          region:
+ *            type: String
+ *            description: region of AWS S3
+ *          customEndpoint:
+ *            type: String
+ *            description: custom endpoint of AWS S3
+ *          bucket:
+ *            type: String
+ *            description: AWS S3 bucket name
+ *          accessKeyId:
+ *            type: String
+ *            description: accesskey id for authentification of AWS
+ *          secretKey:
+ *            type: String
+ *            description: secret key for authentification of AWS
  */
 
 module.exports = (crowi) => {
@@ -340,5 +364,57 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /app-settings/aws-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        description: Update aws setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  $ref: '#/components/schemas/AwsSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update aws setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    status:
+   *                      $ref: '#/components/schemas/AwsSettingParams'
+   */
+  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async(req, res) => {
+    const requestAwsSettingParams = {
+      'aws:region': req.body.region,
+      'aws:customEndpoint': req.body.customEndpoint,
+      'aws:bucket': req.body.bucket,
+      'aws:accessKeyId': req.body.accessKeyId,
+      'aws:secretKey': req.body.secretKey,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
+      const awsSettingParams = {
+        region: crowi.configManager.getConfig('crowi', 'aws:region'),
+        customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+        bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+        accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+        secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+      };
+      return res.apiv3({ awsSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating aws setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
+    }
+
+  });
   return router;
 };
