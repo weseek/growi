@@ -149,6 +149,11 @@ module.exports = (crowi) => {
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
+      region: crowi.configManager.getConfig('crowi', 'aws:region'),
+      customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+      bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+      accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+      secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
     };
     return res.apiv3({ appSettingsParams });
 
