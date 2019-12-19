@@ -39,77 +39,58 @@ class MailSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="well">{t('app_setting.SMTP_used')} {t('app_setting.SMTP_but_AWS')}<br />{t('app_setting.neihter_of')}</p>
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label htmlFor="settingForm[mail.from]" className="col-xs-3 control-label">{t('app_setting.From e-mail address')}</label>
-              <div className="col-xs-6">
-                <input
-                  className="form-control"
-                  id="settingForm[mail.from]"
-                  type="text"
-                  name="settingForm[mail:from]"
-                  placeholder={`${t('eg')} mail@growi.org`}
-                  defaultValue={adminAppContainer.state.fromAddress}
-                  onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
-                />
-              </div>
-            </div>
+        <div className="row mb-5">
+          <label className="col-xs-3 control-label">{t('app_setting.From e-mail address')}</label>
+          <div className="col-xs-6">
+            <input
+              className="form-control"
+              type="text"
+              placeholder={`${t('eg')} mail@growi.org`}
+              defaultValue={adminAppContainer.state.fromAddress}
+              onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
+            />
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label className="col-xs-3 control-label">{ t('app_setting.SMTP settings') }</label>
-              <div className="col-xs-4">
-                <label>{ t('app_setting.Host') }</label>
-                <input
-                  className="form-control"
-                  type="text"
-                  name="settingForm[mail:smtpHost]"
-                  defaultValue={adminAppContainer.state.smtpHost}
-                  onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
-                />
-              </div>
-              <div className="col-xs-2">
-                <label>{ t('app_setting.Port') }</label>
-                <input
-                  className="form-control"
-                  type="text"
-                  name="settingForm[mail:smtpPort]"
-                  defaultValue={adminAppContainer.state.smtpPort}
-                  onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
-                />
-              </div>
-            </div>
+        <div className="row mb-5">
+          <label className="col-xs-3 control-label">{ t('app_setting.SMTP settings') }</label>
+          <div className="col-xs-4">
+            <label>{ t('app_setting.Host') }</label>
+            <input
+              className="form-control"
+              type="text"
+              defaultValue={adminAppContainer.state.smtpHost}
+              onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
+            />
+          </div>
+          <div className="col-xs-2">
+            <label>{ t('app_setting.Port') }</label>
+            <input
+              className="form-control"
+              defaultValue={adminAppContainer.state.smtpPort}
+              onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
+            />
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <div className="col-xs-3 col-xs-offset-3">
-                <label>{ t('app_setting.User') }</label>
-                <input
-                  className="form-control"
-                  type="text"
-                  name="settingForm[mail:smtpUser]"
-                  defaultValue={adminAppContainer.state.SmtpUser}
-                  onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
-                />
-              </div>
-              <div className="col-xs-3">
-                <label>{ t('Password') }</label>
-                <input
-                  className="form-control"
-                  type="password"
-                  name="settingForm[mail:smtpPassword]"
-                  defaultValue={adminAppContainer.state.smtpPassword}
-                  onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
-                />
-              </div>
-            </div>
+        <div className="row mb-5">
+          <div className="col-xs-3 col-xs-offset-3">
+            <label>{ t('app_setting.User') }</label>
+            <input
+              className="form-control"
+              type="text"
+              defaultValue={adminAppContainer.state.SmtpUser}
+              onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
+            />
+          </div>
+          <div className="col-xs-3">
+            <label>{ t('Password') }</label>
+            <input
+              className="form-control"
+              type="password"
+              defaultValue={adminAppContainer.state.smtpPassword}
+              onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
+            />
           </div>
         </div>
 

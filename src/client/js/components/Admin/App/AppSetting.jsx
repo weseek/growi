@@ -38,47 +38,35 @@ class AppSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label className="col-xs-3 control-label">{t('app_setting.Site Name')}</label>
-              <div className="col-xs-6">
-                <input
-                  className="form-control"
-                  id="settingForm[app:title]"
-                  type="text"
-                  name="title"
-                  defaultValue={adminAppContainer.state.title}
-                  onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
-                  placeholder="GROWI"
-                />
-                <p className="help-block">{t('app_setting.sitename_change')}</p>
-              </div>
-            </div>
+        <div className="row md-5">
+          <label className="col-xs-3 control-label">{t('app_setting.Site Name')}</label>
+          <div className="col-xs-6">
+            <input
+              className="form-control"
+              type="text"
+              defaultValue={adminAppContainer.state.title}
+              onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
+              placeholder="GROWI"
+            />
+            <p className="help-block">{t('app_setting.sitename_change')}</p>
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label className="col-xs-3 control-label">{t('app_setting.Confidential name')}</label>
-              <div className="col-xs-6">
-                <input
-                  className="form-control"
-                  id="settingForm[app:confidential]"
-                  type="text"
-                  name="confidential"
-                  defaultValue={adminAppContainer.state.confidential}
-                  onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
-                  placeholder={t('app_setting.ex) internal use only')}
-                />
-                <p className="help-block">{t('app_setting.header_content')}</p>
-              </div>
-            </div>
+        <div className="row md-5">
+          <label className="col-xs-3 control-label">{t('app_setting.Confidential name')}</label>
+          <div className="col-xs-6">
+            <input
+              className="form-control"
+              type="text"
+              defaultValue={adminAppContainer.state.confidential}
+              onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
+              placeholder={t('app_setting.ex) internal use only')}
+            />
+            <p className="help-block">{t('app_setting.header_content')}</p>
           </div>
         </div>
 
-        <div className="form-group">
+        <div className="row md-5">
           <label className="col-xs-3 control-label">{t('app_setting.Default Language for new users')}</label>
           <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
@@ -106,29 +94,25 @@ class AppSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
-              <div className="col-xs-6">
-                <div className="checkbox checkbox-info">
-                  <input
-                    type="checkbox"
-                    id="cbFileUpload"
-                    name="fileUpload"
-                    checked={adminAppContainer.state.fileUpload}
-                    onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
-                  />
-                  <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
-                </div>
-
-                <p className="help-block">
-                  {t('app_setting.enable_files_except_image')}
-                  <br />
-                  {t('app_setting.attach_enable')}
-                </p>
-              </div>
+        <div className="row md-5">
+          <label className="col-xs-3 control-label">{t('app_setting.File Uploading')}</label>
+          <div className="col-xs-6">
+            <div className="checkbox checkbox-info">
+              <input
+                type="checkbox"
+                id="cbFileUpload"
+                name="fileUpload"
+                checked={adminAppContainer.state.fileUpload}
+                onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
+              />
+              <label htmlFor="cbFileUpload">{t('app_setting.enable_files_except_image')}</label>
             </div>
+
+            <p className="help-block">
+              {t('app_setting.enable_files_except_image')}
+              <br />
+              {t('app_setting.attach_enable')}
+            </p>
           </div>
         </div>
 
