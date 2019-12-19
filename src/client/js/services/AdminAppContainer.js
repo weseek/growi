@@ -30,6 +30,11 @@ export default class AdminAppContainer extends Container {
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
+      region: '',
+      customEndpoint: '',
+      bucket: '',
+      accessKeyId: '',
+      secretKey: '',
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -42,9 +47,15 @@ export default class AdminAppContainer extends Container {
     this.changeSmtpPort = this.changeSmtpPort.bind(this);
     this.changeSmtpUser = this.changeSmtpUser.bind(this);
     this.changeSmtpPassword = this.changeSmtpPassword.bind(this);
+    this.changeRegion = this.changeRegion.bind(this);
+    this.changeCustomEndpoint = this.changeCustomEndpoint.bind(this);
+    this.changeBucket = this.changeBucket.bind(this);
+    this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
+    this.changeSecretKey = this.changeSecretKey.bind(this);
     this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
     this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
     this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
+    this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
   }
 
   /**
@@ -75,6 +86,11 @@ export default class AdminAppContainer extends Container {
         smtpPort: appSettingsParams.smtpPort,
         smtpUser: appSettingsParams.smtpUser,
         smtpPassword: appSettingsParams.smtpPassword,
+        region: appSettingsParams.region,
+        customEndpoint: appSettingsParams.customEndpoint,
+        bucket: appSettingsParams.bucket,
+        accessKeyId: appSettingsParams.accessKeyId,
+        secretKey: appSettingsParams.secretKey,
       });
 
     }
@@ -156,6 +172,41 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change region
+   */
+  changeRegion(region) {
+    this.setState({ region });
+  }
+
+  /**
+   * Change custom endpoint
+   */
+  changeCustomEndpoint(customEndpoint) {
+    this.setState({ customEndpoint });
+  }
+
+  /**
+   * Change bucket name
+   */
+  changeBucket(bucket) {
+    this.setState({ bucket });
+  }
+
+  /**
+   * Change access key id
+   */
+  changeAccessKeyId(accessKeyId) {
+    this.setState({ accessKeyId });
+  }
+
+  /**
+   * Change secret key
+   */
+  changeSecretKey(secretKey) {
+    this.setState({ secretKey });
+  }
+
+  /**
    * Update app setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
@@ -200,6 +251,23 @@ export default class AdminAppContainer extends Container {
     });
     const { mailSettingParams } = response.data;
     return mailSettingParams;
+  }
+
+  /**
+   * Update AWS setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateAwsSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
+      region: this.state.region,
+      customEndpoint: this.state.customEndpoint,
+      bucket: this.state.bucket,
+      accessKeyId: this.state.accessKeyId,
+      secretKey: this.state.secretKey,
+    });
+    const { awsSettingParams } = response.data;
+    return awsSettingParams;
   }
 
 }
