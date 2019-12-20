@@ -16,6 +16,7 @@ export default class AdminNotificationContainer extends Container {
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
       slackToken: '',
+      userNotifications: [],
     };
 
   }
@@ -68,8 +69,8 @@ export default class AdminNotificationContainer extends Container {
    * Add notificationPattern
    * @memberOf SlackAppConfiguration
    */
-  async addNotificationPattern() {
-    // TODO GW-794 create apiV3 addNotificationPattern
+  async addNotificationPattern(pathPattern, channel) {
+    // TODO GW-802 create apiV3 addNotificationPattern
   }
 
 }

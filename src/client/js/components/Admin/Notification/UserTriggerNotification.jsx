@@ -51,7 +51,7 @@ class UserTriggerNotification extends React.Component {
     const { t, adminNotificationContainer } = this.props;
 
     try {
-      await adminNotificationContainer.addNotificationPattern();
+      await adminNotificationContainer.addNotificationPattern(this.state.pathPattern, this.state.channel);
       toastSuccess(t('notification_setting.add_notification_pattern'));
       this.setState({ pathPattern: '', channel: '' });
     }
