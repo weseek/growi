@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
   yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
 # install peerDependencies
 RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
-  yarn add -D react-images react-motion
+  yarn add -D react-images@1.0.0 react-motion
 
 
 
@@ -48,7 +48,14 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
+COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
+
+# copy all files except the files listed in Dockerfile.dockerignore
 COPY . ${appDir}
+
+# overwirte package.json and yarn.lock
+COPY --from=deps-resolver ${appDir}/package.json ${appDir}/package.json
+COPY --from=deps-resolver ${appDir}/yarn.lock ${appDir}/yarn.lock
 
 
 
@@ -63,23 +70,17 @@ COPY docker/nocdn/env.prod.js ${appDir}/config/
 
 
 ##
-## prebuilder (alias)
-##
-FROM prebuilder-${flavor} AS prebuilder
-
-
-
-##
 ## builder
 ##
-FROM deps-resolver AS builder
+FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
 
-COPY --from=prebuilder ${appDir} ${appDir}
+WORKDIR ${appDir}
 
 # build
-RUN yarn build:prod
+RUN --mount=type=cache,target=./node_modules/.cache \
+  yarn build:prod
 
 # remove except artifacts
 WORKDIR /tmp

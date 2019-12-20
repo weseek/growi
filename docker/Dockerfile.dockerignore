@@ -11,4 +11,3 @@ src/test
 .stylelint*
 app.json
 Procfile
-wercker.yml
