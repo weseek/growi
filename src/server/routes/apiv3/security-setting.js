@@ -760,6 +760,8 @@ module.exports = (crowi) => {
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetTwitterStrategy();
       const msg = 'Error occurred in updating twitterOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));
