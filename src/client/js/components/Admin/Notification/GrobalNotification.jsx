@@ -19,6 +19,18 @@ class GrobalNotification extends React.Component {
         </a>
 
         <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}</h2>
+
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>ON/OFF</th>
+              <th>{t('notification_setting.trigger_path')} {t('notification_setting.trigger_path_help', '<code>*</code>')}</th>
+              <th>{t('notification_setting.trigger_events')}</th>
+              <th>{t('notification_setting.notify_to')}</th>
+              <th></th>
+            </tr>
+          </thead>
+        </table>
       </React.Fragment>
     );
   }
