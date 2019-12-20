@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/es/Modal';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
+import AppContainer from '../../../services/AppContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
@@ -46,7 +47,19 @@ class LdapAuthTestModal extends React.Component {
    */
   async testLdapCredentials() {
     try {
-      toastSuccess('success');
+      const response = await this.props.appContainer.apiPost('/login/testLdap', {
+        loginForm: {
+          username: this.state.username,
+          password: this.state.password,
+        },
+      });
+      if (!response.status) {
+        toastError('data.status not found');
+      }
+      else {
+        toastSuccess(response.message);
+      }
+
     }
     catch (err) {
       toastError(err);
@@ -105,6 +118,7 @@ class LdapAuthTestModal extends React.Component {
 
 LdapAuthTestModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
@@ -112,7 +126,7 @@ LdapAuthTestModal.propTypes = {
 };
 
 const LdapAuthTestModalWrapper = (props) => {
-  return createSubscribedElement(LdapAuthTestModal, props, [AdminLdapSecurityContainer]);
+  return createSubscribedElement(LdapAuthTestModal, props, [AppContainer, AdminLdapSecurityContainer]);
 };
 
 export default withTranslation()(LdapAuthTestModalWrapper);
