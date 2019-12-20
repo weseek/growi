@@ -5,6 +5,8 @@
 * Improvement: Reactify admin pages (Customize)
 * Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
 * Improvement: Enter key behavior in markdown table
+* Fix: Pre-installed plugins in official docker image are not detected
+    * Introduced by 3.6.0
 * Fix: Emoji Autocomplete window does not float correctly
     * Introduced by 3.5.0
 
