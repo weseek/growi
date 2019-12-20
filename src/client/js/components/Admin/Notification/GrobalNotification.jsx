@@ -11,9 +11,10 @@ import AdminNotificationContainer from '../../../services/AdminNotificationConta
 class GrobalNotification extends React.Component {
 
   render() {
-    const { t } = this.props;
+    const { t, adminNotificationContainer } = this.props;
     return (
       <React.Fragment>
+
         <a href="/admin/global-notification/new">
           <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
         </a>
@@ -30,7 +31,13 @@ class GrobalNotification extends React.Component {
               <th></th>
             </tr>
           </thead>
+          {adminNotificationContainer.state.grobalNotifications.length !== 0 && (
+            <tbody className="admin-notif-list">
+              <p>hoge</p>
+            </tbody>
+          )}
         </table>
+
       </React.Fragment>
     );
   }
