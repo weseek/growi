@@ -132,7 +132,7 @@ export default class UserGroupDetailContainer extends Container {
   async fetchApplicableUsers(searchWord) {
     const res = await this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
       searchWord,
-      isForwardMatch: this.state.searchType,
+      searchType: this.state.searchType,
       isAlsoMailSearched: this.state.isAlsoMailSearched,
       isAlsoNameSearched: this.state.isAlsoNameSearched,
     });

@@ -196,20 +196,20 @@ class UserGroupRelation {
    */
   static findUserByNotRelatedGroup(userGroup, queryOptions) {
     const User = UserGroupRelation.crowi.model('User');
-    let searchWord = `${queryOptions.searchWord}`;
+    let searchWord = new RegExp(`${queryOptions.searchWord}`);
     switch (queryOptions.searchType) {
       case 'forward':
-        searchWord = `^${queryOptions.searchWord}`;
+        searchWord = new RegExp(`^${queryOptions.searchWord}`);
         break;
       case 'backword':
-        searchWord = `${queryOptions.searchWord}$`;
+        searchWord = new RegExp(`${queryOptions.searchWord}$`);
         break;
     }
     const searthField = [
-      { username: new RegExp(`${queryOptions.searchWord}`) },
+      { username: searchWord },
     ];
-    if (queryOptions.isAlsoMailSearched) { searthField.push({ email: new RegExp(`${searchWord}`) }) }
-    if (queryOptions.isAlsoNameSearched) { searthField.push({ name: new RegExp(`${searchWord}`) }) }
+    if (queryOptions.isAlsoMailSearched === 'true') { searthField.push({ email: searchWord }) }
+    if (queryOptions.isAlsoNameSearched === 'true') { searthField.push({ name: searchWord }) }
 
     return this.findAllRelationForUserGroup(userGroup)
       .then((relations) => {

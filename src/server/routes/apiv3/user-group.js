@@ -322,11 +322,11 @@ module.exports = (crowi) => {
   router.get('/:id/unrelated-users', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
     const {
-      searchWord, isForwardMatch, isAlsoNameSearched, isAlsoMailSearched,
+      searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched,
     } = req.query;
 
     const queryOptions = {
-      searchWord, isForwardMatch, isAlsoNameSearched, isAlsoMailSearched,
+      searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched,
     };
 
     try {
