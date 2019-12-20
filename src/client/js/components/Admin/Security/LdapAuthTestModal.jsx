@@ -17,9 +17,33 @@ class LdapAuthTestModal extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      username: '',
+      password: '',
+    };
+
+    this.onChangeUsername = this.onChangeUsername.bind(this);
+    this.onChangePassword = this.onChangePassword.bind(this);
     this.testLdapCredentials = this.testLdapCredentials.bind(this);
   }
 
+  /**
+   * Change username
+   */
+  onChangeUsername(username) {
+    this.setState({ username });
+  }
+
+  /**
+   * Change password
+   */
+  onChangePassword(password) {
+    this.setState({ password });
+  }
+
+  /**
+   * Test ldap auth
+   */
   async testLdapCredentials() {
     try {
       toastSuccess('success');
@@ -44,13 +68,24 @@ class LdapAuthTestModal extends React.Component {
           <div className="row p-3">
             <label htmlFor="username" className="col-xs-3 text-right">{t('username')}</label>
             <div className="col-xs-6">
-              <input className="form-control" name="username" />
+              <input
+                className="form-control"
+                name="username"
+                value={this.state.username}
+                onChange={(e) => { this.onChangeUsername(e.target.value) }}
+              />
             </div>
           </div>
           <div className="row p-3">
             <label htmlFor="password" className="col-xs-3 text-right">{t('Password')}</label>
             <div className="col-xs-6">
-              <input className="form-control" type="password" name="password" />
+              <input
+                className="form-control"
+                type="password"
+                name="password"
+                value={this.state.password}
+                onChange={(e) => { this.onChangePassword(e.target.value) }}
+              />
             </div>
           </div>
           <div>
