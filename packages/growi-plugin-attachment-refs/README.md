@@ -11,7 +11,7 @@ Install
 
     ```bash
     yarn add growi-plugin-attachment-refs
-    yarn add -D react-images react-motion
+    yarn add -D react-images@1.0.0 react-motion
     ```
 
 1. build client app (see official documents)
