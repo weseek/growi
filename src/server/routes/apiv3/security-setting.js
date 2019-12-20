@@ -751,15 +751,12 @@ module.exports = (crowi) => {
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
-<<<<<<< HEAD
       // reset strategy
       await crowi.passportService.resetTwitterStrategy();
       // setup strategy
       if (crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
-        await crowi.passportService.setupTwitterStrategy(true);
+        await crowi.passportService.setupTwitterStrzwategy(true);
       }
-=======
->>>>>>> reactify-admin/security
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
