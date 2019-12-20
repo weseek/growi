@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
@@ -38,6 +39,7 @@ class GrobalNotification extends React.Component {
                 return (
                   <tr>
                     <td className="align-middle td-abs-center">
+                      {/* GW-807 switch enable notification */}
                       <input type="checkbox" className="js-switch" data-size="small" data-id="{{ notification._id.toString() }}" />
                     </td>
                     <td>
@@ -88,11 +90,11 @@ class GrobalNotification extends React.Component {
                         </button>
                         <ul className="dropdown-menu" role="menu">
                           <li>
-                            <a href="{{ detailPageUrl }}">
+                            <a href={urljoin('/admin/global-notification/', notification.id)}>
                               <i className="icon-fw icon-note"></i> {t('Edit')}
                             </a>
                           </li>
-
+                          {/*  TODO GW-780 create delete modal  */}
                           <li className="btn-delete">
                             <a
                               href="#"
