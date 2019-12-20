@@ -100,8 +100,6 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    markdonwParams:
-   *                  properties:
    *                    markdownParams:
    *                      type: object
    *                      description: markdown params
