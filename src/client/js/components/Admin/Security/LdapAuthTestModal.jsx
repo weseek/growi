@@ -21,10 +21,12 @@ class LdapAuthTestModal extends React.Component {
     this.state = {
       username: '',
       password: '',
+      logs: '',
     };
 
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
+    this.addLogs = this.addLogs.bind(this);
     this.testLdapCredentials = this.testLdapCredentials.bind(this);
   }
 
@@ -43,6 +45,16 @@ class LdapAuthTestModal extends React.Component {
   }
 
   /**
+   * add logs
+   */
+  addLogs(log) {
+    const newLog = `${new Date()} - ${log}\n\n`;
+    this.setState({
+      logs: `${newLog}${this.state.logs}`,
+    });
+  }
+
+  /**
    * Test ldap auth
    */
   async testLdapCredentials() {
@@ -58,6 +70,19 @@ class LdapAuthTestModal extends React.Component {
       }
       else {
         toastSuccess(response.message);
+      }
+
+      // add logs
+      if (response.err) {
+        this.addLogs(response.err);
+      }
+      if (response.ldapConfiguration) {
+        const prettified = JSON.stringify(response.ldapConfiguration.server, undefined, 4);
+        this.addLogs(`LDAP Configuration : ${prettified}`);
+      }
+      if (response.ldapAccountInfo) {
+        const prettified = JSON.stringify(response.ldapAccountInfo, undefined, 4);
+        this.addLogs(`Retrieved LDAP Account : ${prettified}`);
       }
 
     }
@@ -103,7 +128,7 @@ class LdapAuthTestModal extends React.Component {
           </div>
           <div>
             <h5>Logs</h5>
-            <textarea id="taLogs" className="col-xs-12" rows="4" readOnly />
+            <textarea id="taLogs" className="col-xs-12" rows="4" value={this.state.logs} readOnly />
           </div>
         </Modal.Body>
         <Modal.Footer>
