@@ -12,6 +12,7 @@ class GrobalNotification extends React.Component {
 
   render() {
     const { t, adminNotificationContainer } = this.props;
+    const { grobalNotifications } = adminNotificationContainer.state;
     return (
       <React.Fragment>
 
@@ -31,9 +32,13 @@ class GrobalNotification extends React.Component {
               <th></th>
             </tr>
           </thead>
-          {adminNotificationContainer.state.grobalNotifications.length !== 0 && (
+          {grobalNotifications.length !== 0 && (
             <tbody className="admin-notif-list">
-              <p>hoge</p>
+              {grobalNotifications.map((notification) => {
+                return (
+                  <p>hoge</p>
+                );
+              })}
             </tbody>
           )}
         </table>
