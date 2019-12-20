@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
   yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
 # install peerDependencies
 RUN --mount=type=cache,target=/usr/local/share/.cache/yarn \
-  yarn add -D react-images react-motion
+  yarn add -D react-images@1.0.0 react-motion
 
 
 
