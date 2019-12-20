@@ -7,6 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
+import GrobalNotification from './GrobalNotification';
 
 class NotificationSetting extends React.Component {
 
@@ -34,7 +35,7 @@ class NotificationSetting extends React.Component {
               <UserTriggerNotification />
             </div>
             <div id="global-notification" className="tab-pane" role="tabpanel">
-              {/* TODO GE-776 global notification component */}
+              <GrobalNotification />
             </div>
           </div>
         </div>
