@@ -14,6 +14,10 @@ class GrobalNotification extends React.Component {
     const { t } = this.props;
     return (
       <React.Fragment>
+        <a href="/admin/global-notification/new">
+          <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
+        </a>
+
         <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}</h2>
       </React.Fragment>
     );
