@@ -44,6 +44,7 @@ export default class AdminSamlSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { samlAuth } = response.data.securityParams;
     this.setState({
+      missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
       samlEntryPoint: samlAuth.samlEntryPoint || '',
       samlIssuer: samlAuth.samlIssuer || '',
       samlCert: samlAuth.samlCert || '',
@@ -156,6 +157,7 @@ export default class AdminSamlSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
 
     this.setState({
+      missingMandatoryConfigKeys: securitySettingParams.missingMandatoryConfigKeys,
       samlEntryPoint: securitySettingParams.samlEntryPoint || '',
       samlIssuer: securitySettingParams.samlIssuer || '',
       samlCert: securitySettingParams.samlCert || '',

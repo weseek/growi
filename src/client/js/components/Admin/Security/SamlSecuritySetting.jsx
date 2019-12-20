@@ -139,8 +139,10 @@ class SamlSecurityManagement extends React.Component {
               <div className="alert alert-danger">
                 {t('security_setting.missing mandatory configs')}
                 <ul>
-                  {/* TODO GW-750 show li after fetch data */}
-                  {/* <li>{ t('security_setting.form_item_name.key') }</li> */}
+                  {adminSamlSecurityContainer.state.missingMandatoryConfigKeys.map((configKey) => {
+                    const key = configKey.replace('security:passport-saml:', '');
+                    return <li key={configKey}>{t(`security_setting.form_item_name.${key}`)}</li>;
+                  })}
                 </ul>
               </div>
             )}
