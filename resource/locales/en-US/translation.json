@@ -635,7 +635,7 @@
     "notification_list": "List of Notification Settings",
     "add_notification": "Add New",
     "trigger_path": "Trigger Path",
-    "trigger_path_help": "(expression with %s is supported)",
+    "trigger_path_help": "(expression with <code>*</code> is supported)",
     "trigger_events": "Trigger Events",
     "notify_to": "Notify To",
     "back_to_list": "Go back to list",

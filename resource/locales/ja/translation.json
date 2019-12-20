@@ -619,7 +619,7 @@
     "notification_list": "通知設定の一覧",
     "add_notification": "通知設定の追加",
     "trigger_path": "トリガーパス",
-    "trigger_path_help": "(%sが使用できます)",
+    "trigger_path_help": "(<code>*</code>が使用できます)",
     "trigger_events": "トリガーイベント",
     "notify_to": "通知先",
     "back_to_list": "通知設定一覧に戻る",

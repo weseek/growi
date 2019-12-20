@@ -27,7 +27,8 @@ class GrobalNotification extends React.Component {
           <thead>
             <tr>
               <th>ON/OFF</th>
-              <th>{t('notification_setting.trigger_path')} {t('notification_setting.trigger_path_help', '<code>*</code>')}</th>
+              {/* eslint-disable-next-line react/no-danger */}
+              <th>{t('notification_setting.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help') }} /></th>
               <th>{t('notification_setting.trigger_events')}</th>
               <th>{t('notification_setting.notify_to')}</th>
               <th></th>
