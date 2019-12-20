@@ -61,7 +61,7 @@ class LdapAuthTestModal extends React.Component {
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
-            {t('Test LDAP Account')}
+            Test LDAP Account
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -94,7 +94,7 @@ class LdapAuthTestModal extends React.Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button type="button" className="btn btn-default mt-3 col-xs-offset-5 col-xs-2" onClick={this.testLdapCredentials}>{t('Test')}</button>
+          <button type="button" className="btn btn-default mt-3 col-xs-offset-5 col-xs-2" onClick={this.testLdapCredentials}>Test</button>
         </Modal.Footer>
       </Modal>
     );
