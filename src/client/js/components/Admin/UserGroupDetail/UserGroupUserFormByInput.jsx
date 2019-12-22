@@ -16,6 +16,7 @@ class UserGroupUserFormByInput extends React.Component {
     super(props);
 
     this.state = {
+      keyword: '',
       inputUser: '',
       applicableUsers: [],
       isLoading: false,
@@ -54,7 +55,7 @@ class UserGroupUserFormByInput extends React.Component {
 
   async searhApplicableUsers() {
     try {
-      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.inputUser);
+      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
       this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
@@ -76,7 +77,7 @@ class UserGroupUserFormByInput extends React.Component {
       return;
     }
 
-    this.setState({ isLoading: true });
+    this.setState({ keyword, isLoading: true });
     this.searhApplicableUsersDebounce();
   }
 
