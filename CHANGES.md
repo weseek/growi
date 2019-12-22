@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.6.2-RC
+## 3.6.3-RC
+
+* 
+
+## 3.6.2
 
 * Improvement: Reactify admin pages (Customize)
 * Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
