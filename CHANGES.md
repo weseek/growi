@@ -2,6 +2,14 @@
 
 ## 3.6.2-RC
 
+* Improvement: Reactify admin pages (Customize)
+* Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
+* Improvement: Enter key behavior in markdown table
+* Fix: Pre-installed plugins in official docker image are not detected
+    * Introduced by 3.6.0
+* Fix: Emoji Autocomplete window does not float correctly
+    * Introduced by 3.5.0
+
 ## 3.6.1
 
 ### BREAKING CHANGES
@@ -17,6 +25,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 
 * Improvement: Drop unnecessary MongoDB collection indexes
 * Improvement: Accessibility of Antarctic theme
+* Improvement: Reactify admin pages (Markdown Settings)
 * Fix: Appending tag is failed by wrong index of PageTagRelation
     * Introduced by 3.5.20
 * Fix: Pages without heading slash is invalid but creatable

@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.6.1-RC",
+  "version": "3.6.2-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -101,6 +101,7 @@
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
     "growi-commons": "^4.0.8",
+    "growi-plugin-attachment-refs": "^1.0.6",
     "helmet": "^3.13.0",
     "i18next": "^19.0.0",
     "i18next-express-middleware": "^1.4.1",
@@ -220,6 +221,8 @@
     "react-frame-component": "^4.0.0",
     "react-hotkeys": "^2.0.0",
     "react-i18next": "^11.1.0",
+    "react-images": "1.0.0",
+    "react-motion": "^0.5.2",
     "react-waypoint": "^9.0.0",
     "replacestream": "^4.0.3",
     "reveal.js": "^3.5.0",

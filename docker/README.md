@@ -1,8 +1,8 @@
 
-growi-docker
-===========
+GROWI Official docker image
+========================
 
-[![wercker status](https://app.wercker.com/status/592aa5cebb59c67c4c266ce1f33b6a7e/s/ "wercker status")](https://app.wercker.com/project/byKey/592aa5cebb59c67c4c266ce1f33b6a7e) [![docker-build-automated](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/weseek/growi/) [![docker-pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/) [![](https://images.microbadger.com/badges/image/weseek/growi.svg)](https://microbadger.com/images/weseek/growi)
+[![Actions Status](https://github.com/weseek/growi/workflows/Release%20Docker%20Images/badge.svg)](https://github.com/weseek/growi/actions) [![docker-pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/) [![](https://images.microbadger.com/badges/image/weseek/growi.svg)](https://microbadger.com/images/weseek/growi)
 
 ![GROWI-x-docker](https://user-images.githubusercontent.com/1638767/38307565-105956e2-384f-11e8-8534-b1128522d68d.png)
 
@@ -10,8 +10,8 @@ growi-docker
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`3.6.0`, `3.6`, `3`, 'latest', (Dockerfile)](https://github.com/weseek/growi/blob/v3.6.0/docker/Dockerfile)
-* [`3.6.0-nocdn`, `3.6-nocdn`, `3-nocdn`, 'latest-nocdn', (Dockerfile)](https://github.com/weseek/growi/blob/v3.6.0/docker/Dockerfile)
+* [`3.6.0`, `3.6`, `3`, `latest`, (Dockerfile)](https://github.com/weseek/growi/blob/v3.6.0/docker/Dockerfile)
+* [`3.6.0-nocdn`, `3.6-nocdn`, `3-nocdn`, `latest-nocdn`, (Dockerfile)](https://github.com/weseek/growi/blob/v3.6.0/docker/Dockerfile)
 * [`3.5.25`, `3.5`, `3`, (Dockerfile)](https://github.com/weseek/growi-docker/blob/v3.5.25/Dockerfile)
 * [`3.5.25-nocdn`, `3.5-nocdn`, `3-nocdn` (Dockerfile)](https://github.com/weseek/growi-docker/blob/v3.5.25/nocdn/Dockerfile)
 * [`3.4.7`, `3.4`, `3`, (Dockerfile)](https://github.com/weseek/growi-docker/blob/v3.4.7/Dockerfile)
