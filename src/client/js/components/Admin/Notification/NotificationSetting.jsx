@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import SlackAppConfiguration from './SlackAppConfiguration';
 
 class NotificationSetting extends React.Component {
 
@@ -26,7 +27,7 @@ class NotificationSetting extends React.Component {
 
         <div className="tab-content m-t-15">
           <div id="slack-configuration" className="tab-pane active" role="tabpanel">
-            {/* TODO GW-773 create slak config component */}
+            <SlackAppConfiguration />
           </div>
           <div id="user-trigger-notification" className="tab-pane" role="tabpanel">
             {/* TODO GW-775 user trigger notification component */}
