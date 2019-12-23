@@ -60,8 +60,11 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async updateSlackAppConfiguration() {
-    // TODO GW-794 create apiV3 updateSlackAppConfiguration
+    const response = await this.appContainer.apiv3.put('/notification-setting/slack-configuration', {
 
+    });
+
+    return response;
   }
 
 }
