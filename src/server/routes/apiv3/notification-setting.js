@@ -9,7 +9,7 @@ const router = express.Router();
 
 // const { body } = require('express-validator/check');
 
-// const ErrorV3 = require('../../models/vo/error-apiv3');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
@@ -32,8 +32,21 @@ module.exports = (crowi) => {
       'slack:token': req.body.slackToken,
     };
 
-    console.log(requestParams);
-    return res.apiv3();
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
+      const responseParams = {
+        webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
+        isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
+        slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+      };
+      // TODO setup
+      return res.apiv3({ responseParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating slack configuration';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-slackConfiguration-failed'));
+    }
 
   });
 
