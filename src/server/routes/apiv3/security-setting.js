@@ -755,7 +755,7 @@ module.exports = (crowi) => {
       await crowi.passportService.resetTwitterStrategy();
       // setup strategy
       if (crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
-        await crowi.passportService.setupTwitterStrzwategy(true);
+        await crowi.passportService.setupTwitterStrategy(true);
       }
       return res.apiv3({ securitySettingParams });
     }
