@@ -709,9 +709,17 @@ module.exports = (crowi) => {
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       };
+      // reset strategy
+      await crowi.passportService.resetGitHubStrategy();
+      // setup strategy
+      if (crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled')) {
+        await crowi.passportService.setupGitHubStrategy(true);
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetGitHubStrategy();
       const msg = 'Error occurred in updating githubOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
