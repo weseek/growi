@@ -39,10 +39,10 @@ class TwitterSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminTwitterSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
 
     try {
-      await adminTwitterSecurityContainer.updateTwitterSetting();
+      await adminTwitterSecurityContainer.updateTwitterSetting(adminGeneralSecurityContainer.state.isTwitterOAuthEnabled);
       toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
     }
     catch (err) {
