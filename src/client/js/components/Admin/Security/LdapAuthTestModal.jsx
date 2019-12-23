@@ -65,12 +65,6 @@ class LdapAuthTestModal extends React.Component {
           password: this.state.password,
         },
       });
-      if (!response.status) {
-        toastError('data.status not found');
-      }
-      else {
-        toastSuccess(response.message);
-      }
 
       // add logs
       if (response.err) {
@@ -86,6 +80,7 @@ class LdapAuthTestModal extends React.Component {
       }
 
     }
+    // Catch server communication error
     catch (err) {
       toastError(err);
       logger.error(err);
