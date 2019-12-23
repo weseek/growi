@@ -6,7 +6,7 @@ import loggerFactory from '@alias/logger';
 import Modal from 'react-bootstrap/es/Modal';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
