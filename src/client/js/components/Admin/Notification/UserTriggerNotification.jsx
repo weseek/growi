@@ -44,7 +44,7 @@ class UserTriggerNotification extends React.Component {
   }
 
   validateForm() {
-    return this.state.pathPattern !== '' && this.state.channel;
+    return this.state.pathPattern !== '' && this.state.channel !== '';
   }
 
   async onClickSubmit() {
