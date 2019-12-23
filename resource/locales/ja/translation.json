@@ -633,7 +633,8 @@
     "email": {
       "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
     },
-    "updated_slackApp": "SlackApp設定を更新しました"
+    "updated_slackApp": "SlackApp設定を更新しました",
+    "add_notification_pattern": "通知パターンを追加しました。"
   },
 
   "customize_page": {
