@@ -69,7 +69,9 @@ export default class AdminNotificationContainer extends Container {
    */
   async updateSlackAppConfiguration() {
     const response = await this.appContainer.apiv3.put('/notification-setting/slack-configuration', {
-
+      webhookUrl: this.state.webhookUrl,
+      isIncomingWebhookPrioritized: this.state.isIncomingWebhookPrioritized,
+      slackToken: this.state.slackToken,
     });
 
     return response;

@@ -26,7 +26,13 @@ module.exports = (crowi) => {
   // TODO swagger
   router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
 
-    console.log('here is apiV3');
+    const requestParams = {
+      'slack:incomingWebhookUrl': req.body.webhookUrl,
+      'slack:isIncomingWebhookPrioritized': req.body.isIncomingWebhookPrioritized,
+      'slack:token': req.body.slackToken,
+    };
+
+    console.log(requestParams);
     return res.apiv3();
 
   });
