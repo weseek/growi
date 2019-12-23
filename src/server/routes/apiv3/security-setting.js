@@ -65,11 +65,13 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   githubOAuth: [
+    body('isGithubOAuthEnabled').isBoolean(),
     body('githubClientId').isString(),
     body('githubClientSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   twitterOAuth: [
+    body('isTwitterOAuthEnabled').isBoolean(),
     body('twitterConsumerKey').isString(),
     body('twitterConsumerSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
@@ -231,6 +233,9 @@ const validator = {
  *            description: local account automatically linked the email matched
  *      GoogleOAuthSetting:
  *        type:object
+ *          isGithubOAuthEnabled:
+ *            type: boolean
+ *            description: whether to enable github oauth
  *          googleClientId:
  *            type: string
  *            description: key of comsumer
@@ -241,6 +246,9 @@ const validator = {
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      TwitterOAuthSetting:
+ *          isTwitterOAuthEnabled:
+ *            type: boolean
+ *            description: whether to enable twitter oauth
  *        type:object
  *          twitterConsumerKey:
  *            type: string
