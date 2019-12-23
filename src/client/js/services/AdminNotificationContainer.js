@@ -12,6 +12,7 @@ export default class AdminNotificationContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       selectSlackOption: 'Incoming Webhooks',
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
@@ -25,6 +26,13 @@ export default class AdminNotificationContainer extends Container {
    */
   static getClassName() {
     return 'AdminNotificationContainer';
+  }
+
+  /**
+   * Retrieve notificationData
+   */
+  retrieveNotificationData() {
+    // TODO retrive data from api
   }
 
   /**

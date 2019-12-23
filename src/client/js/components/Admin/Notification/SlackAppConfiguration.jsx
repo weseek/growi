@@ -18,10 +18,6 @@ class SlackAppConfiguration extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      retrieveError: null,
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
@@ -142,7 +138,7 @@ class SlackAppConfiguration extends React.Component {
 
         <AdminUpdateButtonRow
           onClick={this.onClickSubmit}
-          disabled={this.state.retrieveError != null}
+          disabled={adminNotificationContainer.state.retrieveError != null}
         />
 
         <hr />
