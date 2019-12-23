@@ -695,6 +695,7 @@ module.exports = (crowi) => {
    */
   router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
+      'security:passport-github:isEnabled': req.body.isGithubOAuthEnabled,
       'security:passport-github:clientId': req.body.githubClientId,
       'security:passport-github:clientSecret': req.body.githubClientSecret,
       'security:passport-github:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
@@ -703,6 +704,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),

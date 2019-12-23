@@ -72,9 +72,10 @@ export default class AdminGithubSecurityContainer extends Container {
   /**
    * Update githubSetting
    */
-  async updateGitHubSetting() {
+  async updateGitHubSetting(isGithubOAuthEnabled) {
 
     const response = await this.appContainer.apiv3.put('/security-setting/github-oauth', {
+      isGithubOAuthEnabled,
       githubClientId: this.state.githubClientId,
       githubClientSecret: this.state.githubClientSecret,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,

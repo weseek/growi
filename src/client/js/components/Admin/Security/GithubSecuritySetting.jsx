@@ -39,10 +39,10 @@ class GithubSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGithubSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGithubSecurityContainer } = this.props;
 
     try {
-      await adminGithubSecurityContainer.updateGitHubSetting();
+      await adminGithubSecurityContainer.updateGitHubSetting(adminGeneralSecurityContainer.state.isGithubOAuthEnabled);
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
