@@ -99,10 +99,9 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    markdonwParams:
-   *                      $ref: '#/components/schemas/LineBreakParams'
-   *                      $ref: '#/components/schemas/PresentationParams'
-   *                      $ref: '#/components/schemas/XssParams'
+   *                    markdownParams:
+   *                      type: object
+   *                      description: markdown params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
