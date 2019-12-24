@@ -33,7 +33,7 @@ export default class AdminNotificationContainer extends Container {
    * Retrieve notificationData
    */
   retrieveNotificationData() {
-    // TODO retrive data from api
+    // TODO GW-821 retrive data from api
   }
 
   /**
