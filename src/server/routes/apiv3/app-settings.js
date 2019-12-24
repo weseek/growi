@@ -371,18 +371,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/AwsSettingParams'
+   *                $ref: '#/components/schemas/AwsSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update aws setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/AwsSettingParams'
+   *                  $ref: '#/components/schemas/AwsSettingParams'
    */
   router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
