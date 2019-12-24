@@ -2,13 +2,34 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
+import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+
 import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
 
+const logger = loggerFactory('growi:NotificationSetting');
+
 class NotificationSetting extends React.Component {
+
+  async componentDidMount() {
+    const { adminNotificationContainer } = this.props;
+
+    try {
+      await adminNotificationContainer.retrieveNotificationData();
+    }
+    catch (err) {
+      toastError(err);
+      adminNotificationContainer.setState({ retrieveError: err });
+      logger.error(err);
+    }
+
+  }
 
   render() {
 
@@ -45,12 +66,13 @@ class NotificationSetting extends React.Component {
 }
 
 const NotificationSettingWrapper = (props) => {
-  return createSubscribedElement(NotificationSetting, props, [AppContainer]);
+  return createSubscribedElement(NotificationSetting, props, [AppContainer, AdminNotificationContainer]);
 };
 
 NotificationSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
 

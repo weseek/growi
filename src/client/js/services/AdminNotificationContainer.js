@@ -12,6 +12,7 @@ export default class AdminNotificationContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       selectSlackOption: 'Incoming Webhooks',
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
@@ -26,6 +27,13 @@ export default class AdminNotificationContainer extends Container {
    */
   static getClassName() {
     return 'AdminNotificationContainer';
+  }
+
+  /**
+   * Retrieve notificationData
+   */
+  retrieveNotificationData() {
+    // TODO GW-821 retrive data from api
   }
 
   /**
@@ -61,8 +69,13 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async updateSlackAppConfiguration() {
-    // TODO GW-794 create apiV3 updateSlackAppConfiguration
+    const response = await this.appContainer.apiv3.put('/notification-setting/slack-configuration', {
+      webhookUrl: this.state.webhookUrl,
+      isIncomingWebhookPrioritized: this.state.isIncomingWebhookPrioritized,
+      slackToken: this.state.slackToken,
+    });
 
+    return response;
   }
 
   /**
