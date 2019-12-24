@@ -16,7 +16,6 @@ module.exports = function(crowi, app) {
     configManager,
     aclService,
     slackNotificationService,
-    customizeService,
     exportService,
   } = crowi;
 
@@ -137,26 +136,12 @@ module.exports = function(crowi, app) {
     });
   };
 
-  // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
-  actions.markdown.presentationSetting = async function(req, res) {
-    const markdownSetting = req.form.markdownSetting;
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
-      req.flash('successMessage', ['Successfully updated!']);
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-    }
-
-    return res.redirect('/admin/markdown');
-  };
-
   // app.get('/admin/customize' , admin.customize.index);
   actions.customize = {};
   actions.customize.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'customize:');
 
+    // TODO delete after apiV3
     /* eslint-disable quote-props, no-multi-spaces */
     const highlightJsCssSelectorOptions = {
       'github':           { name: '[Light] GitHub',         border: false },
@@ -867,20 +852,6 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
-  actions.api.customizeSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      customizeService.initCustomCss();
-      customizeService.initCustomTitle();
-
-      return res.json({ status: true });
-    }
-
-    return res.json({ status: false, message: req.form.errors.join('\n') });
-  };
 
   // app.post('/_api/admin/notifications.add'    , admin.api.notificationAdd);
   actions.api.notificationAdd = function(req, res) {

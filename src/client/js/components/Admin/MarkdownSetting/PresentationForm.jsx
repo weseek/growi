@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import MarkDownSettingContainer from '../../../services/MarkDownSettingContainer';
+import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 const logger = loggerFactory('growi:markdown:presentation');
 
@@ -23,7 +23,7 @@ class PresentationForm extends React.Component {
     const { t } = this.props;
 
     try {
-      await this.props.markDownSettingContainer.updatePresentationSetting();
+      await this.props.adminMarkDownContainer.updatePresentationSetting();
       toastSuccess(t('markdown_setting.updated_presentation'));
     }
     catch (err) {
@@ -34,8 +34,8 @@ class PresentationForm extends React.Component {
 
 
   render() {
-    const { t, markDownSettingContainer } = this.props;
-    const { pageBreakSeparator, pageBreakCustomSeparator } = markDownSettingContainer.state;
+    const { t, adminMarkDownContainer } = this.props;
+    const { pageBreakSeparator, pageBreakCustomSeparator } = adminMarkDownContainer.state;
 
     return (
       <React.Fragment>
@@ -53,7 +53,7 @@ class PresentationForm extends React.Component {
                   className="custom-control-input"
                   id="pageBreakOption1"
                   checked={pageBreakSeparator === 1}
-                  onChange={() => markDownSettingContainer.switchPageBreakSeparator(1)}
+                  onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
                 />
                 <label className="custom-control-label" htmlFor="pageBreakOption1">
                   <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
@@ -71,7 +71,7 @@ class PresentationForm extends React.Component {
                   className="custom-control-input"
                   id="pageBreakOption2"
                   checked={pageBreakSeparator === 2}
-                  onChange={() => markDownSettingContainer.switchPageBreakSeparator(2)}
+                  onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
                 />
                 <label className="custom-control-label" htmlFor="pageBreakOption2">
                   <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
@@ -89,7 +89,7 @@ class PresentationForm extends React.Component {
                   id="pageBreakOption3"
                   className="custom-control-input"
                   checked={pageBreakSeparator === 3}
-                  onChange={() => markDownSettingContainer.switchPageBreakSeparator(3)}
+                  onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
                 />
                 <label className="custom-control-label" htmlFor="pageBreakOption3">
                   <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
@@ -98,7 +98,7 @@ class PresentationForm extends React.Component {
                     <input
                       className="form-control"
                       value={pageBreakCustomSeparator}
-                      onChange={(e) => { markDownSettingContainer.setPageBreakCustomSeparator(e.target.value) }}
+                      onChange={(e) => { adminMarkDownContainer.setPageBreakCustomSeparator(e.target.value) }}
                     />
                   </div>
                 </label>
@@ -118,13 +118,13 @@ class PresentationForm extends React.Component {
 }
 
 const PresentationFormWrapper = (props) => {
-  return createSubscribedElement(PresentationForm, props, [AppContainer, MarkDownSettingContainer]);
+  return createSubscribedElement(PresentationForm, props, [AppContainer, AdminMarkDownContainer]);
 };
 
 PresentationForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  markDownSettingContainer: PropTypes.instanceOf(MarkDownSettingContainer).isRequired,
+  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
 };
 
