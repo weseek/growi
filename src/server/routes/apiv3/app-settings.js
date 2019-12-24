@@ -121,6 +121,9 @@ module.exports = (crowi) => {
       body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
       body('secretKey').trim(),
     ],
+    pluginSetting: [
+      body('isEnabledPlugins').isBoolean(),
+    ],
   };
 
   /**
