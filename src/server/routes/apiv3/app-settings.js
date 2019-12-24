@@ -9,28 +9,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
-
 const ErrorV3 = require('../../models/vo/error-apiv3');
-
-const validator = {
-  appSetting: [
-    body('title').trim(),
-    body('confidential'),
-    body('globalLang').isIn(['en-US', 'ja']),
-    body('fileUpload').isBoolean(),
-  ],
-  siteUrlSetting: [
-    body('siteUrl').trim(),
-  ],
-  mailSetting: [
-    body('fromAddress').trim(),
-    body('smtpHost').trim(),
-    body('smtpPort').trim(),
-    body('smtpUser').trim(),
-    body('smtpPassword').trim(),
-  ],
-};
-
 
 /**
  * @swagger
@@ -85,6 +64,23 @@ const validator = {
  *          smtpPassword:
  *            type: String
  *            description: password of client's smtp server
+ *      AwsSettingParams:
+ *        type: object
+ *          region:
+ *            type: String
+ *            description: region of AWS S3
+ *          customEndpoint:
+ *            type: String
+ *            description: custom endpoint of AWS S3
+ *          bucket:
+ *            type: String
+ *            description: AWS S3 bucket name
+ *          accessKeyId:
+ *            type: String
+ *            description: accesskey id for authentification of AWS
+ *          secretKey:
+ *            type: String
+ *            description: secret key for authentification of AWS
  */
 
 module.exports = (crowi) => {
@@ -95,6 +91,32 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const validator = {
+    appSetting: [
+      body('title').trim(),
+      body('confidential'),
+      body('globalLang').isIn(['en-US', 'ja']),
+      body('fileUpload').isBoolean(),
+    ],
+    siteUrlSetting: [
+      body('siteUrl').trim().isURL({ require_tld: false }),
+    ],
+    mailSetting: [
+      body('fromAddress').trim().isEmail(),
+      body('smtpHost').trim(),
+      body('smtpPort').trim().isPort(),
+      body('smtpUser').trim(),
+      body('smtpPassword').trim(),
+    ],
+    awsSetting: [
+      body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage('リージョンには、AWSリージョン名を入力してください。 例: ap-northeast-1'),
+      body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
+      body('bucket').trim(),
+      body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
+      body('secretKey').trim(),
+    ],
+  };
 
   /**
    * @swagger
@@ -127,6 +149,11 @@ module.exports = (crowi) => {
       smtpPort: crowi.configManager.getConfig('crowi', 'mail:smtpPort'),
       smtpUser: crowi.configManager.getConfig('crowi', 'mail:smtpUser'),
       smtpPassword: crowi.configManager.getConfig('crowi', 'mail:smtpPassword'),
+      region: crowi.configManager.getConfig('crowi', 'aws:region'),
+      customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+      bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+      accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+      secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -330,5 +357,53 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /app-settings/aws-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        description: Update aws setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/AwsSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update aws setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/AwsSettingParams'
+   */
+  router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async(req, res) => {
+    const requestAwsSettingParams = {
+      'aws:region': req.body.region,
+      'aws:customEndpoint': req.body.customEndpoint,
+      'aws:bucket': req.body.bucket,
+      'aws:accessKeyId': req.body.accessKeyId,
+      'aws:secretKey': req.body.secretKey,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAwsSettingParams);
+      const awsSettingParams = {
+        region: crowi.configManager.getConfig('crowi', 'aws:region'),
+        customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
+        bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
+        accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
+        secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+      };
+      return res.apiv3({ awsSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating aws setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-awsSetting-failed'));
+    }
+
+  });
   return router;
 };
