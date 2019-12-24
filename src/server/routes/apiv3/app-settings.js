@@ -9,35 +9,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
-
 const ErrorV3 = require('../../models/vo/error-apiv3');
-
-const validator = {
-  appSetting: [
-    body('title').trim(),
-    body('confidential'),
-    body('globalLang').isIn(['en-US', 'ja']),
-    body('fileUpload').isBoolean(),
-  ],
-  siteUrlSetting: [
-    body('siteUrl').trim(),
-  ],
-  mailSetting: [
-    body('fromAddress').trim(),
-    body('smtpHost').trim(),
-    body('smtpPort').trim(),
-    body('smtpUser').trim(),
-    body('smtpPassword').trim(),
-  ],
-  awsSetting: [
-    body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage('リージョンには、AWSリージョン名を入力してください。 例: ap-northeast-1'),
-    body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
-    body('bucket').trim(),
-    body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
-    body('secretKey').trim(),
-  ],
-};
-
 
 /**
  * @swagger
@@ -119,6 +91,32 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const validator = {
+    appSetting: [
+      body('title').trim(),
+      body('confidential'),
+      body('globalLang').isIn(['en-US', 'ja']),
+      body('fileUpload').isBoolean(),
+    ],
+    siteUrlSetting: [
+      body('siteUrl').trim().isURL({ require_tld: false }),
+    ],
+    mailSetting: [
+      body('fromAddress').trim().isEmail(),
+      body('smtpHost').trim(),
+      body('smtpPort').trim().isPort(),
+      body('smtpUser').trim(),
+      body('smtpPassword').trim(),
+    ],
+    awsSetting: [
+      body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage('リージョンには、AWSリージョン名を入力してください。 例: ap-northeast-1'),
+      body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
+      body('bucket').trim(),
+      body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
+      body('secretKey').trim(),
+    ],
+  };
 
   /**
    * @swagger
