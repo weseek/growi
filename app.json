@@ -27,7 +27,7 @@
     },
     "ADDITIONAL_PACKAGES": {
       "description": "Space-separated list of npm package names to install.",
-      "value": "growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images react-motion",
+      "value": "growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion",
       "required": false
     }
   },
