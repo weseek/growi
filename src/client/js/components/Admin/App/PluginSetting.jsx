@@ -47,7 +47,7 @@ class PluginSetting extends React.Component {
               <input
                 id="isEnabledPlugins"
                 type="checkbox"
-                checked={adminAppContainer.isEnabledPlugins}
+                checked={adminAppContainer.state.isEnabledPlugins}
                 onChange={(e) => {
                   adminAppContainer.changeIsEnabledPlugins(e.target.checked);
                 }}
