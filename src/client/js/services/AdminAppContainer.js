@@ -36,7 +36,6 @@ export default class AdminAppContainer extends Container {
       bucket: '',
       accessKeyId: '',
       secretKey: '',
-      isEnabledPlugins: true,
     };
 
     this.changeTitle = this.changeTitle.bind(this);
@@ -54,12 +53,10 @@ export default class AdminAppContainer extends Container {
     this.changeBucket = this.changeBucket.bind(this);
     this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
     this.changeSecretKey = this.changeSecretKey.bind(this);
-    this.changeIsEnabledPlugins = this.changeIsEnabledPlugins.bind(this);
     this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
     this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
     this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
     this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
-    this.updatePluginSettingHandler = this.updatePluginSettingHandler.bind(this);
   }
 
   /**
@@ -95,7 +92,6 @@ export default class AdminAppContainer extends Container {
         bucket: appSettingsParams.bucket,
         accessKeyId: appSettingsParams.accessKeyId,
         secretKey: appSettingsParams.secretKey,
-        isEnabledPlugins: appSettingsParams.isEnabledPlugins,
       });
 
     }
@@ -212,13 +208,6 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change secret key
-   */
-  changeIsEnabledPlugins(isEnabledPlugins) {
-    this.setState({ isEnabledPlugins });
-  }
-
-  /**
    * Update app setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
@@ -281,19 +270,5 @@ export default class AdminAppContainer extends Container {
     const { awsSettingParams } = response.data;
     return awsSettingParams;
   }
-
-  /**
-   * Update plugin setting
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updatePluginSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/plugin-setting', {
-      isEnabledPlugins: this.state.isEnabledPlugins,
-    });
-    const { pluginSettingParams } = response.data;
-    return pluginSettingParams;
-  }
-
 
 }
