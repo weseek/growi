@@ -59,7 +59,6 @@ module.exports = function(crowi, app) {
 
   app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
-  app.post('/_api/admin/settings/plugin'    , loginRequiredStrictly , adminRequired , csrf, form.admin.plugin, admin.api.appSetting);
 
   // security admin
   app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);

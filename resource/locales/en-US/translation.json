@@ -440,7 +440,8 @@
     "Disable": "Disable",
     "Use env var if empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used.",
     "updated_app_setting": "Succeeded to update app setting",
-    "updated_site_url": "Succeeded to update site URL"
+    "updated_site_url": "Succeeded to update site URL",
+    "updated_plugin_setting": "Succeeded to update plugin setting"
   },
 
   "security_setting": {
