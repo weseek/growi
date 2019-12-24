@@ -16,6 +16,25 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *  tags:
  *    name: NotificationSetting
  */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      SlackConfigurationParams:
+ *        type: object
+ *        properties:
+ *          webhookUrl:
+ *            type: string
+ *            description: incoming webhooks url
+ *          isIncomingWebhookPrioritized:
+ *            type: boolean
+ *            description: use incoming webhooks even if Slack App settings are enabled
+ *          slackToken:
+ *            type: string
+ *            description: OAuth access token
+ */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
@@ -23,7 +42,27 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /notification-setting/slack-configuration:
+   *      put:
+   *        tags: [NotificationSetting]
+   *        description: Update slack configuration setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SlackConfigurationParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update slack configuration setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/SlackConfigurationParams'
+   */
   router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
 
     const requestParams = {
