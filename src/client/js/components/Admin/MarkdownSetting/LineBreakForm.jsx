@@ -43,8 +43,8 @@ class LineBreakForm extends React.Component {
     const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
 
     return (
-      <div className="form-group my-3">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
+      <div className="form-group text-left my-3">
+        <div className="col-xs-offset-4 col-xs-6">
           <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
@@ -70,8 +70,8 @@ class LineBreakForm extends React.Component {
     const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
 
     return (
-      <div className="form-group my-3">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
+      <div className="form-group text-left my-3">
+        <div className="col-xs-offset-4 col-xs-6">
           <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
@@ -99,7 +99,7 @@ class LineBreakForm extends React.Component {
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
-        <div className="form-group my-3">
+        <div className="form-group col-12 text-center my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>

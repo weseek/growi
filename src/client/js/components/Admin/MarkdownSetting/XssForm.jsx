@@ -103,7 +103,8 @@ class XssForm extends React.Component {
     return (
       <React.Fragment>
         <fieldset className="form-group mx-auto my-3">
-          <div className="col-xs-offset-4 col-xs-6 text-left">
+
+          <div className="col-xs-offset-4 col-xs-6 text-center">
             <div className="custom-control custom-switch checkbox-success">
               <input
                 type="checkbox"
@@ -118,9 +119,12 @@ class XssForm extends React.Component {
               </label>
             </div>
           </div>
-          {isEnabledXss && this.xssOptions()}
+
+          <div className="col-xs-offset-4 col-xs-6 mx-auto">
+            {isEnabledXss && this.xssOptions()}
+          </div>
         </fieldset>
-        <div className="form-group my-3">
+        <div className="form-group col-12 text-center my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>

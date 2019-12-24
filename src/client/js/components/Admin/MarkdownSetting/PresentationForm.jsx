@@ -41,12 +41,12 @@ class PresentationForm extends React.Component {
       <React.Fragment>
         <fieldset className="form-group mx-auto my-2">
 
-          <p className="col-xs-3 control-label text-left">
+          <p className="col-12 col-xs-3 control-label font-weight-bold text-left mt-3">
             { t('markdown_setting.Page break setting') }
           </p>
 
-          <div className="form-group form-check-inline col-xs-12 my-3">
-            <div className="col-xs-4 align-self-start">
+          <div className="form-group form-check-inline mx-auto col-xs-12 my-3">
+            <div className="col-4 align-self-start">
               <div className="custom-control custom-radio">
                 <input
                   type="radio"
@@ -64,7 +64,7 @@ class PresentationForm extends React.Component {
                 </label>
               </div>
             </div>
-            <div className="col-xs-4 align-self-start">
+            <div className="col-4 align-self-start">
               <div className="custom-control custom-radio">
                 <input
                   type="radio"
@@ -82,7 +82,7 @@ class PresentationForm extends React.Component {
                 </label>
               </div>
             </div>
-            <div className="col-xs-4 align-self-start">
+            <div className="col-4 align-self-start">
               <div className="custom-control custom-radio">
                 <input
                   type="radio"
@@ -106,7 +106,7 @@ class PresentationForm extends React.Component {
             </div>
           </div>
         </fieldset>
-        <div className="form-group my-3">
+        <div className="form-group col-12 text-center my-3">
           <div className="col-xs-offset-4 col-xs-5">
             <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
           </div>
