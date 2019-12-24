@@ -7,9 +7,17 @@ const express = require('express');
 
 const router = express.Router();
 
-// const { body } = require('express-validator/check');
+const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const validator = {
+  slackConfiguration: [
+    body('webhookUrl').isString(),
+    body('isIncomingWebhookPrioritized').isBoolean(),
+    body('slackToken').isString(),
+  ],
+};
 
 /**
  * @swagger
@@ -63,7 +71,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SlackConfigurationParams'
    */
-  router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, ApiV3FormValidator, async(req, res) => {
+  router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, validator.slackConfiguration, ApiV3FormValidator, async(req, res) => {
 
     const requestParams = {
       'slack:incomingWebhookUrl': req.body.webhookUrl,
