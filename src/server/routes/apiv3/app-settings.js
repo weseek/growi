@@ -9,38 +9,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator/check');
-
 const ErrorV3 = require('../../models/vo/error-apiv3');
-
-const validator = {
-  appSetting: [
-    body('title').trim(),
-    body('confidential'),
-    body('globalLang').isIn(['en-US', 'ja']),
-    body('fileUpload').isBoolean(),
-  ],
-  siteUrlSetting: [
-    body('siteUrl').trim(),
-  ],
-  mailSetting: [
-    body('fromAddress').trim(),
-    body('smtpHost').trim(),
-    body('smtpPort').trim(),
-    body('smtpUser').trim(),
-    body('smtpPassword').trim(),
-  ],
-  awsSetting: [
-    body('region').trim(),
-    body('customEndpoint').trim(),
-    body('bucket').trim(),
-    body('accessKeyId').trim(),
-    body('secretKey').trim(),
-  ],
-  pluginSetting: [
-    body('isEnabledPlugins').isBoolean(),
-  ],
-};
-
 
 /**
  * @swagger
@@ -112,11 +81,6 @@ const validator = {
  *          secretKey:
  *            type: String
  *            description: secret key for authentification of AWS
- *      PluginSettingParams:
- *        type: object
- *          isEnabledPlugins:
- *            type: String
- *            description: enable use plugins
  */
 
 module.exports = (crowi) => {
@@ -127,6 +91,32 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const validator = {
+    appSetting: [
+      body('title').trim(),
+      body('confidential'),
+      body('globalLang').isIn(['en-US', 'ja']),
+      body('fileUpload').isBoolean(),
+    ],
+    siteUrlSetting: [
+      body('siteUrl').trim().isURL({ require_tld: false }),
+    ],
+    mailSetting: [
+      body('fromAddress').trim().isEmail(),
+      body('smtpHost').trim(),
+      body('smtpPort').trim().isPort(),
+      body('smtpUser').trim(),
+      body('smtpPassword').trim(),
+    ],
+    awsSetting: [
+      body('region').trim().matches(/^[a-z]+-[a-z]+-\d+$/).withMessage('リージョンには、AWSリージョン名を入力してください。 例: ap-northeast-1'),
+      body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
+      body('bucket').trim(),
+      body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
+      body('secretKey').trim(),
+    ],
+  };
 
   /**
    * @swagger
@@ -164,7 +154,6 @@ module.exports = (crowi) => {
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
       accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
       secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
-      isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -416,47 +405,5 @@ module.exports = (crowi) => {
     }
 
   });
-
-  /**
-   * @swagger
-   *
-   *    /app-settings/plugin-setting:
-   *      put:
-   *        tags: [AppSettings]
-   *        description: Update plugin setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/PluginSettingParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update plugin setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/PluginSettingParams'
-   */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, ApiV3FormValidator, async(req, res) => {
-    const requestPluginSettingParams = {
-      'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestPluginSettingParams);
-      const pluginSettingParams = {
-        isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
-      };
-      return res.apiv3({ pluginSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating plugin setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-pluginSetting-failed'));
-    }
-
-  });
-
   return router;
 };
