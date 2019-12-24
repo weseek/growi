@@ -423,6 +423,7 @@ export default class HandsontableModal extends React.PureComponent {
 
     const dialogClassName = dialogClassNames.join(' ');
 
+    // eslint-disable-next-line no-unused-vars
     const buttons = (
       <span>
         {/* change order because of `float: right` by '.close' class */}
