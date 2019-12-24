@@ -17,7 +17,7 @@ import PluginSetting from './PluginSetting';
 
 const logger = loggerFactory('growi:appSettings');
 
-class AppSettingPage extends React.Component {
+class AppSettingsPage extends React.Component {
 
   async componentDidMount() {
     const { adminAppContainer } = this.props;
@@ -77,7 +77,7 @@ class AppSettingPage extends React.Component {
 
 }
 
-AppSettingPage.propTypes = {
+AppSettingsPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
@@ -86,9 +86,9 @@ AppSettingPage.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const AppSettingPageWrapper = (props) => {
-  return createSubscribedElement(AppSettingPage, props, [AppContainer, AdminAppContainer]);
+const AppSettingsPageWrapper = (props) => {
+  return createSubscribedElement(AppSettingsPage, props, [AppContainer, AdminAppContainer]);
 };
 
 
-export default withTranslation()(AppSettingPageWrapper);
+export default withTranslation()(AppSettingsPageWrapper);
