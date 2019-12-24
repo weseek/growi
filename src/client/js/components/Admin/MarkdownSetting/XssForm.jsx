@@ -1,4 +1,6 @@
 import React from 'react';
+// import { Button } from 'reactstrap';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
@@ -125,9 +127,14 @@ class XssForm extends React.Component {
           </div>
         </fieldset>
         <div className="form-group col-12 text-center my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <button type="submit" className="btn btn-primary" onClick={this.onClickSubmit}>{ t('Update') }</button>
-          </div>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            onClick={this.onClickSubmit}
+            disabled={adminMarkDownContainer.state.retrieveError != null}
+          >
+            {t('Update')}
+          </button>
         </div>
       </React.Fragment>
     );

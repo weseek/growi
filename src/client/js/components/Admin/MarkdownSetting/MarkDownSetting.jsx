@@ -40,7 +40,6 @@ class MarkdownSetting extends React.Component {
         {/* Line Break Setting */}
         <div className="row mb-5">
           <h2 className="border-bottom col-12">{ t('markdown_setting.line_break_setting') }</h2>
-          {/* <div className="well w-100">{ t('markdown_setting.line_break_setting_desc') }</div> */}
           <Card className="well col-12">
             <CardBody className="px-2 py-3">{ t('markdown_setting.line_break_setting_desc') }</CardBody>
           </Card>
