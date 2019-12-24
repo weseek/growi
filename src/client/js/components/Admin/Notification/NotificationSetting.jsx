@@ -8,8 +8,10 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
-import SlackAppConfiguration from './SlackAppConfiguration';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+
+import SlackAppConfiguration from './SlackAppConfiguration';
+import UserTriggerNotification from './UserTriggerNotification';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
@@ -33,27 +35,28 @@ class NotificationSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <ul className="nav nav-tabs" role="tablist">
-          <li role="tab" className="active">
-            <a href="#slack-configuration" data-toggle="tab" role="tab"><i className="icon-settings"></i> Slack Configuration</a>
-          </li>
-          <li role="tab">
-            <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User Trigger Notification</a>
-          </li>
-          <li role="tab">
-            <a href="#global-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> Global Notification</a>
-          </li>
-        </ul>
-
-        <div className="tab-content m-t-15">
-          <div id="slack-configuration" className="tab-pane active" role="tabpanel">
-            <SlackAppConfiguration />
-          </div>
-          <div id="user-trigger-notification" className="tab-pane" role="tabpanel">
-            {/* TODO GW-775 user trigger notification component */}
-          </div>
-          <div id="global-notification" className="tab-pane" role="tabpanel">
-            {/* TODO GE-776 global notification component */}
+        <div className="notification-settings">
+          <ul className="nav nav-tabs" role="tablist">
+            <li className="active">
+              <a href="#slack-configuration" data-toggle="tab" role="tab"><i className="icon-settings"></i> Slack Configuration</a>
+            </li>
+            <li>
+              <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User Trigger Notification</a>
+            </li>
+            <li>
+              <a href="#global-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> Global Notification</a>
+            </li>
+          </ul>
+          <div className="tab-content m-t-15">
+            <div id="slack-configuration" className="tab-pane active" role="tabpanel">
+              <SlackAppConfiguration />
+            </div>
+            <div id="user-trigger-notification" className="tab-pane" role="tabpanel">
+              <UserTriggerNotification />
+            </div>
+            <div id="global-notification" className="tab-pane" role="tabpanel">
+              {/* TODO GE-776 global notification component */}
+            </div>
           </div>
         </div>
       </React.Fragment>
