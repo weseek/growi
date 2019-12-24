@@ -49,6 +49,9 @@ require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
 
+
+const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
+
 export default class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
@@ -250,6 +253,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  replaceLine(text) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceRange(text, this.getBol(), this.getEol());
+  }
+
+  /**
+   * @inheritDoc
+   */
   insertText(text) {
     const editor = this.getCodeMirror();
     editor.getDoc().replaceSelection(text);
@@ -442,23 +453,19 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   cursorHandler(editor, event) {
-    const strFromBol = this.getStrFromBol();
+    const { additionalClassSet } = this.state;
+    const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
 
-    const autoformatTableClass = 'autoformat-markdown-table-activated';
-    const additionalClassSet = this.state.additionalClassSet;
-    const hasCustomClass = additionalClassSet.has(autoformatTableClass);
-    if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
-      if (!hasCustomClass) {
-        additionalClassSet.add(autoformatTableClass);
-        this.setState({ additionalClassSet });
-      }
+    const isInTable = mtu.isInTable(editor);
+
+    if (!hasCustomClass && isInTable) {
+      additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
     }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (hasCustomClass) {
-        additionalClassSet.delete(autoformatTableClass);
-        this.setState({ additionalClassSet });
-      }
+
+    if (hasCustomClass && !isInTable) {
+      additionalClassSet.delete(MARKDOWN_TABLE_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
     }
   }
 
