@@ -52,6 +52,7 @@ const validator = {
  *    schemas:
  *      AppSettingParams:
  *        type: object
+ *        properties:
  *          title:
  *            type: String
  *            description: site name show on page header and tilte of HTML
@@ -66,6 +67,7 @@ const validator = {
  *            description: enable upload file except image file
  *     SiteUrlSettingParams:
  *        type: object
+ *        properties:
  *          siteUrl:
  *            type: String
  *            description: Site URL. e.g. https://example.com, https://example.com:8080
@@ -74,6 +76,7 @@ const validator = {
  *            description: environment variable 'APP_SITE_URL'
  *     MailSettingParams:
  *        type: object
+ *        properties:
  *          fromAddress:
  *            type: String
  *            description: e-mail address used as from address of mail which sent from GROWI app
@@ -131,10 +134,9 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    schema:
-   *                      $ref: '#/components/schemas/AppSettingParams'
-   *                      $ref: '#/components/schemas/SiteUrlSettingParams'
-   *                      $ref: '#/components/schemas/MailSettingParams'
+   *                    appSettingsParams:
+   *                      type: object
+   *                      description: app settings params
    */
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const appSettingsParams = {
@@ -172,18 +174,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/AppSettingParams'
+   *                $ref: '#/components/schemas/AppSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update app setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/AppSettingParams'
+   *                  $ref: '#/components/schemas/AppSettingParams'
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
@@ -223,18 +221,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/SiteUrlSettingParams'
+   *                $ref: '#/components/schemas/SiteUrlSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update site url setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/SiteUrlSettingParams'
+   *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
 
@@ -317,18 +311,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/MailSettingParams'
+   *                $ref: '#/components/schemas/MailSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update site url setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/MailSettingParams'
+   *                  $ref: '#/components/schemas/MailSettingParams'
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
     // テストメール送信によるバリデート
