@@ -11,8 +11,6 @@ module.exports = {
     apiToken: require('./me/apiToken'),
   },
   admin: {
-    siteUrl: require('./admin/siteUrl'),
-    mail: require('./admin/mail'),
     plugin: require('./admin/plugin'),
     securityGeneral: require('./admin/securityGeneral'),
     securityPassportLocal: require('./admin/securityPassportLocal'),
