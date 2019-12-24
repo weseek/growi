@@ -566,21 +566,6 @@ module.exports = function(crowi, app) {
     }
   };
 
-  actions.api = {};
-  actions.api.appSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      return res.json({ status: true });
-    }
-
-    return res.json({ status: false, message: req.form.errors.join('\n') });
-
-  };
-
   actions.api.securitySetting = async function(req, res) {
     if (!req.form.isValid) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
