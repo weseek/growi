@@ -8,6 +8,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -84,17 +85,7 @@ class SiteUrlSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="form-group">
-              <div className="col-xs-offset-3 col-xs-6">
-                <button type="submit" className="btn btn-primary" onClick={this.submitHandler}>
-                  {t('app_setting.Update')}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }

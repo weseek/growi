@@ -36,6 +36,9 @@ const validator = {
     body('accessKeyId').trim(),
     body('secretKey').trim(),
   ],
+  pluginSetting: [
+    body('isEnabledPlugins').isBoolean(),
+  ],
 };
 
 
@@ -52,6 +55,7 @@ const validator = {
  *    schemas:
  *      AppSettingParams:
  *        type: object
+ *        properties:
  *          title:
  *            type: String
  *            description: site name show on page header and tilte of HTML
@@ -66,6 +70,7 @@ const validator = {
  *            description: enable upload file except image file
  *     SiteUrlSettingParams:
  *        type: object
+ *        properties:
  *          siteUrl:
  *            type: String
  *            description: Site URL. e.g. https://example.com, https://example.com:8080
@@ -74,6 +79,7 @@ const validator = {
  *            description: environment variable 'APP_SITE_URL'
  *     MailSettingParams:
  *        type: object
+ *        properties:
  *          fromAddress:
  *            type: String
  *            description: e-mail address used as from address of mail which sent from GROWI app
@@ -106,6 +112,11 @@ const validator = {
  *          secretKey:
  *            type: String
  *            description: secret key for authentification of AWS
+ *      PluginSettingParams:
+ *        type: object
+ *          isEnabledPlugins:
+ *            type: String
+ *            description: enable use plugins
  */
 
 module.exports = (crowi) => {
@@ -131,10 +142,9 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    schema:
-   *                      $ref: '#/components/schemas/AppSettingParams'
-   *                      $ref: '#/components/schemas/SiteUrlSettingParams'
-   *                      $ref: '#/components/schemas/MailSettingParams'
+   *                    appSettingsParams:
+   *                      type: object
+   *                      description: app settings params
    */
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const appSettingsParams = {
@@ -154,6 +164,7 @@ module.exports = (crowi) => {
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
       accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
       secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+      isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -172,18 +183,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/AppSettingParams'
+   *                $ref: '#/components/schemas/AppSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update app setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/AppSettingParams'
+   *                  $ref: '#/components/schemas/AppSettingParams'
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, ApiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
@@ -223,18 +230,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/SiteUrlSettingParams'
+   *                $ref: '#/components/schemas/SiteUrlSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update site url setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/SiteUrlSettingParams'
+   *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, ApiV3FormValidator, async(req, res) => {
 
@@ -317,18 +320,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/MailSettingParams'
+   *                $ref: '#/components/schemas/MailSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update site url setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/MailSettingParams'
+   *                  $ref: '#/components/schemas/MailSettingParams'
    */
   router.put('/mail-setting', loginRequiredStrictly, adminRequired, csrf, validator.mailSetting, ApiV3FormValidator, async(req, res) => {
     // テストメール送信によるバリデート
@@ -381,18 +380,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  $ref: '#/components/schemas/AwsSettingParams'
+   *                $ref: '#/components/schemas/AwsSettingParams'
    *        responses:
    *          200:
    *            description: Succeeded to update aws setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/AwsSettingParams'
+   *                  $ref: '#/components/schemas/AwsSettingParams'
    */
   router.put('/aws-setting', loginRequiredStrictly, adminRequired, csrf, validator.awsSetting, ApiV3FormValidator, async(req, res) => {
     const requestAwsSettingParams = {
@@ -421,5 +416,47 @@ module.exports = (crowi) => {
     }
 
   });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/plugin-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        description: Update plugin setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/PluginSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update plugin setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/PluginSettingParams'
+   */
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, ApiV3FormValidator, async(req, res) => {
+    const requestPluginSettingParams = {
+      'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestPluginSettingParams);
+      const pluginSettingParams = {
+        isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
+      };
+      return res.apiv3({ pluginSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating plugin setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-pluginSetting-failed'));
+    }
+
+  });
+
   return router;
 };
