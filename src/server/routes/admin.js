@@ -566,6 +566,7 @@ module.exports = function(crowi, app) {
     }
   };
 
+  actions.api = {};
   actions.api.securitySetting = async function(req, res) {
     if (!req.form.isValid) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
