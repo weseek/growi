@@ -36,6 +36,9 @@ const validator = {
     body('accessKeyId').trim(),
     body('secretKey').trim(),
   ],
+  pluginSetting: [
+    body('isEnabledPlugins').isBoolean(),
+  ],
 };
 
 
@@ -109,6 +112,11 @@ const validator = {
  *          secretKey:
  *            type: String
  *            description: secret key for authentification of AWS
+ *      PluginSettingParams:
+ *        type: object
+ *          isEnabledPlugins:
+ *            type: String
+ *            description: enable use plugins
  */
 
 module.exports = (crowi) => {
@@ -156,6 +164,7 @@ module.exports = (crowi) => {
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
       accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
       secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+      isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -407,5 +416,47 @@ module.exports = (crowi) => {
     }
 
   });
+
+  /**
+   * @swagger
+   *
+   *    /app-settings/plugin-setting:
+   *      put:
+   *        tags: [AppSettings]
+   *        description: Update plugin setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/PluginSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update plugin setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/PluginSettingParams'
+   */
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, validator.pluginSetting, ApiV3FormValidator, async(req, res) => {
+    const requestPluginSettingParams = {
+      'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestPluginSettingParams);
+      const pluginSettingParams = {
+        isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
+      };
+      return res.apiv3({ pluginSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating plugin setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-pluginSetting-failed'));
+    }
+
+  });
+
   return router;
 };
