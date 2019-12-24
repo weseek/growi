@@ -439,7 +439,8 @@
     "Disable": "無効",
     "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "updated_app_setting": "アプリ設定を更新しました",
-    "updated_site_url": "サイトURLを更新しました"
+    "updated_site_url": "サイトURLを更新しました",
+    "updated_plugin_setting": "プラグイン設定を更新しました"
   },
 
   "security_setting": {
