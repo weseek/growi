@@ -18,6 +18,7 @@ export default class AdminNotificationContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],
+      grobalNotifications: [],
     };
 
   }
