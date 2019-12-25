@@ -24,7 +24,7 @@ class PresentationForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updatePresentationSetting();
-      toastSuccess(t('markdown_setting.updated_presentation'));
+      toastSuccess(t('toaster:update_successed', { target: 'Presentation' }));
     }
     catch (err) {
       toastError(err);
