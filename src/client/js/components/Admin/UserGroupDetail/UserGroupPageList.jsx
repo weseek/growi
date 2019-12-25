@@ -40,7 +40,7 @@ class UserGroupPageList extends React.Component {
       const { total, pages } = res.data;
 
       this.setState({
-        total,
+        total: total || 0,
         activePage: pageNum,
         currentPages: pages,
       });
