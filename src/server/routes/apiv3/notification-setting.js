@@ -13,9 +13,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   slackConfiguration: [
-    body('webhookUrl').isString(),
+    body('webhookUrl').isString().trim(),
     body('isIncomingWebhookPrioritized').isBoolean(),
-    body('slackToken').isString(),
+    body('slackToken').isString().trim(),
+  ],
+  userNotification: [
+    body('pathPattern').isString().trim(),
+    body('channel').isString().trim(),
   ],
 };
 
@@ -42,6 +46,15 @@ const validator = {
  *          slackToken:
  *            type: string
  *            description: OAuth access token
+ *      UserNotificationParams:
+ *        type: object
+ *        properties:
+ *          pathPattern:
+ *            type: string
+ *            description: path name of wiki
+ *          channel:
+ *            type: string
+ *            description: slack channel name without '#'
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -97,6 +110,43 @@ module.exports = (crowi) => {
 
   });
 
+  /**
+  * @swagger
+  *
+  *    /notification-setting/user-notification:
+  *      put:
+  *        tags: [NotificationSetting]
+  *        description: add user notification setting
+  *        requestBody:
+  *          required: true
+  *          content:
+  *            application/json:
+  *              schema:
+  *                $ref: '#/components/schemas/UserNotificationParams'
+  *        responses:
+  *          200:
+  *            description: Succeeded to add user notification setting
+  *            content:
+  *              application/json:
+  *                schema:
+  *                  $ref: '#/components/schemas/UserNotificationParams'
+  */
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
+    const { pathPattern, channel } = req.body;
+    const UpdatePost = crowi.model('UpdatePost');
+
+    try {
+      logger.info('notification.add', pathPattern, channel);
+      const params = await UpdatePost.create(pathPattern, channel, req.user);
+      return res.apiv3({ params });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating user notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-userNotification-failed'));
+    }
+
+  });
 
   return router;
 };
