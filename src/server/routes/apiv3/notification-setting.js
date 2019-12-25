@@ -148,6 +148,5 @@ module.exports = (crowi) => {
 
   });
 
-
   return router;
 };
