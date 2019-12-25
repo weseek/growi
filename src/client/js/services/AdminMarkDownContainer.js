@@ -106,12 +106,16 @@ export default class AdminMarkDownContainer extends Container {
    * Update Xss Setting
    */
   async updateXssSetting() {
+    let { tagWhiteList, attrWhiteList } = this.state;
+
+    tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
+    attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
     const response = await this.appContainer.apiv3.put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
-      tagWhiteList: this.state.tagWhiteList.split(','),
-      attrWhiteList: this.state.attrWhiteList.split(','),
+      tagWhiteList,
+      attrWhiteList,
     });
 
     return response;
