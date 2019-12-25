@@ -476,6 +476,7 @@
     "clientID": "Client ID",
     "client_secret": "Client Secret",
     "updated_general_security_setting": "Succeeded to update security setting",
+    "setup_not_completed_yet": "Setup not completed yet",
     "guest_mode": {
       "deny": "Deny (Registered Users Only)",
       "readonly": "Accept (Guests can read only)"
