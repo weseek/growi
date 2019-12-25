@@ -49,9 +49,9 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
           />
           <label htmlFor="xssOption1">
-            <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
+            <p className="font-weight-bold">{t('markdown_setting:xss_options.ignore_all_tags')}</p>
             <div className="m-t-15">
-              { t('markdown_setting.Ignore all tags desc') }
+              {t('markdown_setting:xss_options.ignore_all_tags_desc')}
             </div>
           </label>
         </div>
@@ -65,7 +65,7 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
           />
           <label htmlFor="xssOption2">
-            <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
+            <p className="font-weight-bold">{t('markdown_setting:xss_options.recommended_setting')}</p>
             <WhiteListInput customizable={false} />
           </label>
         </div>
@@ -79,7 +79,7 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
           />
           <label htmlFor="xssOption3">
-            <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
+            <p className="font-weight-bold">{t('markdown_setting:xss_options.custom_whitelist')}</p>
             <WhiteListInput customizable />
           </label>
         </div>
@@ -106,7 +106,7 @@ class XssForm extends React.Component {
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label htmlFor="XssEnable">
-                  { t('markdown_setting.Enable XSS prevention') }
+                  {t('markdown_setting:xss_options.enable_xss_prevention')}
                 </label>
               </div>
             </div>
