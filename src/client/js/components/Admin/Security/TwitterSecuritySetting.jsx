@@ -39,10 +39,10 @@ class TwitterSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
+    const { t, adminTwitterSecurityContainer } = this.props;
 
     try {
-      await adminTwitterSecurityContainer.updateTwitterSetting(adminGeneralSecurityContainer.state.isTwitterOAuthEnabled);
+      await adminTwitterSecurityContainer.updateTwitterSetting();
       toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
     }
     catch (err) {
@@ -109,6 +109,12 @@ class TwitterSecurityManagement extends React.Component {
 
         {adminGeneralSecurityContainer.state.isTwitterOAuthEnabled && (
           <React.Fragment>
+
+            {!adminTwitterSecurityContainer.state.isTwitterStrategySetup && (
+              <div className="alert alert-warning">
+                <p>{t('security_setting.setup_not_completed_yet')}</p>
+              </div>
+            )}
 
             <div className="row mb-5">
               <label htmlFor="TwitterConsumerId" className="col-xs-3 text-right">{ t('security_setting.clientID') }</label>
