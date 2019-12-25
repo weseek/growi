@@ -1,5 +1,11 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+const logger = loggerFactory('growi:services:AdminNotificationContainer');
+
 /**
  * Service container for admin Notification setting page (NotificationSetting.jsx)
  * @extends {Container} unstated Container
@@ -34,11 +40,21 @@ export default class AdminNotificationContainer extends Container {
    * Retrieve notificationData
    */
   async retrieveNotificationData() {
-    const response = await this.appContainer.apiv3.get('/notification-setting/', {
+    try {
+      const response = await this.appContainer.apiv3.get('/notification-setting/');
+      const { notificationParams } = response.data;
 
-    });
+      this.setState({
+        webhookUrl: notificationParams.webhookUrl || '',
+        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
+        slackToken: notificationParams.slackToken || '',
+      });
 
-    return response;
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
   }
 
   /**

@@ -63,9 +63,14 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  // TODO swagger
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    console.log('here is apiv3');
-    return res.apiv3({ });
+    const notificationParams = {
+      webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
+      isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
+      slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+    };
+    return res.apiv3({ notificationParams });
   });
 
 
