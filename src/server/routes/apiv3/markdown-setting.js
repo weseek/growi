@@ -1,7 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:routes:apiv3:user-group');
+const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 
 const express = require('express');
 
@@ -100,10 +99,9 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    markdonwParams:
-   *                      $ref: '#/components/schemas/LineBreakParams'
-   *                      $ref: '#/components/schemas/PresentationParams'
-   *                      $ref: '#/components/schemas/XssParams'
+   *                    markdownParams:
+   *                      type: object
+   *                      description: markdown params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
