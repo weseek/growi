@@ -10,6 +10,26 @@ import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 class WhiteListInput extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.tagWhiteList = React.createRef();
+    this.attrWhiteList = React.createRef();
+
+    this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
+    this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
+  }
+
+  onClickRecommendTagButton() {
+    this.tagWhiteList.current.value = tags;
+    this.props.adminMarkDownContainer.setState({ tagWhiteList: tags });
+  }
+
+  onClickRecommendAttrButton() {
+    this.attrWhiteList.current.value = attrs;
+    this.props.adminMarkDownContainer.setState({ attrWhiteList: tags });
+  }
+
   render() {
     const { t, adminMarkDownContainer } = this.props;
 
@@ -18,7 +38,7 @@ class WhiteListInput extends React.Component {
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             {t('markdown_setting.Tag names')}
-            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ tagWhiteList: tags }) }}>
+            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendTagButton}>
               {t('markdown_setting.import_recommended', 'tags')}
             </p>
           </div>
@@ -27,6 +47,7 @@ class WhiteListInput extends React.Component {
             name="recommendedTags"
             rows="6"
             cols="40"
+            ref={this.tagWhiteListInput}
             defaultValue={adminMarkDownContainer.state.tagWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
           />
@@ -34,7 +55,7 @@ class WhiteListInput extends React.Component {
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             {t('markdown_setting.Tag attributes')}
-            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ attrWhiteList: attrs }) }}>
+            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendAttrButton}>
               {t('markdown_setting.import_recommended', 'Attrs')}
             </p>
           </div>
@@ -43,6 +64,7 @@ class WhiteListInput extends React.Component {
             name="recommendedAttrs"
             rows="6"
             cols="40"
+            ref={this.attrWhiteListInput}
             defaultValue={adminMarkDownContainer.state.attrWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
           />
