@@ -110,8 +110,8 @@ export default class AdminMarkDownContainer extends Container {
     const response = await this.appContainer.apiv3.put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
-      tagWhiteList: this.state.tagWhiteList,
-      attrWhiteList: this.state.attrWhiteList,
+      tagWhiteList: this.state.tagWhiteList.split(','),
+      attrWhiteList: this.state.attrWhiteList.split(','),
     });
 
     return response;
