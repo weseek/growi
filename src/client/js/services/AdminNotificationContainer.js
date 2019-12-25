@@ -33,8 +33,12 @@ export default class AdminNotificationContainer extends Container {
   /**
    * Retrieve notificationData
    */
-  retrieveNotificationData() {
-    // TODO GW-821 retrive data from api
+  async retrieveNotificationData() {
+    const response = await this.appContainer.apiv3.get('/notification-setting/', {
+
+    });
+
+    return response;
   }
 
   /**

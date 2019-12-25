@@ -63,6 +63,12 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    console.log('here is apiv3');
+    return res.apiv3({ });
+  });
+
+
   /**
    * @swagger
    *
