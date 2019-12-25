@@ -1,0 +1,35 @@
+{
+  "lineBreak_header": "Line Break Setting",
+  "lineBreak_desc": "You can change line break settings.",
+  "lineBreak_options": {
+    "enable_lineBreak": "Enable Line Break",
+    "enable_lineBreak_desc": "Treat line break in the text page as<code>&lt;br&gt;</code>in HTML",
+    "enable_lineBreak_for_comment": "Enable Line Break in comment",
+    "enable_lineBreak_for_comment_desc": "Treat line break in comment as<code>&lt;br&gt;</code>in HTML"
+  },
+  "presentation_header": "Presentation Setting",
+  "presentation_desc": "You can change presentation settings.",
+  "presentation_options": {
+    "page_break_setting": "Page break Setting",
+    "preset_one_separator": "Preset 1",
+    "preset_one_separator_desc": "3 Blank lines",
+    "preset_one_separator_value": "\\n\\n\\n",
+    "preset_two_separator": "Preset 2",
+    "preset_two_separator_desc": "5 Hyphens",
+    "preset_two_separator_value": "-----",
+    "custom_separator": "Custom",
+    "custom_separator_desc": "Regular Expression"
+  },
+  "xss_header": "Prevent XSS(Cross Site Scripting) Setting",
+  "xss_desc": "You can change the handling of HTML tags in markdown text.",
+  "xss_options": {
+    "enable_xss_prevention": "Enable XSS Prevention",
+    "ignore_all_tags": "Ignore All Tags",
+    "ignore_all_tags_desc": "Stripe all HTML tags and attributes",
+    "recommended_setting": "Recommended Setting",
+    "custom_whitelist": "Custom Whitelist",
+    "tag_names": "Tag names",
+    "tag_attributes": "Tag attributes",
+    "import_recommended": "Import recommended"
+  }
+}
