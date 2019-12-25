@@ -46,6 +46,15 @@ const validator = {
  *          slackToken:
  *            type: string
  *            description: OAuth access token
+ *      UserNotificationParams:
+ *        type: object
+ *        properties:
+ *          pathPattern:
+ *            type: string
+ *            description: path name of wiki
+ *          channel:
+ *            type: string
+ *            description: slack channel name without '#'
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -101,7 +110,27 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO swagger
+  /**
+  * @swagger
+  *
+  *    /notification-setting/user-notification:
+  *      put:
+  *        tags: [NotificationSetting]
+  *        description: add user notification setting
+  *        requestBody:
+  *          required: true
+  *          content:
+  *            application/json:
+  *              schema:
+  *                $ref: '#/components/schemas/UserNotificationParams'
+  *        responses:
+  *          200:
+  *            description: Succeeded to add user notification setting
+  *            content:
+  *              application/json:
+  *                schema:
+  *                  $ref: '#/components/schemas/UserNotificationParams'
+  */
   router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
     const UpdatePost = crowi.model('UpdatePost');
