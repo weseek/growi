@@ -852,28 +852,6 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
-
-  // app.post('/_api/admin/notifications.add'    , admin.api.notificationAdd);
-  actions.api.notificationAdd = function(req, res) {
-    const UpdatePost = crowi.model('UpdatePost');
-    const pathPattern = req.body.pathPattern;
-    const channel = req.body.channel;
-
-    debug('notification.add', pathPattern, channel);
-    UpdatePost.create(pathPattern, channel, req.user)
-      .then((doc) => {
-        debug('Successfully save updatePost', doc);
-
-        // fixme: うーん
-        doc.creator = doc.creator._id.toString();
-        return res.json(ApiResponse.success({ updatePost: doc }));
-      })
-      .catch((err) => {
-        debug('Failed to save updatePost', err);
-        return res.json(ApiResponse.error());
-      });
-  };
-
   // app.post('/_api/admin/notifications.remove' , admin.api.notificationRemove);
   actions.api.notificationRemove = function(req, res) {
     const UpdatePost = crowi.model('UpdatePost');

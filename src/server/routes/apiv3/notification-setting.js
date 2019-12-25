@@ -103,7 +103,20 @@ module.exports = (crowi) => {
 
   // TODO swagger
   router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
-    return res.apiv3({ });
+    const { pathPattern, channel } = req.body;
+    const UpdatePost = crowi.model('UpdatePost');
+
+    try {
+      logger.info('notification.add', pathPattern, channel);
+      const params = await UpdatePost.create(pathPattern, channel, req.user);
+      return res.apiv3({ params });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating user notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-userNotification-failed'));
+    }
+
   });
 
 
