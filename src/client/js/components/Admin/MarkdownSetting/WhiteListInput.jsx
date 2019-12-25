@@ -27,7 +27,7 @@ class WhiteListInput extends React.Component {
 
   onClickRecommendAttrButton() {
     this.attrWhiteList.current.value = attrs;
-    this.props.adminMarkDownContainer.setState({ attrWhiteList: tags });
+    this.props.adminMarkDownContainer.setState({ attrWhiteList: attrs });
   }
 
   render() {
@@ -47,7 +47,7 @@ class WhiteListInput extends React.Component {
             name="recommendedTags"
             rows="6"
             cols="40"
-            ref={this.tagWhiteListInput}
+            ref={this.tagWhiteList}
             defaultValue={adminMarkDownContainer.state.tagWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
           />
@@ -64,7 +64,7 @@ class WhiteListInput extends React.Component {
             name="recommendedAttrs"
             rows="6"
             cols="40"
-            ref={this.attrWhiteListInput}
+            ref={this.attrWhiteList}
             defaultValue={adminMarkDownContainer.state.attrWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
           />
