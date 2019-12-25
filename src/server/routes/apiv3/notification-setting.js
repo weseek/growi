@@ -13,13 +13,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   slackConfiguration: [
-    body('webhookUrl').isString(),
+    body('webhookUrl').isString().trim(),
     body('isIncomingWebhookPrioritized').isBoolean(),
-    body('slackToken').isString(),
+    body('slackToken').isString().trim(),
   ],
   userNotification: [
-    body('pathPattern').isString,
-    body('channel').isString,
+    body('pathPattern').isString().trim(),
+    body('channel').isString().trim(),
   ],
 };
 
