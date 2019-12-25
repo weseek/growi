@@ -60,6 +60,7 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   googleOAuth: [
+    body('isGoogleOAuthEnabled').isBoolean(),
     body('googleClientId').isString(),
     body('googleClientSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
@@ -222,6 +223,9 @@ const validator = {
  *            description: local account automatically linked the email matched
  *      GitHubOAuthSetting:
  *        type:object
+ *          isGoogleOAuthEnabled:
+ *            type: boolean
+ *            description: whether to enable google oauth
  *          githubClientId:
  *            type: string
  *            description: key of comsumer
@@ -659,6 +663,7 @@ module.exports = (crowi) => {
    */
   router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
+      'security:passport-google:isEnabled': req.body.isEnabled,
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
       'security:passport-google:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
@@ -667,13 +672,22 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
       };
+      // reset strategy
+      await crowi.passportService.resetGoogleStrategy();
+      // setup strategy
+      if (crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled')) {
+        await crowi.passportService.setupGoogleStrategy(true);
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetGoogleStrategy();
       const msg = 'Error occurred in updating googleOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-googleOAuth-failed'));

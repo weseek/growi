@@ -39,10 +39,10 @@ class GoogleSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGoogleSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer } = this.props;
 
     try {
-      await adminGoogleSecurityContainer.updateGoogleSetting();
+      await adminGoogleSecurityContainer.updateGoogleSetting(adminGeneralSecurityContainer.state.isGoogleOAuthEnabled);
       toastSuccess(t('security_setting.OAuth.Google.updated_google'));
     }
     catch (err) {

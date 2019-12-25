@@ -73,9 +73,10 @@ export default class AdminGoogleSecurityContainer extends Container {
   /**
    * Update googleSetting
    */
-  async updateGoogleSetting() {
+  async updateGoogleSetting(isGoogleOAuthEnabled) {
 
     const response = await this.appContainer.apiv3.put('/security-setting/google-oauth', {
+      isGoogleOAuthEnabled,
       googleClientId: this.state.googleClientId,
       googleClientSecret: this.state.googleClientSecret,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
