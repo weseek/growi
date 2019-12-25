@@ -97,6 +97,11 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger & validator
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
+    return res.apiv3({ });
+  });
+
 
   return router;
 };

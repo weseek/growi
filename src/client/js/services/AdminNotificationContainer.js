@@ -84,7 +84,12 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async addNotificationPattern(pathPattern, channel) {
-    // TODO GW-802 create apiV3 addNotificationPattern
+    const response = await this.appContainer.apiv3.post('/notification-setting/user-notification', {
+      pathPattern,
+      channel,
+    });
+
+    return response;
   }
 
 }
