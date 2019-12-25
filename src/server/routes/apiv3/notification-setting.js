@@ -63,7 +63,24 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /notification-setting/:
+   *      get:
+   *        tags: [NotificationSetting]
+   *        description: Get notification paramators
+   *        responses:
+   *          200:
+   *            description: params of notification
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    notificationParams:
+   *                      type: object
+   *                      description: notification params
+   */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const notificationParams = {
       webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
