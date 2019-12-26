@@ -1,4 +1,7 @@
 const express = require('express');
+const PluginUtils = require('../../plugins/plugin-utils');
+
+const pluginUtils = new PluginUtils();
 
 const router = express.Router();
 
@@ -60,11 +63,11 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const adminHomeParams = {
-      growiVersion: 'x.y.x',
-      nodeVersion: 'x.y.x',
-      npmVersion: 'x.y.x',
-      yarnVersion: 'x.y.x',
-      installedPlugins: { ex: 'x.y.z' },
+      growiVersion: crowi.version,
+      nodeVersion: crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-',
+      npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
+      yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
+      installedPlugins: pluginUtils.listPlugins(crowi.rootDir),
     };
 
     return res.apiv3({ adminHomeParams });
