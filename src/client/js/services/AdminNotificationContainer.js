@@ -1,5 +1,11 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+const logger = loggerFactory('growi:services:AdminNotificationContainer');
+
 /**
  * Service container for admin Notification setting page (NotificationSetting.jsx)
  * @extends {Container} unstated Container
@@ -18,7 +24,7 @@ export default class AdminNotificationContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],
-      grobalNotifications: [],
+      globalNotifications: [],
     };
 
   }
@@ -33,8 +39,24 @@ export default class AdminNotificationContainer extends Container {
   /**
    * Retrieve notificationData
    */
-  retrieveNotificationData() {
-    // TODO GW-821 retrive data from api
+  async retrieveNotificationData() {
+    try {
+      const response = await this.appContainer.apiv3.get('/notification-setting/');
+      const { notificationParams } = response.data;
+
+      this.setState({
+        webhookUrl: notificationParams.webhookUrl || '',
+        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
+        slackToken: notificationParams.slackToken || '',
+        userNotifications: notificationParams.userNotifications || [],
+        globalNotifications: notificationParams.globalNotifications || [],
+      });
+
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
   }
 
   /**
@@ -84,10 +106,12 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async addNotificationPattern(pathPattern, channel) {
-    return this.appContainer.apiv3.post('/notification-setting/user-notification', {
+    const response = await this.appContainer.apiv3.post('/notification-setting/user-notification', {
       pathPattern,
       channel,
     });
+
+    this.setState({ userNotifications: response.data.responseParams.userNotifications });
   }
 
 }
