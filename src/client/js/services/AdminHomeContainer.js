@@ -24,7 +24,7 @@ export default class AdminCustomizeContainer extends Container {
       nodeVersion: '',
       npmVersion: '',
       yarnVersion: '',
-      installedPlugins: {},
+      installedPlugins: [],
     };
 
   }

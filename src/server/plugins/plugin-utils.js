@@ -48,8 +48,8 @@ class PluginUtils {
    *
    * @returns array of objects
    *   [
-   *     { name: 'growi-plugin-...', version: '1.0.0' },
-   *     { name: 'growi-plugin-...', version: '1.0.0' },
+   *     { name: 'growi-plugin-...', requiredVersion: '^1.0.0', installedVersion: '1.0.0' },
+   *     { name: 'growi-plugin-...', requiredVersion: '^1.0.0', installedVersion: '1.0.0' },
    *     ...
    *   ]
    *
@@ -75,7 +75,7 @@ class PluginUtils {
     const plugins = pluginNames.map((name) => {
       return {
         name,
-        version: deps[name],
+        requiredVersion: deps[name],
         installedVersion: 'TBD',
       };
     });

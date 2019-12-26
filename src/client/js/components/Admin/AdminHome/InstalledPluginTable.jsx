@@ -21,12 +21,12 @@ class InstalledPluginTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          { Object.keys(adminHomeContainer.state.installedPlugins).map((pluginName) => {
+          { adminHomeContainer.state.installedPlugins.map((plugin) => {
             return (
-              <tr key={pluginName}>
-                <td>{ pluginName }</td>
-                <td className="text-center">{ adminHomeContainer.state.installedPlugins[pluginName] }</td>
-                <td className="text-center"><span className="tbd">(TBD)</span></td>
+              <tr key={plugin.name}>
+                <td>{ plugin.name }</td>
+                <td className="text-center">{ plugin.requiredVersion }</td>
+                <td className="text-center">{ plugin.installeVersion }</td>
               </tr>
             );
           }) }
