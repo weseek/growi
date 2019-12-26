@@ -69,7 +69,7 @@ class PluginUtils {
     const deps = json.dependencies || {};
 
     const pluginNames = Object.keys(deps).filter((name) => {
-      if (/^(crowi|growi)-plugin-/.test(name)) return;
+      return /^(crowi|growi)-plugin-/.test(name);
     });
 
     const plugins = pluginNames.map((name) => {
