@@ -48,6 +48,8 @@ export default class AdminNotificationContainer extends Container {
         webhookUrl: notificationParams.webhookUrl || '',
         isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
         slackToken: notificationParams.slackToken || '',
+        userNotifications: notificationParams.userNotifications,
+        globalNotifications: notificationParams.globalNotifications,
       });
 
     }

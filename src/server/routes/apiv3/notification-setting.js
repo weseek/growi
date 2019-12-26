@@ -82,10 +82,15 @@ module.exports = (crowi) => {
    *                      description: notification params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const UpdatePost = crowi.model('UpdatePost');
+    const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+
     const notificationParams = {
       webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
       isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
       slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+      userNotifications: await UpdatePost.findAll(),
+      globalNotifications: await GlobalNotificationSetting.findAll(),
     };
     return res.apiv3({ notificationParams });
   });
