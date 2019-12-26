@@ -124,7 +124,6 @@
     "openid-client": "=2.5.0",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
-    "passport-google-auth": "^1.0.2",
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",
     "passport-ldapauth": "^2.0.0",
