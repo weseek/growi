@@ -26,7 +26,7 @@ class InstalledPluginTable extends React.Component {
               <tr key={plugin.name}>
                 <td>{ plugin.name }</td>
                 <td className="text-center">{ plugin.requiredVersion }</td>
-                <td className="text-center">{ plugin.installeVersion }</td>
+                <td className="text-center">{ plugin.installedVersion }</td>
               </tr>
             );
           }) }

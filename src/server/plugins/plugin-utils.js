@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('graceful-fs');
 const logger = require('@alias/logger')('growi:plugins:plugin-utils');
+const packageInstalledVersionSync = require('package-installed-version-sync');
 
 const PluginUtilsV2 = require('./plugin-utils-v2');
 
@@ -76,7 +77,7 @@ class PluginUtils {
       return {
         name,
         requiredVersion: deps[name],
-        installedVersion: 'TBD',
+        installedVersion: packageInstalledVersionSync(name),
       };
     });
 
