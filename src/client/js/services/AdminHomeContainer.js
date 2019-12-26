@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:services:AdminHomeContainer');
  * Service container for admin home page (AdminHome.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminCustomizeContainer extends Container {
+export default class AdminHomeContainer extends Container {
 
   constructor(appContainer) {
     super();
