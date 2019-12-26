@@ -68,14 +68,19 @@ class PluginUtils {
     const json = JSON.parse(content);
     const deps = json.dependencies || {};
 
-    const objs = {};
-    Object.keys(deps).forEach((name) => {
-      if (/^(crowi|growi)-plugin-/.test(name)) {
-        objs[name] = deps[name];
-      }
+    const pluginNames = Object.keys(deps).filter((name) => {
+      if (/^(crowi|growi)-plugin-/.test(name)) return;
     });
 
-    return objs;
+    const plugins = pluginNames.map((name) => {
+      return {
+        name,
+        version: deps[name],
+        installedVersion: 'TBD',
+      };
+    });
+
+    return plugins;
   }
 
   /**
@@ -87,7 +92,7 @@ class PluginUtils {
    */
   listPluginNames(rootDir) {
     const plugins = this.listPlugins(rootDir);
-    return Object.keys(plugins);
+    return plugins.map((plugin) => { return plugin.name });
   }
 
 }
