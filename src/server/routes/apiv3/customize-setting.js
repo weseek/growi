@@ -123,7 +123,7 @@ module.exports = (crowi) => {
    *    /customize-setting/:
    *      get:
    *        tags: [CustomizeSetting]
-   *        description: Get customize paramators
+   *        description: Get customize paramaters
    *        responses:
    *          200:
    *            description: params of customize
