@@ -24,6 +24,7 @@ class UserNotificationList extends React.Component {
                 {notification.channel}
               </td>
               <td>
+                {/* TODO GW-806 create apiV3 for delete notification */}
                 <button type="submit" className="btn btn-default">{t('Delete')}</button>
               </td>
             </tr>
