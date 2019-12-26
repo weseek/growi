@@ -64,7 +64,7 @@ class UserTriggerNotification extends React.Component {
 
   // TODO GW-788 i18n
   render() {
-    const { t } = this.props;
+    const { t, adminNotificationContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -110,7 +110,9 @@ class UserTriggerNotification extends React.Component {
                 <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
               </td>
             </tr>
-            <UserNotificationList />
+            {adminNotificationContainer.state.userNotifications.length !== 0
+              && <UserNotificationList />
+            }
           </tbody>
         </table>
       </React.Fragment>
