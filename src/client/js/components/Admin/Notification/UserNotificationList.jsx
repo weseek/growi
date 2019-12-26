@@ -11,23 +11,30 @@ import AdminNotificationContainer from '../../../services/AdminNotificationConta
 class UserNotificationList extends React.Component {
 
   render() {
-    const { t } = this.props;
-
+    const { t, adminNotificationContainer } = this.props;
     return (
-      <tr className="admin-notif-row">
-        <td>
-          pattern
-        </td>
-        <td>
-          channel
-        </td>
-        <td>
-          <form className="admin-remove-updatepost">
-            <button type="submit" className="btn btn-default">{t('Delete')}</button>
-          </form>
-        </td>
-      </tr>
+      <React.Fragment>
+        {adminNotificationContainer.state.userNotifications.map((notification) => {
+          return (
+            <tr className="admin-notif-row">
+              <td>
+                pattern
+              </td>
+              <td>
+                channel
+              </td>
+              <td>
+                <form className="admin-remove-updatepost">
+                  <button type="submit" className="btn btn-default">{t('Delete')}</button>
+                </form>
+              </td>
+            </tr>
+          );
+        })
+        }
+      </React.Fragment>
     );
+
   }
 
 }
