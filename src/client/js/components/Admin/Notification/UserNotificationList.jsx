@@ -16,17 +16,15 @@ class UserNotificationList extends React.Component {
       <React.Fragment>
         {adminNotificationContainer.state.userNotifications.map((notification) => {
           return (
-            <tr className="admin-notif-row">
+            <tr className="admin-notif-row" key={notification._id}>
               <td>
-                pattern
+                {notification.pathPattern}
               </td>
               <td>
-                channel
+                {notification.channel}
               </td>
               <td>
-                <form className="admin-remove-updatepost">
-                  <button type="submit" className="btn btn-default">{t('Delete')}</button>
-                </form>
+                <button type="submit" className="btn btn-default">{t('Delete')}</button>
               </td>
             </tr>
           );
