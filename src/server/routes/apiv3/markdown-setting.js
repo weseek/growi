@@ -91,8 +91,8 @@ module.exports = (crowi) => {
    *
    *    /markdown-setting/:
    *      get:
-   *        tags: [MarkDownSettind]
-   *        description: Get markdown paramators
+   *        tags: [MarkDownSetting]
+   *        description: Get markdown paramaters
    *        responses:
    *          200:
    *            description: params of markdown
