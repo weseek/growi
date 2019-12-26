@@ -61,6 +61,9 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
+  const UpdatePost = crowi.model('UpdatePost');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+
   const { ApiV3FormValidator } = crowi.middlewares;
 
   /**
@@ -82,8 +85,6 @@ module.exports = (crowi) => {
    *                      description: notification params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const UpdatePost = crowi.model('UpdatePost');
-    const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
     const notificationParams = {
       webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),

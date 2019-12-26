@@ -12,7 +12,7 @@ import AdminNotificationContainer from '../../../services/AdminNotificationConta
 
 import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
-import GrobalNotification from './GrobalNotification';
+import GlobalNotification from './GlobalNotification';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
@@ -56,7 +56,7 @@ class NotificationSetting extends React.Component {
               <UserTriggerNotification />
             </div>
             <div id="global-notification" className="tab-pane" role="tabpanel">
-              <GrobalNotification />
+              <GlobalNotification />
             </div>
           </div>
         </div>

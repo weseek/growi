@@ -9,13 +9,13 @@ import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
 
-class GrobalNotification extends React.Component {
+class GlobalNotification extends React.Component {
 
   renderNotification() {
     const { t, adminNotificationContainer } = this.props;
-    const { grobalNotifications } = adminNotificationContainer.state;
+    const { globalNotifications } = adminNotificationContainer.state;
 
-    grobalNotifications.map((notification) => {
+    globalNotifications.map((notification) => {
       return (
         <tr>
           <td className="align-middle td-abs-center">
@@ -97,7 +97,7 @@ class GrobalNotification extends React.Component {
 
   render() {
     const { t, adminNotificationContainer } = this.props;
-    const { grobalNotifications } = adminNotificationContainer.state;
+    const { globalNotifications } = adminNotificationContainer.state;
     return (
       <React.Fragment>
 
@@ -118,7 +118,7 @@ class GrobalNotification extends React.Component {
               <th></th>
             </tr>
           </thead>
-          {grobalNotifications.length !== 0 && (
+          {globalNotifications.length !== 0 && (
             <tbody className="admin-notif-list">
               {this.renderNotification()}
             </tbody>
@@ -131,15 +131,15 @@ class GrobalNotification extends React.Component {
 
 }
 
-const GrobalNotificationWrapper = (props) => {
-  return createSubscribedElement(GrobalNotification, props, [AppContainer, AdminNotificationContainer]);
+const GlobalNotificationWrapper = (props) => {
+  return createSubscribedElement(GlobalNotification, props, [AppContainer, AdminNotificationContainer]);
 };
 
-GrobalNotification.propTypes = {
+GlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
 
-export default withTranslation()(GrobalNotificationWrapper);
+export default withTranslation()(GlobalNotificationWrapper);
