@@ -162,7 +162,15 @@ module.exports = (crowi) => {
   *            content:
   *              application/json:
   *                schema:
-  *                  $ref: '#/components/schemas/UserNotificationParams'
+  *                  responseParams:
+  *                    type: object
+  *                    properties:
+  *                      createdUser:
+  *                        type: object
+  *                        description: user who set notification
+  *                      userNotifications:
+  *                        type: object
+  *                        description: user trigger notifications for updated
   */
   router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
@@ -170,8 +178,11 @@ module.exports = (crowi) => {
 
     try {
       logger.info('notification.add', pathPattern, channel);
-      const params = await UpdatePost.create(pathPattern, channel, req.user);
-      return res.apiv3({ params });
+      const responseParams = {
+        createdUser: await UpdatePost.create(pathPattern, channel, req.user),
+        userNotifications: await UpdatePost.findAll(),
+      };
+      return res.apiv3({ responseParams });
     }
     catch (err) {
       const msg = 'Error occurred in updating user notification';

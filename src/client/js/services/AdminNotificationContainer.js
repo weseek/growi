@@ -106,10 +106,12 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async addNotificationPattern(pathPattern, channel) {
-    return this.appContainer.apiv3.post('/notification-setting/user-notification', {
+    const response = await this.appContainer.apiv3.post('/notification-setting/user-notification', {
       pathPattern,
       channel,
     });
+
+    this.setState({ userNotifications: response.data.responseParams.userNotifications });
   }
 
 }
