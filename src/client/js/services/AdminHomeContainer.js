@@ -20,7 +20,11 @@ export default class AdminCustomizeContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      version: '',
+      growiVersion: '',
+      nodeVersion: '',
+      npmVersion: '',
+      yarnVersion: '',
+      installedPlugins: {},
     };
 
   }
@@ -37,13 +41,8 @@ export default class AdminCustomizeContainer extends Container {
    */
   async retrieveAdminHomeData() {
     try {
-      const response = await this.appContainer.apiv3.get('/home/');
-      const { adminHomeParams } = response.data;
-
-      this.setState({
-        version: adminHomeParams.version,
-      });
-
+      // [TODO GW-727] create api endpoint for retrieve admin home data
+      // const response = await this.appContainer.apiv3.get('/home/');
     }
     catch (err) {
       logger.error(err);
