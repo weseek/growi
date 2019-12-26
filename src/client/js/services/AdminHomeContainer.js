@@ -41,8 +41,16 @@ export default class AdminCustomizeContainer extends Container {
    */
   async retrieveAdminHomeData() {
     try {
-      // [TODO GW-727] create api endpoint for retrieve admin home data
-      // const response = await this.appContainer.apiv3.get('/home/');
+      const response = await this.appContainer.apiv3.get('/admin-home/');
+      const { adminHomeParams } = response.data;
+
+      this.setState({
+        growiVersion: adminHomeParams.growiVersion,
+        nodeVersion: adminHomeParams.nodeVersion,
+        npmVersion: adminHomeParams.npmVersion,
+        yarnVersion: adminHomeParams.yarnVersion,
+        installedPlugins: adminHomeParams.installedPlugins,
+      });
     }
     catch (err) {
       logger.error(err);
