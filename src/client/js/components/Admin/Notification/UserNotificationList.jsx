@@ -11,8 +11,22 @@ import AdminNotificationContainer from '../../../services/AdminNotificationConta
 class UserNotificationList extends React.Component {
 
   render() {
+    const { t } = this.props;
+
     return (
-      <p>hoge</p>
+      <tr className="admin-notif-row">
+        <td>
+          pattern
+        </td>
+        <td>
+          channel
+        </td>
+        <td>
+          <form className="admin-remove-updatepost">
+            <button type="submit" className="btn btn-default">{t('Delete')}</button>
+          </form>
+        </td>
+      </tr>
     );
   }
 
