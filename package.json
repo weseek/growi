@@ -228,8 +228,6 @@
     "style-loader": "^1.0.0",
     "stylelint": "^12.0.1",
     "stylelint-config-recess-order": "^2.0.1",
-    "stylelint-config-recommended-scss": "^4.1.0",
-    "stylelint-scss": "^3.13.0",
     "swagger-jsdoc": "^3.4.0",
     "swagger2openapi": "^5.3.1",
     "terser-webpack-plugin": "^2.0.1",
