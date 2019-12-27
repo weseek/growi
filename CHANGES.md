@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.6.3-RC
+## v3.6.4-RC
+
+*
+
+## v3.6.3
 
 * Improvement: Searching users in UserGroup Management
 * Fix: Repair google authentication by migrating to jaredhanson/passport-google-oauth2
