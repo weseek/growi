@@ -13,6 +13,21 @@
       </p>
     {% endif %}
 
+    {% if getConfig('crowi', 'customize:isEnabledStaleNotification') %}
+      {% if page && page.updatedAt && page.getContentAge() > 0 %}
+        {% if page.getContentAge() == 1 %}
+        <div class="alert alert-info">
+        {% elseif page.getContentAge() == 2 %}
+        <div class="alert alert-warning">
+        {% else %}
+        <div class="alert alert-danger">
+        {% endif %}
+          <i class="icon-fw icon-hourglass"></i>
+          <strong>{{ t('page_page.notice.stale', { count: page.getContentAge() }) }}</strong>
+        </div>
+      {% endif %}
+    {% endif %}
+
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
     <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
       <span>

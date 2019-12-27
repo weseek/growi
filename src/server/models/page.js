@@ -9,6 +9,7 @@ const urljoin = require('url-join');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
+const differenceInYears = require('date-fns/differenceInYears')
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
@@ -487,6 +488,10 @@ module.exports = function(crowi) {
       this.grantedGroup = grantUserGroupId;
     }
   };
+
+  pageSchema.methods.getContentAge = function() {
+    return differenceInYears(new Date(), this.updatedAt)
+  }
 
 
   pageSchema.statics.updateCommentCount = function(pageId) {
