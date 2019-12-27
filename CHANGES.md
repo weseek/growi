@@ -26,7 +26,7 @@
     * This affects **only when `MONGO_URI` has parameters**
     * v3.5.x or above has a bug ([#1361](https://github.com/weseek/growi/issues/1361))
 
-Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 
 ### Updates
 
@@ -255,7 +255,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/36x.html
 * The restriction mode of the root page (`/`) will be set 'Public'
 * The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
-Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/35x.html
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
 
 ### Updates
 
@@ -372,7 +372,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/35x.html
 
 None.
 
-Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 
 ### Updates
 
@@ -685,7 +685,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 * Improvement: Post comment with `Ctrl-Enter`
 * Improvement: Place the commented page at the beginning of the list
 * Improvement: Resolve errors on IE11 (Experimental)
-* Support: Migrate to webpack 4 
+* Support: Migrate to webpack 4
 * Support: Upgrade libs
     * eslint
     * react-bootstrap-typeahead
@@ -709,7 +709,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 
 * Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
-* Fix: Select modal for group is not shown 
+* Fix: Select modal for group is not shown
 * Support: Upgrade libs
     * googleapis
     * throttle-debounce
@@ -746,17 +746,21 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 * Improvement: Add 'future' theme
 * Improvement: Modify syntax for Crowi compatible template feature
     * *before*
-        ~~~
+
+        ~~~markdown
         ``` template:/page/name
         page contents
         ```
         ~~~
+
     * *after*
-        ~~~
+
+        ~~~plane
         ::: template:/page/name
         page contents
         :::
         ~~~
+
 * Improvement: Escape iframe tag in block codes
 * Support: Upgrade libs
     * assets-webpack-plugin
@@ -779,7 +783,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 * Improvement: Auto-format markdown table which includes multibyte text
 * Improvement: Show icon when auto-format markdown table is activated
 * Improvement: Enable to switch show/hide border for highlight.js
-* Improvement: BindDN field allows also ActiveDirectory styles 
+* Improvement: BindDN field allows also ActiveDirectory styles
 * Improvement: Show LDAP logs when testing login
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
@@ -931,7 +935,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 * Support: Upgrade libs
     * uglifycss
     * sinon-chai
-    
+
 ## 2.4.2
 
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
@@ -1151,7 +1155,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 
 ## 1.2.13
 
-* Improvement: Enabled to switch whether to push states with History API when tabs changes 
+* Improvement: Enabled to switch whether to push states with History API when tabs changes
 * Fix: Layout of the Not Found page
 
 ## 1.2.12 (Missing number)
@@ -1312,7 +1316,7 @@ Upgrading Guide: https://docs.growi.org/en/admin-guide/upgrading/34x.html
 
 ## 1.0.2
 
-* Improvement: For lsx 
+* Improvement: For lsx
 
 ## 1.0.1
 
