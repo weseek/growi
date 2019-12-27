@@ -1,7 +1,6 @@
 {
   "extends": [
-    "stylelint-config-recess-order",
-    "./node_modules/prettier-stylelint/config.js"
+    "stylelint-config-recess-order"
   ],
   "ignoreFiles": [
     "src/client/styles/scss/_override-bootstrap-variables.scss",

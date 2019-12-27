@@ -21,8 +21,8 @@ const validator = {
   ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').toArray(),
-    body('attrWhiteList').toArray(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
   ],
 };
 
@@ -91,7 +91,7 @@ module.exports = (crowi) => {
    *
    *    /markdown-setting/:
    *      get:
-   *        tags: [MarkDownSettind]
+   *        tags: [MarkDownSetting]
    *        description: Get markdown paramaters
    *        responses:
    *          200:
