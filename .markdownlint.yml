@@ -1,0 +1,6 @@
+ul-indent:
+  indent: 4
+line-length: false
+no-multiple-blanks: false
+no-duplicate-heading: false
+no-inline-html: false
