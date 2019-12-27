@@ -105,7 +105,7 @@ module.exports = (crowi) => {
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
-      body('siteUrl').trim().isURL({ require_tld: false }),
+      body('siteUrl').trim().matches(/^(https?:\/\/[^/]+|)$/).isURL({ require_tld: false }),
     ],
     mailSetting: [
       body('fromAddress').trim().isEmail(),
