@@ -21,8 +21,8 @@ const validator = {
   ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').toArray(),
-    body('attrWhiteList').toArray(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
   ],
 };
 
@@ -100,10 +100,9 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    markdonwParams:
-   *                      $ref: '#/components/schemas/LineBreakParams'
-   *                      $ref: '#/components/schemas/PresentationParams'
-   *                      $ref: '#/components/schemas/XssParams'
+   *                    markdownParams:
+   *                      type: object
+   *                      description: markdown params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
