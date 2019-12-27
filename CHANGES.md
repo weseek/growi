@@ -5,7 +5,10 @@
 * Improvement: Searching users in UserGroup Management
 * Fix: Repair google authentication by migrating to jaredhanson/passport-google-oauth2
 * Fix: Markdown Settings are broken by import recommended button
-
+* Support: Upgrade libs
+    * check-node-version
+    * file-loader
+    * mini-css-extract-plugin
 
 ## 3.6.2
 
