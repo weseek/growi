@@ -582,7 +582,7 @@
     "Custom Whitelist": "Custom Whitelist",
     "Tag names": "Tag names",
     "Tag attributes": "Tag attributes",
-    "import_recommended": "Import recommended %s",
+    "import_recommended": "Import recommended {{target}}",
     "updated_lineBreak": "Succeeded to update line braek setting",
     "updated_presentation": "Succeeded to update presentation setting",
     "updated_xss": "Succeeded to update XSS setting"
@@ -607,7 +607,7 @@
     }
   },
   "customize_page": {
-    "recommended":"Recommended",
+    "recommended": "Recommended",
     "Behavior": "Behavior",
     "Layout": "Layout",
     "Function": "Function",
@@ -644,29 +644,29 @@
     "update_customHeader_success": "Succeeded to update customize html header",
     "update_customCss_success": "Succeeded to update customize css",
     "update_script_success": "Succeeded to update custom script",
-    "layout_description":{
-      "growi_title":"Simple and Clear",
-      "growi_text1":"Full screen layout and thin margins/paddings",
-      "growi_text2":"Show and post comments at the bottom of the page",
-      "growi_text3":"Affix Table-of-contents",
-      "kibela_title":"Easy Viewing Structure",
-      "kibela_text1":"Center aligned contents",
-      "kibela_text2":"Show and post comments at the bottom of the page",
-      "kibela_text3":"Affix Table-of-contents",
-      "crowi_title":"Separated Functions",
-      "crowi_text1":"Collapsible Sidebar",
-      "crowi_text2":"Show and post comments in Sidebar",
-      "crowi_text3":"Collapsible Table-of-contents"
+    "layout_description": {
+      "growi_title": "Simple and Clear",
+      "growi_text1": "Full screen layout and thin margins/paddings",
+      "growi_text2": "Show and post comments at the bottom of the page",
+      "growi_text3": "Affix Table-of-contents",
+      "kibela_title": "Easy Viewing Structure",
+      "kibela_text1": "Center aligned contents",
+      "kibela_text2": "Show and post comments at the bottom of the page",
+      "kibela_text3": "Affix Table-of-contents",
+      "crowi_title": "Separated Functions",
+      "crowi_text1": "Collapsible Sidebar",
+      "crowi_text2": "Show and post comments in Sidebar",
+      "crowi_text3": "Collapsible Table-of-contents"
     },
-    "behavior_description":{
-      "growi_text1":"Both of <code>/page</code> and <code>/page/</code> shows the same page。",
-      "growi_text2":"<code>/nonexistent_page</code> shows editing form",
-      "growi_text3":"All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b>",
-      "crowi_text1":"<code>/page</code> shows the page",
-      "crowi_text2":"<code>/page/</code> shows the list of sub pages",
-      "crowi_text3":"If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown",
-      "crowi_text4":"<code>/nonexistent_page</code> shows editing form<",
-      "crowi_text5":"<code>/nonexistent_page/</code> the list of sub pages"
+    "behavior_description": {
+      "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page。",
+      "growi_text2": "<code>/nonexistent_page</code> shows editing form",
+      "growi_text3": "All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b>",
+      "crowi_text1": "<code>/page</code> shows the page",
+      "crowi_text2": "<code>/page/</code> shows the list of sub pages",
+      "crowi_text3": "If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown",
+      "crowi_text4": "<code>/nonexistent_page</code> shows editing form<",
+      "crowi_text5": "<code>/nonexistent_page/</code> the list of sub pages"
     }
   },
   "user_management": {
