@@ -320,10 +320,17 @@ module.exports = (crowi) => {
    */
   router.get('/:id/unrelated-users', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.params;
+    const {
+      searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched,
+    } = req.query;
+
+    const queryOptions = {
+      searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched,
+    };
 
     try {
       const userGroup = await UserGroup.findById(id);
-      const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup);
+      const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup, queryOptions);
 
       return res.apiv3({ users });
     }
@@ -380,6 +387,14 @@ module.exports = (crowi) => {
         UserGroup.findById(id),
         User.findUserByUsername(username),
       ]);
+
+      // check for duplicate users in groups
+      const isRelatedUserForGroup = await UserGroupRelation.isRelatedUserForGroup(userGroup, user);
+
+      if (isRelatedUserForGroup) {
+        logger.warn('The user is already joined');
+        return res.apiv3();
+      }
 
       const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
       await userGroupRelation.populate('relatedUser', User.USER_PUBLIC_FIELDS).execPopulate();

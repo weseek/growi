@@ -66,13 +66,11 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   githubOAuth: [
-    body('isGithubOAuthEnabled').isBoolean(),
     body('githubClientId').isString(),
     body('githubClientSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   twitterOAuth: [
-    body('isTwitterOAuthEnabled').isBoolean(),
     body('twitterConsumerKey').isString(),
     body('twitterConsumerSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
@@ -237,9 +235,6 @@ const validator = {
  *            description: local account automatically linked the email matched
  *      GoogleOAuthSetting:
  *        type:object
- *          isGithubOAuthEnabled:
- *            type: boolean
- *            description: whether to enable github oauth
  *          googleClientId:
  *            type: string
  *            description: key of comsumer
@@ -250,9 +245,6 @@ const validator = {
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      TwitterOAuthSetting:
- *          isTwitterOAuthEnabled:
- *            type: boolean
- *            description: whether to enable twitter oauth
  *        type:object
  *          twitterConsumerKey:
  *            type: string
@@ -361,11 +353,13 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
       },
       githubOAuth: {
+        isGitHubStrategySetup: await crowi.passportService.isGitHubStrategySetup,
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
       twitterOAuth: {
+        isTwitterStrategySetup: await crowi.passportService.isTwitterStrategySetup,
         twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
@@ -717,7 +711,6 @@ module.exports = (crowi) => {
    */
   router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-github:isEnabled': req.body.isGithubOAuthEnabled,
       'security:passport-github:clientId': req.body.githubClientId,
       'security:passport-github:clientSecret': req.body.githubClientSecret,
       'security:passport-github:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
@@ -726,7 +719,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
-        isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+        isGitHubStrategySetup: await crowi.passportService.isGitHubStrategySetup,
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
@@ -771,7 +764,6 @@ module.exports = (crowi) => {
    */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-twitter:isEnabled': req.body.isTwitterOAuthEnabled,
       'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
       'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
       'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
@@ -780,14 +772,22 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
-        isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+        isTwitterStrategySetup: await crowi.passportService.isTwitterStrategySetup,
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
+      // reset strategy
+      await crowi.passportService.resetTwitterStrategy();
+      // setup strategy
+      if (crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
+        await crowi.passportService.setupTwitterStrategy(true);
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetTwitterStrategy();
       const msg = 'Error occurred in updating twitterOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));

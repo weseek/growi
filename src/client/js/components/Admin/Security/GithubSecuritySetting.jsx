@@ -39,10 +39,10 @@ class GithubSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGeneralSecurityContainer, adminGithubSecurityContainer } = this.props;
+    const { t, adminGithubSecurityContainer } = this.props;
 
     try {
-      await adminGithubSecurityContainer.updateGitHubSetting(adminGeneralSecurityContainer.state.isGithubOAuthEnabled);
+      await adminGithubSecurityContainer.updateGitHubSetting();
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
@@ -109,6 +109,12 @@ class GithubSecurityManagement extends React.Component {
 
         {adminGeneralSecurityContainer.state.isGithubOAuthEnabled && (
           <React.Fragment>
+
+            {!adminGithubSecurityContainer.state.isGitHubStrategySetup && (
+              <div className="alert alert-warning">
+                <p>{t('security_setting.setup_not_completed_yet')}</p>
+              </div>
+            )}
 
             <div className="row mb-5">
               <label htmlFor="githubClientId" className="col-xs-3 text-right">{ t('security_setting.clientID') }</label>

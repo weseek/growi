@@ -1,6 +1,13 @@
 # CHANGES
 
-## 3.6.2-RC
+## 3.6.3-RC
+
+* Improvement: Searching users in UserGroup Management
+* Fix: Repair google authentication by migrating to jaredhanson/passport-google-oauth2
+* Fix: Markdown Settings are broken by import recommended button
+
+
+## 3.6.2
 
 * Improvement: Reactify admin pages (Customize)
 * Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
