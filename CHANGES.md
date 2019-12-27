@@ -2,7 +2,8 @@
 
 ## v3.6.4-RC
 
-*
+* Feature: Alert for stale page
+* Improvement: Reactify admin pages (App)
 
 ## v3.6.3
 
