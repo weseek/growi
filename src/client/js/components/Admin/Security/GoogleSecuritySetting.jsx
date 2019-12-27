@@ -110,6 +110,12 @@ class GoogleSecurityManagement extends React.Component {
         {adminGeneralSecurityContainer.state.isGoogleOAuthEnabled && (
           <React.Fragment>
 
+            {!adminGoogleSecurityContainer.state.isGoogleStrategySetup && (
+              <div className="alert alert-warning">
+                <p>{t('security_setting.setup_not_completed_yet')}</p>
+              </div>
+            )}
+
             <div className="row mb-5">
               <label htmlFor="googleClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
               <div className="col-xs-6">
