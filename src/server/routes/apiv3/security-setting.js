@@ -60,7 +60,6 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   googleOAuth: [
-    body('isGoogleOAuthEnabled').isBoolean(),
     body('googleClientId').isString(),
     body('googleClientSecret').isString(),
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
@@ -221,9 +220,6 @@ const validator = {
  *            description: local account automatically linked the email matched
  *      GitHubOAuthSetting:
  *        type:object
- *          isGoogleOAuthEnabled:
- *            type: boolean
- *            description: whether to enable google oauth
  *          githubClientId:
  *            type: string
  *            description: key of comsumer
@@ -657,7 +653,6 @@ module.exports = (crowi) => {
    */
   router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-google:isEnabled': req.body.isEnabled,
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
       'security:passport-google:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
