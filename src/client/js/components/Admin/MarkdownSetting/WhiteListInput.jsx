@@ -15,7 +15,7 @@ class WhiteListInput extends React.Component {
 
     return (
       <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ tagWhiteList: tags }) }}>
-        { t('markdown_setting.import_recommended', 'tags') }
+        {t('markdown_setting:xss_options.import_recommended')}
       </p>
     );
   }
@@ -25,7 +25,7 @@ class WhiteListInput extends React.Component {
 
     return (
       <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ attrWhiteList: attrs }) }}>
-        { t('markdown_setting.import_recommended', 'Attrs') }
+        {t('markdown_setting:xss_options.import_recommended')}
       </p>
     );
   }
@@ -57,7 +57,7 @@ class WhiteListInput extends React.Component {
       <>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
-            { t('markdown_setting.Tag names') }
+            {t('markdown_setting:xss_options.tag_names')}
             {customizable && this.renderRecommendTagBtn()}
           </div>
           <textarea
@@ -72,7 +72,7 @@ class WhiteListInput extends React.Component {
         </div>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
-            { t('markdown_setting.Tag attributes') }
+            {t('markdown_setting:xss_options.tag_attributes')}
             {customizable && this.renderRecommendAttrBtn()}
           </div>
           <textarea
