@@ -373,7 +373,7 @@
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
-    "ex): internal use only": "ex): internal use only",
+    "ex) internal use only":"ex): internal use only",
     "File Uploading": "File Uploading",
     "enable_files_except_image": "Enable file upload other than image files.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
@@ -400,7 +400,10 @@
     "Load plugins": "Load plugins",
     "Enable": "Enable",
     "Disable": "Disable",
-    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
+    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used.",
+    "updated_app_setting": "Succeeded to update app setting",
+    "updated_site_url": "Succeeded to update site URL",
+    "updated_plugin_setting": "Succeeded to update plugin setting"
   },
   "security_setting": {
     "Security settings": "Security settings",
