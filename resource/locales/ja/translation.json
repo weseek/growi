@@ -564,9 +564,9 @@
     "Ignore all tags desc": "すべてのHTMLタグと属性を使用不可にします",
     "Recommended setting": "おすすめ設定",
     "Custom Whitelist": "カスタムホワイトリスト",
-    "Tag names": "タグ名のホワイトリスト",
-    "Tag attributes": "タグ属性のホワイトリスト",
-    "import_recommended": "おすすめをインポート",
+    "Tag names": "タグ名",
+    "Tag attributes": "タグ属性",
+    "import_recommended": "{{target}} のおすすめをインポート",
     "updated_lineBreak": "改行設定を更新しました",
     "updated_presentation": "プレゼンテーション設定を更新しました",
     "updated_xss": "XSS設定を更新しました"
@@ -591,7 +591,7 @@
     }
   },
   "customize_page": {
-    "recommended":"おすすめ",
+    "recommended": "おすすめ",
     "Behavior": "動作",
     "Layout": "レイアウト",
     "Function": "機能",
@@ -628,29 +628,29 @@
     "update_customHeader_success": "カスタムHTMLヘッダーを更新しました",
     "update_customCss_success": "カスタムCSSを更新しました",
     "update_script_success": "カスタムスクリプトを更新しました",
-    "layout_description":{
-      "growi_title":"シンプル・明瞭",
-      "growi_text1":"全画面レイアウトで、余白は少なくなります。",
-      "growi_text2":"コメントはページの下部に表示されます。",
-      "growi_text3":"ページ情報は下部に表示されます。",
-      "kibela_title":"閲覧重視の構造",
-      "kibela_text1":"コンテンツが中心に表示されます。",
-      "kibela_text2":"コメントはページの下部に表示されます。",
-      "kibela_text3":"ページ情報は下部に表示されます。",
-      "crowi_title":"ビュー・コントロールの分離",
-      "crowi_text1":"サイドバーを開くと情報が表示されます。",
-      "crowi_text2":"コメントはサイドバーに表示されます。",
-      "crowi_text3":"ページ情報はサイドバーに表示されます。"
+    "layout_description": {
+      "growi_title": "シンプル・明瞭",
+      "growi_text1": "全画面レイアウトで、余白は少なくなります。",
+      "growi_text2": "コメントはページの下部に表示されます。",
+      "growi_text3": "ページ情報は下部に表示されます。",
+      "kibela_title": "閲覧重視の構造",
+      "kibela_text1": "コンテンツが中心に表示されます。",
+      "kibela_text2": "コメントはページの下部に表示されます。",
+      "kibela_text3": "ページ情報は下部に表示されます。",
+      "crowi_title": "ビュー・コントロールの分離",
+      "crowi_text1": "サイドバーを開くと情報が表示されます。",
+      "crowi_text2": "コメントはサイドバーに表示されます。",
+      "crowi_text3": "ページ情報はサイドバーに表示されます。"
     },
-    "behavior_description":{
-      "growi_text1":"<code>/page</code>と<code>/page/</code>どちらのパスも同じページを表示します。",
-      "growi_text2":"<code>/nonexistent_page</code> では編集フォームを表示します",
-      "growi_text3":"<b>GROWI Enhanced Layout</b>では全てのページが配下のページリストを表示します",
-      "crowi_text1":"<code>/page</code> ではページを表示します。",
-      "crowi_text2":"<code>/page/</code> では配下のページを表示します。",
-      "crowi_text3":"<code>/page/</code>がポータルに適応している場合、ポータルページと配下のページリストを表示します。",
-      "crowi_text4":"<code>/nonexistent_page</code> では編集フォームを表示します",
-      "crowi_text5":"<code>/nonexistent_page</code> では配下のページリストを表示します。"
+    "behavior_description": {
+      "growi_text1": "<code>/page</code>と<code>/page/</code>どちらのパスも同じページを表示します。",
+      "growi_text2": "<code>/nonexistent_page</code> では編集フォームを表示します",
+      "growi_text3": "<b>GROWI Enhanced Layout</b>では全てのページが配下のページリストを表示します",
+      "crowi_text1": "<code>/page</code> ではページを表示します。",
+      "crowi_text2": "<code>/page/</code> では配下のページを表示します。",
+      "crowi_text3": "<code>/page/</code>がポータルに適応している場合、ポータルページと配下のページリストを表示します。",
+      "crowi_text4": "<code>/nonexistent_page</code> では編集フォームを表示します",
+      "crowi_text5": "<code>/nonexistent_page</code> では配下のページリストを表示します。"
     }
   },
   "user_management": {
