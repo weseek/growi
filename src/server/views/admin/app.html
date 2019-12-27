@@ -28,12 +28,13 @@
     {{ emessage }}
   </div>
   {% endif %}
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'app'} %}
+    </div>
 
-  <div class="col-md-3">
-    {% include './widget/menu.html' with {current: 'app'} %}
+    <div class="col-md-9" id="admin-app"></div>
   </div>
-
-  <div class="col-md-9" id="admin-app"></div>
 
 </div>
 {% endblock content_main %}
