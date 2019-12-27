@@ -4,7 +4,7 @@
 
 * Improvement: Searching users in UserGroup Management
 * Fix: Repair google authentication by migrating to jaredhanson/passport-google-oauth2
-* Fix: Markdown Settings are broken by import recommended button
+* Fix: Markdown Settings are broken by the button to import recommended settings
 * Support: Upgrade libs
     * check-node-version
     * file-loader
