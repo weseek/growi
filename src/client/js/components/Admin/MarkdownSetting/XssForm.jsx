@@ -5,6 +5,7 @@ import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
@@ -39,7 +40,7 @@ class XssForm extends React.Component {
     const { xssOption } = adminMarkDownContainer.state;
 
     return (
-      <fieldset className="form-group col-xs-12 my-3">
+      <fieldset className="row col-xs-12 my-3">
         <div className="col-xs-4 radio radio-primary">
           <input
             type="radio"
@@ -49,9 +50,9 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
           />
           <label htmlFor="xssOption1">
-            <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
+            <p className="font-weight-bold">{t('markdown_setting.Ignore all tags')}</p>
             <div className="m-t-15">
-              { t('markdown_setting.Ignore all tags desc') }
+              {t('markdown_setting.Ignore all tags desc')}
             </div>
           </label>
         </div>
@@ -65,8 +66,33 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
           />
           <label htmlFor="xssOption2">
-            <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
-            <WhiteListInput customizable={false} />
+            <p className="font-weight-bold">{t('markdown_setting.Recommended setting')}</p>
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
+                {t('markdown_setting.Tag names')}
+              </div>
+              <textarea
+                className="form-control xss-list"
+                name="recommendedTags"
+                rows="6"
+                cols="40"
+                readOnly
+                defaultValue={tags}
+              />
+            </div>
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
+                {t('markdown_setting.Tag attributes')}
+              </div>
+              <textarea
+                className="form-control xss-list"
+                name="recommendedAttrs"
+                rows="6"
+                cols="40"
+                readOnly
+                defaultValue={attrs}
+              />
+            </div>
           </label>
         </div>
 
@@ -79,8 +105,8 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
           />
           <label htmlFor="xssOption3">
-            <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
-            <WhiteListInput customizable />
+            <p className="font-weight-bold">{t('markdown_setting.Custom Whitelist')}</p>
+            <WhiteListInput />
           </label>
         </div>
       </fieldset>
@@ -106,7 +132,7 @@ class XssForm extends React.Component {
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label htmlFor="XssEnable">
-                  { t('markdown_setting.Enable XSS prevention') }
+                  {t('markdown_setting.Enable XSS prevention')}
                 </label>
               </div>
             </div>
