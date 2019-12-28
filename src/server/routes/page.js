@@ -85,41 +85,6 @@
  *            description: date updated at
  *            example: 2010-01-01T00:00:00.000Z
  *
- *      Revision:
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e0734e472560e001761fa68
- *          __v:
- *            type: integer
- *            description: DB record version
- *            example: 0
- *          author:
- *            type: object
- *            description: author
- *            example: nil
- *          body:
- *            type: string
- *            description: content body
- *            example: |
- *              \# test
- *
- *              test
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          format:
- *            type: string
- *            description: format
- *            example: markdown
- *          path:
- *            type: string
- *            description: path
- *            example: /user/alice/test
- *
  *      UpdatePost:
  *        type: object
  *        properties:
