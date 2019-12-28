@@ -70,7 +70,7 @@
  *            items:
  *              type: string
  *              description: user ID
- *            example: 5ae5fccfc5577b0004dbd8ab
+ *            example: ["5ae5fccfc5577b0004dbd8ab"]
  *          status:
  *            type: string
  *            description: status
@@ -89,7 +89,7 @@
  *        type: object
  *        properties:
  *          _id:
- *            type: object
+ *            type: string
  *            description: update post ID
  *            example: 5e0734e472560e001761fa68
  *          __v:
@@ -648,7 +648,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Get list of pages
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -657,6 +656,8 @@ module.exports = function(crowi, app) {
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  user:
    *                    $ref: '#/components/schemas/User/properties/username'
+   *                  offset:
+   *                    $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
    *        responses:
    *          200:
    *            description: Succeeded to get list of pages.
@@ -733,7 +734,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Create page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -841,7 +841,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Update page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -968,7 +967,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Get page data
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1089,7 +1087,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Mark as seen user
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1157,7 +1154,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Like page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1232,7 +1228,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Unlike page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1299,7 +1294,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Get UpdatePost setting list
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1361,7 +1355,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Remove page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1464,7 +1457,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Revert removed page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1536,7 +1528,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Rename page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -1687,7 +1678,6 @@ module.exports = function(crowi, app) {
    *        tags: [Pages]
    *        description: Remove the redirecting page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:

@@ -21,9 +21,7 @@
  *            description: DB record version
  *            example: 0
  *          author:
- *            type: object
- *            description: author
- *            example: nil
+ *            $ref: '#/components/schemas/User/properties/_id'
  *          body:
  *            type: string
  *            description: content body
