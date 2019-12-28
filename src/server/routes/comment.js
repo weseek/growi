@@ -77,7 +77,7 @@
    *                    $ref: '#/components/schemas/Revision/properties/_id'
    *        responses:
    *          200:
-   *            description: Succeeded to get comments of the page of the revisiona.
+   *            description: Succeeded to get comments of the page of the revision.
    *            content:
    *              application/json:
    *                schema:
