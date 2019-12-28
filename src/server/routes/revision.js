@@ -31,10 +31,6 @@
  *              # test
  *
  *              test
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
  *          format:
  *            type: string
  *            description: format
@@ -43,6 +39,10 @@
  *            type: string
  *            description: path
  *            example: /user/alice/test
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
  */
 
 module.exports = function(crowi, app) {
