@@ -21,6 +21,51 @@ const validator = {};
  *    name: Users
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      User:
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: user ID
+ *            example: '0123456789abcdef01234567'
+ *          __v:
+ *            type: integer
+ *            description: DB record version
+ *            example: 0
+ *          lang:
+ *            type: string
+ *            description: language
+ *            example: 'en-US'
+ *          status:
+ *            type: integer
+ *            description: status
+ *            example: 0
+ *          admin:
+ *            type: boolean
+ *            description: whether the admin
+ *          email:
+ *            type: string
+ *            description: E-Mail address
+ *            example: 'alice@aaa.aaa'
+ *          username:
+ *            type: string
+ *            description: username
+ *            example: 'alice'
+ *          name:
+ *            type: string
+ *            description: full name
+ *            example: 'Alice'
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: '2010-01-01T00:00:00.000Z'
+ */
+
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);

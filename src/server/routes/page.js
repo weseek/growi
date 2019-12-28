@@ -1,3 +1,73 @@
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Page:
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: page ID
+ *          __v:
+ *            type: integer
+ *            description: DB record version
+ *          commentCount:
+ *            type: integer
+ *            description: count of comments
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *          creator:
+ *            $ref: '#/components/schemas/User'
+ *          extended:
+ *            type: object
+ *            description: extend data
+ *          grant:
+ *            type: integer
+ *            description: grant
+ *          grantedUsers:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *          lastUpdateUser:
+ *            $ref: '#/components/schemas/User'
+ *          liker:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *          path:
+ *            type: string
+ *            description: page path
+ *          redirectTo:
+ *            type: string
+ *            description: redirect path
+ *          revision:
+ *            type: object
+ *            description: revision
+ *          seenUsers:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *          status:
+ *            type: string
+ *            description: status
+ *            enum:
+ *              - 'wip'
+ *              - 'published'
+ *              - 'deleted'
+ *              - 'deprecated'
+ *          updatedAt:
+ *            type: string
+ *            description: date updated at
+ */
+
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
