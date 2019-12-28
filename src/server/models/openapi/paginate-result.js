@@ -45,4 +45,33 @@
  *          meta:
  *            type: number
  *            description: Object of pagination meta data (Default false).
+ *
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      V1PaginateResult:
+ *        type: object
+ *        properties:
+ *          meta:
+ *            type: object
+ *            properties:
+ *              total:
+ *                type: integer
+ *                description: Total number of documents in collection that match a query
+ *                example: 35
+ *              limit:
+ *                type: integer
+ *                description:
+ *                example: 10
+ *              offset:
+ *                type: integer
+ *                description: Only if specified or default page/offset values were used
+ *                example: 20
+ *          data:
+ *            type: object
+ *            description: Object of pagination meta data.
  */
