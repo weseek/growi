@@ -28,7 +28,7 @@
  *            type: string
  *            description: content body
  *            example: |
- *              \# test
+ *              # test
  *
  *              test
  *          createdAt:
