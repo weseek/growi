@@ -222,7 +222,8 @@
       "redirected": "リダイレクト元 >> <code>%s</code>",
       "duplicated": "このページは <code>%s</code> から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
-      "restricted": "このページの閲覧は制限されています"
+      "restricted": "このページの閲覧は制限されています",
+      "stale": "このページは最終更新日から{{count}}年以上が経過しています。"
     }
   },
   "page_edit": {
@@ -370,7 +371,7 @@
     "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
     "Confidential name": "コンフィデンシャル表示",
     "Default Language for new users": "新規ユーザーのデフォルト設定言語",
-    "ex): internal use only": "例: 社外秘",
+    "ex) internal use only": "例: 社外秘",
     "File Uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
@@ -397,7 +398,10 @@
     "Load plugins": "プラグインを読み込む",
     "Enable": "有効",
     "Disable": "無効",
-    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します"
+    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
+    "updated_app_setting": "アプリ設定を更新しました",
+    "updated_site_url": "サイトURLを更新しました",
+    "updated_plugin_setting": "プラグイン設定を更新しました"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
@@ -588,6 +592,8 @@
     "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
     "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
     "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
+    "stale_notification": "更新されていないページに通知を表示",
+    "stale_notification_desc": "最終更新から１年以上が経過しているページに通知を表示します。",
     "update_layout_success": "レイアウトを更新しました",
     "update_behavior_success": "動作を更新しました",
     "update_function_success": "機能を更新しました",

@@ -28,8 +28,8 @@
     "ignore_all_tags_desc": "すべてのHTMLタグと属性を使用不可にします",
     "recommended_setting": "おすすめ設定",
     "custom_whitelist": "カスタムホワイトリスト",
-    "tag_names": "タグ名のホワイトリスト",
-    "tag_attributes": "タグ属性のホワイトリスト",
-    "import_recommended": "おすすめをインポート"
+    "tag_names": "タグ名",
+    "tag_attributes": "タグ属性",
+    "import_recommended": "{{target}} のおすすめをインポート"
   }
 }

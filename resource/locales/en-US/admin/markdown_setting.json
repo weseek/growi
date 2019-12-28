@@ -30,6 +30,6 @@
     "custom_whitelist": "Custom Whitelist",
     "tag_names": "Tag names",
     "tag_attributes": "Tag attributes",
-    "import_recommended": "Import recommended"
+    "import_recommended": "Import recommended {{target}}"
   }
 }

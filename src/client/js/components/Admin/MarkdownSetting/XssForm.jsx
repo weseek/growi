@@ -5,6 +5,7 @@ import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
@@ -39,7 +40,7 @@ class XssForm extends React.Component {
     const { xssOption } = adminMarkDownContainer.state;
 
     return (
-      <fieldset className="form-group col-xs-12 my-3">
+      <fieldset className="row col-xs-12 my-3">
         <div className="col-xs-4 radio radio-primary">
           <input
             type="radio"
@@ -66,7 +67,32 @@ class XssForm extends React.Component {
           />
           <label htmlFor="xssOption2">
             <p className="font-weight-bold">{t('markdown_setting:xss_options.recommended_setting')}</p>
-            <WhiteListInput customizable={false} />
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
+                {t('markdown_setting:xss_options.tag_names')}
+              </div>
+              <textarea
+                className="form-control xss-list"
+                name="recommendedTags"
+                rows="6"
+                cols="40"
+                readOnly
+                defaultValue={tags}
+              />
+            </div>
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
+                {t('markdown_setting:xss_options.tag_attributes')}
+              </div>
+              <textarea
+                className="form-control xss-list"
+                name="recommendedAttrs"
+                rows="6"
+                cols="40"
+                readOnly
+                defaultValue={attrs}
+              />
+            </div>
           </label>
         </div>
 
@@ -80,7 +106,7 @@ class XssForm extends React.Component {
           />
           <label htmlFor="xssOption3">
             <p className="font-weight-bold">{t('markdown_setting:xss_options.custom_whitelist')}</p>
-            <WhiteListInput customizable />
+            <WhiteListInput />
           </label>
         </div>
       </fieldset>

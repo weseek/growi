@@ -10,78 +10,62 @@ import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 class WhiteListInput extends React.Component {
 
-  renderRecommendTagBtn() {
-    const { t, adminMarkDownContainer } = this.props;
+  constructor(props) {
+    super(props);
 
-    return (
-      <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ tagWhiteList: tags }) }}>
-        {t('markdown_setting:xss_options.import_recommended')}
-      </p>
-    );
+    this.tagWhiteList = React.createRef();
+    this.attrWhiteList = React.createRef();
+
+    this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
+    this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
   }
 
-  renderRecommendAttrBtn() {
-    const { t, adminMarkDownContainer } = this.props;
-
-    return (
-      <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={() => { adminMarkDownContainer.setState({ attrWhiteList: attrs }) }}>
-        {t('markdown_setting:xss_options.import_recommended')}
-      </p>
-    );
+  onClickRecommendTagButton() {
+    this.tagWhiteList.current.value = tags;
+    this.props.adminMarkDownContainer.setState({ tagWhiteList: tags });
   }
 
-  renderTagValue() {
-    const { customizable, adminMarkDownContainer } = this.props;
-
-    if (customizable) {
-      return adminMarkDownContainer.state.tagWhiteList;
-    }
-
-    return tags;
-  }
-
-  renderAttrValue() {
-    const { customizable, adminMarkDownContainer } = this.props;
-
-    if (customizable) {
-      return adminMarkDownContainer.state.attrWhiteList;
-    }
-
-    return attrs;
+  onClickRecommendAttrButton() {
+    this.attrWhiteList.current.value = attrs;
+    this.props.adminMarkDownContainer.setState({ attrWhiteList: attrs });
   }
 
   render() {
-    const { t, customizable, adminMarkDownContainer } = this.props;
+    const { t, adminMarkDownContainer } = this.props;
 
     return (
       <>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             {t('markdown_setting:xss_options.tag_names')}
-            {customizable && this.renderRecommendTagBtn()}
+            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendTagButton}>
+              {t('markdown_setting:xss_options.import_recommended', { target: 'Tags' })}
+            </p>
           </div>
           <textarea
             className="form-control xss-list"
             name="recommendedTags"
             rows="6"
             cols="40"
-            readOnly={!customizable}
-            defaultValue={this.renderTagValue()}
+            ref={this.tagWhiteList}
+            defaultValue={adminMarkDownContainer.state.tagWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
           />
         </div>
         <div className="m-t-15">
           <div className="d-flex justify-content-between">
             {t('markdown_setting:xss_options.tag_attributes')}
-            {customizable && this.renderRecommendAttrBtn()}
+            <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendAttrButton}>
+              {t('markdown_setting:xss_options.import_recommended', { target: 'Attrs' })}
+            </p>
           </div>
           <textarea
             className="form-control xss-list"
             name="recommendedAttrs"
             rows="6"
             cols="40"
-            readOnly={!customizable}
-            defaultValue={this.renderAttrValue()}
+            ref={this.attrWhiteList}
+            defaultValue={adminMarkDownContainer.state.attrWhiteList}
             onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
           />
         </div>
@@ -100,7 +84,6 @@ WhiteListInput.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
-  customizable: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(WhiteListWrapper);
