@@ -24,35 +24,45 @@ const ApiResponse = require('../util/apiResponse');
  *          _id:
  *            type: string
  *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
  *          __v:
  *            type: integer
  *            description: attachment version
+ *            example: 0
  *          fileFormat:
  *            type: string
  *            description: file format in MIME
+ *            example: image/png
  *          fileName:
  *            type: string
  *            description: file name
+ *            example: 601b7c59d43a042c0117e08dd37aad0aimage.png
  *          originalName:
  *            type: string
  *            description: original file name
+ *            example: image.png
  *          filePath:
  *            type: string
  *            description: file path
+ *            example: attachment/5e07345972560e001761fa63/6b0b3facf3628699263d760e18efd446.png
  *          creator:
  *            $ref: '#/components/schemas/User'
  *          page:
  *            type: string
  *            description: page ID attached at
+ *            example: 5e07345972560e001761fa63
  *          createdAt:
  *            type: string
  *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
  *          fileSize:
  *            type: integer
  *            description: file size
+ *            example: 3494332
  *          url:
  *            type: string
  *            description: attachment URL
+ *            example: http://localhost/files/5e0734e072560e001761fa67
  */
 
 module.exports = function(crowi, app) {
@@ -247,8 +257,7 @@ module.exports = function(crowi, app) {
    *              schema:
    *                properties:
    *                  page_id:
-   *                    type: string
-   *                    description: page object ID
+   *                    $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
    *            description: Succeeded to get list of attachments.
@@ -316,8 +325,7 @@ module.exports = function(crowi, app) {
    *              schema:
    *                properties:
    *                  page_id:
-   *                    type: string
-   *                    description: page object ID
+   *                    $ref: '#/components/schemas/Page/properties/_id'
    *                  file:
    *                    type: string
    *                    format: binary
@@ -336,8 +344,7 @@ module.exports = function(crowi, app) {
    *                    attachment:
    *                      $ref: '#/components/schemas/Attachment'
    *                    url:
-   *                      type: string
-   *                      description: attachment URL
+   *                      $ref: '#/components/schemas/Attachment/properties/url'
    *                    pageCreated:
    *                      type: boolean
    *                      description: whether the page was created
@@ -461,8 +468,7 @@ module.exports = function(crowi, app) {
    *              schema:
    *                properties:
    *                  attachment_id:
-   *                    type: string
-   *                    description: attachment ID
+   *                    $ref: '#/components/schemas/Attachment/properties/_id'
    *        responses:
    *          200:
    *            description: Succeeded to remove attachment.

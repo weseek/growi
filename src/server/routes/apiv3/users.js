@@ -32,7 +32,7 @@ const validator = {};
  *          _id:
  *            type: string
  *            description: user ID
- *            example: '0123456789abcdef01234567'
+ *            example: 5ae5fccfc5577b0004dbd8ab
  *          __v:
  *            type: integer
  *            description: DB record version
@@ -48,22 +48,23 @@ const validator = {};
  *          admin:
  *            type: boolean
  *            description: whether the admin
+ *            example: false
  *          email:
  *            type: string
  *            description: E-Mail address
- *            example: 'alice@aaa.aaa'
+ *            example: alice@aaa.aaa
  *          username:
  *            type: string
  *            description: username
- *            example: 'alice'
+ *            example: alice
  *          name:
  *            type: string
  *            description: full name
- *            example: 'Alice'
+ *            example: Alice
  *          createdAt:
  *            type: string
  *            description: date created at
- *            example: '2010-01-01T00:00:00.000Z'
+ *            example: 2010-01-01T00:00:00.000Z
  */
 
 module.exports = (crowi) => {
