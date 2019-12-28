@@ -258,6 +258,8 @@ module.exports = function(crowi, app) {
    *                properties:
    *                  page_id:
    *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                required:
+   *                  - page_id
    *        responses:
    *          200:
    *            description: Succeeded to get list of attachments.
@@ -330,6 +332,9 @@ module.exports = function(crowi, app) {
    *                    type: string
    *                    format: binary
    *                    description: attachment data
+   *                required:
+   *                  - page_id
+   *                  - file
    *        responses:
    *          200:
    *            description: Succeeded to add attachment.
@@ -469,6 +474,8 @@ module.exports = function(crowi, app) {
    *                properties:
    *                  attachment_id:
    *                    $ref: '#/components/schemas/Attachment/properties/_id'
+   *                required:
+   *                  - attachment_id
    *        responses:
    *          200:
    *            description: Succeeded to remove attachment.
