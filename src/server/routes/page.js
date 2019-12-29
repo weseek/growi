@@ -57,11 +57,11 @@
  *          path:
  *            type: string
  *            description: page path
- *            example: /user/alice/test
+ *            example: /
  *          redirectTo:
  *            type: string
  *            description: redirect path
- *            example: /user/alice/test2
+ *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
  *          seenUsers:
