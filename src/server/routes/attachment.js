@@ -250,6 +250,7 @@ module.exports = function(crowi, app) {
    *    /_api/attachments.list:
    *      get:
    *        tags: [Attachments]
+   *        operationId: /_api/attachments.list
    *        summary: /_api/attachments.list
    *        description: Get list of attachments in page
    *        parameters:
@@ -317,6 +318,7 @@ module.exports = function(crowi, app) {
    *    components:
    *      schemas:
    *        AttachmentAddParams:
+   *          description: AttachmentAddParams
    *          type: object
    *          properties:
    *            page_id:
@@ -337,6 +339,7 @@ module.exports = function(crowi, app) {
    *    /_api/attachments.add:
    *      post:
    *        tags: [Attachments]
+   *        operationId: /_api/attachments.add
    *        summary: /_api/attachments.add
    *        description: Add attachment to the page
    *        requestBody:
@@ -483,6 +486,7 @@ module.exports = function(crowi, app) {
    *    /_api/attachments.remove:
    *      post:
    *        tags: [Attachments]
+   *        operationId: /_api/attachments.remove
    *        summary: /_api/attachments.remove
    *        description: Remove attachment
    *        requestBody:

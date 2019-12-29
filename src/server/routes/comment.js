@@ -65,6 +65,7 @@
    *    /_api/comments.get:
    *      get:
    *        tags: [Comments]
+   *        operationId: /_api/comments.get
    *        summary: /_api/comments.get
    *        description: Get comments of the page of the revision
    *        parameters:
@@ -158,6 +159,7 @@
    *    /_api/comments.add:
    *      post:
    *        tags: [Comments]
+   *        operationId: /_api/comments.add
    *        summary: /_api/comments.add
    *        description: Post comment for the page
    *        requestBody:
@@ -286,6 +288,7 @@
    *    /_api/comments.update:
    *      post:
    *        tags: [Comments]
+   *        operationId: /_api/comments.update
    *        summary: /_api/comments.update
    *        description: Update comment dody
    *        requestBody:
@@ -377,6 +380,7 @@
    *    /_api/comments.remove:
    *      post:
    *        tags: [Comments]
+   *        operationId: /_api/comments.remove
    *        summary: /_api/comments.remove
    *        description: Remove specified comment
    *        requestBody:
