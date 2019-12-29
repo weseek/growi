@@ -60,19 +60,19 @@ module.exports = function(crowi, app) {
    *    /_api/revisions.get:
    *      get:
    *        tags: [Revisions]
+   *        summary: /_api/revisions.get
    *        description: Get revision
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revision_id:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
-   *                required:
-   *                  - page_id
-   *                  - revision_id
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *            required: true
+   *          - in: query
+   *            name: revision_id
+   *            schema:
+   *              $ref: '#/components/schemas/Revision/properties/_id'
+   *            required: true
    *        responses:
    *          200:
    *            description: Succeeded to get revision.
@@ -127,16 +127,14 @@ module.exports = function(crowi, app) {
    *    /_api/revisions.ids:
    *      get:
    *        tags: [Revisions]
+   *        summary: /_api/revisions.ids
    *        description: Get revision id list of the page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *            required: true
    *        responses:
    *          200:
    *            description: Succeeded to get revision id list of the page.
@@ -189,18 +187,19 @@ module.exports = function(crowi, app) {
    *    /_api/revisions.list:
    *      get:
    *        tags: [Revisions]
+   *        summary: /_api/revisions.list
    *        description: Get revisions
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revision_ids:
-   *                    type: string
-   *                    description: revision ids
-   *                    example: 5e0734e472560e001761fa68,5e079a0a0afa6700170a75fb
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: revision_ids
+   *            schema:
+   *              type: string
+   *              description: revision ids
+   *              example: 5e0734e472560e001761fa68,5e079a0a0afa6700170a75fb
    *        responses:
    *          200:
    *            description: Succeeded to get revisions.
