@@ -4,6 +4,7 @@
  *  components:
  *    schemas:
  *      V1Response:
+ *        description: Response v1
  *        type: object
  *        properties:
  *          ok:

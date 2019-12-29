@@ -19,6 +19,7 @@ const ApiResponse = require('../util/apiResponse');
  *  components:
  *    schemas:
  *      Attachment:
+ *        description: Attachment
  *        type: object
  *        properties:
  *          _id:

@@ -54,6 +54,7 @@
  *  components:
  *    schemas:
  *      V1PaginateResult:
+ *        description: Paginate result v1
  *        type: object
  *        properties:
  *          meta:

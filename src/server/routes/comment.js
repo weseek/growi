@@ -10,6 +10,7 @@
  *  components:
  *    schemas:
  *      Comment:
+ *        description: Comment
  *        type: object
  *        properties:
  *          _id:

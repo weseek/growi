@@ -10,6 +10,7 @@
  *  components:
  *    schemas:
  *      Page:
+ *        description: Page
  *        type: object
  *        properties:
  *          _id:
@@ -86,6 +87,7 @@
  *            example: 2010-01-01T00:00:00.000Z
  *
  *      UpdatePost:
+ *        description: UpdatePost
  *        type: object
  *        properties:
  *          _id:

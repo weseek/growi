@@ -10,6 +10,7 @@
  *  components:
  *    schemas:
  *      Bookmark:
+ *        description: Bookmark
  *        type: object
  *        properties:
  *          _id:

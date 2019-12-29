@@ -10,6 +10,7 @@
  *  components:
  *    schemas:
  *      Revision:
+ *        description: Revision
  *        type: object
  *        properties:
  *          _id:
