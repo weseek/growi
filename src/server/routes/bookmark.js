@@ -45,16 +45,14 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.get:
    *      get:
    *        tags: [Bookmarks]
+   *        summary: /_api/bookmarks.get
    *        description: Get bookmark of the page with the user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            required: true
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
    *            description: Succeeded to get bookmark of the page with the user.
@@ -101,16 +99,17 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.list:
    *      get:
    *        tags: [Bookmarks]
+   *        summary: /_api/bookmarks.list
    *        description: Get bookmark list of the page with the user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  limit:
-   *                    $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *                  offset:
-   *                    $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *        parameters:
+   *          - in: query
+   *            name: limit
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *          - in: query
+   *            name: offset
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
    *        responses:
    *          200:
    *            description: Succeeded to get bookmark of the page with the user.
@@ -150,16 +149,14 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.add:
    *      post:
    *        tags: [Bookmarks]
+   *        summary: /_api/bookmarks.add
    *        description: Add bookmark of the page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *            required: true
    *        responses:
    *          200:
    *            description: Succeeded to add bookmark of the page.
@@ -206,6 +203,7 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.remove:
    *      post:
    *        tags: [Bookmarks]
+   *        summary: /_api/bookmarks.remove
    *        description: Remove bookmark of the page
    *        requestBody:
    *          content:
