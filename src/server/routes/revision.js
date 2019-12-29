@@ -62,7 +62,6 @@ module.exports = function(crowi, app) {
    *        tags: [Revisions]
    *        description: Get revision
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -130,7 +129,6 @@ module.exports = function(crowi, app) {
    *        tags: [Revisions]
    *        description: Get revision id list of the page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -193,7 +191,6 @@ module.exports = function(crowi, app) {
    *        tags: [Revisions]
    *        description: Get revisions
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:

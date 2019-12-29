@@ -251,7 +251,6 @@ module.exports = function(crowi, app) {
    *        tags: [Attachments]
    *        description: Get list of attachments in page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -321,7 +320,6 @@ module.exports = function(crowi, app) {
    *        tags: [Attachments]
    *        description: Add attachment to the page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -467,7 +465,6 @@ module.exports = function(crowi, app) {
    *        tags: [Attachments]
    *        description: Remove attachment
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:

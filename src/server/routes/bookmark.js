@@ -47,7 +47,6 @@ module.exports = function(crowi, app) {
    *        tags: [Bookmarks]
    *        description: Get bookmark of the page with the user
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -104,7 +103,6 @@ module.exports = function(crowi, app) {
    *        tags: [Bookmarks]
    *        description: Get bookmark list of the page with the user
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -154,7 +152,6 @@ module.exports = function(crowi, app) {
    *        tags: [Bookmarks]
    *        description: Add bookmark of the page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -211,7 +208,6 @@ module.exports = function(crowi, app) {
    *        tags: [Bookmarks]
    *        description: Remove bookmark of the page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:

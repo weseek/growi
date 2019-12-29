@@ -66,7 +66,6 @@
    *        tags: [Comments]
    *        description: Get comments of the page of the revision
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -159,7 +158,6 @@
    *        tags: [Comments]
    *        description: Post comment for the page
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -287,7 +285,6 @@
    *        tags: [Comments]
    *        description: Update comment dody
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
@@ -378,7 +375,6 @@
    *        tags: [Comments]
    *        description: Remove specified comment
    *        requestBody:
-   *          required: true
    *          content:
    *            application/json:
    *              schema:
