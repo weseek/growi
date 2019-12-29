@@ -17,7 +17,7 @@
  *            description: revision ID
  *            example: 5e079a0a0afa6700170a75fb
  *          __v:
- *            type: integer
+ *            type: number
  *            description: DB record version
  *            example: 0
  *          page:
@@ -31,7 +31,7 @@
  *            description: comment
  *            example: good
  *          commentPosition:
- *            type: integer
+ *            type: number
  *            description: comment position
  *            example: 0
  *          createdAt:

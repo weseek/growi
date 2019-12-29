@@ -17,7 +17,7 @@
  *            description: page ID
  *            example: 5e07345972560e001761fa63
  *          __v:
- *            type: integer
+ *            type: number
  *            description: DB record version
  *            example: 0
  *          createdAt:

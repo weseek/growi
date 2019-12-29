@@ -17,11 +17,11 @@
  *            description: page ID
  *            example: 5e07345972560e001761fa63
  *          __v:
- *            type: integer
+ *            type: number
  *            description: DB record version
  *            example: 0
  *          commentCount:
- *            type: integer
+ *            type: number
  *            description: count of comments
  *            example: 3
  *          createdAt:
@@ -35,7 +35,7 @@
  *            description: extend data
  *            example: {}
  *          grant:
- *            type: integer
+ *            type: number
  *            description: grant
  *            example: 1
  *          grantedUsers:
@@ -93,7 +93,7 @@
  *            description: update post ID
  *            example: 5e0734e472560e001761fa68
  *          __v:
- *            type: integer
+ *            type: number
  *            description: DB record version
  *            example: 0
  *          pathPattern:

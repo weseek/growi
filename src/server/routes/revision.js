@@ -17,7 +17,7 @@
  *            description: revision ID
  *            example: 5e0734e472560e001761fa68
  *          __v:
- *            type: integer
+ *            type: number
  *            description: DB record version
  *            example: 0
  *          author:

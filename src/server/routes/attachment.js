@@ -26,7 +26,7 @@ const ApiResponse = require('../util/apiResponse');
  *            description: attachment ID
  *            example: 5e0734e072560e001761fa67
  *          __v:
- *            type: integer
+ *            type: number
  *            description: attachment version
  *            example: 0
  *          fileFormat:
@@ -56,7 +56,7 @@ const ApiResponse = require('../util/apiResponse');
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
  *          fileSize:
- *            type: integer
+ *            type: number
  *            description: file size
  *            example: 3494332
  *          url:
