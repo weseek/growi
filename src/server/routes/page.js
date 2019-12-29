@@ -669,7 +669,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    pages:
    *                      type: array
    *                      items:
@@ -759,7 +759,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -869,7 +869,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -993,7 +993,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -1112,7 +1112,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    seenUser:
    *                      $ref: '#/components/schemas/Page/properties/seenUsers'
    *          403:
@@ -1180,7 +1180,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -1255,7 +1255,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -1318,7 +1318,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    updatePost:
    *                      $ref: '#/components/schemas/UpdatePost'
    *          403:
@@ -1384,7 +1384,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -1485,7 +1485,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -1568,7 +1568,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:
@@ -1710,7 +1710,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *          403:

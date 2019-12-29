@@ -83,7 +83,7 @@
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    comments:
    *                      type: array
    *                      items:
@@ -185,7 +185,7 @@
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
@@ -316,7 +316,7 @@
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:
@@ -395,7 +395,7 @@
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    comment:
    *                      $ref: '#/components/schemas/Comment'
    *          403:

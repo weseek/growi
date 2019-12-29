@@ -265,7 +265,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    attachments:
    *                      type: array
    *                      items:
@@ -360,7 +360,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *                    attachment:
@@ -501,7 +501,7 @@ module.exports = function(crowi, app) {
    *                schema:
    *                  properties:
    *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/ok'
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:

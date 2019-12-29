@@ -65,7 +65,7 @@
  *                example: 35
  *              limit:
  *                type: integer
- *                description:
+ *                description: Limit that was used
  *                example: 10
  *              offset:
  *                type: integer
