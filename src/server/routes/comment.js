@@ -64,16 +64,17 @@
    *    /_api/comments.get:
    *      get:
    *        tags: [Comments]
+   *        summary: /_api/comments.get
    *        description: Get comments of the page of the revision
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revision_id:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: revision_id
+   *            schema:
+   *              $ref: '#/components/schemas/Revision/properties/_id'
    *        responses:
    *          200:
    *            description: Succeeded to get comments of the page of the revision.
@@ -156,6 +157,7 @@
    *    /_api/comments.add:
    *      post:
    *        tags: [Comments]
+   *        summary: /_api/comments.add
    *        description: Post comment for the page
    *        requestBody:
    *          content:
@@ -283,6 +285,7 @@
    *    /_api/comments.update:
    *      post:
    *        tags: [Comments]
+   *        summary: /_api/comments.update
    *        description: Update comment dody
    *        requestBody:
    *          content:
@@ -373,6 +376,7 @@
    *    /_api/comments.remove:
    *      post:
    *        tags: [Comments]
+   *        summary: /_api/comments.remove
    *        description: Remove specified comment
    *        requestBody:
    *          content:
