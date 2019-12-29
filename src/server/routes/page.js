@@ -646,18 +646,21 @@ module.exports = function(crowi, app) {
    *    /_api/pages.list:
    *      get:
    *        tags: [Pages]
+   *        summary: /_api/pages.list
    *        description: Get list of pages
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                  user:
-   *                    $ref: '#/components/schemas/User/properties/username'
-   *                  offset:
-   *                    $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *        parameters:
+   *          - in: query
+   *            name: path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *          - in: query
+   *            name: user
+   *            schema:
+   *              $ref: '#/components/schemas/User/properties/username'
+   *          - in: query
+   *            name: offset
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
    *        responses:
    *          200:
    *            description: Succeeded to get list of pages.
@@ -732,6 +735,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.create:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.create
    *        description: Create page
    *        requestBody:
    *          content:
@@ -839,6 +843,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.update:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.update
    *        description: Update page
    *        requestBody:
    *          content:
@@ -965,18 +970,21 @@ module.exports = function(crowi, app) {
    *    /_api/pages.get:
    *      get:
    *        tags: [Pages]
+   *        summary: /_api/pages.get
    *        description: Get page data
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                  revision_id:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *          - in: query
+   *            name: revision_id
+   *            schema:
+   *              $ref: '#/components/schemas/Revision/properties/_id'
    *        responses:
    *          200:
    *            description: Succeeded to get page data.
@@ -1085,6 +1093,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.seen:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.seen
    *        description: Mark as seen user
    *        requestBody:
    *          content:
@@ -1152,6 +1161,7 @@ module.exports = function(crowi, app) {
    *    /_api/likes.add:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/likes.add
    *        description: Like page
    *        requestBody:
    *          content:
@@ -1226,6 +1236,7 @@ module.exports = function(crowi, app) {
    *    /_api/likes.remove:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/likes.remove
    *        description: Unlike page
    *        requestBody:
    *          content:
@@ -1292,14 +1303,13 @@ module.exports = function(crowi, app) {
    *    /_api/pages.updatePost:
    *      get:
    *        tags: [Pages]
+   *        summary: /_api/pages.updatePost
    *        description: Get UpdatePost setting list
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
+   *        parameters:
+   *          - in: query
+   *            name: path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
    *        responses:
    *          200:
    *            description: Succeeded to get UpdatePost setting list.
@@ -1353,6 +1363,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.remove:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.remov
    *        description: Remove page
    *        requestBody:
    *          content:
@@ -1455,6 +1466,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.revertRemove:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.revertRemove
    *        description: Revert removed page
    *        requestBody:
    *          content:
@@ -1526,6 +1538,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.rename:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.rename
    *        description: Rename page
    *        requestBody:
    *          content:
@@ -1676,6 +1689,7 @@ module.exports = function(crowi, app) {
    *    /_api/pages.unlink:
    *      post:
    *        tags: [Pages]
+   *        summary: /_api/pages.unlink
    *        description: Remove the redirecting page
    *        requestBody:
    *          content:
