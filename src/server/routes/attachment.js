@@ -250,7 +250,7 @@ module.exports = function(crowi, app) {
    *    /_api/attachments.list:
    *      get:
    *        tags: [Attachments, apiv1]
-   *        operationId: /_api/attachments.list
+   *        operationId: listAttachments
    *        summary: /_api/attachments.list
    *        description: Get list of attachments in page
    *        parameters:
@@ -371,6 +371,7 @@ module.exports = function(crowi, app) {
    *                    pageCreated:
    *                      type: boolean
    *                      description: whether the page was created
+   *                      example: false
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -483,7 +484,7 @@ module.exports = function(crowi, app) {
    *    /_api/attachments.remove:
    *      post:
    *        tags: [Attachments, apiv1]
-   *        operationId: /_api/attachments.remove
+   *        operationId: removeAttachment
    *        summary: /_api/attachments.remove
    *        description: Remove attachment
    *        requestBody:

@@ -42,7 +42,7 @@ module.exports = function(crowi, app) {
    *    /_api/users.list:
    *      get:
    *        tags: [Users, apiv1]
-   *        operationId: /_api/users.list
+   *        operationId: listUsersV1
    *        summary: /_api/users.list
    *        description: Get list of users
    *        parameters:

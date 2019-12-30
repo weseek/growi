@@ -23,6 +23,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *  components:
  *    schemas:
  *      AppSettingParams:
+ *        description: AppSettingParams
  *        type: object
  *        properties:
  *          title:
@@ -38,6 +39,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *            description: enable upload file except image file
  *      SiteUrlSettingParams:
+ *        description: SiteUrlSettingParams
  *        type: object
  *        properties:
  *          siteUrl:
@@ -47,6 +49,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *            description: environment variable 'APP_SITE_URL'
  *      MailSettingParams:
+ *        description: MailSettingParams
  *        type: object
  *        properties:
  *          fromAddress:
@@ -65,6 +68,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *            description: password of client's smtp server
  *      AwsSettingParams:
+ *        description: AwsSettingParams
  *        type: object
  *        properties:
  *          region:
@@ -83,6 +87,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *            description: secret key for authentification of AWS
  *      PluginSettingParams:
+ *        description: PluginSettingParams
  *        type: object
  *        properties:
  *          isEnabledPlugins:
@@ -131,9 +136,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/:
+   *    /_api/v3/app-settings:
    *      get:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: getAppSettings
+   *        summary: /_api/v3/app-settings
    *        description: get app setting params
    *        responses:
    *          200:
@@ -174,9 +181,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/app-setting:
+   *    /_api/v3/app-settings/app-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        summary: /_api/v3/app-settings/app-setting
+   *        operationId: updateAppSettings
    *        description: Update app setting
    *        requestBody:
    *          required: true
@@ -221,9 +230,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/site-url-setting:
+   *    /_api/v3/app-settings/site-url-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingSiteUrlSetting
+   *        summary: /_api/v3/app-settings/site-url-setting
    *        description: Update site url setting
    *        requestBody:
    *          required: true
@@ -311,10 +322,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/site-url-setting:
+   *    /_api/v3/app-settings/mail-setting:
    *      put:
-   *        tags: [AppSettings]
-   *        description: Update site url setting
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingMailSetting
+   *        summary: /_api/v3/app-settings/site-url-setting
+   *        description: Update mail setting
    *        requestBody:
    *          required: true
    *          content:
@@ -323,7 +336,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/MailSettingParams'
    *        responses:
    *          200:
-   *            description: Succeeded to update site url setting
+   *            description: Succeeded to update mail setting
    *            content:
    *              application/json:
    *                schema:
@@ -371,9 +384,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/aws-setting:
+   *    /_api/v3/app-settings/aws-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingAwsSetting
+   *        summary: /_api/v3/app-settings/aws-setting
    *        description: Update aws setting
    *        requestBody:
    *          required: true
@@ -420,9 +435,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/plugin-setting:
+   *    /_api/v3/app-settings/plugin-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingPluginSetting
+   *        summary: /_api/v3/app-settings/plugin-setting
    *        description: Update plugin setting
    *        requestBody:
    *          required: true

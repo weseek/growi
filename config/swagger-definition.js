@@ -10,7 +10,7 @@ module.exports = {
   },
   servers: [
     {
-      url: `https://demo.growi.org/_api/v${apiVersion}/`,
+      url: 'https://demo.growi.org',
     },
   ],
 };

@@ -46,7 +46,7 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.get:
    *      get:
    *        tags: [Bookmarks, apiv1]
-   *        operationId: /_api/bookmarks.get
+   *        operationId: getBookmark
    *        summary: /_api/bookmarks.get
    *        description: Get bookmark of the page with the user
    *        parameters:
@@ -101,7 +101,7 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.list:
    *      get:
    *        tags: [Bookmarks, apiv1]
-   *        operationId: /_api/bookmarks.list
+   *        operationId: listBookmarks
    *        summary: /_api/bookmarks.list
    *        description: Get bookmark list of the page with the user
    *        parameters:
@@ -152,7 +152,7 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.add:
    *      post:
    *        tags: [Bookmarks, apiv1]
-   *        operationId: /_api/bookmarks.add
+   *        operationId: addBookmark
    *        summary: /_api/bookmarks.add
    *        description: Add bookmark of the page
    *        parameters:
@@ -207,7 +207,7 @@ module.exports = function(crowi, app) {
    *    /_api/bookmarks.remove:
    *      post:
    *        tags: [Bookmarks, apiv1]
-   *        operationId: /_api/bookmarks.remove
+   *        operationId: removeBookmark
    *        summary: /_api/bookmarks.remove
    *        description: Remove bookmark of the page
    *        requestBody:

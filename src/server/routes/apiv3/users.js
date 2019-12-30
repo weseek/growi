@@ -27,6 +27,7 @@ const validator = {};
  *  components:
  *    schemas:
  *      User:
+ *        description: User
  *        type: object
  *        properties:
  *          _id:
@@ -82,7 +83,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users:
    *      get:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: listUsers
+   *        summary: /_api/v3/users
    *        description: Get users
    *        responses:
    *          200:
@@ -132,7 +135,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/invite:
    *      post:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: inviteUser
+   *        summary: /_api/v3/users/invite
    *        description: Create new users and send Emails
    *        parameters:
    *          - name: shapedEmailList
@@ -175,7 +180,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/giveAdmin:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: giveAdminUser
+   *        summary: /_api/v3/users/{id}/giveAdmin
    *        description: Give user admin
    *        parameters:
    *          - name: id
@@ -214,7 +221,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/removeAdmin:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: removeAdminUser
+   *        summary: /_api/v3/users/{id}/removeAdmin
    *        description: Remove user admin
    *        parameters:
    *          - name: id
@@ -253,7 +262,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/activate:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: activateUser
+   *        summary: /_api/v3/users/{id}/activate
    *        description: Activate user
    *        parameters:
    *          - name: id
@@ -300,7 +311,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/deactivate:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: deactivateUser
+   *        summary: /_api/v3/users/{id}/deactivate
    *        description: Deactivate user
    *        parameters:
    *          - name: id
@@ -339,7 +352,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/remove:
    *      delete:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: removeUser
+   *        summary: /_api/v3/users/{id}/remove
    *        description: Delete user
    *        parameters:
    *          - name: id
@@ -380,9 +395,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/users:
+   *    /_api/v3/users/external-accounts:
    *      get:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: listExternalAccountsUsers
+   *        summary: /_api/v3/users/external-accounts
    *        description: Get external-account
    *        responses:
    *          200:
@@ -414,7 +431,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/external-accounts/{id}/remove:
    *      delete:
-   *        tags: [Users]
+   *        tags: [Users, apiv3]
+   *        operationId: removeExternalAccountUser
+   *        summary: /_api/v3/users/external-accounts/{id}/remove
    *        description: Delete ExternalAccount
    *        parameters:
    *          - name: id

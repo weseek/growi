@@ -5,6 +5,7 @@
  *  components:
  *    schemas:
  *      PaginateResult:
+ *        description: PaginateResult
  *        type: object
  *        properties:
  *          docs:
