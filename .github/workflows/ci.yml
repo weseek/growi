@@ -21,26 +21,26 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v1
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+    # - name: Cache/Restore node_modules
+    #   id: cache-dependencies
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: node_modules
+    #     key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    # - name: Get yarn cache dir
+    #   if: steps.cache-dependencies.outputs.cache-hit != 'true'
+    #   id: cache-yarn
+    #   run: echo "::set-output name=dir::$(yarn cache dir)"
+    # - name: Cache/Restore yarn cache
+    #   if: steps.cache-dependencies.outputs.cache-hit != 'true'
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: ${{ steps.cache-yarn.outputs.dir }}
+    #     key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      # if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
     - name: Print dependencies
