@@ -64,7 +64,7 @@
    *
    *    /_api/comments.get:
    *      get:
-   *        tags: [Comments]
+   *        tags: [Comments, apiv1]
    *        operationId: /_api/comments.get
    *        summary: /_api/comments.get
    *        description: Get comments of the page of the revision
@@ -158,7 +158,7 @@
    *
    *    /_api/comments.add:
    *      post:
-   *        tags: [Comments]
+   *        tags: [Comments, apiv1]
    *        operationId: /_api/comments.add
    *        summary: /_api/comments.add
    *        description: Post comment for the page
@@ -287,7 +287,7 @@
    *
    *    /_api/comments.update:
    *      post:
-   *        tags: [Comments]
+   *        tags: [Comments, apiv1]
    *        operationId: /_api/comments.update
    *        summary: /_api/comments.update
    *        description: Update comment dody
@@ -379,7 +379,7 @@
    *
    *    /_api/comments.remove:
    *      post:
-   *        tags: [Comments]
+   *        tags: [Comments, apiv1]
    *        operationId: /_api/comments.remove
    *        summary: /_api/comments.remove
    *        description: Remove specified comment

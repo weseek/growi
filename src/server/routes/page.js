@@ -647,7 +647,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.list:
    *      get:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.list
    *        summary: /_api/pages.list
    *        description: Get list of pages
@@ -737,7 +737,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.create:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.create
    *        summary: /_api/pages.create
    *        description: Create page
@@ -846,7 +846,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.update:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.update
    *        summary: /_api/pages.update
    *        description: Update page
@@ -974,7 +974,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.get:
    *      get:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.get
    *        summary: /_api/pages.get
    *        description: Get page data
@@ -1098,7 +1098,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.seen:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.seen
    *        summary: /_api/pages.seen
    *        description: Mark as seen user
@@ -1167,7 +1167,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/likes.add:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/likes.add
    *        summary: /_api/likes.add
    *        description: Like page
@@ -1243,7 +1243,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/likes.remove:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/likes.remove
    *        summary: /_api/likes.remove
    *        description: Unlike page
@@ -1311,7 +1311,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.updatePost:
    *      get:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.updatePost
    *        summary: /_api/pages.updatePost
    *        description: Get UpdatePost setting list
@@ -1372,7 +1372,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.remove:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.remove
    *        summary: /_api/pages.remov
    *        description: Remove page
@@ -1476,7 +1476,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.revertRemove:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.revertRemove
    *        summary: /_api/pages.revertRemove
    *        description: Revert removed page
@@ -1549,7 +1549,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.rename:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.rename
    *        summary: /_api/pages.rename
    *        description: Rename page
@@ -1701,7 +1701,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.unlink:
    *      post:
-   *        tags: [Pages]
+   *        tags: [Pages, apiv1]
    *        operationId: /_api/pages.unlink
    *        summary: /_api/pages.unlink
    *        description: Remove the redirecting page
