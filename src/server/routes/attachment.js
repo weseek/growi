@@ -322,15 +322,18 @@ module.exports = function(crowi, app) {
    *          type: object
    *          properties:
    *            page_id:
+   *              nullable: true
    *              $ref: '#/components/schemas/Page/properties/_id'
    *            path:
+   *              nullable: true
    *              $ref: '#/components/schemas/Page/properties/path'
    *            file:
    *              type: string
    *              format: binary
    *              description: attachment data
-   *            access_token:
-   *              type: string
+   *          encoding:
+   *            path:
+   *              contentType: application/x-www-form-urlencoded
    */
 
   /**
@@ -344,18 +347,12 @@ module.exports = function(crowi, app) {
    *        description: Add attachment to the page
    *        requestBody:
    *          content:
-   *            multipart/form-data:
+   *            "multipart/form-data":
    *              schema:
    *                $ref: '#/components/schemas/AttachmentAddParams'
-   *              encoding:
-   *                file:
-   *                  contentType: text/plain, image/png
    *            "*\/*":
    *              schema:
    *                $ref: '#/components/schemas/AttachmentAddParams'
-   *              encoding:
-   *                file:
-   *                  contentType: text/plain, image/png
    *        responses:
    *          200:
    *            description: Succeeded to add attachment.
