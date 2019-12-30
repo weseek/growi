@@ -26,13 +26,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        type: object
  *        properties:
  *          title:
- *            type: String
+ *            type: string
  *            description: site name show on page header and tilte of HTML
  *          confidential:
- *            type: String
+ *            type: string
  *            description: confidential show on page header
  *          globalLang:
- *            type: String
+ *            type: string
  *            description: language set when create user
  *          fileUpload:
  *            type: boolean
@@ -41,52 +41,52 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        type: object
  *        properties:
  *          siteUrl:
- *            type: String
+ *            type: string
  *            description: Site URL. e.g. https://example.com, https://example.com:8080
  *          envSiteUrl:
- *            type: String
+ *            type: string
  *            description: environment variable 'APP_SITE_URL'
  *      MailSettingParams:
  *        type: object
  *        properties:
  *          fromAddress:
- *            type: String
+ *            type: string
  *            description: e-mail address used as from address of mail which sent from GROWI app
  *          smtpHost:
- *            type: String
+ *            type: string
  *            description: host name of client's smtp server
  *          smtpPort:
- *            type: String
+ *            type: string
  *            description: port of client's smtp server
  *          smtpUser:
- *            type: String
+ *            type: string
  *            description: user name of client's smtp server
  *          smtpPassword:
- *            type: String
+ *            type: string
  *            description: password of client's smtp server
  *      AwsSettingParams:
  *        type: object
  *        properties:
  *          region:
- *            type: String
+ *            type: string
  *            description: region of AWS S3
  *          customEndpoint:
- *            type: String
+ *            type: string
  *            description: custom endpoint of AWS S3
  *          bucket:
- *            type: String
+ *            type: string
  *            description: AWS S3 bucket name
  *          accessKeyId:
- *            type: String
+ *            type: string
  *            description: accesskey id for authentification of AWS
  *          secretKey:
- *            type: String
+ *            type: string
  *            description: secret key for authentification of AWS
  *      PluginSettingParams:
  *        type: object
  *        properties:
  *          isEnabledPlugins:
- *            type: String
+ *            type: string
  *            description: enable use plugins
  */
 
