@@ -315,44 +315,46 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    components:
-   *      schemas:
-   *        AttachmentAddParams:
-   *          description: AttachmentAddParams
-   *          type: object
-   *          properties:
-   *            page_id:
-   *              nullable: true
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            path:
-   *              nullable: true
-   *              $ref: '#/components/schemas/Page/properties/path'
-   *            file:
-   *              type: string
-   *              format: binary
-   *              description: attachment data
-   *          encoding:
-   *            path:
-   *              contentType: application/x-www-form-urlencoded
-   */
-
-  /**
-   * @swagger
-   *
    *    /_api/attachments.add:
    *      post:
    *        tags: [Attachments, apiv1]
-   *        operationId: /_api/attachments.add
+   *        operationId: addAttachment
    *        summary: /_api/attachments.add
    *        description: Add attachment to the page
    *        requestBody:
    *          content:
    *            "multipart/form-data":
    *              schema:
-   *                $ref: '#/components/schemas/AttachmentAddParams'
+   *                properties:
+   *                  page_id:
+   *                    nullable: true
+   *                    type: string
+   *                  path:
+   *                    nullable: true
+   *                    type: string
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
    *            "*\/*":
    *              schema:
-   *                $ref: '#/components/schemas/AttachmentAddParams'
+   *                properties:
+   *                  page_id:
+   *                    nullable: true
+   *                    type: string
+   *                  path:
+   *                    nullable: true
+   *                    type: string
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
    *        responses:
    *          200:
    *            description: Succeeded to add attachment.
