@@ -41,7 +41,7 @@
  *            example: 2010-01-01T00:00:00.000Z
  */
 
- module.exports = function(crowi, app) {
+module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:comment');
   const Comment = crowi.model('Comment');
   const User = crowi.model('User');
