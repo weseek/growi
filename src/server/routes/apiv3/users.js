@@ -33,10 +33,6 @@ const validator = {};
  *            type: string
  *            description: user ID
  *            example: 5ae5fccfc5577b0004dbd8ab
- *          __v:
- *            type: integer
- *            description: DB record version
- *            example: 0
  *          lang:
  *            type: string
  *            description: language
