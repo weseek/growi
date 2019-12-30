@@ -1368,42 +1368,6 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @swagger
-   *
-   *    /_api/pages.remove:
-   *      post:
-   *        tags: [Pages, apiv1]
-   *        operationId: /_api/pages.remove
-   *        summary: /_api/pages.remov
-   *        description: Remove page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revision_id:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to remove page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
    * @api {post} /pages.remove Remove page
    * @apiName RemovePage
    * @apiGroup Page
@@ -1471,40 +1435,6 @@ module.exports = function(crowi, app) {
     await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page.path, req.user);
   };
 
-  /**
-   * @swagger
-   *
-   *    /_api/pages.revertRemove:
-   *      post:
-   *        tags: [Pages, apiv1]
-   *        operationId: /_api/pages.revertRemove
-   *        summary: /_api/pages.revertRemove
-   *        description: Revert removed page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to revert removed page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {post} /pages.revertRemove Revert removed page
    * @apiName RevertRemovePage
@@ -1696,42 +1626,6 @@ module.exports = function(crowi, app) {
     return api.create(req, res);
   };
 
-  /**
-   * @swagger
-   *
-   *    /_api/pages.unlink:
-   *      post:
-   *        tags: [Pages, apiv1]
-   *        operationId: /_api/pages.unlink
-   *        summary: /_api/pages.unlink
-   *        description: Remove the redirecting page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revision_id:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to remove the redirecting page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {post} /pages.unlink Remove the redirecting page
    * @apiName UnlinkPage
