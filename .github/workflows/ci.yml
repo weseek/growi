@@ -52,6 +52,8 @@ jobs:
       run: yarn run build:apiv3:jsdoc
     - name: cat swagger.json
       run: cat tmp/swagger.json
+    - name: grub
+      run: ls -al src/server/**/*.js
     - name: yarn lint
       run: |
         yarn lint
