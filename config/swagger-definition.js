@@ -13,5 +13,5 @@ module.exports = {
       url: 'https://demo.growi.org',
     },
   ],
-  apis: ['src/server/**/*.js']
+  apis: ['src/server/**/*.js'],
 };
