@@ -48,12 +48,6 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: build swagger.json
-      run: yarn run build:apiv3:jsdoc
-    - name: cat swagger.json
-      run: cat tmp/swagger.json
-    - name: grub
-      run: ls -al src/server/**/*.js
     - name: yarn lint
       run: |
         yarn lint
