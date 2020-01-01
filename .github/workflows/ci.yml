@@ -51,7 +51,7 @@ jobs:
     - name: Remove swagger.json
       run: |
         ls -al tmp
-        rm tmp/swagger.json
+        rm -f tmp/swagger.json
         ls -al tmp
     - name: yarn lint
       run: |
