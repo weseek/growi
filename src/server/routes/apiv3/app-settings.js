@@ -37,7 +37,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          fileUpload:
  *            type: boolean
  *            description: enable upload file except image file
- *     SiteUrlSettingParams:
+ *      SiteUrlSettingParams:
  *        type: object
  *        properties:
  *          siteUrl:
@@ -46,7 +46,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          envSiteUrl:
  *            type: String
  *            description: environment variable 'APP_SITE_URL'
- *     MailSettingParams:
+ *      MailSettingParams:
  *        type: object
  *        properties:
  *          fromAddress:
@@ -66,6 +66,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            description: password of client's smtp server
  *      AwsSettingParams:
  *        type: object
+ *        properties:
  *          region:
  *            type: String
  *            description: region of AWS S3
@@ -83,6 +84,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            description: secret key for authentification of AWS
  *      PluginSettingParams:
  *        type: object
+ *        properties:
  *          isEnabledPlugins:
  *            type: String
  *            description: enable use plugins
