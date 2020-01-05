@@ -83,9 +83,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /statistics/user:
+   *  /_api/v3/statistics/user:
    *    get:
-   *      tags: [Statistics]
+   *      tags: [Statistics, apiv3]
+   *      operationId: getStatisticsUser
+   *      summary: /_api/v3/statistics/user
    *      description: Get statistics for user
    *      responses:
    *        200:

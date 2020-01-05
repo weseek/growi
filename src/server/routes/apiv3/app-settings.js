@@ -23,70 +23,75 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *  components:
  *    schemas:
  *      AppSettingParams:
+ *        description: AppSettingParams
  *        type: object
  *        properties:
  *          title:
- *            type: String
+ *            type: string
  *            description: site name show on page header and tilte of HTML
  *          confidential:
- *            type: String
+ *            type: string
  *            description: confidential show on page header
  *          globalLang:
- *            type: String
+ *            type: string
  *            description: language set when create user
  *          fileUpload:
  *            type: boolean
  *            description: enable upload file except image file
  *      SiteUrlSettingParams:
+ *        description: SiteUrlSettingParams
  *        type: object
  *        properties:
  *          siteUrl:
- *            type: String
+ *            type: string
  *            description: Site URL. e.g. https://example.com, https://example.com:8080
  *          envSiteUrl:
- *            type: String
+ *            type: string
  *            description: environment variable 'APP_SITE_URL'
  *      MailSettingParams:
+ *        description: MailSettingParams
  *        type: object
  *        properties:
  *          fromAddress:
- *            type: String
+ *            type: string
  *            description: e-mail address used as from address of mail which sent from GROWI app
  *          smtpHost:
- *            type: String
+ *            type: string
  *            description: host name of client's smtp server
  *          smtpPort:
- *            type: String
+ *            type: string
  *            description: port of client's smtp server
  *          smtpUser:
- *            type: String
+ *            type: string
  *            description: user name of client's smtp server
  *          smtpPassword:
- *            type: String
+ *            type: string
  *            description: password of client's smtp server
  *      AwsSettingParams:
+ *        description: AwsSettingParams
  *        type: object
  *        properties:
  *          region:
- *            type: String
+ *            type: string
  *            description: region of AWS S3
  *          customEndpoint:
- *            type: String
+ *            type: string
  *            description: custom endpoint of AWS S3
  *          bucket:
- *            type: String
+ *            type: string
  *            description: AWS S3 bucket name
  *          accessKeyId:
- *            type: String
+ *            type: string
  *            description: accesskey id for authentification of AWS
  *          secretKey:
- *            type: String
+ *            type: string
  *            description: secret key for authentification of AWS
  *      PluginSettingParams:
+ *        description: PluginSettingParams
  *        type: object
  *        properties:
  *          isEnabledPlugins:
- *            type: String
+ *            type: string
  *            description: enable use plugins
  */
 
@@ -131,9 +136,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/:
+   *    /_api/v3/app-settings:
    *      get:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: getAppSettings
+   *        summary: /_api/v3/app-settings
    *        description: get app setting params
    *        responses:
    *          200:
@@ -174,9 +181,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/app-setting:
+   *    /_api/v3/app-settings/app-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        summary: /_api/v3/app-settings/app-setting
+   *        operationId: updateAppSettings
    *        description: Update app setting
    *        requestBody:
    *          required: true
@@ -221,9 +230,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/site-url-setting:
+   *    /_api/v3/app-settings/site-url-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingSiteUrlSetting
+   *        summary: /_api/v3/app-settings/site-url-setting
    *        description: Update site url setting
    *        requestBody:
    *          required: true
@@ -311,10 +322,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/site-url-setting:
+   *    /_api/v3/app-settings/mail-setting:
    *      put:
-   *        tags: [AppSettings]
-   *        description: Update site url setting
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingMailSetting
+   *        summary: /_api/v3/app-settings/site-url-setting
+   *        description: Update mail setting
    *        requestBody:
    *          required: true
    *          content:
@@ -323,7 +336,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/MailSettingParams'
    *        responses:
    *          200:
-   *            description: Succeeded to update site url setting
+   *            description: Succeeded to update mail setting
    *            content:
    *              application/json:
    *                schema:
@@ -371,9 +384,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/aws-setting:
+   *    /_api/v3/app-settings/aws-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingAwsSetting
+   *        summary: /_api/v3/app-settings/aws-setting
    *        description: Update aws setting
    *        requestBody:
    *          required: true
@@ -420,9 +435,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /app-settings/plugin-setting:
+   *    /_api/v3/app-settings/plugin-setting:
    *      put:
-   *        tags: [AppSettings]
+   *        tags: [AppSettings, apiv3]
+   *        operationId: updateAppSettingPluginSetting
+   *        summary: /_api/v3/app-settings/plugin-setting
    *        description: Update plugin setting
    *        requestBody:
    *          required: true
