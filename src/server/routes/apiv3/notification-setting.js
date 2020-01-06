@@ -69,7 +69,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /notification-setting/:
+   *    /_api/v3/notification-setting/:
    *      get:
    *        tags: [NotificationSetting]
    *        description: Get notification paramators
@@ -99,7 +99,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /notification-setting/slack-configuration:
+   *    /_api/v3/notification-setting/slack-configuration:
    *      put:
    *        tags: [NotificationSetting]
    *        description: Update slack configuration setting
@@ -146,8 +146,8 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /notification-setting/user-notification:
-  *      put:
+  *    /_api/v3/notification-setting/user-notification:
+  *      post:
   *        tags: [NotificationSetting]
   *        description: add user notification setting
   *        requestBody:
@@ -162,15 +162,13 @@ module.exports = (crowi) => {
   *            content:
   *              application/json:
   *                schema:
-  *                  responseParams:
-  *                    type: object
-  *                    properties:
-  *                      createdUser:
-  *                        type: object
-  *                        description: user who set notification
-  *                      userNotifications:
-  *                        type: object
-  *                        description: user trigger notifications for updated
+  *                  properties:
+  *                    createdUser:
+  *                      type: object
+  *                      description: user who set notification
+  *                    userNotifications:
+  *                      type: object
+  *                      description: user trigger notifications for updated
   */
   router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, ApiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
