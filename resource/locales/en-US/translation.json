@@ -223,7 +223,9 @@
       "redirected": "You are redirected from <code>%s</code>",
       "duplicated": "This page was duplicated from <code>%s</code>",
       "unlinked": "Redirect pages to this page have been deleted.",
-      "restricted": "Access to this page is restricted"
+      "restricted": "Access to this page is restricted",
+      "stale": "More than {{count}} year has passed since last update.",
+      "stale_plural": "More than {{count}} years has passed since last update."
     }
   },
   "page_edit": {
@@ -371,7 +373,7 @@
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
-    "ex): internal use only": "ex): internal use only",
+    "ex) internal use only": "ex): internal use only",
     "File Uploading": "File Uploading",
     "enable_files_except_image": "Enable file upload other than image files.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
@@ -398,7 +400,10 @@
     "Load plugins": "Load plugins",
     "Enable": "Enable",
     "Disable": "Disable",
-    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used."
+    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used.",
+    "updated_app_setting": "Succeeded to update app setting",
+    "updated_site_url": "Succeeded to update site URL",
+    "updated_plugin_setting": "Succeeded to update plugin setting"
   },
   "security_setting": {
     "Security settings": "Security settings",
@@ -599,7 +604,7 @@
     "Custom Whitelist": "Custom Whitelist",
     "Tag names": "Tag names",
     "Tag attributes": "Tag attributes",
-    "import_recommended": "Import recommended %s",
+    "import_recommended": "Import recommended {{target}}",
     "updated_lineBreak": "Succeeded to update line braek setting",
     "updated_presentation": "Succeeded to update presentation setting",
     "updated_xss": "Succeeded to update XSS setting"
@@ -653,6 +658,8 @@
     "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
     "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
     "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
+    "stale_notification": "Display Notification on Stale Pages",
+    "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
     "update_layout_success": "Succeeded to update layout",
     "update_behavior_success": "Succeeded to update behavior",
     "update_function_success": "Succeeded to update function",

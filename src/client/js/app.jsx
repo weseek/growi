@@ -38,6 +38,7 @@ import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDet
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import SecurityManagement from './components/Admin/Security/SecurityManagement';
+import AppSettingsPage from './components/Admin/App/AppSettingsPage';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -55,6 +56,7 @@ import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from './services/AdminLdapSecurityContainer';
+import AdminAppContainer from './services/AdminAppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
@@ -175,6 +177,20 @@ const adminContainers = {
   'admin-markdown-setting': adminMarkDownContainer,
   'admin-export-page': websocketContainer,
 };
+
+// render for admin
+const adminAppElem = document.getElementById('admin-app');
+if (adminAppElem != null) {
+  const adminAppContainer = new AdminAppContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminAppContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <AppSettingsPage />
+      </I18nextProvider>
+    </Provider>,
+    adminAppElem,
+  );
+}
 
 /**
  * define components

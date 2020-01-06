@@ -16,7 +16,7 @@
 </p>
 
 
-GROWI 
+GROWI
 ===========
 
 [![Actions Status](https://github.com/weseek/growi/workflows/Node%20CI/badge.svg)](https://github.com/weseek/growi/actions)
@@ -41,19 +41,19 @@ Features
 ========
 
 * **Features**
-  * Create hierarchical pages with markdown -> [HERE](https://docs.growi.org/en/guide/getting-started/five_minutes.html) is 5 minutes tutorial
-  * Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
-      * [GROWI Docs: HackMD(CodiMD) Integration](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
-  * Support Authentication with LDAP / Active Directory, OAuth
-  * SSO(Single Sign On) with SAML
-  * Slack/Mattermost, IFTTT Integration
-  * [GROWI Docs: Features](https://docs.growi.org/en/guide/features/page_layout.html)
+    * Create hierarchical pages with markdown -> [HERE](https://docs.growi.org/en/guide/getting-started/five_minutes.html) is 5 minutes tutorial
+    * Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
+        * [GROWI Docs: HackMD(CodiMD) Integration](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+    * Support Authentication with LDAP / Active Directory, OAuth
+    * SSO(Single Sign On) with SAML
+    * Slack/Mattermost, IFTTT Integration
+    * [GROWI Docs: Features](https://docs.growi.org/en/guide/features/page_layout.html)
 * **Pluggable**
-  * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
+    * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
-  * [GROWI Docs: Multiple sites](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
-  * [GROWI Docs: HTTPS(with Let's Encrypt) proxy integration](https://docs.growi.org/en/admin-guide/admin-cookbook/lets-encrypt.html)
+    * [GROWI Docs: Multiple sites](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
+    * [GROWI Docs: HTTPS(with Let's Encrypt) proxy integration](https://docs.growi.org/en/admin-guide/admin-cookbook/lets-encrypt.html)
 
 Quick Start for Production
 ===========================
@@ -74,6 +74,16 @@ Quick Start for Production
 - [GROWI Docs: Install on CentOS](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
 
 
+Configuration
+============
+
+See [GROWI Docs: Admin Guide](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/)).
+
+## Environment Variables
+
+- [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)
+
+
 Development
 ==========
 
@@ -90,9 +100,9 @@ See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-
 
 - Redis 3.x
 - ElasticSearch 6.x (needed when using Full-text search)
-  - **CAUTION: Following plugins are required**
-      - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
-      - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
+    - **CAUTION: Following plugins are required**
+        - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
+        - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
 
 ## Command details
 
@@ -104,11 +114,6 @@ See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-
 
 For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup/launch.html#list-of-npm-commands).
 
-
-Environment Variables
-======================
-
-- [GROWI Docs Environment Variables](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)
 
 Documentation
 ==============

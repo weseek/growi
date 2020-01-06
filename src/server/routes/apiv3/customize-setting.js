@@ -22,6 +22,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *  components:
  *    schemas:
  *      CustomizeLayoutTheme:
+ *        description: CustomizeLayoutTheme
  *        type: object
  *        properties:
  *          layoutType:
@@ -29,11 +30,13 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          themeType:
  *            type: string
  *      CustomizeBehavior:
+ *        description: CustomizeBehavior
  *        type: object
  *        properties:
  *          behaviorType:
  *            type: string
  *      CustomizeFunction:
+ *        description: CustomizeFunction
  *        type: object
  *        properties:
  *          isEnabledTimeline:
@@ -44,7 +47,10 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          recentCreatedLimit:
  *            type: number
+ *          isEnabledStaleNotification:
+ *            type: boolean
  *      CustomizeHighlight:
+ *        description: CustomizeHighlight
  *        type: object
  *        properties:
  *          styleName:
@@ -52,21 +58,25 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          styleBorder:
  *            type: boolean
  *      CustomizeTitle:
+ *        description: CustomizeTitle
  *        type: object
  *        properties:
  *          customizeTitle:
  *            type: string
  *      CustomizeHeader:
+ *        description: CustomizeHeader
  *        type: object
  *        properties:
  *          customizeHeader:
  *            type: string
  *      CustomizeCss:
+ *        description: CustomizeCss
  *        type: object
  *        properties:
  *          customizeCss:
  *            type: string
  *      CustomizeScript:
+ *        description: CustomizeScript
  *        type: object
  *        properties:
  *          customizeScript:
@@ -96,6 +106,7 @@ module.exports = (crowi) => {
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
+      body('isEnabledStaleNotification').isBoolean(),
     ],
     customizeTitle: [
       body('customizeTitle').isString(),
@@ -120,9 +131,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/:
+   *    /_api/v3/customize-setting:
    *      get:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: getCustomizeSetting
+   *        summary: /_api/v3/customize-setting
    *        description: Get customize paramators
    *        responses:
    *          200:
@@ -145,6 +158,7 @@ module.exports = (crowi) => {
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
@@ -159,23 +173,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/layoutTheme:
+   *    /_api/v3/customize-setting/layoutTheme:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateLayoutThemeCustomizeSetting
+   *        summary: /_api/v3/customize-setting/layoutTheme
    *        description: Update layout and theme
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeLayoutTheme'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update layout and theme
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeLayoutTheme'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update layout and theme
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeLayoutTheme'
    */
   router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -201,23 +217,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/behavior:
+   *    /_api/v3/customize-setting/behavior:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateBehaviorCustomizeSetting
+   *        summary: /_api/v3/customize-setting/behavior
    *        description: Update behavior
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeBehavior'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update behavior
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeBehavior'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update behavior
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeBehavior'
    */
   router.put('/behavior', loginRequiredStrictly, adminRequired, csrf, validator.behavior, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -241,23 +259,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/function:
+   *    /_api/v3/customize-setting/function:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateFunctionCustomizeSetting
+   *        summary: /_api/v3/customize-setting/function
    *        description: Update function
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeFunction'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update function
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeFunction'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update function
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeFunction'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -265,6 +285,7 @@ module.exports = (crowi) => {
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       'customize:showRecentCreatedNumber': req.body.recentCreatedLimit,
+      'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
     };
 
     try {
@@ -274,6 +295,7 @@ module.exports = (crowi) => {
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+        isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       };
       return res.apiv3({ customizedParams });
     }
@@ -287,23 +309,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/highlight:
+   *    /_api/v3/customize-setting/highlight:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateHighlightCustomizeSetting
+   *        summary: /_api/v3/customize-setting/highlight
    *        description: Update highlight
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeHighlight'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update highlight
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeHighlight'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update highlight
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeHighlight'
    */
   router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -329,9 +353,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeTitle:
+   *    /_api/v3/customize-setting/customizeTitle:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateCustomizeTitleCustomizeSetting
+   *        summary: /_api/v3/customize-setting/customizeTitle
    *        description: Update customizeTitle
    *        requestBody:
    *          required: true
@@ -339,13 +365,13 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeTitle'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update customizeTitle
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/CustomizeTitle'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update customizeTitle
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeTitle'
    */
   router.put('/customize-title', loginRequiredStrictly, adminRequired, csrf, validator.customizeTitle, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -370,23 +396,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeHeader:
+   *    /_api/v3/customize-setting/customizeHeader:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateCustomizeHeaderCustomizeSetting
+   *        summary: /_api/v3/customize-setting/customizeHeader
    *        description: Update customizeHeader
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeHeader'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update customize header
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeHeader'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update customize header
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeHeader'
    */
   router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, validator.customizeHeader, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -409,23 +437,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeCss:
+   *    /_api/v3/customize-setting/customizeCss:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateCustomizeCssCustomizeSetting
+   *        summary: /_api/v3/customize-setting/customizeCss
    *        description: Update customizeCss
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeCss'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update customize css
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeCss'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update customize css
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeCss'
    */
   router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, validator.customizeCss, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -449,23 +479,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeScript:
+   *    /_api/v3/customize-setting/customizeScript:
    *      put:
-   *        tags: [CustomizeSetting]
+   *        tags: [CustomizeSetting, apiv3]
+   *        operationId: updateCustomizeScriptCustomizeSetting
+   *        summary: /_api/v3/customize-setting/customizeScript
    *        description: Update customizeScript
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
-   *              schama:
-   *                $ref: '#/components/schemas/CustomizeScript'
-   *      responses:
-   *        200:
-   *          description: Succeeded to update customize script
-   *          content:
-   *            application/json:
    *              schema:
    *                $ref: '#/components/schemas/CustomizeScript'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update customize script
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeScript'
    */
   router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, validator.customizeScript, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
