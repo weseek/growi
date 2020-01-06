@@ -9,6 +9,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+import UserNotificationRow from './UserNotificationRow';
 
 const logger = loggerFactory('growi:slackAppConfiguration');
 
@@ -63,7 +64,7 @@ class UserTriggerNotification extends React.Component {
 
   // TODO GW-788 i18n
   render() {
-    const { t } = this.props;
+    const { t, adminNotificationContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -109,6 +110,10 @@ class UserTriggerNotification extends React.Component {
                 <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
               </td>
             </tr>
+            {adminNotificationContainer.state.userNotifications.map((notification) => {
+              return <UserNotificationRow notification={notification} />;
+            })
+            }
           </tbody>
         </table>
       </React.Fragment>
