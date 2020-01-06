@@ -89,30 +89,23 @@ const validator = {
  *  components:
  *    schemas:
  *      GeneralSetting:
- *        type:object
- *          GuestModeParams:
- *            type: object
- *            properties:
- *              restrictGuestMode:
- *                type: string
- *                description: type of restrictGuestMode
- *          PageDeletionParams:
- *            type: object
- *            properties:
- *              pageCompleteDeletionAuthority:
- *                type: string
- *                description: type of pageDeletionAuthority
- *          Function:
- *            type: object
- *            properties:
- *              hideRestrictedByOwner:
- *                type: boolean
- *                description: enable hide by owner
- *              hideRestrictedByGroup:
- *                type: boolean
- *                description: enable hide by group
+ *        type: object
+ *        properties:
+ *          restrictGuestMode:
+ *            type: string
+ *            description: type of restrictGuestMode
+ *          pageCompleteDeletionAuthority:
+ *            type: string
+ *            description: type of pageDeletionAuthority
+ *          hideRestrictedByOwner:
+ *            type: boolean
+ *            description: enable hide by owner
+ *          hideRestrictedByGroup:
+ *            type: boolean
+ *            description: enable hide by group
  *      LdapAuthSetting:
- *        type:object
+ *        type: object
+ *        properties:
  *          serverUrl:
  *            type: string
  *            description: server url for ldap
@@ -150,7 +143,8 @@ const validator = {
  *            type: string
  *            description: The property of user object to use in dn interpolation of Group Search Filter
  *      SamlAuthSetting:
- *        type:object
+ *        type: object
+ *        properties:
  *          samlEntryPoint:
  *            type: string
  *            description: entry point for saml
@@ -175,14 +169,15 @@ const validator = {
  *          samlAttrMapLastName:
  *            type: string
  *            description: attribute mapping last name for saml
- *          isSameUsernameTreatedAsIdenticalUser
+ *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the user name matched
- *          isSameEmailTreatedAsIdenticalUser
+ *          isSameEmailTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      OidcAuthSetting:
- *        type:object
+ *        type: object
+ *        properties:
  *          oidcProviderName:
  *            type: string
  *            description: provider name for oidc
@@ -207,48 +202,52 @@ const validator = {
  *          oidcAttrMapMail:
  *            type: string
  *            description: attr map mail for oidc
- *          isSameUsernameTreatedAsIdenticalUser
+ *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the user name matched
- *          isSameEmailTreatedAsIdenticalUser
+ *          isSameEmailTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      BasicAuthSetting:
- *        type:object
- *          isSameUsernameTreatedAsIdenticalUser
+ *        type: object
+ *        properties:
+ *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      GitHubOAuthSetting:
- *        type:object
+ *        type: object
+ *        properties:
  *          githubClientId:
  *            type: string
  *            description: key of comsumer
  *          githubClientSecret:
  *            type: string
  *            description: password of comsumer
- *          isSameUsernameTreatedAsIdenticalUser
+ *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      GoogleOAuthSetting:
- *        type:object
+ *        type: object
+ *        properties:
  *          googleClientId:
  *            type: string
  *            description: key of comsumer
  *          googleClientSecret:
  *            type: string
  *            description: password of comsumer
- *          isSameUsernameTreatedAsIdenticalUser
+ *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
  *      TwitterOAuthSetting:
- *        type:object
+ *        type: object
+ *        properties:
  *          twitterConsumerKey:
  *            type: string
  *            description: key of comsumer
  *          twitterConsumerSecret:
  *            type: string
  *            description: password of comsumer
- *          isSameUsernameTreatedAsIdenticalUser
+ *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
  */
@@ -272,14 +271,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GeneralSetting'
-   *                  $ref: '#/components/schemas/LdapAuthSetting'
-   *                  $ref: '#/components/schemas/SamlAuthSetting'
-   *                  $ref: '#/components/schemas/OidcAuthSetting'
-   *                  $ref: '#/components/schemas/BasicAuthSetting'
-   *                  $ref: '#/components/schemas/GitHubOAuthSetting'
-   *                  $ref: '#/components/schemas/GoogleOAuthSetting'
-   *                  $ref: '#/components/schemas/TwitterOAuthSetting'
+   *                  properties:
+   *                    securityParams:
+   *                      type: object
+   *                      description: security params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
