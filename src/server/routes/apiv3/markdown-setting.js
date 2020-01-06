@@ -20,8 +20,8 @@ const validator = {
   ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').toArray(),
-    body('attrWhiteList').toArray(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
   ],
 };
 
@@ -38,6 +38,7 @@ const validator = {
  *  components:
  *    schemas:
  *      LineBreakParams:
+ *        description: LineBreakParams
  *        type: object
  *        properties:
  *          isEnabledLinebreaks:
@@ -47,6 +48,7 @@ const validator = {
  *            type: boolean
  *            description: enable lineBreak in comment
  *      PresentationParams:
+ *        description: PresentationParams
  *        type: object
  *        properties:
  *          pageBreakSeparator:
@@ -56,6 +58,7 @@ const validator = {
  *            type: string
  *            description: string of pageBreakCustomSeparator
  *      XssParams:
+ *        description: XssParams
  *        type: object
  *        properties:
  *          isEnabledPrevention:
@@ -88,9 +91,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/:
+   *    /_api/v3/markdown-setting:
    *      get:
-   *        tags: [MarkDownSettind]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: getMarkdownSetting
+   *        summary: /_api/v3/markdown-setting
    *        description: Get markdown paramators
    *        responses:
    *          200:
@@ -121,9 +126,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/lineBreak:
+   *    /_api/v3/markdown-setting/lineBreak:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: updateLineBreakMarkdownSetting
+   *        summary: /_api/v3/markdown-setting/lineBreak
    *        description: Update lineBreak setting
    *        requestBody:
    *          required: true
@@ -165,9 +172,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/presentation:
+   *    /_api/v3/markdown-setting/presentation:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: updatePresentationMarkdownSetting
+   *        summary: /_api/v3/markdown-setting/presentation
    *        description: Update presentation
    *        requestBody:
    *          required: true
@@ -212,9 +221,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/xss:
+   *    /_api/v3/markdown-setting/xss:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: updateXssMarkdownSetting
+   *        summary: /_api/v3/markdown-setting/xss
    *        description: Update xss
    *        requestBody:
    *          required: true
