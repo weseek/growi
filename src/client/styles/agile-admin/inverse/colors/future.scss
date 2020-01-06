@@ -35,3 +35,7 @@ $inline-code-bg: darken($bodycolor, 5%);
     border-bottom: 1px solid rgb(131, 228, 215);
   }
 }
+
+.editor-container .navbar-editor svg {
+  fill: $bodytext;
+}
