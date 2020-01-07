@@ -261,7 +261,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/:
+   *    /_api/v3/security-setting/:
    *      get:
    *        tags: [SecuritySetting]
    *        description: Get security paramators
@@ -370,7 +370,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/general-setting:
+   *    /_api/v3/security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update GeneralSetting
@@ -420,7 +420,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/ldap:
+   *    /_api/v3/security-setting/ldap:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update LDAP setting
@@ -482,7 +482,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/saml:
+   *    /_api/v3/security-setting/saml:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update SAML setting
@@ -541,7 +541,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/oidc:
+   *    /_api/v3/security-setting/oidc:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update OpenID Connect setting
@@ -599,7 +599,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/basic:
+   *    /_api/v3/security-setting/basic:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update basic
@@ -639,7 +639,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/google-oauth:
+   *    /_api/v3/security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update google OAuth
@@ -692,7 +692,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/github-oauth:
+   *    /_api/v3/security-setting/github-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update github OAuth
@@ -745,7 +745,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/twitter-oauth:
+   *    /_api/v3/security-setting/twitter-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update twitter OAuth
