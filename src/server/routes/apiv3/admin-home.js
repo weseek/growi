@@ -20,16 +20,16 @@ const router = express.Router();
  *        type: object
  *        properties:
  *          growiVersion:
- *            type: String
+ *            type: string
  *            description: version of growi
  *          nodeVersion:
- *            type: String
+ *            type: string
  *            description: version of node
  *          npmVersion:
- *            type: String
+ *            type: string
  *            description: version of npm
  *          yarnVersion:
- *            type: String
+ *            type: string
  *            description: version of yarn
  *      InstalledPluginsParams:
  *        type: object
