@@ -15,6 +15,10 @@ module.exports = (crowi) => {
 
   router.use('/markdown-setting', require('./markdown-setting')(crowi));
 
+  router.use('/app-settings', require('./app-settings')(crowi));
+
+  router.use('/customize-setting', require('./customize-setting')(crowi));
+
   router.use('/users', require('./users')(crowi));
 
   router.use('/user-groups', require('./user-group')(crowi));

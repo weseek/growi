@@ -59,11 +59,6 @@ module.exports = function(crowi, app) {
 
   app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
-  app.post('/_api/admin/settings/app'       , loginRequiredStrictly , adminRequired , csrf, form.admin.app, admin.api.appSetting);
-  app.post('/_api/admin/settings/siteUrl'   , loginRequiredStrictly , adminRequired , csrf, form.admin.siteUrl, admin.api.asyncAppSetting);
-  app.post('/_api/admin/settings/mail'      , loginRequiredStrictly , adminRequired , csrf, form.admin.mail, admin.api.appSetting);
-  app.post('/_api/admin/settings/aws'       , loginRequiredStrictly , adminRequired , csrf, form.admin.aws, admin.api.appSetting);
-  app.post('/_api/admin/settings/plugin'    , loginRequiredStrictly , adminRequired , csrf, form.admin.plugin, admin.api.appSetting);
 
   // security admin
   app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
@@ -93,17 +88,8 @@ module.exports = function(crowi, app) {
   // markdown admin
   app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
 
-  // markdown admin
+  // customize admin
   app.get('/admin/customize'                , loginRequiredStrictly , adminRequired , admin.customize.index);
-  app.post('/_api/admin/customize/css'      , loginRequiredStrictly , adminRequired , csrf, form.admin.customcss, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/script'   , loginRequiredStrictly , adminRequired , csrf, form.admin.customscript, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/header'   , loginRequiredStrictly , adminRequired , csrf, form.admin.customheader, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/theme'    , loginRequiredStrictly , adminRequired , csrf, form.admin.customtheme, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/title'    , loginRequiredStrictly , adminRequired , csrf, form.admin.customtitle, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/behavior' , loginRequiredStrictly , adminRequired , csrf, form.admin.custombehavior, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/layout'   , loginRequiredStrictly , adminRequired , csrf, form.admin.customlayout, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/features' , loginRequiredStrictly , adminRequired , csrf, form.admin.customfeatures, admin.api.customizeSetting);
-  app.post('/_api/admin/customize/highlightJsStyle' , loginRequiredStrictly , adminRequired , csrf, form.admin.customhighlightJsStyle, admin.api.customizeSetting);
 
   // search admin
   app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);

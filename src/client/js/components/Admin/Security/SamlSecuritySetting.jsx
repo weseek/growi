@@ -2,15 +2,72 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
 
+const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
 
 class SamlSecurityManagement extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+      envEntryPoint: '',
+      envIssuer: '',
+      envCert: '',
+      envAttrMapId: '',
+      envAttrMapUserName: '',
+      envAttrMapMail: '',
+      envAttrMapFirstName: '',
+      envAttrMapLastName: '',
+    };
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    const { adminSamlSecurityContainer } = this.props;
+
+    try {
+      const samlAuth = await adminSamlSecurityContainer.retrieveSecurityData();
+      this.setState({
+        envEntryPoint: samlAuth.samlEnvVarEntryPoint || '',
+        envIssuer: samlAuth.samlEnvVarIssuer || '',
+        envCert: samlAuth.samlEnvVarCert || '',
+        envAttrMapId: samlAuth.samlEnvVarAttrMapId || '',
+        envAttrMapUserName: samlAuth.samlEnvVarAttrMapUserName || '',
+        envAttrMapMail: samlAuth.samlEnvVarAttrMapMail || '',
+        envAttrMapFirstName: samlAuth.samlEnvVarAttrMapFirstName || '',
+        envAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName || '',
+      });
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+      logger.error(err);
+    }
+  }
+
+  async onClickSubmit() {
+    const { t, adminSamlSecurityContainer } = this.props;
+
+    try {
+      await adminSamlSecurityContainer.updateSamlSetting();
+      toastSuccess(t('security_setting.SAML.updated_saml'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
@@ -20,18 +77,24 @@ class SamlSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.SAML.name') } { t('security_setting.configuration') }
+          {t('security_setting.SAML.name')} {t('security_setting.configuration')}
         </h2>
 
+        {this.state.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
+        )}
+
         {useOnlyEnvVars && (
-        <p
-          className="alert alert-info"
-          dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
-        />
+          <p
+            className="alert alert-info"
+            dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
+          />
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.SAML.name') }</strong>
+          <strong className="col-xs-3 text-right">{t('security_setting.SAML.name')}</strong>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -41,30 +104,30 @@ class SamlSecurityManagement extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
               />
               <label htmlFor="isSamlEnabled">
-                { t('security_setting.SAML.enable_saml') }
+                {t('security_setting.SAML.enable_saml')}
               </label>
             </div>
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
+          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
               type="text"
-              value={adminSamlSecurityContainer.state.callbackUrl}
+              defaultValue={adminSamlSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' }) }</p>
-            {!adminSamlSecurityContainer.state.appSiteUrl && (
-            <div className="alert alert-danger">
-              <i
-                className="icon-exclamation"
-                // eslint-disable-next-line max-len
-                dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
-              />
-            </div>
+            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
+            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+              <div className="alert alert-danger">
+                <i
+                  className="icon-exclamation"
+                  // eslint-disable-next-line max-len
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -73,14 +136,16 @@ class SamlSecurityManagement extends React.Component {
           <React.Fragment>
 
             {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
-            <div className="alert alert-danger">
-              { t('security_setting.missing mandatory configs') }
-              <ul>
-                {/* TODO GW-583 show li after fetch data */}
-                {/* <li>{ t('security_setting.form_item_name.key') }</li> */}
-              </ul>
-            </div>
-          )}
+              <div className="alert alert-danger">
+                {t('security_setting.missing mandatory configs')}
+                <ul>
+                  {adminSamlSecurityContainer.state.missingMandatoryConfigKeys.map((configKey) => {
+                    const key = configKey.replace('security:passport-saml:', '');
+                    return <li key={configKey}>{t(`security_setting.form_item_name.${key}`)}</li>;
+                  })}
+                </ul>
+              </div>
+            )}
 
 
             <h3 className="alert-anchor border-bottom">
@@ -98,22 +163,22 @@ class SamlSecurityManagement extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.entryPoint') }</th>
+                  <th>{t('security_setting.form_item_name.entryPoint')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
-                      name="samlDbEntryPoint"
+                      name="samlEntryPoint"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbEntryPoint}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbEntryPoint(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlEntryPoint}
+                      onChange={e => adminSamlSecurityContainer.changeSamlEntryPoint(e.target.value)}
                     />
                   </td>
                   <td>
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarEntryPoint}
+                      value={this.state.envEntryPoint}
                       readOnly
                     />
                     <p className="help-block">
@@ -122,22 +187,22 @@ class SamlSecurityManagement extends React.Component {
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.issuer') }</th>
+                  <th>{t('security_setting.form_item_name.issuer')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
                       name="samlEnvVarissuer"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbIssuer}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbIssuer(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlIssuer}
+                      onChange={e => adminSamlSecurityContainer.changeSamlIssuer(e.target.value)}
                     />
                   </td>
                   <td>
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarIssuer}
+                      value={this.state.envIssuer}
                       readOnly
                     />
                     <p className="help-block">
@@ -146,25 +211,25 @@ class SamlSecurityManagement extends React.Component {
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.cert') }</th>
+                  <th>{t('security_setting.form_item_name.cert')}</th>
                   <td>
                     <textarea
                       className="form-control input-sm"
                       type="text"
                       rows="5"
-                      name="samlDbCert"
+                      name="samlCert"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbcert}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbCert(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlcert}
+                      onChange={e => adminSamlSecurityContainer.changeSamlCert(e.target.value)}
                     />
                     <p className="help-block">
                       <small>
-                        { t('security_setting.SAML.cert_detail') }
+                        {t('security_setting.SAML.cert_detail')}
                       </small>
                     </p>
                     <div>
                       <small>
-                      e.g.
+                        e.g.
                         <pre>{`-----BEGIN CERTIFICATE-----
 MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
 UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
@@ -183,7 +248,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       type="text"
                       rows="5"
                       readOnly
-                      value={adminSamlSecurityContainer.state.samlEnvVarCert}
+                      value={this.state.envCert}
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_CERT' }) }} />
@@ -208,18 +273,18 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </thead>
               <tbody>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapId') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapId')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapId}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapId(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapId}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapId(e.target.value)}
                     />
                     <p className="help-block">
                       <small>
-                        { t('security_setting.SAML.id_detail') }
+                        {t('security_setting.SAML.id_detail')}
                       </small>
                     </p>
                   </td>
@@ -227,7 +292,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapId}
+                      value={this.state.envAttrMapId}
                       readOnly
                     />
                     <p className="help-block">
@@ -236,14 +301,14 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapUsername') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapUsername')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapUserName}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapUserName(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapUserName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.username_detail') }} />
@@ -253,7 +318,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapUserName}
+                      value={this.state.envAttrMapUserName}
                       readOnly
                     />
                     <p className="help-block">
@@ -262,14 +327,14 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapMail') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapMail')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapMail}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapMail(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapMail}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
                     <p className="help-block">
                       <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: 'Email' }) }} />
@@ -279,7 +344,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapMail}
+                      value={this.state.envAttrMapMail}
                       readOnly
                     />
                     <p className="help-block">
@@ -288,14 +353,14 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapFirstName') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapFirstName')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapFirstName}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapFirstName(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapFirstName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapFirstName(e.target.value)}
                     />
                     <p className="help-block">
                       {/* eslint-disable-next-line max-len */}
@@ -306,7 +371,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapFirstName}
+                      value={this.state.envAttrMapFirstName}
                       readOnly
                     />
                     <p className="help-block">
@@ -319,14 +384,14 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   </td>
                 </tr>
                 <tr>
-                  <th>{ t('security_setting.form_item_name.attrMapLastName') }</th>
+                  <th>{t('security_setting.form_item_name.attrMapLastName')}</th>
                   <td>
                     <input
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlDbAttrMapLastName}
-                      onChange={e => adminSamlSecurityContainer.changeSamlDbAttrMapLastName(e.target.value)}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapLastName}
+                      onChange={e => adminSamlSecurityContainer.changeSamlAttrMapLastName(e.target.value)}
                     />
                     <p className="help-block">
                       {/* eslint-disable-next-line max-len */}
@@ -337,7 +402,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlEnvVarAttrMapLastName}
+                      value={this.state.envAttrMapLastName}
                       readOnly
                     />
                     <p className="help-block">
@@ -399,6 +464,12 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
           </React.Fragment>
 
         )}
+
+        <div className="row my-3">
+          <div className="col-xs-offset-3 col-xs-5">
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+          </div>
+        </div>
 
 
       </React.Fragment>

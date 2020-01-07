@@ -1,10 +1,16 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../util/apiNotification';
+
+const logger = loggerFactory('growi:services:AdminMarkdownContainer');
+
 /**
  * Service container for admin markdown setting page (MarkDownSetting.jsx)
  * @extends {Container} unstated Container
  */
-export default class MarkDownSettingContainer extends Container {
+export default class AdminMarkDownContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -12,16 +18,15 @@ export default class MarkDownSettingContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      isEnabledLinebreaks: appContainer.config.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: appContainer.config.isEnabledLinebreaksInComments,
-      pageBreakSeparator: appContainer.config.pageBreakSeparator,
-      pageBreakCustomSeparator: appContainer.config.pageBreakCustomSeparator || '',
-      // pageBreakOption: appContainer.config.pageBreakOption,
-      customRegularExpression: appContainer.config.customRegularExpression || '',
-      isEnabledXss: (appContainer.config.xssOption != null),
-      xssOption: appContainer.config.xssOption,
-      tagWhiteList: appContainer.config.tagWhiteList || '',
-      attrWhiteList: appContainer.config.attrWhiteList || '',
+      retrieveError: null,
+      isEnabledLinebreaks: false,
+      isEnabledLinebreaksInComments: false,
+      pageBreakSeparator: 1,
+      pageBreakCustomSeparator: '',
+      isEnabledXss: false,
+      xssOption: 1,
+      tagWhiteList: '',
+      attrWhiteList: '',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -31,7 +36,33 @@ export default class MarkDownSettingContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'MarkDownSettingContainer';
+    return 'AdminMarkDownContainer';
+  }
+
+  /**
+   * retrieve markdown data
+   */
+  async retrieveMarkdownData() {
+    try {
+      const response = await this.appContainer.apiv3.get('/markdown-setting/');
+      const { markdownParams } = response.data;
+
+      this.setState({
+        isEnabledLinebreaks: markdownParams.isEnabledLinebreaks,
+        isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
+        pageBreakSeparator: markdownParams.pageBreakSeparator,
+        pageBreakCustomSeparator: markdownParams.pageBreakCustomSeparator || '',
+        isEnabledXss: markdownParams.isEnabledXss,
+        xssOption: markdownParams.xssOption,
+        tagWhiteList: markdownParams.tagWhiteList || '',
+        attrWhiteList: markdownParams.attrWhiteList || '',
+      });
+
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
   }
 
   /**
@@ -75,12 +106,16 @@ export default class MarkDownSettingContainer extends Container {
    * Update Xss Setting
    */
   async updateXssSetting() {
+    let { tagWhiteList, attrWhiteList } = this.state;
+
+    tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
+    attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
     const response = await this.appContainer.apiv3.put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
-      tagWhiteList: this.state.tagWhiteList,
-      attrWhiteList: this.state.attrWhiteList,
+      tagWhiteList,
+      attrWhiteList,
     });
 
     return response;

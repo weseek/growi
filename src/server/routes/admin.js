@@ -16,7 +16,6 @@ module.exports = function(crowi, app) {
     configManager,
     aclService,
     slackNotificationService,
-    customizeService,
     exportService,
   } = crowi;
 
@@ -137,26 +136,12 @@ module.exports = function(crowi, app) {
     });
   };
 
-  // app.post('/admin/markdown/presentationSetting' , admin.markdown.presentationSetting);
-  actions.markdown.presentationSetting = async function(req, res) {
-    const markdownSetting = req.form.markdownSetting;
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('markdown', markdownSetting);
-      req.flash('successMessage', ['Successfully updated!']);
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-    }
-
-    return res.redirect('/admin/markdown');
-  };
-
   // app.get('/admin/customize' , admin.customize.index);
   actions.customize = {};
   actions.customize.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'customize:');
 
+    // TODO delete after apiV3
     /* eslint-disable quote-props, no-multi-spaces */
     const highlightJsCssSelectorOptions = {
       'github':           { name: '[Light] GitHub',         border: false },
@@ -582,54 +567,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.appSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-
-      // mail setting ならここで validation
-      if (form['mail:from']) {
-        validateMailSetting(req, form, async(err, data) => {
-          debug('Error validate mail setting: ', err, data);
-          if (err) {
-            req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
-            return res.json({ status: false, message: req.form.errors.join('\n') });
-          }
-
-          await configManager.updateConfigsInTheSameNamespace('crowi', form);
-          return res.json({ status: true });
-        });
-      }
-      else {
-        await configManager.updateConfigsInTheSameNamespace('crowi', form);
-        return res.json({ status: true });
-      }
-    }
-    else {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-  };
-
-  actions.api.asyncAppSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      return res.json({ status: true });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false });
-    }
-  };
-
   actions.api.securitySetting = async function(req, res) {
     if (!req.form.isValid) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
@@ -867,20 +804,6 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
-  actions.api.customizeSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      customizeService.initCustomCss();
-      customizeService.initCustomTitle();
-
-      return res.json({ status: true });
-    }
-
-    return res.json({ status: false, message: req.form.errors.join('\n') });
-  };
 
   // app.post('/_api/admin/notifications.add'    , admin.api.notificationAdd);
   actions.api.notificationAdd = function(req, res) {
@@ -1091,33 +1014,6 @@ module.exports = function(crowi, app) {
 
     return res.json(ApiResponse.success());
   };
-
-  function validateMailSetting(req, form, callback) {
-    const mailer = crowi.mailer;
-    const option = {
-      host: form['mail:smtpHost'],
-      port: form['mail:smtpPort'],
-    };
-    if (form['mail:smtpUser'] && form['mail:smtpPassword']) {
-      option.auth = {
-        user: form['mail:smtpUser'],
-        pass: form['mail:smtpPassword'],
-      };
-    }
-    if (option.port === 465) {
-      option.secure = true;
-    }
-
-    const smtpClient = mailer.createSMTPClient(option);
-    debug('mailer setup for validate SMTP setting', smtpClient);
-
-    smtpClient.sendMail({
-      from: form['mail:from'],
-      to: req.user.email,
-      subject: 'Wiki管理設定のアップデートによるメール通知',
-      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-    }, callback);
-  }
 
   /**
    * validate setting form values for SAML

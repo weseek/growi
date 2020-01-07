@@ -21,6 +21,7 @@ export default class AdminGithubSecurityContainer extends Container {
 
     this.state = {
       appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
+      isGitHubStrategySetup: false,
       githubClientId: '',
       githubClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
@@ -35,6 +36,7 @@ export default class AdminGithubSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { githubOAuth } = response.data.securityParams;
     this.setState({
+      isGitHubStrategySetup: githubOAuth.isGitHubStrategySetup,
       githubClientId: githubOAuth.githubClientId || '',
       githubClientSecret: githubOAuth.githubClientSecret || '',
       isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser || false,
@@ -80,10 +82,13 @@ export default class AdminGithubSecurityContainer extends Container {
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
     });
 
+    const { securitySettingParams } = response.data;
+
     this.setState({
-      githubClientId: this.state.githubClientId,
-      githubClientSecret: this.state.githubClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isGitHubStrategySetup: securitySettingParams.isGitHubStrategySetup,
+      githubClientId: securitySettingParams.githubClientId,
+      githubClientSecret: securitySettingParams.githubClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
     });
     return response;
   }

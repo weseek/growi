@@ -17,27 +17,42 @@ export default class AdminLdapSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      // TODO GW-583 set value
       serverUrl: '',
-      bindMode: 'manager',
-      bindDN: '',
-      bindDNPassword: '',
-      searchFilter: '',
-      attrMapUsername: '',
-      cbSameUsernameTreatedAsIdenticalUser: true,
-      attrMapMail: '',
-      attrMapName: '',
-      groupSearchBase: '',
-      groupSearchFilter: '',
-      groupDnProperty: '',
+      isUserBind: false,
+      ldapBindDN: '',
+      ldapBindDNPassword: '',
+      ldapSearchFilter: '',
+      ldapAttrMapUsername: '',
+      isSameUsernameTreatedAsIdenticalUser: false,
+      ldapAttrMapMail: '',
+      ldapAttrMapName: '',
+      ldapGroupSearchBase: '',
+      ldapGroupSearchFilter: '',
+      ldapGroupDnProperty: '',
     };
-
-    this.init();
 
   }
 
-  init() {
-    // TODO GW-583 fetch config value with api
+  /**
+   * retrieve security data
+   */
+  async retrieveSecurityData() {
+    const response = await this.appContainer.apiv3.get('/security-setting/');
+    const { ldapAuth } = response.data.securityParams;
+    this.setState({
+      serverUrl: ldapAuth.serverUrl || '',
+      isUserBind: ldapAuth.isUserBind || false,
+      ldapBindDN: ldapAuth.ldapBindDN || '',
+      ldapBindDNPassword: ldapAuth.ldapBindDNPassword || '',
+      ldapSearchFilter: ldapAuth.ldapSearchFilter || '',
+      ldapAttrMapUsername: ldapAuth.ldapAttrMapUsername || '',
+      isSameUsernameTreatedAsIdenticalUser: ldapAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      ldapAttrMapMail: ldapAuth.ldapAttrMapMail || '',
+      ldapAttrMapName: ldapAuth.ldapAttrMapName || '',
+      ldapGroupSearchBase: ldapAuth.ldapGroupSearchBase || '',
+      ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter || '',
+      ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty || '',
+    });
   }
 
 
@@ -49,87 +64,126 @@ export default class AdminLdapSecurityContainer extends Container {
   }
 
   /**
-   * Change server url
+   * Change serverUrl
    */
-  changeServerUrl(inputValue) {
-    this.setState({ serverUrl: inputValue });
+  changeServerUrl(serverUrl) {
+    this.setState({ serverUrl });
   }
 
   /**
-   * Change ldap bind mode
+   * Change ldapBindMode
    */
-  changeLdapBindMode(mode) {
-    this.setState({ bindMode: mode });
+  changeLdapBindMode() {
+    this.setState({ isUserBind: !this.state.isUserBind });
   }
 
   /**
-   * Change bind DN
+   * Change bindDN
    */
-  changeBindDN(inputValue) {
-    this.setState({ bindDN: inputValue });
+  changeBindDN(ldapBindDN) {
+    this.setState({ ldapBindDN });
   }
 
   /**
-   * Change bind DN password
+   * Change bindDNPassword
    */
-  changeBindDNPassword(inputValue) {
-    this.setState({ bindDNPassword: inputValue });
+  changeBindDNPassword(ldapBindDNPassword) {
+    this.setState({ ldapBindDNPassword });
   }
 
   /**
-   * Change search filter
+   * Change ldapSearchFilter
    */
-  changeSearchFilter(inputValue) {
-    this.setState({ searchFilter: inputValue });
+  changeSearchFilter(ldapSearchFilter) {
+    this.setState({ ldapSearchFilter });
   }
 
   /**
-   * Change attr map username
+   * Change ldapAttrMapUsername
    */
-  changeAttrMapUsername(inputValue) {
-    this.setState({ attrMapUsername: inputValue });
+  changeAttrMapUsername(ldapAttrMapUsername) {
+    this.setState({ ldapAttrMapUsername });
   }
 
   /**
-   * Switch cb same username treated as identical user
+   * Switch is same username treated as identical user
    */
-  switchCbSameUsernameTreatedAsIdenticalUser() {
-    this.setState({ cbSameUsernameTreatedAsIdenticalUser: !this.state.cbSameUsernameTreatedAsIdenticalUser });
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
   }
 
   /**
-   * Change attr map email
+   * Change ldapAttrMapMail
    */
-  changeAttrMapMail(inputValue) {
-    this.setState({ attrMapMail: inputValue });
+  changeAttrMapMail(ldapAttrMapMail) {
+    this.setState({ ldapAttrMapMail });
   }
 
   /**
-   * Change attr map name
+   * Change ldapAttrMapName
    */
-  changeAttrMapName(inputValue) {
-    this.setState({ attrMapName: inputValue });
+  changeAttrMapName(ldapAttrMapName) {
+    this.setState({ ldapAttrMapName });
   }
 
   /**
-   * Change group search base
+   * Change ldapGroupSearchBase
    */
-  changeGroupSearchBase(inputValue) {
-    this.setState({ groupSearchBase: inputValue });
+  changeGroupSearchBase(ldapGroupSearchBase) {
+    this.setState({ ldapGroupSearchBase });
   }
 
   /**
-   * Change group search filter
+   * Change ldapGroupSearchFilter
    */
-  changeGroupSearchFilter(inputValue) {
-    this.setState({ groupSearchFilter: inputValue });
+  changeGroupSearchFilter(ldapGroupSearchFilter) {
+    this.setState({ ldapGroupSearchFilter });
   }
 
   /**
-   * Change group dn property
+   * Change ldapGroupDnProperty
    */
-  changeGroupDnProperty(inputValue) {
-    this.setState({ groupDnProperty: inputValue });
+  changeGroupDnProperty(ldapGroupDnProperty) {
+    this.setState({ ldapGroupDnProperty });
+  }
+
+  /**
+   * Update ldap option
+   */
+  async updateLdapSetting() {
+
+    const response = await this.appContainer.apiv3.put('/security-setting/ldap', {
+      serverUrl: this.state.serverUrl,
+      isUserBind: this.state.isUserBind,
+      ldapBindDN: this.state.ldapBindDN,
+      ldapBindDNPassword: this.state.ldapBindDNPassword,
+      ldapSearchFilter: this.state.ldapSearchFilter,
+      ldapAttrMapUsername: this.state.ldapAttrMapUsername,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail: this.state.ldapAttrMapMail,
+      ldapAttrMapName: this.state.ldapAttrMapName,
+      ldapGroupSearchBase: this.state.ldapGroupSearchBase,
+      ldapGroupSearchFilter: this.state.ldapGroupSearchFilter,
+      ldapGroupDnProperty: this.state.ldapGroupDnProperty,
+    });
+
+    const { securitySettingParams } = response.data;
+
+    this.setState({
+      serverUrl: securitySettingParams.serverUrl || '',
+      isUserBind: securitySettingParams.isUserBind || false,
+      ldapBindDN: securitySettingParams.ldapBindDN || '',
+      ldapBindDNPassword: securitySettingParams.ldapBindDNPassword || '',
+      ldapSearchFilter: securitySettingParams.ldapSearchFilter || '',
+      ldapAttrMapUsername: securitySettingParams.ldapAttrMapUsername || '',
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
+      ldapAttrMapMail: securitySettingParams.ldapAttrMapMail || '',
+      ldapAttrMapName: securitySettingParams.ldapAttrMapName || '',
+      ldapGroupSearchBase: securitySettingParams.ldapGroupSearchBase || '',
+      ldapGroupSearchFilter: securitySettingParams.ldapGroupSearchFilter || '',
+      ldapGroupDnProperty: securitySettingParams.ldapGroupDnProperty || '',
+    });
+    return response;
   }
 
 }
