@@ -343,15 +343,17 @@ class ImportForm extends React.Component {
     }
 
     return (
-      <div className="mt-4">
-        <legend>{groupName} Collections</legend>
-        { wellContent != null && (
-          <div className="well well-sm small">
-            <ul>
-              <li>{wellContent}</li>
-            </ul>
-          </div>
-        ) }
+      <div className="mt-4 row">
+        <div className="col-12">
+          <legend>{groupName} Collections</legend>
+          { wellContent != null && (
+            <div className="card card-body p-2 bg-light">
+              <ul>
+                <li>{wellContent}</li>
+              </ul>
+            </div>
+          )}
+        </div>
         { this.renderImportItems(collectionNames) }
         { this.renderWarnForGroups(errors, `warnFor${groupName}`) }
       </div>
@@ -385,7 +387,7 @@ class ImportForm extends React.Component {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
-            <div className="col-xs-6 my-1" key={collectionName}>
+            <div className="col-6 my-1" key={collectionName}>
               <ImportCollectionItem
                 isImporting={isImporting}
                 isImported={collectionProgress ? isImported : false}
