@@ -73,15 +73,13 @@ class PluginUtils {
       return /^(crowi|growi)-plugin-/.test(name);
     });
 
-    const plugins = pluginNames.map((name) => {
+    return pluginNames.map((name) => {
       return {
         name,
         requiredVersion: deps[name],
         installedVersion: packageInstalledVersionSync(name),
       };
     });
-
-    return plugins;
   }
 
   /**
