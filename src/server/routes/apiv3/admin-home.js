@@ -49,7 +49,7 @@ module.exports = (crowi) => {
    *    /admin-home/:
    *      get:
    *        tags: [adminHome]
-   *        description: Get adminHome paramaters
+   *        description: Get adminHome parameters
    *        responses:
    *          200:
    *            description: params of adminHome
