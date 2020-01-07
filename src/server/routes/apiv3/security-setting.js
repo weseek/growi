@@ -261,7 +261,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/:
+   *    /_api/v3/security-setting/:
    *      get:
    *        tags: [SecuritySetting]
    *        description: Get security paramators
@@ -279,6 +279,13 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const securityParams = {
+      generalSetting: {
+        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
+        hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
+        hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
+        wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
+      },
       generalAuth: {
         isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
@@ -357,14 +364,13 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
-
     return res.apiv3({ securityParams });
   });
 
   /**
    * @swagger
    *
-   *    /security-setting/general-setting:
+   *    /_api/v3/security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update GeneralSetting
@@ -389,7 +395,11 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
-
+    const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
+    if (wikiMode === 'private') {
+      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
+      delete requestParams['security:restrictGuestMode'];
+    }
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
@@ -410,7 +420,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/ldap:
+   *    /_api/v3/security-setting/ldap:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update LDAP setting
@@ -472,7 +482,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/saml:
+   *    /_api/v3/security-setting/saml:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update SAML setting
@@ -531,7 +541,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/oidc:
+   *    /_api/v3/security-setting/oidc:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update OpenID Connect setting
@@ -589,7 +599,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/basic:
+   *    /_api/v3/security-setting/basic:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update basic
@@ -629,7 +639,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/google-oauth:
+   *    /_api/v3/security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update google OAuth
@@ -682,7 +692,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/github-oauth:
+   *    /_api/v3/security-setting/github-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update github OAuth
@@ -735,7 +745,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/twitter-oauth:
+   *    /_api/v3/security-setting/twitter-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update twitter OAuth

@@ -405,7 +405,7 @@
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
-    "Fixed by env var": "環境変数 <code>%s=%s</code> により固定されています。",
+    "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
     "Register limitation": "登録の制限",
     "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
