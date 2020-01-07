@@ -123,6 +123,21 @@ class CustomizeBehaviorSetting extends React.Component {
           </div>
         </div>
 
+        <div className="form-group row">
+          <div className="col-xs-offset-3 col-xs-6 text-left">
+            <CustomizeFunctionOption
+              optionId="isEnabledStaleNotification"
+              label={t('customize_page.stale_notification')}
+              isChecked={adminCustomizeContainer.state.isEnabledStaleNotification}
+              onChecked={() => { adminCustomizeContainer.switchEnableStaleNotification() }}
+            >
+              <p className="help-block">
+                { t('customize_page.stale_notification_desc') }
+              </p>
+            </CustomizeFunctionOption>
+          </div>
+        </div>
+
         <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );

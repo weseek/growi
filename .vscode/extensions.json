@@ -12,6 +12,7 @@
     "christian-kohler.npm-intellisense",
     "esbenp.prettier-vscode",
     "shinnn.stylelint",
+    "hex-ci.stylelint-plus",
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [
