@@ -37,7 +37,7 @@ class CustomizeHeaderSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeHeader();
-      toastSuccess(t('customize_page.update_customHeader_success'));
+      toastSuccess(t('toaster:update_successed', { target: 'CustomHeader' }));
     }
     catch (err) {
       toastError(err);
@@ -50,16 +50,16 @@ class CustomizeHeaderSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.custom_header')}</h2>
+        <h2 className="admin-setting-header">{t('customize_setting:custom_header')}</h2>
 
         <p
           className="well"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('customize_page.custom_header_detail') }}
+          dangerouslySetInnerHTML={{ __html: t('customize_setting:custom_header_detail') }}
         />
 
         <div className="help-block">
-          { t('Example') }:
+          {t('Example')}:
           <pre className="hljs">
             {/* eslint-disable-next-line react/no-unescaped-entities */}
             <code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code>
@@ -76,7 +76,7 @@ class CustomizeHeaderSetting extends React.Component {
         <div className="col-xs-12">
           <p className="help-block text-right">
             <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
-            { t('customize_page.ctrl_space') }
+            {t('customize_setting:ctrl_space')}
           </p>
         </div>
 

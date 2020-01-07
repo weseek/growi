@@ -29,7 +29,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeBehavior();
-      toastSuccess(t('customize_page.update_behavior_success'));
+      toastSuccess(t('toaster:update_successed', { target: 'Behavior' }));
     }
     catch (err) {
       toastError(err);
@@ -42,19 +42,19 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Behavior')}</h2>
+        <h2 className="admin-setting-header">{t('customize_setting:behavior')}</h2>
         <div className="row">
           <div className="col-xs-6">
             <CustomizeBehaviorOption
               behaviorType="growi"
               isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
               onSelected={() => adminCustomizeContainer.switchBehaviorType('growi')}
-              labelHtml={`GROWI Simplified Behavior <small class="text-success">${t('customize_page.recommended')}</small>`}
+              labelHtml={`GROWI Simplified Behavior <small class="text-success">${t('customize_setting:recommended')}</small>`}
             >
               <ul>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.growi_text1') }} /></li>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.growi_text2') }} /></li>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.growi_text3') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.growi_text1') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.growi_text2') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.growi_text3') }} /></li>
               </ul>
             </CustomizeBehaviorOption>
           </div>
@@ -67,13 +67,13 @@ class CustomizeBehaviorSetting extends React.Component {
               labelHtml="Crowi Classic Behavior"
             >
               <ul>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text1') }} /></li>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text2') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.crowi_text1') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.crowi_text2') }} /></li>
                 <ul>
-                  <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text3') }} /></li>
+                  <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.crowi_text3') }} /></li>
                 </ul>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text4') }} /></li>
-                <li><span dangerouslySetInnerHTML={{ __html: t('customize_page.behavior_description.crowi_text5') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.crowi_text4') }} /></li>
+                <li><span dangerouslySetInnerHTML={{ __html: t('customize_setting:behavior_desc.crowi_text5') }} /></li>
               </ul>
             </CustomizeBehaviorOption>
           </div>
