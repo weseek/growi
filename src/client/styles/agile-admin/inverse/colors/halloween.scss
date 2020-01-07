@@ -74,6 +74,10 @@ $inline-code-bg: #0a121b;
   background-color: rgba(0, 0, 0, 0.3);
 }
 
+.editor-container .navbar-editor svg {
+  fill: $bodytext;
+}
+
 /*
  * Tabs
  */

@@ -39,7 +39,7 @@ class WhiteListInput extends React.Component {
           <div className="d-flex justify-content-between">
             {t('markdown_setting.Tag names')}
             <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendTagButton}>
-              {t('markdown_setting.import_recommended', 'tags')}
+              {t('markdown_setting.import_recommended', { target: 'Tags' })}
             </p>
           </div>
           <textarea
@@ -56,7 +56,7 @@ class WhiteListInput extends React.Component {
           <div className="d-flex justify-content-between">
             {t('markdown_setting.Tag attributes')}
             <p id="btn-import-tags" className="btn btn-xs btn-primary" onClick={this.onClickRecommendAttrButton}>
-              {t('markdown_setting.import_recommended', 'Attrs')}
+              {t('markdown_setting.import_recommended', { target: 'Attrs' })}
             </p>
           </div>
           <textarea
