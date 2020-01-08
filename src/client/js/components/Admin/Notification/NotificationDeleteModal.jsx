@@ -10,6 +10,7 @@ import AppContainer from '../../../services/AppContainer';
 class NotificationDeleteModal extends React.PureComponent {
 
   render() {
+    const { t } = this.props;
 
     return (
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
@@ -22,12 +23,12 @@ class NotificationDeleteModal extends React.PureComponent {
         </Modal.Header>
         <Modal.Body>
           <span className="text-danger">
-            削除すると元に戻すことはできませんのでご注意ください。
+            {t('notification_setting.delete_notification_pattern_desc')}
           </span>
         </Modal.Body>
         <Modal.Footer className="text-right">
           <button type="button" className="btn btn-sm btn-danger" onClick={this.props.onClickSubmit}>
-            <i className="icon icon-fire"></i> 削除
+            <i className="icon icon-fire"></i> {t('Delete')}
           </button>
         </Modal.Footer>
       </Modal>
