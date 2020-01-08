@@ -594,7 +594,8 @@
       "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
     },
     "updated_slackApp": "SlackApp設定を更新しました",
-    "add_notification_pattern": "通知パターンを追加しました。"
+    "add_notification_pattern": "通知パターンを追加しました。",
+    "delete__notification_pattern": "通知パターンを削除しました。"
   },
   "customize_page": {
     "recommended": "おすすめ",

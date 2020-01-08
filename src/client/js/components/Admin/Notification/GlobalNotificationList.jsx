@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import NotificationDeleteModal from './NotificationDeleteModal';
 
+const logger = loggerFactory('growi:GolobalNotificationList');
 
 class GlobalNotificationList extends React.Component {
 
@@ -20,10 +23,25 @@ class GlobalNotificationList extends React.Component {
     };
 
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+    this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   toggleDeleteModal() {
     this.setState({ isNotificationDeleteModalShown: !this.state.isNotificationDeleteModalShown });
+  }
+
+  async onClickSubmit() {
+    const { t } = this.props;
+
+    try {
+      // await this.props.adminMarkDownContainer.updateLineBreakSetting();
+      toastSuccess(t('notification_setting.delete__notification_pattern'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+    this.setState({ isNotificationDeleteModalShown: false });
   }
 
   render() {
@@ -102,7 +120,11 @@ class GlobalNotificationList extends React.Component {
             </tr>
           );
         })}
-        <NotificationDeleteModal isOpen={this.state.isNotificationDeleteModalShown} onClose={this.toggleDeleteModal} />;
+        <NotificationDeleteModal
+          isOpen={this.state.isNotificationDeleteModalShown}
+          onClose={this.toggleDeleteModal}
+          onClickSubmit={this.onClickSubmit}
+        />;
       </React.Fragment>
     );
 

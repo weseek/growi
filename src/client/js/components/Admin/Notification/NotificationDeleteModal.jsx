@@ -7,16 +7,7 @@ import Modal from 'react-bootstrap/es/Modal';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
-class NotificationDeleteModal extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-    };
-
-  }
-
+class NotificationDeleteModal extends React.PureComponent {
 
   render() {
 
@@ -24,13 +15,20 @@ class NotificationDeleteModal extends React.Component {
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
+            <div className="modal-header bg-danger">
+              <i className="icon icon-fire"></i> Delete Global Notification Setting
+            </div>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          hoge
+          <span className="text-danger">
+            削除すると元に戻すことはできませんのでご注意ください。
+          </span>
         </Modal.Body>
-        <Modal.Footer className="d-flex">
-
+        <Modal.Footer className="text-right">
+          <button type="button" className="btn btn-sm btn-danger" onClick={this.props.onClickSubmit}>
+            <i className="icon icon-fire"></i> 削除
+          </button>
         </Modal.Footer>
       </Modal>
     );
@@ -51,6 +49,7 @@ NotificationDeleteModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onClickSubmit: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(NotificationDeleteModalWrapper);
