@@ -31,10 +31,10 @@ class GlobalNotificationList extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, adminNotificationContainer } = this.props;
 
     try {
-      // await this.props.adminMarkDownContainer.updateLineBreakSetting();
+      await adminNotificationContainer.deleteGlobalNotificationPattern();
       toastSuccess(t('notification_setting.delete__notification_pattern'));
     }
     catch (err) {
