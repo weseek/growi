@@ -7,9 +7,24 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+import NotificationDeleteModal from './NotificationDeleteModal';
 
 
 class GlobalNotificationList extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isNotificationDeleteModalShown: false,
+    };
+
+    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+  }
+
+  toggleDeleteModal() {
+    this.setState({ isNotificationDeleteModalShown: !this.state.isNotificationDeleteModalShown });
+  }
 
   render() {
     const { t, adminNotificationContainer } = this.props;
@@ -76,24 +91,18 @@ class GlobalNotificationList extends React.Component {
                         <i className="icon-fw icon-note"></i> {t('Edit')}
                       </a>
                     </li>
-                    {/*  TODO GW-780 create delete modal  */}
-                    <li className="btn-delete">
-                      <a
-                        href="#"
-                        data-setting-id="{{ notification.id }}"
-                        data-target="#admin-delete-global-notification"
-                        data-toggle="modal"
-                      >
+                    <li onClick={this.toggleDeleteModal}>
+                      <a>
                         <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                       </a>
                     </li>
-
                   </ul>
                 </div>
               </td>
             </tr>
           );
         })}
+        <NotificationDeleteModal isOpen={this.state.isNotificationDeleteModalShown} onClose={this.toggleDeleteModal} />;
       </React.Fragment>
     );
 
