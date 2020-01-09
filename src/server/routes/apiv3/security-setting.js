@@ -489,56 +489,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/local-setting:
-   *      put:
-   *        tags: [SecuritySetting]
-   *        description: Update GeneralSetting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/GeneralSetting'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update general Setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/GeneralSetting'
-   */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, ApiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:restrictGuestMode': req.body.restrictGuestMode,
-      'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
-      'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
-      'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
-    };
-    const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
-    if (wikiMode === 'private') {
-      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
-      delete requestParams['security:restrictGuestMode'];
-    }
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const securitySettingParams = {
-        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
-        pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
-        hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
-        hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-      };
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating security setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
    *    /_api/v3/security-setting/ldap:
    *      put:
    *        tags: [SecuritySetting]
