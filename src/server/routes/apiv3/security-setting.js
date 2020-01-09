@@ -19,6 +19,11 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  localSetting: [
+    body('isLocalEnabled').isBoolean(),
+    body('registrationMode').isString(),
+    body('registrationWhiteList').isArray(),
+  ],
   ldapAuth: [
     body('serverUrl').isString(),
     body('isUserBind').isBoolean(),
@@ -215,7 +220,7 @@ module.exports = (crowi) => {
       localSetting: {
         isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
-        registrationwhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+        registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       },
     };
     return res.apiv3({ securityParams });
@@ -268,6 +273,49 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/local-setting:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update local Setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/LocalSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update local Setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/LocalSetting'
+   */
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-local:isEnabled': req.body.isLocalEnabled,
+      'security:registrationMode': req.body.registrationMode,
+      'security:registrationWhiteList': req.body.registrationWhiteList,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const localSettingParams = {
+        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+        registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
+        registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      };
+      return res.apiv3({ localSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating local setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-local-setting failed'));
     }
   });
 

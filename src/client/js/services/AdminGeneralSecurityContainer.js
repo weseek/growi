@@ -27,7 +27,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: true,
       registrationMode: 'open',
-      registrationWhiteList: [],
+      registrationWhiteList: '',
       isLdapEnabled: true,
       isSamlEnabled: true,
       isOidcEnabled: true,
@@ -51,7 +51,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
-      isLocalEnabled: localSetting.isLocalEnabled || 'true',
+      isLocalEnabled: localSetting.isLocalEnabled || false,
       registrationMode: localSetting.registrationMode || 'open',
       registrationWhiteList: localSetting.registrationWhiteList || '',
     });
@@ -144,10 +144,12 @@ export default class AdminGeneralSecurityContainer extends Container {
   * update local security setting
   */
   async updateLocalSecuritySetting() {
+    let { registrationWhiteList } = this.state;
+    registrationWhiteList = Array.isArray(registrationWhiteList) ? registrationWhiteList : registrationWhiteList.split('\n');
     const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
       isLocalEnabled: this.state.isLocalEnabled,
       registrationMode: this.state.registrationMode,
-      registrationWhiteList: this.state.registrationWhiteList,
+      registrationWhiteList,
     });
     const { localSecuritySettingParams } = response.data;
     return localSecuritySettingParams;

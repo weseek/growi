@@ -139,7 +139,7 @@ class LocalSecuritySetting extends React.Component {
                     type="textarea"
                     name="registrationWhiteList"
                     placeholder={adminGeneralSecurityContainer.state.registrationWhiteList}
-                    value={adminGeneralSecurityContainer.state.registrationWhiteList}
+                    defaultValue={adminGeneralSecurityContainer.state.registrationWhiteList}
                     onChange={e => adminGeneralSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
                   <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
