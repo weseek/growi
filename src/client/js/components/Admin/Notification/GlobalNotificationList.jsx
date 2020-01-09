@@ -19,29 +19,35 @@ class GlobalNotificationList extends React.Component {
     super(props);
 
     this.state = {
-      isNotificationDeleteModalShown: false,
+      isConfirmationModalOpen: false,
+      notificatiionIdForConfiguration: null,
     };
 
-    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+    this.openConfirmationModal = this.openConfirmationModal.bind(this);
+    this.closeConfirmationModal = this.closeConfirmationModal.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  toggleDeleteModal() {
-    this.setState({ isNotificationDeleteModalShown: !this.state.isNotificationDeleteModalShown });
+  openConfirmationModal(notificatiionId) {
+    this.setState({ isConfirmationModalOpen: true, notificatiionIdForConfiguration: notificatiionId });
+  }
+
+  closeConfirmationModal() {
+    this.setState({ isConfirmationModalOpen: false, notificatiionIdForConfiguration: null });
   }
 
   async onClickSubmit() {
     const { t, adminNotificationContainer } = this.props;
 
     try {
-      await adminNotificationContainer.deleteGlobalNotificationPattern();
+      await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionIdForConfiguration);
       toastSuccess(t('notification_setting.delete_notification_pattern'));
     }
     catch (err) {
       toastError(err);
       logger.error(err);
     }
-    this.setState({ isNotificationDeleteModalShown: false });
+    this.setState({ isConfirmationModalOpen: false });
   }
 
   render() {
@@ -109,7 +115,7 @@ class GlobalNotificationList extends React.Component {
                         <i className="icon-fw icon-note"></i> {t('Edit')}
                       </a>
                     </li>
-                    <li onClick={this.toggleDeleteModal}>
+                    <li onClick={() => this.toggleDeleteModal(notification._id)}>
                       <a>
                         <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                       </a>
@@ -121,8 +127,8 @@ class GlobalNotificationList extends React.Component {
           );
         })}
         <NotificationDeleteModal
-          isOpen={this.state.isNotificationDeleteModalShown}
-          onClose={this.toggleDeleteModal}
+          isOpen={this.state.isConfirmationModalOpen}
+          onClose={this.closeConfirmationModal}
           onClickSubmit={this.onClickSubmit}
         />;
       </React.Fragment>

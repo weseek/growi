@@ -4,9 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import Modal from 'react-bootstrap/es/Modal';
 
-import { createSubscribedElement } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-
 class NotificationDeleteModal extends React.PureComponent {
 
   render() {
@@ -37,14 +34,6 @@ class NotificationDeleteModal extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const NotificationDeleteModalWrapper = (props) => {
-  return createSubscribedElement(NotificationDeleteModal, props, [AppContainer]);
-};
-
-
 NotificationDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
@@ -53,4 +42,4 @@ NotificationDeleteModal.propTypes = {
   onClickSubmit: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(NotificationDeleteModalWrapper);
+export default withTranslation()(NotificationDeleteModal);
