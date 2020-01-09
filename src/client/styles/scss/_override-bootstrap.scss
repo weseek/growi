@@ -18,10 +18,27 @@
   .dropdown-toggle.btn.disabled {
     cursor: not-allowed;
   }
-  .dropdown-menu > li > a {
-    width: 100%;
-    padding: 5px 15px;
-  }
+}
+
+// agile-admin style
+.dropdown-menu {
+  padding-bottom: 8px;
+  margin-top: 0px;
+  border: 1px solid $border;
+  border-radius: $radius;
+  -webkit-box-shadow: 0px !important;
+  -moz-box-shadow: 0px !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dropdown-menu > li > a {
+  width: 100%;
+  padding: 9px 20px;
+}
+
+.dropdown-menu > li > a:focus,
+.dropdown-menu > li > a:hover {
+  background: $extralight;
 }
 
 //Modals
