@@ -115,7 +115,7 @@ class GlobalNotificationList extends React.Component {
                         <i className="icon-fw icon-note"></i> {t('Edit')}
                       </a>
                     </li>
-                    <li onClick={() => this.toggleDeleteModal(notification._id)}>
+                    <li onClick={() => this.openConfirmationModal(notification._id)}>
                       <a>
                         <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                       </a>
