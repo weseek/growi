@@ -153,20 +153,32 @@ legend {
 }
 
 /*
- * Panel
+ * cards
  */
-.panel {
-  .panel-body {
-    background-color: $bgcolor-global;
-  }
+.card {
+  margin-bottom: 20px;
+  border: 1px solid #f0f0f0;
+  border-radius: 0;
 }
 
-/*
- * Wells
- */
-.well {
-  background-color: darken($bgcolor-global, 5%);
-  border-color: $border;
+.card-header {
+  padding: 7px 15px;
+  text-transform: none;
+  background-color: #f0f0f0;
+  border-radius: 0;
+}
+
+.card-header:first-child {
+  border-radius: 0;
+}
+
+.card.card-well {
+  min-height: 20px;
+  background-color: #f2f2f2;
+  background-color: #f5f5f5;
+  border-color: #f0f0f0;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 /*
