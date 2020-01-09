@@ -347,15 +347,15 @@ class ImportForm extends React.Component {
         <div className="col-12">
           <legend>{groupName} Collections</legend>
           { wellContent != null && (
-            <div className="card card-body p-2 bg-light">
+            <div className="card card-header card-well small" role="alert">
               <ul>
                 <li>{wellContent}</li>
               </ul>
             </div>
           )}
+          {this.renderImportItems(collectionNames)}
+          {this.renderWarnForGroups(errors, `warnFor${groupName}`)}
         </div>
-        { this.renderImportItems(collectionNames) }
-        { this.renderWarnForGroups(errors, `warnFor${groupName}`) }
       </div>
     );
   }
