@@ -24,10 +24,15 @@ export default class UserGroupDetailContainer extends Container {
       userGroupRelations: [],
       relatedPages: [],
       isUserGroupUserModalOpen: false,
+      searchType: 'partial',
+      isAlsoMailSearched: false,
+      isAlsoNameSearched: false,
     };
 
     this.init();
 
+    this.switchIsAlsoMailSearched = this.switchIsAlsoMailSearched.bind(this);
+    this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
     this.addUserByUsername = this.addUserByUsername.bind(this);
@@ -66,6 +71,27 @@ export default class UserGroupDetailContainer extends Container {
   }
 
   /**
+   * switch isAlsoMailSearched
+   */
+  switchIsAlsoMailSearched() {
+    this.setState({ isAlsoMailSearched: !this.state.isAlsoMailSearched });
+  }
+
+  /**
+   * switch isAlsoNameSearched
+   */
+  switchIsAlsoNameSearched() {
+    this.setState({ isAlsoNameSearched: !this.state.isAlsoNameSearched });
+  }
+
+  /**
+   * switch searchType
+   */
+  switchSearchType(searchType) {
+    this.setState({ searchType });
+  }
+
+  /**
    * update user group
    *
    * @memberOf UserGroupDetailContainer
@@ -100,6 +126,24 @@ export default class UserGroupDetailContainer extends Container {
   }
 
   /**
+   * search user for invitation
+   * @param {string} username username of the user to be searched
+   */
+  async fetchApplicableUsers(searchWord) {
+    const res = await this.appContainer.apiv3.get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
+      searchWord,
+      searchType: this.state.searchType,
+      isAlsoMailSearched: this.state.isAlsoMailSearched,
+      isAlsoNameSearched: this.state.isAlsoNameSearched,
+    });
+
+    const { users } = res.data;
+
+    return users;
+  }
+
+
+  /**
    * update user group
    *
    * @memberOf UserGroupDetailContainer
@@ -107,6 +151,10 @@ export default class UserGroupDetailContainer extends Container {
    */
   async addUserByUsername(username) {
     const res = await this.appContainer.apiv3.post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
+
+    // do not add users for ducaplicate
+    if (res.data.userGroupRelation == null) { return }
+
     const { userGroupRelation } = res.data;
 
     this.setState((prevState) => {

@@ -15,6 +15,10 @@ import ProgressBar from './Common/ProgressBar';
 import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
 
+const IGNORED_COLLECTION_NAMES = [
+  'sessions',
+];
+
 class ExportArchiveDataPage extends React.Component {
 
   constructor(props) {
@@ -46,9 +50,14 @@ class ExportArchiveDataPage extends React.Component {
     ]);
     // TODO: toastSuccess, toastError
 
+    // filter only not ignored collection names
+    const filteredCollections = collections.filter((collectionName) => {
+      return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+    });
+
     const { zipFileStats, isExporting, progressList } = status;
     this.setState({
-      collections,
+      collections: filteredCollections,
       zipFileStats,
       isExporting,
       progressList,

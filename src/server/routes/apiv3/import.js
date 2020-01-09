@@ -5,9 +5,6 @@ const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-lin
 const path = require('path');
 const multer = require('multer');
 
-// eslint-disable-next-line no-unused-vars
-const { ObjectId } = require('mongoose').Types;
-
 const express = require('express');
 
 const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
@@ -27,6 +24,7 @@ const router = express.Router();
  *  components:
  *    schemas:
  *      ImportStatus:
+ *        description: ImportStatus
  *        type: object
  *        properties:
  *          zipFileStat:
@@ -54,6 +52,8 @@ const generateOverwriteParams = (collectionName, req, options) => {
       return require('./overwrite-params/pages')(req, options);
     case 'revisions':
       return require('./overwrite-params/revisions')(req, options);
+    case 'attachmentFiles.chunks':
+      return require('./overwrite-params/attachmentFiles.chunks')(req, options);
     default:
       return {};
   }
@@ -101,9 +101,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/status:
+   *  /_api/v3/import/status:
    *    get:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: getImportStatus
+   *      summary: /_api/v3/import/status
    *      description: Get properties of stored zip files for import
    *      responses:
    *        200:
@@ -128,9 +130,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import:
+   *  /_api/v3/import:
    *    post:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: executeImport
+   *      summary: /_api/v3/import
    *      description: import a collection from a zipped json
    *      requestBody:
    *        required: true
@@ -237,9 +241,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/upload:
+   *  /_api/v3/import/upload:
    *    post:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: uploadImport
+   *      summary: /_api/v3/import/upload
    *      description: upload a zip file
    *      responses:
    *        200:
@@ -282,9 +288,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/all:
+   *  /_api/v3/import/all:
    *    delete:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: deleteImportAll
+   *      summary: /_api/v3/import/all
    *      description: Delete all zip files
    *      responses:
    *        200:

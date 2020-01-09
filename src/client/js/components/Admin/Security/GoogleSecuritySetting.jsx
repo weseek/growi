@@ -58,17 +58,17 @@ class GoogleSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.OAuth.Google.name') } { t('security_setting.configuration') }
+          {t('security_setting.OAuth.Google.name')} {t('security_setting.configuration')}
         </h2>
 
         {this.state.retrieveError != null && (
-        <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {this.state.err}</p>
-        </div>
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.Google.name') }</strong>
+          <strong className="col-xs-3 text-right">{t('security_setting.OAuth.Google.name')}</strong>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -78,14 +78,14 @@ class GoogleSecurityManagement extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
               <label htmlFor="isGoogleEnabled">
-                { t('security_setting.OAuth.Google.enable_google') }
+                {t('security_setting.OAuth.Google.enable_google')}
               </label>
             </div>
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
+          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -93,15 +93,15 @@ class GoogleSecurityManagement extends React.Component {
               value={adminGoogleSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' }) }</p>
+            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {!adminGeneralSecurityContainer.state.appSiteUrl && (
-            <div className="alert alert-danger">
-              <i
-                className="icon-exclamation"
-                // eslint-disable-next-line max-len
-                dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
-              />
-            </div>
+              <div className="alert alert-danger">
+                <i
+                  className="icon-exclamation"
+                  // eslint-disable-next-line max-len
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -110,8 +110,14 @@ class GoogleSecurityManagement extends React.Component {
         {adminGeneralSecurityContainer.state.isGoogleOAuthEnabled && (
           <React.Fragment>
 
+            {!adminGoogleSecurityContainer.state.isGoogleStrategySetup && (
+              <div className="alert alert-warning">
+                <p>{t('security_setting.setup_not_completed_yet')}</p>
+              </div>
+            )}
+
             <div className="row mb-5">
-              <label htmlFor="googleClientId" className="col-xs-3 text-right">{ t('security_setting.clientID') }</label>
+              <label htmlFor="googleClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -127,7 +133,7 @@ class GoogleSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientSecret" className="col-xs-3 text-right">{ t('security_setting.client_secret') }</label>
+              <label htmlFor="googleClientSecret" className="col-xs-3 text-right">{t('security_setting.client_secret')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -167,7 +173,7 @@ class GoogleSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</button>
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
           </div>
         </div>
 
@@ -176,15 +182,15 @@ class GoogleSecurityManagement extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForGoogleOauth" data-toggle="collapse"> { t('security_setting.OAuth.how_to.google') }</a>
+            <a href="#collapseHelpForGoogleOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.google')}</a>
           </h4>
           <ol id="collapseHelpForGoogleOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_1', { link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_2') }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_3') }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_4', { url: adminGoogleSecurityContainer.state.callbackUrl }) }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Google.register_5') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_1', { link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>' }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_2') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_3') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_4', { url: adminGoogleSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Google.register_5') }} />
           </ol>
         </div>
 

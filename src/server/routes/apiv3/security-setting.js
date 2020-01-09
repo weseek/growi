@@ -19,10 +19,45 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
-  localSetting: [
-    body('isLocalEnabled').isBoolean(),
-    body('registrationMode').isString(),
-    body('registrationwhiteList').toArray(),
+  ldapAuth: [
+    body('serverUrl').isString(),
+    body('isUserBind').isBoolean(),
+    body('ldapBindDN').isString(),
+    body('ldapBindDNPassword').isString(),
+    body('ldapSearchFilter').isString(),
+    body('ldapAttrMapUsername').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('ldapAttrMapMail').isString(),
+    body('ldapAttrMapName').isString(),
+    body('ldapGroupSearchBase').isString(),
+    body('ldapGroupSearchFilter').isString(),
+    body('ldapGroupDnProperty').isString(),
+  ],
+  samlAuth: [
+    body('samlEntryPoint').isString(),
+    body('samlIssuer').isString(),
+    body('samlCert').isString(),
+    body('samlAttrMapId').isString(),
+    body('samlAttrMapUserName').isString(),
+    body('samlAttrMapMail').isString(),
+    body('samlAttrMapFirstName').isString(),
+    body('samlAttrMapLastName').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
+  ],
+  oidcAuth: [
+    body('oidcProviderName').isString(),
+    body('oidcIssuerHost').isString(),
+    body('oidcClientId').isString(),
+    body('oidcClientSecret').isString(),
+    body('oidcAttrMapId').isString(),
+    body('oidcAttrMapUserName').isString(),
+    body('oidcAttrMapEmail').isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser').isBoolean(),
+  ],
+  basicAuth: [
+    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   googleOAuth: [
     body('googleClientId').isString(),
@@ -53,81 +88,17 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      SecurityParams:
  *        type: object
- *          GeneralSetting:
- *            type:object
- *              GuestModeParams:
- *                type: object
- *                properties:
- *                  restrictGuestMode:
- *                    type: string
- *                    description: type of restrictGuestMode
- *              PageDeletionParams:
- *                type: object
- *                properties:
- *                  pageCompleteDeletionAuthority:
- *                    type: string
- *                    description: type of pageDeletionAuthority
- *              WikiModeParams:
- *                type: object
- *                properties:
- *                  wikiMode:
- *                    type: string
- *                    description: type of wikiMode
- *              Function:
- *                type: object
- *                properties:
- *                  hideRestrictedByOwner:
- *                    type: boolean
- *                    description: enable hide by owner
- *                  hideRestrictedByGroup:
- *                    type: boolean
- *                    description: enable hide by group
- *          LocalSetting:
- *            type:object
- *              isLocalEnabled:
- *                type: boolean
- *                description: enable local mode
- *              registrationMode:
- *                type: string
- *                description: type of registrationMode
- *              registrationWhiteList:
- *                type: array
- *                desription: type of registrationWhiteList
- *          GitHubOAuthSetting:
- *            type:object
- *              githubClientId:
- *                type: string
- *                description: key of comsumer
- *              githubClientSecret:
- *                type: string
- *                description: password of comsumer
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
- *          GoogleOAuthSetting:
- *            type:object
- *              googleClientId:
- *                type: string
- *                description: key of comsumer
- *              googleClientSecret:
- *                type: string
- *                description: password of comsumer
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
- *          TwitterOAuthSetting:
- *            type:object
- *              twitterConsumerKey:
- *                type: string
- *                description: key of comsumer
- *              twitterConsumerSecret:
- *                type: string
- *                description: password of comsumer
- *              isSameUsernameTreatedAsIdenticalUser
- *                type: boolean
- *                description: local account automatically linked the email matched
+ *        properties:
+ *          twitterConsumerKey:
+ *            type: string
+ *            description: key of comsumer
+ *          twitterConsumerSecret:
+ *            type: string
+ *            description: password of comsumer
+ *          isSameUsernameTreatedAsIdenticalUser:
+ *            type: boolean
+ *            description: local account automatically linked the email matched
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -139,7 +110,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/:
+   *    /_api/v3/security-setting/:
    *      get:
    *        tags: [SecuritySetting]
    *        description: Get security paramators
@@ -151,7 +122,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    securityParams:
-   *                      $ref: '#/components/schemas/SecurityParams'
+   *                      type: object
+   *                      description: security params
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -164,21 +136,78 @@ module.exports = (crowi) => {
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
       },
       generalAuth: {
+        isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+        isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
+        isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
+        isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
+      ldapAuth: {
+        serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
+        isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
+        ldapBindDN: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
+        ldapBindDNPassword: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
+        ldapAttrMapUsername: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
+      },
+      samlAuth: {
+        missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
+        samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
+        samlEnvVarEntryPoint: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
+        samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
+        samlEnvVarIssuer: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:issuer'),
+        samlCert: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
+        samlEnvVarCert: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:cert'),
+        samlAttrMapId: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
+        samlEnvVarAttrMapId: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapId'),
+        samlAttrMapUserName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
+        samlEnvVarAttrMapUserName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapUsername'),
+        samlAttrMapMail: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
+        samlEnvVarAttrMapMail: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapMail'),
+        samlAttrMapFirstName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
+        samlEnvVarAttrMapFirstName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapFirstName'),
+        samlAttrMapLastName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
+        samlEnvVarAttrMapLastName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+      },
+      oidcAuth: {
+        oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
+        oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
+        oidcClientId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
+        oidcClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
+        oidcAttrMapId: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
+        oidcAttrMapUserName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
+        oidcAttrMapName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
+        oidcAttrMapEmail: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
+      },
+      basicAuth: {
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
+      },
       googleOAuth: {
+        isGoogleStrategySetup: await crowi.passportService.isGoogleStrategySetup,
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
       },
       githubOAuth: {
+        isGitHubStrategySetup: await crowi.passportService.isGitHubStrategySetup,
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
       twitterOAuth: {
+        isTwitterStrategySetup: await crowi.passportService.isTwitterStrategySetup,
         twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
@@ -195,7 +224,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/general-setting:
+   *    /_api/v3/security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update GeneralSetting
@@ -204,29 +233,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  restrictGuestMode:
-   *                    description: type of restrictGuestMode
-   *                    type: string
-   *                  pageCompleteDeletionAuthority:
-   *                    type: string
-   *                    description: type of pageDeletionAuthority
-   *                  hideRestrictedByOwner:
-   *                    type: boolean
-   *                    description: enable hide by owner
-   *                  hideRestrictedByGroup:
-   *                    type: boolean
-   *                    description: enable hide by group
+   *                $ref: '#/components/schemas/GeneralSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update general Setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/SecurityParams/GeneralSetting'
+   *                  $ref: '#/components/schemas/GeneralSetting'
    */
   router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -260,60 +274,46 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/local-setting:
    *      put:
    *        tags: [SecuritySetting]
-   *        description: Update LocalSetting
+   *        description: Update basic
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  isLocalEnabled:
-   *                    description: enable local
-   *                    type: string
-   *                  registrationMode:
-   *                    type: string
-   *                    description: type of pageDeletionAuthority
-   *                  registrationWhiteList:
-   *                    type: array
-   *                    description: type of registrationWhiteList
+   *                $ref: '#/components/schemas/BasicAuthSetting'
    *        responses:
    *          200:
-   *            description: Succeeded to update local Setting
+   *            description: Succeeded to update basic
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/SecurityParams/LocalSetting'
+   *                  $ref: '#/components/schemas/BasicAuthSetting'
    */
-  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-local:isEnabled': req.body.isLocalEnabled,
-      'security:registrationMode': req.body.registrationMode,
-      'security:registrationWhiteList': req.body.registrationWhiteList,
+      'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
-      const localSecuritySettingParams = {
-        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
-        registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
-        registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      const securitySettingParams = {
+        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       };
-      return res.apiv3({ localSecuritySettingParams });
+      return res.apiv3({ securitySettingParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating local security setting';
+      const msg = 'Error occurred in updating basicAuth';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-local-secuirty-setting failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-basicOAuth-failed'));
     }
   });
 
-  /**    /security-setting/google-oauth:
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update google OAuth
@@ -322,14 +322,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/GoogleOAuthSetting'
+   *                $ref: '#/components/schemas/GoogleOAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to google OAuth
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/GoogleOAuthSetting'
+   *                  $ref: '#/components/schemas/GoogleOAuthSetting'
    */
   router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -341,13 +341,22 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
       };
+      // reset strategy
+      await crowi.passportService.resetGoogleStrategy();
+      // setup strategy
+      if (crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled')) {
+        await crowi.passportService.setupGoogleStrategy(true);
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetGoogleStrategy();
       const msg = 'Error occurred in updating googleOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-googleOAuth-failed'));
@@ -357,7 +366,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/github-oauth:
+   *    /_api/v3/security-setting/github-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update github OAuth
@@ -366,14 +375,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   *                $ref: '#/components/schemas/GitHubOAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to github OAuth
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/GitHubOAuthSetting'
+   *                  $ref: '#/components/schemas/GitHubOAuthSetting'
    */
   router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -385,13 +394,22 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        isGitHubStrategySetup: await crowi.passportService.isGitHubStrategySetup,
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       };
+      // reset strategy
+      await crowi.passportService.resetGitHubStrategy();
+      // setup strategy
+      if (crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled')) {
+        await crowi.passportService.setupGitHubStrategy(true);
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetGitHubStrategy();
       const msg = 'Error occurred in updating githubOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
@@ -401,7 +419,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /security-setting/twitter-oauth:
+   *    /_api/v3/security-setting/twitter-oauth:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update twitter OAuth
@@ -410,14 +428,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *                $ref: '#/components/schemas/TwitterOAuthSetting'
    *        responses:
    *          200:
    *            description: Succeeded to update twitter OAuth
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SecurityParams/TwitterOAuthSetting'
+   *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -429,13 +447,22 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const securitySettingParams = {
+        isTwitterStrategySetup: await crowi.passportService.isTwitterStrategySetup,
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
+      // reset strategy
+      await crowi.passportService.resetTwitterStrategy();
+      // setup strategy
+      if (crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
+        await crowi.passportService.setupTwitterStrategy(true);
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
+      // reset strategy
+      await crowi.passportService.resetTwitterStrategy();
       const msg = 'Error occurred in updating twitterOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));

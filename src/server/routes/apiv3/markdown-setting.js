@@ -21,8 +21,8 @@ const validator = {
   ],
   xssSetting: [
     body('isEnabledXss').isBoolean(),
-    body('tagWhiteList').toArray(),
-    body('attrWhiteList').toArray(),
+    body('tagWhiteList').isArray(),
+    body('attrWhiteList').isArray(),
   ],
 };
 
@@ -39,6 +39,7 @@ const validator = {
  *  components:
  *    schemas:
  *      LineBreakParams:
+ *        description: LineBreakParams
  *        type: object
  *        properties:
  *          isEnabledLinebreaks:
@@ -48,6 +49,7 @@ const validator = {
  *            type: boolean
  *            description: enable lineBreak in comment
  *      PresentationParams:
+ *        description: PresentationParams
  *        type: object
  *        properties:
  *          pageBreakSeparator:
@@ -57,6 +59,7 @@ const validator = {
  *            type: string
  *            description: string of pageBreakCustomSeparator
  *      XssParams:
+ *        description: XssParams
  *        type: object
  *        properties:
  *          isEnabledPrevention:
@@ -89,32 +92,60 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/lineBreak:
+   *    /_api/v3/markdown-setting:
+   *      get:
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: getMarkdownSetting
+   *        summary: /_api/v3/markdown-setting
+   *        description: Get markdown paramators
+   *        responses:
+   *          200:
+   *            description: params of markdown
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    markdownParams:
+   *                      type: object
+   *                      description: markdown params
+   */
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const markdownParams = {
+      isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+      isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+      pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
+      pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
+      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
+      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
+      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+    };
+
+    return res.apiv3({ markdownParams });
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/markdown-setting/lineBreak:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: updateLineBreakMarkdownSetting
+   *        summary: /_api/v3/markdown-setting/lineBreak
    *        description: Update lineBreak setting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  isEnabledLinebreaks:
-   *                    description: enable lineBreak
-   *                    type: boolean
-   *                  isEnabledLinebreaksInComments:
-   *                    description: enable lineBreak in comment
-   *                    type: boolean
+   *                $ref: '#/components/schemas/LineBreakParams'
    *        responses:
    *          200:
    *            description: Succeeded to update lineBreak setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/LineBreakParams'
+  *                   $ref: '#/components/schemas/LineBreakParams'
    */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, validator.lineBreak, ApiV3FormValidator, async(req, res) => {
 
@@ -142,32 +173,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/presentation:
+   *    /_api/v3/markdown-setting/presentation:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: updatePresentationMarkdownSetting
+   *        summary: /_api/v3/markdown-setting/presentation
    *        description: Update presentation
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  pageBreakSeparator:
-   *                    description: number of pageBreakSeparator
-   *                    type: number
-   *                  pageBreakCustomSeparator:
-   *                    description: string of pageBreakCustomSeparator
-   *                    type: string
+   *                $ref: '#/components/schemas/PresentationParams'
    *        responses:
    *          200:
    *            description: Succeeded to update presentation setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/PresentationParams'
+   *                  $ref: '#/components/schemas/PresentationParams'
    */
   router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, validator.presentationSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
@@ -198,44 +222,25 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /markdown-setting/xss:
+   *    /_api/v3/markdown-setting/xss:
    *      put:
-   *        tags: [MarkDownSetting]
+   *        tags: [MarkDownSetting, apiv3]
+   *        operationId: updateXssMarkdownSetting
+   *        summary: /_api/v3/markdown-setting/xss
    *        description: Update xss
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                type: object
-   *                properties:
-   *                  isEnabledPrevention:
-   *                    description: enable xss
-   *                    type: boolean
-   *                  xssOption:
-   *                    description: number of xss option
-   *                    type: number
-   *                  tagWhiteList:
-   *                    description: array of tag whiteList
-   *                    type: array
-   *                    items:
-   *                      type: string
-   *                      description: tag whitelist
-   *                  attrWhiteList:
-   *                    description: array of attr whiteList
-   *                    type: array
-   *                    items:
-   *                      type: string
-   *                      description: attr whitelist
+   *                $ref: '#/components/schemas/XssParams'
    *        responses:
    *          200:
    *            description: Succeeded to update xss setting
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    status:
-   *                      $ref: '#/components/schemas/XssParams'
+   *                  $ref: '#/components/schemas/XssParams'
    */
   router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, ApiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {

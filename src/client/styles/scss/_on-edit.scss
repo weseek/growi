@@ -181,7 +181,7 @@ body.on-edit {
       }
 
       // add icon on cursor
-      .autoformat-markdown-table-activated .CodeMirror-cursor {
+      .markdown-table-activated .CodeMirror-cursor {
         &:after {
           position: relative;
           top: -1.1em;

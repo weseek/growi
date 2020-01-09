@@ -37,6 +37,41 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/users.list:
+   *      get:
+   *        tags: [Users, apiv1]
+   *        operationId: listUsersV1
+   *        summary: /_api/users.list
+   *        description: Get list of users
+   *        parameters:
+   *          - in: query
+   *            name: user_ids
+   *            schema:
+   *              type: string
+   *              description: user IDs
+   *              example: 5e06fcc7516d64004dbf4da6,5e098d53baa2ac004e7d24ad
+   *        responses:
+   *          200:
+   *            description: Succeeded to get list of users.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    users:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/User'
+   *                      description: user list
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /users.list Get user list
    * @apiName GetUserList
    * @apiGroup User

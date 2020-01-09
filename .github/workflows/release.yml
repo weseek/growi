@@ -3,10 +3,10 @@ name: GitHub Release
 on:
   push:
     branches:
-      - release
+      - release/**
 
 jobs:
-  build:
+  release:
 
     runs-on: ubuntu-latest
 
@@ -19,19 +19,27 @@ jobs:
       run: |
         git config --local user.name "GitHub Action"
         git config --local user.email "info@weseek.co.jp"
+        git remote set-url origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
 
     - name: Bump version
       run: |
-        npm version patch
-        sh ./bin/github-actions/bump-version.sh
+        npm --no-git-tag-version version patch
+        export RELEASE_VERSION=`npm run version --silent`
+        sh ./bin/github-actions/update-readme.sh
+        echo ::set-env name=RELEASE_VERSION::$RELEASE_VERSION
 
-    - name: Commit
+    - name: Checkout, Commit, Tag and Push
       run: |
-        git commit -am "Release $RELEASE_VERSION"
+        TMP_RELEASE_BRANCH=tmp/release-${{ env.RELEASE_VERSION }}
+        git checkout -B $TMP_RELEASE_BRANCH
+        git commit -am "Release v${{ env.RELEASE_VERSION }}"
+        git tag -a v${{ env.RELEASE_VERSION }} -m "v${{ env.RELEASE_VERSION }}"
+        git push --follow-tags origin $TMP_RELEASE_BRANCH
+        git push --delete origin $TMP_RELEASE_BRANCH
 
-    - name: Push tag
-      uses: ad-m/github-push-action@master
+    - name: Upload release notes
+      uses: Roang-zero1/github-create-release-action@master
       with:
-        branch: null
-        github_token: ${{ secrets. GITHUB_TOKEN }}
-
+        created_tag: v${{ env.RELEASE_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

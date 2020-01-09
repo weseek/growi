@@ -2,12 +2,17 @@ const logger = require('@alias/logger')('growi:services:ImportService'); // esli
 const fs = require('fs');
 const path = require('path');
 
+const isIsoDate = require('is-iso-date');
+const parseISO = require('date-fns/parseISO');
+
 const { Writable, Transform } = require('stream');
 const JSONStream = require('JSONStream');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
 
-const { ObjectId } = require('mongoose').Types;
+const mongoose = require('mongoose');
+
+const { ObjectId } = mongoose.Types;
 
 const { createBatchStream } = require('../util/batch-stream');
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
@@ -90,16 +95,27 @@ class ImportService {
    *
    * @memberOf ImportService
    * @param {any} value value from imported document
-   * @param {{ document: object, schema: object, key: string }}
+   * @param {{ document: object, schema: object, propertyName: string }}
    * @return {any} new value for the document
    */
   keepOriginal(value, { document, schema, propertyName }) {
-    let _value;
-    if (schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
+    let _value = value;
+
+    // _id
+    if (propertyName === '_id' && ObjectId.isValid(value)) {
       _value = ObjectId(value);
     }
-    else {
-      _value = value;
+    // Date
+    else if (isIsoDate(value)) {
+      _value = parseISO(value);
+    }
+
+    // Model
+    if (schema != null) {
+      // ObjectID
+      if (schema[propertyName] != null && schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
+        _value = ObjectId(value);
+      }
     }
 
     return _value;
@@ -177,18 +193,20 @@ class ImportService {
     const execUnorderedBulkOpSafely = this.execUnorderedBulkOpSafely.bind(this);
     const emitProgressEvent = this.emitProgressEvent.bind(this);
 
+    const collection = mongoose.connection.collection(collectionName);
+
     const { mode, jsonFileName, overwriteParams } = importSettings;
-    const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
-    const jsonFile = this.getFile(jsonFileName);
     const collectionProgress = this.currentProgressingStatus.progressMap[collectionName];
 
     try {
+      const jsonFile = this.getFile(jsonFileName);
+
       // validate options
       this.validateImportSettings(collectionName, importSettings);
 
       // flush
       if (mode === 'flushAndInsert') {
-        await Model.remove({});
+        await collection.deleteMany({});
       }
 
       // stream 1
@@ -214,7 +232,7 @@ class ImportService {
       const writeStream = new Writable({
         objectMode: true,
         async write(batch, encoding, callback) {
-          const unorderedBulkOp = Model.collection.initializeUnorderedBulkOp();
+          const unorderedBulkOp = collection.initializeUnorderedBulkOp();
 
           // documents are not persisted until unorderedBulkOp.execute()
           batch.forEach((document) => {
@@ -363,7 +381,8 @@ class ImportService {
     }
     catch (err) {
       result = err.result;
-      errors = err.writeErrors.map((err) => {
+      errors = err.writeErrors || [err];
+      errors.map((err) => {
         const moreDetailErr = err.err;
         return { _id: moreDetailErr.op._id, message: err.errmsg };
       });
@@ -390,27 +409,33 @@ class ImportService {
    */
   convertDocuments(collectionName, document, overwriteParams) {
     const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
-    const schema = Model.schema.paths;
+    const schema = (Model != null) ? Model.schema.paths : null;
     const convertMap = this.convertMap[collectionName];
-
-    if (convertMap == null) {
-      throw new Error(`attribute map is not defined for ${collectionName}`);
-    }
 
     const _document = {};
 
-    // assign value from documents being imported
-    Object.entries(convertMap).forEach(([propertyName, convertedValue]) => {
-      const value = document[propertyName];
+    // not Mongoose Model
+    if (convertMap == null) {
+      // apply keepOriginal to all of properties
+      Object.entries(document).forEach(([propertyName, value]) => {
+        _document[propertyName] = this.keepOriginal(value, { document, propertyName });
+      });
+    }
+    // Mongoose Model
+    else {
+      // assign value from documents being imported
+      Object.entries(convertMap).forEach(([propertyName, convertedValue]) => {
+        const value = document[propertyName];
 
-      // distinguish between null and undefined
-      if (value === undefined) {
-        return; // next entry
-      }
+        // distinguish between null and undefined
+        if (value === undefined) {
+          return; // next entry
+        }
 
-      const convertFunc = (typeof convertedValue === 'function') ? convertedValue : null;
-      _document[propertyName] = (convertFunc != null) ? convertFunc(value, { document, propertyName, schema }) : convertedValue;
-    });
+        const convertFunc = (typeof convertedValue === 'function') ? convertedValue : null;
+        _document[propertyName] = (convertFunc != null) ? convertFunc(value, { document, propertyName, schema }) : convertedValue;
+      });
+    }
 
     // overwrite documents with custom values
     Object.entries(overwriteParams).forEach(([propertyName, overwriteValue]) => {
