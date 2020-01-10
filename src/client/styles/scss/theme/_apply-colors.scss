@@ -153,6 +153,19 @@ legend {
 }
 
 /*
+ * progress bar
+ */
+.progress {
+  height: 4px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  border-radius: 0;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/*
  * cards
  */
 .card {
@@ -165,6 +178,7 @@ legend {
   padding: 7px 15px;
   text-transform: none;
   background-color: #f0f0f0;
+  border: 1px solid #f0f0f0;
   border-radius: 0;
 }
 
