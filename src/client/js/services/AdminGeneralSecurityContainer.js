@@ -53,7 +53,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       wikiMode: generalSetting.wikiMode || '',
       isLocalEnabled: localSetting.isLocalEnabled || false,
       registrationMode: localSetting.registrationMode || 'open',
-      registrationWhiteList: localSetting.registrationWhiteList || '',
+      registrationWhiteList: localSetting.registrationWhiteList.join('\n') || '',
     });
   }
 
