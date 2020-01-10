@@ -116,7 +116,7 @@ export default class ImportCollectionItem extends React.Component {
         Mode:&nbsp;
         <div className="dropdown d-inline-block">
           <button
-            className={`btn ${btnColor} btn-xs dropdown-toggle`}
+            className={`btn ${btnColor} btn-sm dropdown-toggle`}
             type="button"
             id="ddmMode"
             disabled={isImporting}
@@ -149,7 +149,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <button
         type="button"
-        className="btn btn-default btn-xs ml-2"
+        className="btn page-link text-dark d-inline-block btn-sm p-1 ml-2"
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >
