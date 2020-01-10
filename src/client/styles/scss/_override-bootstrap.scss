@@ -113,3 +113,10 @@
 label {
   font-weight: 700;
 }
+
+// disabled button (reproduction from bootstrap3)
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+  cursor: not-allowed;
+}
