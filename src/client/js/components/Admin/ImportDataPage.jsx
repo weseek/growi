@@ -138,7 +138,7 @@ class ImportDataPage extends React.Component {
         <GrowiArchiveSection />
 
         <form
-          className="form-horizontal mt-5"
+          className="mt-5"
           id="importerSettingFormEsa"
           role="form"
         >
@@ -177,31 +177,31 @@ class ImportDataPage extends React.Component {
               </ul>
             </div>
 
-            <div className="form-group">
+            <div className="form-group row">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:esa:team_name]" className="col-3 col-form-label">
                 { t('importer_management.esa_settings.team_name') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-6">
                 <input className="form-control" type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
               </div>
 
             </div>
 
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:esa:access_token]" className="col-xs-3 control-label">
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:esa:access_token]" className="col-3 col-form-label">
                 { t('importer_management.esa_settings.access_token') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-6">
                 <input className="form-control" type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
-            <div className="form-group">
-              <div className="offset-3 col-xs-6">
+            <div className="form-group row">
+              <div className="offset-3 col-6">
                 <input
                   id="testConnectionToEsa"
                   type="button"
@@ -228,7 +228,7 @@ class ImportDataPage extends React.Component {
         </form>
 
         <form
-          className="form-horizontal mt-5"
+          className="mt-5"
           id="importerSettingFormQiita"
           role="form"
         >
@@ -271,30 +271,30 @@ class ImportDataPage extends React.Component {
               </ul>
             </div>
 
-            <div className="form-group">
+            <div className="form-group row">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:qiita:team_name]" className="col-xs-3 control-label">
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:qiita:team_name]" className="col-3 col-form-label">
                 { t('importer_management.qiita_settings.team_name') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-6">
                 <input className="form-control" type="text" name="qiitaTeamName" value={qiitaTeamName} onChange={this.handleInputValue} />
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="settingForm[importer:qiita:access_token]" className="col-xs-3 control-label">
+            <div className="form-group row">
+              <label htmlFor="settingForm[importer:qiita:access_token]" className="col-3 col-form-label">
                 { t('importer_management.qiita_settings.access_token') }
               </label>
-              <div className="col-xs-6">
+              <div className="col-6">
                 <input className="form-control" type="password" name="qiitaAccessToken" value={qiitaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
 
-            <div className="form-group">
-              <div className="offset-3 col-xs-6">
+            <div className="form-group row">
+              <div className="offset-3 col-6">
                 <input
                   id="testConnectionToQiita"
                   type="button"
