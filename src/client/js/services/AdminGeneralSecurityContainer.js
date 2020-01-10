@@ -43,6 +43,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { generalSetting } = response.data.securityParams;
+    const { localSetting } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
@@ -50,6 +51,9 @@ export default class AdminGeneralSecurityContainer extends Container {
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
+      isLocalEnabled: localSetting.isLocalEnabled || false,
+      registrationMode: localSetting.registrationMode || 'open',
+      registrationWhiteList: localSetting.registrationWhiteList.join('\n') || '',
     });
   }
 
@@ -127,6 +131,28 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   changeRegistrationMode(value) {
     this.setState({ registrationMode: value });
+  }
+
+  /**
+   * Change registration white list
+   */
+  changeRegistrationWhiteList(value) {
+    this.setState({ registrationWhiteList: value });
+  }
+
+  /**
+  * update local security setting
+  */
+  async updateLocalSecuritySetting() {
+    let { registrationWhiteList } = this.state;
+    registrationWhiteList = Array.isArray(registrationWhiteList) ? registrationWhiteList : registrationWhiteList.split('\n');
+    const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
+      isLocalEnabled: this.state.isLocalEnabled,
+      registrationMode: this.state.registrationMode,
+      registrationWhiteList,
+    });
+    const { localSecuritySettingParams } = response.data;
+    return localSecuritySettingParams;
   }
 
   /**

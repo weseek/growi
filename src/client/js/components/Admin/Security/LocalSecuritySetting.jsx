@@ -4,18 +4,56 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class LocalSecuritySetting extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      retrieveError: null,
+    };
+    this.putLocalSecuritySetting = this.putLocalSecuritySetting.bind(this);
+  }
+
+  async componentDidMount() {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    try {
+      await adminGeneralSecurityContainer.retrieveSecurityData();
+    }
+    catch (err) {
+      toastError(err);
+      this.setState({ retrieveError: err });
+    }
+  }
+
+
+  async putLocalSecuritySetting() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    try {
+      await adminGeneralSecurityContainer.updateLocalSecuritySetting();
+      toastSuccess(t('security_setting.updated_general_security_setting'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
 
     return (
       <React.Fragment>
-
+        {this.state.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
+        )}
         <h2 className="alert-anchor border-bottom">
           { t('security_setting.Local.name') } { t('security_setting.configuration') }
         </h2>
@@ -100,7 +138,8 @@ class LocalSecuritySetting extends React.Component {
                     className="form-control"
                     type="textarea"
                     name="registrationWhiteList"
-                    placeholder={adminGeneralSecurityContainer.state.registrationWhiteList}
+                    value={adminGeneralSecurityContainer.state.registrationWhiteList}
+                    onChange={e => adminGeneralSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
                   <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
                     <code>@growi.org</code>{ t('security_setting.only_those') }<br />
@@ -114,7 +153,7 @@ class LocalSecuritySetting extends React.Component {
 
         {/*  TODO replace component */}
         <div className="col-xs-offset-3 col-xs-6 mb-5">
-          <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+          <button type="submit" className="btn btn-primary" onClick={this.putLocalSecuritySetting}>{ t('Update') }</button>
         </div>
 
       </React.Fragment>

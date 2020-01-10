@@ -1,3 +1,4 @@
+
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
@@ -18,6 +19,11 @@ const validator = {
     body('pageCompleteDeletionAuthority').isString(),
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
+  ],
+  localSetting: [
+    body('isLocalEnabled').isBoolean(),
+    body('registrationMode').isString(),
+    body('registrationWhiteList').isArray(),
   ],
   ldapAuth: [
     body('serverUrl').isString(),
@@ -103,6 +109,21 @@ const validator = {
  *          hideRestrictedByGroup:
  *            type: boolean
  *            description: enable hide by group
+ *      LocalSetting:
+ *        type: object
+ *        properties:
+ *          isLocalEnabled:
+ *            type: boolean
+ *            description: local setting mode
+ *          registrationMode:
+ *            type: string
+ *            description: type of registrationMode
+ *          registrationWhiteList:
+ *            type: array
+ *            description: array of regsitrationList
+ *            items:
+ *              type: string
+ *              description: registration whiteList
  *      LdapAuthSetting:
  *        type: object
  *        properties:
@@ -286,6 +307,11 @@ module.exports = (crowi) => {
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
       },
+      localSetting: {
+        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+        registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
+        registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      },
       generalAuth: {
         isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
@@ -414,6 +440,49 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/local-setting:
+   *      put:
+   *        tags: [LocalSetting]
+   *        description: Update LocalSetting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/LocalSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update local Setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/LocalSetting'
+   */
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-local:isEnabled': req.body.isLocalEnabled,
+      'security:registrationMode': req.body.registrationMode,
+      'security:registrationWhiteList': req.body.registrationWhiteList,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const localSettingParams = {
+        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+        registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
+        registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      };
+      return res.apiv3({ localSettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating local setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-local-setting failed'));
     }
   });
 
