@@ -24,6 +24,7 @@ const router = express.Router();
  *  components:
  *    schemas:
  *      ImportStatus:
+ *        description: ImportStatus
  *        type: object
  *        properties:
  *          zipFileStat:
@@ -100,9 +101,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/status:
+   *  /_api/v3/import/status:
    *    get:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: getImportStatus
+   *      summary: /_api/v3/import/status
    *      description: Get properties of stored zip files for import
    *      responses:
    *        200:
@@ -127,9 +130,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import:
+   *  /_api/v3/import:
    *    post:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: executeImport
+   *      summary: /_api/v3/import
    *      description: import a collection from a zipped json
    *      requestBody:
    *        required: true
@@ -236,9 +241,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/upload:
+   *  /_api/v3/import/upload:
    *    post:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: uploadImport
+   *      summary: /_api/v3/import/upload
    *      description: upload a zip file
    *      responses:
    *        200:
@@ -281,9 +288,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /import/all:
+   *  /_api/v3/import/all:
    *    delete:
-   *      tags: [Import]
+   *      tags: [Import, apiv3]
+   *      operationId: deleteImportAll
+   *      summary: /_api/v3/import/all
    *      description: Delete all zip files
    *      responses:
    *        200:

@@ -25,5 +25,9 @@ $active-navbar-border: darken($border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
 $bgcolor-inline-code: darken($bgcolor-global, 5%);
 
+.editor-container .navbar-editor svg {
+  fill: $bodytext;
+}
+
 @import 'apply-colors';
 @import 'apply-colors-dark';
