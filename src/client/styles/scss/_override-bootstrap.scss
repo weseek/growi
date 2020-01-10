@@ -13,6 +13,23 @@
   }
 }
 
+// card (substitute panel of bootstrap3)
+.card {
+  margin-bottom: 20px;
+  border-radius: 0;
+}
+
+.card-header:not(.card-well) {
+  padding: 7px 15px;
+  font-weight: 700;
+  text-transform: none;
+  border-radius: 0;
+}
+
+.card-header:first-child {
+  border-radius: 0;
+}
+
 // Dropdowns
 .dropdown {
   .dropdown-toggle.btn.disabled {
