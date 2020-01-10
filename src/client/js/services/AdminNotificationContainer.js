@@ -114,4 +114,11 @@ export default class AdminNotificationContainer extends Container {
     this.setState({ userNotifications: response.data.responseParams.userNotifications });
   }
 
+  /**
+   * Delete global notification pattern
+   */
+  async deleteGlobalNotificationPattern(notificatiionId) {
+    // TODO GW-780 create apiV3
+  }
+
 }

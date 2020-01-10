@@ -2,14 +2,53 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+import NotificationDeleteModal from './NotificationDeleteModal';
 
+const logger = loggerFactory('growi:GolobalNotificationList');
 
 class GlobalNotificationList extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isConfirmationModalOpen: false,
+      notificatiionForConfiguration: null,
+    };
+
+    this.openConfirmationModal = this.openConfirmationModal.bind(this);
+    this.closeConfirmationModal = this.closeConfirmationModal.bind(this);
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  openConfirmationModal(notificatiion) {
+    this.setState({ isConfirmationModalOpen: true, notificatiionForConfiguration: notificatiion });
+  }
+
+  closeConfirmationModal() {
+    this.setState({ isConfirmationModalOpen: false, notificatiionForConfiguration: null });
+  }
+
+  async onClickSubmit() {
+    const { t, adminNotificationContainer } = this.props;
+
+    try {
+      await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionForConfiguration);
+      toastSuccess(t('notification_setting.delete_notification_pattern'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+    this.setState({ isConfirmationModalOpen: false });
+  }
 
   render() {
     const { t, adminNotificationContainer } = this.props;
@@ -76,24 +115,25 @@ class GlobalNotificationList extends React.Component {
                         <i className="icon-fw icon-note"></i> {t('Edit')}
                       </a>
                     </li>
-                    {/*  TODO GW-780 create delete modal  */}
-                    <li className="btn-delete">
-                      <a
-                        href="#"
-                        data-setting-id="{{ notification.id }}"
-                        data-target="#admin-delete-global-notification"
-                        data-toggle="modal"
-                      >
+                    <li onClick={() => this.openConfirmationModal(notification)}>
+                      <a>
                         <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                       </a>
                     </li>
-
                   </ul>
                 </div>
               </td>
             </tr>
           );
         })}
+        {this.state.notificatiionForConfiguration != null && (
+          <NotificationDeleteModal
+            isOpen={this.state.isConfirmationModalOpen}
+            onClose={this.closeConfirmationModal}
+            onClickSubmit={this.onClickSubmit}
+            notificatiionForConfiguration={this.state.notificatiionForConfiguration}
+          />
+        )}
       </React.Fragment>
     );
 

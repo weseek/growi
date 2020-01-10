@@ -373,7 +373,7 @@
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
-    "ex) internal use only":"ex): internal use only",
+    "ex) internal use only": "ex): internal use only",
     "File Uploading": "File Uploading",
     "enable_files_except_image": "Enable file upload other than image files.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
@@ -611,7 +611,10 @@
       "ifttt_link": "Create a new IFTTT applet with Email trigger"
     },
     "updated_slackApp": "Succeeded to update Slack App Configuration setting",
-    "add_notification_pattern": "Add user trigger notification patterns"
+    "add_notification_pattern": "Add user trigger notification patterns",
+    "delete_notification_pattern": "Delete notification pattern",
+    "delete_notification_pattern_desc1": "Delete Path: {{path}}",
+    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered"
   },
   "customize_page": {
     "recommended": "Recommended",
