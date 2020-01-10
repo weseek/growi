@@ -2,7 +2,7 @@
 
 $themecolor:#112744;
 
-$topbar:#334455;
+$topbar:#F5A9F2;
 $sidebar:#fff;
 $bodycolor:#fff;
 $headingtext: #2b2b2b;
@@ -19,3 +19,13 @@ $wikilinktext-hover: lighten($wikilinktext, 20%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';
+
+// add background-image
+.main-container > #wrapper > #page-wrapper,
+.page-editor-preview-container {
+  background-image: url('/images/themes/spring/spring.jpg');
+  background-attachment: fixed;
+  background-position: bottom;
+  background-size: cover;
+  opacity: 0.4;
+}
