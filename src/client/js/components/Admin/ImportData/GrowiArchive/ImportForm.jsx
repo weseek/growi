@@ -347,7 +347,7 @@ class ImportForm extends React.Component {
         <div className="col-12">
           <legend>{groupName} Collections</legend>
           { wellContent != null && (
-            <div className="card card-header card-well small" role="alert">
+            <div className="card card-well small" role="alert">
               <ul>
                 <li>{wellContent}</li>
               </ul>
