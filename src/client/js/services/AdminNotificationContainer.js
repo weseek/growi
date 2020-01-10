@@ -118,8 +118,10 @@ export default class AdminNotificationContainer extends Container {
    * Delete global notification pattern
    */
   async deleteGlobalNotificationPattern(notificatiionId) {
-    await this.appContainer.apiv3.delete(`/notification-setting/global-notification/${notificatiionId}`);
-    return this.retrieveNotificationData();
+    const response = await this.appContainer.apiv3.delete(`/notification-setting/global-notification/${notificatiionId}`);
+    const deletedNotificaton = response.data;
+    await this.retrieveNotificationData();
+    return deletedNotificaton;
   }
 
 }

@@ -195,8 +195,8 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      await GlobalNotificationSetting.findOneAndRemove({ _id: id });
-      return res.apiv3({});
+      const deletedNotificaton = await GlobalNotificationSetting.findOneAndRemove({ _id: id });
+      return res.apiv3(deletedNotificaton);
     }
     catch (err) {
       const msg = 'Error occurred in delete global notification';
