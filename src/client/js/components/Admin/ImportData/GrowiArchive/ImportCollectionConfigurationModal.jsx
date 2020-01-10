@@ -67,28 +67,26 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="form-check">
+        <div className="checkbox checkbox-warning">
           <input
             id="cbOpt4"
             type="checkbox"
             checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt4" className="form-check-label">
+          <label htmlFor="cbOpt4">
             {t(`${translationBase}.overwrite_author.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
-        <div className="form-check">
+        <div className="checkbox checkbox-warning">
           <input
             id="cbOpt1"
             type="checkbox"
             checked={option.makePublicForGrant2 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant2: !option.makePublicForGrant2 })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt1" className="form-check-label">
+          <label htmlFor="cbOpt1">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Anyone with the link') })}
             <p
               className="help-block mt-0"
@@ -96,28 +94,26 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="form-check">
+        <div className="checkbox checkbox-warning">
           <input
             id="cbOpt2"
             type="checkbox"
             checked={option.makePublicForGrant4 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt2" className="form-check-label">
+          <label htmlFor="cbOpt2">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Just me') })}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }} />
           </label>
         </div>
-        <div className="form-check">
+        <div className="checkbox checkbox-warning">
           <input
             id="cbOpt3"
             type="checkbox"
             checked={option.makePublicForGrant5 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant5: !option.makePublicForGrant5 })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt3" className="form-check-label">
+          <label htmlFor="cbOpt3">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Only inside the group') })}
             <p
               className="help-block mt-0"
@@ -125,28 +121,26 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="form-check">
+        <div className="checkbox checkbox-default">
           <input
             id="cbOpt5"
             type="checkbox"
             checked={option.initPageMetadatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initPageMetadatas: !option.initPageMetadatas })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt5" className="form-check-label">
+          <label htmlFor="cbOpt5">
             {t(`${translationBase}.initialize_meta_datas.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
         </div>
-        <div className="form-check">
+        <div className="checkbox checkbox-default">
           <input
             id="cbOpt6"
             type="checkbox"
             checked={option.initHackmdDatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initHackmdDatas: !option.initHackmdDatas })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt6" className="form-check-label">
+          <label htmlFor="cbOpt6">
             {t(`${translationBase}.initialize_hackmd_related_datas.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
           </label>
@@ -165,15 +159,14 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="form-check">
+        <div className="checkbox checkbox-warning">
           <input
             id="cbOpt1"
             type="checkbox"
             checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
-            className="form-check-input"
           />
-          <label htmlFor="cbOpt1" className="form-check-label">
+          <label htmlFor="cbOpt1">
             {t(`${translationBase}.overwrite_author.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
