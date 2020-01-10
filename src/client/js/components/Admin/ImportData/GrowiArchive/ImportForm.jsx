@@ -455,12 +455,12 @@ class ImportForm extends React.Component {
       <>
         <form className="form-inline">
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+            <button type="button" className="btn btn-sm page-link text-dark d-inline-block mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('export_management.check_all')}
             </button>
           </div>
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+            <button type="button" className="btn btn-sm page-link text-dark d-inline-block mr-2" onClick={this.uncheckAll}>
               <i className="fa fa-square-o"></i> {t('export_management.uncheck_all')}
             </button>
           </div>
@@ -472,7 +472,7 @@ class ImportForm extends React.Component {
         { this.renderOthers() }
 
         <div className="mt-4 text-center">
-          <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
+          <button type="button" className="btn page-link text-dark d-inline-block mx-1" onClick={this.props.onDiscard}>
             { t('importer_management.growi_settings.discard') }
           </button>
           <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>
