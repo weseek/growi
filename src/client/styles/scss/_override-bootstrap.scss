@@ -95,6 +95,13 @@
 .modal-content {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
 }
+.modal-header {
+  border: 1px solid #e5e5e5;
+}
+
+.modal-footer {
+  border: 1px solid #e5e5e5;
+}
 
 // col-form-label (substitute for control-label of bootstrap3)
 .col-form-label {
