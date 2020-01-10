@@ -41,6 +41,34 @@
   background: $extralight;
 }
 
+// substitute for btn-default of bootstrap3  (agile-admin style)
+.page-link.text-dark.d-inline-block,
+.page-link.text-dark.d-inline-block.disabled {
+  color: $bodytext;
+  $this-color: $btn-default-bgcolor;
+  background: $this-color;
+  border: 1px solid $this-color;
+
+  &:hover,
+  &:focus,
+  &.focus {
+    color: $bodytext;
+    background: $this-color;
+    border: 1px solid $this-color;
+    opacity: 0.8;
+  }
+}
+
+.page-link.text-dark.d-inline-block.btn-outline {
+  background-color: transparent;
+
+  &:hover,
+  &:focus,
+  &.focus {
+    background: $btn-default-bgcolor;
+  }
+}
+
 //Modals
 .modal-content {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
