@@ -432,24 +432,13 @@ export default class HandsontableModal extends React.PureComponent {
     );
 
     return (
-<<<<<<< HEAD
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
         <ModalHeader toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
             <Button className="mr-4 data-import-button" onClick={this.toggleDataImportArea}>
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
-=======
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
-        <Modal.Header closeButton>
-          { this.renderExpandOrContractButton() }
-          <Modal.Title>Edit Table</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0 d-flex flex-column">
-          <div className="px-4 py-3 modal-navbar">
-            <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
->>>>>>> master
+
             </Button>
             <ButtonGroup>
               <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
