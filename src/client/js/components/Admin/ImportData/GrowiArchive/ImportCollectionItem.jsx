@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import { withTranslation } from 'react-i18next';
 
-import ProgressBar from 'react-bootstrap/es/ProgressBar';
+/* import ProgressBar from 'react-bootstrap/es/ProgressBar'; */
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
@@ -158,21 +158,21 @@ export default class ImportCollectionItem extends React.Component {
     );
   }
 
-  renderProgressBar() {
+  /* renderProgressBar() {
     const {
       isImporting, insertedCount, modifiedCount, errorsCount,
     } = this.props;
 
     const total = insertedCount + modifiedCount + errorsCount;
 
-    return (
+    return(
       <ProgressBar className="mb-0">
         <ProgressBar max={total} striped={isImporting} active={isImporting} now={insertedCount} bsStyle="info" />
         <ProgressBar max={total} striped={isImporting} active={isImporting} now={modifiedCount} bsStyle="success" />
         <ProgressBar max={total} striped={isImporting} active={isImporting} now={errorsCount} bsStyle="danger" />
       </ProgressBar>
     );
-  }
+  } */
 
   renderBody() {
     const { isImporting, isImported } = this.props;

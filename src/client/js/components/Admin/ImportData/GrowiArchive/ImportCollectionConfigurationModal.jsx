@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import Modal from 'react-bootstrap/es/Modal';
+/* import Modal from 'react-bootstrap/es/Modal'; */
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
@@ -172,7 +172,7 @@ class ImportCollectionConfigurationModal extends React.Component {
   }
 
   render() {
-    const { t, collectionName } = this.props;
+    /* const { t, collectionName } = this.props;
     const { option } = this.state;
 
     let contents = null;
@@ -185,10 +185,10 @@ class ImportCollectionConfigurationModal extends React.Component {
           contents = this.renderRevisionsContents();
           break;
       }
-    }
+    } */
 
-    return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose} onEnter={this.initialize}>
+    return;
+    /* <Modal show={this.props.isOpen} onHide={this.props.onClose} onEnter={this.initialize}>
         <Modal.Header closeButton>
           <Modal.Title>{`'${collectionName}'`} Configuration</Modal.Title>
         </Modal.Header>
@@ -202,7 +202,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           <button type="button" className="btn btn-sm btn-primary" onClick={this.updateOption}>{t('Update')}</button>
         </Modal.Footer>
       </Modal>
-    );
+    ); */
   }
 
 }
