@@ -55,7 +55,7 @@ class UserManagement extends React.Component {
         {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
         <p>
           <InviteUserControl />
-          <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
+          <a className="btn page-link text-dark d-inline-block ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             { t('user_management.external_account') }
           </a>
