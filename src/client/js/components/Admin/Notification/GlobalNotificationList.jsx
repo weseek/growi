@@ -40,7 +40,7 @@ class GlobalNotificationList extends React.Component {
     const { t, adminNotificationContainer } = this.props;
 
     try {
-      const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionIdForConfiguration);
+      const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionForConfiguration._id);
       toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
     }
     catch (err) {
