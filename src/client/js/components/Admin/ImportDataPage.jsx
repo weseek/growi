@@ -171,7 +171,7 @@ class ImportDataPage extends React.Component {
               </tbody>
             </table>
 
-            <div className="well well-sm mb-0 small">
+            <div className="card card-well mb-0 small">
               <ul>
                 <li>{ t('importer_management.page_skip') }</li>
               </ul>
@@ -201,7 +201,7 @@ class ImportDataPage extends React.Component {
             </div>
 
             <div className="form-group">
-              <div className="col-xs-offset-3 col-xs-6">
+              <div className="offset-3 col-xs-6">
                 <input
                   id="testConnectionToEsa"
                   type="button"
@@ -210,13 +210,13 @@ class ImportDataPage extends React.Component {
                   onClick={this.esaHandleSubmit}
                   value={t('importer_management.import')}
                 />
-                <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
-                <span className="col-xs-offset-1">
+                <input type="button" className="btn" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
+                <span className="offset-1">
                   <input
                     name="Esa"
                     type="button"
                     id="importFromEsa"
-                    className="btn btn-default btn-esa"
+                    className="btn page-link text-dark d-inline-block btn-esa"
                     onClick={this.esaHandleSubmitTest}
                     value={t('importer_management.esa_settings.test_connection')}
                   />
@@ -265,7 +265,7 @@ class ImportDataPage extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="well well-sm mb-0 small">
+            <div className="card card-well mb-0 small">
               <ul>
                 <li>{ t('importer_management.page_skip') }</li>
               </ul>
@@ -294,7 +294,7 @@ class ImportDataPage extends React.Component {
 
 
             <div className="form-group">
-              <div className="col-xs-offset-3 col-xs-6">
+              <div className="offset-3 col-xs-6">
                 <input
                   id="testConnectionToQiita"
                   type="button"
@@ -303,13 +303,13 @@ class ImportDataPage extends React.Component {
                   onClick={this.qiitaHandleSubmit}
                   value={t('importer_management.import')}
                 />
-                <input type="button" className="btn btn-secondary" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
-                <span className="col-xs-offset-1">
+                <input type="button" className="btn" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
+                <span className="offset-1">
                   <input
                     name="Qiita"
                     type="button"
                     id="importFromQiita"
-                    className="btn btn-default btn-qiita"
+                    className="btn page-link text-dark d-inline-block btn-qiita"
                     onClick={this.qiitaHandleSubmitTest}
                     value={t('importer_management.qiita_settings.test_connection')}
                   />
