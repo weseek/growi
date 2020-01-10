@@ -118,7 +118,8 @@ export default class AdminNotificationContainer extends Container {
    * Delete global notification pattern
    */
   async deleteGlobalNotificationPattern(notificatiionId) {
-    // TODO GW-780 create apiV3
+    await this.appContainer.apiv3.delete(`/notification-setting/global-notification/${notificatiionId}`);
+    return this.retrieveNotificationData();
   }
 
 }

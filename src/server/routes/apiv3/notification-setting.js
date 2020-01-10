@@ -190,5 +190,22 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO Swagger Validation
+  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      await GlobalNotificationSetting.findOneAndRemove({ _id: id });
+      return res.apiv3({});
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-globalNotification-failed'));
+    }
+
+
+  });
+
   return router;
 };

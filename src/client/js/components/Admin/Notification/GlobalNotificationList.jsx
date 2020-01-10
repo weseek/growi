@@ -130,7 +130,7 @@ class GlobalNotificationList extends React.Component {
           isOpen={this.state.isConfirmationModalOpen}
           onClose={this.closeConfirmationModal}
           onClickSubmit={this.onClickSubmit}
-        />;
+        />
       </React.Fragment>
     );
 
