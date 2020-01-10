@@ -190,7 +190,31 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO Swagger Validation
+  /**
+  * @swagger
+  *
+  *    /_api/v3/notification-setting/global-notification/{id}:
+  *      delete:
+  *        tags: [NotificationSetting]
+  *        description: delete global notification pattern
+  *        parameters:
+  *          - name: id
+  *            in: path
+  *            required: true
+  *            description: id of global notification
+  *            schema:
+  *              type: string
+  *        responses:
+  *          200:
+  *            description: Succeeded to delete global notification pattern
+  *            content:
+  *              application/json:
+  *                schema:
+  *                  properties:
+  *                    deletedNotificaton:
+  *                      type: object
+  *                      description: deleted notification
+  */
   router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
