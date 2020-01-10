@@ -63,7 +63,7 @@
   background: $extralight;
 }
 
-// substitute for btn-default of bootstrap3  (agile-admin style)
+// page-link (substitute for btn-default of bootstrap3)  (agile-admin style)
 .page-link.text-dark.d-inline-block,
 .page-link.text-dark.d-inline-block.disabled {
   color: $bodytext;
@@ -94,4 +94,14 @@
 //Modals
 .modal-content {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+// col-form-label (substitute for control-label of bootstrap3)
+.col-form-label {
+  text-align: right;
+}
+
+// label
+label {
+  font-weight: 700;
 }
