@@ -79,8 +79,8 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <div className="btn-group admin-user-menu">
-          <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+        <div className="btn-group admin-user-menu" role="group">
+          <button type="button" className="btn page-link text-dark d-inline-block btn-sm dropdown-toggle" data-toggle="dropdown">
             <i className="icon-settings"></i> <span className="caret"></span>
           </button>
           <ul className="dropdown-menu" role="menu">
