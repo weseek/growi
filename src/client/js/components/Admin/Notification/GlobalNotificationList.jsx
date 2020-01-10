@@ -20,7 +20,7 @@ class GlobalNotificationList extends React.Component {
 
     this.state = {
       isConfirmationModalOpen: false,
-      notificatiionIdForConfiguration: null,
+      notificatiionForConfiguration: null,
     };
 
     this.openConfirmationModal = this.openConfirmationModal.bind(this);
@@ -28,19 +28,19 @@ class GlobalNotificationList extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  openConfirmationModal(notificatiionId) {
-    this.setState({ isConfirmationModalOpen: true, notificatiionIdForConfiguration: notificatiionId });
+  openConfirmationModal(notificatiion) {
+    this.setState({ isConfirmationModalOpen: true, notificatiionForConfiguration: notificatiion });
   }
 
   closeConfirmationModal() {
-    this.setState({ isConfirmationModalOpen: false, notificatiionIdForConfiguration: null });
+    this.setState({ isConfirmationModalOpen: false, notificatiionForConfiguration: null });
   }
 
   async onClickSubmit() {
     const { t, adminNotificationContainer } = this.props;
 
     try {
-      await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionIdForConfiguration);
+      await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionForConfiguration);
       toastSuccess(t('notification_setting.delete_notification_pattern'));
     }
     catch (err) {
@@ -115,7 +115,7 @@ class GlobalNotificationList extends React.Component {
                         <i className="icon-fw icon-note"></i> {t('Edit')}
                       </a>
                     </li>
-                    <li onClick={() => this.openConfirmationModal(notification._id)}>
+                    <li onClick={() => this.openConfirmationModal(notification)}>
                       <a>
                         <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                       </a>
@@ -126,11 +126,14 @@ class GlobalNotificationList extends React.Component {
             </tr>
           );
         })}
-        <NotificationDeleteModal
-          isOpen={this.state.isConfirmationModalOpen}
-          onClose={this.closeConfirmationModal}
-          onClickSubmit={this.onClickSubmit}
-        />;
+        {this.state.notificatiionForConfiguration != null && (
+          <NotificationDeleteModal
+            isOpen={this.state.isConfirmationModalOpen}
+            onClose={this.closeConfirmationModal}
+            onClickSubmit={this.onClickSubmit}
+            notificatiionForConfiguration={this.state.notificatiionForConfiguration}
+          />
+        )}
       </React.Fragment>
     );
 
