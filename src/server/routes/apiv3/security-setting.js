@@ -464,9 +464,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LocalSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-local:isEnabled': req.body.restrictGuestMode,
+      'security:passport-local:isEnabled': req.body.isLocalEnabled,
       'security:registrationMode': req.body.registrationMode,
       'security:registrationWhiteList': req.body.registrationWhiteList,
     };
