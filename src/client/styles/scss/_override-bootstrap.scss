@@ -30,6 +30,11 @@
   border-radius: 0;
 }
 
+// card-well (substitute well of bootstrap3)
+.card.card-well {
+  padding: 7px 15px;
+}
+
 // Dropdowns
 .dropdown {
   .dropdown-toggle.btn.disabled {
