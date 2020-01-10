@@ -595,8 +595,9 @@
     },
     "updated_slackApp": "SlackApp設定を更新しました",
     "add_notification_pattern": "通知パターンを追加しました。",
-    "delete_notification_pattern": "{{path}} を削除しました。",
-    "delete_notification_pattern_desc": "一度消すと復元できません"
+    "delete_notification_pattern": "通知パターンを削除しました。",
+    "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
+    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered"
   },
   "customize_page": {
     "recommended": "おすすめ",
