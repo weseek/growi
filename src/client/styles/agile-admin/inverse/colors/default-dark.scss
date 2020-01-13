@@ -24,10 +24,69 @@ $navbar-border: lighten($border, 10%);
 $active-navbar-border: darken($border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
 $inline-code-bg: darken($bodycolor, 5%);
+$table-header: $btn-default-bgcolor;
 
 .editor-container .navbar-editor svg {
   fill: $bodytext;
 }
+
+/*
+ * Table editor for darkmode
+ */
+
+.modal.in .modal-dialog.handsontable-modal {
+  .modal-navbar {
+    background-color: $basecolor;
+    border-bottom: $border 1px solid;
+  }
+}
+
+.handsontable {
+  .wtHider {
+
+    th {
+      color: $sidebar-text;
+      background-color: $table-header;
+      background-clip: border-box;
+      border-color: #080;
+
+      &.ht__highlight {
+        color: $bodycolor;
+      }
+
+      &first-child {
+        border-color: #080;
+      }
+
+      &last-child {
+        border-color: #080;
+      }
+    }
+
+    td {
+      background-color: $basecolor;
+      background-clip: border-box;
+      border-color: #080;
+
+      &.current {
+        color: $bodycolor;
+        background-color: #dcdcdc;
+      }
+    }
+  }
+
+  tr:first-child th,
+  tr:first-child td {
+    border-color: #080;
+  }
+
+  tr:first-child {
+    border-color: #080;
+  }
+
+}
+
+
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
