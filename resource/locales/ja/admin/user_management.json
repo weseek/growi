@@ -30,9 +30,9 @@
     "new_password": "新しいパスワード"
   },
   "external_account": "外部アカウントの管理",
+  "external_account_list": "外部アカウント一覧",
   "invite": "招待する",
   "invited": "ユーザーを招待しました",
-  "external_account_list": "外部アカウント一覧",
   "back_to_user_management": "ユーザー管理に戻る",
   "authentication_provider": "認証情報プロバイダ",
   "manage": "操作",
