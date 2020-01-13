@@ -59,6 +59,7 @@ import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
+import ManageGlobalNotification from './components/Admin/Notification/ManageGlobalNotification';
 
 const logger = loggerFactory('growi:app');
 
@@ -197,6 +198,7 @@ const adminComponentMappings = {
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
   'admin-notification-setting': <NotificationSetting />,
+  'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
 };
