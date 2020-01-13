@@ -136,7 +136,7 @@ module.exports = (crowi) => {
    *        tags: [CustomizeSetting, apiv3]
    *        operationId: getCustomizeSetting
    *        summary: /_api/v3/customize-setting
-   *        description: Get customize paramators
+   *        description: Get customize parameters
    *        responses:
    *          200:
    *            description: params of customize
