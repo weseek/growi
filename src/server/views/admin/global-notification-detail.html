@@ -31,8 +31,8 @@
       {% include './widget/menu.html' with {current: 'notification'} %}
     </div>
 
-    <div class="col-md-9" id="admin-global-notification-setting">
-      <a href="/admin/notification#global-notification" class="btn btn-default">
+    <div class="col-md-9" id="admin-global-notification-setting" />
+    <!-- <a href="/admin/notification#global-notification" class="btn btn-default">
         <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
         {{ t('notification_setting.back_to_list') }}
       </a>
@@ -164,25 +164,23 @@
             </div>
           </form>
         </div>
-      </div>
+      </div> -->
 
-    </div>
   </div>
-</div>
 
-<script>
-  $('input[name="notificationGlobal[notifyToType]"]').change(function () {
-    var val = $(this).val();
-    $('.notify-to-option').addClass('d-none');
-    $('#' + val + '-input').removeClass('d-none');
-  });
+  <script>
+    $('input[name="notificationGlobal[notifyToType]"]').change(function () {
+      var val = $(this).val();
+      $('.notify-to-option').addClass('d-none');
+      $('#' + val + '-input').removeClass('d-none');
+    });
 
-  $('button#global-notificatin-delete').submit(function () {
-    alert(123)
-  });
+    $('button#global-notificatin-delete').submit(function () {
+      alert(123)
+    });
 
-</script>
-{% endblock content_main %}
+  </script>
+  {% endblock content_main %}
 
-{% block content_footer %}
-{% endblock content_footer %}
+  {% block content_footer %}
+  {% endblock content_footer %}
