@@ -35,6 +35,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGoogleOAuthEnabled: true,
       isGithubOAuthEnabled: true,
       isTwitterOAuthEnabled: true,
+      optionError: null,
     };
 
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
@@ -63,6 +64,22 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminGeneralSecurityContainer';
+  }
+
+  /**
+   * Check one option is enabled at least
+   */
+  isEnabledOneOptionAtLeast() {
+    return (
+      this.state.isLocalEnabled
+                 || this.state.isLdapEnabled
+                 || this.state.isSamlEnabled
+                 || this.state.isOidcEnabled
+                 || this.state.isBasicEnabled
+                 || this.state.isGoogleOAuthEnabled
+                 || this.state.isGithubOAuthEnabled
+                 || this.state.isTwitterOAuthEnabled
+    );
   }
 
   /**
