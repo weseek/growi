@@ -29,7 +29,7 @@ TriggerEventCheckBox.propTypes = {
   checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   event: PropTypes.string.isRequired,
-  children: PropTypes.array.isRequired,
+  children: PropTypes.object.isRequired,
 };
 
 

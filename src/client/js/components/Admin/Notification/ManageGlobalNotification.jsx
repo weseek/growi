@@ -2,8 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
+import { toastError } from '../../../util/apiNotification';
+
 import TriggerEventCheckBox from './TriggerEventCheckBox';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+
+const logger = loggerFactory('growi:manageGlobalNotification');
 
 class ManageGlobalNotification extends React.Component {
 
@@ -11,6 +17,7 @@ class ManageGlobalNotification extends React.Component {
     super();
 
     this.state = {
+      retrieveError: null,
       triggerPath: '',
       notifyToType: 'mail',
       emailToSend: '',
@@ -18,6 +25,22 @@ class ManageGlobalNotification extends React.Component {
       triggerEvents: new Set([]),
     };
 
+    this.submitHandler = this.submitHandler.bind(this);
+  }
+
+  componentDidMount() {
+    this.retrieveTriggerEvent();
+  }
+
+  async retrieveTriggerEvent() {
+    try {
+      // TODO GW-913 create apiV3
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+      this.setState({ retrieveError: err });
+    }
   }
 
   onChangeTriggerPath(inputValue) {
@@ -48,6 +71,18 @@ class ManageGlobalNotification extends React.Component {
       this.setState({ triggerEvents });
     }
   }
+
+  async submitHandler() {
+
+    try {
+      // TODO GW-778 create apiV3 update notification
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
 
   render() {
     const { t } = this.props;
@@ -206,8 +241,10 @@ class ManageGlobalNotification extends React.Component {
             </div>
           </div>
 
-          <AdminUpdateButtonRow />
-
+          <AdminUpdateButtonRow
+            onClick={this.submitHandler}
+            disabled={this.state.retrieveError != null}
+          />
 
         </div>
 
