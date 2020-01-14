@@ -78,6 +78,10 @@
     background: $this-color;
     border: 1px solid $this-color;
     opacity: 0.8;
+    box-shadow: none;
+  }
+  &:active &.active {
+    box-shadow: none;
   }
 }
 
