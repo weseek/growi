@@ -71,29 +71,29 @@ class UserGroupCreateForm extends React.Component {
           {this.props.isAclEnabled
             ? (
               <button type="button" data-toggle="collapse" className="btn btn-default" href="#createGroupForm">
-                { t('user_group_management.create_group') }
+                {t('user_group_management:create_group')}
               </button>
             )
             : (
-              t('user_group_management.deny_create_group')
+              t('user_group_management:deny_create_group')
             )
           }
         </p>
         <form onSubmit={this.handleSubmit}>
           <div id="createGroupForm" className="collapse">
             <div className="form-group">
-              <label htmlFor="name">{ t('user_group_management.group_name') }</label>
+              <label htmlFor="name">{t('user_group_management:group_name')}</label>
               <textarea
                 id="name"
                 name="name"
                 className="form-control"
-                placeholder={t('user_group_management.group_example')}
+                placeholder={t('user_group_management:group_example')}
                 value={this.state.name}
                 onChange={this.handleChange}
               >
               </textarea>
             </div>
-            <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{ t('Create') }</button>
+            <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{t('Create')}</button>
           </div>
         </form>
       </div>
