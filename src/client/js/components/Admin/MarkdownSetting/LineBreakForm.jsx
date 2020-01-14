@@ -44,7 +44,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="form-group text-left my-3">
-        <div className="col-xs-offset-4 col-xs-6">
+        <div className="offset-xs-4">
           <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
@@ -71,7 +71,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="form-group text-left my-3">
-        <div className="col-xs-offset-4 col-xs-6">
+        <div className="offset-xs-4">
           <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
@@ -100,7 +100,7 @@ class LineBreakForm extends React.Component {
           {this.renderLineBreakInCommentOption()}
         </fieldset>
         <div className="form-group col-12 text-center my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="offset-xs-4 col-xs-5">
             <button
               type="submit"
               className="btn btn-primary"
