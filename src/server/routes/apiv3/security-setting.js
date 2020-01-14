@@ -393,6 +393,60 @@ module.exports = (crowi) => {
     return res.apiv3({ securityParams });
   });
 
+  // TODO swagger
+  router.put('/toggleIsEnabled', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { isEnabled, target } = req.body;
+
+    const enableParams = {
+      'security:passport-local:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+      'security:passport-ldap:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+      'security:passport-saml:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
+      'security:passport-oidc:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
+      'security:passport-basic:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
+      'security:passport-google:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
+      'security:passport-github:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+      'security:passport-twitter:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+    };
+
+    // Reflect request param
+    enableParams[`security:passport-${target}:isEnabled`] = isEnabled;
+
+    if (
+      enableParams['security:passport-local:isEnabled']
+      || enableParams['security:passport-ldap:isEnabled']
+      || enableParams['security:passport-saml:isEnabled']
+      || enableParams['security:passport-oidc:isEnabled']
+      || enableParams['security:passport-basic:isEnabled']
+      || enableParams['security:passport-google:isEnabled']
+      || enableParams['security:passport-github:isEnabled']
+      || enableParams['security:passport-twitter:isEnabled']
+    ) {
+      try {
+        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', enableParams);
+        const responseParams = {
+          'security:passport-local:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+          'security:passport-ldap:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
+          'security:passport-saml:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
+          'security:passport-oidc:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
+          'security:passport-basic:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
+          'security:passport-google:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
+          'security:passport-github:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+          'security:passport-twitter:isEnabled': await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+        };
+        return res.apiv3({ responseParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating enable setting';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-enable-setting failed'));
+      }
+
+    }
+
+    return res.apiv3Err(new ErrorV3('Can not turn everything off'));
+
+  });
+
   /**
    * @swagger
    *
