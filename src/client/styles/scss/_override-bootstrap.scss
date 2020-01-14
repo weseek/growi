@@ -101,11 +101,11 @@
 }
 
 .modal-header {
-  border: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .modal-footer {
-  border: 1px solid #e5e5e5;
+  border-top: 1px solid #e5e5e5;
 }
 
 // col-form-label (substitute for control-label of bootstrap3)
@@ -123,4 +123,12 @@ label {
 .btn[disabled],
 fieldset[disabled] .btn {
   cursor: not-allowed;
+}
+
+// input form (disabled box-shadow added in bootstrap4)
+.form-group .form-control {
+  &:focus,
+  &.focus {
+    box-shadow: none;
+  }
 }
