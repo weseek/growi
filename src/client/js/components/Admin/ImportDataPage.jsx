@@ -210,7 +210,7 @@ class ImportDataPage extends React.Component {
                   onClick={this.esaHandleSubmit}
                   value={t('importer_management.import')}
                 />
-                <input type="button" className="btn" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
+                <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
                 <span className="offset-1">
                   <input
                     name="Esa"
@@ -303,7 +303,7 @@ class ImportDataPage extends React.Component {
                   onClick={this.qiitaHandleSubmit}
                   value={t('importer_management.import')}
                 />
-                <input type="button" className="btn" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
+                <input type="button" className="btn btn-secondary" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
                 <span className="offset-1">
                   <input
                     name="Qiita"
