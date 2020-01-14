@@ -1,6 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { toastError } from '../../../util/apiNotification';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
@@ -35,7 +36,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGoogleOAuthEnabled: true,
       isGithubOAuthEnabled: true,
       isTwitterOAuthEnabled: true,
-      optionError: null,
     };
 
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
@@ -65,7 +65,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   static getClassName() {
     return 'AdminGeneralSecurityContainer';
   }
-  
+
   /**
    * Change restrictGuestMode
    */
@@ -125,10 +125,16 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchIsLocalEnabled() {
     await this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
-    return this.appContainer.apiv3.put('/security-setting/toggleIsEnabled', {
-      isEnabled: this.state.isLocalEnabled,
-      target: 'local',
-    });
+    try {
+      await this.appContainer.apiv3.put('/security-setting/toggleIsEnabled', {
+        isEnabled: this.state.isLocalEnabled,
+        target: 'local',
+      });
+    }
+    catch (err) {
+      this.setState({ isLocalEnabled: true });
+      toastError(err);
+    }
   }
 
   /**
