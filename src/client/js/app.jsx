@@ -36,6 +36,7 @@ import TableOfContents from './components/TableOfContents';
 
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import NotificationSetting from './components/Admin/Notification/NotificationSetting';
+import ManageGlobalNotification from './components/Admin/Notification/ManageGlobalNotification';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import AppSettingsPage from './components/Admin/App/AppSettingsPage';
@@ -169,6 +170,7 @@ const adminContainers = {
   'admin-user-page': adminUsersContainer,
   'admin-external-account-setting': adminExternalAccountsContainer,
   'admin-notification-setting': adminNotificationContainer,
+  'admin-global-notification-setting': adminNotificationContainer,
   'admin-markdown-setting': adminMarkDownContainer,
   'admin-export-page': websocketContainer,
 };
@@ -197,6 +199,7 @@ const adminComponentMappings = {
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
   'admin-notification-setting': <NotificationSetting />,
+  'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
 };
