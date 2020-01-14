@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
-import { toastError } from '../../../util/apiNotification';
+import { toastError } from '../util/apiNotification';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
