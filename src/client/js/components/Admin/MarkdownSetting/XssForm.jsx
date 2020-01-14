@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'reactstrap';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -40,8 +41,8 @@ class XssForm extends React.Component {
     const { xssOption } = adminMarkDownContainer.state;
 
     return (
-      <div className="form-group form-check-inline col-xs-12 my-3">
-        <div className="col-xs-4 align-self-start">
+      <div className="form-group form-check-inline col-12 my-3">
+        <div className="col-4 align-self-start">
           <div className="custom-control custom-radio ">
             <input
               type="radio"
@@ -60,7 +61,7 @@ class XssForm extends React.Component {
           </div>
         </div>
 
-        <div className="col-xs-4 align-self-start">
+        <div className="col-4 align-self-start">
           <div className="custom-control custom-radio">
             <input
               type="radio"
@@ -77,7 +78,7 @@ class XssForm extends React.Component {
           </div>
         </div>
 
-        <div className="col-xs-4 align-self-start">
+        <div className="col-4 align-self-start">
           <div className="custom-control custom-radio">
             <input
               type="radio"
@@ -103,37 +104,40 @@ class XssForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="form-group mx-auto my-3">
-
-          <div className="col-xs-offset-4 col-xs-6 text-center">
-            <div className="custom-control custom-switch checkbox-success">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="XssEnable"
-                name="isEnabledXss"
-                checked={isEnabledXss}
-                onChange={adminMarkDownContainer.switchEnableXss}
-              />
-              <label className="custom-control-label" htmlFor="XssEnable">
-                { t('markdown_setting.Enable XSS prevention') }
-              </label>
+        <fieldset className="col-12">
+          <div className="form-group">
+            <div className="col-8 offset-4 my-3">
+              <div className="custom-control custom-switch checkbox-success">
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="XssEnable"
+                  name="isEnabledXss"
+                  checked={isEnabledXss}
+                  onChange={adminMarkDownContainer.switchEnableXss}
+                />
+                <label className="custom-control-label" htmlFor="XssEnable">
+                  { t('markdown_setting.Enable XSS prevention') }
+                </label>
+              </div>
             </div>
           </div>
 
-          <div className="col-xs-offset-4 col-xs-6 mx-auto">
+          <div className="col-12">
             {isEnabledXss && this.xssOptions()}
           </div>
         </fieldset>
-        <div className="form-group col-12 text-center my-3">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={this.onClickSubmit}
-            disabled={adminMarkDownContainer.state.retrieveError != null}
-          >
-            {t('Update')}
-          </button>
+        <div className="form-group col-12 m-3">
+          <div className="offset-4 col-8">
+            <Button
+              type="submit"
+              color="primary"
+              onClick={this.onClickSubmit}
+              disabled={adminMarkDownContainer.state.retrieveError != null}
+            >
+              {t('Update')}
+            </Button>
+          </div>
         </div>
       </React.Fragment>
     );

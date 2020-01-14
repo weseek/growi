@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-// import { Button } from 'reactstrap';
+import { Button } from 'reactstrap';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
@@ -44,7 +45,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="form-group text-left my-3">
-        <div className="offset-xs-4">
+        <div className="col-8 offset-4">
           <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
@@ -71,7 +72,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="form-group text-left my-3">
-        <div className="offset-xs-4">
+        <div className="col-8 offset-4">
           <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
@@ -95,20 +96,20 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="mx-auto">
+        <fieldset className="col-12">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
-        <div className="form-group col-12 text-center my-3">
-          <div className="offset-xs-4 col-xs-5">
-            <button
+        <div className="form-group col-12 m-3">
+          <div className="offset-4 col-8">
+            <Button
               type="submit"
-              className="btn btn-primary"
+              color="primary"
               onClick={this.onClickSubmit}
               disabled={adminMarkDownContainer.state.retrieveError != null}
             >
               {t('Update')}
-            </button>
+            </Button>
           </div>
         </div>
       </React.Fragment>

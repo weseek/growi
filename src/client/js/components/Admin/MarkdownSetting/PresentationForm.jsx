@@ -1,5 +1,5 @@
 import React from 'react';
-// import { Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -41,13 +41,13 @@ class PresentationForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="form-group mx-auto my-2">
+        <fieldset className="form-group col-12 my-2">
 
-          <p className="col-12 col-xs-3 control-label font-weight-bold text-left mt-3">
+          <p className="col-12 col-sm-3 control-label font-weight-bold text-left mt-3">
             { t('markdown_setting.Page break setting') }
           </p>
 
-          <div className="form-group form-check-inline mx-auto col-xs-12 my-3">
+          <div className="form-group form-check-inline col-12 my-3">
             <div className="col-4 align-self-start">
               <div className="custom-control custom-radio">
                 <input
@@ -108,16 +108,16 @@ class PresentationForm extends React.Component {
             </div>
           </div>
         </fieldset>
-        <div className="form-group col-12 text-center my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <button
+        <div className="form-group col-12 m-3">
+          <div className="offset-4 col-8">
+            <Button
               type="submit"
-              className="btn btn-primary"
+              color="primary"
               onClick={this.onClickSubmit}
               disabled={adminMarkDownContainer.state.retrieveError != null}
             >
               { t('Update') }
-            </button>
+            </Button>
           </div>
         </div>
       </React.Fragment>
