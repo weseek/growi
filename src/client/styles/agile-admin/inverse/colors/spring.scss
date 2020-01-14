@@ -1,8 +1,9 @@
 @import '../variables';
 
-$themecolor:#112744;
-
-$topbar:#F5A9F2;
+$themecolor:#ffb6c1;
+$subthemecolor: black;
+$themelight: #f0f8ff;
+$topbar:$themecolor;
 $sidebar:#fff;
 $bodycolor:#fff;
 $headingtext: #2b2b2b;
@@ -10,6 +11,7 @@ $bodytext: #333333;
 $linktext: lighten($themecolor, 20%);
 $linktext-hover: lighten($linktext, 20%);
 $sidebar-text:#38495a;
+$accentcolor:#ee82ee;
 
 $primary: $themecolor;
 
@@ -27,6 +29,66 @@ $wikilinktext-hover: lighten($wikilinktext, 20%);
   background-attachment: fixed;
   background-position: bottom;
   background-size: cover;
-  opacity: 0.4;
+  
 }
 
+.sidebar {
+  background: $themecolor;
+}
+
+/*
+ * Accentcolor (yellow)
+ */
+
+ header.affix {
+  border-bottom: 4px solid $accentcolor;
+}
+
+.modal {
+  .modal-header {
+    border-bottom: 4px solid $accentcolor;
+  }
+}
+
+#wrapper > .navbar > .navbar-header {
+  border-bottom: 4px solid $accentcolor;
+}
+
+/*
+ * Comments
+ */
+
+ .page-comment {
+  .page-comment-main {
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+
+    .page-comment-creator > a {
+      border-bottom: 1px double $subthemecolor;
+    }
+  }
+}
+
+/*
+ * Tabs
+ */
+
+ .nav.nav-tabs > li.active > a {
+  color: $themelight;
+}
+
+.text-info,
+body:not(.on-edit) .nav.nav-tabs {
+  > li > a {
+    color: $themecolor;
+  }
+
+  > li.active > a {
+    color: $themelight;
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 50%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
+    background-color: $themecolor;
+  }
+}
