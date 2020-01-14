@@ -27,6 +27,7 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
       currentRecentCreatedLimit: 10,
+      isEnabledStaleNotification: false,
       currentHighlightJsStyleId: '',
       isHighlightJsStyleBorderEnabled: false,
       currentCustomizeTitle: '',
@@ -74,6 +75,7 @@ export default class AdminCustomizeContainer extends Container {
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         currentRecentCreatedLimit: customizeParams.recentCreatedLimit,
+        isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         currentHighlightJsStyleId: customizeParams.styleName,
         isHighlightJsStyleBorderEnabled: customizeParams.styleBorder,
         currentCustomizeTitle: customizeParams.customizeTitle,
@@ -142,6 +144,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchRecentCreatedLimit(value) {
     this.setState({ currentRecentCreatedLimit: value });
+  }
+
+  /**
+   * Switch enabledStaleNotification
+   */
+  switchEnableStaleNotification() {
+    this.setState({ isEnabledStaleNotification:  !this.state.isEnabledStaleNotification });
   }
 
   /**
@@ -228,6 +237,7 @@ export default class AdminCustomizeContainer extends Container {
       isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
       isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
       recentCreatedLimit: this.state.currentRecentCreatedLimit,
+      isEnabledStaleNotification: this.state.isEnabledStaleNotification,
     });
     const { customizedParams } = response.data;
     return customizedParams;

@@ -102,6 +102,7 @@ module.exports = function(crowi) {
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
+      'customize:isEnabledStaleNotification': false,
 
       'importer:esa:team_name': undefined,
       'importer:esa:access_token': undefined,
@@ -201,6 +202,7 @@ module.exports = function(crowi) {
         NO_CDN: env.NO_CDN || null,
       },
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };

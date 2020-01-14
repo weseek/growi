@@ -9,6 +9,8 @@ import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
+import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
+import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 
 class UserGroupUserModal extends React.Component {
 
@@ -21,7 +23,51 @@ class UserGroupUserModal extends React.Component {
           { t('user_group_management.add_user') }
         </ModalHeader>
         <ModalBody>
-          <UserGroupUserFormByInput />
+          <div className="p-3">
+            <UserGroupUserFormByInput />
+          </div>
+          <h2 className="border-bottom">{t('user_group_management.search_option')}</h2>
+          <div className="row mt-4">
+            <div className="col-xs-6">
+              <div className="mb-5">
+                <CheckBoxForSerchUserOption
+                  option="Mail"
+                  checked={userGroupDetailContainer.state.isAlsoMailSearched}
+                  onChange={userGroupDetailContainer.switchIsAlsoMailSearched}
+                />
+              </div>
+              <div className="mb-5">
+                <CheckBoxForSerchUserOption
+                  option="Name"
+                  checked={userGroupDetailContainer.state.isAlsoNameSearched}
+                  onChange={userGroupDetailContainer.switchIsAlsoNameSearched}
+                />
+              </div>
+            </div>
+            <div className="col-xs-6">
+              <div className="mb-5">
+                <RadioButtonForSerchUserOption
+                  searchType="forward"
+                  checked={userGroupDetailContainer.state.searchType === 'forward'}
+                  onChange={() => { userGroupDetailContainer.switchSearchType('forward') }}
+                />
+              </div>
+              <div className="mb-5">
+                <RadioButtonForSerchUserOption
+                  searchType="partial"
+                  checked={userGroupDetailContainer.state.searchType === 'partial'}
+                  onChange={() => { userGroupDetailContainer.switchSearchType('partial') }}
+                />
+              </div>
+              <div className="mb-5">
+                <RadioButtonForSerchUserOption
+                  searchType="backward"
+                  checked={userGroupDetailContainer.state.searchType === 'backword'}
+                  onChange={() => { userGroupDetailContainer.switchSearchType('backword') }}
+                />
+              </div>
+            </div>
+          </div>
         </ModalBody>
       </Modal>
     );

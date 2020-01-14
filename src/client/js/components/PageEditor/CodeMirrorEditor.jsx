@@ -648,13 +648,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   getNavbarItems() {
     return [
+      /* eslint-disable max-len */
       <Button
         key="nav-item-bold"
         size="sm"
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
       >
-        <img src="/images/icons/editor/bold.svg" alt="icon-bold" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 10.9 14">
+          <path d="M0 0h5.6c3 0 4.7 1.1 4.7 3.4a3.1 3.1 0 0 1-2.5 3.1 3.7 3.7 0 0 1 3.1 3.5c0 2.9-1.4 4-4.2 4H0zm5.2 6.5c2.7 0 2.6-1.4 2.6-3.1S7.9.7 5.6.7H2.3v5.8zm-2.9 6.6h3.4c2.1 0 2.7-1.1 2.7-3.1s0-2.8-3.2-2.8H2.3z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-italic"
@@ -662,7 +665,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
       >
-        <img src="/images/icons/editor/italic.svg" alt="icon-italic" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 8.6 13.9">
+          <path d="M8.1 0a.6.6 0 0 1 .5.6c0 .3-.2.6-.7.6H6.2L3.8 12.8h1.8c.2 0 .4.3.4.5a.7.7 0 0 1-.7.6H.5c-.3 0-.5-.4-.5-.6s.4-.6.7-.6h1.7L4.9 1.2H3.1a.5.5 0 0 1-.5-.5c0-.3.1-.7.8-.7z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-strikethrough"
@@ -670,7 +675,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
       >
-        <img src="/images/icons/editor/strikethrough.svg" alt="icon-strikethrough" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 19.5 14">
+          <path d="M5.8 6.2H9C7.2 5.7 6.3 5 6.3 3.8a2.2 2.2 0 0 1 .9-1.9 4.3 4.3 0 0 1 2.5-.7 4.3 4.3 0 0 1 2.5.7 3.1 3.1 0 0 1 1.1 1.6.7.7 0 0 0 .6.4h.3a.7.7 0 0 0 .4-.8A3.6 3.6 0 0 0 13.1 1a6.7 6.7 0 0 0-6-.5 3.1 3.1 0 0 0-1.7 1.3 3.6 3.6 0 0 0-.6 2 2.9 2.9 0 0 0 1 2.3zm7 2.5a2 2 0 0 1 .6 1.4 2.4 2.4 0 0 1-1 1.9 3.7 3.7 0 0 1-2.5.7 4.6 4.6 0 0 1-3-.8 3.7 3.7 0 0 1-1.2-2 .6.6 0 0 0-.6-.5h-.2a.7.7 0 0 0-.5.8 4.1 4.1 0 0 0 1.5 2.5A6 6 0 0 0 9.8 14a7.5 7.5 0 0 0 2.6-.5 4.9 4.9 0 0 0 1.8-1.4 4.3 4.3 0 0 0 .6-2.2 5 5 0 0 0-.2-1.2zM.4 7.9a.7.7 0 0 1-.4-.5.4.4 0 0 1 .4-.4h18.8a.4.4 0 0 1 .3.6c0 .1-.1.2-.2.3z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-header"
@@ -678,7 +685,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Heading"
         onClick={this.makeHeaderHandler}
       >
-        <img src="/images/icons/editor/header.svg" alt="icon-header" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 13.7 14">
+          <path d="M10.2 0h2.9a.6.6 0 0 1 .6.6.6.6 0 0 1-.6.6h-.8v11.6h.8a.6.6 0 0 1 .6.6.6.6 0 0 1-.6.6h-2.9a.6.6 0 0 1-.6-.6.6.6 0 0 1 .6-.6h.8V7.2H2.7v5.6h.8a.6.6 0 0 1 .6.6.6.6 0 0 1-.6.6H.6a.6.6 0 0 1-.6-.6.6.6 0 0 1 .6-.6h.7V1.2H.6A.6.6 0 0 1 0 .6.6.6 0 0 1 .6 0h2.9a.6.6 0 0 1 .6.6.6.6 0 0 1-.6.6h-.8v4.9H11V1.2h-.8a.6.6 0 0 1-.6-.6.6.6 0 0 1 .6-.6z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-code"
@@ -686,7 +695,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
       >
-        <img src="/images/icons/editor/code.svg" alt="icon-code" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 18.1 14">
+          <path d="M17.8 7.9l-4 3.8a.5.5 0 0 1-.8 0 .5.5 0 0 1 0-.8L16.8 7 13 3.2a.6.6 0 0 1 0-.9.5.5 0 0 1 .8 0l4 3.8a1.3 1.3 0 0 1 0 1.8zM5.2 2.3a.7.7 0 0 1 0 .9L1.3 7l3.9 3.9a.6.6 0 0 1 0 .8.6.6 0 0 1-.9 0L.4 7.9a1.3 1.3 0 0 1 0-1.8l3.9-3.8a.6.6 0 0 1 .9 0zM11.5.8L7.8 13.6a.6.6 0 0 1-.7.4.6.6 0 0 1-.5-.8L10.3.4a.7.7 0 0 1 .8-.4.6.6 0 0 1 .4.8z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-quote"
@@ -694,7 +705,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
       >
-        <img src="/images/icons/editor/quote.svg" alt="icon-quote" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 17 12">
+          <path d="M5 0H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a1.7 1.7 0 0 0 1-.3V10a.9.9 0 0 1-1 1H3v1h2a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 6H2a.9.9 0 0 1-1-1V2a.9.9 0 0 1 1-1h3a.9.9 0 0 1 1 1v3a.9.9 0 0 1-1 1zm10-6h-3a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a1.7 1.7 0 0 0 1-.3V10a.9.9 0 0 1-1 1h-2v1h2a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 6h-3a.9.9 0 0 1-1-1V2a.9.9 0 0 1 1-1h3a.9.9 0 0 1 1 1v3a.9.9 0 0 1-1 1z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-ul"
@@ -702,7 +715,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
       >
-        <img src="/images/icons/editor/list-ul.svg" alt="icon-list-ul" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 21.6 13.5">
+          <path d="M6.4 1.5h14.5a.7.7 0 0 0 .7-.7.7.7 0 0 0-.7-.7H6.4a.8.8 0 0 0-.8.7.8.8 0 0 0 .8.7zm0 6h14.5a.7.7 0 0 0 .7-.7.7.7 0 0 0-.7-.7H6.4a.8.8 0 0 0-.8.7.8.8 0 0 0 .8.7zm0 6h14.5a.7.7 0 0 0 .7-.7.7.7 0 0 0-.7-.7H6.4a.8.8 0 0 0-.8.7.8.8 0 0 0 .8.7zM.9 1.5h1a.8.8 0 0 0 .9-.7.8.8 0 0 0-.9-.8h-1a.8.8 0 0 0-.9.7.8.8 0 0 0 .9.8zm0 6h1a.8.8 0 0 0 .9-.7.8.8 0 0 0-.9-.8h-1a.8.8 0 0 0-.9.7.8.8 0 0 0 .9.8zm0 6h1a.8.8 0 0 0 .9-.7.8.8 0 0 0-.9-.7h-1a.8.8 0 0 0-.9.7.8.8 0 0 0 .9.7z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-ol"
@@ -710,7 +725,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
       >
-        <img src="/images/icons/editor/list-ol.svg" alt="icon-list-ol" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 23.7 16">
+          <path d="M23.7 2a.8.8 0 0 1-.8.8H6.6a.8.8 0 0 1-.7-.8.7.7 0 0 1 .7-.7h16.3a.7.7 0 0 1 .8.7zM6.6 8.7h16.3a.7.7 0 0 0 .8-.7.8.8 0 0 0-.8-.8H6.6a.8.8 0 0 0-.7.8.7.7 0 0 0 .7.7zm0 5.9h16.3a.7.7 0 0 0 .8-.7.7.7 0 0 0-.8-.7H6.6a.7.7 0 0 0-.7.7.7.7 0 0 0 .7.7zM1.5.5V4h.6V0h-.5L.7.5v.4l.8-.4zM.9 9.6l.3-.3c.9-.9 1.4-1.5 1.4-2.2a1.2 1.2 0 0 0-1.3-1.2h-.1a1.4 1.4 0 0 0-1.2.6l.3.4a1.2 1.2 0 0 1 .9-.5.6.6 0 0 1 .8.6v.2c0 .6-.4 1.1-1.5 2.1l-.4.4v.3h2.6v-.4zm.9 4.1a1 1 0 0 0 .7-.9 1 1 0 0 0-1.1-1 2 2 0 0 0-1.1.3v.4l.8-.2c.5 0 .8.2.8.6s-.5.7-.9.7H.7v.4H1c.6 0 1.1.2 1.1.8a.8.8 0 0 1-.9.8l-.9-.3-.2.4a2 2 0 0 0 1.1.3c1 0 1.5-.6 1.5-1.2a1.2 1.2 0 0 0-.9-1.1z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-checkbox"
@@ -718,7 +735,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
       >
-        <img src="/images/icons/editor/check.svg" alt="icon-check" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 14.4 16">
+          <path d="M13.9 5.5a.5.5 0 0 1 .5.5v9a1.1 1.1 0 0 1-1.1 1H1a1.1 1.1 0 0 1-1-1V2.6a1.1 1.1 0 0 1 1-1h7.1a.5.5 0 0 1 .5.5.5.5 0 0 1-.5.5H1V15h12.3V6a.6.6 0 0 1 .6-.5zM3.6 8.3a.5.5 0 0 0 0 .7l2.5 2.5a.8.8 0 0 0 1.1 0h.1l7-10.7c.1-.2.1-.6-.2-.7a.5.5 0 0 0-.7.1L6.6 10.6 4.3 8.3a.5.5 0 0 0-.7 0z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-link"
@@ -726,7 +745,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
       >
-        <img src="/images/icons/editor/link.svg" alt="icon-link" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 16 16">
+          <path d="M4.6 11.4l.4.2h.2v-.2l6.1-6.1a.4.4 0 0 0 .1-.3.5.5 0 0 0-.5-.5h-.3l-6 6.2a.6.6 0 0 0-.1.4c0 .1 0 .3.1.3zm2.8-1a2 2 0 0 1 0 1.1 4.1 4.1 0 0 1-.5.9l-2.1 1.9a1.9 1.9 0 0 1-1.5.7 2 2 0 0 1-1.6-.7 1.9 1.9 0 0 1-.7-1.5 2 2 0 0 1 .7-1.6l1.9-2.1a2 2 0 0 1 2.2-.5l.8-.8a3.2 3.2 0 0 0-1.4-.3 3.3 3.3 0 0 0-2.3.9L1 10.5A3.2 3.2 0 0 0 .9 15H1a2.9 2.9 0 0 0 2.3 1 3.2 3.2 0 0 0 2.3-1l2-1.9a4.6 4.6 0 0 0 .9-1.7 2.9 2.9 0 0 0-.3-1.8zM15 1a2.5 2.5 0 0 0-1-.8 3.1 3.1 0 0 0-3.5.8L8.4 2.9a3.1 3.1 0 0 0-.9 1.8 3.2 3.2 0 0 0 .3 1.9l.8-.8a2 2 0 0 1 0-1.1 2.2 2.2 0 0 1 .5-1.1l2.1-1.9.3-.3.4-.2.4-.2h.5a1.9 1.9 0 0 1 1.5.7 2 2 0 0 1 .7 1.6 1.9 1.9 0 0 1-.7 1.5l-2 2.1-.7.4a1.5 1.5 0 0 1-.9.2h-.4l-.8.8H12l1-.7 2-2.1A3 3 0 0 0 15 1z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-image"
@@ -734,7 +755,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
       >
-        <img src="/images/icons/editor/picture.svg" alt="icon-picture" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 19 16">
+          <path d="M17.8 0H1.2A1.2 1.2 0 0 0 0 1.2v13.6A1.2 1.2 0 0 0 1.2 16h16.6a1.2 1.2 0 0 0 1.2-1.2V1.2a1.4 1.4 0 0 0-.2-.6.8.8 0 0 0-.4-.4zm0 14.8H1.2v-3.5l4.7-4.6 5 4.9.3.2.5-.2 2.1-1.9 3.9 4h.1v1.1zm0-2.8l-3.5-3.5-.4-.2h-.4l-2.2 2-4.9-4.8-.4-.2c-.2 0-.4 0-.5.2L1.2 9.7V1.2h16.6V12zm-4.2-6.1h.6a1.1 1.1 0 0 0 .6-1.1 1.2 1.2 0 0 0-1.2-1.1 1.3 1.3 0 0 0-1.2 1.2 1.2 1.2 0 0 0 .4.8 1.1 1.1 0 0 0 .8.3z" />
+        </svg>
       </Button>,
       <Button
         key="nav-item-table"
@@ -742,8 +765,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Table"
         onClick={this.showHandsonTableHandler}
       >
-        <img src="/images/icons/editor/table.svg" alt="icon-table" height="13" />
+        <svg xmlns="http://www.w3.org/2000/svg" height="13" viewBox="0 0 20.3 16">
+          <path d="M19.1 16H1.2A1.2 1.2 0 0 1 0 14.8V1.2A1.2 1.2 0 0 1 1.2 0h17.9a1.2 1.2 0 0 1 1.2 1.2v13.6a1.2 1.2 0 0 1-1.2 1.2zm-5.2-4.3v3.2h5.3v-3.2zm-6.4 0v3.2h5.3v-3.2zm-6.4 0v3.2h5.3v-3.2zm12.8-4.2v3.2h5.3V7.5zm-6.4 0v3.2h5.3V7.5zm-6.4 0v3.2h5.3V7.5zm12.8-4.3v3.2h5.3V3.2zm-6.4 0v3.2h5.3V3.2zm-6.4 0v3.2h5.3V3.2z" />
+        </svg>
       </Button>,
+      /* eslint-able max-len */
     ];
   }
 

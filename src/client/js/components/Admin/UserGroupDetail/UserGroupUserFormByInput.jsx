@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { debounce } from 'throttle-debounce';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import UserPicture from '../../User/UserPicture';
 
 class UserGroupUserFormByInput extends React.Component {
 
@@ -13,55 +16,133 @@ class UserGroupUserFormByInput extends React.Component {
     super(props);
 
     this.state = {
-      username: '',
+      keyword: '',
+      inputUser: '',
+      applicableUsers: [],
+      isLoading: false,
+      searchError: null,
     };
 
     this.xss = window.xss;
 
-    this.changeUsername = this.changeUsername.bind(this);
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
+
+    this.searhApplicableUsersDebounce = debounce(1000, this.searhApplicableUsers);
   }
 
-  changeUsername(e) {
-    this.setState({ username: e.target.value });
-  }
-
-  async addUserBySubmit(e) {
-    e.preventDefault();
-    const { username } = this.state;
+  async addUserBySubmit() {
+    if (this.state.inputUser.length === 0) { return }
+    const userName = this.state.inputUser[0].username;
 
     try {
-      await this.props.userGroupDetailContainer.addUserByUsername(username);
-      toastSuccess(`Added "${this.xss.process(username)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
-      this.setState({ username: '' });
+      await this.props.userGroupDetailContainer.addUserByUsername(userName);
+      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
+      this.setState({ inputUser: '' });
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${this.xss.process(username)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
     }
   }
 
   validateForm() {
-    return this.state.username !== '';
+    return this.state.inputUser !== '';
+  }
+
+  async searhApplicableUsers() {
+    try {
+      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
+      this.setState({ applicableUsers: users, isLoading: false });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
+   * Reflect when forecast is clicked
+   * @param {object} inputUser
+   */
+  handleChange(inputUser) {
+    this.setState({ inputUser });
+  }
+
+  handleSearch(keyword) {
+
+    if (keyword === '') {
+      return;
+    }
+
+    this.setState({ keyword, isLoading: true });
+    this.searhApplicableUsersDebounce();
+  }
+
+  onKeyDown(event) {
+    // 13 is Enter key
+    if (event.keyCode === 13) {
+      this.addUserBySubmit();
+    }
+  }
+
+  renderMenuItemChildren(option) {
+    const { userGroupDetailContainer } = this.props;
+    const user = option;
+    return (
+      <React.Fragment>
+        <UserPicture user={user} size="sm" withoutLink />
+        <strong className="ml-2">{user.username}</strong>
+        {userGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
+        {userGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+      </React.Fragment>
+    );
+  }
+
+  getEmptyLabel() {
+    return (this.state.searchError !== null) && 'Error on searching.';
   }
 
   render() {
     const { t } = this.props;
 
+    const inputProps = { autoComplete: 'off' };
+
     return (
-      <form className="form-inline" onSubmit={this.addUserBySubmit}>
-        <div className="form-group">
-          <input
-            type="text"
-            name="username"
-            className="form-control input-sm"
-            placeholder={t('username')}
-            value={this.state.username}
-            onChange={this.changeUsername}
+      <div className="row">
+        <div className="col-xs-8 pr-0">
+          <AsyncTypeahead
+            {...this.props}
+            id="name-typeahead-asynctypeahead"
+            ref={(c) => { this.typeahead = c }}
+            inputProps={inputProps}
+            isLoading={this.state.isLoading}
+            labelKey={user => `${user.username} ${user.name} ${user.email}`}
+            minLength={0}
+            options={this.state.applicableUsers} // Search result
+            searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
+            renderMenuItemChildren={this.renderMenuItemChildren}
+            align="left"
+            onChange={this.handleChange}
+            onSearch={this.handleSearch}
+            onKeyDown={this.onKeyDown}
+            caseSensitive={false}
+            clearButton
           />
         </div>
-        <button type="submit" className="btn btn-sm btn-success" disabled={!this.validateForm()}>{ t('add') }</button>
-      </form>
+        <div className="col-xs-2 pl-0">
+          <button
+            type="button"
+            className="btn btn-sm btn-success"
+            disabled={!this.validateForm()}
+            onClick={this.addUserBySubmit}
+          >
+            {t('add')}
+          </button>
+        </div>
+      </div>
     );
   }
 
