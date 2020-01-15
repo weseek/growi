@@ -126,7 +126,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async switchIsLocalEnabled() {
     await this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
     try {
-      await this.appContainer.apiv3.put('/security-setting/toggleIsEnabled', {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
         isEnabled: this.state.isLocalEnabled,
         target: 'local',
       });

@@ -84,6 +84,27 @@ class PassportService {
   }
 
   /**
+   * get SetupStrategies
+   *
+   * @return {Array}
+   * @memberof PassportService
+   */
+  getSetupStrategies() {
+    const setupStrategies = [];
+
+    if (this.isLocalStrategySetup) { setupStrategies.push('passport-local') }
+    if (this.isLdapStrategySetup) { setupStrategies.push('passport-ldap') }
+    if (this.isSamlStrategySetup) { setupStrategies.push('passport-saml') }
+    if (this.isOidcStrategySetup) { setupStrategies.push('passport-oidc') }
+    if (this.isBasicStrategySetup) { setupStrategies.push('passport-basic') }
+    if (this.isGoogleStrategySetup) { setupStrategies.push('passport-google') }
+    if (this.isGitHubStrategySetup) { setupStrategies.push('passport-github') }
+    if (this.isTwitterStrategySetup) { setupStrategies.push('passport-twitter') }
+
+    return setupStrategies;
+  }
+
+  /**
    * reset LocalStrategy
    *
    * @memberof PassportService
