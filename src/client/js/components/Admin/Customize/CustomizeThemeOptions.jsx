@@ -28,7 +28,7 @@ class CustomizeThemeOptions extends React.Component {
     }, {
       name: 'antarctic', bg: '#ffffff', topbar: '#000080', theme: '#99cccc',
     }, {
-      name: 'spring', bg: '#FBEFFB', topbar: '#CC2EFA', theme: '#F5A9F2',
+      name: 'spring', bg: '#FBEFFB', topbar: '#ff69b4', theme: '#ffb6c1',
     }];
 
     const darkTheme = [{
