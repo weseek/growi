@@ -455,33 +455,33 @@ class ImportForm extends React.Component {
       <>
         <form className="form-inline">
           <div className="form-group">
-            <button type="button" className="btn btn-sm page-link text-dark d-inline-block mr-2" onClick={this.checkAll}>
+            <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('export_management.check_all')}
             </button>
           </div>
           <div className="form-group">
-            <button type="button" className="btn btn-sm page-link text-dark d-inline-block mr-2" onClick={this.uncheckAll}>
+            <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.uncheckAll}>
               <i className="fa fa-square-o"></i> {t('export_management.uncheck_all')}
             </button>
           </div>
         </form>
 
-        { this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups, { wellContent: t('importer_management.growi_settings.overwrite_documents') }) }
-        { this.renderGroups(GROUPS_USER, 'User', warnForUserGroups) }
-        { this.renderGroups(GROUPS_CONFIG, 'Config', warnForConfigGroups) }
-        { this.renderOthers() }
+        {this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups, { wellContent: t('importer_management.growi_settings.overwrite_documents') })}
+        {this.renderGroups(GROUPS_USER, 'User', warnForUserGroups)}
+        {this.renderGroups(GROUPS_CONFIG, 'Config', warnForConfigGroups)}
+        {this.renderOthers()}
 
         <div className="mt-4 text-center">
-          <button type="button" className="btn page-link text-dark d-inline-block mx-1" onClick={this.props.onDiscard}>
-            { t('importer_management.growi_settings.discard') }
+          <button type="button" className="btn btn-light mx-1" onClick={this.props.onDiscard}>
+            {t('importer_management.growi_settings.discard')}
           </button>
           <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>
-            { t('importer_management.import') }
+            {t('importer_management.import')}
           </button>
         </div>
 
-        { this.renderConfigurationModal() }
-        { this.renderErrorsViewer() }
+        {this.renderConfigurationModal()}
+        {this.renderErrorsViewer()}
       </>
     );
   }

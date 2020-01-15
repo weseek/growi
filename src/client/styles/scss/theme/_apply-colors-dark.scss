@@ -8,7 +8,7 @@
 /*
  * Button
  */
-.page-link.text-dark.d-inline-block {
+.btn-light {
   &:hover,
   &:focus,
   &.active,
@@ -139,7 +139,7 @@ header.affix {
  */
 .search-page {
   .input-group-btn {
-    .page-link.text-dark.d-inline-block {
+    .btn-light {
       border: 1px solid darken($border, 30%); // fit to input.form-control
     }
   }
