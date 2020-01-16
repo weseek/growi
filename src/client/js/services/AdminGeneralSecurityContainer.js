@@ -124,15 +124,14 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch local enabled
    */
   async switchIsLocalEnabled() {
-    await this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
     try {
       await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: this.state.isLocalEnabled,
+        isEnabled: !this.state.isLocalEnabled,
         target: 'local',
       });
+      this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
     }
     catch (err) {
-      this.setState({ isLocalEnabled: true });
       toastError(err);
     }
   }
@@ -169,50 +168,113 @@ export default class AdminGeneralSecurityContainer extends Container {
   /**
    * Switch LDAP enabled
    */
-  switchIsLdapEnabled() {
-    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
+  async switchIsLdapEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isLdapEnabled,
+        target: 'ldap',
+      });
+      this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * Switch SAML enabled
    */
-  switchIsSamlEnabled() {
-    this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
+  async switchIsSamlEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isSamlEnabled,
+        target: 'saml',
+      });
+      this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * Switch Oidc enabled
    */
-  switchIsOidcEnabled() {
-    this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
+  async switchIsOidcEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isOidcEnabled,
+        target: 'oidc',
+      });
+      this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * Switch Basic enabled
    */
-  switchIsBasicEnabled() {
-    this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
+  async switchIsBasicEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isBasicEnabled,
+        target: 'basic',
+      });
+      this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * Switch GoogleOAuth enabled
    */
-  switchIsGoogleOAuthEnabled() {
-    this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
+  async switchIsGoogleOAuthEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isGoogleOAuthEnabled,
+        target: 'google',
+      });
+      this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * Switch GithubOAuth enabled
    */
-  switchIsGithubOAuthEnabled() {
-    this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
+  async switchIsGithubOAuthEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isGithubOAuthEnabled,
+        target: 'github',
+      });
+      this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * Switch TwitterOAuth enabled
    */
-  switchIsTwitterOAuthEnabled() {
-    this.setState({ isTwitterOAuthEnabled: !this.state.isTwitterOAuthEnabled });
+  async switchIsTwitterOAuthEnabled() {
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication', {
+        isEnabled: !this.state.isTwitterOAuthEnabled,
+        target: 'twitter',
+      });
+      this.setState({ isTwitterOAuthEnabled: !this.state.isTwitterOAuthEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
 
