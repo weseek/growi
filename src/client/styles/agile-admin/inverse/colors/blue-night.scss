@@ -1,19 +1,19 @@
 @import '../variables';
 
-$basecolor:#061f2f;
-$themecolor:#0090c8;
+$basecolor: #061f2f;
+$themecolor: #0090c8;
 
 $linkcolor: #97d1f0;
 
-$topbar:#27343b;
-$sidebar:#061f2f;
-$bodycolor:#061f2f;
+$topbar: #27343b;
+$sidebar: #061f2f;
+$bodycolor: #061f2f;
 $headingtext: #fff;
 $bodytext: #d3d4d4;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
-$sidebar-text:#d3d4d4;
-$dark-themecolor:#4f5467;
+$sidebar-text: #d3d4d4;
+$dark-themecolor: #4f5467;
 
 $primary: $themecolor;
 
@@ -28,18 +28,21 @@ $active-navbar-border: darken($navbar-border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
 $inline-code-color: #c1f1f0;
 $inline-code-bg: #0a121b;
+$table-header: $btn-default-bgcolor;
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
 
 .wiki {
   .highlighted {
-   background-color: lighten($themecolor, 20%);
+    background-color: lighten($themecolor, 20%);
   }
 }
 
 .panel {
-  &, &.panel-white, &.panel-default {
+  &,
+  &.panel-white,
+  &.panel-default {
     border-color: $bodytext;
     .panel-heading {
       color: $basecolor;
@@ -50,4 +53,40 @@ $inline-code-bg: #0a121b;
 
 .editor-container .navbar-editor svg {
   fill: $bodytext;
+}
+
+/*
+ * Table editor for darkmode
+ */
+
+.modal.in .modal-dialog.handsontable-modal {
+  .modal-navbar {
+    background-color: $basecolor;
+    border-bottom: $border 1px solid;
+  }
+}
+
+.handsontable {
+  .wtHider {
+    th {
+      color: $sidebar-text;
+      background-color: $table-header;
+      background-clip: border-box;
+
+      &.ht__highlight {
+        color: $bodycolor;
+      }
+    }
+
+    td {
+      color: lighten(#dcdcdc, 30%);
+      background-color: $basecolor;
+      background-clip: border-box;
+
+      &.current {
+        color: $bodycolor;
+        background-color: #dcdcdc;
+      }
+    }
+  }
 }
