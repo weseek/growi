@@ -29,7 +29,7 @@ $wikilinktext-hover: lighten($wikilinktext, 20%);
 // add background-image
 .main-container > #wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url('/images/themes/spring/spring.jpg');
+  background-image: url('/images/themes/spring/spring.svg');
   background-attachment: fixed;
   background-position: bottom;
   background-size: cover;
@@ -118,7 +118,7 @@ div .radius-btn {
  */
 
  .login-page > #wrapper > #page-wrapper {
-  background-image: url('/images/themes/spring/spring.jpg');
+  background-image: url('/images/themes/spring/spring.svg');
   background-attachment: fixed;
   background-position: bottom;
   background-size: cover;
