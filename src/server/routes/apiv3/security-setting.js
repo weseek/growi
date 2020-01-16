@@ -20,6 +20,12 @@ const validator = {
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
+  authenticationSetting: [
+    body('isEnabled').isBoolean(),
+    body('target').isString().isIn([
+      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
+    ]),
+  ],
   localSetting: [
     body('isLocalEnabled').isBoolean(),
     body('registrationMode').isString(),
@@ -393,8 +399,34 @@ module.exports = (crowi) => {
     return res.apiv3({ securityParams });
   });
 
-  // TODO swagger
-  router.put('/authentication', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/authentication:
+   *      put:
+   *        tags: [SecuritySetting]
+   *        description: Update authentication isEnabled
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isEnabled:
+   *                    type: boolean
+   *                  target:
+   *                    type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to enable authentication
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  description: updated param
+   */
+  router.put('/authentication', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, ApiV3FormValidator, async(req, res) => {
     const { isEnabled, target } = req.body;
 
     let setupStrategies = await crowi.passportService.getSetupStrategies();
