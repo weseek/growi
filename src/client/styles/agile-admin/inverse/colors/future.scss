@@ -39,3 +39,14 @@ $inline-code-bg: darken($bodycolor, 5%);
 .editor-container .navbar-editor svg {
   fill: $bodytext;
 }
+
+/*
+ * Table editor
+ */
+
+.modal.in .modal-dialog.handsontable-modal {
+  .modal-navbar {
+    background-color: $basecolor;
+    border-bottom: $border 1px solid;
+  }
+}
