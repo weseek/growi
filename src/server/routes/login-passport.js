@@ -253,6 +253,10 @@ module.exports = function(crowi, app) {
       return loginFailure(req, res, next);
     }
 
+    /**
+     * Emails are not empty
+     * See https://github.com/passport/express-4.x-facebook-example/blob/master/views/profile.ejs
+     */
     const email = response.emails[0].value;
     const username = email.slice(0, email.indexOf('@'));
 
