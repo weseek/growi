@@ -121,19 +121,27 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch local enabled
+   * Switch authentication
    */
-  async switchIsLocalEnabled() {
+  async switchAuthentication(target) {
+    const isEnabled = this.state[target];
     try {
       await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isLocalEnabled,
-        target: 'local',
+        isEnabled,
+        target,
       });
-      this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
+      this.setState({ [target]: isEnabled });
     }
     catch (err) {
       toastError(err);
     }
+  }
+
+  /**
+   * Switch local enabled
+   */
+  async switchIsLocalEnabled() {
+    this.switchAuthentication('isLocalEnabled');
   }
 
   /**
@@ -169,113 +177,49 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch LDAP enabled
    */
   async switchIsLdapEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isLdapEnabled,
-        target: 'ldap',
-      });
-      this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isLdapEnabled');
   }
 
   /**
    * Switch SAML enabled
    */
   async switchIsSamlEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isSamlEnabled,
-        target: 'saml',
-      });
-      this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isSamlEnabled');
   }
 
   /**
    * Switch Oidc enabled
    */
   async switchIsOidcEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isOidcEnabled,
-        target: 'oidc',
-      });
-      this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isOidcEnabled');
   }
 
   /**
    * Switch Basic enabled
    */
   async switchIsBasicEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isBasicEnabled,
-        target: 'basic',
-      });
-      this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isBasicEnabled');
   }
 
   /**
    * Switch GoogleOAuth enabled
    */
   async switchIsGoogleOAuthEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isGoogleOAuthEnabled,
-        target: 'google',
-      });
-      this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isGoogleEnabled');
   }
 
   /**
    * Switch GithubOAuth enabled
    */
   async switchIsGithubOAuthEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isGithubOAuthEnabled,
-        target: 'github',
-      });
-      this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isGithubEnabled');
   }
 
   /**
    * Switch TwitterOAuth enabled
    */
   async switchIsTwitterOAuthEnabled() {
-    try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
-        isEnabled: !this.state.isTwitterOAuthEnabled,
-        target: 'twitter',
-      });
-      this.setState({ isTwitterOAuthEnabled: !this.state.isTwitterOAuthEnabled });
-    }
-    catch (err) {
-      toastError(err);
-    }
+    this.switchAuthentication('isTwitterEnabled');
   }
-
 
 }
