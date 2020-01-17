@@ -89,14 +89,3 @@ body:not(.on-edit) .nav.nav-tabs {
     ); // overwrite only the bottom pixel
   }
 }
-
-/*
- * Table editor
- */
-
-.modal.in .modal-dialog.handsontable-modal {
-  .modal-navbar {
-    background-color: $basecolor;
-    border-bottom: $border 1px solid;
-  }
-}

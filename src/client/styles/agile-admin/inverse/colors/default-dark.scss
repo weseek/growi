@@ -25,21 +25,15 @@ $active-navbar-border: darken($border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
 $inline-code-bg: darken($bodycolor, 5%);
 $table-header: $btn-default-bgcolor;
+$current-table: #dcdcdc;
 
 .editor-container .navbar-editor svg {
   fill: $bodytext;
 }
 
 /*
- * Table editor for darkmode
+ * Table editor
  */
-
-.modal.in .modal-dialog.handsontable-modal {
-  .modal-navbar {
-    background-color: $basecolor;
-    border-bottom: $border 1px solid;
-  }
-}
 
 .handsontable {
   .wtHider {
@@ -54,13 +48,13 @@ $table-header: $btn-default-bgcolor;
     }
 
     td {
-      color: lighten(#dcdcdc, 30%);
+      color: lighten($current-table, 30%);
       background-color: $basecolor;
       background-clip: border-box;
 
       &.current {
         color: $bodycolor;
-        background-color: #dcdcdc;
+        background-color: $current-table;
       }
     }
   }

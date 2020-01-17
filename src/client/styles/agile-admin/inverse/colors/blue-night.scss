@@ -29,6 +29,7 @@ $btn-default-bgcolor: darken($basecolor, 10%);
 $inline-code-color: #c1f1f0;
 $inline-code-bg: #0a121b;
 $table-header: $btn-default-bgcolor;
+$current-table: #dcdcdc;
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
@@ -58,14 +59,6 @@ $table-header: $btn-default-bgcolor;
 /*
  * Table editor for darkmode
  */
-
-.modal.in .modal-dialog.handsontable-modal {
-  .modal-navbar {
-    background-color: $basecolor;
-    border-bottom: $border 1px solid;
-  }
-}
-
 .handsontable {
   .wtHider {
     th {
@@ -79,13 +72,13 @@ $table-header: $btn-default-bgcolor;
     }
 
     td {
-      color: lighten(#dcdcdc, 30%);
+      color: lighten($current-table, 30%);
       background-color: $basecolor;
       background-clip: border-box;
 
       &.current {
         color: $bodycolor;
-        background-color: #dcdcdc;
+        background-color: $current-table;
       }
     }
   }
