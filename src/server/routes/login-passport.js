@@ -254,7 +254,7 @@ module.exports = function(crowi, app) {
     }
 
     // Emails are not empty
-    // both Facebook and Google use OAuth 2.0, the code is similar
+    // Both Facebook and Google use OAuth 2.0, the code is similar
     // See https://github.com/passport/express-4.x-facebook-example/blob/master/views/profile.ejs
     const email = response.emails[0].value;
     const username = email.slice(0, email.indexOf('@'));
