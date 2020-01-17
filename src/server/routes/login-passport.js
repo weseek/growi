@@ -253,7 +253,7 @@ module.exports = function(crowi, app) {
       return loginFailure(req, res, next);
     }
 
-    const userData = {
+    const userInfo = {
       id: response.id,
       username: response.displayName,
       name: `${response.name.givenName} ${response.name.familyName}`,
@@ -264,13 +264,10 @@ module.exports = function(crowi, app) {
     // Both Facebook and Google use OAuth 2.0, the code is similar
     // See https://github.com/jaredhanson/passport-google-oauth2/blob/723e8f3e8e711275f89e0163e2c77cfebae33f25/README.md#examples
     if (response.emails != null) {
-      userData.email = response.emails[0].value;
-      userData.username = userData.email.slice(0, userData.email.indexOf('@'));
+      userInfo.email = response.emails[0].value;
+      userInfo.username = userInfo.email.slice(0, userInfo.email.indexOf('@'));
     }
 
-    const userInfo = {
-      ...userData,
-    };
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
       return loginFailure(req, res, next);
