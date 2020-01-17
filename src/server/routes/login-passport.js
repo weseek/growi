@@ -253,17 +253,23 @@ module.exports = function(crowi, app) {
       return loginFailure(req, res, next);
     }
 
-    // Emails are not empty
+    const userData = {
+      id: response.id,
+      username: response.displayName,
+      name: `${response.name.givenName} ${response.name.familyName}`,
+    };
+
+    // Emails are not empty if it exists
+    // See https://github.com/passport/express-4.x-facebook-example/blob/dfce5495d0313174a1b5039bab2c2dcda7e0eb61/views/profile.ejs
     // Both Facebook and Google use OAuth 2.0, the code is similar
-    // See https://github.com/passport/express-4.x-facebook-example/blob/master/views/profile.ejs
-    const email = response.emails[0].value;
-    const username = email.slice(0, email.indexOf('@'));
+    // https://github.com/jaredhanson/passport-google-oauth2#examples
+    if (response.emails != null) {
+      userData.email = response.emails[0].value;
+      userData.username = userData.email.slice(0, userData.email.indexOf('@'));
+    }
 
     const userInfo = {
-      id: response.id,
-      email,
-      username,
-      name: `${response.name.givenName} ${response.name.familyName}`,
+      ...userData,
     };
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
