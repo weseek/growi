@@ -1,0 +1,13 @@
+.git
+.github
+.vscode
+node_modules
+src/linter-checker
+src/test
+.editorconfig
+.eslint*
+.gitignore
+.prettier*
+.stylelint*
+app.json
+Procfile

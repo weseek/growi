@@ -12,184 +12,15 @@
 
 {% block content_main %}
 <div class="content-main">
-  {% set smessage = req.flash('successMessage') %}
-  {% if smessage.length %}
-  <div class="alert alert-success">
-    {{ smessage }}
-  </div>
-  {% endif %}
-
-  {% set emessage = req.flash('errorMessage') %}
-  {% if emessage.length %}
-  <div class="alert alert-danger">
-    {{ emessage }}
-  </div>
-  {% endif %}
-
   <div class="row">
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'user-group'} %}
     </div>
-
-    <div class="col-md-9">
-      <a href="/admin/user-groups" class="btn btn-default">
-        <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
-        {{ t('user_group_management.back_to_list') }}
-      </a>
-
-      <div class="modal fade" id="admin-add-user-group-relation-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">
-                {{ t('user_group_management.add_user') }}
-              </h4>
-            </div>
-
-            <div class="modal-body">
-              <p>
-                <strong>{{ t('Method') }}1.</strong> {{ t('user_group_management.how_to_add1') }}
-              </p>
-              <form class="form-inline" role="form" action="/admin/user-group-relation/create" method="post">
-                <div class="form-group">
-                  <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="{{ t('User Name')}}">
-                </div>
-                <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-sm btn-success">{{ t('Add') }}</button>
-              </form>
-
-              {% if 0 < notRelatedusers.length %}
-              <hr>
-              <p>
-                <strong>{{ t('Method') }}2.</strong> {{ t('user_group_management.how_to_add2') }}
-              </p>
-
-              <ul class="list-inline">
-                {% for sUser in notRelatedusers %}
-                <li>
-                  <form role="form" action="/admin/user-group-relation/create" method="post">
-                    <!-- <input type="hidden" name="user_name" value="{{sUser.username}}"> -->
-                    <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" name="user_name" value="{{sUser.username}}" class="btn btn-xs btn-primary">{{sUser.username}}</button>
-                  </form>
-                </li>
-                {% endfor %}
-              </ul>
-              {% endif %}
-
-            </div>
-
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-
-      <div class="m-t-20 form-box">
-        <form action="/admin/user-group/{{userGroup.id}}/update" method="post" class="form-horizontal" role="form">
-          <fieldset>
-            <legend>{{ t('Basic Settings') }}</legend>
-            <div class="form-group">
-              <label for="name" class="col-sm-2 control-label">{{ t('Name') }}</label>
-              <div class="col-sm-4">
-                <input class="form-control" type="text" name="name" value="{{ userGroup.name }}" required>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label">{{ t('Created') }}</label>
-              <div class="col-sm-4">
-                <input class="form-control" type="text" disabled value="{{userGroup.createdAt|datetz('Y-m-d') }}">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-offset-2 col-sm-10">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-
-      <legend class="m-t-20">{{ t('User List') }}</legend>
-
-      <table class="table table-bordered table-user-list">
-        <thead>
-          <tr>
-            <th width="100px">#</th>
-            <th>
-              {{ t('User') }}
-            </th>
-            <th>{{ t('Name') }}</th>
-            <th width="100px">{{ t('Created') }}</th>
-            <th width="160px">{{ t('Last Login')}}</th>
-            <th width="70px"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for sRelation in userGroupRelations %}
-          {% set sUser = sRelation.relatedUser%}
-          <tr>
-            <td>
-              <img src="{{ sRelation.relatedUser|picture }}" class="picture img-circle" />
-            </td>
-            <td>
-              <strong>{{ sRelation.relatedUser.username }}</strong>
-            </td>
-            <td>{{ sRelation.relatedUser.name }}</td>
-            <td>{{ sRelation.relatedUser.createdAt|datetz('Y-m-d') }}</td>
-            <td>
-              {% if sRelation.relatedUser.lastLoginAt %} {{ sRelation.relatedUser.lastLoginAt|datetz('Y-m-d H:i:s') }} {% endif %}
-            </td>
-            <td>
-              <div class="btn-group admin-user-menu">
-                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  <i class="icon-settings"></i> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <form id="form_removeFromGroup_{{ loop.index }}" action="/admin/user-group-relation/{{userGroup._id.toString()}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  </form>
-                  <li>
-                    <a href="javascript:form_removeFromGroup_{{ loop.index }}.submit()">
-                      <i class="icon-fw icon-user-unfollow"></i> {{ t('user_group_management.remove_from_group')}}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-
-          {% if 0 < notRelatedusers.length %}
-          <tr>
-            <td></td>
-            <td class="text-center">
-              <button class="btn btn-default" data-target="#admin-add-user-group-relation-modal" data-toggle="modal">
-                <i class="ti-plus"></i>
-              </button>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
-
-      <!-- {% include '../widget/pager.html' with {path: "/admin/user-group-detail", pager: pager} %} -->
-
-      <legend class="m-t-20">{{ t('Page') }}</legend>
-
-      <div class="page-list">
-        {% if relatedPages.length == 0 %}<p>{{ t('user_group_management.no_pages') }}</p>{% endif %}
-        {% include '../widget/page_list.html' with { pages: relatedPages } %}
-      </div>
-
+    <div
+      id="admin-user-group-detail"
+      class="col-md-9"
+      data-user-group="{{ userGroup|json }}"
+    >
     </div>
   </div>
 </div>
@@ -197,5 +28,3 @@
 
 {% block content_footer %}
 {% endblock content_footer %}
-
-

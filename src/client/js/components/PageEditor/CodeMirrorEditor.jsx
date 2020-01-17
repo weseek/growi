@@ -18,6 +18,7 @@ import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import HandsontableModal from './HandsontableModal';
+import EditorIcon from './EditorIcon';
 
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
@@ -48,6 +49,9 @@ require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
+
+
+const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
@@ -250,6 +254,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  replaceLine(text) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceRange(text, this.getBol(), this.getEol());
+  }
+
+  /**
+   * @inheritDoc
+   */
   insertText(text) {
     const editor = this.getCodeMirror();
     editor.getDoc().replaceSelection(text);
@@ -442,23 +454,19 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   cursorHandler(editor, event) {
-    const strFromBol = this.getStrFromBol();
+    const { additionalClassSet } = this.state;
+    const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
 
-    const autoformatTableClass = 'autoformat-markdown-table-activated';
-    const additionalClassSet = this.state.additionalClassSet;
-    const hasCustomClass = additionalClassSet.has(autoformatTableClass);
-    if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
-      if (!hasCustomClass) {
-        additionalClassSet.add(autoformatTableClass);
-        this.setState({ additionalClassSet });
-      }
+    const isInTable = mtu.isInTable(editor);
+
+    if (!hasCustomClass && isInTable) {
+      additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
     }
-    else {
-      // eslint-disable-next-line no-lonely-if
-      if (hasCustomClass) {
-        additionalClassSet.delete(autoformatTableClass);
-        this.setState({ additionalClassSet });
-      }
+
+    if (hasCustomClass && !isInTable) {
+      additionalClassSet.delete(MARKDOWN_TABLE_ACTIVATED_CLASS);
+      this.setState({ additionalClassSet });
     }
   }
 
@@ -641,13 +649,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   getNavbarItems() {
     return [
+      /* eslint-disable max-len */
       <Button
         key="nav-item-bold"
         bsSize="small"
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
       >
-        <img src="/images/icons/editor/bold.svg" alt="icon-bold" height="13" />
+        <EditorIcon icon="Bold" />
       </Button>,
       <Button
         key="nav-item-italic"
@@ -655,7 +664,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
       >
-        <img src="/images/icons/editor/italic.svg" alt="icon-italic" height="13" />
+        <EditorIcon icon="Italic" />
       </Button>,
       <Button
         key="nav-item-strikethrough"
@@ -663,7 +672,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
       >
-        <img src="/images/icons/editor/strikethrough.svg" alt="icon-strikethrough" height="13" />
+        <EditorIcon icon="Strikethrough" />
       </Button>,
       <Button
         key="nav-item-header"
@@ -671,7 +680,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Heading"
         onClick={this.makeHeaderHandler}
       >
-        <img src="/images/icons/editor/header.svg" alt="icon-header" height="13" />
+        <EditorIcon icon="Heading" />
       </Button>,
       <Button
         key="nav-item-code"
@@ -679,7 +688,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
       >
-        <img src="/images/icons/editor/code.svg" alt="icon-code" height="13" />
+        <EditorIcon icon="InlineCode" />
       </Button>,
       <Button
         key="nav-item-quote"
@@ -687,7 +696,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
       >
-        <img src="/images/icons/editor/quote.svg" alt="icon-quote" height="13" />
+        <EditorIcon icon="Quote" />
       </Button>,
       <Button
         key="nav-item-ul"
@@ -695,7 +704,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
       >
-        <img src="/images/icons/editor/list-ul.svg" alt="icon-list-ul" height="13" />
+        <EditorIcon icon="List" />
       </Button>,
       <Button
         key="nav-item-ol"
@@ -703,7 +712,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
       >
-        <img src="/images/icons/editor/list-ol.svg" alt="icon-list-ol" height="13" />
+        <EditorIcon icon="NumberedList" />
       </Button>,
       <Button
         key="nav-item-checkbox"
@@ -711,7 +720,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
       >
-        <img src="/images/icons/editor/check.svg" alt="icon-check" height="13" />
+        <EditorIcon icon="CheckList" />
       </Button>,
       <Button
         key="nav-item-link"
@@ -719,7 +728,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
       >
-        <img src="/images/icons/editor/link.svg" alt="icon-link" height="13" />
+        <EditorIcon icon="Link" />
       </Button>,
       <Button
         key="nav-item-image"
@@ -727,7 +736,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
       >
-        <img src="/images/icons/editor/picture.svg" alt="icon-picture" height="13" />
+        <EditorIcon icon="Image" />
       </Button>,
       <Button
         key="nav-item-table"
@@ -735,8 +744,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Table"
         onClick={this.showHandsonTableHandler}
       >
-        <img src="/images/icons/editor/table.svg" alt="icon-table" height="13" />
+        <EditorIcon icon="Table" />
       </Button>,
+      /* eslint-able max-len */
     ];
   }
 

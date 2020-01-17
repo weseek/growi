@@ -7,7 +7,9 @@ const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const urljoin = require('url-join');
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
+const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
@@ -38,9 +40,9 @@ const pageSchema = new mongoose.Schema({
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
   grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
   creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
-  liker: [{ type: ObjectId, ref: 'User', index: true }],
-  seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
+  lastUpdateUser: { type: ObjectId, ref: 'User' },
+  liker: [{ type: ObjectId, ref: 'User' }],
+  seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   extended: {
     type: String,
@@ -67,6 +69,7 @@ const pageSchema = new mongoose.Schema({
   toObject: { getters: true },
 });
 // apply plugins
+pageSchema.plugin(mongoosePaginate);
 pageSchema.plugin(uniqueValidator);
 
 
@@ -484,6 +487,10 @@ module.exports = function(crowi) {
     if (grant === GRANT_USER_GROUP) {
       this.grantedGroup = grantUserGroupId;
     }
+  };
+
+  pageSchema.methods.getContentAge = function() {
+    return differenceInYears(new Date(), this.updatedAt);
   };
 
 
@@ -921,21 +928,6 @@ module.exports = function(crowi) {
     return { templateBody, templateTags };
   };
 
-  /**
-   * Bulk get (for internal only)
-   */
-  pageSchema.statics.getStreamOfFindAll = function(options) {
-    const criteria = { redirectTo: null };
-
-    return this.find(criteria)
-      .populate([
-        { path: 'creator', model: 'User' },
-        { path: 'revision', model: 'Revision' },
-      ])
-      .lean()
-      .cursor();
-  };
-
   async function pushRevision(pageData, newRevision, user) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
@@ -1281,7 +1273,7 @@ module.exports = function(crowi) {
     return pageData;
   };
 
-  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, selectedGroupId) {
+  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
     const Page = mongoose.model('Page');
 
     const pages = await this.find({ grantedGroup: deletedGroup });
@@ -1299,7 +1291,7 @@ module.exports = function(crowi) {
         break;
       case 'transfer':
         await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, selectedGroupId);
+          return Page.transferPageToGroup(page, transferToUserGroupId);
         }));
         break;
       default:
@@ -1313,17 +1305,17 @@ module.exports = function(crowi) {
     await page.save();
   };
 
-  pageSchema.statics.transferPageToGroup = async function(page, selectedGroupId) {
+  pageSchema.statics.transferPageToGroup = async function(page, transferToUserGroupId) {
     const UserGroup = mongoose.model('UserGroup');
 
     // check page existence
-    const isExist = await UserGroup.count({ _id: selectedGroupId }) > 0;
+    const isExist = await UserGroup.count({ _id: transferToUserGroupId }) > 0;
     if (isExist) {
-      page.grantedGroup = selectedGroupId;
+      page.grantedGroup = transferToUserGroupId;
       await page.save();
     }
     else {
-      throw new Error('Cannot find the group to which private pages belong to. _id: ', selectedGroupId);
+      throw new Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
     }
   };
 
@@ -1380,10 +1372,6 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.addSlashOfEnd = function(path) {
     return addSlashOfEnd(path);
-  };
-
-  pageSchema.statics.allPageCount = function() {
-    return this.count({ redirectTo: null });
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;

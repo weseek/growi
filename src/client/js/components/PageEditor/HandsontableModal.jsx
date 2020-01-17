@@ -412,7 +412,7 @@ export default class HandsontableModal extends React.PureComponent {
     const dialogClassName = dialogClassNames.join(' ');
 
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName}>
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
         <Modal.Header closeButton>
           { this.renderExpandOrContractButton() }
           <Modal.Title>Edit Table</Modal.Title>

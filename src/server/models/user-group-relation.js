@@ -1,6 +1,7 @@
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -14,6 +15,8 @@ const schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, required: true },
 });
 schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
+
 
 /**
  * UserGroupRelation Class
@@ -191,15 +194,33 @@ class UserGroupRelation {
    * @returns {Promise<User>}
    * @memberof UserGroupRelation
    */
-  static findUserByNotRelatedGroup(userGroup) {
+  static findUserByNotRelatedGroup(userGroup, queryOptions) {
     const User = UserGroupRelation.crowi.model('User');
+    let searchWord = new RegExp(`${queryOptions.searchWord}`);
+    switch (queryOptions.searchType) {
+      case 'forward':
+        searchWord = new RegExp(`^${queryOptions.searchWord}`);
+        break;
+      case 'backword':
+        searchWord = new RegExp(`${queryOptions.searchWord}$`);
+        break;
+    }
+    const searthField = [
+      { username: searchWord },
+    ];
+    if (queryOptions.isAlsoMailSearched === 'true') { searthField.push({ email: searchWord }) }
+    if (queryOptions.isAlsoNameSearched === 'true') { searthField.push({ name: searchWord }) }
 
     return this.findAllRelationForUserGroup(userGroup)
       .then((relations) => {
         const relatedUserIds = relations.map((relation) => {
           return relation.relatedUser.id;
         });
-        const query = { _id: { $nin: relatedUserIds }, status: User.STATUS_ACTIVE };
+        const query = {
+          _id: { $nin: relatedUserIds },
+          status: User.STATUS_ACTIVE,
+          $or: searthField,
+        };
 
         debug('findUserByNotRelatedGroup ', query);
         return User.find(query).exec();
@@ -210,15 +231,15 @@ class UserGroupRelation {
    * get if the user has relation for group
    *
    * @static
-   * @param {User} userData
    * @param {UserGroup} userGroup
+   * @param {User} user
    * @returns {Promise<boolean>} is user related for group(or not)
    * @memberof UserGroupRelation
    */
-  static isRelatedUserForGroup(userData, userGroup) {
+  static isRelatedUserForGroup(userGroup, user) {
     const query = {
       relatedGroup: userGroup.id,
-      relatedUser: userData.id,
+      relatedUser: user.id,
     };
 
     return this

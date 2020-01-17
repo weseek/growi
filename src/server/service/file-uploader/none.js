@@ -3,7 +3,11 @@
 module.exports = function(crowi) {
   const debug = require('debug')('growi:service:fileUploaderNone');
   const Uploader = require('./uploader');
-  const lib = new Uploader(crowi.configManager);
+  const lib = new Uploader(crowi);
+
+  lib.getIsUploadable = function() {
+    return false;
+  };
 
   lib.deleteFile = function(filePath) {
     debug(`File deletion: ${filePath}`);
