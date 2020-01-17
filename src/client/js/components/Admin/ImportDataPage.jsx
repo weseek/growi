@@ -171,7 +171,7 @@ class ImportDataPage extends React.Component {
               </tbody>
             </table>
 
-            <div className="card card-well mb-0 small">
+            <div className="card well mb-0 small">
               <ul>
                 <li>{ t('importer_management.page_skip') }</li>
               </ul>
@@ -265,7 +265,7 @@ class ImportDataPage extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="card card-well mb-0 small">
+            <div className="card well mb-0 small">
               <ul>
                 <li>{ t('importer_management.page_skip') }</li>
               </ul>

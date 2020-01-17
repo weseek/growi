@@ -19,7 +19,7 @@
   border-radius: 0;
 }
 
-.card-header:not(.card-well) {
+.card-header {
   padding: 7px 15px;
   font-weight: 700;
   text-transform: none;
@@ -30,8 +30,8 @@
   border-radius: 0;
 }
 
-// card-well (substitute well of bootstrap3)
-.card.card-well {
+// Well (substitute Well of bootstrap3)
+.card.well {
   padding: 7px 15px;
 }
 
