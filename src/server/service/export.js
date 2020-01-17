@@ -1,9 +1,30 @@
 const logger = require('@alias/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
+
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
+const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
+
 const toArrayIfNot = require('../../lib/util/toArrayIfNot');
+
+const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
+
+class ExportProgressingStatus extends CollectionProgressingStatus {
+
+  async init() {
+    // retrieve total document count from each collections
+    const promises = this.progressList.map(async(collectionProgress) => {
+      const collection = mongoose.connection.collection(collectionProgress.collectionName);
+      collectionProgress.totalCount = await collection.count();
+    });
+    await Promise.all(promises);
+
+    this.recalculateTotalCount();
+  }
+
+}
 
 class ExportService {
 
@@ -15,13 +36,17 @@ class ExportService {
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
+
+    this.adminEvent = crowi.event('admin');
+
+    this.currentProgressingStatus = null;
   }
 
   /**
    * parse all zip files in downloads dir
    *
    * @memberOf ExportService
-   * @return {Array.<object>} info for zip files
+   * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
     const zipFiles = fs.readdirSync(this.baseDir).filter((file) => { return path.extname(file) === '.zip' });
@@ -30,7 +55,16 @@ class ExportService {
       return this.growiBridgeService.parseZipFile(zipFile);
     }));
 
-    return zipFileStats;
+    // filter null object (broken zip)
+    const filtered = zipFileStats.filter(element => element != null);
+
+    const isExporting = this.currentProgressingStatus != null;
+
+    return {
+      zipFileStats: filtered,
+      isExporting,
+      progressList: isExporting ? this.currentProgressingStatus.progressList : null,
+    };
   }
 
   /**
@@ -59,87 +93,204 @@ class ExportService {
   }
 
   /**
-   * dump a collection into json
+   *
+   * @param {ExportProgress} exportProgress
+   * @return {Transform}
+   */
+  generateLogStream(exportProgress) {
+    const logProgress = this.logProgress.bind(this);
+
+    let count = 0;
+
+    return new Transform({
+      transform(chunk, encoding, callback) {
+        count++;
+        logProgress(exportProgress, count);
+
+        this.push(chunk);
+
+        callback();
+      },
+    });
+  }
+
+  /**
+   * insert beginning/ending brackets and comma separator for Json Array
    *
    * @memberOf ExportService
-   * @param {string} file path to json file to be written
-   * @param {readStream} readStream  read stream
-   * @param {number} total number of target items (optional)
-   * @param {function} [getLogText] (n, total) => { ... }
-   * @return {string} path to the exported json file
+   * @return {TransformStream}
    */
-  async export(writeStream, readStream, total, getLogText) {
-    let n = 0;
+  generateTransformStream() {
+    let isFirst = true;
 
-    // open an array
-    writeStream.write('[');
+    const transformStream = new Transform({
+      transform(chunk, encoding, callback) {
+        // write beginning brace
+        if (isFirst) {
+          this.push('[');
+          isFirst = false;
+        }
+        // write separator
+        else {
+          this.push(',');
+        }
 
-    readStream.on('data', (chunk) => {
-      if (n !== 0) writeStream.write(',');
-      writeStream.write(JSON.stringify(chunk));
-      n++;
-      this.logProgress(n, total, getLogText);
+        this.push(chunk);
+        callback();
+      },
+      final(callback) {
+        // write beginning brace
+        if (isFirst) {
+          this.push('[');
+        }
+        // write ending brace
+        this.push(']');
+        callback();
+      },
     });
 
-    readStream.on('end', () => {
-      // close the array
-      writeStream.write(']');
-      writeStream.close();
-    });
-
-    await streamToPromise(readStream);
-
-    return writeStream.path;
+    return transformStream;
   }
 
   /**
    * dump a mongodb collection into json
    *
    * @memberOf ExportService
-   * @param {object} Model instance of mongoose model
+   * @param {string} collectionName collection name
    * @return {string} path to zip file
    */
-  async exportCollectionToJson(Model) {
-    const { collectionName } = Model.collection;
+  async exportCollectionToJson(collectionName) {
+    const collection = mongoose.connection.collection(collectionName);
+
+    const nativeCursor = collection.find();
+    const readStream = nativeCursor
+      .snapshot()
+      .stream({ transform: JSON.stringify });
+
+    // get TransformStream
+    const transformStream = this.generateTransformStream();
+
+    // log configuration
+    const exportProgress = this.currentProgressingStatus.progressMap[collectionName];
+    const logStream = this.generateLogStream(exportProgress);
+
+    // create WritableStream
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
-    const readStream = Model.find().cursor();
-    const total = await Model.countDocuments();
-    const getLogText = (n, total) => `${collectionName}: ${n}/${total} written`;
 
-    const jsonFileWritten = await this.export(writeStream, readStream, total, getLogText);
+    readStream
+      .pipe(logStream)
+      .pipe(transformStream)
+      .pipe(writeStream);
 
-    return jsonFileWritten;
+    await streamToPromise(writeStream);
+
+    return writeStream.path;
   }
 
   /**
-   * export multiple collections
+   * export multiple Collections into json and Zip
    *
    * @memberOf ExportService
-   * @param {Array.<object>} models array of instances of mongoose model
+   * @param {Array.<string>} collections array of collection name
    * @return {Array.<string>} paths to json files created
    */
-  async exportMultipleCollectionsToJsons(models) {
-    const jsonFiles = await Promise.all(models.map(Model => this.exportCollectionToJson(Model)));
+  async exportCollectionsToZippedJson(collections) {
+    const metaJson = await this.createMetaJson();
 
-    return jsonFiles;
+    const promises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
+    const jsonFiles = await Promise.all(promises);
+
+    // send terminate event
+    this.emitStartZippingEvent();
+
+    // zip json
+    const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
+    // add meta.json in zip
+    configs.push({ from: metaJson, as: path.basename(metaJson) });
+    // exec zip
+    const zipFile = await this.zipFiles(configs);
+
+    // get stats for the zip file
+    const addedZipFileStat = await this.growiBridgeService.parseZipFile(zipFile);
+
+    // send terminate event
+    this.emitTerminateEvent(addedZipFileStat);
+
+    // TODO: remove broken zip file
+  }
+
+  async export(collections) {
+    if (this.currentProgressingStatus != null) {
+      throw new Error('There is an exporting process running.');
+    }
+
+    this.currentProgressingStatus = new ExportProgressingStatus(collections);
+    await this.currentProgressingStatus.init();
+
+    try {
+      await this.exportCollectionsToZippedJson(collections);
+    }
+    finally {
+      this.currentProgressingStatus = null;
+    }
+
   }
 
   /**
    * log export progress
    *
    * @memberOf ExportService
-   * @param {number} n number of items exported
-   * @param {number} total number of target items (optional)
-   * @param {function} [getLogText] (n, total) => { ... }
+   *
+   * @param {CollectionProgress} collectionProgress
+   * @param {number} currentCount number of items exported
    */
-  logProgress(n, total, getLogText) {
-    const output = getLogText ? getLogText(n, total) : `${n}/${total} items written`;
+  logProgress(collectionProgress, currentCount) {
+    const output = `${collectionProgress.collectionName}: ${currentCount}/${collectionProgress.totalCount} written`;
+
+    // update exportProgress.currentCount
+    collectionProgress.currentCount = currentCount;
 
     // output every this.per items
-    if (n % this.per === 0) logger.debug(output);
+    if (currentCount % this.per === 0) {
+      logger.debug(output);
+      this.emitProgressEvent();
+    }
     // output last item
-    else if (n === total) logger.info(output);
+    else if (currentCount === collectionProgress.totalCount) {
+      logger.info(output);
+      this.emitProgressEvent();
+    }
+  }
+
+  /**
+   * emit progress event
+   */
+  emitProgressEvent() {
+    const { currentCount, totalCount, progressList } = this.currentProgressingStatus;
+    const data = {
+      currentCount,
+      totalCount,
+      progressList,
+    };
+
+    // send event (in progress in global)
+    this.adminEvent.emit('onProgressForExport', data);
+  }
+
+  /**
+   * emit start zipping event
+   */
+  emitStartZippingEvent() {
+    this.adminEvent.emit('onStartZippingForExport', {});
+  }
+
+  /**
+   * emit terminate event
+   * @param {object} zipFileStat added zip file status data
+   */
+  emitTerminateEvent(zipFileStat) {
+    this.adminEvent.emit('onTerminateForExport', { addedZipFileStat: zipFileStat });
   }
 
   /**
@@ -154,7 +305,7 @@ class ExportService {
     const configs = toArrayIfNot(_configs);
     const appTitle = this.appService.getAppTitle();
     const timeStamp = (new Date()).getTime();
-    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.zip`);
+    const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.growi.zip`);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
     });

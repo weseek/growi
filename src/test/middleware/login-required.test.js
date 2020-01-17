@@ -1,7 +1,5 @@
 /* eslint-disable arrow-body-style */
 
-import each from 'jest-each';
-
 const { getInstance } = require('../setup-crowi');
 
 describe('loginRequired', () => {
@@ -15,11 +13,6 @@ describe('loginRequired', () => {
     loginRequired = require('@server/middleware/login-required')(crowi, true);
     done();
   });
-
-  // test('returns strict middlware when args is undefined', () => {
-  //   const func = middlewares.loginRequired();
-  //   expect(func).toBe(loginRequiredStrict);
-  // });
 
   describe('not strict mode', () => {
     // setup req/res/next
@@ -129,30 +122,29 @@ describe('loginRequired', () => {
       expect(req.session.jumpTo).toBe(undefined);
     });
 
-    each`
+    /* eslint-disable indent */
+    test.each`
       userStatus  | expectedPath
       ${1}        | ${'/login/error/registered'}
       ${3}        | ${'/login/error/suspended'}
       ${5}        | ${'/login/invited'}
-    `
-      .test('redirect to \'$expectedPath\''
-        + ' when user.status is \'$userStatus\' ', ({ userStatus, expectedPath }) => {
+    `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
+      req.user = {
+        _id: 'user id',
+        status: userStatus,
+      };
 
-        req.user = {
-          _id: 'user id',
-          status: userStatus,
-        };
+      const result = loginRequiredStrictly(req, res, next);
 
-        const result = loginRequiredStrictly(req, res, next);
-
-        expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
-        expect(next).not.toHaveBeenCalled();
-        expect(res.sendStatus).not.toHaveBeenCalled();
-        expect(res.redirect).toHaveBeenCalledTimes(1);
-        expect(res.redirect).toHaveBeenCalledWith(expectedPath);
-        expect(result).toBe('redirect');
-        expect(req.session.jumpTo).toBe(undefined);
-      });
+      expect(isGuestAllowedToReadSpy).not.toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
+      expect(res.sendStatus).not.toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(expectedPath);
+      expect(result).toBe('redirect');
+      expect(req.session.jumpTo).toBe(undefined);
+    });
+    /* eslint-disable indent */
 
     test('redirect to \'/login\' when user.status is \'STATUS_DELETED\'', () => {
       const User = crowi.model('User');

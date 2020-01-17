@@ -1,9 +1,128 @@
 # CHANGES
 
-## 3.5.17-RC
+## v3.6.4-RC
 
+* Feature: Alert for stale page
+* Improvement: Reactify admin pages (App)
+* Improvement: Accessibility for editor icons of dark themes
+
+## v3.6.3
+
+* Improvement: Searching users in UserGroup Management
+* Fix: Repair google authentication by migrating to jaredhanson/passport-google-oauth2
+* Fix: Markdown Settings are broken by the button to import recommended settings
+* Support: Upgrade libs
+    * check-node-version
+    * file-loader
+    * mini-css-extract-plugin
+
+## 3.6.2
+
+* Improvement: Reactify admin pages (Customize)
+* Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
+* Improvement: Enter key behavior in markdown table
+* Fix: Pre-installed plugins in official docker image are not detected
+    * Introduced by 3.6.0
+* Fix: Emoji Autocomplete window does not float correctly
+    * Introduced by 3.5.0
+
+## 3.6.1
+
+### BREAKING CHANGES
+
+* GROWI v3.6.x no longer support Node.js v8.x
+* The name of database that is storing migrations meta data has been changed
+    * This affects **only when `MONGO_URI` has parameters**
+    * v3.5.x or above has a bug ([#1361](https://github.com/weseek/growi/issues/1361))
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
+
+### Updates
+
+* Improvement: Drop unnecessary MongoDB collection indexes
+* Improvement: Accessibility of Antarctic theme
+* Improvement: Reactify admin pages (Markdown Settings)
+* Fix: Appending tag is failed by wrong index of PageTagRelation
+    * Introduced by 3.5.20
+* Fix: Pages without heading slash is invalid but creatable
+* Fix: Connect to Elasticsearch with `httpAuth` param
+* Support: Support Node.js v12
+* Support: Optimize build in dev with hard-source-webpack-plugin
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.6.0 (Missing number)
+
+## 3.5.25
+
+* Improvement: Disable ESC key to close Handsontable Modal
+* Fix: Exported data of empty collection is broken
+* Fix: Some components crash after when the page with attachment has exported/imported
+
+## 3.5.24
+
+* Fix: Plugins are not working on Heroku
+
+## 3.5.23
+
+* Fix: Global Notification failed to send e-mail
+* Fix: Pagination is not working for trash list
+* Fix: Healthcheck API with `?connectToMiddlewares` returns error
+* Support: Upgrade libs
+    * growi-commons
+
+## 3.5.22
+
+* Improvement: Add `FILE_UPLOAD_DISABLED` env var
+
+## 3.5.21
+
+* Improvement: Cache control when retrieving attachment data
+* Fix: Inviting user doesn't work
+    * Introduced by 3.5.20
+
+## 3.5.20
+
+* Improvement: Organize MongoDB collection indexes uniqueness
+* Improvement: Reactify admin pages (External Account Management)
+* Fix: Search result or Timeline shows loading icon eternally when retrieving not accessible page
+* Support: Use SearchBox Elasticsearch Addon on Heroku
+* Support: Upgrade libs
+    * cross-env
+    * eslint-plugin-jest
+    * i18next
+    * i18next-browser-languagedetector
+    * migrate-mongo
+    * react-i18next
+    * validator
+
+## 3.5.19 (Missing number)
+
+## 3.5.18
+
+* Improvement: Import GROWI Archive
+    * Process asynchronously
+    * Collection configurations
+    * Selectable mode (insert/upsert/flush and insert)
+    * Safely mode settings for configs and users collections
+    * Show errors view
+* Improvement: Optimize handling promise of stream when exporting archive
+* Improvement: Optimize handling promise of stream when building indices
+* Improvement: Add link to [docs.growi.org](https://docs.growi.org)
+* Fix: Monospace font code is broken when printing on Mac
+
+## 3.5.17
+
+* Feature: Upload to GCS (Google Cloud Storage)
+* Feature: Statistics API
+* Improvement: Optimize exporting
+* Improvement: Show progress bar when exporting
+* Improvement: Validate collection combinations when importing
+* Improvement: Reactify admin pages
 * Fix: Use HTTP PlantUML URL in default
     * Introduced by 3.5.12
+* Fix: Config default values
+* Support: REPL with `console` npm scripts
 
 ## 3.5.16
 
@@ -145,7 +264,7 @@
 * The restriction mode of the root page (`/`) will be set 'Public'
 * The restriction mode of the root page (`/`) can not be changed after v 3.5.1
 
-Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
 
 ### Updates
 
@@ -262,7 +381,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/35x.html
 
 None.
 
-Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 
 ### Updates
 
@@ -575,7 +694,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 * Improvement: Post comment with `Ctrl-Enter`
 * Improvement: Place the commented page at the beginning of the list
 * Improvement: Resolve errors on IE11 (Experimental)
-* Support: Migrate to webpack 4 
+* Support: Migrate to webpack 4
 * Support: Upgrade libs
     * eslint
     * react-bootstrap-typeahead
@@ -599,7 +718,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 
 * Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
-* Fix: Select modal for group is not shown 
+* Fix: Select modal for group is not shown
 * Support: Upgrade libs
     * googleapis
     * throttle-debounce
@@ -636,17 +755,21 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 * Improvement: Add 'future' theme
 * Improvement: Modify syntax for Crowi compatible template feature
     * *before*
-        ~~~
+
+        ~~~markdown
         ``` template:/page/name
         page contents
         ```
         ~~~
+
     * *after*
-        ~~~
+
+        ~~~plane
         ::: template:/page/name
         page contents
         :::
         ~~~
+
 * Improvement: Escape iframe tag in block codes
 * Support: Upgrade libs
     * assets-webpack-plugin
@@ -669,7 +792,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 * Improvement: Auto-format markdown table which includes multibyte text
 * Improvement: Show icon when auto-format markdown table is activated
 * Improvement: Enable to switch show/hide border for highlight.js
-* Improvement: BindDN field allows also ActiveDirectory styles 
+* Improvement: BindDN field allows also ActiveDirectory styles
 * Improvement: Show LDAP logs when testing login
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
@@ -821,7 +944,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 * Support: Upgrade libs
     * uglifycss
     * sinon-chai
-    
+
 ## 2.4.2
 
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
@@ -1041,7 +1164,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 
 ## 1.2.13
 
-* Improvement: Enabled to switch whether to push states with History API when tabs changes 
+* Improvement: Enabled to switch whether to push states with History API when tabs changes
 * Fix: Layout of the Not Found page
 
 ## 1.2.12 (Missing number)
@@ -1202,7 +1325,7 @@ Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
 
 ## 1.0.2
 
-* Improvement: For lsx 
+* Improvement: For lsx
 
 ## 1.0.1
 

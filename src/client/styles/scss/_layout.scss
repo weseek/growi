@@ -17,7 +17,8 @@
     }
 
     .nav-item-admin,
-    .nav-item-create-page {
+    .nav-item-create-page,
+    .nav-item-help {
       span {
         margin-left: 0.5em;
         @media (max-width: $screen-xs-min) {
