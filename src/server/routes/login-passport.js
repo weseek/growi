@@ -262,7 +262,7 @@ module.exports = function(crowi, app) {
     // Emails are not empty if it exists
     // See https://github.com/passport/express-4.x-facebook-example/blob/dfce5495d0313174a1b5039bab2c2dcda7e0eb61/views/profile.ejs
     // Both Facebook and Google use OAuth 2.0, the code is similar
-    // https://github.com/jaredhanson/passport-google-oauth2#examples
+    // See https://github.com/jaredhanson/passport-google-oauth2/blob/723e8f3e8e711275f89e0163e2c77cfebae33f25/README.md#examples
     if (response.emails != null) {
       userData.email = response.emails[0].value;
       userData.username = userData.email.slice(0, userData.email.indexOf('@'));
