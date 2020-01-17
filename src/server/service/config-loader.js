@@ -22,6 +22,12 @@ const TYPES = {
  *  So, parameters of these are under consideration.
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
+  // ELASTICSEARCH_URI: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
   // FILE_UPLOAD: {
   //   ns:      ,
   //   key:     ,
@@ -124,50 +130,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
-  FILE_UPLOAD_TOTAL_LIMIT: {
-    ns:      'crowi',
-    key:     'app:fileUploadTotalLimit',
-    type:    TYPES.NUMBER,
-    default: Infinity,
-  },
-  FILE_UPLOAD_DISABLED: {
-    ns:      'crowi',
-    key:     'app:fileUploadDisabled',
-    type:    TYPES.BOOLEAN,
-    default: false,
-  },
-  ELASTICSEARCH_URI: {
-    ns:      'crowi',
-    key:     'app:elasticsearchUri',
-    type:    TYPES.STRING,
-    default: null,
-  },
-  SEARCHBOX_SSL_URL: {
-    ns:      'crowi',
-    key:     'app:searchboxSslUrl',
-    type:    TYPES.STRING,
-    default: null,
-  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',
     type:    TYPES.NUMBER,
-    default: null, // set null in default for backward compatibility
-    //                cz: Newer system respects FILE_UPLOAD_TOTAL_LIMIT.
-    //                    If the default value of MONGO_GRIDFS_TOTAL_LIMIT is Infinity,
-    //                      the system can't distinguish between "not specified" and "Infinity is specified".
+    default: Infinity,
   },
   FORCE_WIKI_MODE: {
     ns:      'crowi',
     key:     'security:wikiMode',
     type:    TYPES.STRING,
     default: undefined,
-  },
-  USER_UPPER_LIMIT: {
-    ns:      'crowi',
-    key:     'security:userUpperLimit',
-    type:    TYPES.NUMBER,
-    default: Infinity,
   },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
@@ -247,24 +220,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  GCS_API_KEY_JSON_PATH: {
-    ns:      'crowi',
-    key:     'gcs:apiKeyJsonPath',
-    type:    TYPES.STRING,
-    default: null,
-  },
-  GCS_BUCKET: {
-    ns:      'crowi',
-    key:     'gcs:bucket',
-    type:    TYPES.STRING,
-    default: null,
-  },
-  GCS_UPLOAD_NAMESPACE: {
-    ns:      'crowi',
-    key:     'gcs:uploadNamespace',
-    type:    TYPES.STRING,
-    default: null,
-  },
 };
 
 class ConfigLoader {
@@ -280,12 +235,10 @@ class ConfigLoader {
     const configFromDB = await this.loadFromDB();
     const configFromEnvVars = this.loadFromEnvVars();
 
-    // merge defaults per ns
-    const mergedConfigFromDB = {
-      crowi: Object.assign(this.configModel.getDefaultCrowiConfigsObject(), configFromDB.crowi),
-      markdown: Object.assign(this.configModel.getDefaultMarkdownConfigsObject(), configFromDB.markdown),
-      notification: Object.assign(this.configModel.getDefaultNotificationConfigsObject(), configFromDB.notification),
-    };
+    // merge defaults
+    let mergedConfigFromDB = Object.assign({ crowi: this.configModel.getDefaultCrowiConfigsObject() }, configFromDB);
+    mergedConfigFromDB = Object.assign({ markdown: this.configModel.getDefaultMarkdownConfigsObject() }, mergedConfigFromDB);
+    mergedConfigFromDB = Object.assign({ notification: this.configModel.getDefaultNotificationConfigsObject() }, mergedConfigFromDB);
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
     // So, if a value loaded from the database is emtpy,

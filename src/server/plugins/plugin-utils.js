@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('graceful-fs');
 const logger = require('@alias/logger')('growi:plugins:plugin-utils');
-const packageInstalledVersionSync = require('package-installed-version-sync');
 
 const PluginUtilsV2 = require('./plugin-utils-v2');
 
@@ -49,8 +48,8 @@ class PluginUtils {
    *
    * @returns array of objects
    *   [
-   *     { name: 'growi-plugin-...', requiredVersion: '^1.0.0', installedVersion: '1.0.0' },
-   *     { name: 'growi-plugin-...', requiredVersion: '^1.0.0', installedVersion: '1.0.0' },
+   *     { name: 'growi-plugin-...', version: '1.0.0' },
+   *     { name: 'growi-plugin-...', version: '1.0.0' },
    *     ...
    *   ]
    *
@@ -69,17 +68,14 @@ class PluginUtils {
     const json = JSON.parse(content);
     const deps = json.dependencies || {};
 
-    const pluginNames = Object.keys(deps).filter((name) => {
-      return /^(crowi|growi)-plugin-/.test(name);
+    const objs = {};
+    Object.keys(deps).forEach((name) => {
+      if (/^(crowi|growi)-plugin-/.test(name)) {
+        objs[name] = deps[name];
+      }
     });
 
-    return pluginNames.map((name) => {
-      return {
-        name,
-        requiredVersion: deps[name],
-        installedVersion: packageInstalledVersionSync(name),
-      };
-    });
+    return objs;
   }
 
   /**
@@ -91,7 +87,7 @@ class PluginUtils {
    */
   listPluginNames(rootDir) {
     const plugins = this.listPlugins(rootDir);
-    return plugins.map((plugin) => { return plugin.name });
+    return Object.keys(plugins);
   }
 
 }

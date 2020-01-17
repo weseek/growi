@@ -2,6 +2,8 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 
+const webpack = require('webpack');
+
 /*
  * Webpack Plugins
  */
@@ -55,6 +57,11 @@ module.exports = require('./webpack.common')({
 
     new MiniCssExtractPlugin({
       filename: '[name].bundle.css',
+    }),
+
+    new webpack.DllReferencePlugin({
+      context: helpers.root(),
+      manifest: require(helpers.root('public/dll', 'manifest.json')),
     }),
 
     new BundleAnalyzerPlugin({

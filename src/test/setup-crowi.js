@@ -8,6 +8,10 @@ async function createInstance() {
   const crowi = new Crowi(helpers.root());
   await crowi.initForTest();
 
+  // init DB
+  const appService = crowi.appService;
+  await appService.initDB();
+
   return crowi;
 }
 

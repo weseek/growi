@@ -79,6 +79,17 @@ class AclService {
     return labels;
   }
 
+  userUpperLimit() {
+    // const limit = this.configManager.getConfig('crowi', 'USER_UPPER_LIMIT');
+    const limit = process.env.USER_UPPER_LIMIT;
+
+    if (limit) {
+      return Number(limit);
+    }
+
+    return 0;
+  }
+
 }
 
 module.exports = AclService;

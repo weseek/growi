@@ -1,49 +1,3 @@
-/**
- * @swagger
- *  tags:
- *    name: Revisions
- */
-
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Revision:
- *        description: Revision
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e0734e472560e001761fa68
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          author:
- *            $ref: '#/components/schemas/User/properties/_id'
- *          body:
- *            type: string
- *            description: content body
- *            example: |
- *              # test
- *
- *              test
- *          format:
- *            type: string
- *            description: format
- *            example: markdown
- *          path:
- *            type: string
- *            description: path
- *            example: /user/alice/test
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- */
-
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:revision');
   const logger = require('@alias/logger')('growi:routes:revision');
@@ -55,42 +9,6 @@ module.exports = function(crowi, app) {
   const actions = {};
   actions.api = {};
 
-  /**
-   * @swagger
-   *
-   *    /_api/revisions.get:
-   *      get:
-   *        tags: [Revisions, apiv1]
-   *        operationId: /_api/revisions.get
-   *        summary: /_api/revisions.get
-   *        description: Get revision
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            required: true
-   *          - in: query
-   *            name: revision_id
-   *            schema:
-   *              $ref: '#/components/schemas/Revision/properties/_id'
-   *            required: true
-   *        responses:
-   *          200:
-   *            description: Succeeded to get revision.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    revision:
-   *                      $ref: '#/components/schemas/Revision'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {get} /revisions.get Get revision
    * @apiName GetRevision
@@ -124,39 +42,6 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @swagger
-   *
-   *    /_api/revisions.ids:
-   *      get:
-   *        tags: [Revisions, apiv1]
-   *        operationId: /_api/revisions.ids
-   *        summary: /_api/revisions.ids
-   *        description: Get revision id list of the page
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            required: true
-   *        responses:
-   *          200:
-   *            description: Succeeded to get revision id list of the page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    revisions:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Revision'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
    * @api {get} /revisions.ids Get revision id list of the page
    * @apiName ids
    * @apiGroup Revision
@@ -184,44 +69,6 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * @swagger
-   *
-   *    /_api/revisions.list:
-   *      get:
-   *        tags: [Revisions, apiv1]
-   *        operationId: /_api/revisions.list
-   *        summary: /_api/revisions.list
-   *        description: Get revisions
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: revision_ids
-   *            schema:
-   *              type: string
-   *              description: revision ids
-   *              example: 5e0734e472560e001761fa68,5e079a0a0afa6700170a75fb
-   *        responses:
-   *          200:
-   *            description: Succeeded to get revisions.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    revisions:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Revision'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {get} /revisions.list Get revisions
    * @apiName ListRevision

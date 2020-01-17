@@ -25,6 +25,7 @@ $background-color: rgba(
   $color: $themelight,
   $alpha: 0.8,
 );
+$info: $subthemecolor;
 
 @import 'apply-colors';
 @import 'apply-colors-light';

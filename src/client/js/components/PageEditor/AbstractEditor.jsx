@@ -80,14 +80,6 @@ export default class AbstractEditor extends React.Component {
   }
 
   /**
-   * replace the current line with param 'text'
-   * @param {string} text
-   */
-  replaceLine(text) {
-    throw new Error('this method should be impelemented in subclass');
-  }
-
-  /**
    * insert text
    * @param {string} text
    */

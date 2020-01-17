@@ -1,3 +1,5 @@
+import each from 'jest-each';
+
 const { getInstance } = require('../setup-crowi');
 
 describe('AclService test', () => {
@@ -163,17 +165,17 @@ describe('AclService test', () => {
       expect(result).toBe(true);
     });
 
-    /* eslint-disable indent */
-    describe.each`
-      restrictGuestMode   | expected
-      ${undefined}        | ${false}
-      ${'Deny'}           | ${false}
-      ${'Readonly'}       | ${true}
-      ${'Open'}           | ${false}
-      ${'Restricted'}     | ${false}
-      ${'closed'}         | ${false}
-    `('to be $expected', ({ restrictGuestMode, expected }) => {
-      test(`when FORCE_WIKI_MODE is undefined and 'security:restrictGuestMode' is '${restrictGuestMode}`, async() => {
+    each`
+    restrictGuestMode   | expected
+      ${undefined}      | ${false}
+      ${'Deny'}         | ${false}
+      ${'Readonly'}     | ${true}
+      ${'Open'}         | ${false}
+      ${'Restricted'}   | ${false}
+      ${'closed'}       | ${false}
+    `
+      .test('to be $expected when FORCE_WIKI_MODE is undefined'
+          + ' and `security:restrictGuestMode` is \'$restrictGuestMode\'', async({ restrictGuestMode, expected }) => {
 
         // reload
         await crowi.configManager.loadConfigs();
@@ -196,7 +198,6 @@ describe('AclService test', () => {
         expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
         expect(result).toBe(expected);
       });
-    });
 
   });
 

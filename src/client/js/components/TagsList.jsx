@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-
-import PaginationWrapper from './PaginationWrapper';
+import Pagination from 'react-bootstrap/lib/Pagination';
 
 class TagsList extends React.Component {
 
@@ -13,36 +12,57 @@ class TagsList extends React.Component {
     this.state = {
       tagData: [],
       activePage: 1,
-      totalTags: 0,
-      pagingLimit: 10,
+      paginationNumbers: {},
     };
 
-    this.handlePage = this.handlePage.bind(this);
-    this.getTagList = this.getTagList.bind(this);
+    this.calculatePagination = this.calculatePagination.bind(this);
   }
 
   async componentWillMount() {
     await this.getTagList(1);
   }
 
-  async handlePage(selectedPage) {
-    await this.getTagList(selectedPage);
-  }
-
   async getTagList(selectPageNumber) {
-    const limit = this.state.pagingLimit;
+    const limit = 10;
     const offset = (selectPageNumber - 1) * limit;
     const res = await this.props.crowi.apiGet('/tags.list', { limit, offset });
 
-    const totalTags = res.totalCount;
+    const totalCount = res.totalCount;
     const tagData = res.data;
     const activePage = selectPageNumber;
+    const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
 
     this.setState({
       tagData,
       activePage,
-      totalTags,
+      paginationNumbers,
     });
+  }
+
+  calculatePagination(limit, totalCount, activePage) {
+    // calc totalPageNumber
+    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0 : 1);
+
+    let paginationStart = activePage - 2;
+    let maxViewPageNum = activePage + 2;
+    // pagination Number area size = 5 , pageNumber calculate in here
+    // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
+    if (paginationStart < 1) {
+      const diff = 1 - paginationStart;
+      paginationStart += diff;
+      maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
+    }
+    if (maxViewPageNum > totalPage) {
+      const diff = maxViewPageNum - totalPage;
+      maxViewPageNum -= diff;
+      paginationStart = Math.max(1, paginationStart - diff);
+    }
+
+    return {
+      totalPage,
+      paginationStart,
+      maxViewPageNum,
+    };
   }
 
   /**
@@ -62,9 +82,92 @@ class TagsList extends React.Component {
     });
   }
 
+  /**
+   * generate Elements of Pagination First Prev
+   * ex.  <<   <   1  2  3  >  >>
+   * this function set << & <
+   */
+  generateFirstPrev(activePage) {
+    const paginationItems = [];
+    if (activePage !== 1) {
+      paginationItems.push(
+        <Pagination.First key="first" onClick={() => { return this.getTagList(1) }} />,
+      );
+      paginationItems.push(
+        <Pagination.Prev key="prev" onClick={() => { return this.getTagList(this.state.activePage - 1) }} />,
+      );
+    }
+    else {
+      paginationItems.push(
+        <Pagination.First key="first" disabled />,
+      );
+      paginationItems.push(
+        <Pagination.Prev key="prev" disabled />,
+      );
+
+    }
+    return paginationItems;
+  }
+
+  /**
+   * generate Elements of Pagination First Prev
+   *  ex. << < 4 5 6 7 8 > >>, << < 1 2 3 4 > >>
+   * this function set  numbers
+   */
+  generatePaginations(activePage, paginationStart, maxViewPageNum) {
+    const paginationItems = [];
+    for (let number = paginationStart; number <= maxViewPageNum; number++) {
+      paginationItems.push(
+        <Pagination.Item key={number} active={number === activePage} onClick={() => { return this.getTagList(number) }}>{number}</Pagination.Item>,
+      );
+    }
+    return paginationItems;
+  }
+
+  /**
+   * generate Elements of Pagination First Prev
+   * ex.  <<   <   1  2  3  >  >>
+   * this function set > & >>
+   */
+  generateNextLast(activePage, totalPage) {
+    const paginationItems = [];
+    if (totalPage !== activePage) {
+      paginationItems.push(
+        <Pagination.Next key="next" onClick={() => { return this.getTagList(this.state.activePage + 1) }} />,
+      );
+      paginationItems.push(
+        <Pagination.Last key="last" onClick={() => { return this.getTagList(totalPage) }} />,
+      );
+    }
+    else {
+      paginationItems.push(
+        <Pagination.Next key="next" disabled />,
+      );
+      paginationItems.push(
+        <Pagination.Last key="last" disabled />,
+      );
+
+    }
+    return paginationItems;
+  }
+
   render() {
     const { t } = this.props;
     const messageForNoTag = this.state.tagData.length ? null : <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
+
+    const paginationItems = [];
+
+    const activePage = this.state.activePage;
+    const totalPage = this.state.paginationNumbers.totalPage;
+    const paginationStart = this.state.paginationNumbers.paginationStart;
+    const maxViewPageNum = this.state.paginationNumbers.maxViewPageNum;
+    const firstPrevItems = this.generateFirstPrev(activePage);
+    paginationItems.push(firstPrevItems);
+    const paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
+    paginationItems.push(paginations);
+    const nextLastItems = this.generateNextLast(activePage, totalPage);
+    paginationItems.push(nextLastItems);
+    const pagination = this.state.tagData.length ? <Pagination>{paginationItems}</Pagination> : null;
 
     return (
       <div className="text-center">
@@ -75,12 +178,7 @@ class TagsList extends React.Component {
           {messageForNoTag}
         </div>
         <div className="tag-list-pagination">
-          <PaginationWrapper
-            activePage={this.state.activePage}
-            changePage={this.handlePage}
-            totalItemsCount={this.state.totalTags}
-            pagingLimit={this.state.pagingLimit}
-          />
+          {pagination}
         </div>
       </div>
     );

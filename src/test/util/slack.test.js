@@ -1,15 +1,10 @@
-const { getInstance } = require('../setup-crowi');
+const helpers = require('@commons/util/helpers');
+
+const Crowi = require('@server/crowi');
 
 describe('Slack Util', () => {
-
-  let crowi;
-  let slack;
-
-  beforeEach(async(done) => {
-    crowi = await getInstance();
-    slack = require(`${crowi.libDir}/util/slack`)(crowi);
-    done();
-  });
+  const crowi = new Crowi(helpers.root());
+  const slack = require(`${crowi.libDir}/util/slack`)(crowi);
 
   test('post comment method exists', () => {
     expect(slack.postComment).toBeInstanceOf(Function);

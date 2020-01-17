@@ -2,27 +2,24 @@ import React from 'react';
 import md5 from 'md5';
 import PropTypes from 'prop-types';
 
-const DEFAULT_IMAGE = '/images/icons/user.svg';
-
 // TODO UserComponent?
 export default class UserPicture extends React.Component {
 
   getUserPicture(user) {
-    let pictPath;
-
     // gravatar
     if (user.isGravatarEnabled === true) {
-      pictPath = this.generateGravatarSrc(user);
+      return this.generateGravatarSrc(user);
     }
     // uploaded image
     if (user.image != null) {
-      pictPath = user.image;
+      return user.image;
     }
     if (user.imageAttachment != null) {
       return user.imageAttachment.filePathProxied;
     }
 
-    return pictPath || DEFAULT_IMAGE;
+    return '/images/icons/user.svg';
+
   }
 
   generateGravatarSrc(user) {
@@ -41,22 +38,9 @@ export default class UserPicture extends React.Component {
     return className.join(' ');
   }
 
-  renderForNull() {
-    return (
-      <img
-        src={DEFAULT_IMAGE}
-        alt="someone"
-        className={this.getClassName()}
-      />
-    );
-  }
-
   render() {
     const user = this.props.user;
-
-    if (user == null) {
-      return this.renderForNull();
-    }
+    const href = `/user/${user.username}`;
 
     const imgElem = (
       <img
@@ -69,14 +53,14 @@ export default class UserPicture extends React.Component {
     return (
       (this.props.withoutLink)
         ? <span>{imgElem}</span>
-        : <a href={`/user/${user.username}`}>{imgElem}</a>
+        : <a href={href}>{imgElem}</a>
     );
   }
 
 }
 
 UserPicture.propTypes = {
-  user: PropTypes.object,
+  user: PropTypes.object.isRequired,
   size: PropTypes.string,
   withoutLink: PropTypes.bool,
 };

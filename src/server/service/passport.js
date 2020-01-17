@@ -3,7 +3,7 @@ const urljoin = require('url-join');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const LdapStrategy = require('passport-ldapauth');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GoogleStrategy = require('passport-google-auth').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const OidcStrategy = require('openid-client').Strategy;
@@ -340,7 +340,7 @@ class PassportService {
     passport.use(
       new GoogleStrategy(
         {
-          clientID: configManager.getConfig('crowi', 'security:passport-google:clientId'),
+          clientId: configManager.getConfig('crowi', 'security:passport-google:clientId'),
           clientSecret: configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
           callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above

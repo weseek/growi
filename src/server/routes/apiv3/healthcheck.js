@@ -18,16 +18,14 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/healthcheck:
+   *  /healthcheck:
    *    get:
-   *      tags: [Healthcheck, apiv3]
-   *      operationId: getHealthcheck
-   *      summary: /_api/v3/healthcheck
+   *      tags: [Healthcheck]
    *      description: Check whether the server is healthy or not
    *      parameters:
    *        - name: connectToMiddlewares
    *          in: query
-   *          description: Check also MongoDB and SearchService
+   *          description: Check also MongoDB and Elasticsearch
    *          schema:
    *            type: boolean
    *      responses:
@@ -40,13 +38,14 @@ module.exports = (crowi) => {
    *                  mongo:
    *                    type: string
    *                    description: 'OK'
-   *                  searchInfo:
+   *                  esInfo:
    *                    type: object
+   *                    description: A result of `client.info()` of Elasticsearch Info API
    */
   router.get('/', helmet.noCache(), async(req, res) => {
     const connectToMiddlewares = req.query.connectToMiddlewares;
 
-    // return 200 w/o connecting to MongoDB and SearchService
+    // return 200 w/o connecting to MongoDB and Elasticsearch
     if (connectToMiddlewares == null) {
       res.status(200).send({ status: 'OK' });
       return;
@@ -58,9 +57,9 @@ module.exports = (crowi) => {
       await Config.findOne({});
       // connect to Elasticsearch
       const search = crowi.getSearcher();
-      const searchInfo = await search.getInfo();
+      const esInfo = await search.getInfo();
 
-      res.status(200).send({ mongo: 'OK', searchInfo });
+      res.status(200).send({ mongo: 'OK', esInfo });
     }
     catch (err) {
       res.status(503).send({ err });

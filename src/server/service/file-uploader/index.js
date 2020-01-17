@@ -5,8 +5,6 @@ const envToModuleMappings = {
   mongo:   'gridfs',
   mongodb: 'gridfs',
   gridfs:  'gridfs',
-  gcp:     'gcs',
-  gcs:     'gcs',
 };
 
 class FileUploaderFactory {

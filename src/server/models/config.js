@@ -1,22 +1,21 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
+/* eslint-disable no-use-before-define */
 
 module.exports = function(crowi) {
+  const mongoose = require('mongoose');
 
   const configSchema = new mongoose.Schema({
-    ns: { type: String, required: true },
-    key: { type: String, required: true },
+    ns: { type: String, required: true, index: true },
+    key: { type: String, required: true, index: true },
     value: { type: String, required: true },
   });
-  // define unique compound index
-  configSchema.index({ ns: 1, key: 1 }, { unique: true });
-  configSchema.plugin(uniqueValidator);
 
   /**
    * default values when GROWI is cleanly installed
    */
   function getConfigsForInstalling() {
-    // eslint-disable-next-line no-use-before-define
     const config = getDefaultCrowiConfigs();
 
     // overwrite
@@ -102,7 +101,6 @@ module.exports = function(crowi) {
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
-      'customize:isEnabledStaleNotification': false,
 
       'importer:esa:team_name': undefined,
       'importer:esa:access_token': undefined,
@@ -175,24 +173,15 @@ module.exports = function(crowi) {
       },
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
-      themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-      pageBreakSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
-      pageBreakCustomSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
       isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
       tagWhiteList: crowi.xssService.getTagWhiteList(),
       attrWhiteList: crowi.xssService.getAttrWhiteList(),
-      highlightJsStyle: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-      customizeTitle: crowi.configManager.getConfig('crowi', 'customize:title'),
-      customizeHeader: crowi.configManager.getConfig('crowi', 'customize:header'),
-      customizeCss: crowi.configManager.getConfig('crowi', 'customize:css'),
       isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
-      isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-      customizeScript: crowi.configManager.getConfig('crowi', 'customize:script'),
       hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,
@@ -202,7 +191,6 @@ module.exports = function(crowi) {
         NO_CDN: env.NO_CDN || null,
       },
       recentCreatedLimit: crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
-      isEnabledStaleNotification: crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAclEnabled: crowi.aclService.isAclEnabled(),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };

@@ -35,10 +35,6 @@ class AppService {
   }
   /* eslint-enable no-else-return */
 
-  getTzoffset() {
-    return -(this.configManager.getConfig('crowi', 'app:timezone') || 9) * 60;
-  }
-
   /**
    * Execute only once for installing application
    */

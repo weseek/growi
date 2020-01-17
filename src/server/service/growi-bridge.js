@@ -11,9 +11,24 @@ const unzipper = require('unzipper');
 class GrowiBridgeService {
 
   constructor(crowi) {
-    this.crowi = crowi;
     this.encoding = 'utf-8';
     this.metaFileName = 'meta.json';
+
+    // { pages: Page, users: User, ... }
+    this.collectionMap = {};
+    this.initCollectionMap(crowi.models);
+  }
+
+  /**
+   * initialize collection map
+   *
+   * @memberOf GrowiBridgeService
+   * @param {object} models from models/index.js
+   */
+  initCollectionMap(models) {
+    for (const model of Object.values(models)) {
+      this.collectionMap[model.collection.collectionName] = model;
+    }
   }
 
   /**
@@ -44,9 +59,11 @@ class GrowiBridgeService {
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {
-    const Model = Object.values(this.crowi.models).find((m) => {
-      return m.collection != null && m.collection.name === collectionName;
-    });
+    const Model = this.collectionMap[collectionName];
+
+    if (Model == null) {
+      throw new Error(`cannot find a model for collection name "${collectionName}"`);
+    }
 
     return Model;
   }
@@ -80,12 +97,10 @@ class GrowiBridgeService {
    * @return {object} meta{object} and files{Array.<object>}
    */
   async parseZipFile(zipFile) {
-    const fileStat = fs.statSync(zipFile);
-    const innerFileStats = [];
-    let meta = {};
-
     const readStream = fs.createReadStream(zipFile);
     const unzipStream = readStream.pipe(unzipper.Parse());
+    const fileStats = [];
+    let meta = {};
 
     unzipStream.on('entry', async(entry) => {
       const fileName = entry.path;
@@ -95,7 +110,7 @@ class GrowiBridgeService {
         meta = JSON.parse((await entry.buffer()).toString());
       }
       else {
-        innerFileStats.push({
+        fileStats.push({
           fileName,
           collectionName: path.basename(fileName, '.json'),
           size,
@@ -105,20 +120,12 @@ class GrowiBridgeService {
       entry.autodrain();
     });
 
-    try {
-      await streamToPromise(unzipStream);
-    }
-    // if zip is broken
-    catch (err) {
-      logger.error(err);
-      return null;
-    }
+    await streamToPromise(unzipStream);
 
     return {
       meta,
       fileName: path.basename(zipFile),
-      fileStat,
-      innerFileStats,
+      fileStats,
     };
   }
 

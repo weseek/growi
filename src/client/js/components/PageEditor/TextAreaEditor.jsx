@@ -149,13 +149,6 @@ export default class TextAreaEditor extends AbstractEditor {
     this.replaceValue(text, this.getBolPos(), lowerPos);
   }
 
-  /**
-   * @inheritDoc
-   */
-  replaceLine(text) {
-    this.replaceValue(text, this.getBolPos(), this.getEolPos());
-  }
-
   getBolPos() {
     const currentPos = this.textarea.selectionStart;
     return this.textarea.value.lastIndexOf('\n', currentPos - 1) + 1;

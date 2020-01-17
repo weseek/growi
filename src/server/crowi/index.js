@@ -6,7 +6,6 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
-const { getMongoUri } = require('@commons/util/mongoose-utils');
 
 const path = require('path');
 
@@ -15,7 +14,6 @@ const sep = path.sep;
 const mongoose = require('mongoose');
 
 const models = require('../models');
-const initMiddlewares = require('../middlewares');
 
 const PluginService = require('../plugins/plugin.service');
 
@@ -58,7 +56,6 @@ function Crowi(rootdir) {
   this.tokens = null;
 
   this.models = {};
-  this.middlewares = {};
 
   this.env = process.env;
   this.node_env = this.env.NODE_ENV || 'development';
@@ -71,14 +68,20 @@ function Crowi(rootdir) {
     search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
     tag: new (require(`${self.eventsDir}tag`))(this),
-    admin: new (require(`${self.eventsDir}admin`))(this),
   };
+}
+
+function getMongoUrl(env) {
+  return env.MONGOLAB_URI // for B.C.
+    || env.MONGODB_URI // MONGOLAB changes their env name
+    || env.MONGOHQ_URL
+    || env.MONGO_URI
+    || ((process.env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
 }
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupModels();
-  await this.setupMiddlewares();
   await this.setupSessionConfig();
   await this.setupConfigManager();
 
@@ -195,10 +198,10 @@ Crowi.prototype.event = function(name, event) {
 };
 
 Crowi.prototype.setupDatabase = function() {
+  // mongoUri = mongodb://user:password@host/dbname
   mongoose.Promise = global.Promise;
 
-  // mongoUri = mongodb://user:password@host/dbname
-  const mongoUri = getMongoUri();
+  const mongoUri = getMongoUrl(this.env);
 
   return mongoose.connect(mongoUri, { useNewUrlParser: true });
 };
@@ -209,7 +212,7 @@ Crowi.prototype.setupSessionConfig = function() {
   const sessionAge = (1000 * 3600 * 24 * 30);
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
 
-  const mongoUrl = getMongoUri();
+  const mongoUrl = getMongoUrl(this.env);
   let sessionConfig;
 
   return new Promise(((resolve, reject) => {
@@ -253,11 +256,6 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
   });
-};
-
-Crowi.prototype.setupMiddlewares = async function() {
-  // const self = this;
-  this.middlewares = await initMiddlewares(this);
 };
 
 Crowi.prototype.getIo = function() {
@@ -330,16 +328,19 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const SearchService = require('@server/service/search');
-  const searchService = new SearchService(this);
+  const self = this;
+  const searcherUri = this.env.ELASTICSEARCH_URI
+    || this.env.BONSAI_URL
+    || null;
 
-  if (searchService.isAvailable) {
+  if (searcherUri) {
     try {
-      this.searcher = searchService;
+      self.searcher = new (require(path.join(self.libDir, 'util', 'search')))(self, searcherUri);
+      self.searcher.initIndices();
     }
     catch (e) {
       logger.error('Error on setup searcher', e);
-      this.searcher = null;
+      self.searcher = null;
     }
   }
 };

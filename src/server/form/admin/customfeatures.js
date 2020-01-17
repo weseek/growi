@@ -8,5 +8,4 @@ module.exports = form(
   field('settingForm[customize:isSavedStatesOfTabChanges]').trim().toBooleanStrict(),
   field('settingForm[customize:isEnabledAttachTitleHeader]').trim().toBooleanStrict(),
   field('settingForm[customize:showRecentCreatedNumber]').trim().toInt(),
-  field('settingForm[customize:isEnabledStaleNotification]').trim().toBooleanStrict(),
 );

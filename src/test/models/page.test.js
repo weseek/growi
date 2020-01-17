@@ -117,17 +117,23 @@ describe('Page', () => {
 
   describe('.isPublic', () => {
     describe('with a public page', () => {
-      test('should return true', async() => {
-        const page = await Page.findOne({ path: '/grant/public' });
-        expect(page.isPublic()).toEqual(true);
+      test('should return true', (done) => {
+        Page.findOne({ path: '/grant/public' }, (err, page) => {
+          expect(err).toBeNull();
+          expect(page.isPublic()).toEqual(true);
+          done();
+        });
       });
     });
 
     ['restricted', 'specified', 'owner'].forEach((grant) => {
       describe(`with a ${grant} page`, () => {
-        test('should return false', async() => {
-          const page = await Page.findOne({ path: `/grant/${grant}` });
-          expect(page.isPublic()).toEqual(false);
+        test('should return false', (done) => {
+          Page.findOne({ path: `/grant/${grant}` }, (err, page) => {
+            expect(err).toBeNull();
+            expect(page.isPublic()).toEqual(false);
+            done();
+          });
         });
       });
     });
@@ -235,10 +241,12 @@ describe('Page', () => {
 
   describe('Extended field', () => {
     describe('Slack Channel.', () => {
-      test('should be empty', async() => {
-        const page = await Page.findOne({ path: '/page/for/extended' });
-        expect(page.extended.hoge).toEqual(1);
-        expect(page.getSlackChannel()).toEqual('');
+      test('should be empty', (done) => {
+        Page.findOne({ path: '/page/for/extended' }, (err, page) => {
+          expect(page.extended.hoge).toEqual(1);
+          expect(page.getSlackChannel()).toEqual('');
+          done();
+        });
       });
 
       test('set slack channel and should get it and should keep hoge ', async() => {

@@ -2,8 +2,7 @@
 /* eslint-disable no-return-await */
 
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate');
 
 /*
  * define schema
@@ -16,7 +15,6 @@ const schema = new mongoose.Schema({
   },
 });
 schema.plugin(mongoosePaginate);
-schema.plugin(uniqueValidator);
 
 /**
  * Tag Class
@@ -24,17 +22,6 @@ schema.plugin(uniqueValidator);
  * @class Tag
  */
 class Tag {
-
-  static async getIdToNameMap(tagIds) {
-    const tags = await this.find({ _id: { $in: tagIds } });
-
-    const idToNameMap = {};
-    tags.forEach((tag) => {
-      idToNameMap[tag._id.toString()] = tag.name;
-    });
-
-    return idToNameMap;
-  }
 
   static async findOrCreate(tagName) {
     const tag = await this.findOne({ name: tagName });

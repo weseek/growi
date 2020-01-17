@@ -7,65 +7,6 @@ const fs = require('fs');
 
 const ApiResponse = require('../util/apiResponse');
 
-/**
- * @swagger
- *  tags:
- *    name: Attachments
- */
-
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Attachment:
- *        description: Attachment
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: attachment ID
- *            example: 5e0734e072560e001761fa67
- *          __v:
- *            type: number
- *            description: attachment version
- *            example: 0
- *          fileFormat:
- *            type: string
- *            description: file format in MIME
- *            example: text/plain
- *          fileName:
- *            type: string
- *            description: file name
- *            example: 601b7c59d43a042c0117e08dd37aad0aimage.txt
- *          originalName:
- *            type: string
- *            description: original file name
- *            example: file.txt
- *          filePath:
- *            type: string
- *            description: file path
- *            example: attachment/5e07345972560e001761fa63/6b0b3facf3628699263d760e18efd446.txt
- *          creator:
- *            $ref: '#/components/schemas/User'
- *          page:
- *            type: string
- *            description: page ID attached at
- *            example: 5e07345972560e001761fa63
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          fileSize:
- *            type: number
- *            description: file size
- *            example: 3494332
- *          url:
- *            type: string
- *            description: attachment URL
- *            example: http://localhost/files/5e0734e072560e001761fa67
- */
-
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const User = crowi.model('User');
@@ -106,30 +47,19 @@ module.exports = function(crowi, app) {
   /**
    * Common method to response
    *
-   * @param {Request} req
    * @param {Response} res
    * @param {User} user
    * @param {Attachment} attachment
    * @param {boolean} forceDownload
    */
-  async function responseForAttachment(req, res, attachment, forceDownload) {
+  async function responseForAttachment(res, user, attachment, forceDownload) {
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    const user = req.user;
     const isAccessible = await isAccessibleByViewer(user, attachment);
     if (!isAccessible) {
       return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
-    }
-
-    // add headers before evaluating 'req.fresh'
-    setHeaderToRes(res, attachment, forceDownload);
-
-    // return 304 if request is "fresh"
-    // see: http://expressjs.com/en/5x/api.html#req.fresh
-    if (req.fresh) {
-      return res.sendStatus(304);
     }
 
     let fileStream;
@@ -141,6 +71,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(e.message));
     }
 
+    setHeaderToRes(res, attachment, forceDownload);
     return fileStream.pipe(res);
   }
 
@@ -152,16 +83,14 @@ module.exports = function(crowi, app) {
    * @param {boolean} forceDownload
    */
   function setHeaderToRes(res, attachment, forceDownload) {
-    res.set({
-      ETag: `Attachment-${attachment._id}`,
-      'Last-Modified': attachment.createdAt,
-    });
-
     // download
     if (forceDownload) {
-      res.set({
-        'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
+      const headers = {
+        'Content-Type': 'application/force-download',
+        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+      };
+
+      res.writeHead(200, headers);
     }
     // reference
     else {
@@ -205,7 +134,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
-    return responseForAttachment(req, res, attachment, true);
+    return responseForAttachment(res, req.user, attachment, true);
   };
 
   /**
@@ -220,7 +149,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
-    return responseForAttachment(req, res, attachment);
+    return responseForAttachment(res, req.user, attachment);
   };
 
   /**
@@ -241,43 +170,9 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findOne({ filePath });
 
-    return responseForAttachment(req, res, attachment);
+    return responseForAttachment(res, req.user, attachment);
   };
 
-  /**
-   * @swagger
-   *
-   *    /_api/attachments.list:
-   *      get:
-   *        tags: [Attachments, apiv1]
-   *        operationId: listAttachments
-   *        summary: /_api/attachments.list
-   *        description: Get list of attachments in page
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            required: true
-   *        responses:
-   *          200:
-   *            description: Succeeded to get list of attachments.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    attachments:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Attachment'
-   *                      description: attachment list
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {get} /attachments.list Get attachments of the page
    * @apiName ListAttachments
@@ -312,73 +207,6 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(await fileUploader.checkLimit(fileSize)));
   };
 
-  /**
-   * @swagger
-   *
-   *    /_api/attachments.add:
-   *      post:
-   *        tags: [Attachments, apiv1]
-   *        operationId: addAttachment
-   *        summary: /_api/attachments.add
-   *        description: Add attachment to the page
-   *        requestBody:
-   *          content:
-   *            "multipart/form-data":
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    nullable: true
-   *                    type: string
-   *                  path:
-   *                    nullable: true
-   *                    type: string
-   *                  file:
-   *                    type: string
-   *                    format: binary
-   *                    description: attachment data
-   *              encoding:
-   *                path:
-   *                  contentType: application/x-www-form-urlencoded
-   *            "*\/*":
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    nullable: true
-   *                    type: string
-   *                  path:
-   *                    nullable: true
-   *                    type: string
-   *                  file:
-   *                    type: string
-   *                    format: binary
-   *                    description: attachment data
-   *              encoding:
-   *                path:
-   *                  contentType: application/x-www-form-urlencoded
-   *        responses:
-   *          200:
-   *            description: Succeeded to add attachment.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *                    attachment:
-   *                      $ref: '#/components/schemas/Attachment'
-   *                    url:
-   *                      $ref: '#/components/schemas/Attachment/properties/url'
-   *                    pageCreated:
-   *                      type: boolean
-   *                      description: whether the page was created
-   *                      example: false
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {post} /attachments.add Add attachment to the page
    * @apiName AddAttachments
@@ -480,38 +308,6 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
-  /**
-   * @swagger
-   *
-   *    /_api/attachments.remove:
-   *      post:
-   *        tags: [Attachments, apiv1]
-   *        operationId: removeAttachment
-   *        summary: /_api/attachments.remove
-   *        description: Remove attachment
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  attachment_id:
-   *                    $ref: '#/components/schemas/Attachment/properties/_id'
-   *                required:
-   *                  - attachment_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to remove attachment.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   /**
    * @api {post} /attachments.remove Remove attachments
    * @apiName RemoveAttachments

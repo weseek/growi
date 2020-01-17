@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
+const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test';
 
-const { getMongoUri } = require('@commons/util/mongoose-utils');
+const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
 jest.setTimeout(30000); // default 5000
 
 beforeAll(async(done) => {
-  await mongoose.connect(getMongoUri(), { useNewUrlParser: true });
+  await mongoose.connect(mongoUri, { useNewUrlParser: true });
   done();
 });
 
