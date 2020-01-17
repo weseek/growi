@@ -4,6 +4,7 @@
 
 * Feature: Alert for stale page
 * Improvement: Reactify admin pages (App)
+* Improvement: Accessibility for editor icons of dark themes
 
 ## v3.6.3
 
