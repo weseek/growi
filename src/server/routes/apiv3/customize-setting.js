@@ -116,7 +116,7 @@ module.exports = (crowi) => {
     ],
     highlight: [
       body('highlightJsStyle').isString().isIn([
-        'github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tororrow-night', 'vs2015',
+        'github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tomorrow-night', 'vs2015',
       ]),
       body('highlightJsStyleBorder').isBoolean(),
     ],
