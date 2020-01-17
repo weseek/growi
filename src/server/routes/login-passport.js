@@ -253,9 +253,13 @@ module.exports = function(crowi, app) {
       return loginFailure(req, res, next);
     }
 
+    const email = response.emails[0].value;
+    const username = email.slice(0, email.indexOf('@'));
+
     const userInfo = {
       id: response.id,
-      username: response.displayName,
+      email,
+      username,
       name: `${response.name.givenName} ${response.name.familyName}`,
     };
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
