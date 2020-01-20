@@ -191,6 +191,63 @@ module.exports = (crowi) => {
   });
 
   /**
+   * @swagger
+   *
+   *    /_api/v3/notification-setting/global-notification/{id}/enabled:
+   *      put:
+   *        tags: [NotificationSetting]
+   *        description: toggle enabled global notification
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: notification id for updated
+   *            schema:
+   *              type: string
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  isEnabled:
+   *                    type: boolean
+   *                    description: is notification enabled
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete global notification pattern
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    deletedNotificaton:
+   *                      type: object
+   *                      description: notification id for updated
+   */
+  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+    const { isEnabled } = req.body;
+
+    try {
+      if (isEnabled) {
+        await GlobalNotificationSetting.enable(id);
+      }
+      else {
+        await GlobalNotificationSetting.disable(id);
+      }
+
+      return res.apiv3({ id });
+
+    }
+    catch (err) {
+      const msg = 'Error occurred in toggle of global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'toggle-globalNotification-failed'));
+    }
+
+  });
+
+  /**
   * @swagger
   *
   *    /_api/v3/notification-setting/global-notification/{id}:

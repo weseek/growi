@@ -20,7 +20,7 @@ class GlobalNotificationList extends React.Component {
 
     this.state = {
       isConfirmationModalOpen: false,
-      notificatiionForConfiguration: null,
+      notificationForConfiguration: null,
     };
 
     this.openConfirmationModal = this.openConfirmationModal.bind(this);
@@ -28,19 +28,35 @@ class GlobalNotificationList extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  openConfirmationModal(notificatiion) {
-    this.setState({ isConfirmationModalOpen: true, notificatiionForConfiguration: notificatiion });
+  async toggleIsEnabled(notification) {
+    const { t } = this.props;
+    const isEnabled = !notification.isEnabled;
+    try {
+      await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${notification._id}/enabled`, {
+        isEnabled,
+      });
+      toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
+      await this.props.adminNotificationContainer.retrieveNotificationData();
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  openConfirmationModal(notification) {
+    this.setState({ isConfirmationModalOpen: true, notificationForConfiguration: notification });
   }
 
   closeConfirmationModal() {
-    this.setState({ isConfirmationModalOpen: false, notificatiionForConfiguration: null });
+    this.setState({ isConfirmationModalOpen: false, notificationForConfiguration: null });
   }
 
   async onClickSubmit() {
     const { t, adminNotificationContainer } = this.props;
 
     try {
-      const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificatiionForConfiguration._id);
+      const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificationForConfiguration._id);
       toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
     }
     catch (err) {
@@ -60,8 +76,12 @@ class GlobalNotificationList extends React.Component {
           return (
             <tr key={notification._id}>
               <td className="align-middle td-abs-center">
-                {/* GW-807 switch enable notification */}
-                <input type="checkbox" className="js-switch" data-size="small" data-id="{{ notification._id.toString() }}" />
+                <input
+                  id="isNotificationEnabled"
+                  type="checkbox"
+                  defaultChecked={notification.isEnabled}
+                  onClick={e => this.toggleIsEnabled(notification)}
+                />
               </td>
               <td>
                 {notification.triggerPath}
@@ -126,12 +146,12 @@ class GlobalNotificationList extends React.Component {
             </tr>
           );
         })}
-        {this.state.notificatiionForConfiguration != null && (
+        {this.state.notificationForConfiguration != null && (
           <NotificationDeleteModal
             isOpen={this.state.isConfirmationModalOpen}
             onClose={this.closeConfirmationModal}
             onClickSubmit={this.onClickSubmit}
-            notificatiionForConfiguration={this.state.notificatiionForConfiguration}
+            notificationForConfiguration={this.state.notificationForConfiguration}
           />
         )}
       </React.Fragment>

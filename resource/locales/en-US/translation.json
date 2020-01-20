@@ -614,7 +614,8 @@
     "add_notification_pattern": "Add user trigger notification patterns",
     "delete_notification_pattern": "Delete notification pattern",
     "delete_notification_pattern_desc1": "Delete Path: {{path}}",
-    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered"
+    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
+    "toggle_notification": "Updated setting of {{path}}"
   },
   "customize_page": {
     "recommended": "Recommended",
