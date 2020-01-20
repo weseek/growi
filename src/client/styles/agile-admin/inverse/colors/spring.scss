@@ -104,8 +104,7 @@ body:not(.on-edit) .nav.nav-tabs {
 /*
  * button
  */
-
-button:not(.btn-link .dropdown-toggle) {
+button:not(.btn-link):not(.dropdown-toggle) {
   border-radius: 10%;
   box-shadow: 2px 2px 4px gray;
 }
