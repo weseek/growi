@@ -193,8 +193,7 @@ module.exports = (crowi) => {
   // TODO swagger
   router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
-    const isEnabled = req.query;
-    console.log(isEnabled);
+    const { isEnabled } = req.body;
 
     try {
       if (isEnabled) {

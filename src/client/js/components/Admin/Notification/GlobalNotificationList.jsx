@@ -28,13 +28,15 @@ class GlobalNotificationList extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  async toggleIsEnabled(notification, isEnabled) {
+  async toggleIsEnabled(notification) {
     const { t } = this.props;
+    const isEnabled = !notification.isEnabled;
     try {
       await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${notification._id}/enabled`, {
         isEnabled,
       });
       toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
+      await this.props.adminNotificationContainer.retrieveNotificationData();
     }
     catch (err) {
       toastError(err);
@@ -78,7 +80,7 @@ class GlobalNotificationList extends React.Component {
                   id="isNotificationEnabled"
                   type="checkbox"
                   defaultChecked={notification.isEnabled}
-                  onClick={e => this.toggleIsEnabled(notification, e.target.value)}
+                  onClick={e => this.toggleIsEnabled(notification)}
                 />
               </td>
               <td>
