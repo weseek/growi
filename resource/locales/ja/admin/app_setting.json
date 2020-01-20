@@ -34,7 +34,5 @@
   "load_plugins": "プラグインを読み込む",
   "enable": "有効",
   "disable": "無効",
-  "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
-  "updated_site_url": "サイトURLを更新しました",
-  "updated_plugin_setting": "プラグイン設定を更新しました"
+  "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します"
 }
