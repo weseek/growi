@@ -152,9 +152,3 @@ div .btn-default {
   background-color: $themelight;
   border-color: $headingtext;
 }
-
-// 編集画面上部のピンク色のブロックが邪魔をしている
-
-div .row .bg-title .hidden-print {
-  background-color: rgba(0, 0, 0, 0);
-}
