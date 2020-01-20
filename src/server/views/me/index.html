@@ -173,7 +173,7 @@
             {% if fileUploadService.getIsUploadable() %}
             <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <input type="file" name="profileImage" accept="image/*">
+              <div id="profile-image-uploader"></div>
               <div id="pictureUploadFormProgress" class="d-flex align-items-center">
               </div>
             </form>

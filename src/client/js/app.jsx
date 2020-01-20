@@ -34,6 +34,7 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
+import ProfileImageUploader from './components/ProfileImageUploader';
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
@@ -107,6 +108,8 @@ let componentMappings = {
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
+
+  'profile-image-uploader': <ProfileImageUploader />,
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
