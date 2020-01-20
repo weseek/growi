@@ -402,7 +402,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/authentication:
+   *    /_api/v3/security-setting/authentication/enabled:
    *      put:
    *        tags: [SecuritySetting]
    *        description: Update authentication isEnabled
@@ -426,7 +426,7 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: updated param
    */
-  router.put('/authentication', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, ApiV3FormValidator, async(req, res) => {
+  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, ApiV3FormValidator, async(req, res) => {
     const { isEnabled, auth } = req.body;
     const authLowerCase = auth.toLowerCase();
 

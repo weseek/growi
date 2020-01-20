@@ -126,7 +126,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async switchAuthentication(auth) {
     const isEnabled = !this.state[`is${auth}Enabled`];
     try {
-      await this.appContainer.apiv3.put('/security-setting/authentication', {
+      await this.appContainer.apiv3.put('/security-setting/authentication/enabled', {
         isEnabled,
         auth,
       });
