@@ -53,21 +53,21 @@ class AppSettingsPage extends React.Component {
 
         <div className="row">
           <div className="col-md-12">
-            <h2>{t('app_setting.Mail settings')}</h2>
+            <h2>{t('app_setting:mail_settings')}</h2>
             <MailSetting />
           </div>
         </div>
 
         <div className="row">
           <div className="col-md-12">
-            <h2>{t('app_setting.AWS settings')}</h2>
+            <h2>{t('app_setting:aws_settings')}</h2>
             <AwsSetting />
           </div>
         </div>
 
         <div className="row">
           <div className="col-md-12">
-            <h2>{t('app_setting.Plugin settings')}</h2>
+            <h2>{t('app_setting:plugin_settings')}</h2>
             <PluginSetting />
           </div>
         </div>
