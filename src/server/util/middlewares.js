@@ -1,3 +1,5 @@
+// don't add any more middlewares to this file.
+// all new middlewares should be an independent file under /server/routes/middlewares
 // eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:lib:middlewares');
 
@@ -6,7 +8,7 @@ const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 
-module.exports = (crowi, app) => {
+module.exports = (crowi) => {
   const { configManager, appService } = crowi;
 
   const middlewares = {};
@@ -30,7 +32,7 @@ module.exports = (crowi, app) => {
 
   middlewares.swigFunctions = function() {
     return function(req, res, next) {
-      require('../util/swigFunctions')(crowi, app, req, res.locals);
+      require('../util/swigFunctions')(crowi, req, res.locals);
       next();
     };
   };
@@ -99,7 +101,7 @@ module.exports = (crowi, app) => {
       swig.setFilter('datetz', (input, format) => {
         // timezone
         const swigFilters = require('swig-templates/lib/filters');
-        return swigFilters.date(input, format, app.get('tzoffset'));
+        return swigFilters.date(input, format, crowi.appService.getTzoffset());
       });
 
       swig.setFilter('dateDistance', (input) => {

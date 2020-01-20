@@ -1,3 +1,133 @@
+/**
+ * @swagger
+ *  tags:
+ *    name: Pages
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Page:
+ *        description: Page
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: page ID
+ *            example: 5e07345972560e001761fa63
+ *          __v:
+ *            type: number
+ *            description: DB record version
+ *            example: 0
+ *          commentCount:
+ *            type: number
+ *            description: count of comments
+ *            example: 3
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          creator:
+ *            $ref: '#/components/schemas/User'
+ *          extended:
+ *            type: object
+ *            description: extend data
+ *            example: {}
+ *          grant:
+ *            type: number
+ *            description: grant
+ *            example: 1
+ *          grantedUsers:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *            example: ["5ae5fccfc5577b0004dbd8ab"]
+ *          lastUpdateUser:
+ *            $ref: '#/components/schemas/User'
+ *          liker:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *            example: []
+ *          path:
+ *            type: string
+ *            description: page path
+ *            example: /
+ *          redirectTo:
+ *            type: string
+ *            description: redirect path
+ *            example: ""
+ *          revision:
+ *            $ref: '#/components/schemas/Revision'
+ *          seenUsers:
+ *            type: array
+ *            description: granted users
+ *            items:
+ *              type: string
+ *              description: user ID
+ *            example: ["5ae5fccfc5577b0004dbd8ab"]
+ *          status:
+ *            type: string
+ *            description: status
+ *            enum:
+ *              - 'wip'
+ *              - 'published'
+ *              - 'deleted'
+ *              - 'deprecated'
+ *            example: published
+ *          updatedAt:
+ *            type: string
+ *            description: date updated at
+ *            example: 2010-01-01T00:00:00.000Z
+ *
+ *      UpdatePost:
+ *        description: UpdatePost
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: update post ID
+ *            example: 5e0734e472560e001761fa68
+ *          __v:
+ *            type: number
+ *            description: DB record version
+ *            example: 0
+ *          pathPattern:
+ *            type: string
+ *            description: path pattern
+ *            example: /test
+ *          patternPrefix:
+ *            type: string
+ *            description: patternPrefix prefix
+ *            example: /
+ *          patternPrefix2:
+ *            type: string
+ *            description: path
+ *            example: test
+ *          channel:
+ *            type: string
+ *            description: channel
+ *            example: general
+ *          provider:
+ *            type: string
+ *            description: provider
+ *            enum:
+ *              - slack
+ *            example: slack
+ *          creator:
+ *            $ref: '#/components/schemas/User'
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ */
+
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
@@ -72,9 +202,6 @@ module.exports = function(crowi, app) {
   }
 
   function generatePager(offset, limit, totalCount) {
-    let next = null;
-
-
     let prev = null;
 
     if (offset > 0) {
@@ -84,11 +211,9 @@ module.exports = function(crowi, app) {
       }
     }
 
-    if (totalCount < limit) {
+    let next = offset + limit;
+    if (totalCount < next) {
       next = null;
-    }
-    else {
-      next = offset + limit;
     }
 
     return {
@@ -164,7 +289,7 @@ module.exports = function(crowi, app) {
 
     const queryOptions = {
       offset,
-      limit: limit + 1,
+      limit,
       includeTrashed: path.startsWith('/trash/'),
       isRegExpEscapedFromPath,
     };
@@ -469,13 +594,15 @@ module.exports = function(crowi, app) {
   };
 
   actions.deletedPageListShow = async function(req, res) {
-    const path = `/trash${getPathFromRequest(req)}`;
+    // normalizePath makes '/trash/' -> '/trash'
+    const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
+
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
 
     const queryOptions = {
       offset,
-      limit: limit + 1,
+      limit,
       includeTrashed: true,
     };
 
@@ -515,6 +642,47 @@ module.exports = function(crowi, app) {
   const api = {};
   actions.api = api;
 
+  /**
+   * @swagger
+   *
+   *    /_api/pages.list:
+   *      get:
+   *        tags: [Pages, apiv1]
+   *        operationId: listPages
+   *        summary: /_api/pages.list
+   *        description: Get list of pages
+   *        parameters:
+   *          - in: query
+   *            name: path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *          - in: query
+   *            name: user
+   *            schema:
+   *              $ref: '#/components/schemas/User/properties/username'
+   *          - in: query
+   *            name: offset
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get list of pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    pages:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Page'
+   *                      description: page list
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {get} /pages.list List pages by user
    * @apiName ListPage
@@ -565,6 +733,45 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/pages.create:
+   *      post:
+   *        tags: [Pages, apiv1]
+   *        operationId: createPage
+   *        summary: /_api/pages.create
+   *        description: Create page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    $ref: '#/components/schemas/Revision/properties/body'
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                required:
+   *                  - body
+   *                  - path
+   *        responses:
+   *          200:
+   *            description: Succeeded to create page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /pages.create Create new page
    * @apiName CreatePage
    * @apiGroup Page
@@ -576,7 +783,7 @@ module.exports = function(crowi, app) {
    */
   api.create = async function(req, res) {
     const body = req.body.body || null;
-    const pagePath = req.body.path || null;
+    let pagePath = req.body.path || null;
     const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
@@ -588,6 +795,9 @@ module.exports = function(crowi, app) {
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
+
+    // check whether path starts slash
+    pagePath = pathUtils.addHeadingSlash(pagePath);
 
     // check page existence
     const isExist = await Page.count({ path: pagePath }) > 0;
@@ -631,6 +841,47 @@ module.exports = function(crowi, app) {
     }
   };
 
+  /**
+   * @swagger
+   *
+   *    /_api/pages.update:
+   *      post:
+   *        tags: [Pages, apiv1]
+   *        operationId: updatePage
+   *        summary: /_api/pages.update
+   *        description: Update page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    $ref: '#/components/schemas/Revision/properties/body'
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  revision_id:
+   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                required:
+   *                  - body
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to update page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {post} /pages.update Update page
    * @apiName UpdatePage
@@ -719,6 +970,44 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/pages.get:
+   *      get:
+   *        tags: [Pages, apiv1]
+   *        operationId: getPage
+   *        summary: /_api/pages.get
+   *        description: Get page data
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *          - in: query
+   *            name: revision_id
+   *            schema:
+   *              $ref: '#/components/schemas/Revision/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get page data.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /pages.get Get page data
    * @apiName GetPage
    * @apiGroup Page
@@ -805,6 +1094,40 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/pages.seen:
+   *      post:
+   *        tags: [Pages, apiv1]
+   *        operationId: seenPage
+   *        summary: /_api/pages.seen
+   *        description: Mark as seen user
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to be page seen.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    seenUser:
+   *                      $ref: '#/components/schemas/Page/properties/seenUsers'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /pages.seen Mark as seen user
    * @apiName SeenPage
    * @apiGroup Page
@@ -839,6 +1162,40 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
+  /**
+   * @swagger
+   *
+   *    /_api/likes.add:
+   *      post:
+   *        tags: [Pages, apiv1]
+   *        operationId: addLike
+   *        summary: /_api/likes.add
+   *        description: Like page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to be page liked.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {post} /likes.add Like page
    * @apiName LikePage
@@ -882,6 +1239,40 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/likes.remove:
+   *      post:
+   *        tags: [Pages, apiv1]
+   *        operationId: removeLike
+   *        summary: /_api/likes.remove
+   *        description: Unlike page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to not be page liked.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /likes.remove Unlike page
    * @apiName UnlikePage
    * @apiGroup Page
@@ -915,6 +1306,36 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
+  /**
+   * @swagger
+   *
+   *    /_api/pages.updatePost:
+   *      get:
+   *        tags: [Pages, apiv1]
+   *        operationId: getUpdatePostPage
+   *        summary: /_api/pages.updatePost
+   *        description: Get UpdatePost setting list
+   *        parameters:
+   *          - in: query
+   *            name: path
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/path'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get UpdatePost setting list.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    updatePost:
+   *                      $ref: '#/components/schemas/UpdatePost'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {get} /pages.updatePost
    * @apiName Get UpdatePost setting list
@@ -1054,6 +1475,51 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/pages.rename:
+   *      post:
+   *        tags: [Pages, apiv1]
+   *        operationId: renamePage
+   *        summary: /_api/pages.rename
+   *        description: Rename page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  revision_id:
+   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                  new_path:
+   *                    type: string
+   *                    description: new path
+   *                    example: /user/alice/new_test
+   *                  create_redirect:
+   *                    type: boolean
+   *                    description: whether redirect page
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to rename page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /pages.rename Rename page
    * @apiName RenamePage
    * @apiGroup Page
@@ -1067,7 +1533,7 @@ module.exports = function(crowi, app) {
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
-    const newPagePath = pathUtils.normalizePath(req.body.new_path);
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
     const options = {
       createRedirectPage: (req.body.create_redirect != null),
       updateMetadata: (req.body.remain_metadata == null),
@@ -1078,6 +1544,9 @@ module.exports = function(crowi, app) {
     if (!Page.isCreatableName(newPagePath)) {
       return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
     }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
@@ -1133,13 +1602,16 @@ module.exports = function(crowi, app) {
    */
   api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
-    const newPagePath = pathUtils.normalizePath(req.body.new_path);
+    let newPagePath = pathUtils.normalizePath(req.body.new_path);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
+
+    // check whether path starts slash
+    newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
     await page.populateDataToShowRevision();
     const originTags = await page.findRelatedTagsById();

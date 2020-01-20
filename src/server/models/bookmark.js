@@ -1,10 +1,12 @@
-// disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+const debug = require('debug')('growi:models:bookmark');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:bookmark');
-  const mongoose = require('mongoose');
-  const ObjectId = mongoose.Schema.Types.ObjectId;
   const bookmarkEvent = crowi.event('bookmark');
 
   let bookmarkSchema = null;
@@ -16,9 +18,27 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
   });
   bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
+  bookmarkSchema.plugin(uniqueValidator);
 
   bookmarkSchema.statics.countByPageId = async function(pageId) {
     return await this.count({ page: pageId });
+  };
+
+  /**
+   * @return {object} key: page._id, value: bookmark count
+   */
+  bookmarkSchema.statics.getPageIdToCountMap = async function(pageIds) {
+    const results = await this.aggregate()
+      .match({ page: { $in: pageIds } })
+      .group({ _id: '$page', count: { $sum: 1 } });
+
+    // convert to map
+    const idToCountMap = {};
+    results.forEach((result) => {
+      idToCountMap[result._id] = result.count;
+    });
+
+    return idToCountMap;
   };
 
   bookmarkSchema.statics.populatePage = async function(bookmarks) {
@@ -122,12 +142,12 @@ module.exports = function(crowi) {
     }
   };
 
-  bookmarkSchema.statics.removeBookmark = async function(page, user) {
+  bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
     const Bookmark = this;
 
     try {
-      const data = await Bookmark.findOneAndRemove({ page, user });
-      bookmarkEvent.emit('delete', page);
+      const data = await Bookmark.findOneAndRemove({ page: pageId, user });
+      bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
