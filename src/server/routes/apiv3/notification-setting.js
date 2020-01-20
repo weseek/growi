@@ -190,6 +190,31 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger
+  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+    const isEnabled = req.query;
+    console.log(isEnabled);
+
+    try {
+      if (isEnabled) {
+        await GlobalNotificationSetting.enable(id);
+      }
+      else {
+        await GlobalNotificationSetting.disable(id);
+      }
+
+      return res.apiv3({ id });
+
+    }
+    catch (err) {
+      const msg = 'Error occurred in toggle of global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'toggle-globalNotification-failed'));
+    }
+
+  });
+
   /**
   * @swagger
   *

@@ -7,7 +7,7 @@ import Modal from 'react-bootstrap/es/Modal';
 class NotificationDeleteModal extends React.PureComponent {
 
   render() {
-    const { t, notificatiionForConfiguration } = this.props;
+    const { t, notificationForConfiguration } = this.props;
     return (
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header className="modal-header" closeButton>
@@ -19,7 +19,7 @@ class NotificationDeleteModal extends React.PureComponent {
         </Modal.Header>
         <Modal.Body>
           <p>
-            {t('notification_setting.delete_notification_pattern_desc1', { path: notificatiionForConfiguration.triggerPath })}
+            {t('notification_setting.delete_notification_pattern_desc1', { path: notificationForConfiguration.triggerPath })}
           </p>
           <span className="text-danger">
             {t('notification_setting.delete_notification_pattern_desc2')}
@@ -42,7 +42,7 @@ NotificationDeleteModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onClickSubmit: PropTypes.func.isRequired,
-  notificatiionForConfiguration: PropTypes.object.isRequired,
+  notificationForConfiguration: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(NotificationDeleteModal);
