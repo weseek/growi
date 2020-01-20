@@ -41,7 +41,7 @@ div .row.bg-title.hidden-print {
 }
 
 .sidebar {
-  background: $themecolor;
+  background: $themelight;
 }
 
 /*
@@ -105,9 +105,19 @@ body:not(.on-edit) .nav.nav-tabs {
  * button
  */
 
-:not(btn.btn-link) div .btn {
+button:not(.btn-link .dropdown-toggle) {
   border-radius: 10%;
   box-shadow: 2px 2px 4px gray;
+}
+
+div .btn-inverse {
+  background-color: $themecolor;
+  border: $themecolor;
+}
+
+div .btn-default {
+  background-color: $themecolor;
+  border-color: $themecolor;
 }
 
 /*
@@ -115,6 +125,7 @@ body:not(.on-edit) .nav.nav-tabs {
  */
 
 .login-page > #wrapper > #page-wrapper {
+  background: $themelight;
   background-image: url('/images/themes/spring/spring.svg');
   background-attachment: fixed;
   background-position: bottom;
@@ -138,16 +149,13 @@ body:not(.on-edit) .nav.nav-tabs {
   background-color: $background-color;
 }
 
-.main-container {
-  font-family: Avenir;
-}
-
 .admin-page #themeOptions .theme-option-container.active a {
   background-color: $themelight;
-  border-color: #da70d6;
+  border-color: $headingtext;
 }
 
-// 編集画面上部のピンク色のブロック
+// 編集画面上部のピンク色のブロックが邪魔をしている
+
 div .row .bg-title .hidden-print {
-  min-height: 20px;
+  background-color: rgba(0, 0, 0, 0);
 }
