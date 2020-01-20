@@ -74,7 +74,7 @@ class GoogleSecurityManagement extends React.Component {
               <input
                 id="isGoogleEnabled"
                 type="checkbox"
-                checked={adminGeneralSecurityContainer.state.isGoogleOAuthEnabled}
+                checked={adminGeneralSecurityContainer.state.isGoogleEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
               <label htmlFor="isGoogleEnabled">
@@ -107,7 +107,7 @@ class GoogleSecurityManagement extends React.Component {
         </div>
 
 
-        {adminGeneralSecurityContainer.state.isGoogleOAuthEnabled && (
+        {adminGeneralSecurityContainer.state.isGoogleEnabled && (
           <React.Fragment>
 
             {!adminGoogleSecurityContainer.state.isGoogleStrategySetup && (

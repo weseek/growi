@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 const debug = require('debug')('growi:service:PassportService');
 const urljoin = require('url-join');
 const passport = require('passport');
@@ -102,6 +103,21 @@ class PassportService {
     if (this.isTwitterStrategySetup) { setupStrategies.push('passport-twitter') }
 
     return setupStrategies;
+  }
+
+  /**
+   * setup strategy by target name
+   */
+  setupStrategyByAuth(auth) {
+
+    try {
+      eval(`this.reset${auth}Strategy()`);
+      eval(`this.setup${auth}Strategy()`);
+    }
+    catch (err) {
+      debug(err);
+      eval(`this.reset${auth}Strategy()`);
+    }
   }
 
   /**

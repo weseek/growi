@@ -33,9 +33,9 @@ export default class AdminGeneralSecurityContainer extends Container {
       isSamlEnabled: true,
       isOidcEnabled: true,
       isBasicEnabled: true,
-      isGoogleOAuthEnabled: true,
-      isGithubOAuthEnabled: true,
-      isTwitterOAuthEnabled: true,
+      isGoogleEnabled: true,
+      isGithubEnabled: true,
+      isTwitterEnabled: true,
     };
 
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
@@ -124,14 +124,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch authentication
    */
   async switchAuthentication(auth) {
-    const isEnabled = this.state[auth];
-    const target = auth.toLowerCase();
+    const isEnabled = !this.state[`is${auth}Enabled`];
     try {
       await this.appContainer.apiv3.put('/security-setting/authentication', {
         isEnabled,
-        target,
+        auth,
       });
-      this.setState({ [target]: isEnabled });
+      this.setState({ [`is${auth}Enabled`]: isEnabled });
     }
     catch (err) {
       toastError(err);
@@ -142,7 +141,7 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch local enabled
    */
   async switchIsLocalEnabled() {
-    this.switchAuthentication('local');
+    this.switchAuthentication('Local');
   }
 
   /**
@@ -178,49 +177,49 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch LDAP enabled
    */
   async switchIsLdapEnabled() {
-    this.switchAuthentication('ldap');
+    this.switchAuthentication('Ldap');
   }
 
   /**
    * Switch SAML enabled
    */
   async switchIsSamlEnabled() {
-    this.switchAuthentication('saml');
+    this.switchAuthentication('Saml');
   }
 
   /**
    * Switch Oidc enabled
    */
   async switchIsOidcEnabled() {
-    this.switchAuthentication('oidc');
+    this.switchAuthentication('Oidc');
   }
 
   /**
    * Switch Basic enabled
    */
   async switchIsBasicEnabled() {
-    this.switchAuthentication('basic');
+    this.switchAuthentication('Basic');
   }
 
   /**
    * Switch GoogleOAuth enabled
    */
   async switchIsGoogleOAuthEnabled() {
-    this.switchAuthentication('google');
+    this.switchAuthentication('Google');
   }
 
   /**
    * Switch GithubOAuth enabled
    */
   async switchIsGithubOAuthEnabled() {
-    this.switchAuthentication('github');
+    this.switchAuthentication('GitHub');
   }
 
   /**
    * Switch TwitterOAuth enabled
    */
   async switchIsTwitterOAuthEnabled() {
-    this.switchAuthentication('twitter');
+    this.switchAuthentication('Twitter');
   }
 
 }

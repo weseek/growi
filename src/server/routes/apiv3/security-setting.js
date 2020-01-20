@@ -22,8 +22,8 @@ const validator = {
   ],
   authenticationSetting: [
     body('isEnabled').isBoolean(),
-    body('target').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
+    body('auth').isString().isIn([
+      'Local', 'Ldap', 'Saml', 'Oidc', 'Basic', 'Google', 'GitHub', 'Twitter',
     ]),
   ],
   localSetting: [
@@ -427,22 +427,27 @@ module.exports = (crowi) => {
    *                  description: updated param
    */
   router.put('/authentication', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, ApiV3FormValidator, async(req, res) => {
-    const { isEnabled, target } = req.body;
+    const { isEnabled, auth } = req.body;
+    const authLowerCase = auth.toLowerCase();
 
     let setupStrategies = await crowi.passportService.getSetupStrategies();
 
     // Reflect request param
-    setupStrategies = setupStrategies.filter(strategy => strategy !== `passport-${target}`);
+    setupStrategies = setupStrategies.filter(strategy => strategy !== `passport-${authLowerCase}`);
 
     if (setupStrategies.length === 0) {
       return res.apiv3Err(new ErrorV3('Can not turn everything off'));
     }
 
-    const enableParams = { [`security:passport-${target}:isEnabled`]: isEnabled };
+    const enableParams = { [`security:passport-${authLowerCase}:isEnabled`]: isEnabled };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', enableParams);
-      const responseParams = { [`security:passport-${target}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${target}:isEnabled`) };
+
+      await crowi.passportService.setupStrategyByAuth(auth);
+
+      const responseParams = { [`security:passport-${authLowerCase}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authLowerCase}:isEnabled`) };
+
       return res.apiv3({ responseParams });
     }
     catch (err) {

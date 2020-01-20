@@ -58,34 +58,34 @@ class TwitterSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.OAuth.Twitter.name') } { t('security_setting.configuration') }
+          {t('security_setting.OAuth.Twitter.name')} {t('security_setting.configuration')}
         </h2>
 
         {this.state.retrieveError != null && (
-        <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {this.state.err}</p>
-        </div>
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {this.state.err}</p>
+          </div>
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.OAuth.Twitter.name') }</strong>
+          <strong className="col-xs-3 text-right">{t('security_setting.OAuth.Twitter.name')}</strong>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
                 id="isTwitterEnabled"
                 type="checkbox"
-                checked={adminGeneralSecurityContainer.state.isTwitterOAuthEnabled}
+                checked={adminGeneralSecurityContainer.state.isTwitterEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsTwitterOAuthEnabled() }}
               />
               <label htmlFor="isTwitterEnabled">
-                { t('security_setting.OAuth.Twitter.enable_twitter') }
+                {t('security_setting.OAuth.Twitter.enable_twitter')}
               </label>
             </div>
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{ t('security_setting.callback_URL') }</label>
+          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -93,21 +93,21 @@ class TwitterSecurityManagement extends React.Component {
               value={adminTwitterSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{ t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' }) }</p>
+            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {!adminGeneralSecurityContainer.state.appSiteUrl && (
-            <div className="alert alert-danger">
-              <i
-                className="icon-exclamation"
-                // eslint-disable-next-line max-len
-                dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
-              />
-            </div>
+              <div className="alert alert-danger">
+                <i
+                  className="icon-exclamation"
+                  // eslint-disable-next-line max-len
+                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App settings')}<i class="icon-login"></i></a>` }) }}
+                />
+              </div>
             )}
           </div>
         </div>
 
 
-        {adminGeneralSecurityContainer.state.isTwitterOAuthEnabled && (
+        {adminGeneralSecurityContainer.state.isTwitterEnabled && (
           <React.Fragment>
 
             {!adminTwitterSecurityContainer.state.isTwitterStrategySetup && (
@@ -117,7 +117,7 @@ class TwitterSecurityManagement extends React.Component {
             )}
 
             <div className="row mb-5">
-              <label htmlFor="TwitterConsumerId" className="col-xs-3 text-right">{ t('security_setting.clientID') }</label>
+              <label htmlFor="TwitterConsumerId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -133,7 +133,7 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="TwitterConsumerSecret" className="col-xs-3 text-right">{ t('security_setting.client_secret') }</label>
+              <label htmlFor="TwitterConsumerSecret" className="col-xs-3 text-right">{t('security_setting.client_secret')}</label>
               <div className="col-xs-6">
                 <input
                   className="form-control"
@@ -173,7 +173,7 @@ class TwitterSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</button>
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
           </div>
         </div>
 
@@ -182,16 +182,16 @@ class TwitterSecurityManagement extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForTwitterOauth" data-toggle="collapse"> { t('security_setting.OAuth.how_to.twitter') }</a>
+            <a href="#collapseHelpForTwitterOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.twitter')}</a>
           </h4>
           <ol id="collapseHelpForTwitterOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_1', { link: '<a href="https://apps.twitter.com/" target=_blank>Twitter Application Management</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_2') }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_3') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Twitter.register_1', { link: '<a href="https://apps.twitter.com/" target=_blank>Twitter Application Management</a>' }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Twitter.register_2') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Twitter.register_3') }} />
             {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_4', { url: adminTwitterSecurityContainer.state.callbackUrl }) }} />
-            <li dangerouslySetInnerHTML={{ __html:  t('security_setting.OAuth.Twitter.register_5') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Twitter.register_4', { url: adminTwitterSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.Twitter.register_5') }} />
           </ol>
         </div>
 
