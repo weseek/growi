@@ -1,15 +1,21 @@
 @import '../variables';
 
-$themecolor:#112744;
-
-$topbar:#F5A9F2;
-$sidebar:#fff;
-$bodycolor:#fff;
-$headingtext: #2b2b2b;
+$themecolor: #ffb6c1;
+$subthemecolor: #ee82ee;
+$themelight: #fff0f5;
+$topbar: $themecolor;
+$sidebar: #fff;
+$bodycolor: #fff;
+$headingtext: #da70d6;
 $bodytext: #333333;
-$linktext: lighten($themecolor, 20%);
+$linktext: $subthemecolor;
 $linktext-hover: lighten($linktext, 20%);
-$sidebar-text:#38495a;
+$sidebar-text: #38495a;
+$accentcolor: #ee82ee;
+$background-color: rgba(
+  $color: $themelight,
+  $alpha: 0.8,
+);
 
 $primary: $themecolor;
 
@@ -23,9 +29,126 @@ $wikilinktext-hover: lighten($wikilinktext, 20%);
 // add background-image
 .main-container > #wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url('/images/themes/spring/spring.jpg');
+  background-color: rgba(255, 255, 255, 0.8);
+  background-image: url('/images/themes/spring/spring04.svg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+}
+
+div .row.bg-title.hidden-print {
+  background: $themelight;
+}
+
+.sidebar {
+  background: $themelight;
+}
+
+/*
+ * Accentcolor (yellow)
+ */
+
+header.affix {
+  border-bottom: 4px solid $accentcolor;
+}
+
+.modal {
+  .modal-header {
+    border-bottom: 4px solid $accentcolor;
+  }
+}
+
+#wrapper > .navbar > .navbar-header {
+  border-bottom: 4px solid $accentcolor;
+}
+
+/*
+ * Comments
+ */
+
+.page-comment {
+  .page-comment-main {
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+
+    .page-comment-creator > a {
+      border-bottom: 1px double $subthemecolor;
+    }
+  }
+}
+
+/*
+ * Tabs
+ */
+
+.nav.nav-tabs > li.active > a {
+  color: $subthemecolor;
+}
+
+.text-info,
+body:not(.on-edit) .nav.nav-tabs {
+  > li > a {
+    color: $themecolor;
+  }
+
+  > li.active > a {
+    color: $themelight;
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 50%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
+    background-color: $themecolor;
+  }
+}
+
+/*
+ * button
+ */
+button:not(.btn-link):not(.dropdown-toggle) {
+  border-radius: 10%;
+  box-shadow: 2px 2px 4px gray;
+}
+
+div .btn-inverse {
+  background-color: $themecolor;
+  border: $themecolor;
+}
+
+div .btn-default {
+  background-color: $themecolor;
+  border-color: $themecolor;
+}
+
+/*
+ *  Login page
+ */
+
+.login-page > #wrapper > #page-wrapper {
+  background: $themelight;
+  background-image: url('/images/themes/spring/spring.svg');
   background-attachment: fixed;
   background-position: bottom;
   background-size: cover;
-  opacity: 0.4;
+
+  .link-switch {
+    color: $themecolor;
+
+    &:hover {
+      color: $subthemecolor;
+    }
+  }
+}
+
+/*
+ *  letter
+ */
+
+.help-block {
+  padding: 5px;
+  background-color: $background-color;
+}
+
+.admin-page #themeOptions .theme-option-container.active a {
+  background-color: $themelight;
+  border-color: $headingtext;
 }
