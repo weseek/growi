@@ -2,8 +2,9 @@ name: Release Docker Images
 
 on:
   push:
-    tags:
-      - v3.*.*
+    branches:
+      - tmp/release-**
+
 
 jobs:
 
