@@ -212,9 +212,7 @@ module.exports = (crowi) => {
         notification.slackChannels = slackChannels;
         break;
       default:
-        logger.error('GlobalNotificationSetting Type Error: undefined type');
-        req.flash('errorMessage', 'Error occurred in creating a new global notification setting: undefined notification type');
-        return res.redirect('/admin/notification#global-notification');
+        return res.apiv3Err(new ErrorV3('Error occurred in creating a new global notification setting: undefined notification type'));
     }
 
     notification.triggerPath = triggerPath;
