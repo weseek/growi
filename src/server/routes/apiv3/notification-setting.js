@@ -66,6 +66,9 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
+  const GlobalNotificationMailSetting = crowi.models.GlobalNotificationMailSetting;
+  const GlobalNotificationSlackSetting = crowi.models.GlobalNotificationSlackSetting;
+
   /**
    * @swagger
    *
@@ -193,26 +196,32 @@ module.exports = (crowi) => {
   // TODO swagger
   router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
-    // switch (form.notifyToType) {
-    //   case GlobalNotificationSetting.TYPE.MAIL:
-    //     setting = new GlobalNotificationMailSetting(crowi);
-    //     setting.toEmail = form.toEmail;
-    //     break;
-    //   case GlobalNotificationSetting.TYPE.SLACK:
-    //     setting = new GlobalNotificationSlackSetting(crowi);
-    //     setting.slackChannels = form.slackChannels;
-    //     break;
-    //   default:
-    //     logger.error('GlobalNotificationSetting Type Error: undefined type');
-    //     req.flash('errorMessage', 'Error occurred in creating a new global notification setting: undefined notification type');
-    //     return res.redirect('/admin/notification#global-notification');
-    // }
+    const {
+      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+    } = req.body;
 
-    // setting.triggerPath = form.triggerPath;
-    // setting.triggerEvents = getNotificationEvents(form);
-    // setting.save();
+    let notification;
+
+    switch (notifyToType) {
+      case GlobalNotificationSetting.TYPE.MAIL:
+        notification = new GlobalNotificationMailSetting(crowi);
+        notification.toEmail = toEmail;
+        break;
+      case GlobalNotificationSetting.TYPE.SLACK:
+        notification = new GlobalNotificationSlackSetting(crowi);
+        notification.slackChannels = slackChannels;
+        break;
+      default:
+        logger.error('GlobalNotificationSetting Type Error: undefined type');
+        req.flash('errorMessage', 'Error occurred in creating a new global notification setting: undefined notification type');
+        return res.redirect('/admin/notification#global-notification');
+    }
+
+    notification.triggerPath = triggerPath;
+    notification.triggerEvents = triggerEvents;
+    notification.save();
+
     return res.apiv3();
-
   });
 
   /**

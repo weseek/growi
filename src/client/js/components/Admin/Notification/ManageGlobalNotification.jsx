@@ -80,8 +80,8 @@ class ManageGlobalNotification extends React.Component {
       await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
         triggerPath: this.state.triggerPath,
         notifyToType: this.state.notifyToType,
-        emailToSend: this.state.emailToSend,
-        slackChannelToSend: this.state.slackChannelToSend,
+        toEmail: this.state.emailToSend,
+        slackChannels: this.state.slackChannelToSend,
         triggerEvents: this.state.triggerEvents,
       });
     }
