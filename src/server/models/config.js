@@ -84,8 +84,14 @@ module.exports = function(crowi) {
       'mail:smtpUser'     : undefined,
       'mail:smtpPassword' : undefined,
 
-      'google:clientId'     : undefined,
-      'google:clientSecret' : undefined,
+      'security:passport-google:clientId'     : undefined,
+      'security:passport-google:clientSecret' : undefined,
+
+      'security:passport-github:clientId': undefined,
+      'security:passport-github:clientSecret': undefined,
+
+      'security:passport-twitter:clientId': undefined,
+      'security:passport-twitter:clientSecret': undefined,
 
       'plugin:isEnabledPlugins' : true,
 
