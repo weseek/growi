@@ -193,11 +193,6 @@ module.exports = (crowi) => {
   // TODO swagger
   router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
-    const form = req.body;
-
-    console.log(form);
-    let setting;
-
     // switch (form.notifyToType) {
     //   case GlobalNotificationSetting.TYPE.MAIL:
     //     setting = new GlobalNotificationMailSetting(crowi);

@@ -77,7 +77,13 @@ class ManageGlobalNotification extends React.Component {
   async submitHandler() {
 
     try {
-      await this.props.appContainer.apiv3.post('/notification-setting/global-notification');
+      await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
+        triggerPath: this.state.triggerPath,
+        notifyToType: this.state.notifyToType,
+        emailToSend: this.state.emailToSend,
+        slackChannelToSend: this.state.slackChannelToSend,
+        triggerEvents: this.state.triggerEvents,
+      });
     }
     catch (err) {
       toastError(err);
