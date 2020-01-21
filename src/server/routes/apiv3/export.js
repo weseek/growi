@@ -19,6 +19,7 @@ const router = express.Router();
  *  components:
  *    schemas:
  *      ExportStatus:
+ *        description: ExportStatus
  *        type: object
  *        properties:
  *          zipFileStats:
@@ -61,9 +62,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/status:
+   *  /_api/v3/export/status:
    *    get:
-   *      tags: [Export]
+   *      tags: [Export, apiv3]
+   *      operationId: getExportStatus
+   *      summary: /_api/v3/export/status
    *      description: get properties of stored zip files for export
    *      responses:
    *        200:
@@ -88,9 +91,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export:
+   *  /_api/v3/export:
    *    post:
-   *      tags: [Export]
+   *      tags: [Export, apiv3]
+   *      operationId: createExport
+   *      summary: /_api/v3/export
    *      description: generate zipped jsons for collections
    *      responses:
    *        200:
@@ -124,9 +129,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /export/{fileName}:
+   *  /_api/v3/export/{fileName}:
    *    delete:
-   *      tags: [Export]
+   *      tags: [Export, apiv3]
+   *      operationId: deleteExport
+   *      summary: /_api/v3/export/{fileName}
    *      description: delete the file
    *      parameters:
    *        - name: fileName

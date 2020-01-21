@@ -20,12 +20,10 @@ module.exports = function(crowi, app) {
   } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
-  const PluginUtils = require('../plugins/plugin-utils');
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
   const searchEvent = crowi.event('search');
-  const pluginUtils = new PluginUtils();
 
   const MAX_PAGE_LIST = 50;
   const actions = {};
@@ -99,9 +97,7 @@ module.exports = function(crowi, app) {
   });
 
   actions.index = function(req, res) {
-    return res.render('admin/index', {
-      plugins: pluginUtils.listPlugins(crowi.rootDir),
-    });
+    return res.render('admin/index');
   };
 
   // app.get('/admin/app'                  , admin.app.index);
@@ -567,54 +563,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.appSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (req.form.isValid) {
-      debug('form content', form);
-
-      // mail setting ならここで validation
-      if (form['mail:from']) {
-        validateMailSetting(req, form, async(err, data) => {
-          debug('Error validate mail setting: ', err, data);
-          if (err) {
-            req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
-            return res.json({ status: false, message: req.form.errors.join('\n') });
-          }
-
-          await configManager.updateConfigsInTheSameNamespace('crowi', form);
-          return res.json({ status: true });
-        });
-      }
-      else {
-        await configManager.updateConfigsInTheSameNamespace('crowi', form);
-        return res.json({ status: true });
-      }
-    }
-    else {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-  };
-
-  actions.api.asyncAppSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      return res.json({ status: true });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false });
-    }
-  };
-
   actions.api.securitySetting = async function(req, res) {
     if (!req.form.isValid) {
       return res.json({ status: false, message: req.form.errors.join('\n') });
@@ -1062,33 +1010,6 @@ module.exports = function(crowi, app) {
 
     return res.json(ApiResponse.success());
   };
-
-  function validateMailSetting(req, form, callback) {
-    const mailer = crowi.mailer;
-    const option = {
-      host: form['mail:smtpHost'],
-      port: form['mail:smtpPort'],
-    };
-    if (form['mail:smtpUser'] && form['mail:smtpPassword']) {
-      option.auth = {
-        user: form['mail:smtpUser'],
-        pass: form['mail:smtpPassword'],
-      };
-    }
-    if (option.port === 465) {
-      option.secure = true;
-    }
-
-    const smtpClient = mailer.createSMTPClient(option);
-    debug('mailer setup for validate SMTP setting', smtpClient);
-
-    smtpClient.sendMail({
-      from: form['mail:from'],
-      to: req.user.email,
-      subject: 'Wiki管理設定のアップデートによるメール通知',
-      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。',
-    }, callback);
-  }
 
   /**
    * validate setting form values for SAML

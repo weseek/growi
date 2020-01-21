@@ -34,9 +34,11 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
+import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
+import AppSettingsPage from './components/Admin/App/AppSettingsPage';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -49,9 +51,11 @@ import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import AdminHomeContainer from './services/AdminHomeContainer';
 import AdminCustomizeContainer from './services/AdminCustomizeContainer';
 import UserGroupDetailContainer from './services/UserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
+import AdminAppContainer from './services/AdminAppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
@@ -155,11 +159,13 @@ Object.keys(componentMappings).forEach((key) => {
 });
 
 // create unstated container instance for admin
+const adminHomeContainer = new AdminHomeContainer(appContainer);
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminContainers = {
+  'admin-home': adminHomeContainer,
   'admin-customize': adminCustomizeContainer,
   'admin-user-page': adminUsersContainer,
   'admin-external-account-setting': adminExternalAccountsContainer,
@@ -167,12 +173,27 @@ const adminContainers = {
   'admin-export-page': websocketContainer,
 };
 
+// render for admin
+const adminAppElem = document.getElementById('admin-app');
+if (adminAppElem != null) {
+  const adminAppContainer = new AdminAppContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, adminAppContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <AppSettingsPage />
+      </I18nextProvider>
+    </Provider>,
+    adminAppElem,
+  );
+}
+
 /**
  * define components
  *  key: id of element
  *  value: React Element
  */
 const adminComponentMappings = {
+  'admin-home': <AdminHome />,
   'admin-customize': <Customize />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
