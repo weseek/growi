@@ -19,10 +19,10 @@ class ArchiveFilesTable extends React.Component {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>{t('export_management.file')}</th>
-            <th>{t('export_management.growi_version')}</th>
-            <th>{t('export_management.collections')}</th>
-            <th>{t('export_management.exported_at')}</th>
+            <th>{t('export_management:file')}</th>
+            <th>{t('export_management:growi_version')}</th>
+            <th>{t('export_management:collections')}</th>
+            <th>{t('export_management:exported_at')}</th>
             <th></th>
           </tr>
         </thead>
