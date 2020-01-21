@@ -82,7 +82,7 @@ class ManageGlobalNotification extends React.Component {
         notifyToType: this.state.notifyToType,
         toEmail: this.state.emailToSend,
         slackChannels: this.state.slackChannelToSend,
-        triggerEvents: this.state.triggerEvents,
+        triggerEvents: [...this.state.triggerEvents],
       });
     }
     catch (err) {
