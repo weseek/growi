@@ -40,14 +40,17 @@ class AdminHome extends React.Component {
         </p>
 
         <div className="row mb-5">
-          <h2>{t('admin_top.System Information')}</h2>
-          <SystemInfomationTable />
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin_top.System Information')}</h2>
+            <SystemInfomationTable />
+          </div>
         </div>
 
         <div className="row mb-5">
-          <h2>{t('admin_top.List of installed plugins')}</h2>
-          <InstalledPluginTable />
-
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin_top.List of installed plugins')}</h2>
+            <InstalledPluginTable />
+          </div>
         </div>
       </Fragment>
     );

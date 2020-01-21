@@ -39,35 +39,35 @@ class AppSettingsPage extends React.Component {
       <Fragment>
         <div className="row">
           <div className="col-md-12">
-            <h2>{t('App Settings')}</h2>
+            <h2 className="admin-setting-header">{t('App Settings')}</h2>
             <AppSetting />
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mt-5">
           <div className="col-md-12">
-            <h2>{t('Site URL settings')}</h2>
+            <h2 className="admin-setting-header">{t('Site URL settings')}</h2>
             <SiteUrlSetting />
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mt-5">
           <div className="col-md-12">
-            <h2>{t('app_setting.Mail settings')}</h2>
+            <h2 className="admin-setting-header">{t('app_setting.Mail settings')}</h2>
             <MailSetting />
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mt-5">
           <div className="col-md-12">
-            <h2>{t('app_setting.AWS settings')}</h2>
+            <h2 className="admin-setting-header">{t('app_setting.AWS settings')}</h2>
             <AwsSetting />
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mt-5">
           <div className="col-md-12">
-            <h2>{t('app_setting.Plugin settings')}</h2>
+            <h2 className="admin-setting-header">{t('app_setting.Plugin settings')}</h2>
             <PluginSetting />
           </div>
         </div>
