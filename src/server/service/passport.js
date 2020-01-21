@@ -137,10 +137,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupLocalStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isLocalStrategySetup) {
-      throw new Error('LocalStrategy has already been set up');
-    }
+
+    this.resetLocalStrategy();
 
     const { configManager } = this.crowi;
 
@@ -194,10 +192,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupLdapStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isLdapStrategySetup) {
-      throw new Error('LdapStrategy has already been set up');
-    }
+
+    this.resetLdapStrategy();
 
     const config = this.crowi.config;
     const { configManager } = this.crowi;
@@ -360,10 +356,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupGoogleStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isGoogleStrategySetup) {
-      throw new Error('GoogleStrategy has already been set up');
-    }
+
+    this.resetGoogleStrategy();
 
     const { configManager } = this.crowi;
     const isGoogleEnabled = configManager.getConfig('crowi', 'security:passport-google:isEnabled');
@@ -410,10 +404,8 @@ class PassportService {
   }
 
   setupGitHubStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isGitHubStrategySetup) {
-      throw new Error('GitHubStrategy has already been set up');
-    }
+
+    this.resetGitHubStrategy();
 
     const { configManager } = this.crowi;
     const isGitHubEnabled = configManager.getConfig('crowi', 'security:passport-github:isEnabled');
@@ -460,10 +452,8 @@ class PassportService {
   }
 
   setupTwitterStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isTwitterStrategySetup) {
-      throw new Error('TwitterStrategy has already been set up');
-    }
+
+    this.resetTwitterStrategy();
 
     const { configManager } = this.crowi;
     const isTwitterEnabled = configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
@@ -510,10 +500,8 @@ class PassportService {
   }
 
   async setupOidcStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isOidcStrategySetup) {
-      throw new Error('OidcStrategy has already been set up');
-    }
+
+    this.resetOidcStrategy();
 
     const { configManager } = this.crowi;
     const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
@@ -573,10 +561,8 @@ class PassportService {
   }
 
   setupSamlStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isSamlStrategySetup) {
-      throw new Error('SamlStrategy has already been set up');
-    }
+
+    this.resetSamlStrategy();
 
     const { configManager } = this.crowi;
     const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
@@ -652,10 +638,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupBasicStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isBasicStrategySetup) {
-      throw new Error('BasicStrategy has already been set up');
-    }
+
+    this.resetBasicStrategy();
 
     const configManager = this.crowi.configManager;
     const isBasicEnabled = configManager.getConfig('crowi', 'security:passport-basic:isEnabled');
