@@ -21,6 +21,18 @@ const validator = {
     body('pathPattern').isString().trim(),
     body('channel').isString().trim(),
   ],
+  globalNotification: [
+    body('triggerPath').isString().trim().not()
+      .isEmpty(),
+    body('notifyToType').isString().trim().not()
+      .isEmpty(),
+    body('toEmail').trim().custom((value, { req }) => {
+      return (req.body.notifyToType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
+    }),
+    body('slackChannels').trim().custom((value, { req }) => {
+      return (req.body.notifyToType === 'slack') ? !!value : true;
+    }),
+  ],
 };
 
 /**
@@ -194,7 +206,7 @@ module.exports = (crowi) => {
   });
 
   // TODO swagger
-  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
 
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -216,7 +228,7 @@ module.exports = (crowi) => {
     }
 
     notification.triggerPath = triggerPath;
-    notification.triggerEvents = triggerEvents;
+    notification.triggerEvents = triggerEvents || [];
     notification.save();
 
     return res.apiv3();
