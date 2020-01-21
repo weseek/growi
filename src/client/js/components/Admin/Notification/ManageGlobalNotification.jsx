@@ -8,6 +8,8 @@ import { toastError } from '../../../util/apiNotification';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AppContainer from '../../../services/AppContainer';
+import { createSubscribedElement } from '../../UnstatedUtils';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
@@ -75,7 +77,7 @@ class ManageGlobalNotification extends React.Component {
   async submitHandler() {
 
     try {
-      // TODO GW-778 create apiV3 update notification
+      await this.props.appContainer.apiv3.post('/notification-setting/global-notification');
     }
     catch (err) {
       toastError(err);
@@ -255,8 +257,14 @@ class ManageGlobalNotification extends React.Component {
 
 }
 
-ManageGlobalNotification.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
+const ManageGlobalNotificationWrapper = (props) => {
+  return createSubscribedElement(ManageGlobalNotification, props, [AppContainer]);
 };
 
-export default withTranslation()(ManageGlobalNotification);
+ManageGlobalNotification.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
+};
+
+export default withTranslation()(ManageGlobalNotificationWrapper);

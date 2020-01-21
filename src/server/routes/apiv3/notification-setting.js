@@ -190,6 +190,36 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    const form = req.body;
+
+    console.log(form);
+    let setting;
+
+    // switch (form.notifyToType) {
+    //   case GlobalNotificationSetting.TYPE.MAIL:
+    //     setting = new GlobalNotificationMailSetting(crowi);
+    //     setting.toEmail = form.toEmail;
+    //     break;
+    //   case GlobalNotificationSetting.TYPE.SLACK:
+    //     setting = new GlobalNotificationSlackSetting(crowi);
+    //     setting.slackChannels = form.slackChannels;
+    //     break;
+    //   default:
+    //     logger.error('GlobalNotificationSetting Type Error: undefined type');
+    //     req.flash('errorMessage', 'Error occurred in creating a new global notification setting: undefined notification type');
+    //     return res.redirect('/admin/notification#global-notification');
+    // }
+
+    // setting.triggerPath = form.triggerPath;
+    // setting.triggerEvents = getNotificationEvents(form);
+    // setting.save();
+    return res.apiv3();
+
+  });
+
   /**
    * @swagger
    *
