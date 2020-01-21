@@ -1,6 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
+import { toastError } from '../util/apiNotification';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
@@ -32,9 +33,9 @@ export default class AdminGeneralSecurityContainer extends Container {
       isSamlEnabled: true,
       isOidcEnabled: true,
       isBasicEnabled: true,
-      isGoogleOAuthEnabled: true,
-      isGithubOAuthEnabled: true,
-      isTwitterOAuthEnabled: true,
+      isGoogleEnabled: true,
+      isGithubEnabled: true,
+      isTwitterEnabled: true,
     };
 
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
@@ -120,10 +121,27 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch authentication
+   */
+  async switchAuthentication(stateVariableName, authId) {
+    const isEnabled = !this.state[stateVariableName];
+    try {
+      await this.appContainer.apiv3.put('/security-setting/authentication/enabled', {
+        isEnabled,
+        authId,
+      });
+      this.setState({ [stateVariableName]: isEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
    * Switch local enabled
    */
-  switchIsLocalEnabled() {
-    this.setState({ isLocalEnabled: !this.state.isLocalEnabled });
+  async switchIsLocalEnabled() {
+    this.switchAuthentication('isLocalEnabled', 'local');
   }
 
   /**
@@ -158,51 +176,50 @@ export default class AdminGeneralSecurityContainer extends Container {
   /**
    * Switch LDAP enabled
    */
-  switchIsLdapEnabled() {
-    this.setState({ isLdapEnabled: !this.state.isLdapEnabled });
+  async switchIsLdapEnabled() {
+    this.switchAuthentication('isLdapEnabled', 'ldap');
   }
 
   /**
    * Switch SAML enabled
    */
-  switchIsSamlEnabled() {
-    this.setState({ isSamlEnabled: !this.state.isSamlEnabled });
+  async switchIsSamlEnabled() {
+    this.switchAuthentication('isSamlEnabled', 'saml');
   }
 
   /**
    * Switch Oidc enabled
    */
-  switchIsOidcEnabled() {
-    this.setState({ isOidcEnabled: !this.state.isOidcEnabled });
+  async switchIsOidcEnabled() {
+    this.switchAuthentication('isOidcEnabled', 'oidc');
   }
 
   /**
    * Switch Basic enabled
    */
-  switchIsBasicEnabled() {
-    this.setState({ isBasicEnabled: !this.state.isBasicEnabled });
+  async switchIsBasicEnabled() {
+    this.switchAuthentication('isBasicEnabled', 'basic');
   }
 
   /**
    * Switch GoogleOAuth enabled
    */
-  switchIsGoogleOAuthEnabled() {
-    this.setState({ isGoogleOAuthEnabled: !this.state.isGoogleOAuthEnabled });
+  async switchIsGoogleOAuthEnabled() {
+    this.switchAuthentication('isGoogleEnabled', 'google');
   }
 
   /**
    * Switch GithubOAuth enabled
    */
-  switchIsGithubOAuthEnabled() {
-    this.setState({ isGithubOAuthEnabled: !this.state.isGithubOAuthEnabled });
+  async switchIsGithubOAuthEnabled() {
+    this.switchAuthentication('isGitHubEnabled', 'github');
   }
 
   /**
    * Switch TwitterOAuth enabled
    */
-  switchIsTwitterOAuthEnabled() {
-    this.setState({ isTwitterOAuthEnabled: !this.state.isTwitterOAuthEnabled });
+  async switchIsTwitterOAuthEnabled() {
+    this.switchAuthentication('isTwitterEnabled', 'twitter');
   }
-
 
 }
