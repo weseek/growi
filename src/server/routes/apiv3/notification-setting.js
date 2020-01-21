@@ -67,6 +67,26 @@ const validator = {
  *          channel:
  *            type: string
  *            description: slack channel name without '#'
+ *      GlobalNotificationParams:
+ *        type: object
+ *        properties:
+ *          notifyToType:
+ *            type: string
+ *            description: What is type for notify
+ *          toEmail:
+ *            type: string
+ *            description: email for notify
+ *          slackChannels:
+ *            type: string
+ *            description: channels for notify
+ *          triggerPath:
+ *            type: string
+ *            description: trigger path for notify
+ *          triggerEvents:
+ *            type: array
+ *            items:
+ *              type: string
+ *              description: trigger events for notify
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -205,7 +225,30 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /_api/v3/notification-setting/global-notification:
+   *      post:
+   *        tags: [NotificationSetting]
+   *        description: add global notification
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/GlobalNotificationParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to add global notification
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    createdNotification:
+   *                      type: object
+   *                      description: notification param created
+   */
   router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
 
     const {
@@ -229,9 +272,9 @@ module.exports = (crowi) => {
 
     notification.triggerPath = triggerPath;
     notification.triggerEvents = triggerEvents || [];
-    notification.save();
+    const createdNotification = await notification.save();
 
-    return res.apiv3();
+    return res.apiv3({ createdNotification });
   });
 
   /**
