@@ -537,6 +537,7 @@ module.exports = (crowi) => {
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('local');
       const localSettingParams = {
         isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
@@ -590,6 +591,7 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('ldap');
       const securitySettingParams = {
         serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
         isUserBind: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
@@ -650,6 +652,7 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('saml');
       const securitySettingParams = {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
@@ -709,6 +712,7 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('oidc');
       const securitySettingParams = {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
         oidcIssuerHost: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
@@ -758,6 +762,7 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('basic');
       const securitySettingParams = {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       };
@@ -800,23 +805,16 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('google');
       const securitySettingParams = {
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
       };
-      // reset strategy
-      await crowi.passportService.resetGoogleStrategy();
-      // setup strategy
-      if (crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled')) {
-        await crowi.passportService.setupGoogleStrategy(true);
-      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
-      // reset strategy
-      await crowi.passportService.resetGoogleStrategy();
       const msg = 'Error occurred in updating googleOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-googleOAuth-failed'));
@@ -853,18 +851,13 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('github');
       const securitySettingParams = {
         isGitHubStrategySetup: await crowi.passportService.isGitHubStrategySetup,
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       };
-      // reset strategy
-      await crowi.passportService.resetGitHubStrategy();
-      // setup strategy
-      if (crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled')) {
-        await crowi.passportService.setupGitHubStrategy(true);
-      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -906,23 +899,16 @@ module.exports = (crowi) => {
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('twitter');
       const securitySettingParams = {
         isTwitterStrategySetup: await crowi.passportService.isTwitterStrategySetup,
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
-      // reset strategy
-      await crowi.passportService.resetTwitterStrategy();
-      // setup strategy
-      if (crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
-        await crowi.passportService.setupTwitterStrategy(true);
-      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
-      // reset strategy
-      await crowi.passportService.resetTwitterStrategy();
       const msg = 'Error occurred in updating twitterOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));
