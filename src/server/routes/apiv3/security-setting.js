@@ -23,7 +23,7 @@ const validator = {
   authenticationSetting: [
     body('isEnabled').isBoolean(),
     body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'gitHub', 'twitter',
+      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
     ]),
   ],
   localSetting: [

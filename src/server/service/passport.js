@@ -81,6 +81,41 @@ class PassportService {
       'security:passport-saml:attrMapUsername',
       'security:passport-saml:attrMapMail',
     ];
+
+    this.setupFunction = {
+      local: {
+        setup: 'setupLocalStrategy',
+        reset: 'resetLocalStrategy',
+      },
+      ldap: {
+        setup: 'setupLdapStrategy',
+        reset: 'resetLdapStrategy',
+      },
+      saml: {
+        setup: 'setupSamlStrategy',
+        reset: 'resetSamlStrategy',
+      },
+      oidc: {
+        setup: 'setupOidcStrategy',
+        reset: 'resetOidcStrategy',
+      },
+      basic: {
+        setup: 'setupBasicStrategy',
+        reset: 'resetBasicStrategy',
+      },
+      google: {
+        setup: 'setupGoogleStrategy',
+        reset: 'resetGoogleStrategy',
+      },
+      github: {
+        setup: 'setupGitHubStrategy',
+        reset: 'resetGitHubStrategy',
+      },
+      twitter: {
+        setup: 'setupTwitterStrategy',
+        reset: 'resetTwitterStrategy',
+      },
+    };
   }
 
   /**
@@ -92,30 +127,40 @@ class PassportService {
   getSetupStrategies() {
     const setupStrategies = [];
 
-    if (this.isLocalStrategySetup) { setupStrategies.push('passport-local') }
-    if (this.isLdapStrategySetup) { setupStrategies.push('passport-ldap') }
-    if (this.isSamlStrategySetup) { setupStrategies.push('passport-saml') }
-    if (this.isOidcStrategySetup) { setupStrategies.push('passport-oidc') }
-    if (this.isBasicStrategySetup) { setupStrategies.push('passport-basic') }
-    if (this.isGoogleStrategySetup) { setupStrategies.push('passport-google') }
-    if (this.isGitHubStrategySetup) { setupStrategies.push('passport-github') }
-    if (this.isTwitterStrategySetup) { setupStrategies.push('passport-twitter') }
+    if (this.isLocalStrategySetup) { setupStrategies.push('local') }
+    if (this.isLdapStrategySetup) { setupStrategies.push('ldap') }
+    if (this.isSamlStrategySetup) { setupStrategies.push('saml') }
+    if (this.isOidcStrategySetup) { setupStrategies.push('oidc') }
+    if (this.isBasicStrategySetup) { setupStrategies.push('basic') }
+    if (this.isGoogleStrategySetup) { setupStrategies.push('google') }
+    if (this.isGitHubStrategySetup) { setupStrategies.push('github') }
+    if (this.isTwitterStrategySetup) { setupStrategies.push('twitter') }
 
     return setupStrategies;
   }
 
   /**
+   * get SetupFunction
+   *
+   * @return {Object}
+   * @param {string} authId
+   */
+  getSetupFunction(authId) {
+    return this.setupFunction[authId];
+  }
+
+  /**
    * setup strategy by target name
    */
-  setupStrategyByAuth(auth) {
+  setupStrategyById(authId) {
+    const func = this.getSetupFunction(authId);
 
     try {
-      this[`reset${auth}Strategy`]();
-      this[`setup${auth}Strategy`]();
+      this[func.setup]();
     }
     catch (err) {
       debug(err);
-      this[`reset${auth}Strategy`]();
+      this[func.reset]();
     }
 
   }
