@@ -74,6 +74,7 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
                   >
+                    {/* default crowi config is "Deny" */}
                     {adminGeneralSecurityContainer.state.currentRestrictGuestMode === 'Deny'
                       ? <span className="pull-left">{t('security_setting.guest_mode.deny')}</span>
                       : <span className="pull-left">{t('security_setting.guest_mode.readonly')}</span>
