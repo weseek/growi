@@ -27,7 +27,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       useOnlyEnvVarsForSomeOptions: false,
       appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
-      registrationMode: 'open',
+      registrationMode: 'Open',
       registrationWhiteList: '',
       isLdapEnabled: false,
       isSamlEnabled: false,

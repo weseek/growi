@@ -45,6 +45,7 @@ class SecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
+    const { currentRestrictGuestMode } = adminGeneralSecurityContainer.state;
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
     // eslint-disable-next-line max-len
@@ -74,11 +75,8 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
                   >
-                    {/* default crowi config is "Deny" */}
-                    {adminGeneralSecurityContainer.state.currentRestrictGuestMode === 'Deny'
-                      ? <span className="pull-left">{t('security_setting.guest_mode.deny')}</span>
-                      : <span className="pull-left">{t('security_setting.guest_mode.readonly')}</span>
-                    }
+                    {currentRestrictGuestMode === 'Deny' && <span className="pull-left">{t('security_setting.guest_mode.deny')}</span>}
+                    {currentRestrictGuestMode === 'Readonly' && <span className="pull-left">{t('security_setting.guest_mode.readonly')}</span>}
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>

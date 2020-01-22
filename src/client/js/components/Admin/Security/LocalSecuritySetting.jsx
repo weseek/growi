@@ -46,6 +46,7 @@ class LocalSecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
+    const { registrationMode } = adminGeneralSecurityContainer.state;
 
     return (
       <React.Fragment>
@@ -55,19 +56,19 @@ class LocalSecuritySetting extends React.Component {
           </div>
         )}
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.Local.name') } { t('security_setting.configuration') }
+          {t('security_setting.Local.name')} {t('security_setting.configuration')}
         </h2>
 
         {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
-        <p
-          className="alert alert-info"
-          // eslint-disable-next-line max-len
-          dangerouslySetInnerHTML={{ __html: t('security_setting.Local.note for the only env option', { env: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
-        />
+          <p
+            className="alert alert-info"
+            // eslint-disable-next-line max-len
+            dangerouslySetInnerHTML={{ __html: t('security_setting.Local.note for the only env option', { env: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
+          />
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.Local.name') }</strong>
+          <strong className="col-xs-3 text-right">{t('security_setting.Local.name')}</strong>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -77,7 +78,7 @@ class LocalSecuritySetting extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsLocalEnabled() }}
               />
               <label htmlFor="isLocalEnabled">
-                { t('security_setting.Local.enable_local') }
+                {t('security_setting.Local.enable_local')}
               </label>
             </div>
           </div>
@@ -86,12 +87,14 @@ class LocalSecuritySetting extends React.Component {
         {adminGeneralSecurityContainer.state.isLocalEnabled && (
           <div>
             <div className="row mb-5">
-              <strong className="col-xs-3 text-right">{ t('Register limitation') }</strong>
+              <strong className="col-xs-3 text-right">{t('Register limitation')}</strong>
               <div className="col-xs-9 text-left">
                 <div className="my-0 btn-group">
                   <div className="dropdown">
                     <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span className="pull-left">{t(`security_setting.registration_mode.${adminGeneralSecurityContainer.state.registrationMode}`)}</span>
+                      {registrationMode === 'Open' && <span className="pull-left">{t('security_setting.registration_mode.open')}</span>}
+                      {registrationMode === 'Restricted' && <span className="pull-left">{t('security_setting.registration_mode.restricted')}</span>}
+                      {registrationMode === 'Closed' && <span className="pull-left">{t('security_setting.registration_mode.closed')}</span>}
                       <span className="bs-caret pull-right">
                         <span className="caret" />
                       </span>
@@ -99,33 +102,33 @@ class LocalSecuritySetting extends React.Component {
                     {/* TODO adjust dropdown after BS4 */}
                     <ul className="dropdown-menu" role="menu">
                       <li
-                        key="open"
+                        key="Open"
                         role="presentation"
                         type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('open') }}
+                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('Open') }}
                       >
-                        <a role="menuitem">{ t('security_setting.registration_mode.open') }</a>
+                        <a role="menuitem">{t('security_setting.registration_mode.open')}</a>
                       </li>
                       <li
-                        key="restricted"
+                        key="Restricted"
                         role="presentation"
                         type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('restricted') }}
+                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('Restricted') }}
                       >
-                        <a role="menuitem">{ t('security_setting.registration_mode.restricted') }</a>
+                        <a role="menuitem">{t('security_setting.registration_mode.restricted')}</a>
                       </li>
                       <li
-                        key="closed"
+                        key="Closed"
                         role="presentation"
                         type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('closed') }}
+                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('Closed') }}
                       >
-                        <a role="menuitem">{ t('security_setting.registration_mode.closed') }</a>
+                        <a role="menuitem">{t('security_setting.registration_mode.closed')}</a>
                       </li>
                     </ul>
                   </div>
                   <p className="help-block">
-                    { t('security_setting.Register limitation desc') }
+                    {t('security_setting.Register limitation desc')}
                   </p>
                 </div>
               </div>
@@ -141,9 +144,9 @@ class LocalSecuritySetting extends React.Component {
                     value={adminGeneralSecurityContainer.state.registrationWhiteList}
                     onChange={e => adminGeneralSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
-                  <p className="help-block small">{ t('security_setting.restrict_emails') }<br />{ t('security_setting.for_instance') }
-                    <code>@growi.org</code>{ t('security_setting.only_those') }<br />
-                    { t('security_setting.insert_single') }
+                  <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
+                    <code>@growi.org</code>{t('security_setting.only_those')}<br />
+                    {t('security_setting.insert_single')}
                   </p>
                 </div>
               </div>
@@ -153,7 +156,7 @@ class LocalSecuritySetting extends React.Component {
 
         {/*  TODO replace component */}
         <div className="col-xs-offset-3 col-xs-6 mb-5">
-          <button type="submit" className="btn btn-primary" onClick={this.putLocalSecuritySetting}>{ t('Update') }</button>
+          <button type="submit" className="btn btn-primary" onClick={this.putLocalSecuritySetting}>{t('Update')}</button>
         </div>
 
       </React.Fragment>
