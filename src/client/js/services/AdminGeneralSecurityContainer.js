@@ -20,7 +20,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.state = {
       isWikiModeForced: false,
       wikiMode: '',
-      currentRestrictGuestMode: 'deny',
+      currentRestrictGuestMode: 'Deny',
       currentPageCompleteDeletionAuthority: 'anyone',
       isHideRestrictedByOwner: true,
       isHideRestrictedByGroup: true,
