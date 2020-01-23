@@ -66,6 +66,7 @@ import AdminBasicSecurityContainer from './services/AdminBasicSecurityContainer'
 import AdminGoogleSecurityContainer from './services/AdminGoogleSecurityContainer';
 import AdminGithubSecurityContainer from './services/AdminGithubSecurityConatainer';
 import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
+import AdminLocalSecurityContainer from './services/AdminLocalSecurityContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -249,6 +250,7 @@ if (adminMarkDownSettingElem != null) {
 const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 if (adminSecuritySettingElem != null) {
   const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer(appContainer);
+  const adminLocalSecurityContainer = new AdminLocalSecurityContainer(appContainer);
   const adminLdapSecurityContainer = new AdminLdapSecurityContainer(appContainer);
   const adminSamlSecurityContainer = new AdminSamlSecurityContainer(appContainer);
   const adminOidcSecurityContainer = new AdminOidcSecurityContainer(appContainer);
@@ -257,8 +259,8 @@ if (adminSecuritySettingElem != null) {
   const adminGithubSecurityContainer = new AdminGithubSecurityContainer(appContainer);
   const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer(appContainer);
   const adminSecurityContainers = [
-    adminGeneralSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer, adminOidcSecurityContainer, adminBasicSecurityContainer,
-    adminGoogleSecurityContainer, adminGithubSecurityContainer, adminTwitterSecurityContainer,
+    adminGeneralSecurityContainer, adminLocalSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer,
+    adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGithubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
