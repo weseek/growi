@@ -21,6 +21,17 @@ const validator = {
     body('pathPattern').isString().trim(),
     body('channel').isString().trim(),
   ],
+  globalNotification: [
+    body('triggerPath').isString().trim().not()
+      .isEmpty(),
+    body('notifyToType').isString().trim().isIn(['mail', 'slack']),
+    body('toEmail').trim().custom((value, { req }) => {
+      return (req.body.notifyToType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
+    }),
+    body('slackChannels').trim().custom((value, { req }) => {
+      return (req.body.notifyToType === 'slack') ? !!value : true;
+    }),
+  ],
 };
 
 /**
@@ -55,6 +66,26 @@ const validator = {
  *          channel:
  *            type: string
  *            description: slack channel name without '#'
+ *      GlobalNotificationParams:
+ *        type: object
+ *        properties:
+ *          notifyToType:
+ *            type: string
+ *            description: What is type for notify
+ *          toEmail:
+ *            type: string
+ *            description: email for notify
+ *          slackChannels:
+ *            type: string
+ *            description: channels for notify
+ *          triggerPath:
+ *            type: string
+ *            description: trigger path for notify
+ *          triggerEvents:
+ *            type: array
+ *            items:
+ *              type: string
+ *              description: trigger events for notify
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
@@ -65,6 +96,9 @@ module.exports = (crowi) => {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const GlobalNotificationMailSetting = crowi.models.GlobalNotificationMailSetting;
+  const GlobalNotificationSlackSetting = crowi.models.GlobalNotificationSlackSetting;
 
   /**
    * @swagger
@@ -186,6 +220,62 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating user notification';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-userNotification-failed'));
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/notification-setting/global-notification:
+   *      post:
+   *        tags: [NotificationSetting]
+   *        description: add global notification
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/GlobalNotificationParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to add global notification
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    createdNotification:
+   *                      type: object
+   *                      description: notification param created
+   */
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
+
+    const {
+      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+    } = req.body;
+
+    let notification;
+
+    if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+      notification = new GlobalNotificationMailSetting(crowi);
+      notification.toEmail = toEmail;
+    }
+    if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+      notification = new GlobalNotificationSlackSetting(crowi);
+      notification.slackChannels = slackChannels;
+    }
+
+    notification.triggerPath = triggerPath;
+    notification.triggerEvents = triggerEvents || [];
+
+    try {
+      const createdNotification = await notification.save();
+      return res.apiv3({ createdNotification });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'post-globalNotification-failed'));
     }
 
   });
