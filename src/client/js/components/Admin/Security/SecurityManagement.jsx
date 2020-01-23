@@ -31,17 +31,16 @@ class SecurityManagement extends React.Component {
 
         {/* XSS configuration link */}
         <div className="mb-5">
-          <h2 className="border-bottom">{ t('security_setting.xss_prevent_setting') }</h2>
+          <h2 className="border-bottom">{t('security_setting.xss_prevent_setting')}</h2>
           <div className="text-center">
             <a style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
-              <i className="fa-fw icon-login"></i> { t('security_setting.xss_prevent_setting_link') }
+              <i className="fa-fw icon-login"></i> {t('security_setting.xss_prevent_setting_link')}
             </a>
           </div>
         </div>
 
-        {/* TODO 542~550 reactify-admin */}
         <div className="auth-mechanism-configurations m-t-10">
-          <h2 className="border-bottom">{ t('security_setting.Authentication mechanism settings') }</h2>
+          <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
           <div className="passport-settings">
             <ul className="nav nav-tabs" role="tablist">
               <li className="active">

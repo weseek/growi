@@ -20,40 +20,40 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.state = {
       isWikiModeForced: false,
       wikiMode: '',
-      currentRestrictGuestMode: 'deny',
+      currentRestrictGuestMode: 'Deny',
       currentPageCompleteDeletionAuthority: 'anyone',
-      isHideRestrictedByOwner: true,
-      isHideRestrictedByGroup: true,
-      useOnlyEnvVarsForSomeOptions: true,
+      isHideRestrictedByOwner: false,
+      isHideRestrictedByGroup: false,
+      useOnlyEnvVarsForSomeOptions: false,
       appSiteUrl: appContainer.config.crowi.url || '',
-      isLocalEnabled: true,
-      registrationMode: 'open',
+      isLocalEnabled: false,
+      registrationMode: 'Open',
       registrationWhiteList: '',
-      isLdapEnabled: true,
-      isSamlEnabled: true,
-      isOidcEnabled: true,
-      isBasicEnabled: true,
-      isGoogleEnabled: true,
-      isGithubEnabled: true,
-      isTwitterEnabled: true,
+      isLdapEnabled: false,
+      isSamlEnabled: false,
+      isOidcEnabled: false,
+      isBasicEnabled: false,
+      isGoogleEnabled: false,
+      isGithubEnabled: false,
+      isTwitterEnabled: false,
     };
 
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
   }
 
   async retrieveSecurityData() {
+    // TODO GW-956 separate local setting container
     const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { generalSetting } = response.data.securityParams;
-    const { localSetting } = response.data.securityParams;
+    const { generalSetting, localSetting } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
-      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
+      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'Deny',
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
       isLocalEnabled: localSetting.isLocalEnabled || false,
-      registrationMode: localSetting.registrationMode || 'open',
+      registrationMode: localSetting.registrationMode || 'Open',
       registrationWhiteList: localSetting.registrationWhiteList.join('\n') || '',
     });
   }

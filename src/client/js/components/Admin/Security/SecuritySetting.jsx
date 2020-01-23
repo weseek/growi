@@ -45,6 +45,7 @@ class SecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
+    const { currentRestrictGuestMode } = adminGeneralSecurityContainer.state;
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
     // eslint-disable-next-line max-len
@@ -54,7 +55,7 @@ class SecuritySetting extends React.Component {
     return (
       <React.Fragment>
         <fieldset>
-          <legend className="alert-anchor">{ t('security_settings') }</legend>
+          <legend className="alert-anchor">{t('security_settings')}</legend>
           {this.state.retrieveError != null && (
             <div className="alert alert-danger">
               <p>{t('Error occurred')} : {this.state.err}</p>
@@ -62,7 +63,7 @@ class SecuritySetting extends React.Component {
           )}
           {/* TODO adjust layout */}
           <div className="row mb-5">
-            <strong className="col-xs-3 text-right"> { t('security_setting.Guest Users Access') } </strong>
+            <strong className="col-xs-3 text-right"> {t('security_setting.Guest Users Access')} </strong>
             <div className="col-xs-9 text-left">
               <div className="my-0 btn-group">
                 <div className="dropdown">
@@ -74,7 +75,8 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
                   >
-                    <span className="pull-left">{t(`security_setting.guest_mode.${adminGeneralSecurityContainer.state.currentRestrictGuestMode}`)}</span>
+                    {currentRestrictGuestMode === 'Deny' && <span className="pull-left">{t('security_setting.guest_mode.deny')}</span>}
+                    {currentRestrictGuestMode === 'Readonly' && <span className="pull-left">{t('security_setting.guest_mode.readonly')}</span>}
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>
@@ -82,20 +84,20 @@ class SecuritySetting extends React.Component {
                   {/* TODO adjust dropdown after BS4 */}
                   <ul className="dropdown-menu" role="menu">
                     <li
-                      key="deny"
+                      key="Deny"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('deny') }}
+                      onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}
                     >
-                      <a role="menuitem">{ t('security_setting.guest_mode.deny') }</a>
+                      <a role="menuitem">{t('security_setting.guest_mode.deny')}</a>
                     </li>
                     <li
-                      key="readonly"
+                      key="Readonly"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('readonly') }}
+                      onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}
                     >
-                      <a role="menuitem">{ t('security_setting.guest_mode.readonly') }</a>
+                      <a role="menuitem">{t('security_setting.guest_mode.readonly')}</a>
                     </li>
                   </ul>
                 </div>
@@ -109,7 +111,7 @@ class SecuritySetting extends React.Component {
                 <p className="alert alert-warning mt-2 text-left">
                   <i className="icon-exclamation icon-fw">
                   </i><b>FIXED</b><br />
-                  { <b dangerouslySetInnerHTML={helpForceWikiMode} /> }
+                  {<b dangerouslySetInnerHTML={helpForceWikiMode} />}
                 </p>
               </div>
             </div>
@@ -125,7 +127,7 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByOwner() }}
                 />
                 <label htmlFor="isHideRestrictedByOwner">
-                  <p className="help-block small">{ t('security_setting.page_listing_1_desc') }</p>
+                  <p className="help-block small">{t('security_setting.page_listing_1_desc')}</p>
                 </label>
               </div>
             </div>
@@ -142,14 +144,14 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByGroup() }}
                 />
                 <label htmlFor="isHideRestrictedByGroup">
-                  <p className="help-block small">{ t('security_setting.page_listing_2_desc') }</p>
+                  <p className="help-block small">{t('security_setting.page_listing_2_desc')}</p>
                 </label>
               </div>
             </div>
           </div>
 
           <div className="row mb-5">
-            <strong className="col-xs-3 text-right"> { t('security_setting.complete_deletion') } </strong>
+            <strong className="col-xs-3 text-right"> {t('security_setting.complete_deletion')} </strong>
             <div className="col-xs-9 text-left">
               <div className="my-0 btn-group">
                 <div className="dropdown">
@@ -167,7 +169,7 @@ class SecuritySetting extends React.Component {
                       type="button"
                       onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyone') }}
                     >
-                      <a role="menuitem">{ t('security_setting.anyone') }</a>
+                      <a role="menuitem">{t('security_setting.anyone')}</a>
                     </li>
                     <li
                       key="admin_only"
@@ -175,7 +177,7 @@ class SecuritySetting extends React.Component {
                       type="button"
                       onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_only') }}
                     >
-                      <a role="menuitem">{ t('security_setting.admin_only') }</a>
+                      <a role="menuitem">{t('security_setting.admin_only')}</a>
                     </li>
                     <li
                       key="admin_and_author"
@@ -183,11 +185,11 @@ class SecuritySetting extends React.Component {
                       type="button"
                       onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_and_author') }}
                     >
-                      <a role="menuitem">{ t('security_setting.admin_and_author') }</a>
+                      <a role="menuitem">{t('security_setting.admin_and_author')}</a>
                     </li>
                   </ul>
                   <p className="help-block small">
-                    { t('security_setting.complete_deletion_explain') }
+                    {t('security_setting.complete_deletion_explain')}
                   </p>
                 </div>
               </div>
@@ -197,7 +199,7 @@ class SecuritySetting extends React.Component {
           <div className="form-group">
             <div className="col-xs-offset-3 col-xs-6">
               <input type="hidden" name="_csrf" value={this.props.csrf} />
-              <button type="submit" className="btn btn-primary" onClick={this.putSecuritySetting}>{ t('Update') }</button>
+              <button type="submit" className="btn btn-primary" onClick={this.putSecuritySetting}>{t('Update')}</button>
             </div>
           </div>
         </fieldset>
