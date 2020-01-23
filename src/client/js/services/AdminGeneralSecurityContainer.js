@@ -47,13 +47,13 @@ export default class AdminGeneralSecurityContainer extends Container {
     const { generalSetting, localSetting } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
-      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'deny',
+      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'Deny',
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
       isLocalEnabled: localSetting.isLocalEnabled || false,
-      registrationMode: localSetting.registrationMode || 'open',
+      registrationMode: localSetting.registrationMode || 'Open',
       registrationWhiteList: localSetting.registrationWhiteList.join('\n') || '',
     });
   }
