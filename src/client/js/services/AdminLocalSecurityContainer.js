@@ -61,19 +61,18 @@ export default class AdminLocalSecurityContainer extends Container {
     let { registrationWhiteList } = this.state;
     registrationWhiteList = Array.isArray(registrationWhiteList) ? registrationWhiteList : registrationWhiteList.split('\n');
     const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
-      isLocalEnabled: this.state.isLocalEnabled,
       registrationMode: this.state.registrationMode,
       registrationWhiteList,
     });
 
-    const { localSecuritySettingParams } = response.data;
+    const { localSettingParams } = response.data;
 
     this.setState({
-      registrationMode: localSecuritySettingParams.registrationMode || 'Open',
-      registrationWhiteList: localSecuritySettingParams.registrationWhiteList || 'Open',
+      registrationMode: localSettingParams.registrationMode || 'Open',
+      registrationWhiteList: localSettingParams.registrationWhiteList || '',
     });
 
-    return localSecuritySettingParams;
+    return localSettingParams;
   }
 
 

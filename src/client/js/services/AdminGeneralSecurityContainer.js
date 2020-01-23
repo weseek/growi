@@ -41,13 +41,21 @@ export default class AdminGeneralSecurityContainer extends Container {
 
   async retrieveSecurityData() {
     const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { generalSetting } = response.data.securityParams;
+    const { generalSetting, generalAuth } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
+      isLocalEnabled: generalAuth.isLocalEnabled || false,
+      isLdapEnabled: generalAuth.isLdapEnabled || false,
+      isSamlEnabled: generalAuth.isSamlEnabled || false,
+      isOidcEnabled: generalAuth.isOidcEnabled || false,
+      isBasicEnabled: generalAuth.isBasicEnabled || false,
+      isGoogleEnabled: generalAuth.isGoogleEnabled || false,
+      isGithubEnabled: generalAuth.isGithubEnabled || false,
+      isTwitterEnabled: generalAuth.isTwitterEnabled || false,
     });
   }
 
