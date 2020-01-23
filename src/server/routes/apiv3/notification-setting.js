@@ -24,8 +24,7 @@ const validator = {
   globalNotification: [
     body('triggerPath').isString().trim().not()
       .isEmpty(),
-    body('notifyToType').isString().trim().not()
-      .isEmpty(),
+    body('notifyToType').isString().trim().isIn(['mail', 'slack']),
     body('toEmail').trim().custom((value, { req }) => {
       return (req.body.notifyToType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
     }),
@@ -257,24 +256,28 @@ module.exports = (crowi) => {
 
     let notification;
 
-    switch (notifyToType) {
-      case GlobalNotificationSetting.TYPE.MAIL:
-        notification = new GlobalNotificationMailSetting(crowi);
-        notification.toEmail = toEmail;
-        break;
-      case GlobalNotificationSetting.TYPE.SLACK:
-        notification = new GlobalNotificationSlackSetting(crowi);
-        notification.slackChannels = slackChannels;
-        break;
-      default:
-        return res.apiv3Err(new ErrorV3('Error occurred in creating a new global notification setting: undefined notification type'));
+    if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+      notification = new GlobalNotificationMailSetting(crowi);
+      notification.toEmail = toEmail;
+    }
+    if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+      notification = new GlobalNotificationSlackSetting(crowi);
+      notification.slackChannels = slackChannels;
     }
 
     notification.triggerPath = triggerPath;
     notification.triggerEvents = triggerEvents || [];
-    const createdNotification = await notification.save();
 
-    return res.apiv3({ createdNotification });
+    try {
+      const createdNotification = await notification.save();
+      return res.apiv3({ createdNotification });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'post-globalNotification-failed'));
+    }
+
   });
 
   /**
