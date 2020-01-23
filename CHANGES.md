@@ -23,7 +23,7 @@
     * file-loader
     * mini-css-extract-plugin
 
-## 3.6.2
+## v3.6.2
 
 * Improvement: Reactify admin pages (Customize)
 * Improvement: Ensure not to consider `[text|site](https://example.com]` as a row in the table
@@ -33,7 +33,7 @@
 * Fix: Emoji Autocomplete window does not float correctly
     * Introduced by 3.5.0
 
-## 3.6.1
+## v3.6.1
 
 ### BREAKING CHANGES
 
@@ -58,19 +58,19 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Support: Upgrade libs
     * growi-commons
 
-## 3.6.0 (Missing number)
+## v3.6.0 (Missing number)
 
-## 3.5.25
+## v3.5.25
 
 * Improvement: Disable ESC key to close Handsontable Modal
 * Fix: Exported data of empty collection is broken
 * Fix: Some components crash after when the page with attachment has exported/imported
 
-## 3.5.24
+## v3.5.24
 
 * Fix: Plugins are not working on Heroku
 
-## 3.5.23
+## v3.5.23
 
 * Fix: Global Notification failed to send e-mail
 * Fix: Pagination is not working for trash list
@@ -78,17 +78,17 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Support: Upgrade libs
     * growi-commons
 
-## 3.5.22
+## v3.5.22
 
 * Improvement: Add `FILE_UPLOAD_DISABLED` env var
 
-## 3.5.21
+## v3.5.21
 
 * Improvement: Cache control when retrieving attachment data
 * Fix: Inviting user doesn't work
     * Introduced by 3.5.20
 
-## 3.5.20
+## v3.5.20
 
 * Improvement: Organize MongoDB collection indexes uniqueness
 * Improvement: Reactify admin pages (External Account Management)
@@ -103,9 +103,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
     * react-i18next
     * validator
 
-## 3.5.19 (Missing number)
+## v3.5.19 (Missing number)
 
-## 3.5.18
+## v3.5.18
 
 * Improvement: Import GROWI Archive
     * Process asynchronously
@@ -118,7 +118,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Improvement: Add link to [docs.growi.org](https://docs.growi.org)
 * Fix: Monospace font code is broken when printing on Mac
 
-## 3.5.17
+## v3.5.17
 
 * Feature: Upload to GCS (Google Cloud Storage)
 * Feature: Statistics API
@@ -131,21 +131,21 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Fix: Config default values
 * Support: REPL with `console` npm scripts
 
-## 3.5.16
+## v3.5.16
 
 * Fix: Full Text Search doesn't work after when building indices
     * Introduced by 3.5.12
 
-## 3.5.15
+## v3.5.15
 
 * Feature: Import/Export Page data
 * Fix: The link to Sandbox on Markdown Help Modal doesn't work
 * Support: Upgrade libs
     * codemirror
 
-## 3.5.14 (Missing number)
+## v3.5.14 (Missing number)
 
-## 3.5.13
+## v3.5.13
 
 * Feature: Re-edit comments
 * Support: [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs)
@@ -153,7 +153,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
     * entities
     * markdown-it
 
-## 3.5.12
+## v3.5.12
 
 * Improvement: Use Elasticsearch Alias
 * Improvement: Connect to HTTPS PlantUML URL in default
@@ -162,7 +162,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Support: Upgrade libs
     * terser-webpack-plugin
 
-## 3.5.11
+## v3.5.11
 
 * Fix: HackMD Editor shows 404 error when HackMD redirect to fqdn URI
     * Introduced by 3.5.8
@@ -176,7 +176,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
     * webpack-cli
     * webpack-merge
 
-## 3.5.10
+## v3.5.10
 
 * Feature: Send Global Notification with Slack
 * Improvement: Show loading spinner when fetching page history data
@@ -187,7 +187,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
     * date-fns
     * eslint-config-weseek
 
-## 3.5.9
+## v3.5.9
 
 * Fix: Editing table with Spreadsheet like GUI (Handsontable) is failed
 * Fix: Plugins are not initialized when first launching
@@ -199,7 +199,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
     * rimraf
     * style-loader
 
-## 3.5.8
+## v3.5.8
 
 * Improvement: Controls when HackMD/CodiMD has unsaved draft
 * Improvement: Show hints if HackMD/CodiMD integration is not working
@@ -207,15 +207,15 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Improvement: Comment Thread Layout
 * Improvement: Show commented date with date distance format
 
-## 3.5.7 (Missing number)
+## v3.5.7 (Missing number)
 
-## 3.5.6
+## v3.5.6
 
 * Fix: Saving new page is failed when empty string tag is set
 * Fix: Link of Create template page button in New Page Modal is broken
 * Fix: Global Notification dows not work when creating/moving/deleting/like/comment
 
-## 3.5.5
+## v3.5.5
 
 * Feature: Support S3-compatible object storage (e.g. MinIO)
 * Feature: Enable/Disable ID/Password Authentication
@@ -230,13 +230,13 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
     * mini-css-extract-plugin
     * react-hotkeys
 
-## 3.5.4
+## v3.5.4
 
 * Fix: List private pages wrongly
 * Fix: Global Notification Trigger Path does not parse glob correctly
 * Fix: Consecutive page deletion requests cause unexpected complete page deletion
 
-## 3.5.3
+## v3.5.3
 
 * Improvement: Calculate string width when save with Spreadsheet like GUI (Handsontable)
 * Fix: Search Result Page doesn't work
@@ -244,7 +244,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Fix: Dropdown to copy page path/URL/MarkdownLink shows under CodeMirror vscrollbar
 * Fix: Link to /trash in Dropdown menu
 
-## 3.5.2
+## v3.5.2
 
 * Feature: Remain metadata option when Move/Rename page
 * Improvement: Support code highlight for Swift and Kotlin
@@ -255,7 +255,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/36x.html>
 * Support: Upgrade libs
     * growi-commons
 
-## 3.5.1
+## v3.5.1
 
 ### BREAKING CHANGES
 
@@ -311,9 +311,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
     * mongoose-unique-validator
     * null-loader
 
-## 3.5.0 (Missing number)
+## v3.5.0 (Missing number)
 
-## 3.4.7
+## v3.4.7
 
 * Improvement: Handle private pages on group deletion
 * Fix: Searching with `tag:xxx` syntax doesn't work
@@ -322,7 +322,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
 * I18n: Import data page
 * I18n: Group Management page
 
-## 3.4.6
+## v3.4.6
 
 * Feature: Tags
 * Feature: Dropdown to copy page path/URL/MarkdownLink
@@ -340,7 +340,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
     * null-loader
     * react-codemirror
 
-## 3.4.5
+## v3.4.5
 
 * Improvement: Pass autolink through the XSS filter according to CommonMark Spec
 * Fix: Update ElasticSearch index when deleting/duplicating pages
@@ -350,11 +350,11 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
     * growi-commons
     * xss
 
-## 3.4.4
+## v3.4.4
 
 * Fix: Comment component doesn't work
 
-## 3.4.3
+## v3.4.3
 
 * Improvement: Add 'antarctic' theme
 * Support Apply eslint-config-airbnb based rules
@@ -373,16 +373,16 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/35x.html>
     * react-i18next
     * string-width
 
-## 3.4.2
+## v3.4.2
 
 * Fix: Nofitication to Slack doesn't work
     * Introduced by 3.4.0
 
-## 3.4.1
+## v3.4.1
 
 * Fix: "Cannot find module 'stream-to-promise'" occured when build client with `FILE_UPLOAD=local`
 
-## 3.4.0
+## v3.4.0
 
 ### BREAKING CHANGES
 
@@ -411,7 +411,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react-dom
 
 
-## 3.3.10
+## v3.3.10
 
 * Feature: PlantUML and Blockdiag on presentation
 * Improvement: Render slides of presentation with GrowiRenderer
@@ -430,7 +430,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * webpack-cli
     * webpack-merge
 
-## 3.3.9
+## v3.3.9
 
 * Fix: Import from Qiita:Team doesn't work
     * Introduced by 3.3.0
@@ -439,7 +439,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support: Upgrade libs
     * react-bootstrap-typeahead
 
-## 3.3.8
+## v3.3.8
 
 * Fix: Move/Duplicate don't work
     * Introduced by 3.3.7
@@ -448,7 +448,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react
     * react-bootstrap-typeahead
 
-## 3.3.7
+## v3.3.7
 
 * Feature: Editor toolbar
 * Feature: `prefix:/path` searching syntax to filter with page path prefix
@@ -461,7 +461,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support: Upgrade libs
     * node-sass
 
-## 3.3.6
+## v3.3.6
 
 * Improvement: Site URL settings must be set
 * Improvement: Site URL settings can be set with environment variable
@@ -483,9 +483,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * sinon
     * sinon-chai
 
-## 3.3.5 (Missing number)
+## v3.3.5 (Missing number)
 
-## 3.3.4
+## v3.3.4
 
 * Improvement: SAML configuration with environment variables
 * Improvement: Upload file with pasting from clipboard
@@ -494,7 +494,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Fix: Connecting to MongoDB failed when processing migration
 * Support: Get ready to use new config management system
 
-## 3.3.3
+## v3.3.3
 
 * Feature: Show line numbers to a code block
 * Feature: Bulk update the scope of descendant pages when create/update page
@@ -509,12 +509,12 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * migrate-mongo
     * string-width
 
-## 3.3.2
+## v3.3.2
 
 * Fix: Specified Group ACL is not persisted correctly
     * Introduced by 3.3.0
 
-## 3.3.1
+## v3.3.1
 
 * Feature: NO_CDN Mode
 * Feature: Add option to show/hide restricted pages in list
@@ -529,9 +529,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * googleapis
     * passport-saml
 
-## 3.3.0 (Missing number)
+## v3.3.0 (Missing number)
 
-## 3.2.10
+## v3.2.10
 
 * Fix: Pages in trash are available to create
 * Fix: Couldn't create portal page under Crowi Classic Behavior
@@ -539,7 +539,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * I18n: Installer
 
 
-## 3.2.9
+## v3.2.9
 
 * Feature: Attachment Storing to MongoDB GridFS
 * Fix: row/col moving of Spreadsheet like GUI (Handsontable) doesn't work
@@ -548,7 +548,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * codemirror
     * react-codemirror2
 
-## 3.2.8
+## v3.2.8
 
 * Improvement: Add an option to use email for account link when using SAML federation
 * Fix: Editor layout is sometimes broken
@@ -558,14 +558,14 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * googleapis
     * react-dropzone
 
-## 3.2.7
+## v3.2.7
 
 * Feature: Import CSV/TSV/HTML table on Spreadsheet like GUI (Handsontable)
 * Fix: Pasting table data copied from Excel includes unnecessary line breaks
 * Fix: Page break Preset 1 for Presentation mode is broken
 * Fix: Login Form when LDAP login failed caused 500 Internal Server Error
 
-## 3.2.6
+## v3.2.6
 
 * Feature: Add select alignment buttons of Spreadsheet like GUI (Handsontable)
 * Improvement: Shrink the rows that have no diff of revision history page
@@ -577,7 +577,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * i18next-node-fs-backend
     * i18next-sprintf-postprocessor
 
-## 3.2.5
+## v3.2.5
 
 * Improvement: Expandable Spreadsheet like GUI (Handsontable)
 * Improvement: Move/Resize rows/columns of Spreadsheet like GUI (Handsontable)
@@ -590,7 +590,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * metismenu
     * sinon
 
-## 3.2.4
+## v3.2.4
 
 * Feature: Edit table with Spreadsheet like GUI (Handsontable)
 * Feature: Paging recent created in users home
@@ -609,13 +609,13 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * mongoose-unique-validator
     * multer
 
-## 3.2.3
+## v3.2.3
 
 * Feature: Kibela like layout
 * Improvement: Custom newpage separator for presentation view
 * Support: Shrink image size for themes which recently added
 
-## 3.2.2
+## v3.2.2
 
 * Feature: SAML Authentication (SSO)
 * Improvement: Add 'wood' theme
@@ -625,7 +625,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support Upgrade libs
     * style-loader
 
-## 3.2.1
+## v3.2.1
 
 * Feature: Import data from esa.io
 * Feature: Import data from Qiita:Team
@@ -640,20 +640,20 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * sass-loader
     * style-loader
 
-## 3.2.0
+## v3.2.0
 
 * Feature: HackMD integration so that user will be able to simultaneously edit with multiple people
 * Feature: Login with Twitter Account (OAuth)
 * Fix: The Initial scroll position is wrong when reloading the page
 
-## 3.1.14
+## v3.1.14
 
 * Improvement: Show help for header search box
 * Improvement: Add Markdown Cheatsheet to Editor component
 * Fix: Couldn't delete page completely from search result page
 * Fix: Tabs of trash page are broken
 
-## 3.1.13
+## v3.1.13
 
 * Feature: Global Notification
 * Feature: Send Global Notification with E-mail
@@ -668,7 +668,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react-dom
 
 
-## 3.1.12
+## v3.1.12
 
 * Feature: Add XSS Settings
 * Feature: Notify to Slack when comment
@@ -680,19 +680,19 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Fix: Invitation mail do not be sent
 * Fix: Edit template button on New Page modal doesn't work
 
-## 3.1.11
+## v3.1.11
 
 * Fix: OAuth doesn't work in production because callback URL field cannot be specified
     * Introduced by 3.1.9
 
-## 3.1.10
+## v3.1.10
 
 * Fix: Enter key on react-bootstrap-typeahead doesn't submit
     * Introduced by 3.1.9
 * Fix: CodeMirror of `/admin/customize` is broken
     * Introduced by 3.1.9
 
-## 3.1.9
+## v3.1.9
 
 * Feature: Login with Google Account (OAuth)
 * Feature: Login with GitHub Account (OAuth)
@@ -708,9 +708,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react-codemirror2
     * webpack
 
-## 3.1.8 (Missing number)
+## v3.1.8 (Missing number)
 
-## 3.1.7
+## v3.1.7
 
 * Fix: Update hidden input 'pageForm[grant]' when save with `Ctrl-S`
 * Fix: Show alert message when conflict
@@ -721,7 +721,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * sinon
     * sinon-chai
 
-## 3.1.6
+## v3.1.6
 
 * Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
@@ -730,7 +730,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * googleapis
     * throttle-debounce
 
-## 3.1.5
+## v3.1.5
 
 * Feature: Write comment with Markdown
 * Improvement: Support some placeholders for template page
@@ -750,13 +750,13 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * markdown-it-toc-and-anchor-with-slugid
 
 
-## 3.1.4 (Missing number)
+## v3.1.4 (Missing number)
 
 
-## 3.1.3 (Missing number)
+## v3.1.3 (Missing number)
 
 
-## 3.1.2
+## v3.1.2
 
 * Feature: Template page
 * Improvement: Add 'future' theme
@@ -784,14 +784,14 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react-clipboard.js
     * xss
 
-## 3.1.1
+## v3.1.1
 
 * Improvement: Add 'blue-night' theme
 * Improvement: List up pages which restricted for Group ACL
 * Fix: PageGroupRelation didn't remove when page is removed completely
 
 
-## 3.1.0
+## v3.1.0
 
 * Improvement: Group Access Control List - Select group modal
 * Improvement: Better input on mobile
@@ -811,7 +811,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * elasticsearch
     * googleapis
 
-## 3.0.13
+## v3.0.13
 
 * Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
 * Improvement: Add 'mono-blue' theme
@@ -824,14 +824,14 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
 * Support: Optimize .eslintrc.js
 
-## 3.0.12
+## v3.0.12
 
 * Feature: Support Vim/Emacs/Sublime-Text keybindings
 * Improvement: Add some CodeMirror themes (Eclipse, Dracula)
 * Improvement: Dynamic loading for CodeMirror theme files from CDN
 * Improvement: Prevent XSS when move/redirect/duplicate
 
-## 3.0.11
+## v3.0.11
 
 * Fix: login.html is broken in iOS
 * Fix: Removing attachment is crashed
@@ -842,14 +842,14 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * googleapis
     * sinon
 
-## 3.0.10
+## v3.0.10
 
 * Improvement: Add 'nature' theme
 * Fix: Page list and Timeline layout for layout-growi
 * Fix: Adjust theme colors
     * Introduced by 3.0.9
 
-## 3.0.9
+## v3.0.9
 
 * Fix: Registering new LDAP User is failed
     * Introduced by 3.0.6
@@ -860,13 +860,13 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * normalize-path
     * style-loader
 
-## 3.0.8
+## v3.0.8
 
 * Improvement: h1#revision-path occupies most of the screen when the page path is long
 * Improvement: Ensure not to save concealed email field to localStorage
 * Fix: Cannot input "c" and "e" on iOS
 
-## 3.0.7
+## v3.0.7
 
 * Improvement: Enable to download an attached file with original name
 * Improvement: Use MongoDB for session store instead of Redis
@@ -876,7 +876,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Fix: Broken page path of timeline
     * Introduced by 3.0.4
 
-## 3.0.6
+## v3.0.6
 
 * Improvement: Automatically bind external accounts newly logged in to local accounts when username match
 * Improvement: Simplify configuration for Slack Web API
@@ -889,18 +889,18 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * sass-loader
     * uglifycss
 
-## 3.0.5
+## v3.0.5
 
 * Improvement: Update lsx icons and styles
 * Fix: lsx plugins doesn't show page names
 
-## 3.0.4
+## v3.0.4
 
 * Improvement: The option that switch whether add h1 section when create new page
 * Improvement: Encode page path that includes special character
 * Fix: Page-saving error after new page creation
 
-## 3.0.3
+## v3.0.3
 
 * Fix: Login page is broken in iOS
 * Fix: Hide presentation tab if portal page
@@ -911,7 +911,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Fix: Activating invited user form url is wrong
 * Support: Use postcss-loader and autoprefixer
 
-## 3.0.2
+## v3.0.2
 
 * Feature: Group Access Control List
 * Feature: Add site theme selector
@@ -927,11 +927,11 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react-bootstrap-typeahead
     * react-clipboard.js
 
-## 3.0.1 (Missing number)
+## v3.0.1 (Missing number)
 
-## 3.0.0 (Missing number)
+## v3.0.0 (Missing number)
 
-## 2.4.4
+## v2.4.4
 
 * Feature: Autoformat Markdown Table
 * Feature: highlight.js Theme Selector
@@ -943,7 +943,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * react, react-dom
     * codemirror, react-codemirror2
 
-## 2.4.3
+## v2.4.3
 
 * Improvement: i18n in `/admin`
 * Improvement: Add `SESSION_NAME` environment variable
@@ -952,7 +952,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * uglifycss
     * sinon-chai
 
-## 2.4.2
+## v2.4.2
 
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
 * Fix: Inline code blocks that includes doller sign are broken
@@ -962,7 +962,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * googleapis
     * markdown-it-plantuml
 
-## 2.4.1
+## v2.4.1
 
 * Feature: Custom Header HTML
 * Improvement: Add highlight.js languages
@@ -975,7 +975,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * axios
     * diff2html
 
-## 2.4.0
+## v2.4.0
 
 * Feature: Support Footnotes
 * Feature: Support Task lists
@@ -988,7 +988,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
 * Fix: 500 Internal Server Error occures when basic-auth configuration is set
 
-## 2.3.9
+## v2.3.9
 
 * Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
@@ -996,7 +996,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support: Upgrade libs
     * googleapis
 
-## 2.3.8
+## v2.3.8
 
 * Feature: Suggest page path when creating pages
 * Improvement: Prevent keyboard shortcuts when modal is opened
@@ -1007,19 +1007,19 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * style-loader
     * react-codemirror2
 
-## 2.3.7
+## v2.3.7
 
 * Fix: Open popups when `Ctrl+C` pressed
     * Introduced by 2.3.5
 
-## 2.3.6
+## v2.3.6
 
 * Feature: Theme Selector for Editor
 * Improvement: Remove unportalize button from crowi-plus layout
 * Fix: CSS for admin pages
 * Support: Shrink the size of libraries to include
 
-## 2.3.5
+## v2.3.5
 
 * Feature: Enhanced Editor by CodeMirror
 * Feature: Emoji AutoComplete
@@ -1035,26 +1035,26 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * mongoose-unique-validator
     * etc..
 
-## 2.3.4 (Missing number)
+## v2.3.4 (Missing number)
 
-## 2.3.3
+## v2.3.3
 
 * Fix: The XSS Library escapes inline code blocks
     * Degraded by 2.3.0
 * Fix: NPE occurs on Elasticsearch when initial access
 * Fix: Couldn't invite users(failed to create)
 
-## 2.3.2
+## v2.3.2
 
 * Improvement: Add LDAP group search options
 
-## 2.3.1
+## v2.3.1
 
 * Fix: Blockquote doesn't work
     * Degraded by 2.3.0
 * Fix: Couldn't create user with first LDAP logging in
 
-## 2.3.0
+## v2.3.0
 
 * Feature: LDAP Authentication
 * Improvement: Prevent XSS
@@ -1062,14 +1062,14 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support: Upgrade libs
     * express-pino-logger
 
-## 2.2.4
+## v2.2.4
 
 * Fix: googleapis v23.0.0 lost the function `oauth2Client.setCredentials`
     * Degraded by 2.2.2 updates
 * Fix: HeaderSearchBox didn't append 'q=' param when searching
     * Degraded by 2.2.3 updates
 
-## 2.2.3
+## v2.2.3
 
 * Fix: The server responds anything when using passport
     * Degraded by 2.2.2 updates
@@ -1078,9 +1078,9 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support: Upgrade react-bootstrap-typeahead
 * Improvement: Replace emojify.js with emojione
 
-## 2.2.2 (Missing number)
+## v2.2.2 (Missing number)
 
-## 2.2.1
+## v2.2.1
 
 * Feature: Duplicate page
 * Improve: Ensure that admin users can remove users waiting for approval
@@ -1088,22 +1088,22 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Support: Upgrade React to 16
 * Support: Upgrade outdated libs
 
-## 2.2.0
+## v2.2.0
 
 * Support: Merge official Crowi v1.6.3
 
-## 2.1.2
+## v2.1.2
 
 * Improvement: Ensure to prevent suspending own account
 * Fix: Ensure to be able to use `.` for username when invited
 * Fix: monospace font for `<code></code>`
 
-## 2.1.1
+## v2.1.1
 
 * Fix: The problem that React Modal doesn't work
 * Support: Lock some packages(react, react-dom, mongoose)
 
-## 2.1.0
+## v2.1.0
 
 * Feature: Adopt Passport the authentication middleware
 * Feature: Selective batch deletion in search result page
@@ -1111,98 +1111,98 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
 * Fix: The problem that couldn't update user data in /me
 * Support: Upgrade outdated libs
 
-## 2.0.9
+## v2.0.9
 
 * Fix: Server is down when a guest user accesses to someone's private pages
 * Support: Merge official Crowi (master branch)
 * Support: Upgrade outdated libs
 
-## 2.0.8
+## v2.0.8
 
 * Fix: The problem that path including round bracket makes something bad
 * Fix: Recursively option processes also unexpedted pages
 * Fix: en-US translation
 
-## 2.0.7
+## v2.0.7
 
 * Improvement: Add recursively option for Delete/Move/Putback operation
 * Improvement: Comment layout and sort order (crowi-plus Enhanced Layout)
 
-## 2.0.6
+## v2.0.6
 
 * Fix: check whether `$APP_DIR/public/uploads` exists before creating symlink
     * Fixed in weseek/crowi-plus-docker
 
-## 2.0.5
+## v2.0.5
 
 * Improvement: Adjust styles for CodeMirror
 * Fix: File upload does not work when using crowi-plus-docker-compose and `FILE_UPLOAD=local` is set  
     * Fixed in weseek/crowi-plus-docker
 
-## 2.0.2 - 2.0.4 (Missing number)
+## v2.0.2 - 2.0.4 (Missing number)
 
-## 2.0.1
+## v2.0.1
 
 * Feature: Custom Script
 * Improvement: Adjust layout and styles for admin pages
 * Improvement: Record and show last updated date in user list page
 * Fix: Ignore Ctrl+(Shift+)Tab when editing (cherry-pick from the official)
 
-## 2.0.0
+## v2.0.0
 
 * Feature: Enabled to integrate with Slack using Incoming Webhooks
 * Support: Upgrade all outdated libs
 
-## 1.2.16
+## v1.2.16
 
 * Improvement: Condition for creating portal
 * Fix: Couldn't create new page after installation cleanly
 
-## 1.2.15
+## v1.2.15
 
 * Improvement: Optimize cache settings for express server
 * Improvement: Add a logo link to the affix header
 * Fix: Child pages under `/trash` are not shown when applying crowi-plus Simplified Behavior
 
-## 1.2.14
+## v1.2.14
 
 * Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
 * Fix: `a[href="#edit-form"]` still save history even when disabling pushing states option
 
-## 1.2.13
+## v1.2.13
 
 * Improvement: Enabled to switch whether to push states with History API when tabs changes
 * Fix: Layout of the Not Found page
 
-## 1.2.12 (Missing number)
+## v1.2.12 (Missing number)
 
-## 1.2.11
+## v1.2.11
 
 * Improvement: Enabled to open editing form from affix header
 * Improvement: Enabled to open editing form from each section headers
 
-## 1.2.10
+## v1.2.10
 
 * Fix: Revise `server:prod:container` script for backward compatibility
 
-## 1.2.9
+## v1.2.9
 
 * Improvement: Enabled to save with <kbd>⌘+S</kbd> on Mac
 * Improvement: Adopt the fastest logger 'pino'
 * Fix: The problem that can't upload profile image
 
-## 1.2.8
+## v1.2.8
 
 * Fix: The problem that redirect doesn't work when using 'crowi-plus Simplified Behavior'
 
-## 1.2.7 (Missing number)
+## v1.2.7 (Missing number)
 
-## 1.2.6
+## v1.2.6
 
 * Fix: The problem that page_list widget doesn't show the picture of revision.author
 * Fix: Change implementation of Bootstrap3 toggle switch for admin pages
 
-## 1.2.5
+## v1.2.5
 
 * Feature: crowi-plus Simplified Behavior
     * `/page` and `/page/` both shows the page
@@ -1210,136 +1210,136 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/34x.html>
     * All pages shows the list of sub pages
 * Improvement: Ensure to be able to disable Timeline feature
 
-## 1.2.4
+## v1.2.4
 
 * Fix: Internal Server Error has occurred when a guest user visited the page someone added "liked"
 
-## 1.2.3
+## v1.2.3
 
 * Improvement: Ensure to be able to use Presentation Mode even when not logged in
 * Improvement: Presentation Mode on IE11 (Experimental)
 * Fix: Broken Presentation Mode
 
-## 1.2.2
+## v1.2.2
 
 * Support: Merge official Crowi (master branch)
 
-## 1.2.1
+## v1.2.1
 
 * Fix: buildIndex error occured when access to installer
 
-## 1.2.0
+## v1.2.0
 
 * Support: Merge official Crowi v1.6.2
 
-## 1.1.12
+## v1.1.12
 
 * Feature: Remove Comment Button
 
-## 1.1.11
+## v1.1.11
 
 * Fix: Omit Comment form from page_list (crowi-plus Enhanced Layout)
 * Fix: .search-box is broken on sm/xs screen
 
-## 1.1.10
+## v1.1.10
 
 * Fix: .search-box is broken on sm/xs screen
 * Support: Browsable with IE11 (Experimental)
 
-## 1.1.9
+## v1.1.9
 
 * Improvement: Ensure to generate indices of Elasticsearch when installed
 * Fix: Specify the version of Bonsai Elasticsearch on Heroku
 
-## 1.1.8
+## v1.1.8
 
 * Fix: Depth of dropdown-menu when `.on-edit`
 * Fix: Error occured on saveing with `Ctrl-S`
 * Fix: Guest users browsing
 
-## 1.1.7
+## v1.1.7
 
 * Feature: Add option to allow guest users to browse
 * Fix: crowi-plus Enhanced Layout
 
-## 1.1.6
+## v1.1.6
 
 * Fix: crowi-plus Enhanced Layout
 
-## 1.1.5
+## v1.1.5
 
 * Fix: crowi-plus Enhanced Layout
 * Support: Merge official Crowi v1.6.1 master branch [573144b]
 
-## 1.1.4
+## v1.1.4
 
 * Feature: Ensure to select layout type from Admin Page
 * Feature: Add crowi-plus Enhanced Layout
 
-## 1.1.3
+## v1.1.3
 
 * Improvement: Use POSIX-style paths (bollowed crowi/crowi#219 by @Tomasom)
 
-## 1.1.2
+## v1.1.2
 
 * Imprv: Brushup fonts and styles
 * Fix: Ensure to specity revision id when saving with `Ctrl-S`
 
-## 1.1.1
+## v1.1.1
 
 * Feature: Save with `Ctrl-S`
 * Imprv: Brushup fonts and styles
 
-## 1.1.0
+## v1.1.0
 
 * Support: Merge official Crowi v1.6.1
 
-## 1.0.9
+## v1.0.9
 
 * Feature: Delete user
 * Feature: Upload other than images
 
-## 1.0.8
+## v1.0.8
 
 * Feature: Ensure to delete page completely
 * Feature: Ensure to delete redirect page
 * Fix: https access to Gravatar (this time for sure)
 
-## 1.0.7
+## v1.0.7
 
 * Feature: Keyboard navigation for search box
 * Improvement: Intelligent Search
 
-## 1.0.6
+## v1.0.6
 
 * Feature: Copy button that copies page path to clipboard
 * Fix: https access to Gravatar
 * Fix: server watching crash with `Error: read ECONNRESET` on Google Chrome
 
-## 1.0.5
+## v1.0.5
 
 * Feature: Ensure to use Gravatar for profile image
 
-## 1.0.4
+## v1.0.4
 
 * Improvement: Detach code blocks before preProcess
 * Support: Ensure to deploy to Heroku with INSTALL_PLUGINS env
 * Support: Ensure to load plugins easily when development
 
-## 1.0.3
+## v1.0.3
 
 * Improvement: Adjust styles
 
-## 1.0.2
+## v1.0.2
 
 * Improvement: For lsx
 
-## 1.0.1
+## v1.0.1
 
 * Feature: Custom CSS
 * Support: Notify build failure to Slask
 
-## 1.0.0
+## v1.0.0
 
 * Feature: Plugin mechanism
 * Feature: Switchable LineBreaks ON/OFF from admin page
