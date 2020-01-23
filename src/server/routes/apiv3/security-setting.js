@@ -27,7 +27,6 @@ const validator = {
     ]),
   ],
   localSetting: [
-    body('isLocalEnabled').isBoolean(),
     body('registrationMode').isString(),
     body('registrationWhiteList').isArray(),
   ],
@@ -531,7 +530,6 @@ module.exports = (crowi) => {
    */
   router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'security:passport-local:isEnabled': req.body.isLocalEnabled,
       'security:registrationMode': req.body.registrationMode,
       'security:registrationWhiteList': req.body.registrationWhiteList,
     };
@@ -539,7 +537,6 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       await crowi.passportService.setupStrategyById('local');
       const localSettingParams = {
-        isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       };
