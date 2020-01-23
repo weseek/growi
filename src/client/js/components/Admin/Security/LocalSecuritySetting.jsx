@@ -8,6 +8,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AdminLocalSecurityContainer from '../../../services/AdminLocalSecurityContainer';
 
 class LocalSecuritySetting extends React.Component {
 
@@ -17,14 +18,14 @@ class LocalSecuritySetting extends React.Component {
     this.state = {
       retrieveError: null,
     };
-    this.putLocalSecuritySetting = this.putLocalSecuritySetting.bind(this);
+    this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   async componentDidMount() {
-    const { adminGeneralSecurityContainer } = this.props;
+    const { adminLocalSecurityContainer } = this.props;
 
     try {
-      await adminGeneralSecurityContainer.retrieveSecurityData();
+      await adminLocalSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       toastError(err);
@@ -33,10 +34,10 @@ class LocalSecuritySetting extends React.Component {
   }
 
 
-  async putLocalSecuritySetting() {
-    const { t, adminGeneralSecurityContainer } = this.props;
+  async onClickSubmit() {
+    const { t, adminLocalSecurityContainer } = this.props;
     try {
-      await adminGeneralSecurityContainer.updateLocalSecuritySetting();
+      await adminLocalSecurityContainer.updateLocalSecuritySetting();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -45,8 +46,8 @@ class LocalSecuritySetting extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer } = this.props;
-    const { registrationMode } = adminGeneralSecurityContainer.state;
+    const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
+    const { registrationMode } = adminLocalSecurityContainer.state;
 
     return (
       <React.Fragment>
@@ -105,7 +106,7 @@ class LocalSecuritySetting extends React.Component {
                         key="Open"
                         role="presentation"
                         type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('Open') }}
+                        onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Open') }}
                       >
                         <a role="menuitem">{t('security_setting.registration_mode.open')}</a>
                       </li>
@@ -113,7 +114,7 @@ class LocalSecuritySetting extends React.Component {
                         key="Restricted"
                         role="presentation"
                         type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('Restricted') }}
+                        onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Restricted') }}
                       >
                         <a role="menuitem">{t('security_setting.registration_mode.restricted')}</a>
                       </li>
@@ -121,7 +122,7 @@ class LocalSecuritySetting extends React.Component {
                         key="Closed"
                         role="presentation"
                         type="button"
-                        onClick={() => { adminGeneralSecurityContainer.changeRegistrationMode('Closed') }}
+                        onClick={() => { adminLocalSecurityContainer.changeRegistrationMode('Closed') }}
                       >
                         <a role="menuitem">{t('security_setting.registration_mode.closed')}</a>
                       </li>
@@ -141,8 +142,8 @@ class LocalSecuritySetting extends React.Component {
                     className="form-control"
                     type="textarea"
                     name="registrationWhiteList"
-                    value={adminGeneralSecurityContainer.state.registrationWhiteList}
-                    onChange={e => adminGeneralSecurityContainer.changeRegistrationWhiteList(e.target.value)}
+                    defaultValue={adminLocalSecurityContainer.state.registrationWhiteList}
+                    onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
                   <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
                     <code>@growi.org</code>{t('security_setting.only_those')}<br />
@@ -154,9 +155,10 @@ class LocalSecuritySetting extends React.Component {
           </div>
         )}
 
-        {/*  TODO replace component */}
-        <div className="col-xs-offset-3 col-xs-6 mb-5">
-          <button type="submit" className="btn btn-primary" onClick={this.putLocalSecuritySetting}>{t('Update')}</button>
+        <div className="row my-3">
+          <div className="col-xs-offset-3 col-xs-5">
+            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+          </div>
         </div>
 
       </React.Fragment>
@@ -169,10 +171,11 @@ LocalSecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
+  adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
 const LocalSecuritySettingWrapper = (props) => {
-  return createSubscribedElement(LocalSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer]);
+  return createSubscribedElement(LocalSecuritySetting, props, [AppContainer, AdminGeneralSecurityContainer, AdminLocalSecurityContainer]);
 };
 
 export default withTranslation()(LocalSecuritySettingWrapper);

@@ -27,8 +27,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       useOnlyEnvVarsForSomeOptions: false,
       appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
-      registrationMode: 'Open',
-      registrationWhiteList: '',
       isLdapEnabled: false,
       isSamlEnabled: false,
       isOidcEnabled: false,
@@ -42,19 +40,14 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   async retrieveSecurityData() {
-    // TODO GW-956 separate local setting container
     const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { generalSetting, localSetting } = response.data.securityParams;
+    const { generalSetting } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
-      currentRestrictGuestMode: generalSetting.restrictGuestMode || 'Deny',
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
-      isLocalEnabled: localSetting.isLocalEnabled || false,
-      registrationMode: localSetting.registrationMode || 'Open',
-      registrationWhiteList: localSetting.registrationWhiteList.join('\n') || '',
     });
   }
 
@@ -142,35 +135,6 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchIsLocalEnabled() {
     this.switchAuthentication('isLocalEnabled', 'local');
-  }
-
-  /**
-   * Change registration mode
-   */
-  changeRegistrationMode(value) {
-    this.setState({ registrationMode: value });
-  }
-
-  /**
-   * Change registration white list
-   */
-  changeRegistrationWhiteList(value) {
-    this.setState({ registrationWhiteList: value });
-  }
-
-  /**
-  * update local security setting
-  */
-  async updateLocalSecuritySetting() {
-    let { registrationWhiteList } = this.state;
-    registrationWhiteList = Array.isArray(registrationWhiteList) ? registrationWhiteList : registrationWhiteList.split('\n');
-    const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
-      isLocalEnabled: this.state.isLocalEnabled,
-      registrationMode: this.state.registrationMode,
-      registrationWhiteList,
-    });
-    const { localSecuritySettingParams } = response.data;
-    return localSecuritySettingParams;
   }
 
   /**
