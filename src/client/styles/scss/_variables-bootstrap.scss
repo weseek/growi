@@ -67,3 +67,8 @@ $modal-header-padding-x: 1rem;
 
 //== Alerts
 $alert-border-radius: 0;
+
+//== Navbar(inherit variables of bootstrap3)
+$navbar-default-color: #777;
+$navbar-default-bg: #f8f8f8;
+$navbar-default-border: darken($navbar-default-bg, 6.5%);
