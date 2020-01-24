@@ -55,13 +55,14 @@ class SecuritySetting extends React.Component {
     return (
       <React.Fragment>
         <fieldset>
-          <legend className="alert-anchor">{t('security_settings')}</legend>
+          <h2 className="alert-anchor border-bottom">
+            {t('security_settings')}
+          </h2>
           {this.state.retrieveError != null && (
             <div className="alert alert-danger">
               <p>{t('Error occurred')} : {this.state.err}</p>
             </div>
           )}
-          {/* TODO adjust layout */}
           <div className="row mb-5">
             <strong className="col-xs-3 text-right"> {t('security_setting.Guest Users Access')} </strong>
             <div className="col-xs-9 text-left">
@@ -127,7 +128,7 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByOwner() }}
                 />
                 <label htmlFor="isHideRestrictedByOwner">
-                  <p className="help-block small">{t('security_setting.page_listing_1_desc')}</p>
+                  {t('security_setting.page_listing_1_desc')}
                 </label>
               </div>
             </div>
@@ -144,7 +145,7 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByGroup() }}
                 />
                 <label htmlFor="isHideRestrictedByGroup">
-                  <p className="help-block small">{t('security_setting.page_listing_2_desc')}</p>
+                  {t('security_setting.page_listing_2_desc')}
                 </label>
               </div>
             </div>
@@ -188,18 +189,18 @@ class SecuritySetting extends React.Component {
                       <a role="menuitem">{t('security_setting.admin_and_author')}</a>
                     </li>
                   </ul>
-                  <p className="help-block small">
-                    {t('security_setting.complete_deletion_explain')}
-                  </p>
                 </div>
+                <p className="help-block small">
+                  {t('security_setting.complete_deletion_explain')}
+                </p>
               </div>
             </div>
           </div>
-          {/* TODO GW-540 */}
-          <div className="form-group">
-            <div className="col-xs-offset-3 col-xs-6">
-              <input type="hidden" name="_csrf" value={this.props.csrf} />
-              <button type="submit" className="btn btn-primary" onClick={this.putSecuritySetting}>{t('Update')}</button>
+          <div className="row my-3">
+            <div className="col-xs-offset-3 col-xs-5">
+              <button type="submit" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.putSecuritySetting}>
+                {t('Update')}
+              </button>
             </div>
           </div>
         </fieldset>

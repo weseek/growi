@@ -27,7 +27,9 @@ class SecurityManagement extends React.Component {
     const { t } = this.props;
     return (
       <Fragment>
-        <div><SecuritySetting /></div>
+        <div>
+          <SecuritySetting />
+        </div>
 
         {/* XSS configuration link */}
         <div className="mb-5">
@@ -39,6 +41,7 @@ class SecurityManagement extends React.Component {
           </div>
         </div>
 
+        {/* TODO GW-226 adapt BS4 */}
         <div className="auth-mechanism-configurations m-t-10">
           <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
           <div className="passport-settings">
