@@ -25,53 +25,7 @@
       {% include './widget/menu.html' %}
     </div>
     <div class="col-md-9">
-      <p> {{ t("admin_top.wiki_administrator") }}<br>
-      {{ t("admin_top.assign_administrator") }}
-      </p>
-
-      <legend>
-        <h2>{{ t('admin_top.System Information') }}</h2>
-      </legend>
-      <table class="table table-bordered">
-        <tr>
-          <th class="col-sm-4">GROWI</th>
-          <td>{{ growiVersion() }}</td>
-        </tr>
-        <tr>
-          <th>node.js</th>
-          <td>{{ nodeVersion() }}</td>
-        </tr>
-        <tr>
-          <th>npm</th>
-          <td>{{ npmVersion() }}</td>
-        </tr>
-        <tr>
-          <th>yarn</th>
-          <td>{{ yarnVersion() }}</td>
-        </tr>
-      </table>
-
-      <legend>
-        <h2>{{ t('admin_top.List of installed plugins') }}</h2>
-      </legend>
-      <table class="table table-bordered">
-        <th class="text-center">
-          {{ t('admin_top.Package name') }}
-        </th>
-        <th class="text-center">
-          {{ t('admin_top.Specified version') }}
-        </th>
-        <th class="text-center">
-          {{ t('admin_top.Installed version') }}
-        </th>
-        {% for pluginName in Object.keys(plugins) %}
-        <tr>
-          <td>{{ pluginName }}</td>
-          <td class="text-center">{{ plugins[pluginName] }}</td>
-          <td class="text-center"><span class="tbd">(TBD)</span></td>
-        </tr>
-        {% endfor %}
-      </table>
+      <div id="admin-home"></div>
     </div>
   </div>
 
