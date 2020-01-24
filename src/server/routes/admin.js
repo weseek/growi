@@ -563,26 +563,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.securitySetting = async function(req, res) {
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    const form = req.form.settingForm;
-    if (aclService.isWikiModeForced()) {
-      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
-      delete form['security:restrictGuestMode'];
-    }
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      return res.json({ status: true });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false });
-    }
-  };
 
   actions.api.securityPassportLocalSetting = async function(req, res) {
     const form = req.form.settingForm;

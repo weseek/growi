@@ -11,7 +11,6 @@ module.exports = {
     apiToken: require('./me/apiToken'),
   },
   admin: {
-    securityGeneral: require('./admin/securityGeneral'),
     securityPassportLocal: require('./admin/securityPassportLocal'),
     securityPassportLdap: require('./admin/securityPassportLdap'),
     securityPassportSaml: require('./admin/securityPassportSaml'),
