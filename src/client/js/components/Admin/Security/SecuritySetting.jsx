@@ -45,7 +45,7 @@ class SecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
-    const { currentRestrictGuestMode } = adminGeneralSecurityContainer.state;
+    const { currentRestrictGuestMode, currentPageCompleteDeletionAuthority } = adminGeneralSecurityContainer.state;
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
     // eslint-disable-next-line max-len
@@ -76,8 +76,10 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
                   >
-                    {currentRestrictGuestMode === 'Deny' && <span className="pull-left">{t('security_setting.guest_mode.deny')}</span>}
-                    {currentRestrictGuestMode === 'Readonly' && <span className="pull-left">{t('security_setting.guest_mode.readonly')}</span>}
+                    <span className="pull-left">
+                      {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
+                      {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                    </span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>
@@ -157,7 +159,11 @@ class SecuritySetting extends React.Component {
               <div className="my-0 btn-group">
                 <div className="dropdown">
                   <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span className="pull-left">{t(`security_setting.${adminGeneralSecurityContainer.state.currentPageCompleteDeletionAuthority}`)}</span>
+                    <span className="pull-left">
+                      {currentPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
+                      {currentPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
+                      {currentPageCompleteDeletionAuthority === 'adminAndAuthor' && t('security_setting.admin_and_author')}
+                    </span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>
@@ -168,7 +174,7 @@ class SecuritySetting extends React.Component {
                       key="anyone"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyone') }}
+                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}
                     >
                       <a role="menuitem">{t('security_setting.anyone')}</a>
                     </li>
@@ -176,7 +182,7 @@ class SecuritySetting extends React.Component {
                       key="admin_only"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_only') }}
+                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}
                     >
                       <a role="menuitem">{t('security_setting.admin_only')}</a>
                     </li>
@@ -184,7 +190,7 @@ class SecuritySetting extends React.Component {
                       key="admin_and_author"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_and_author') }}
+                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
                     >
                       <a role="menuitem">{t('security_setting.admin_and_author')}</a>
                     </li>

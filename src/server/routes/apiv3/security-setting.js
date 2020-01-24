@@ -13,10 +13,13 @@ const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
-  // TODO correct validator
   generalSetting: [
-    body('restrictGuestMode').isString(),
-    body('pageCompleteDeletionAuthority').isString(),
+    body('restrictGuestMode').isString().isIn([
+      'Deny', 'Readonly',
+    ]),
+    body('pageCompleteDeletionAuthority').isString().isIn([
+      'anyOne', 'adminOnly', 'adminAndAuthor',
+    ]),
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
@@ -27,7 +30,9 @@ const validator = {
     ]),
   ],
   localSetting: [
-    body('registrationMode').isString(),
+    body('registrationMode').isString().isIn([
+      'Open', 'Restricted', 'Closed',
+    ]),
     body('registrationWhiteList').isArray(),
   ],
   ldapAuth: [
@@ -431,7 +436,7 @@ module.exports = (crowi) => {
     setupStrategies = setupStrategies.filter(strategy => strategy !== authId);
 
     if (setupStrategies.length === 0) {
-      return res.apiv3Err(new ErrorV3('Can not turn everything off'));
+      return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
     }
 
     const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
