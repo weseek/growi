@@ -36,7 +36,7 @@ class LdapSecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
+      this.setState({ retrieveError: err.message });
       logger.error(err);
     }
   }

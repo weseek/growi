@@ -28,7 +28,7 @@ class SecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
+      this.setState({ retrieveError: err.message });
     }
   }
 
@@ -60,7 +60,7 @@ class SecuritySetting extends React.Component {
           </h2>
           {this.state.retrieveError != null && (
             <div className="alert alert-danger">
-              <p>{t('Error occurred')} : {this.state.err}</p>
+              <p>{t('Error occurred')} : {this.state.retrieveError}</p>
             </div>
           )}
           <div className="row mb-5">

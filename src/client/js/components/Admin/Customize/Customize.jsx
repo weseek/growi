@@ -32,7 +32,7 @@ class Customize extends React.Component {
     }
     catch (err) {
       toastError(err);
-      adminCustomizeContainer.setState({ retrieveError: err });
+      adminCustomizeContainer.setState({ retrieveError: err.message });
       logger.error(err);
     }
 
