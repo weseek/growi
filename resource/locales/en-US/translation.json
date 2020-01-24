@@ -354,16 +354,6 @@
     "insert_image": "inserts an image",
     "open_sandbox": "Open Sandbox"
   },
-  "admin_top": {
-    "Management Wiki": "Management Wiki",
-    "System Information": "System Information",
-    "wiki_administrator": "Only Wiki administrator can access this page",
-    "assign_administrator": "You can assign administrator from Assign administrator button in the User management page",
-    "List of installed plugins": "List of installed plugins",
-    "Package name": "Package name",
-    "Specified version": "Specified version",
-    "Installed version": "Installed version"
-  },
   "security_setting": {
     "Security settings": "Security settings",
     "Guest Users Access": "Guest Users Access",
