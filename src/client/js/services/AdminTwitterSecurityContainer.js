@@ -21,7 +21,6 @@ export default class AdminTwitterSecurityContainer extends Container {
 
     this.state = {
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/twitter/callback'),
-      isTwitterStrategySetup: false,
       twitterConsumerKey: '',
       twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
@@ -36,7 +35,6 @@ export default class AdminTwitterSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { twitterOAuth } = response.data.securityParams;
     this.setState({
-      isTwitterStrategySetup: twitterOAuth.isTwitterStrategySetup,
       twitterConsumerKey: twitterOAuth.twitterConsumerKey || '',
       twitterConsumerSecret: twitterOAuth.twitterConsumerSecret || '',
       isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser || false,

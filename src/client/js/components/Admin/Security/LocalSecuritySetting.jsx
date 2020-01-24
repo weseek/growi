@@ -29,7 +29,7 @@ class LocalSecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
+      this.setState({ retrieveError: err.message });
     }
   }
 

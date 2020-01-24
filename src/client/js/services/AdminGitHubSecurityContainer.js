@@ -6,13 +6,13 @@ import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminGithubSecurityContainer');
+const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
 /**
- * Service container for admin security page (GithubSecurityManagement.jsx)
+ * Service container for admin security page (GitHubSecurityManagement.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminGithubSecurityContainer extends Container {
+export default class AdminGitHubSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -21,7 +21,6 @@ export default class AdminGithubSecurityContainer extends Container {
 
     this.state = {
       appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
-      isGitHubStrategySetup: false,
       githubClientId: '',
       githubClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: true,
@@ -36,7 +35,6 @@ export default class AdminGithubSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { githubOAuth } = response.data.securityParams;
     this.setState({
-      isGitHubStrategySetup: githubOAuth.isGitHubStrategySetup,
       githubClientId: githubOAuth.githubClientId || '',
       githubClientSecret: githubOAuth.githubClientSecret || '',
       isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser || false,
@@ -47,20 +45,20 @@ export default class AdminGithubSecurityContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'AdminGithubSecurityContainer';
+    return 'AdminGitHubSecurityContainer';
   }
 
   /**
    * Change githubClientId
    */
-  changeGithubClientId(value) {
+  changeGitHubClientId(value) {
     this.setState({ githubClientId: value });
   }
 
   /**
    * Change githubClientSecret
    */
-  changeGithubClientSecret(value) {
+  changeGitHubClientSecret(value) {
     this.setState({ githubClientSecret: value });
   }
 

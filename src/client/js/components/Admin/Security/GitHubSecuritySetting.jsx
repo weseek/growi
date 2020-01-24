@@ -9,11 +9,11 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import AdminGithubSecurityContainer from '../../../services/AdminGithubSecurityConatainer';
+import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityContainer';
 
 const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
-class GithubSecurityManagement extends React.Component {
+class GitHubSecurityManagement extends React.Component {
 
   constructor(props) {
     super(props);
@@ -26,23 +26,23 @@ class GithubSecurityManagement extends React.Component {
   }
 
   async componentDidMount() {
-    const { adminGithubSecurityContainer } = this.props;
+    const { adminGitHubSecurityContainer } = this.props;
 
     try {
-      await adminGithubSecurityContainer.retrieveSecurityData();
+      await adminGitHubSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
+      this.setState({ retrieveError: err.message });
       logger.error(err);
     }
   }
 
   async onClickSubmit() {
-    const { t, adminGithubSecurityContainer } = this.props;
+    const { t, adminGitHubSecurityContainer } = this.props;
 
     try {
-      await adminGithubSecurityContainer.updateGitHubSetting();
+      await adminGitHubSecurityContainer.updateGitHubSetting();
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
@@ -52,7 +52,7 @@ class GithubSecurityManagement extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminGithubSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer } = this.props;
     return (
 
       <React.Fragment>
@@ -72,12 +72,12 @@ class GithubSecurityManagement extends React.Component {
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
-                id="isGithubEnabled"
+                id="isGitHubEnabled"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGitHubEnabled}
-                onChange={() => { adminGeneralSecurityContainer.switchIsGithubOAuthEnabled() }}
+                onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
-              <label htmlFor="isGithubEnabled">
+              <label htmlFor="isGitHubEnabled">
                 {t('security_setting.OAuth.GitHub.enable_github')}
               </label>
             </div>
@@ -90,7 +90,7 @@ class GithubSecurityManagement extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminGithubSecurityContainer.state.appSiteUrl}
+              value={adminGitHubSecurityContainer.state.appSiteUrl}
               readOnly
             />
             <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
@@ -107,14 +107,8 @@ class GithubSecurityManagement extends React.Component {
         </div>
 
 
-        {adminGeneralSecurityContainer.state.isGithubEnabled && (
+        {adminGeneralSecurityContainer.state.isGitHubEnabled && (
           <React.Fragment>
-
-            {!adminGithubSecurityContainer.state.isGitHubStrategySetup && (
-              <div className="alert alert-warning">
-                <p>{t('security_setting.setup_not_completed_yet')}</p>
-              </div>
-            )}
 
             <div className="row mb-5">
               <label htmlFor="githubClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
@@ -123,8 +117,8 @@ class GithubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientId"
-                  value={adminGithubSecurityContainer.state.githubClientId}
-                  onChange={e => adminGithubSecurityContainer.changeGithubClientId(e.target.value)}
+                  value={adminGitHubSecurityContainer.state.githubClientId}
+                  onChange={e => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
                 />
                 <p className="help-block">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_ID' }) }} />
@@ -139,8 +133,8 @@ class GithubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
-                  defaultValue={adminGithubSecurityContainer.state.githubClientSecret}
-                  onChange={e => adminGithubSecurityContainer.changeGithubClientSecret(e.target.value)}
+                  defaultValue={adminGitHubSecurityContainer.state.githubClientSecret}
+                  onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
                 <p className="help-block">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_SECRET' }) }} />
@@ -152,13 +146,13 @@ class GithubSecurityManagement extends React.Component {
               <div className="col-xs-offset-3 col-xs-6 text-left">
                 <div className="checkbox checkbox-success">
                   <input
-                    id="bindByUserNameGithub"
+                    id="bindByUserNameGitHub"
                     type="checkbox"
-                    checked={adminGithubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
-                    onChange={() => { adminGithubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                    checked={adminGitHubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    onChange={() => { adminGitHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    htmlFor="bindByUserNameGithub"
+                    htmlFor="bindByUserNameGitHub"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
                 </div>
@@ -182,12 +176,12 @@ class GithubSecurityManagement extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForGithubOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.github')}</a>
+            <a href="#collapseHelpForGitHubOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.github')}</a>
           </h4>
-          <ol id="collapseHelpForGithubOauth" className="collapse">
+          <ol id="collapseHelpForGitHubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: adminGithubSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: adminGitHubSecurityContainer.state.callbackUrl }) }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_3') }} />
           </ol>
         </div>
@@ -201,15 +195,15 @@ class GithubSecurityManagement extends React.Component {
 }
 
 
-GithubSecurityManagement.propTypes = {
+GitHubSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
-  adminGithubSecurityContainer: PropTypes.instanceOf(AdminGithubSecurityContainer).isRequired,
+  adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
-const GithubSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(GithubSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGithubSecurityContainer]);
+const GitHubSecurityManagementWrapper = (props) => {
+  return createSubscribedElement(GitHubSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGitHubSecurityContainer]);
 };
 
-export default withTranslation()(GithubSecurityManagementWrapper);
+export default withTranslation()(GitHubSecurityManagementWrapper);

@@ -27,7 +27,7 @@ class AppSettingsPage extends React.Component {
     }
     catch (err) {
       toastError(err);
-      adminAppContainer.setState({ retrieveError: err });
+      adminAppContainer.setState({ retrieveError: err.message });
       logger.error(err);
     }
   }

@@ -28,7 +28,7 @@ class SecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
+      this.setState({ retrieveError: err.message });
     }
   }
 
@@ -45,7 +45,7 @@ class SecuritySetting extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
-    const { currentRestrictGuestMode } = adminGeneralSecurityContainer.state;
+    const { currentRestrictGuestMode, currentPageCompleteDeletionAuthority } = adminGeneralSecurityContainer.state;
     const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
     const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
     // eslint-disable-next-line max-len
@@ -55,13 +55,14 @@ class SecuritySetting extends React.Component {
     return (
       <React.Fragment>
         <fieldset>
-          <legend className="alert-anchor">{t('security_settings')}</legend>
+          <h2 className="alert-anchor border-bottom">
+            {t('security_settings')}
+          </h2>
           {this.state.retrieveError != null && (
             <div className="alert alert-danger">
-              <p>{t('Error occurred')} : {this.state.err}</p>
+              <p>{t('Error occurred')} : {this.state.retrieveError}</p>
             </div>
           )}
-          {/* TODO adjust layout */}
           <div className="row mb-5">
             <strong className="col-xs-3 text-right"> {t('security_setting.Guest Users Access')} </strong>
             <div className="col-xs-9 text-left">
@@ -75,8 +76,10 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
                   >
-                    {currentRestrictGuestMode === 'Deny' && <span className="pull-left">{t('security_setting.guest_mode.deny')}</span>}
-                    {currentRestrictGuestMode === 'Readonly' && <span className="pull-left">{t('security_setting.guest_mode.readonly')}</span>}
+                    <span className="pull-left">
+                      {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
+                      {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                    </span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>
@@ -127,7 +130,7 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByOwner() }}
                 />
                 <label htmlFor="isHideRestrictedByOwner">
-                  <p className="help-block small">{t('security_setting.page_listing_1_desc')}</p>
+                  {t('security_setting.page_listing_1_desc')}
                 </label>
               </div>
             </div>
@@ -144,7 +147,7 @@ class SecuritySetting extends React.Component {
                   onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByGroup() }}
                 />
                 <label htmlFor="isHideRestrictedByGroup">
-                  <p className="help-block small">{t('security_setting.page_listing_2_desc')}</p>
+                  {t('security_setting.page_listing_2_desc')}
                 </label>
               </div>
             </div>
@@ -156,7 +159,11 @@ class SecuritySetting extends React.Component {
               <div className="my-0 btn-group">
                 <div className="dropdown">
                   <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span className="pull-left">{t(`security_setting.${adminGeneralSecurityContainer.state.currentPageCompleteDeletionAuthority}`)}</span>
+                    <span className="pull-left">
+                      {currentPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
+                      {currentPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
+                      {currentPageCompleteDeletionAuthority === 'adminAndAuthor' && t('security_setting.admin_and_author')}
+                    </span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />
                     </span>
@@ -167,7 +174,7 @@ class SecuritySetting extends React.Component {
                       key="anyone"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyone') }}
+                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}
                     >
                       <a role="menuitem">{t('security_setting.anyone')}</a>
                     </li>
@@ -175,7 +182,7 @@ class SecuritySetting extends React.Component {
                       key="admin_only"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_only') }}
+                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminOnly') }}
                     >
                       <a role="menuitem">{t('security_setting.admin_only')}</a>
                     </li>
@@ -183,23 +190,23 @@ class SecuritySetting extends React.Component {
                       key="admin_and_author"
                       role="presentation"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('admin_and_author') }}
+                      onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('adminAndAuthor') }}
                     >
                       <a role="menuitem">{t('security_setting.admin_and_author')}</a>
                     </li>
                   </ul>
-                  <p className="help-block small">
-                    {t('security_setting.complete_deletion_explain')}
-                  </p>
                 </div>
+                <p className="help-block small">
+                  {t('security_setting.complete_deletion_explain')}
+                </p>
               </div>
             </div>
           </div>
-          {/* TODO GW-540 */}
-          <div className="form-group">
-            <div className="col-xs-offset-3 col-xs-6">
-              <input type="hidden" name="_csrf" value={this.props.csrf} />
-              <button type="submit" className="btn btn-primary" onClick={this.putSecuritySetting}>{t('Update')}</button>
+          <div className="row my-3">
+            <div className="col-xs-offset-3 col-xs-5">
+              <button type="submit" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.putSecuritySetting}>
+                {t('Update')}
+              </button>
             </div>
           </div>
         </fieldset>

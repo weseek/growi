@@ -21,7 +21,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isWikiModeForced: false,
       wikiMode: '',
       currentRestrictGuestMode: 'Deny',
-      currentPageCompleteDeletionAuthority: 'anyone',
+      currentPageCompleteDeletionAuthority: 'adminOnly',
       isHideRestrictedByOwner: false,
       isHideRestrictedByGroup: false,
       useOnlyEnvVarsForSomeOptions: false,
@@ -32,7 +32,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: false,
       isBasicEnabled: false,
       isGoogleEnabled: false,
-      isGithubEnabled: false,
+      isGitHubEnabled: false,
       isTwitterEnabled: false,
     };
 
@@ -44,7 +44,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     const { generalSetting, generalAuth } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
-      currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyone',
+      currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyOne',
       isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
       isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
@@ -54,7 +54,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: generalAuth.isOidcEnabled || false,
       isBasicEnabled: generalAuth.isBasicEnabled || false,
       isGoogleEnabled: generalAuth.isGoogleEnabled || false,
-      isGithubEnabled: generalAuth.isGithubEnabled || false,
+      isGitHubEnabled: generalAuth.isGitHubEnabled || false,
       isTwitterEnabled: generalAuth.isTwitterEnabled || false,
     });
   }
@@ -181,9 +181,9 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch GithubOAuth enabled
+   * Switch GitHubOAuth enabled
    */
-  async switchIsGithubOAuthEnabled() {
+  async switchIsGitHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
   }
 

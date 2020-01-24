@@ -33,7 +33,7 @@ class TwitterSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err });
+      this.setState({ retrieveError: err.message });
       logger.error(err);
     }
   }
@@ -109,12 +109,6 @@ class TwitterSecurityManagement extends React.Component {
 
         {adminGeneralSecurityContainer.state.isTwitterEnabled && (
           <React.Fragment>
-
-            {!adminTwitterSecurityContainer.state.isTwitterStrategySetup && (
-              <div className="alert alert-warning">
-                <p>{t('security_setting.setup_not_completed_yet')}</p>
-              </div>
-            )}
 
             <div className="row mb-5">
               <label htmlFor="TwitterConsumerId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>

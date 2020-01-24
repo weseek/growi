@@ -13,10 +13,13 @@ const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
-  // TODO correct validator
   generalSetting: [
-    body('restrictGuestMode').isString(),
-    body('pageCompleteDeletionAuthority').isString(),
+    body('restrictGuestMode').isString().isIn([
+      'Deny', 'Readonly',
+    ]),
+    body('pageCompleteDeletionAuthority').isString().isIn([
+      'anyOne', 'adminOnly', 'adminAndAuthor',
+    ]),
     body('hideRestrictedByOwner').isBoolean(),
     body('hideRestrictedByGroup').isBoolean(),
   ],
@@ -27,7 +30,9 @@ const validator = {
     ]),
   ],
   localSetting: [
-    body('registrationMode').isString(),
+    body('registrationMode').isString().isIn([
+      'Open', 'Restricted', 'Closed',
+    ]),
     body('registrationWhiteList').isArray(),
   ],
   ldapAuth: [
@@ -289,7 +294,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/:
    *      get:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Get security paramators
    *        responses:
    *          200:
@@ -323,7 +328,7 @@ module.exports = (crowi) => {
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
-        isGithubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+        isGitHubOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterOAuthEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       ldapAuth: {
@@ -400,7 +405,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/authentication/enabled:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update authentication isEnabled
    *        requestBody:
    *          required: true
@@ -431,7 +436,7 @@ module.exports = (crowi) => {
     setupStrategies = setupStrategies.filter(strategy => strategy !== authId);
 
     if (setupStrategies.length === 0) {
-      return res.apiv3Err(new ErrorV3('Can not turn everything off'));
+      return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
     }
 
     const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
@@ -459,7 +464,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/general-setting:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
@@ -509,7 +514,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/local-setting:
    *      put:
-   *        tags: [LocalSetting]
+   *        tags: [LocalSetting, apiv3]
    *        description: Update LocalSetting
    *        requestBody:
    *          required: true
@@ -551,7 +556,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/ldap:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update LDAP setting
    *        requestBody:
    *          required: true
@@ -614,7 +619,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/saml:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update SAML setting
    *        requestBody:
    *          required: true
@@ -674,7 +679,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/oidc:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update OpenID Connect setting
    *        requestBody:
    *          required: true
@@ -733,7 +738,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/basic:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update basic
    *        requestBody:
    *          required: true
@@ -774,7 +779,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/google-oauth:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update google OAuth
    *        requestBody:
    *          required: true
@@ -820,7 +825,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/github-oauth:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update github OAuth
    *        requestBody:
    *          required: true
@@ -868,7 +873,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/twitter-oauth:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update twitter OAuth
    *        requestBody:
    *          required: true
