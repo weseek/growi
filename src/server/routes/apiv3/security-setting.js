@@ -294,7 +294,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/:
    *      get:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Get security paramators
    *        responses:
    *          200:
@@ -405,7 +405,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/authentication/enabled:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update authentication isEnabled
    *        requestBody:
    *          required: true
@@ -464,7 +464,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/general-setting:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
@@ -514,7 +514,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/local-setting:
    *      put:
-   *        tags: [LocalSetting]
+   *        tags: [LocalSetting, apiv3]
    *        description: Update LocalSetting
    *        requestBody:
    *          required: true
@@ -556,7 +556,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/ldap:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update LDAP setting
    *        requestBody:
    *          required: true
@@ -619,7 +619,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/saml:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update SAML setting
    *        requestBody:
    *          required: true
@@ -679,7 +679,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/oidc:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update OpenID Connect setting
    *        requestBody:
    *          required: true
@@ -738,7 +738,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/basic:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update basic
    *        requestBody:
    *          required: true
@@ -779,7 +779,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/google-oauth:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update google OAuth
    *        requestBody:
    *          required: true
@@ -825,7 +825,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/github-oauth:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update github OAuth
    *        requestBody:
    *          required: true
@@ -873,7 +873,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/security-setting/twitter-oauth:
    *      put:
-   *        tags: [SecuritySetting]
+   *        tags: [SecuritySetting, apiv3]
    *        description: Update twitter OAuth
    *        requestBody:
    *          required: true
