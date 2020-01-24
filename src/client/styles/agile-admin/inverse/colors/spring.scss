@@ -1,21 +1,21 @@
 @import '../variables';
 
-$themecolor: #ffb6c1;
-$subthemecolor: #ee82ee;
+$themecolor: #ffb8c6;
+$buttoncolor: rgba(255, 184, 197, 0.5);
+$subthemecolor: #67a856;
 $themelight: #fff0f5;
 $topbar: $themecolor;
 $sidebar: #fff;
 $bodycolor: #fff;
-$headingtext: #da70d6;
+$headingtext: $subthemecolor;
 $bodytext: #333333;
 $linktext: $subthemecolor;
 $linktext-hover: lighten($linktext, 20%);
 $sidebar-text: #38495a;
-$accentcolor: #ee82ee;
-$background-color: rgba(
-  $color: $themelight,
-  $alpha: 0.8,
-);
+$accentcolor: #e08dbc;
+$accentlight: rgba(224, 141, 188, 0.2);
+$accentdark: rgba(224, 141, 188, 0.5);
+$background-color: rgba(171, 224, 174, 0.4);
 
 $primary: $themecolor;
 
@@ -83,36 +83,64 @@ header.affix {
 .text-info,
 body:not(.on-edit) .nav.nav-tabs {
   > li > a {
-    color: $themecolor;
+    color: $subthemecolor;
   }
 
   > li.active > a {
-    color: $themelight;
+    color: $subthemecolor;
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 50%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
       $active-nav-tabs-bgcolor 100%
     ); // overwrite only the bottom pixel
-    background-color: $themecolor;
+    background-color: $themelight;
   }
 }
 
 /*
  * button
  */
-button:not(.btn-link):not(.dropdown-toggle) {
-  border-radius: 10%;
-  box-shadow: 2px 2px 4px gray;
+
+button:not(.btn-link):not(.close) {
+  border-radius: 5px;
+}
+
+div .btn-primary {
+  border-radius: 5px;
+}
+
+.btn-link {
+  color: $subthemecolor;
+}
+
+.label-default {
+  background-color: $themecolor;
 }
 
 div .btn-inverse {
   background-color: $themecolor;
   border: $themecolor;
+  border-radius: 5px;
 }
 
 div .btn-default {
-  background-color: $themecolor;
-  border-color: $themecolor;
+  background-color: $accentdark;
+  border-color: $accentcolor;
+  border-radius: 5px;
+}
+
+.btn-group-sm > .btn {
+  border-radius: 5px;
+}
+
+.admin-page .btn-group.btn-toggle .btn.active[data-active-class='primary'] {
+  color: $sidebar;
+  background-color: $accentdark;
+  border-color: $accentcolor;
+}
+
+button .btn-outline {
+  background-color: $themelight;
 }
 
 /*
