@@ -20,12 +20,10 @@ module.exports = function(crowi, app) {
   } = crowi;
 
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
-  const PluginUtils = require('../plugins/plugin-utils');
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
   const searchEvent = crowi.event('search');
-  const pluginUtils = new PluginUtils();
 
   const MAX_PAGE_LIST = 50;
   const actions = {};
@@ -99,9 +97,7 @@ module.exports = function(crowi, app) {
   });
 
   actions.index = function(req, res) {
-    return res.render('admin/index', {
-      plugins: pluginUtils.listPlugins(crowi.rootDir),
-    });
+    return res.render('admin/index');
   };
 
   // app.get('/admin/app'                  , admin.app.index);

@@ -150,6 +150,9 @@ legend {
     border-color: $border;
   }
 }
+.editor-container .navbar-editor svg {
+  fill: $bodytext;
+}
 
 /*
  * GROWI admin page #themeOptions
