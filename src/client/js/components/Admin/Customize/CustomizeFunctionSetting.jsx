@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { Card, CardBody } from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -42,7 +43,12 @@ class CustomizeBehaviorSetting extends React.Component {
     return (
       <React.Fragment>
         <h2 className="admin-setting-header">{t('customize_page.Function')}</h2>
-        <p className="well">{ t('customize_page.function_choose') }</p>
+        <Card className="card-well my-3">
+          <CardBody>
+            { t('customize_page.function_choose') }
+          </CardBody>
+        </Card>
+
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">

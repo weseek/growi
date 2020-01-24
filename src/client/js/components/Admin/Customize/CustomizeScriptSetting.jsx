@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { Card, CardBody } from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -59,10 +60,12 @@ class CustomizeScriptSetting extends React.Component {
     return (
       <React.Fragment>
         <h2 className="admin-setting-header">{t('customize_page.Custom script')}</h2>
-        <p className="well">
-          { t('customize_page.write_java') }<br />
-          { t('customize_page.reflect_change') }
-        </p>
+        <Card className="card-well my-3">
+          <CardBody>
+            { t('customize_page.write_java') }<br />
+            { t('customize_page.reflect_change') }
+          </CardBody>
+        </Card>
 
         <div className="help-block">
           Placeholders:<br />
