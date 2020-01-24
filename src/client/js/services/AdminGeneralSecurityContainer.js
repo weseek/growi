@@ -32,7 +32,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: false,
       isBasicEnabled: false,
       isGoogleEnabled: false,
-      isGithubEnabled: false,
+      isGitHubEnabled: false,
       isTwitterEnabled: false,
     };
 
@@ -54,7 +54,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: generalAuth.isOidcEnabled || false,
       isBasicEnabled: generalAuth.isBasicEnabled || false,
       isGoogleEnabled: generalAuth.isGoogleEnabled || false,
-      isGithubEnabled: generalAuth.isGithubEnabled || false,
+      isGitHubEnabled: generalAuth.isGitHubEnabled || false,
       isTwitterEnabled: generalAuth.isTwitterEnabled || false,
     });
   }
@@ -181,9 +181,9 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch GithubOAuth enabled
+   * Switch GutHubOAuth enabled
    */
-  async switchIsGithubOAuthEnabled() {
+  async switchIsGutHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
   }
 

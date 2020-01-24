@@ -60,13 +60,13 @@ import AdminAppContainer from './services/AdminAppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
+import AdminLocalSecurityContainer from './services/AdminLocalSecurityContainer';
 import AdminSamlSecurityContainer from './services/AdminSamlSecurityContainer';
 import AdminOidcSecurityContainer from './services/AdminOidcSecurityContainer';
 import AdminBasicSecurityContainer from './services/AdminBasicSecurityContainer';
 import AdminGoogleSecurityContainer from './services/AdminGoogleSecurityContainer';
-import AdminGithubSecurityContainer from './services/AdminGithubSecurityConatainer';
+import AdminGutHubSecurityContainer from './services/AdminGitHubSecurityConatainer';
 import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
-import AdminLocalSecurityContainer from './services/AdminLocalSecurityContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -256,11 +256,11 @@ if (adminSecuritySettingElem != null) {
   const adminOidcSecurityContainer = new AdminOidcSecurityContainer(appContainer);
   const adminBasicSecurityContainer = new AdminBasicSecurityContainer(appContainer);
   const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer(appContainer);
-  const adminGithubSecurityContainer = new AdminGithubSecurityContainer(appContainer);
+  const adminGutHubSecurityContainer = new AdminGutHubSecurityContainer(appContainer);
   const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer(appContainer);
   const adminSecurityContainers = [
     adminGeneralSecurityContainer, adminLocalSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer,
-    adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGithubSecurityContainer, adminTwitterSecurityContainer,
+    adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGutHubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
