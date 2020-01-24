@@ -6,13 +6,13 @@ import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminGutHubSecurityContainer');
+const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
 /**
- * Service container for admin security page (GutHubSecurityManagement.jsx)
+ * Service container for admin security page (GitHubSecurityManagement.jsx)
  * @extends {Container} unstated Container
  */
-export default class AdminGutHubSecurityContainer extends Container {
+export default class AdminGitHubSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -45,20 +45,20 @@ export default class AdminGutHubSecurityContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'AdminGutHubSecurityContainer';
+    return 'AdminGitHubSecurityContainer';
   }
 
   /**
    * Change githubClientId
    */
-  changeGutHubClientId(value) {
+  changeGitHubClientId(value) {
     this.setState({ githubClientId: value });
   }
 
   /**
    * Change githubClientSecret
    */
-  changeGutHubClientSecret(value) {
+  changeGitHubClientSecret(value) {
     this.setState({ githubClientSecret: value });
   }
 

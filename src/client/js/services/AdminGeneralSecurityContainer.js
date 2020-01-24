@@ -181,9 +181,9 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch GutHubOAuth enabled
+   * Switch GitHubOAuth enabled
    */
-  async switchIsGutHubOAuthEnabled() {
+  async switchIsGitHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
   }
 

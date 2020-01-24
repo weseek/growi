@@ -9,11 +9,11 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import AdminGutHubSecurityContainer from '../../../services/AdminGitHubSecurityConatainer';
+import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityConatainer';
 
 const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
-class GutHubSecurityManagement extends React.Component {
+class GitHubSecurityManagement extends React.Component {
 
   constructor(props) {
     super(props);
@@ -26,10 +26,10 @@ class GutHubSecurityManagement extends React.Component {
   }
 
   async componentDidMount() {
-    const { adminGutHubSecurityContainer } = this.props;
+    const { adminGitHubSecurityContainer } = this.props;
 
     try {
-      await adminGutHubSecurityContainer.retrieveSecurityData();
+      await adminGitHubSecurityContainer.retrieveSecurityData();
     }
     catch (err) {
       toastError(err);
@@ -39,10 +39,10 @@ class GutHubSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGutHubSecurityContainer } = this.props;
+    const { t, adminGitHubSecurityContainer } = this.props;
 
     try {
-      await adminGutHubSecurityContainer.updateGitHubSetting();
+      await adminGitHubSecurityContainer.updateGitHubSetting();
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
@@ -52,7 +52,7 @@ class GutHubSecurityManagement extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminGutHubSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer } = this.props;
     return (
 
       <React.Fragment>
@@ -72,12 +72,12 @@ class GutHubSecurityManagement extends React.Component {
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
-                id="isGutHubEnabled"
+                id="isGitHubEnabled"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGitHubEnabled}
-                onChange={() => { adminGeneralSecurityContainer.switchIsGutHubOAuthEnabled() }}
+                onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
-              <label htmlFor="isGutHubEnabled">
+              <label htmlFor="isGitHubEnabled">
                 {t('security_setting.OAuth.GitHub.enable_github')}
               </label>
             </div>
@@ -90,7 +90,7 @@ class GutHubSecurityManagement extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminGutHubSecurityContainer.state.appSiteUrl}
+              value={adminGitHubSecurityContainer.state.appSiteUrl}
               readOnly
             />
             <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
@@ -117,8 +117,8 @@ class GutHubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientId"
-                  value={adminGutHubSecurityContainer.state.githubClientId}
-                  onChange={e => adminGutHubSecurityContainer.changeGutHubClientId(e.target.value)}
+                  value={adminGitHubSecurityContainer.state.githubClientId}
+                  onChange={e => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
                 />
                 <p className="help-block">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_ID' }) }} />
@@ -133,8 +133,8 @@ class GutHubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
-                  defaultValue={adminGutHubSecurityContainer.state.githubClientSecret}
-                  onChange={e => adminGutHubSecurityContainer.changeGutHubClientSecret(e.target.value)}
+                  defaultValue={adminGitHubSecurityContainer.state.githubClientSecret}
+                  onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
                 <p className="help-block">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_SECRET' }) }} />
@@ -146,13 +146,13 @@ class GutHubSecurityManagement extends React.Component {
               <div className="col-xs-offset-3 col-xs-6 text-left">
                 <div className="checkbox checkbox-success">
                   <input
-                    id="bindByUserNameGutHub"
+                    id="bindByUserNameGitHub"
                     type="checkbox"
-                    checked={adminGutHubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
-                    onChange={() => { adminGutHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                    checked={adminGitHubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    onChange={() => { adminGitHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
-                    htmlFor="bindByUserNameGutHub"
+                    htmlFor="bindByUserNameGitHub"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
                 </div>
@@ -176,12 +176,12 @@ class GutHubSecurityManagement extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForGutHubOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.github')}</a>
+            <a href="#collapseHelpForGitHubOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.github')}</a>
           </h4>
-          <ol id="collapseHelpForGutHubOauth" className="collapse">
+          <ol id="collapseHelpForGitHubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: adminGutHubSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: adminGitHubSecurityContainer.state.callbackUrl }) }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_3') }} />
           </ol>
         </div>
@@ -195,15 +195,15 @@ class GutHubSecurityManagement extends React.Component {
 }
 
 
-GutHubSecurityManagement.propTypes = {
+GitHubSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
-  adminGutHubSecurityContainer: PropTypes.instanceOf(AdminGutHubSecurityContainer).isRequired,
+  adminGitHubSecurityContainer: PropTypes.instanceOf(AdminGitHubSecurityContainer).isRequired,
 };
 
-const GutHubSecurityManagementWrapper = (props) => {
-  return createSubscribedElement(GutHubSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGutHubSecurityContainer]);
+const GitHubSecurityManagementWrapper = (props) => {
+  return createSubscribedElement(GitHubSecurityManagement, props, [AppContainer, AdminGeneralSecurityContainer, AdminGitHubSecurityContainer]);
 };
 
-export default withTranslation()(GutHubSecurityManagementWrapper);
+export default withTranslation()(GitHubSecurityManagementWrapper);

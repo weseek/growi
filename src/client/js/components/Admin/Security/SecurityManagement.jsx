@@ -12,7 +12,7 @@ import OidcSecuritySetting from './OidcSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 import BasicSecuritySetting from './BasicSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
-import GutHubSecuritySetting from './GitHubSecuritySetting';
+import GitHubSecuritySetting from './GitHubSecuritySetting';
 import TwitterSecuritySetting from './TwitterSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
 
@@ -94,7 +94,7 @@ class SecurityManagement extends React.Component {
                 <GoogleSecuritySetting />
               </div>
               <div id="passport-github" className="tab-pane" role="tabpanel">
-                <GutHubSecuritySetting />
+                <GitHubSecuritySetting />
               </div>
               <div id="passport-twitter" className="tab-pane" role="tabpanel">
                 <TwitterSecuritySetting />
