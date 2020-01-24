@@ -9,7 +9,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityConatainer';
+import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityContainer';
 
 const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
