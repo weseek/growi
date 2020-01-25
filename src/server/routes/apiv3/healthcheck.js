@@ -20,7 +20,7 @@ module.exports = (crowi) => {
    *
    *  /_api/v3/healthcheck:
    *    get:
-   *      tags: [Healthcheck, apiv3]
+   *      tags: [Healthcheck]
    *      operationId: getHealthcheck
    *      summary: /_api/v3/healthcheck
    *      description: Check whether the server is healthy or not

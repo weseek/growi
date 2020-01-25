@@ -25,7 +25,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-group-relations:
    *      get:
-   *        tags: [UserGroupRelation, apiv3]
+   *        tags: [UserGroupRelation]
    *        operationId: listUserGroupRelations
    *        summary: /_api/v3/user-group-relations
    *        description: Gets the user group relations

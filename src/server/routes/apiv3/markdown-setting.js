@@ -94,7 +94,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/markdown-setting:
    *      get:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: getMarkdownSetting
    *        summary: /_api/v3/markdown-setting
    *        description: Get markdown parameters
@@ -129,7 +129,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/markdown-setting/lineBreak:
    *      put:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: updateLineBreakMarkdownSetting
    *        summary: /_api/v3/markdown-setting/lineBreak
    *        description: Update lineBreak setting
@@ -175,7 +175,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/markdown-setting/presentation:
    *      put:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: updatePresentationMarkdownSetting
    *        summary: /_api/v3/markdown-setting/presentation
    *        description: Update presentation
@@ -224,7 +224,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/markdown-setting/xss:
    *      put:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: updateXssMarkdownSetting
    *        summary: /_api/v3/markdown-setting/xss
    *        description: Update xss

@@ -48,7 +48,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3//admin-home/:
    *      get:
-   *        tags: [adminHome, apiv3]
+   *        tags: [adminHome]
    *        operationId: getAdminHome
    *        summary: /_api/v3//admin-home/
    *        description: Get adminHome parameters

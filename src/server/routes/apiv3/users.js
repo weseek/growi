@@ -83,7 +83,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users:
    *      get:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: listUsers
    *        summary: /_api/v3/users
    *        description: Get users
@@ -135,7 +135,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/invite:
    *      post:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: inviteUser
    *        summary: /_api/v3/users/invite
    *        description: Create new users and send Emails
@@ -180,7 +180,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/giveAdmin:
    *      put:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: giveAdminUser
    *        summary: /_api/v3/users/{id}/giveAdmin
    *        description: Give user admin
@@ -221,7 +221,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/removeAdmin:
    *      put:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: removeAdminUser
    *        summary: /_api/v3/users/{id}/removeAdmin
    *        description: Remove user admin
@@ -262,7 +262,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/activate:
    *      put:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: activateUser
    *        summary: /_api/v3/users/{id}/activate
    *        description: Activate user
@@ -311,7 +311,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/deactivate:
    *      put:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: deactivateUser
    *        summary: /_api/v3/users/{id}/deactivate
    *        description: Deactivate user
@@ -352,7 +352,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/{id}/remove:
    *      delete:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: removeUser
    *        summary: /_api/v3/users/{id}/remove
    *        description: Delete user
@@ -397,7 +397,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/external-accounts:
    *      get:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: listExternalAccountsUsers
    *        summary: /_api/v3/users/external-accounts
    *        description: Get external-account
@@ -431,7 +431,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/users/external-accounts/{id}/remove:
    *      delete:
-   *        tags: [Users, apiv3]
+   *        tags: [Users]
    *        operationId: removeExternalAccountUser
    *        summary: /_api/v3/users/external-accounts/{id}/remove
    *        description: Delete ExternalAccount

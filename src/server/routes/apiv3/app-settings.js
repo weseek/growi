@@ -138,7 +138,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/app-settings:
    *      get:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: getAppSettings
    *        summary: /_api/v3/app-settings
    *        description: get app setting params
@@ -183,7 +183,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/app-settings/app-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        summary: /_api/v3/app-settings/app-setting
    *        operationId: updateAppSettings
    *        description: Update app setting
@@ -232,7 +232,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/app-settings/site-url-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingSiteUrlSetting
    *        summary: /_api/v3/app-settings/site-url-setting
    *        description: Update site url setting
@@ -324,7 +324,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/app-settings/mail-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingMailSetting
    *        summary: /_api/v3/app-settings/site-url-setting
    *        description: Update mail setting
@@ -386,7 +386,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/app-settings/aws-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingAwsSetting
    *        summary: /_api/v3/app-settings/aws-setting
    *        description: Update aws setting
@@ -437,7 +437,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/app-settings/plugin-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingPluginSetting
    *        summary: /_api/v3/app-settings/plugin-setting
    *        description: Update plugin setting

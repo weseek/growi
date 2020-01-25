@@ -45,7 +45,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups:
    *      get:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: getUserGroup
    *        summary: /_api/v3/user-groups
    *        description: Get usergroups
@@ -85,7 +85,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups:
    *      post:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: createUserGroup
    *        summary: /_api/v3/user-groups
    *        description: Adds userGroup
@@ -137,7 +137,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}:
    *      delete:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: deleteUserGroup
    *        summary: /_api/v3/user-groups/{id}
    *        description: Deletes userGroup
@@ -199,7 +199,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}:
    *      put:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: updateUserGroups
    *        summary: /_api/v3/user-groups/{id}
    *        description: Update userGroup
@@ -256,7 +256,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}/users:
    *      get:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: getUsersUserGroups
    *        summary: /_api/v3/user-groups/{id}/users
    *        description: Get users related to the userGroup
@@ -306,7 +306,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}/unrelated-users:
    *      get:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: getUnrelatedUsersUserGroups
    *        summary: /_api/v3/user-groups/{id}/unrelated-users
    *        description: Get users unrelated to the userGroup
@@ -364,7 +364,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}/users:
    *      post:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: addUserUserGroups
    *        summary: /_api/v3/user-groups/{id}/users
    *        description: Add a user to the userGroup
@@ -433,7 +433,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}/users:
    *      delete:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: deleteUsersUserGroups
    *        summary: /_api/v3/user-groups/{id}/users
    *        description: remove a user from the userGroup
@@ -495,7 +495,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}/user-group-relations:
    *      get:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: getUserGroupRelationsUserGroups
    *        summary: /_api/v3/user-groups/{id}/user-group-relations
    *        description: Get the user group relations for the userGroup
@@ -549,7 +549,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /_api/v3/user-groups/{id}/pages:
    *      get:
-   *        tags: [UserGroup, apiv3]
+   *        tags: [UserGroup]
    *        operationId: getPagesUserGroups
    *        summary: /_api/v3/user-groups/{id}/pages
    *        description: Get closed pages for the userGroup

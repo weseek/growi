@@ -133,7 +133,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting:
    *      get:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: getCustomizeSetting
    *        summary: /_api/v3/customize-setting
    *        description: Get customize parameters
@@ -175,7 +175,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/layoutTheme:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateLayoutThemeCustomizeSetting
    *        summary: /_api/v3/customize-setting/layoutTheme
    *        description: Update layout and theme
@@ -219,7 +219,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/behavior:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateBehaviorCustomizeSetting
    *        summary: /_api/v3/customize-setting/behavior
    *        description: Update behavior
@@ -261,7 +261,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/function:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateFunctionCustomizeSetting
    *        summary: /_api/v3/customize-setting/function
    *        description: Update function
@@ -311,7 +311,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/highlight:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateHighlightCustomizeSetting
    *        summary: /_api/v3/customize-setting/highlight
    *        description: Update highlight
@@ -355,7 +355,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/customizeTitle:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeTitleCustomizeSetting
    *        summary: /_api/v3/customize-setting/customizeTitle
    *        description: Update customizeTitle
@@ -398,7 +398,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/customizeHeader:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeHeaderCustomizeSetting
    *        summary: /_api/v3/customize-setting/customizeHeader
    *        description: Update customizeHeader
@@ -439,7 +439,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/customizeCss:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeCssCustomizeSetting
    *        summary: /_api/v3/customize-setting/customizeCss
    *        description: Update customizeCss
@@ -481,7 +481,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/customize-setting/customizeScript:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeScriptCustomizeSetting
    *        summary: /_api/v3/customize-setting/customizeScript
    *        description: Update customizeScript

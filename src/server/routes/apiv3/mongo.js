@@ -19,7 +19,7 @@ module.exports = (crowi) => {
    *
    *  /_api/v3/mongo/collections:
    *    get:
-   *      tags: [Mongo, apiv3]
+   *      tags: [Mongo]
    *      operationId: getMongoCollections
    *      summary: /_api/v3/mongo/collections
    *      description: get mongodb collections names
