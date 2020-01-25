@@ -60,7 +60,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/revisions.get:
    *      get:
-   *        tags: [Revisions, apiv1]
+   *        tags: [Revisions]
    *        operationId: /_api/revisions.get
    *        summary: /_api/revisions.get
    *        description: Get revision
@@ -128,7 +128,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/revisions.ids:
    *      get:
-   *        tags: [Revisions, apiv1]
+   *        tags: [Revisions]
    *        operationId: /_api/revisions.ids
    *        summary: /_api/revisions.ids
    *        description: Get revision id list of the page
@@ -189,7 +189,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/revisions.list:
    *      get:
-   *        tags: [Revisions, apiv1]
+   *        tags: [Revisions]
    *        operationId: /_api/revisions.list
    *        summary: /_api/revisions.list
    *        description: Get revisions

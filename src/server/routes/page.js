@@ -647,7 +647,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.list:
    *      get:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: listPages
    *        summary: /_api/pages.list
    *        description: Get list of pages
@@ -737,7 +737,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.create:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: createPage
    *        summary: /_api/pages.create
    *        description: Create page
@@ -846,7 +846,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.update:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: updatePage
    *        summary: /_api/pages.update
    *        description: Update page
@@ -974,7 +974,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.get:
    *      get:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: getPage
    *        summary: /_api/pages.get
    *        description: Get page data
@@ -1098,7 +1098,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.seen:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: seenPage
    *        summary: /_api/pages.seen
    *        description: Mark as seen user
@@ -1167,7 +1167,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/likes.add:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: addLike
    *        summary: /_api/likes.add
    *        description: Like page
@@ -1243,7 +1243,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/likes.remove:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: removeLike
    *        summary: /_api/likes.remove
    *        description: Unlike page
@@ -1311,7 +1311,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.updatePost:
    *      get:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: getUpdatePostPage
    *        summary: /_api/pages.updatePost
    *        description: Get UpdatePost setting list
@@ -1479,7 +1479,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/pages.rename:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages]
    *        operationId: renamePage
    *        summary: /_api/pages.rename
    *        description: Rename page
