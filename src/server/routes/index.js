@@ -64,9 +64,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
 
   // OAuth
-  app.post('/_api/admin/security/passport-google' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
-  app.post('/_api/admin/security/passport-github' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportGitHub, admin.api.securityPassportGitHubSetting);
-  app.post('/_api/admin/security/passport-twitter', loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);

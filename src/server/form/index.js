@@ -11,9 +11,6 @@ module.exports = {
     apiToken: require('./me/apiToken'),
   },
   admin: {
-    securityPassportGoogle: require('./admin/securityPassportGoogle'),
-    securityPassportGitHub: require('./admin/securityPassportGitHub'),
-    securityPassportTwitter: require('./admin/securityPassportTwitter'),
     slackIwhSetting: require('./admin/slackIwhSetting'),
     slackSetting: require('./admin/slackSetting'),
     userGroupCreate: require('./admin/userGroupCreate'),
