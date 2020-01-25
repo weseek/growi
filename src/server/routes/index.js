@@ -62,15 +62,11 @@ module.exports = function(crowi, app) {
 
   // security admin
   app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
-  app.post('/_api/admin/security/passport-ldap' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportLdap, admin.api.securityPassportLdapSetting);
-  app.post('/_api/admin/security/passport-saml' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportSaml, admin.api.securityPassportSamlSetting);
-  app.post('/_api/admin/security/passport-basic', loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportBasic, admin.api.securityPassportBasicSetting);
 
   // OAuth
   app.post('/_api/admin/security/passport-google' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
   app.post('/_api/admin/security/passport-github' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportGitHub, admin.api.securityPassportGitHubSetting);
   app.post('/_api/admin/security/passport-twitter', loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
-  app.post('/_api/admin/security/passport-oidc',    loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportOidc, admin.api.securityPassportOidcSetting);
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);

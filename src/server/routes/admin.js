@@ -564,88 +564,6 @@ module.exports = function(crowi, app) {
 
   actions.api = {};
 
-  actions.api.securityPassportLdapSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      // reset strategy
-      crowi.passportService.resetLdapStrategy();
-      // setup strategy
-      if (configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')) {
-        crowi.passportService.setupLdapStrategy(true);
-      }
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false, message: err.message });
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportSamlSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    validateSamlSettingForm(req.form, req.t);
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetSamlStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-saml:isEnabled')) {
-      try {
-        await crowi.passportService.setupSamlStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetSamlStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportBasicSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetBasicStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-basic:isEnabled')) {
-      try {
-        await crowi.passportService.setupBasicStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetBasicStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
   actions.api.securityPassportGoogleSetting = async(req, res) => {
     const form = req.form.settingForm;
 
@@ -726,34 +644,6 @@ module.exports = function(crowi, app) {
 
     return res.json({ status: true });
   };
-
-  actions.api.securityPassportOidcSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetOidcStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-oidc:isEnabled')) {
-      try {
-        await crowi.passportService.setupOidcStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetOidcStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
 
   // app.post('/_api/admin/notifications.add'    , admin.api.notificationAdd);
   actions.api.notificationAdd = function(req, res) {
