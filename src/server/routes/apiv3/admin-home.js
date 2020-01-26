@@ -46,7 +46,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3//admin-home/:
+   *    /_api/v3/admin-home/:
    *      get:
    *        tags: [adminHome]
    *        operationId: getAdminHome
