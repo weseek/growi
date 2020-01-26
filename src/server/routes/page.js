@@ -126,6 +126,14 @@
  *            type: string
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
+ *
+ *      Tags:
+ *        description: Tags
+ *        type: array
+ *        items:
+ *          type: string
+ *          description: tag name
+ *        example: ['daily', 'report', 'tips']
  */
 
 /* eslint-disable no-use-before-define */
@@ -1133,10 +1141,7 @@ module.exports = function(crowi, app) {
    *                    ok:
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    tags:
-   *                      type: array
-   *                      description: Tag names
-   *                      items: string
-   *                      example: ['daily', 'report', 'tips']
+   *                      $ref: '#/components/schemas/Tags'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -1659,6 +1664,44 @@ module.exports = function(crowi, app) {
     return page;
   };
 
+  /**
+   * @swagger
+   *
+   *    /_api/pages.duplicate:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: duplicatePage
+   *        summary: /_api/pages.duplicate
+   *        description: Duplicate page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  new_path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to duplicate page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {post} /pages.duplicate Duplicate page
    * @apiName DuplicatePage
