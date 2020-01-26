@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 import loggerFactory from '@alias/logger';
 
@@ -82,6 +83,7 @@ class ManageGlobalNotification extends React.Component {
           triggerEvents: [...this.state.triggerEvents],
         });
       }
+      window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
     catch (err) {
       toastError(err);
