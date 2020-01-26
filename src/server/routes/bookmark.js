@@ -94,45 +94,6 @@ module.exports = function(crowi, app) {
       });
   };
 
-
-  /**
-   * @swagger
-   *
-   *    /_api/bookmarks.list:
-   *      get:
-   *        tags: [Bookmarks, CrowiCompatibles]
-   *        operationId: listBookmarks
-   *        summary: /_api/bookmarks.list
-   *        description: Get bookmark list of the page with the user
-   *        parameters:
-   *          - in: query
-   *            name: limit
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *          - in: query
-   *            name: offset
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get bookmark of the page with the user.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    meta:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta'
-   *                    data:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/V1PaginateResult/properties/meta'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   actions.api.list = function(req, res) {
     const paginateOptions = ApiPaginate.parseOptions(req.query);
 
