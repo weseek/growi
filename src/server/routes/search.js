@@ -50,7 +50,7 @@ module.exports = function(crowi, app) {
    *
    *   /_api/search:
    *     get:
-   *       tags: [Pages, CrowiCompatibles]
+   *       tags: [Search, CrowiCompatibles]
    *       operationId: searchPages
    *       summary: /_api/search
    *       description: Search pages
