@@ -42,10 +42,6 @@ const ApiResponse = require('../util/apiResponse');
  *            type: string
  *            description: original file name
  *            example: file.txt
- *          filePath:
- *            type: string
- *            description: file path
- *            example: attachment/5e07345972560e001761fa63/6b0b3facf3628699263d760e18efd446.txt
  *          creator:
  *            $ref: '#/components/schemas/User'
  *          page:
@@ -64,6 +60,14 @@ const ApiResponse = require('../util/apiResponse');
  *            type: string
  *            description: attachment URL
  *            example: http://localhost/files/5e0734e072560e001761fa67
+ *          filePathProxied:
+ *            type: string
+ *            description: file path proxied
+ *            example: "/attachment/5e0734e072560e001761fa67"
+ *          downloadPathProxied:
+ *            type: string
+ *            description: download path proxied
+ *            example: "/download/5e0734e072560e001761fa67"
  */
 
 /**
