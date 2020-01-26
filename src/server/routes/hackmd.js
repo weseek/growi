@@ -128,11 +128,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/hackmd.integrate:
+   *    /hackmd.integrate:
    *      post:
    *        tags: [Hackmd]
    *        operationId: integrateHackmd
-   *        summary: /_api/hackmd.integrate
+   *        summary: /hackmd.integrate
    *        description: Integrate hackmd
    *        requestBody:
    *          content:
@@ -241,11 +241,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/hackmd.discard:
+   *    /hackmd.discard:
    *      post:
    *        tags: [Hackmd]
    *        operationId: discardHackmd
-   *        summary: /_api/hackmd.discard
+   *        summary: /hackmd.discard
    *        description: Discard hackmd
    *        requestBody:
    *          content:
@@ -305,11 +305,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/hackmd.saveOnHackmd:
+   *    /hackmd.saveOnHackmd:
    *      post:
    *        tags: [Hackmd]
    *        operationId: saveOnHackmd
-   *        summary: /_api/hackmd.saveOnHackmd
+   *        summary: /hackmd.saveOnHackmd
    *        description: Receive when save operation triggered on HackMD
    *        requestBody:
    *          content:

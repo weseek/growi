@@ -48,11 +48,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *   /_api/search:
+   *   /search:
    *     get:
    *       tags: [Search, CrowiCompatibles]
    *       operationId: searchPages
-   *       summary: /_api/search
+   *       summary: /search
    *       description: Search pages
    *       parameters:
    *         - in: query

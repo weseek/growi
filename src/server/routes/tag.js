@@ -44,11 +44,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/tags.search:
+   *    /tags.search:
    *      get:
    *        tags: [Tags]
    *        operationId: searchTags
-   *        summary: /_api/tags.search
+   *        summary: /tags.search
    *        description: Search tags
    *        parameters:
    *          - in: query
@@ -90,11 +90,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/tags.update:
+   *    /tags.update:
    *      post:
    *        tags: [Tags]
    *        operationId: updateTag
-   *        summary: /_api/tags.update
+   *        summary: /tags.update
    *        description: Update tag
    *        requestBody:
    *          content:
@@ -154,11 +154,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/tags.list:
+   *    /tags.list:
    *      get:
    *        tags: [Tags]
    *        operationId: listTags
-   *        summary: /_api/tags.list
+   *        summary: /tags.list
    *        description: Get tags
    *        parameters:
    *          - in: query

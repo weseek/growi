@@ -67,11 +67,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *   /_api/me/user-group-relations:
+   *   /me/user-group-relations:
    *     get:
    *       tags: [Me, CrowiCompatibles]
    *       operationId: getUserGroupRelations
-   *       summary: /_api/me/user-group-relations
+   *       summary: /me/user-group-relations
    *       description: Get user group relations
    *       responses:
    *         200:

@@ -43,11 +43,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/bookmarks.get:
+   *    /bookmarks.get:
    *      get:
    *        tags: [Bookmarks, CrowiCompatibles]
    *        operationId: getBookmark
-   *        summary: /_api/bookmarks.get
+   *        summary: /bookmarks.get
    *        description: Get bookmark of the page with the user
    *        parameters:
    *          - in: query
@@ -110,11 +110,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/bookmarks.add:
+   *    /bookmarks.add:
    *      post:
    *        tags: [Bookmarks, CrowiCompatibles]
    *        operationId: addBookmark
-   *        summary: /_api/bookmarks.add
+   *        summary: /bookmarks.add
    *        description: Add bookmark of the page
    *        parameters:
    *          - in: query
@@ -165,11 +165,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/bookmarks.remove:
+   *    /bookmarks.remove:
    *      post:
    *        tags: [Bookmarks, CrowiCompatibles]
    *        operationId: removeBookmark
-   *        summary: /_api/bookmarks.remove
+   *        summary: /bookmarks.remove
    *        description: Remove bookmark of the page
    *        requestBody:
    *          content:

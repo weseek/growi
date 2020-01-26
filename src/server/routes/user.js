@@ -86,11 +86,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/users.list:
+   *    /users.list:
    *      get:
    *        tags: [Users, CrowiCompatibles]
    *        operationId: listUsersV1
-   *        summary: /_api/users.list
+   *        summary: /users.list
    *        description: Get list of users
    *        parameters:
    *          - in: query

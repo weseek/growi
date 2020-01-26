@@ -308,11 +308,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.list:
+   *    /attachments.list:
    *      get:
    *        tags: [Attachments, CrowiCompatibles]
    *        operationId: listAttachments
-   *        summary: /_api/attachments.list
+   *        summary: /attachments.list
    *        description: Get list of attachments in page
    *        parameters:
    *          - in: query
@@ -366,11 +366,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.limit:
+   *    /attachments.limit:
    *      get:
    *        tags: [Attachments]
    *        operationId: getAttachmentsLimit
-   *        summary: /_api/attachments.limit
+   *        summary: /attachments.limit
    *        description: Get available capacity of uploaded file with GridFS
    *        parameters:
    *          - in: query
@@ -411,11 +411,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.add:
+   *    /attachments.add:
    *      post:
    *        tags: [Attachments, CrowiCompatibles]
    *        operationId: addAttachment
-   *        summary: /_api/attachments.add
+   *        summary: /attachments.add
    *        description: Add attachment to the page
    *        requestBody:
    *          content:
@@ -537,11 +537,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.uploadProfileImage:
+   *    /attachments.uploadProfileImage:
    *      post:
    *        tags: [Attachments]
    *        operationId: uploadProfileImage
-   *        summary: /_api/attachments.uploadProfileImage
+   *        summary: /attachments.uploadProfileImage
    *        description: Upload profile image
    *        requestBody:
    *          content:
@@ -632,11 +632,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.remove:
+   *    /attachments.remove:
    *      post:
    *        tags: [Attachments, CrowiCompatibles]
    *        operationId: removeAttachment
-   *        summary: /_api/attachments.remove
+   *        summary: /attachments.remove
    *        description: Remove attachment
    *        requestBody:
    *          content:
@@ -696,11 +696,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.removeProfileImage:
+   *    /attachments.removeProfileImage:
    *      post:
    *        tags: [Attachments]
    *        operationId: removeProfileImage
-   *        summary: /_api/attachments.removeProfileImage
+   *        summary: /attachments.removeProfileImage
    *        description: Remove profile image
    *        requestBody:
    *          content:

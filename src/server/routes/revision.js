@@ -58,11 +58,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/revisions.get:
+   *    /revisions.get:
    *      get:
    *        tags: [Revisions, CrowiCompatibles]
-   *        operationId: /_api/revisions.get
-   *        summary: /_api/revisions.get
+   *        operationId: revisions.get
+   *        summary: /revisions.get
    *        description: Get revision
    *        parameters:
    *          - in: query
@@ -126,11 +126,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/revisions.ids:
+   *    /revisions.ids:
    *      get:
    *        tags: [Revisions, CrowiCompatibles]
-   *        operationId: /_api/revisions.ids
-   *        summary: /_api/revisions.ids
+   *        operationId: revisions.ids
+   *        summary: /revisions.ids
    *        description: Get revision id list of the page
    *        parameters:
    *          - in: query
@@ -187,11 +187,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/revisions.list:
+   *    /revisions.list:
    *      get:
    *        tags: [Revisions, CrowiCompatibles]
-   *        operationId: /_api/revisions.list
-   *        summary: /_api/revisions.list
+   *        operationId: revisions.list
+   *        summary: /revisions.list
    *        description: Get revisions
    *        parameters:
    *          - in: query

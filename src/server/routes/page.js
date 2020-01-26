@@ -645,11 +645,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.list:
+   *    /pages.list:
    *      get:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: listPages
-   *        summary: /_api/pages.list
+   *        summary: /pages.list
    *        description: Get list of pages
    *        parameters:
    *          - in: query
@@ -739,11 +739,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.create:
+   *    /pages.create:
    *      post:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: createPage
-   *        summary: /_api/pages.create
+   *        summary: /pages.create
    *        description: Create page
    *        requestBody:
    *          content:
@@ -848,11 +848,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.update:
+   *    /pages.update:
    *      post:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: updatePage
-   *        summary: /_api/pages.update
+   *        summary: /pages.update
    *        description: Update page
    *        requestBody:
    *          content:
@@ -976,11 +976,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.get:
+   *    /pages.get:
    *      get:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: getPage
-   *        summary: /_api/pages.get
+   *        summary: /pages.get
    *        description: Get page data
    *        parameters:
    *          - in: query
@@ -1059,11 +1059,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.exist:
+   *    /pages.exist:
    *      get:
    *        tags: [Pages]
    *        operationId: getPageExistence
-   *        summary: /_api/pages.exist
+   *        summary: /pages.exist
    *        description: Get page existence
    *        parameters:
    *          - in: query
@@ -1116,11 +1116,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.getPageTag:
+   *    /pages.getPageTag:
    *      get:
    *        tags: [Pages]
    *        operationId: getPageTag
-   *        summary: /_api/pages.getPageTag
+   *        summary: /pages.getPageTag
    *        description: Get page tag
    *        parameters:
    *          - in: query
@@ -1164,11 +1164,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.seen:
+   *    /pages.seen:
    *      post:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: seenPage
-   *        summary: /_api/pages.seen
+   *        summary: /pages.seen
    *        description: Mark as seen user
    *        requestBody:
    *          content:
@@ -1233,11 +1233,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/likes.add:
+   *    /likes.add:
    *      post:
    *        tags: [Likes, CrowiCompatibles]
    *        operationId: addLike
-   *        summary: /_api/likes.add
+   *        summary: /likes.add
    *        description: Like page
    *        requestBody:
    *          content:
@@ -1309,11 +1309,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/likes.remove:
+   *    /likes.remove:
    *      post:
    *        tags: [Likes, CrowiCompatibles]
    *        operationId: removeLike
-   *        summary: /_api/likes.remove
+   *        summary: /likes.remove
    *        description: Unlike page
    *        requestBody:
    *          content:
@@ -1377,11 +1377,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.updatePost:
+   *    /pages.updatePost:
    *      get:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: getUpdatePostPage
-   *        summary: /_api/pages.updatePost
+   *        summary: /pages.updatePost
    *        description: Get UpdatePost setting list
    *        parameters:
    *          - in: query
@@ -1545,11 +1545,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.rename:
+   *    /pages.rename:
    *      post:
    *        tags: [Pages, CrowiCompatibles]
    *        operationId: renamePage
-   *        summary: /_api/pages.rename
+   *        summary: /pages.rename
    *        description: Rename page
    *        requestBody:
    *          content:
@@ -1663,11 +1663,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.duplicate:
+   *    /pages.duplicate:
    *      post:
    *        tags: [Pages]
    *        operationId: duplicatePage
-   *        summary: /_api/pages.duplicate
+   *        summary: /pages.duplicate
    *        description: Duplicate page
    *        requestBody:
    *          content:
@@ -1759,11 +1759,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.recentCreated:
+   *    /pages.recentCreated:
    *      get:
    *        tags: [Pages]
    *        operationId: getRecentCreatedPages
-   *        summary: /_api/pages.recentCreated
+   *        summary: /pages.recentCreated
    *        description: Get recent created page list
    *        parameters:
    *          - in: query
