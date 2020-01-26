@@ -84,6 +84,40 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/tags.update:
+   *      post:
+   *        tags: [Tags]
+   *        operationId: updateTag
+   *        summary: /_api/tags.update
+   *        description: Update tag
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  tags:
+   *                    $ref: '#/components/schemas/Tags'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update tag.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /tags.update update tags on view-mode (not edit-mode)
    * @apiName UpdateTag
    * @apiGroup Tag
