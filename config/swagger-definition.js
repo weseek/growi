@@ -13,4 +13,18 @@ module.exports = {
       url: 'https://demo.growi.org',
     },
   ],
+  security: [
+    {
+      api_key: [],
+    },
+  ],
+  components: {
+    securitySchemes: {
+      api_key: {
+        type: 'apiKey',
+        name: 'access_token',
+        in: 'query',
+      },
+    },
+  },
 };
