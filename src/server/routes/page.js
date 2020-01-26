@@ -1053,6 +1053,40 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/pages.exist:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: getPageExistence
+   *        summary: /_api/pages.exist
+   *        description: Get page existence
+   *        parameters:
+   *          - in: query
+   *            name: pages
+   *            schema:
+   *              type: string
+   *              description: Page paths specified by hash key in JSON format
+   *              example: '{"/": "unused value", "/user/unknown": "unused value"}'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get page data.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    pages:
+   *                      type: Object
+   *                      description: Properties of page path and existence
+   *                      example: {"/": true, "/user/unknown": false}
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /pages.exist Get if page exists
    * @apiName GetPage
    * @apiGroup Page
