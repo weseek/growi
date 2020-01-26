@@ -18,11 +18,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/healthcheck:
+   *  /healthcheck:
    *    get:
-   *      tags: [Healthcheck, apiv3]
+   *      tags: [Healthcheck]
    *      operationId: getHealthcheck
-   *      summary: /_api/v3/healthcheck
+   *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
    *      parameters:
    *        - name: connectToMiddlewares
