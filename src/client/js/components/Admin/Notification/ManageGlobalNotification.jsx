@@ -18,31 +18,18 @@ class ManageGlobalNotification extends React.Component {
   constructor() {
     super();
 
+    const globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
+
     this.state = {
-      retrieveError: null,
-      triggerPath: '',
-      notifyToType: 'mail',
-      emailToSend: '',
-      slackChannelToSend: '',
-      triggerEvents: new Set([]),
+      globalNotificationId: globalNotification._id || null,
+      triggerPath: globalNotification.triggerPath || '',
+      notifyToType: globalNotification.__t || 'mail',
+      emailToSend: globalNotification.toEmail || '',
+      slackChannelToSend: globalNotification.slackChannels || '',
+      triggerEvents: new Set(globalNotification.triggerEvents),
     };
 
     this.submitHandler = this.submitHandler.bind(this);
-  }
-
-  componentDidMount() {
-    this.retrieveTriggerEvent();
-  }
-
-  async retrieveTriggerEvent() {
-    try {
-      // TODO GW-913 create apiV3
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-      this.setState({ retrieveError: err });
-    }
   }
 
   onChangeTriggerPath(inputValue) {
@@ -77,13 +64,18 @@ class ManageGlobalNotification extends React.Component {
   async submitHandler() {
 
     try {
-      await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
-        triggerPath: this.state.triggerPath,
-        notifyToType: this.state.notifyToType,
-        toEmail: this.state.emailToSend,
-        slackChannels: this.state.slackChannelToSend,
-        triggerEvents: [...this.state.triggerEvents],
-      });
+      if (this.state.globalNotificationId != null) {
+        // TODO put
+      }
+      else {
+        await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
+          triggerPath: this.state.triggerPath,
+          notifyToType: this.state.notifyToType,
+          toEmail: this.state.emailToSend,
+          slackChannels: this.state.slackChannelToSend,
+          triggerEvents: [...this.state.triggerEvents],
+        });
+      }
     }
     catch (err) {
       toastError(err);

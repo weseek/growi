@@ -31,7 +31,9 @@
       {% include './widget/menu.html' with {current: 'notification'} %}
     </div>
 
-    <div class="col-md-9" id="admin-global-notification-setting" />
+    <div class="col-md-9" id="admin-global-notification-setting"
+      data-global-notification="{{ globalNotification|json }}">
+    </div>
     <!-- <a href="/admin/notification#global-notification" class="btn btn-default">
         <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
         {{ t('notification_setting.back_to_list') }}

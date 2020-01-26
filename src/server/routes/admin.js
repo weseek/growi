@@ -267,18 +267,18 @@ module.exports = function(crowi, app) {
   actions.globalNotification = {};
   actions.globalNotification.detail = async(req, res) => {
     const notificationSettingId = req.params.id;
-    const renderVars = {};
+    let globalNotification;
 
     if (notificationSettingId) {
       try {
-        renderVars.setting = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
+        globalNotification = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
       }
       catch (err) {
         logger.error(`Error in finding a global notification setting with {_id: ${notificationSettingId}}`);
       }
     }
 
-    return res.render('admin/global-notification-detail', renderVars);
+    return res.render('admin/global-notification-detail', { globalNotification });
   };
 
   actions.globalNotification.create = (req, res) => {
