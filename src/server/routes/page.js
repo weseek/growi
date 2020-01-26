@@ -1070,7 +1070,7 @@ module.exports = function(crowi, app) {
    *              example: '{"/": "unused value", "/user/unknown": "unused value"}'
    *        responses:
    *          200:
-   *            description: Succeeded to get page data.
+   *            description: Succeeded to get page existence.
    *            content:
    *              application/json:
    *                schema:
