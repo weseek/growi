@@ -17,11 +17,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/mongo/collections:
+   *  /mongo/collections:
    *    get:
    *      tags: [Mongo]
    *      operationId: getMongoCollections
-   *      summary: /_api/v3/mongo/collections
+   *      summary: /mongo/collections
    *      description: get mongodb collections names
    *      responses:
    *        200:

@@ -43,11 +43,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups:
+   *    /user-groups:
    *      get:
    *        tags: [UserGroup]
    *        operationId: getUserGroup
-   *        summary: /_api/v3/user-groups
+   *        summary: /user-groups
    *        description: Get usergroups
    *        responses:
    *          200:
@@ -83,11 +83,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups:
+   *    /user-groups:
    *      post:
    *        tags: [UserGroup]
    *        operationId: createUserGroup
-   *        summary: /_api/v3/user-groups
+   *        summary: /user-groups
    *        description: Adds userGroup
    *        requestBody:
    *          required: true
@@ -135,11 +135,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}:
+   *    /user-groups/{id}:
    *      delete:
    *        tags: [UserGroup]
    *        operationId: deleteUserGroup
-   *        summary: /_api/v3/user-groups/{id}
+   *        summary: /user-groups/{id}
    *        description: Deletes userGroup
    *        parameters:
    *          - name: id
@@ -197,11 +197,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}:
+   *    /user-groups/{id}:
    *      put:
    *        tags: [UserGroup]
    *        operationId: updateUserGroups
-   *        summary: /_api/v3/user-groups/{id}
+   *        summary: /user-groups/{id}
    *        description: Update userGroup
    *        parameters:
    *          - name: id
@@ -254,11 +254,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/users:
+   *    /user-groups/{id}/users:
    *      get:
    *        tags: [UserGroup]
    *        operationId: getUsersUserGroups
-   *        summary: /_api/v3/user-groups/{id}/users
+   *        summary: /user-groups/{id}/users
    *        description: Get users related to the userGroup
    *        parameters:
    *          - name: id
@@ -304,11 +304,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/unrelated-users:
+   *    /user-groups/{id}/unrelated-users:
    *      get:
    *        tags: [UserGroup]
    *        operationId: getUnrelatedUsersUserGroups
-   *        summary: /_api/v3/user-groups/{id}/unrelated-users
+   *        summary: /user-groups/{id}/unrelated-users
    *        description: Get users unrelated to the userGroup
    *        parameters:
    *          - name: id
@@ -362,11 +362,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/users:
+   *    /user-groups/{id}/users:
    *      post:
    *        tags: [UserGroup]
    *        operationId: addUserUserGroups
-   *        summary: /_api/v3/user-groups/{id}/users
+   *        summary: /user-groups/{id}/users
    *        description: Add a user to the userGroup
    *        parameters:
    *          - name: id
@@ -431,11 +431,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/users:
+   *    /user-groups/{id}/users:
    *      delete:
    *        tags: [UserGroup]
    *        operationId: deleteUsersUserGroups
-   *        summary: /_api/v3/user-groups/{id}/users
+   *        summary: /user-groups/{id}/users
    *        description: remove a user from the userGroup
    *        parameters:
    *          - name: id
@@ -493,11 +493,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/user-group-relations:
+   *    /user-groups/{id}/user-group-relations:
    *      get:
    *        tags: [UserGroup]
    *        operationId: getUserGroupRelationsUserGroups
-   *        summary: /_api/v3/user-groups/{id}/user-group-relations
+   *        summary: /user-groups/{id}/user-group-relations
    *        description: Get the user group relations for the userGroup
    *        parameters:
    *          - name: id
@@ -547,11 +547,11 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /_api/v3/user-groups/{id}/pages:
+   *    /user-groups/{id}/pages:
    *      get:
    *        tags: [UserGroup]
    *        operationId: getPagesUserGroups
-   *        summary: /_api/v3/user-groups/{id}/pages
+   *        summary: /user-groups/{id}/pages
    *        description: Get closed pages for the userGroup
    *        parameters:
    *          - name: id
