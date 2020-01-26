@@ -76,7 +76,7 @@ module.exports = function(crowi, app) {
    *             $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
    *       responses:
    *         200:
-   *           description: Succeeded to get list of users.
+   *           description: Succeeded to get list of pages.
    *           content:
    *             application/json:
    *               schema:
