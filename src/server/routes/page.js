@@ -1110,6 +1110,39 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/pages.getPageTag:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: getPageTag
+   *        summary: /_api/pages.getPageTag
+   *        description: Get page tag
+   *        parameters:
+   *          - in: query
+   *            name: pageId
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get page tags.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    tags:
+   *                      type: array
+   *                      description: Tag names
+   *                      items: string
+   *                      example: ['daily', 'report', 'tips']
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /pages.getPageTag get page tags
    * @apiName GetPageTag
    * @apiGroup Page
