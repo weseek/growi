@@ -1235,7 +1235,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/likes.add:
    *      post:
-   *        tags: [Pages, CrowiCompatibles]
+   *        tags: [Likes, CrowiCompatibles]
    *        operationId: addLike
    *        summary: /_api/likes.add
    *        description: Like page
@@ -1311,7 +1311,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/likes.remove:
    *      post:
-   *        tags: [Pages, CrowiCompatibles]
+   *        tags: [Likes, CrowiCompatibles]
    *        operationId: removeLike
    *        summary: /_api/likes.remove
    *        description: Unlike page
