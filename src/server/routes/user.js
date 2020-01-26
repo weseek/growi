@@ -7,6 +7,10 @@
  *        description: User
  *        type: object
  *        properties:
+ *          __v:
+ *            type: number
+ *            description: record version
+ *            example: 0
  *          _id:
  *            type: string
  *            description: user ID
