@@ -280,8 +280,38 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO swagger and validator
-  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  /**
+   * @swagger
+   *
+   *    /_api/v3/notification-setting/global-notification/{id}:
+   *      put:
+   *        tags: [NotificationSetting]
+   *        description: update global notification
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: global notification id for updated
+   *            schema:
+   *              type: string
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/GlobalNotificationParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update global notification
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    createdNotification:
+   *                      type: object
+   *                      description: notification param updated
+   */
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
