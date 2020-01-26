@@ -126,14 +126,6 @@
  *            type: string
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
- *
- *      Tags:
- *        description: Tags
- *        type: array
- *        items:
- *          type: string
- *          description: tag name
- *        example: ['daily', 'report', 'tips']
  */
 
 /* eslint-disable no-use-before-define */
@@ -668,6 +660,10 @@ module.exports = function(crowi, app) {
    *            name: user
    *            schema:
    *              $ref: '#/components/schemas/User/properties/username'
+   *          - in: query
+   *            name: limit
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
    *          - in: query
    *            name: offset
    *            schema:
