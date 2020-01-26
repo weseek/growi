@@ -53,6 +53,10 @@ module.exports = function(crowi, app) {
    *        parameters:
    *          - in: query
    *            name: q
+   *            schema:
+   *              type: string
+   *              description: keyword
+   *              example: daily
    *            description: keyword to search
    *        responses:
    *          200:
