@@ -21,9 +21,6 @@ class ElasticsearchDelegator {
     this.configManager = configManager;
     this.searchEvent = searchEvent;
 
-    this.esVersion = 'unknown';
-    this.esNodeInfos = {};
-
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -68,11 +65,33 @@ class ElasticsearchDelegator {
     this.indexName = indexName;
   }
 
-  getInfo() {
-    return {
-      esVersion: this.esVersion,
-      esNodeInfos: this.esNodeInfos,
-    };
+  async getInfo() {
+    const info = await this.client.nodes.info();
+    if (!info._nodes || !info.nodes) {
+      throw new Error('There is no nodes');
+    }
+
+    let esVersion = 'unknown';
+    const esNodeInfos = {};
+
+    for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
+      esVersion = nodeInfo.version;
+
+      const filteredInfo = {
+        name: nodeInfo.name,
+        version: nodeInfo.version,
+        plugins: nodeInfo.plugins.map((pluginInfo) => {
+          return {
+            name: pluginInfo.name,
+            version: pluginInfo.version,
+          };
+        }),
+      };
+
+      esNodeInfos[nodeName] = filteredInfo;
+    }
+
+    return { esVersion, esNodeInfos };
   }
 
   /**
@@ -156,41 +175,7 @@ class ElasticsearchDelegator {
     await client.indices.delete({ index: tmpIndexName });
   }
 
-  /**
-   * retrieve elasticsearch node information
-   */
-  async checkESVersion() {
-    try {
-      const info = await this.client.nodes.info();
-      if (!info._nodes || !info.nodes) {
-        throw new Error('no nodes info');
-      }
-
-      for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
-        this.esVersion = nodeInfo.version;
-
-        const filteredInfo = {
-          name: nodeInfo.name,
-          version: nodeInfo.version,
-          plugins: nodeInfo.plugins.map((pluginInfo) => {
-            return {
-              name: pluginInfo.name,
-              version: pluginInfo.version,
-            };
-          }),
-        };
-
-        this.esNodeInfos[nodeName] = filteredInfo;
-      }
-    }
-    catch (error) {
-      logger.error('Couldn\'t check ES version:', error);
-    }
-  }
-
   async initIndices() {
-    await this.checkESVersion();
-
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
