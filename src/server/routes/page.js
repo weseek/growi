@@ -1082,9 +1082,9 @@ module.exports = function(crowi, app) {
    *                    ok:
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    pages:
-   *                      type: Object
+   *                      type: string
    *                      description: Properties of page path and existence
-   *                      example: {"/": true, "/user/unknown": false}
+   *                      example: '{"/": true, "/user/unknown": false}'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
