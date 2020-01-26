@@ -1,7 +1,7 @@
 const pkg = require('../package.json');
 
-const apiVersion = process.env.API_VERSION || 3;
-const basePath = (apiVersion === 1 ? '/_api' : `/_api/v${apiVersion}`);
+const apiVersion = process.env.API_VERSION || '3';
+const basePath = (apiVersion === '1' ? '/_api' : `/_api/v${apiVersion}`);
 
 module.exports = {
   openapi: '3.0.1',
