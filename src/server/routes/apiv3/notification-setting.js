@@ -280,6 +280,56 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger and validator
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+    const {
+      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+    } = req.body;
+
+    const models = {
+      [GlobalNotificationSetting.TYPE.MAIL]: GlobalNotificationMailSetting,
+      [GlobalNotificationSetting.TYPE.SLACK]: GlobalNotificationSlackSetting,
+    };
+
+    try {
+      let setting = await GlobalNotificationSetting.findOne({ _id: id });
+      setting = setting.toObject();
+
+      // when switching from one type to another,
+      // remove toEmail from slack setting and slackChannels from mail setting
+      if (setting.__t !== notifyToType) {
+        setting = models[setting.__t].hydrate(setting);
+        setting.toEmail = undefined;
+        setting.slackChannels = undefined;
+        await setting.save();
+        setting = setting.toObject();
+      }
+
+      if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+        setting = GlobalNotificationMailSetting.hydrate(setting);
+        setting.toEmail = toEmail;
+      }
+      if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+        setting = GlobalNotificationSlackSetting.hydrate(setting);
+        setting.slackChannels = slackChannels;
+      }
+
+      setting.__t = notifyToType;
+      setting.triggerPath = triggerPath;
+      setting.triggerEvents = triggerEvents || [];
+
+      const createdNotification = await setting.save();
+      return res.apiv3({ createdNotification });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'post-globalNotification-failed'));
+    }
+
+  });
+
   /**
    * @swagger
    *

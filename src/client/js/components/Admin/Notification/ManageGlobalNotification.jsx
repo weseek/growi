@@ -65,7 +65,13 @@ class ManageGlobalNotification extends React.Component {
 
     try {
       if (this.state.globalNotificationId != null) {
-        // TODO put
+        await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, {
+          triggerPath: this.state.triggerPath,
+          notifyToType: this.state.notifyToType,
+          toEmail: this.state.emailToSend,
+          slackChannels: this.state.slackChannelToSend,
+          triggerEvents: [...this.state.triggerEvents],
+        });
       }
       else {
         await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
