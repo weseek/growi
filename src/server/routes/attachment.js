@@ -66,6 +66,63 @@ const ApiResponse = require('../util/apiResponse');
  *            example: http://localhost/files/5e0734e072560e001761fa67
  */
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      AttachmentProfile:
+ *        description: Attachment
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: string
+ *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
+ *          _id:
+ *            type: string
+ *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
+ *          __v:
+ *            type: number
+ *            description: attachment version
+ *            example: 0
+ *          fileFormat:
+ *            type: string
+ *            description: file format in MIME
+ *            example: image/png
+ *          fileName:
+ *            type: string
+ *            description: file name
+ *            example: 601b7c59d43a042c0117e08dd37aad0a.png
+ *          originalName:
+ *            type: string
+ *            description: original file name
+ *            example: profile.png
+ *          creator:
+ *            $ref: '#/components/schemas/User/properties/_id'
+ *          page:
+ *            type: string
+ *            description: page ID attached at
+ *            example: null
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          fileSize:
+ *            type: number
+ *            description: file size
+ *            example: 3494332
+ *          filePathProxied:
+ *            type: string
+ *            description: file path proxied
+ *            example: "/attachment/5e0734e072560e001761fa67"
+ *          downloadPathProxied:
+ *            type: string
+ *            description: download path proxied
+ *            example: "/download/5e0734e072560e001761fa67"
+ */
+
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
   const User = crowi.model('User');
@@ -438,6 +495,59 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
+  /**
+   * @swagger
+   *
+   *    /_api/attachments.uploadProfileImage:
+   *      post:
+   *        tags: [Attachments]
+   *        operationId: uploadProfileImage
+   *        summary: /_api/attachments.uploadProfileImage
+   *        description: Upload profile image
+   *        requestBody:
+   *          content:
+   *            "multipart/form-data":
+   *              schema:
+   *                properties:
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *                  user:
+   *                    type: string
+   *                    description: user to set profile
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
+   *            "*\/*":
+   *              schema:
+   *                properties:
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *                  user:
+   *                    type: string
+   *                    description: user to set profile
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
+   *        responses:
+   *          200:
+   *            description: Succeeded to add attachment.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    attachment:
+   *                      $ref: '#/components/schemas/AttachmentProfile'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {post} /attachments.uploadProfileImage Add attachment for profile image
    * @apiName UploadProfileImage
