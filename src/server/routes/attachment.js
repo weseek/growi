@@ -515,7 +515,7 @@ module.exports = function(crowi, app) {
    *                    description: attachment data
    *                  user:
    *                    type: string
-   *                    description: user to set profile
+   *                    description: user to set profile image
    *              encoding:
    *                path:
    *                  contentType: application/x-www-form-urlencoded
