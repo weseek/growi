@@ -655,6 +655,37 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /_api/attachments.removeProfileImage:
+   *      post:
+   *        tags: [Attachments]
+   *        operationId: removeProfileImage
+   *        summary: /_api/attachments.removeProfileImage
+   *        description: Remove profile image
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  user:
+   *                    type: string
+   *                    description: user to remove profile image
+   *        responses:
+   *          200:
+   *            description: Succeeded to add attachment.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /attachments.removeProfileImage Remove profile image attachments
    * @apiGroup Attachment
    * @apiParam {String} attachment_id
