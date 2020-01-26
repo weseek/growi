@@ -55,7 +55,7 @@ module.exports = function(crowi, app) {
    *       summary: /_api/search
    *       description: Search pages
    *       parameters:
-   *         - in: path
+   *         - in: query
    *           name: q
    *           schema:
    *             type: string
