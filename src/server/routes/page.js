@@ -1650,6 +1650,54 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
+  /**
+   * @swagger
+   *
+   *    /_api/pages.recentCreated:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: getRecentCreatedPages
+   *        summary: /_api/pages.recentCreated
+   *        description: Get recent created page list
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            required: true
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: offset
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *          - in: query
+   *            name: limit
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get recent created page list.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    pages:
+   *                      type: array
+   *                      description: recent created page list
+   *                      items:
+   *                        $ref: '#/components/schemas/Page'
+   *                    totalCount:
+   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/total'
+   *                    offset:
+   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *                    limit:
+   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   api.recentCreated = async function(req, res) {
     const pageId = req.query.page_id;
 
