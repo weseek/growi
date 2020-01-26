@@ -64,7 +64,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/comments.get:
    *      get:
-   *        tags: [Comments]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: getComments
    *        summary: /_api/comments.get
    *        description: Get comments of the page of the revision
@@ -158,7 +158,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/comments.add:
    *      post:
-   *        tags: [Comments]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: addComment
    *        summary: /_api/comments.add
    *        description: Post comment for the page
@@ -287,7 +287,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/comments.update:
    *      post:
-   *        tags: [Comments]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: updateComment
    *        summary: /_api/comments.update
    *        description: Update comment dody
@@ -379,7 +379,7 @@ module.exports = function(crowi, app) {
    *
    *    /_api/comments.remove:
    *      post:
-   *        tags: [Comments]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: removeComment
    *        summary: /_api/comments.remove
    *        description: Remove specified comment
