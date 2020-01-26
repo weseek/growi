@@ -60,7 +60,7 @@ module.exports = (crowi) => {
    *      parameters:
    *        - name: connectToMiddlewares
    *          in: query
-   *          description: Check MongoDB and SearchService
+   *          description: Check MongoDB and SearchService (consider as healthy even if any of middleware is available or not)
    *          schema:
    *            type: boolean
    *        - name: checkMiddlewaresStrictly
@@ -70,7 +70,7 @@ module.exports = (crowi) => {
    *            type: boolean
    *      responses:
    *        200:
-   *          description: Resources are available
+   *          description: Healthy
    *          content:
    *            application/json:
    *              schema:
@@ -78,12 +78,14 @@ module.exports = (crowi) => {
    *                  info:
    *                    $ref: '#/components/schemas/HealthcheckInfo'
    *        503:
+   *          description: Unhealthy
    *          content:
    *            application/json:
    *              schema:
    *                properties:
    *                  errors:
    *                    type: array
+   *                    description: Errors
    *                    items:
    *                      $ref: '#/components/schemas/ErrorV3'
    *                  info:
