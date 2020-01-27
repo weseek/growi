@@ -17,7 +17,8 @@ $accentcolor: #e08dbc;
 $accentlight: rgba(224, 141, 188, 0.2);
 $accentdark: rgba(224, 141, 188, 0.5);
 $background-color: rgba(171, 224, 174, 0.4);
-
+$third-main-color: antiquewhite;
+$textcolor: dimgray;
 $primary: $themecolor;
 
 $logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
@@ -42,7 +43,15 @@ $wikilinktext-hover: lighten($wikilinktext, 20%);
 }
 
 /*
- * Accentcolor (yellow)
+ * user's page
+ */
+
+.growi .main .page-comments-row {
+  border-top-color: $third-main-color;
+}
+
+/*
+ * Accentcolor (green)
  */
 
 header.affix {
@@ -126,6 +135,17 @@ div .btn-default {
   border-color: $accentdark;
 }
 
+/*
+ * GROWI admin page #themeOptions
+ */
+.admin-page {
+  #themeOptions {
+    .theme-option-container.active a {
+      border-color: $accentcolor;
+    }
+  }
+}
+
 button .btn-outline {
   background-color: $themelight;
 }
@@ -160,10 +180,21 @@ input .btn-secondary {
 
 .help-block {
   padding: 5px;
-  background-color: $background-color;
-}
+  color: $textcolor;
+  background-color: $accentlight;
+  .panel-primary a {
+    color: $subthemecolor;
+  }
 
-.admin-page #themeOptions .theme-option-container.active a {
-  background-color: $themelight;
-  border-color: $headingtext;
+  /*
+ *  panel
+ */
+
+  .panel-timeline > .panel-heading {
+    background-color: $third-main-color;
+  }
+
+  .panel-default > .panel-heading {
+    background-color: $third-main-color;
+  }
 }
