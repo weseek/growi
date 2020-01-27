@@ -285,7 +285,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/global-notification/{id}:
    *      put:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: update global notification
    *        parameters:
    *          - name: id

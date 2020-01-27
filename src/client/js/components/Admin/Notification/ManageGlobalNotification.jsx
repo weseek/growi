@@ -19,7 +19,14 @@ class ManageGlobalNotification extends React.Component {
   constructor() {
     super();
 
-    const globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
+    let globalNotification;
+    try {
+      globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
 
     this.state = {
       globalNotificationId: globalNotification._id || null,
@@ -64,24 +71,20 @@ class ManageGlobalNotification extends React.Component {
 
   async submitHandler() {
 
+    const requestParams = {
+      triggerPath: this.state.triggerPath,
+      notifyToType: this.state.notifyToType,
+      toEmail: this.state.emailToSend,
+      slackChannels: this.state.slackChannelToSend,
+      triggerEvents: [...this.state.triggerEvents],
+    };
+
     try {
       if (this.state.globalNotificationId != null) {
-        await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, {
-          triggerPath: this.state.triggerPath,
-          notifyToType: this.state.notifyToType,
-          toEmail: this.state.emailToSend,
-          slackChannels: this.state.slackChannelToSend,
-          triggerEvents: [...this.state.triggerEvents],
-        });
+        await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
       }
       else {
-        await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
-          triggerPath: this.state.triggerPath,
-          notifyToType: this.state.notifyToType,
-          toEmail: this.state.emailToSend,
-          slackChannels: this.state.slackChannelToSend,
-          triggerEvents: [...this.state.triggerEvents],
-        });
+        await this.props.appContainer.apiv3.post('/notification-setting/global-notification', requestParams);
       }
       window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
