@@ -41,5 +41,6 @@ jobs:
       uses: Roang-zero1/github-create-release-action@master
       with:
         created_tag: v${{ env.RELEASE_VERSION }}
+        changelog_file: CHANGES.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

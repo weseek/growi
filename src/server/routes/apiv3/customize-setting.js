@@ -131,11 +131,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting:
+   *    /customize-setting:
    *      get:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: getCustomizeSetting
-   *        summary: /_api/v3/customize-setting
+   *        summary: /customize-setting
    *        description: Get customize parameters
    *        responses:
    *          200:
@@ -173,11 +173,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/layoutTheme:
+   *    /customize-setting/layoutTheme:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateLayoutThemeCustomizeSetting
-   *        summary: /_api/v3/customize-setting/layoutTheme
+   *        summary: /customize-setting/layoutTheme
    *        description: Update layout and theme
    *        requestBody:
    *          required: true
@@ -217,11 +217,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/behavior:
+   *    /customize-setting/behavior:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateBehaviorCustomizeSetting
-   *        summary: /_api/v3/customize-setting/behavior
+   *        summary: /customize-setting/behavior
    *        description: Update behavior
    *        requestBody:
    *          required: true
@@ -259,11 +259,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/function:
+   *    /customize-setting/function:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateFunctionCustomizeSetting
-   *        summary: /_api/v3/customize-setting/function
+   *        summary: /customize-setting/function
    *        description: Update function
    *        requestBody:
    *          required: true
@@ -309,11 +309,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/highlight:
+   *    /customize-setting/highlight:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateHighlightCustomizeSetting
-   *        summary: /_api/v3/customize-setting/highlight
+   *        summary: /customize-setting/highlight
    *        description: Update highlight
    *        requestBody:
    *          required: true
@@ -353,11 +353,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeTitle:
+   *    /customize-setting/customizeTitle:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeTitleCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeTitle
+   *        summary: /customize-setting/customizeTitle
    *        description: Update customizeTitle
    *        requestBody:
    *          required: true
@@ -396,11 +396,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeHeader:
+   *    /customize-setting/customizeHeader:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeHeaderCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeHeader
+   *        summary: /customize-setting/customizeHeader
    *        description: Update customizeHeader
    *        requestBody:
    *          required: true
@@ -437,11 +437,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeCss:
+   *    /customize-setting/customizeCss:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeCssCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeCss
+   *        summary: /customize-setting/customizeCss
    *        description: Update customizeCss
    *        requestBody:
    *          required: true
@@ -479,11 +479,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeScript:
+   *    /customize-setting/customizeScript:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeScriptCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeScript
+   *        summary: /customize-setting/customizeScript
    *        description: Update customizeScript
    *        requestBody:
    *          required: true
