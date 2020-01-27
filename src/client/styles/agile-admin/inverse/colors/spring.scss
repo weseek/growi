@@ -1,4 +1,5 @@
 @import '../variables';
+$radius: 5px;
 
 $themecolor: #ffb8c6;
 $buttoncolor: rgba(255, 184, 197, 0.5);
@@ -6,7 +7,7 @@ $subthemecolor: #67a856;
 $themelight: #fff0f5;
 $topbar: $themecolor;
 $sidebar: #fff;
-$bodycolor: #fff;
+$bodycolor: $sidebar;
 $headingtext: $subthemecolor;
 $bodytext: #333333;
 $linktext: $subthemecolor;
@@ -101,14 +102,6 @@ body:not(.on-edit) .nav.nav-tabs {
  * button
  */
 
-button:not(.btn-link):not(.close) {
-  border-radius: 5px;
-}
-
-div .btn-primary {
-  border-radius: 5px;
-}
-
 .btn-link {
   color: $subthemecolor;
 }
@@ -120,27 +113,25 @@ div .btn-primary {
 div .btn-inverse {
   background-color: $themecolor;
   border: $themecolor;
-  border-radius: 5px;
 }
 
 div .btn-default {
-  background-color: $accentdark;
-  border-color: $accentcolor;
-  border-radius: 5px;
-}
-
-.btn-group-sm > .btn {
-  border-radius: 5px;
+  background-color: $accentlight;
+  border-color: $accentdark;
 }
 
 .admin-page .btn-group.btn-toggle .btn.active[data-active-class='primary'] {
   color: $sidebar;
-  background-color: $accentdark;
-  border-color: $accentcolor;
+  background-color: $accentcolor;
+  border-color: $accentdark;
 }
 
 button .btn-outline {
   background-color: $themelight;
+}
+
+input .btn-secondary {
+  background: $themecolor;
 }
 
 /*
