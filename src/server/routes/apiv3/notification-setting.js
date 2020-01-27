@@ -103,9 +103,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/:
+   *    /notification-setting/:
    *      get:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: Get notification paramators
    *        responses:
    *          200:
@@ -133,9 +133,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/slack-configuration:
+   *    /notification-setting/slack-configuration:
    *      put:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: Update slack configuration setting
    *        requestBody:
    *          required: true
@@ -180,9 +180,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /_api/v3/notification-setting/user-notification:
+  *    /notification-setting/user-notification:
   *      post:
-  *        tags: [NotificationSetting, apiv3]
+  *        tags: [NotificationSetting]
   *        description: add user notification setting
   *        requestBody:
   *          required: true
@@ -227,9 +227,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/user-notification/{id}:
+   *    /notification-setting/user-notification/{id}:
    *      delete:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: delete user trigger notification pattern
    *        parameters:
    *          - name: id
@@ -268,9 +268,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/global-notification:
+   *    /notification-setting/global-notification:
    *      post:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: add global notification
    *        requestBody:
    *          required: true
@@ -324,9 +324,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/global-notification/{id}:
+   *    /notification-setting/global-notification/{id}:
    *      put:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: update global notification
    *        parameters:
    *          - name: id
@@ -404,9 +404,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/global-notification/{id}/enabled:
+   *    /notification-setting/global-notification/{id}/enabled:
    *      put:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: toggle enabled global notification
    *        parameters:
    *          - name: id
@@ -461,9 +461,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /_api/v3/notification-setting/global-notification/{id}:
+  *    /notification-setting/global-notification/{id}:
   *      delete:
-  *        tags: [NotificationSetting, apiv3]
+  *        tags: [NotificationSetting]
   *        description: delete global notification pattern
   *        parameters:
   *          - name: id
