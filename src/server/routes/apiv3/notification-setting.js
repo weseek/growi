@@ -105,7 +105,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/:
    *      get:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: Get notification paramators
    *        responses:
    *          200:
@@ -135,7 +135,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/slack-configuration:
    *      put:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: Update slack configuration setting
    *        requestBody:
    *          required: true
@@ -182,7 +182,7 @@ module.exports = (crowi) => {
   *
   *    /_api/v3/notification-setting/user-notification:
   *      post:
-  *        tags: [NotificationSetting]
+  *        tags: [NotificationSetting, apiv3]
   *        description: add user notification setting
   *        requestBody:
   *          required: true
@@ -229,7 +229,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/global-notification:
    *      post:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: add global notification
    *        requestBody:
    *          required: true
@@ -285,7 +285,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/global-notification/{id}/enabled:
    *      put:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: toggle enabled global notification
    *        parameters:
    *          - name: id
@@ -342,7 +342,7 @@ module.exports = (crowi) => {
   *
   *    /_api/v3/notification-setting/global-notification/{id}:
   *      delete:
-  *        tags: [NotificationSetting]
+  *        tags: [NotificationSetting, apiv3]
   *        description: delete global notification pattern
   *        parameters:
   *          - name: id
