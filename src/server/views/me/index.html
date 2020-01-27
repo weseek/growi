@@ -137,6 +137,8 @@
         <img src="{{ user|gravatar }}" width="64">
       </div><!-- /.col-sm* -->
 
+    <!-- 削除ここから -->
+
       <div class="form-group col-md-4 col-sm-7">
         <h4>
           <div class="radio radio-primary">
@@ -163,24 +165,24 @@
             </form>
             </p>
           </div>
-        </div><!-- /.form-group -->
+        </div> <!-- /.form-group -->
 
         <div class="form-group">
-          <label for="" class="col-sm-4 control-label">
+          <div id="profile-image-uploader"></div>
+          <!-- <label for="" class="col-sm-4 control-label">
             {{ t('Upload new image') }}
           </label>
           <div class="col-sm-8">
             {% if fileUploadService.getIsUploadable() %}
             <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <input type="file" name="profileImage" accept="image/*">
               <div id="pictureUploadFormProgress" class="d-flex align-items-center">
               </div>
             </form>
             {% else %}
             * {{ t('page_me.form_help.profile_image1') }}<br>
             * {{ t('page_me.form_help.profile_image2') }}<br>
-            {% endif %}
+            {% endif %} -->
           </div>
         </div><!-- /.form-group -->
 
@@ -191,6 +193,8 @@
           <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
         </div>
       </div>
+
+      <!-- 削除ここまで -->
 
     </fieldset>
   </div><!-- /.form-box -->
