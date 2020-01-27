@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 import loggerFactory from '@alias/logger';
 
@@ -18,31 +19,25 @@ class ManageGlobalNotification extends React.Component {
   constructor() {
     super();
 
-    this.state = {
-      retrieveError: null,
-      triggerPath: '',
-      notifyToType: 'mail',
-      emailToSend: '',
-      slackChannelToSend: '',
-      triggerEvents: new Set([]),
-    };
-
-    this.submitHandler = this.submitHandler.bind(this);
-  }
-
-  componentDidMount() {
-    this.retrieveTriggerEvent();
-  }
-
-  async retrieveTriggerEvent() {
+    let globalNotification;
     try {
-      // TODO GW-913 create apiV3
+      globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
     }
     catch (err) {
       toastError(err);
       logger.error(err);
-      this.setState({ retrieveError: err });
     }
+
+    this.state = {
+      globalNotificationId: globalNotification._id || null,
+      triggerPath: globalNotification.triggerPath || '',
+      notifyToType: globalNotification.__t || 'mail',
+      emailToSend: globalNotification.toEmail || '',
+      slackChannelToSend: globalNotification.slackChannels || '',
+      triggerEvents: new Set(globalNotification.triggerEvents),
+    };
+
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   onChangeTriggerPath(inputValue) {
@@ -76,14 +71,22 @@ class ManageGlobalNotification extends React.Component {
 
   async submitHandler() {
 
+    const requestParams = {
+      triggerPath: this.state.triggerPath,
+      notifyToType: this.state.notifyToType,
+      toEmail: this.state.emailToSend,
+      slackChannels: this.state.slackChannelToSend,
+      triggerEvents: [...this.state.triggerEvents],
+    };
+
     try {
-      await this.props.appContainer.apiv3.post('/notification-setting/global-notification', {
-        triggerPath: this.state.triggerPath,
-        notifyToType: this.state.notifyToType,
-        toEmail: this.state.emailToSend,
-        slackChannels: this.state.slackChannelToSend,
-        triggerEvents: [...this.state.triggerEvents],
-      });
+      if (this.state.globalNotificationId != null) {
+        await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
+      }
+      else {
+        await this.props.appContainer.apiv3.post('/notification-setting/global-notification', requestParams);
+      }
+      window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
     catch (err) {
       toastError(err);

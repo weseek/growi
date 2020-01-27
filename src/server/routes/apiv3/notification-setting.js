@@ -105,7 +105,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/:
    *      get:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: Get notification paramators
    *        responses:
    *          200:
@@ -135,7 +135,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/slack-configuration:
    *      put:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: Update slack configuration setting
    *        requestBody:
    *          required: true
@@ -182,7 +182,7 @@ module.exports = (crowi) => {
   *
   *    /_api/v3/notification-setting/user-notification:
   *      post:
-  *        tags: [NotificationSetting]
+  *        tags: [NotificationSetting, apiv3]
   *        description: add user notification setting
   *        requestBody:
   *          required: true
@@ -229,7 +229,7 @@ module.exports = (crowi) => {
    *
    *    /_api/v3/notification-setting/global-notification:
    *      post:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: add global notification
    *        requestBody:
    *          required: true
@@ -283,9 +283,89 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /_api/v3/notification-setting/global-notification/{id}:
+   *      put:
+   *        tags: [NotificationSetting, apiv3]
+   *        description: update global notification
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: global notification id for updated
+   *            schema:
+   *              type: string
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/GlobalNotificationParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update global notification
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    createdNotification:
+   *                      type: object
+   *                      description: notification param updated
+   */
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, validator.globalNotification, ApiV3FormValidator, async(req, res) => {
+    const { id } = req.params;
+    const {
+      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+    } = req.body;
+
+    const models = {
+      [GlobalNotificationSetting.TYPE.MAIL]: GlobalNotificationMailSetting,
+      [GlobalNotificationSetting.TYPE.SLACK]: GlobalNotificationSlackSetting,
+    };
+
+    try {
+      let setting = await GlobalNotificationSetting.findOne({ _id: id });
+      setting = setting.toObject();
+
+      // when switching from one type to another,
+      // remove toEmail from slack setting and slackChannels from mail setting
+      if (setting.__t !== notifyToType) {
+        setting = models[setting.__t].hydrate(setting);
+        setting.toEmail = undefined;
+        setting.slackChannels = undefined;
+        await setting.save();
+        setting = setting.toObject();
+      }
+
+      if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+        setting = GlobalNotificationMailSetting.hydrate(setting);
+        setting.toEmail = toEmail;
+      }
+      if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+        setting = GlobalNotificationSlackSetting.hydrate(setting);
+        setting.slackChannels = slackChannels;
+      }
+
+      setting.__t = notifyToType;
+      setting.triggerPath = triggerPath;
+      setting.triggerEvents = triggerEvents || [];
+
+      const createdNotification = await setting.save();
+      return res.apiv3({ createdNotification });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating global notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'post-globalNotification-failed'));
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
    *    /_api/v3/notification-setting/global-notification/{id}/enabled:
    *      put:
-   *        tags: [NotificationSetting]
+   *        tags: [NotificationSetting, apiv3]
    *        description: toggle enabled global notification
    *        parameters:
    *          - name: id
@@ -342,7 +422,7 @@ module.exports = (crowi) => {
   *
   *    /_api/v3/notification-setting/global-notification/{id}:
   *      delete:
-  *        tags: [NotificationSetting]
+  *        tags: [NotificationSetting, apiv3]
   *        description: delete global notification pattern
   *        parameters:
   *          - name: id
