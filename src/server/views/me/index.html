@@ -166,22 +166,7 @@
         </div><!-- /.form-group -->
 
         <div class="form-group">
-          <label for="" class="col-sm-4 control-label">
-            {{ t('Upload new image') }}
-          </label>
-          <div class="col-sm-8">
-            {% if fileUploadService.getIsUploadable() %}
-            <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <div id="profile-image-uploader"></div>
-              <div id="pictureUploadFormProgress" class="d-flex align-items-center">
-              </div>
-            </form>
-            {% else %}
-            * {{ t('page_me.form_help.profile_image1') }}<br>
-            * {{ t('page_me.form_help.profile_image2') }}<br>
-            {% endif %}
-          </div>
+          <div id="profile-image-uploader"></div>
         </div><!-- /.form-group -->
 
       </div><!-- /.col-sm- -->
