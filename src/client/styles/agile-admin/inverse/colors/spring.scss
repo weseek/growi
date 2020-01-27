@@ -182,20 +182,19 @@ input .btn-secondary {
   padding: 5px;
   color: $textcolor;
   background-color: $accentlight;
-.panel-primary a {
-  color: $subthemecolor;
-}
+  .panel-primary a {
+    color: $subthemecolor;
+  }
 
-/*
+  /*
  *  panel
  */
 
-.panel-timeline > .panel-heading {
-  background-color: $third-main-color;
-}
+  .panel-timeline > .panel-heading {
+    background-color: $third-main-color;
+  }
 
-.panel-default > .panel-heading {
-  background-color: $third-main-color;
-}
-
+  .panel-default > .panel-heading {
+    background-color: $third-main-color;
+  }
 }
