@@ -126,6 +126,17 @@ div .btn-default {
   border-color: $accentdark;
 }
 
+/*
+ * GROWI admin page #themeOptions
+ */
+.admin-page {
+  #themeOptions {
+    .theme-option-container.active a {
+      border-color: $accentcolor;
+    }
+  }
+}
+
 button .btn-outline {
   background-color: $themelight;
 }
