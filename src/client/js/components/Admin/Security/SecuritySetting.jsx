@@ -124,12 +124,12 @@ class SecuritySetting extends React.Component {
             <div className="col-xs-6 text-left">
               <div className="checkbox checkbox-success">
                 <input
-                  id="isHideRestrictedByOwner"
+                  id="isShowRestrictedByOwner"
                   type="checkbox"
-                  checked={adminGeneralSecurityContainer.state.isHideRestrictedByOwner}
-                  onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByOwner() }}
+                  checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
+                  onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                 />
-                <label htmlFor="isHideRestrictedByOwner">
+                <label htmlFor="isShowRestrictedByOwner">
                   {t('security_setting.page_listing_1_desc')}
                 </label>
               </div>
@@ -141,12 +141,12 @@ class SecuritySetting extends React.Component {
             <div className="col-xs-6 text-left">
               <div className="checkbox checkbox-success">
                 <input
-                  id="isHideRestrictedByGroup"
+                  id="isShowRestrictedByGroup"
                   type="checkbox"
-                  checked={adminGeneralSecurityContainer.state.isHideRestrictedByGroup}
-                  onChange={() => { adminGeneralSecurityContainer.switchIsHideRestrictedByGroup() }}
+                  checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                  onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                 />
-                <label htmlFor="isHideRestrictedByGroup">
+                <label htmlFor="isShowRestrictedByGroup">
                   {t('security_setting.page_listing_2_desc')}
                 </label>
               </div>
