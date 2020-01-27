@@ -27,6 +27,7 @@ class UserTriggerNotification extends React.Component {
     this.changeChannel = this.changeChannel.bind(this);
     this.validateForm = this.validateForm.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.onClickDeleteBtn = this.onClickDeleteBtn.bind(this);
 
   }
 
@@ -55,6 +56,19 @@ class UserTriggerNotification extends React.Component {
       await adminNotificationContainer.addNotificationPattern(this.state.pathPattern, this.state.channel);
       toastSuccess(t('notification_setting.add_notification_pattern'));
       this.setState({ pathPattern: '', channel: '' });
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
+
+  async onClickDeleteBtn(notificationIdForDelete) {
+    const { t, adminNotificationContainer } = this.props;
+
+    try {
+      const deletedNotificaton = await adminNotificationContainer.deleteUserTriggerNotificationPattern(notificationIdForDelete);
+      toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.pathPattern }));
     }
     catch (err) {
       toastError(err);
@@ -111,7 +125,7 @@ class UserTriggerNotification extends React.Component {
               </td>
             </tr>
             {adminNotificationContainer.state.userNotifications.map((notification) => {
-              return <UserNotificationRow notification={notification} />;
+              return <UserNotificationRow notification={notification} onClickDeleteBtn={this.onClickDeleteBtn} />;
             })
             }
           </tbody>

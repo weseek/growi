@@ -103,9 +103,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/:
+   *    /notification-setting/:
    *      get:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: Get notification paramators
    *        responses:
    *          200:
@@ -133,9 +133,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/slack-configuration:
+   *    /notification-setting/slack-configuration:
    *      put:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: Update slack configuration setting
    *        requestBody:
    *          required: true
@@ -180,9 +180,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /_api/v3/notification-setting/user-notification:
+  *    /notification-setting/user-notification:
   *      post:
-  *        tags: [NotificationSetting, apiv3]
+  *        tags: [NotificationSetting]
   *        description: add user notification setting
   *        requestBody:
   *          required: true
@@ -227,9 +227,50 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/global-notification:
+   *    /notification-setting/user-notification/{id}:
+   *      delete:
+   *        tags: [NotificationSetting]
+   *        description: delete user trigger notification pattern
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user trigger notification
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete user trigger notification pattern
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    deletedNotificaton:
+   *                      type: object
+   *                      description: deleted notification
+   */
+  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const deletedNotificaton = await UpdatePost.remove(id);
+      return res.apiv3(deletedNotificaton);
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete user trigger notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-userTriggerNotification-failed'));
+    }
+
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /notification-setting/global-notification:
    *      post:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: add global notification
    *        requestBody:
    *          required: true
@@ -283,9 +324,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/global-notification/{id}:
+   *    /notification-setting/global-notification/{id}:
    *      put:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: update global notification
    *        parameters:
    *          - name: id
@@ -363,9 +404,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/notification-setting/global-notification/{id}/enabled:
+   *    /notification-setting/global-notification/{id}/enabled:
    *      put:
-   *        tags: [NotificationSetting, apiv3]
+   *        tags: [NotificationSetting]
    *        description: toggle enabled global notification
    *        parameters:
    *          - name: id
@@ -420,9 +461,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /_api/v3/notification-setting/global-notification/{id}:
+  *    /notification-setting/global-notification/{id}:
   *      delete:
-  *        tags: [NotificationSetting, apiv3]
+  *        tags: [NotificationSetting]
   *        description: delete global notification pattern
   *        parameters:
   *          - name: id

@@ -8,7 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
 
-class UserNotificationRow extends React.Component {
+class UserNotificationRow extends React.PureComponent {
 
   render() {
     const { t, notification } = this.props;
@@ -22,8 +22,7 @@ class UserNotificationRow extends React.Component {
             {notification.channel}
           </td>
           <td>
-            {/* TODO GW-806 create apiV3 for delete notification */}
-            <button type="submit" className="btn btn-default">{t('Delete')}</button>
+            <button type="submit" className="btn btn-default" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
           </td>
         </tr>
       </React.Fragment>
@@ -44,7 +43,7 @@ UserNotificationRow.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
   notification: PropTypes.object.isRequired,
-
+  onClickDeleteBtn: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserNotificationRowWrapper);

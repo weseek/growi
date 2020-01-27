@@ -115,6 +115,16 @@ export default class AdminNotificationContainer extends Container {
   }
 
   /**
+   * Delete user trigger notification pattern
+   */
+  async deleteUserTriggerNotificationPattern(notificatiionId) {
+    const response = await this.appContainer.apiv3.delete(`/notification-setting/user-notification/${notificatiionId}`);
+    const deletedNotificaton = response.data;
+    await this.retrieveNotificationData();
+    return deletedNotificaton;
+  }
+
+  /**
    * Delete global notification pattern
    */
   async deleteGlobalNotificationPattern(notificatiionId) {
