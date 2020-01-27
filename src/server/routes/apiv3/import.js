@@ -101,11 +101,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/import/status:
+   *  /import/status:
    *    get:
-   *      tags: [Import, apiv3]
+   *      tags: [Import]
    *      operationId: getImportStatus
-   *      summary: /_api/v3/import/status
+   *      summary: /import/status
    *      description: Get properties of stored zip files for import
    *      responses:
    *        200:
@@ -130,11 +130,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/import:
+   *  /import:
    *    post:
-   *      tags: [Import, apiv3]
+   *      tags: [Import]
    *      operationId: executeImport
-   *      summary: /_api/v3/import
+   *      summary: /import
    *      description: import a collection from a zipped json
    *      requestBody:
    *        required: true
@@ -241,11 +241,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/import/upload:
+   *  /import/upload:
    *    post:
-   *      tags: [Import, apiv3]
+   *      tags: [Import]
    *      operationId: uploadImport
-   *      summary: /_api/v3/import/upload
+   *      summary: /import/upload
    *      description: upload a zip file
    *      responses:
    *        200:
@@ -288,11 +288,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/import/all:
+   *  /import/all:
    *    delete:
-   *      tags: [Import, apiv3]
+   *      tags: [Import]
    *      operationId: deleteImportAll
-   *      summary: /_api/v3/import/all
+   *      summary: /import/all
    *      description: Delete all zip files
    *      responses:
    *        200:
