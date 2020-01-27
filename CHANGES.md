@@ -2,7 +2,7 @@
 
 ## v3.6.5-RC
 
-*
+* Impromvement: Add `checkMiddlewaresStrictly` query option to Healthcheck API
 
 ## v3.6.4
 
