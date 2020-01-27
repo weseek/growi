@@ -224,6 +224,24 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger
+  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const deletedNotificaton = await UpdatePost.remove(id);
+      console.log(deletedNotificaton);
+      return res.apiv3(deletedNotificaton);
+    }
+    catch (err) {
+      const msg = 'Error occurred in delete user trigger notification';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-userTriggerNotification-failed'));
+    }
+
+
+  });
+
   /**
    * @swagger
    *
