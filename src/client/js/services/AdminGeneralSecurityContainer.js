@@ -22,8 +22,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       wikiMode: '',
       currentRestrictGuestMode: 'Deny',
       currentPageCompleteDeletionAuthority: 'adminOnly',
-      isHideRestrictedByOwner: false,
-      isHideRestrictedByGroup: false,
+      isShowRestrictedByOwner: false,
+      isShowRestrictedByGroup: false,
       useOnlyEnvVarsForSomeOptions: false,
       appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
@@ -45,8 +45,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyOne',
-      isHideRestrictedByOwner: generalSetting.hideRestrictedByOwner || false,
-      isHideRestrictedByGroup: generalSetting.hideRestrictedByGroup || false,
+      isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner || false,
+      isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup || false,
       wikiMode: generalSetting.wikiMode || '',
       isLocalEnabled: generalAuth.isLocalEnabled || false,
       isLdapEnabled: generalAuth.isLdapEnabled || false,
@@ -82,17 +82,17 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch hideRestrictedByOwner
+   * Switch showRestrictedByOwner
    */
-  switchIsHideRestrictedByOwner() {
-    this.setState({ isHideRestrictedByOwner:  !this.state.isHideRestrictedByOwner });
+  switchIsShowRestrictedByOwner() {
+    this.setState({ isShowRestrictedByOwner:  !this.state.isShowRestrictedByOwner });
   }
 
   /**
-   * Switch hideRestrictedByGroup
+   * Switch showRestrictedByGroup
    */
-  switchIsHideRestrictedByGroup() {
-    this.setState({ isHideRestrictedByGroup:  !this.state.isHideRestrictedByGroup });
+  switchIsShowRestrictedByGroup() {
+    this.setState({ isShowRestrictedByGroup:  !this.state.isShowRestrictedByGroup });
   }
 
   onIsWikiModeForced(wikiModeSetting) {
@@ -114,8 +114,8 @@ export default class AdminGeneralSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.put('/security-setting/general-setting', {
       restrictGuestMode: this.state.currentRestrictGuestMode,
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
-      hideRestrictedByGroup: this.state.isHideRestrictedByGroup,
-      hideRestrictedByOwner: this.state.isHideRestrictedByOwner,
+      hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
+      hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
     });
     const { securitySettingParams } = response.data;
     return securitySettingParams;
