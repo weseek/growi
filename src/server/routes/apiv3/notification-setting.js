@@ -224,13 +224,36 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /_api/v3/notification-setting/user-notification/{id}:
+   *      delete:
+   *        tags: [NotificationSetting, apiv3]
+   *        description: delete user trigger notification pattern
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user trigger notification
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete user trigger notification pattern
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    deletedNotificaton:
+   *                      type: object
+   *                      description: deleted notification
+   */
   router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
     try {
       const deletedNotificaton = await UpdatePost.remove(id);
-      console.log(deletedNotificaton);
       return res.apiv3(deletedNotificaton);
     }
     catch (err) {
