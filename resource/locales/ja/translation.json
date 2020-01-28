@@ -576,6 +576,7 @@
     "updated_xss": "XSS設定を更新しました"
   },
   "notification_setting": {
+    "slack_configuration": "Slack Incoming Webhooks 設定",
     "notification_list": "通知設定の一覧",
     "add_notification": "通知設定の追加",
     "trigger_path": "トリガーパス",

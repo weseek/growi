@@ -607,6 +607,11 @@
       "at_growi": "(At GROWI admin page) Set Webhook URL",
       "at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
     },
+    "user_trigger_notification_header": "Default Notification Settings for Patterns",
+    "pattern": "Pattern",
+    "channel": "Channel",
+    "pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
+    "channel_desc": "Slack channel name. Without <code>#</code>.",
     "notification_list": "List of Notification Settings",
     "add_notification": "Add New",
     "trigger_path": "Trigger Path",

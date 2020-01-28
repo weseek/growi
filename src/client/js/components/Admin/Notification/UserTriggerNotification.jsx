@@ -76,20 +76,19 @@ class UserTriggerNotification extends React.Component {
     }
   }
 
-  // TODO GW-788 i18n
   render() {
     const { t, adminNotificationContainer } = this.props;
 
     return (
       <React.Fragment>
-        <h2 className="border-bottom mb-5">Default Notification Settings for Patterns</h2>
+        <h2 className="border-bottom mb-5">{t('notification_setting.user_trigger_notification_header')}</h2>
 
         <table className="table table-bordered">
           <thead>
             <tr>
-              <th>Pattern</th>
-              <th>Channel</th>
-              <th>Operation</th>
+              <th>{t('notification_setting.pattern')}</th>
+              <th>{t('notification_setting.channel')}</th>
+              <th />
             </tr>
           </thead>
           <tbody className="admin-notif-list">
@@ -103,10 +102,10 @@ class UserTriggerNotification extends React.Component {
                   placeholder="e.g. /projects/xxx/MTG/*"
                   onChange={(e) => { this.changePathPattern(e.target.value) }}
                 />
-                <p className="help-block">
-                  Path name of wiki. Pattern expression with <code>*</code> can be used.
-                </p>
+                {/* eslint-disable-next-line react/no-danger */}
+                <p className="help-block" dangerouslySetInnerHTML={{ __html: t('notification_setting.pattern_desc') }} />
               </td>
+
               <td>
                 <input
                   className="form-control form-inline"
@@ -116,9 +115,9 @@ class UserTriggerNotification extends React.Component {
                   placeholder="e.g. project-xxx"
                   onChange={(e) => { this.changeChannel(e.target.value) }}
                 />
-                <p className="help-block">
-                  Slack channel name. Without <code>#</code>.
-                </p>
+                {/* eslint-disable-next-line react/no-danger */}
+                <p className="help-block" dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+
               </td>
               <td>
                 <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
