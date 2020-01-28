@@ -108,15 +108,13 @@ class SlackAppConfiguration extends React.Component {
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.slack_app_configuration_desc') }} />
                 <br /><br />
-                Please use{' '}
                 <a
                   href="#slack-incoming-webhooks"
                   data-toggle="tab"
                   onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}
                 >
-                  {t('notification_setting.slack_incoming_configuration')}
+                  {t('notification_setting.use_instead')}
                 </a>{' '}
-                instead.
               </div>
 
               <div className="row mb-5">
@@ -143,7 +141,7 @@ class SlackAppConfiguration extends React.Component {
         <hr />
 
         <h3>
-          <i className="icon-question" aria-hidden="true"></i>
+          <i className="icon-question" aria-hidden="true"></i>{' '}
           <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_setting.how_to.header')}</a>
         </h3>
 

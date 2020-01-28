@@ -598,6 +598,7 @@
     "prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
     "slack_app_configuration": "Slack App Configuration",
     "slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
+    "use_instead":"Please use Slack Incoming Webhooks Configuration instead.",
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",
