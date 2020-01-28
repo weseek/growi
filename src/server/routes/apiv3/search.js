@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:search'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const { query } = require('express-validator');
 
 const router = express.Router();
 
@@ -18,6 +19,9 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
   const loginRequired = require('../../middleware/login-required')(crowi);
   const adminRequired = require('../../middleware/admin-required')(crowi);
+  const csrf = require('../../middleware/csrf')(crowi);
+
+  const { ApiV3FormValidator } = crowi.middlewares;
 
   /**
    * @swagger
@@ -36,7 +40,6 @@ module.exports = (crowi) => {
    *                properties:
    */
   router.get('/indices', helmet.noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    // connect to search service
     try {
       const search = crowi.getSearcher();
       const info = await search.getInfoForAdmin();
@@ -47,6 +50,11 @@ module.exports = (crowi) => {
     }
   });
 
+
+  const validatorForPutIndices = [
+    query('operation').isString().isIn(['rebuild', 'normalize']),
+  ];
+
   /**
    * @swagger
    *
@@ -54,7 +62,7 @@ module.exports = (crowi) => {
    *    put:
    *      tags: [Search]
    *      summary: /search/indices
-   *      description: Init indices
+   *      description: Operate indices
    *      responses:
    *        200:
    *          description: Return 200
@@ -63,28 +71,28 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    */
-  router.put('/indices', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    res.status(200).send({});
-  });
+  router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, ApiV3FormValidator, async(req, res) => {
+    const operation = req.query.operation;
 
-  /**
-   * @swagger
-   *
-   *  /search/indices/rebuild:
-   *    post:
-   *      tags: [Search]
-   *      summary: /search/rebuild
-   *      description: Rebuild index
-   *      responses:
-   *        200:
-   *          description: Return 200 when rebuilding is successfully requested
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   */
-  router.post('/indices/rebuild', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    res.status(200).send({});
+    try {
+      const search = crowi.getSearcher();
+
+      switch (operation) {
+        case 'normalize':
+          search.initIndices();
+          break;
+        case 'rebuild':
+          search.buildIndex();
+          break;
+        default:
+          throw new Error(`Unimplemented operation: ${operation}`);
+      }
+
+      return res.status(200).send();
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
   });
 
   return router;
