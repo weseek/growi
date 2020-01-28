@@ -191,24 +191,24 @@ input .btn-secondary {
   padding: 5px;
   color: $textcolor;
   background-color: $accentlight;
-  .panel-primary a {
-    color: $subthemecolor;
-  }
   border-radius: 3px;
 }
 
+.panel-primary a {
+  color: $subthemecolor;
+}
 
-  /*
+/*
  *  panel
  */
 
-  .panel-timeline > .panel-heading {
-    background-color: $third-main-color;
-  }
+.panel-timeline > .panel-heading {
+  background-color: $third-main-color;
+}
 
-  .panel-default > .panel-heading {
-    background-color: $third-main-color;
-  }
+.panel-default > .panel-heading {
+  background-color: $third-main-color;
+}
 
 .panel .panel-body {
   border-radius: 10px;
