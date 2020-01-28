@@ -34,7 +34,7 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
-import ProfileImageUploader from './components/ProfileImageUploader';
+import ProfileImageUploader from './components/Me/ProfileImageUploader';
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
