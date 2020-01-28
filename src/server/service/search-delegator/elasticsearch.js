@@ -65,35 +65,6 @@ class ElasticsearchDelegator {
     this.indexName = indexName;
   }
 
-  async getInfo() {
-    const info = await this.client.nodes.info();
-    if (!info._nodes || !info.nodes) {
-      throw new Error('There is no nodes');
-    }
-
-    let esVersion = 'unknown';
-    const esNodeInfos = {};
-
-    for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
-      esVersion = nodeInfo.version;
-
-      const filteredInfo = {
-        name: nodeInfo.name,
-        version: nodeInfo.version,
-        plugins: nodeInfo.plugins.map((pluginInfo) => {
-          return {
-            name: pluginInfo.name,
-            version: pluginInfo.version,
-          };
-        }),
-      };
-
-      esNodeInfos[nodeName] = filteredInfo;
-    }
-
-    return { esVersion, esNodeInfos };
-  }
-
   /**
    * return information object to connect to ES
    * @return {object} { host, httpAuth, indexName}
@@ -124,6 +95,57 @@ class ElasticsearchDelegator {
 
   async init() {
     return this.initIndices();
+  }
+
+  async getInfo() {
+    const info = await this.client.nodes.info();
+    if (!info._nodes || !info.nodes) {
+      throw new Error('There is no nodes');
+    }
+
+    let esVersion = 'unknown';
+    const esNodeInfos = {};
+
+    for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
+      esVersion = nodeInfo.version;
+
+      const filteredInfo = {
+        name: nodeInfo.name,
+        version: nodeInfo.version,
+        plugins: nodeInfo.plugins.map((pluginInfo) => {
+          return {
+            name: pluginInfo.name,
+            version: pluginInfo.version,
+          };
+        }),
+      };
+
+      esNodeInfos[nodeName] = filteredInfo;
+    }
+
+    return { esVersion, esNodeInfos };
+  }
+
+  async getInfoForAdmin() {
+    const { client, indexName, aliasName } = this;
+
+    const tmpIndexName = `${indexName}-tmp`;
+
+    const isExistsMainIndex = await client.indices.exists({ index: indexName });
+    const isMainIndexHasAlias = isExistsMainIndex && await client.indices.existsAlias({ name: aliasName, index: indexName });
+
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
+    const isTmpIndexHasAlias = isExistsTmpIndex && await client.indices.existsAlias({ name: aliasName, index: tmpIndexName });
+
+    const isNormalized = isExistsMainIndex && isMainIndexHasAlias && !isExistsTmpIndex && !isTmpIndexHasAlias;
+
+    return {
+      isExistsMainIndex,
+      isExistsTmpIndex,
+      isMainIndexHasAlias,
+      isTmpIndexHasAlias,
+      isNormalized,
+    };
   }
 
   /**

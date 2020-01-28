@@ -26,17 +26,25 @@ module.exports = (crowi) => {
    *    get:
    *      tags: [Search]
    *      summary: /search/indices
-   *      description: Get current status of indices and tasks
+   *      description: Get current status of indices
    *      responses:
    *        200:
-   *          description: Status of indices and tasks
+   *          description: Status of indices
    *          content:
    *            application/json:
    *              schema:
    *                properties:
    */
   router.get('/indices', helmet.noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
-    res.status(200).send({});
+    // connect to search service
+    try {
+      const search = crowi.getSearcher();
+      const info = await search.getInfoForAdmin();
+      return res.status(200).send({ info });
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
   });
 
   /**
@@ -46,7 +54,7 @@ module.exports = (crowi) => {
    *    put:
    *      tags: [Search]
    *      summary: /search/indices
-   *      description: Init indices and tasks
+   *      description: Init indices
    *      responses:
    *        200:
    *          description: Return 200
