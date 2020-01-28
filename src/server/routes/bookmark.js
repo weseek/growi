@@ -43,11 +43,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/bookmarks.get:
+   *    /bookmarks.get:
    *      get:
-   *        tags: [Bookmarks, apiv1]
+   *        tags: [Bookmarks, CrowiCompatibles]
    *        operationId: getBookmark
-   *        summary: /_api/bookmarks.get
+   *        summary: /bookmarks.get
    *        description: Get bookmark of the page with the user
    *        parameters:
    *          - in: query
@@ -94,45 +94,6 @@ module.exports = function(crowi, app) {
       });
   };
 
-
-  /**
-   * @swagger
-   *
-   *    /_api/bookmarks.list:
-   *      get:
-   *        tags: [Bookmarks, apiv1]
-   *        operationId: listBookmarks
-   *        summary: /_api/bookmarks.list
-   *        description: Get bookmark list of the page with the user
-   *        parameters:
-   *          - in: query
-   *            name: limit
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *          - in: query
-   *            name: offset
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get bookmark of the page with the user.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    meta:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta'
-   *                    data:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/V1PaginateResult/properties/meta'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
   actions.api.list = function(req, res) {
     const paginateOptions = ApiPaginate.parseOptions(req.query);
 
@@ -149,11 +110,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/bookmarks.add:
+   *    /bookmarks.add:
    *      post:
-   *        tags: [Bookmarks, apiv1]
+   *        tags: [Bookmarks, CrowiCompatibles]
    *        operationId: addBookmark
-   *        summary: /_api/bookmarks.add
+   *        summary: /bookmarks.add
    *        description: Add bookmark of the page
    *        parameters:
    *          - in: query
@@ -204,11 +165,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/bookmarks.remove:
+   *    /bookmarks.remove:
    *      post:
-   *        tags: [Bookmarks, apiv1]
+   *        tags: [Bookmarks, CrowiCompatibles]
    *        operationId: removeBookmark
-   *        summary: /_api/bookmarks.remove
+   *        summary: /bookmarks.remove
    *        description: Remove bookmark of the page
    *        requestBody:
    *          content:

@@ -645,11 +645,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.list:
+   *    /pages.list:
    *      get:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: listPages
-   *        summary: /_api/pages.list
+   *        summary: /pages.list
    *        description: Get list of pages
    *        parameters:
    *          - in: query
@@ -660,6 +660,10 @@ module.exports = function(crowi, app) {
    *            name: user
    *            schema:
    *              $ref: '#/components/schemas/User/properties/username'
+   *          - in: query
+   *            name: limit
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
    *          - in: query
    *            name: offset
    *            schema:
@@ -735,11 +739,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.create:
+   *    /pages.create:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: createPage
-   *        summary: /_api/pages.create
+   *        summary: /pages.create
    *        description: Create page
    *        requestBody:
    *          content:
@@ -844,11 +848,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.update:
+   *    /pages.update:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: updatePage
-   *        summary: /_api/pages.update
+   *        summary: /pages.update
    *        description: Update page
    *        requestBody:
    *          content:
@@ -972,11 +976,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.get:
+   *    /pages.get:
    *      get:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: getPage
-   *        summary: /_api/pages.get
+   *        summary: /pages.get
    *        description: Get page data
    *        parameters:
    *          - in: query
@@ -1053,6 +1057,40 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /pages.exist:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: getPageExistence
+   *        summary: /pages.exist
+   *        description: Get page existence
+   *        parameters:
+   *          - in: query
+   *            name: pages
+   *            schema:
+   *              type: string
+   *              description: Page paths specified by hash key in JSON format
+   *              example: '{"/": "unused value", "/user/unknown": "unused value"}'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get page existence.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    pages:
+   *                      type: string
+   *                      description: Properties of page path and existence
+   *                      example: '{"/": true, "/user/unknown": false}'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /pages.exist Get if page exists
    * @apiName GetPage
    * @apiGroup Page
@@ -1076,6 +1114,36 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /pages.getPageTag:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: getPageTag
+   *        summary: /pages.getPageTag
+   *        description: Get page tag
+   *        parameters:
+   *          - in: query
+   *            name: pageId
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get page tags.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /pages.getPageTag get page tags
    * @apiName GetPageTag
    * @apiGroup Page
@@ -1096,11 +1164,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.seen:
+   *    /pages.seen:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: seenPage
-   *        summary: /_api/pages.seen
+   *        summary: /pages.seen
    *        description: Mark as seen user
    *        requestBody:
    *          content:
@@ -1165,11 +1233,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/likes.add:
+   *    /likes.add:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Likes, CrowiCompatibles]
    *        operationId: addLike
-   *        summary: /_api/likes.add
+   *        summary: /likes.add
    *        description: Like page
    *        requestBody:
    *          content:
@@ -1241,11 +1309,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/likes.remove:
+   *    /likes.remove:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Likes, CrowiCompatibles]
    *        operationId: removeLike
-   *        summary: /_api/likes.remove
+   *        summary: /likes.remove
    *        description: Unlike page
    *        requestBody:
    *          content:
@@ -1309,11 +1377,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.updatePost:
+   *    /pages.updatePost:
    *      get:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: getUpdatePostPage
-   *        summary: /_api/pages.updatePost
+   *        summary: /pages.updatePost
    *        description: Get UpdatePost setting list
    *        parameters:
    *          - in: query
@@ -1477,11 +1545,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/pages.rename:
+   *    /pages.rename:
    *      post:
-   *        tags: [Pages, apiv1]
+   *        tags: [Pages, CrowiCompatibles]
    *        operationId: renamePage
-   *        summary: /_api/pages.rename
+   *        summary: /pages.rename
    *        description: Rename page
    *        requestBody:
    *          content:
@@ -1593,6 +1661,44 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /pages.duplicate:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: duplicatePage
+   *        summary: /pages.duplicate
+   *        description: Duplicate page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  new_path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                required:
+   *                  - page_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to duplicate page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    tags:
+   *                      $ref: '#/components/schemas/Tags'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /pages.duplicate Duplicate page
    * @apiName DuplicatePage
    * @apiGroup Page
@@ -1650,6 +1756,54 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
+  /**
+   * @swagger
+   *
+   *    /pages.recentCreated:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: getRecentCreatedPages
+   *        summary: /pages.recentCreated
+   *        description: Get recent created page list
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            required: true
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: offset
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *          - in: query
+   *            name: limit
+   *            schema:
+   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get recent created page list.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    pages:
+   *                      type: array
+   *                      description: recent created page list
+   *                      items:
+   *                        $ref: '#/components/schemas/Page'
+   *                    totalCount:
+   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/total'
+   *                    offset:
+   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *                    limit:
+   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   api.recentCreated = async function(req, res) {
     const pageId = req.query.page_id;
 
