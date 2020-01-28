@@ -34,9 +34,8 @@ class SlackAppConfiguration extends React.Component {
     }
   }
 
-  // TODO GW-788 i18n
   render() {
-    const { adminNotificationContainer } = this.props;
+    const { t, adminNotificationContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -65,7 +64,7 @@ class SlackAppConfiguration extends React.Component {
         </div>
         {adminNotificationContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
           <React.Fragment>
-            <h2 className="border-bottom mb-5">Slack Incoming Webhooks Configuration</h2>
+            <h2 className="border-bottom mb-5">{t('notification_setting.slack_incoming_configuration')}</h2>
 
             <div className="row mb-5">
               <label className="col-xs-3 text-right">Webhook URL</label>
@@ -89,11 +88,11 @@ class SlackAppConfiguration extends React.Component {
                     onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
                   />
                   <label htmlFor="cbPrioritizeIWH">
-                    Prioritize Incoming Webhook than Slack App
+                    {t('notification_setting.prioritize_webhook')}
                   </label>
                 </div>
                 <p className="help-block">
-                  Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.
+                  {t('notification_setting.prioritize_webhook_desc')}
                 </p>
               </div>
             </div>
@@ -101,22 +100,22 @@ class SlackAppConfiguration extends React.Component {
         )
           : (
             <React.Fragment>
-              <h2 className="border-bottom mb-5">Slack App Configuration</h2>
+              <h2 className="border-bottom mb-5">{t('notification_setting.slack_app_configuration')}</h2>
 
               <div className="well">
                 <i className="icon-fw icon-exclamation text-danger"></i><span className="text-danger">NOT RECOMMENDED</span>
                 <br /><br />
-                This is the way that compatible with Crowi,<br />
-                but not recommended in GROWI because it is <strong>too complex</strong>.
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.slack_app_configuration_desc') }} />
                 <br /><br />
-                Please use
+                Please use{' '}
                 <a
                   href="#slack-incoming-webhooks"
                   data-toggle="tab"
                   onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}
                 >
-                  Slack incomming webhooks Configuration
-                </a>
+                  {t('notification_setting.slack_incoming_configuration')}
+                </a>{' '}
                 instead.
               </div>
 
@@ -145,22 +144,24 @@ class SlackAppConfiguration extends React.Component {
 
         <h3>
           <i className="icon-question" aria-hidden="true"></i>
-          <a href="#collapseHelpForIwh" data-toggle="collapse"> How to configure Incoming Webhooks?</a>
+          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_setting.how_to.header')}</a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse">
           <li>
-            (At Workspace) Add a hook
+            {t('notification_setting.how_to.workspace')}
             <ol>
-              <li>Go to <a href="https://slack.com/services/new/incoming-webhook">Incoming Webhooks Configuration page</a>.</li>
-              <li>Choose the default channel to post.</li>
-              <li>Add.</li>
+              {/* eslint-disable-next-line react/no-danger */}
+              <li dangerouslySetInnerHTML={{ __html:  t('notification_setting.how_to.workspace_desc1') }} />
+              <li>{t('notification_setting.how_to.workspace_desc2')}</li>
+              <li>{t('notification_setting.how_to.workspace_desc3')}</li>
             </ol>
           </li>
           <li>
-            (At GROWI admin page) Set Webhook URL
+            {t('notification_setting.how_to.at_growi')}
             <ol>
-              <li>Input &rdquo;Webhook URL&rdquo; and submit on this page.</li>
+              {/* eslint-disable-next-line react/no-danger */}
+              <li dangerouslySetInnerHTML={{ __html: t('notification_setting.how_to.at_growi_desc') }} />
             </ol>
           </li>
         </ol>
