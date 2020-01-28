@@ -38,6 +38,8 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
+   *                  info:
+   *                    type: object
    */
   router.get('/indices', helmet.noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
@@ -66,10 +68,6 @@ module.exports = (crowi) => {
    *      responses:
    *        200:
    *          description: Return 200
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
    */
   router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, ApiV3FormValidator, async(req, res) => {
     const operation = req.query.operation;
