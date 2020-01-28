@@ -577,10 +577,10 @@
   },
   "notification_setting": {
     "slack_incoming_configuration": "Slack Incoming Webhooks 設定",
-    "prioritize_webhook": "Slack アプリより Webhook を優先する",
-    "prioritize_webhook_desc": "このオプションをオンにすると、 Slack App が有効になっていても GROWI は Webhook を使用します。",
+    "prioritize_webhook": "Slack アプリより Incoming Webhook を優先する",
+    "prioritize_webhook_desc": "このオプションをオンにすると、 Slack App が有効になっていても GROWI は Incoming Webhook を使用します。",
     "slack_app_configuration": "Slack App 設定",
-    "slack_app_configuration_desc": "これは Crowiと互換性のある方法です。<br /> しかし、 GROWI では<strong>あまりにも複雑</strong>なのでオススメしません。",
+    "slack_app_configuration_desc": "Crowi 互換の機能です。<br /> <strong>設定が複雑すぎる</strong>のでオススメしません。",
     "use_instead": "代わりに Slack Incoming Webhooks 設定を使用してください。",
     "how_to": {
       "header": "Incoming Webhooks の設定方法",
