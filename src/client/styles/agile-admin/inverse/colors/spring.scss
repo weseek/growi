@@ -82,6 +82,15 @@ header.affix {
   }
 }
 
+div .page-comment-main {
+  border-radius: 10px;
+}
+
+// add comment
+div .comment-form-main {
+  border-radius: 10px;
+}
+
 /*
  * Tabs
  */
@@ -185,6 +194,9 @@ input .btn-secondary {
   .panel-primary a {
     color: $subthemecolor;
   }
+  border-radius: 3px;
+}
+
 
   /*
  *  panel
@@ -197,4 +209,7 @@ input .btn-secondary {
   .panel-default > .panel-heading {
     background-color: $third-main-color;
   }
+
+.panel .panel-body {
+  border-radius: 10px;
 }
