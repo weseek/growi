@@ -94,7 +94,7 @@ const i18n = appContainer.i18n;
  *  value: React Element
  */
 let componentMappings = {
-  'search-top': <HeaderSearchBox crowi={appContainer} />,
+  'search-top': <HeaderSearchBox />,
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'search-page': <SearchPage crowi={appContainer} />,
 
