@@ -89,16 +89,16 @@ module.exports = (crowi) => {
 
       switch (operation) {
         case 'normalize':
-          search.normalizeIndices();
-          break;
+          // wait the processing is terminated
+          await search.normalizeIndices();
+          return res.status(200).send({ message: 'Operation is successfully processed.' });
         case 'rebuild':
+          // NOT wait the processing is terminated
           search.buildIndex();
-          break;
+          return res.status(200).send({ message: 'Operation is successfully requested.' });
         default:
           throw new Error(`Unimplemented operation: ${operation}`);
       }
-
-      return res.status(200).send({ message: 'Operation is successfully requested.' });
     }
     catch (err) {
       return res.apiv3Err(err);
