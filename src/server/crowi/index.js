@@ -333,7 +333,7 @@ Crowi.prototype.setupSearcher = async function() {
   const SearchService = require('@server/service/search');
   const searchService = new SearchService(this);
 
-  if (searchService.isAvailable) {
+  if (searchService.isConfigured) {
     try {
       this.searcher = searchService;
     }

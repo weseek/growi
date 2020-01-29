@@ -7,6 +7,8 @@ class SearchService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
+    this.isErrorOccured = null;
+
     try {
       this.delegator = this.initDelegator();
     }
@@ -14,14 +16,18 @@ class SearchService {
       logger.error(err);
     }
 
-    if (this.isAvailable) {
+    if (this.isConfigured) {
       this.delegator.init();
       this.registerUpdateEvent();
     }
   }
 
-  get isAvailable() {
+  get isConfigured() {
     return this.delegator != null;
+  }
+
+  get isReachable() {
+    return this.isConfigured && !this.isErrorOccured;
   }
 
   get isSearchboxEnabled() {
@@ -69,7 +75,14 @@ class SearchService {
   }
 
   async getInfo() {
-    return this.delegator.getInfo();
+    try {
+      return await this.delegator.getInfo();
+    }
+    catch (err) {
+      // switch error flag
+      this.isErrorOccured = true;
+      throw err;
+    }
   }
 
   async getInfoForAdmin() {
@@ -85,7 +98,14 @@ class SearchService {
   }
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {
-    return this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
+    try {
+      return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
+    }
+    catch (err) {
+      // switch error flag
+      this.isErrorOccured = true;
+      throw err;
+    }
   }
 
 }
