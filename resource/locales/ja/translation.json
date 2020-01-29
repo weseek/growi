@@ -790,10 +790,17 @@
   },
   "full_text_search_management": {
     "elasticsearch_management": "Elasticsearch 管理",
-    "build_button": "インデックスのリビルド",
-    "rebuild_description_1": "Build Now ボタンを押すと全てのページのインデックスを削除し、作り直します。",
-    "rebuild_description_2": "この作業には数秒かかります。",
-    "rebuild_description_3": ""
+    "indices_status": "インデックスの状態",
+    "indices_status_label_normalized": "正規化されています",
+    "indices_status_label_unnormalized": "リビルド中 または 破損しています",
+    "indices_summary": "インデックスのサマリ",
+    "normalize": "正規化",
+    "normalize_button": "インデックスの正規化",
+    "normalize_description": "破損したインデックスを修復します。",
+    "rebuild": "リビルド",
+    "rebuild_button": "インデックスのリビルド",
+    "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
+    "rebuild_description_2": "この作業には数秒かかります。"
   },
   "export_management": {
     "exporting_collection_list": "エクスポート中のコレクション",

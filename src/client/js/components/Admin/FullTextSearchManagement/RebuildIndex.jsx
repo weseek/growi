@@ -80,7 +80,7 @@ class RebuildIndex extends React.Component {
 
     try {
       await appContainer.apiv3Put('/search/indices', { operation: 'normalize' });
-  }
+    }
     catch (e) {
       toastError(e);
     }
@@ -210,9 +210,66 @@ class RebuildIndex extends React.Component {
     );
   }
 
+  renderNormalizeControls() {
+    const { t } = this.props;
+
+    const isEnabled = !this.state.isNormalized && !this.state.isProcessing;
+
+    return (
+      <>
+        <button
+          type="submit"
+          className={`btn btn-outline ${isEnabled ? 'btn-info' : 'btn-default'}`}
+          onClick={this.normalizeIndices}
+          disabled={!isEnabled}
+        >
+          { t('full_text_search_management.normalize_button') }
+        </button>
+
+        <p className="help-block">
+          { t('full_text_search_management.normalize_description') }<br />
+        </p>
+      </>
+    );
+  }
+
+  renderRebuildControls() {
+    const { t } = this.props;
+
+    const isEnabled = this.state.isNormalized && !this.state.isProcessing;
+
+    return (
+      <>
+        { this.renderProgressBar() }
+
+        <button
+          type="submit"
+          className="btn btn-inverse"
+          onClick={this.rebuildIndices}
+          disabled={!isEnabled}
+        >
+          { t('full_text_search_management.rebuild_button') }
+        </button>
+
+        <p className="help-block">
+          { t('full_text_search_management.rebuild_description_1') }<br />
+          { t('full_text_search_management.rebuild_description_2') }<br />
+        </p>
+      </>
+    );
+  }
+
+
   render() {
     const { t } = this.props;
     const { isNormalized } = this.state;
+
+    let statusLabel = <span className="label label-default">――</span>;
+    if (isNormalized != null) {
+      statusLabel = isNormalized
+        ? <span className="label label-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+        : <span className="label label-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+    }
 
     return (
       <>
@@ -221,41 +278,39 @@ class RebuildIndex extends React.Component {
             <table className="table table-bordered">
               <tbody>
                 <tr>
-                  <th className="col-sm-4">Indices</th>
+                  <th>{ t('full_text_search_management.indices_status') }</th>
+                  <td>{statusLabel}</td>
+                </tr>
+                <tr>
+                  <th className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
                   <td className="p-4">
                     { this.renderIndexInfoPanels() }
                   </td>
-                </tr>
-                <tr>
-                  <th>Status</th>
-                  <td>{isNormalized}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
+        <hr />
+
+        {/* Controls */}
         <div className="row">
-          <div className="col-xs-3 control-label"></div>
-          <div className="col-xs-9">
-            { this.renderProgressBar() }
-
-            <button
-              type="submit"
-              className="btn btn-inverse"
-              onClick={this.rebuildIndices}
-              disabled={this.state.isProcessing}
-            >
-              { t('full_text_search_management.build_button') }
-            </button>
-
-            <p className="help-block">
-              { t('full_text_search_management.rebuild_description_1') }<br />
-              { t('full_text_search_management.rebuild_description_2') }<br />
-              { t('full_text_search_management.rebuild_description_3') }<br />
-            </p>
+          <label className="col-xs-3 control-label">{ t('full_text_search_management.normalize') }</label>
+          <div className="col-xs-6">
+            { this.renderNormalizeControls() }
           </div>
         </div>
+
+        <hr />
+
+        <div className="row">
+          <label className="col-xs-3 control-label">{ t('full_text_search_management.rebuild') }</label>
+          <div className="col-xs-6">
+            { this.renderRebuildControls() }
+          </div>
+        </div>
+
       </>
     );
   }
