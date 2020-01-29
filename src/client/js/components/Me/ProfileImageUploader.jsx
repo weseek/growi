@@ -19,6 +19,7 @@ class ProfileImageUploader extends React.Component {
     this.onSelectFile = this.onSelectFile.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.cancelModal = this.cancelModal.bind(this);
+    this.setCroppedImageUrl = this.setCroppedImageUrl.bind(this);
   }
 
   onSelectFile(e) {
@@ -32,11 +33,6 @@ class ProfileImageUploader extends React.Component {
 
   setCroppedImageUrl(croppedImageUrl) {
     this.setState({ croppedImageUrl });
-  }
-
-  setImageRef(image) {
-    console.log(image);
-    this.imageRef = image;
   }
 
   showModal() {
@@ -69,8 +65,6 @@ class ProfileImageUploader extends React.Component {
           <ImageCropModal
             show={this.state.show}
             src={this.state.src}
-            imageRef={this.imageRef}
-            setImageRef={this.setImageRef}
             hideModal={this.hideModal}
             cancelModal={this.cancelModal}
             setCroppedImageUrl={this.setCroppedImageUrl}

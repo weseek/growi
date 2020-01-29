@@ -15,17 +15,19 @@ class ImageCropModal extends React.Component {
     super();
     this.state = {
       crop: null,
+      imageRef: null,
     };
     this.onImageLoaded = this.onImageLoaded.bind(this);
     this.onCropChange = this.onCropChange.bind(this);
     this.getCroppedImg = this.getCroppedImg.bind(this);
     this.crop = this.crop.bind(this);
+    this.reset = this.reset.bind(this);
+    this.imageRef = null;
+    // imageRefのgetttorとして定義
   }
 
   onImageLoaded(image) {
-    this.props.setImageRef(image);
-    console.log(image)
-    this.reset();
+    this.setState({ imageRef: image }, () => this.reset());
     return false; // Return false when setting crop state in here.
   }
 
@@ -57,21 +59,21 @@ class ImageCropModal extends React.Component {
 
   async crop() {
     // crop immages
-    if (this.props.imageRef && this.crop.width && this.crop.height) {
-      const croppedImageUrl = await this.getCroppedImg(this.imageRef, this.crop, '/images/icons/user');
+    if (this.state.imageRef && this.state.crop.width && this.state.crop.height) {
+      const croppedImageUrl = await this.getCroppedImg(this.state.imageRef, this.state.crop, '/images/icons/user');
       this.props.setCroppedImageUrl(croppedImageUrl);
     }
     this.props.hideModal();
   }
 
   reset() {
-    const size = Math.min(this.props.imageRef.width, this.props.imageRef.height);
+    const size = Math.min(this.state.imageRef.width, this.state.imageRef.height);
     this.setState({
       crop: {
         aspect: 1,
         unit: 'px',
-        x: this.imageRef.width / 2 - size / 2,
-        y: this.imageRef.height / 2 - size / 2,
+        x: this.state.imageRef.width / 2 - size / 2,
+        y: this.state.imageRef.height / 2 - size / 2,
         width: size,
         height: size,
       },
@@ -124,8 +126,6 @@ ImageCropModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   show: PropTypes.bool.isRequired,
   src: PropTypes.string,
-  imageRef: PropTypes.object,
-  setImageRef: PropTypes.func,
   hideModal: PropTypes.func.isRequired,
   cancelModal: PropTypes.func.isRequired,
   setCroppedImageUrl: PropTypes.func.isRequired,
