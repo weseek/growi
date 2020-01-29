@@ -19,7 +19,7 @@ class ProfileImageUploader extends React.Component {
     this.onSelectFile = this.onSelectFile.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.cancelModal = this.cancelModal.bind(this);
-    this.setCroppedImageUrl = this.setCroppedImageUrl.bind(this);
+    this.onCropCompleted = this.onCropCompleted.bind(this);
   }
 
   onSelectFile(e) {
@@ -27,12 +27,13 @@ class ProfileImageUploader extends React.Component {
       const reader = new FileReader();
       reader.addEventListener('load', () => this.setState({ src: reader.result }));
       reader.readAsDataURL(e.target.files[0]);
+      this.setState({ show: true });
     }
-    this.setState({ show: true });
   }
 
-  setCroppedImageUrl(croppedImageUrl) {
+  onCropCompleted(croppedImageUrl) {
     this.setState({ croppedImageUrl });
+    this.hideModal();
   }
 
   showModal() {
@@ -65,9 +66,8 @@ class ProfileImageUploader extends React.Component {
           <ImageCropModal
             show={this.state.show}
             src={this.state.src}
-            hideModal={this.hideModal}
-            cancelModal={this.cancelModal}
-            setCroppedImageUrl={this.setCroppedImageUrl}
+            onModalClose={this.cancelModal}
+            onCropCompleted={this.onCropCompleted}
           />
         </div>
       </div>

@@ -60,9 +60,8 @@ class ImageCropModal extends React.Component {
     // crop immages
     if (this.state.imageRef && this.state.crop.width && this.state.crop.height) {
       const croppedImageUrl = await this.getCroppedImg(this.state.imageRef, this.state.crop, '/images/icons/user');
-      this.props.setCroppedImageUrl(croppedImageUrl);
+      this.props.onCropCompleted(croppedImageUrl);
     }
-    this.props.hideModal();
   }
 
   reset() {
@@ -81,7 +80,7 @@ class ImageCropModal extends React.Component {
 
   render() {
     return (
-      <Modal show={this.props.show} onHide={this.props.cancelModal}>
+      <Modal show={this.props.show} onHide={this.props.onModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>Image Crop</Modal.Title>
         </Modal.Header>
@@ -100,7 +99,7 @@ class ImageCropModal extends React.Component {
               Reset
             </Button>
             <div className="d-flex">
-              <Button bsStyle="default" onClick={this.props.cancelModal}>
+              <Button bsStyle="default" onClick={this.props.onModalClose}>
                 Cancel
               </Button>
               <Button bsStyle="primary" onClick={this.crop}>
@@ -125,8 +124,7 @@ ImageCropModal.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   show: PropTypes.bool.isRequired,
   src: PropTypes.string,
-  hideModal: PropTypes.func.isRequired,
-  cancelModal: PropTypes.func.isRequired,
-  setCroppedImageUrl: PropTypes.func.isRequired,
+  onModalClose: PropTypes.func.isRequired,
+  onCropCompleted: PropTypes.func.isRequired,
 };
 export default withTranslation()(ProfileImageFormWrapper);
