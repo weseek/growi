@@ -76,7 +76,16 @@ class RebuildIndex extends React.Component {
   }
 
   async normalizeIndices() {
+    const { appContainer } = this.props;
 
+    try {
+      await appContainer.apiv3Put('/search/indices', { operation: 'normalize' });
+  }
+    catch (e) {
+      toastError(e);
+    }
+
+    this.retrieveIndicesStatus();
   }
 
   async rebuildIndices() {
