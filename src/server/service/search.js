@@ -76,8 +76,8 @@ class SearchService {
     return this.delegator.normalizeIndices();
   }
 
-  async buildIndex() {
-    return this.delegator.buildIndex();
+  async rebuildIndex() {
+    return this.delegator.rebuildIndex();
   }
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {

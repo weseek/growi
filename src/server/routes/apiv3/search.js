@@ -94,7 +94,7 @@ module.exports = (crowi) => {
           return res.status(200).send({ message: 'Operation is successfully processed.' });
         case 'rebuild':
           // NOT wait the processing is terminated
-          search.buildIndex();
+          search.rebuildIndex();
           return res.status(200).send({ message: 'Operation is successfully requested.' });
         default:
           throw new Error(`Unimplemented operation: ${operation}`);

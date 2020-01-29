@@ -149,9 +149,9 @@ class ElasticsearchDelegator {
   }
 
   /**
-   * build index
+   * rebuild index
    */
-  async buildIndex() {
+  async rebuildIndex() {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
@@ -185,7 +185,7 @@ class ElasticsearchDelegator {
       await this.addAllPages();
     }
     catch (err) {
-      logger.warn('An error occured while \'buildIndex\', normalize indices anyway.');
+      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
       throw err;
     }
     finally {
