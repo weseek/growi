@@ -67,37 +67,37 @@ class CustomizeScriptSetting extends React.Component {
           </CardBody>
         </Card>
 
-        <div className="help-block">
+        <div className="form-text text-muted">
           Placeholders:<br />
           (Available after <code>load</code> event)
-          <dl className="dl-horizontal">
-            <dt><code>$</code></dt>
-            <dd>jQuery instance</dd>
-            <dt><code>appContainer</code></dt>
-            <dd>GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
-            <dt><code>growiRenderer</code></dt>
-            <dd>GROWI Renderer origin instance</dd>
-            <dt><code>growiPlugin</code></dt>
-            <dd>GROWI Plugin Manager instance</dd>
-            <dt><code>Crowi</code></dt>
-            <dd>Crowi legacy instance (jQuery based)</dd>
+          <dl className="row">
+            <dt className="col-2 text-right"><code>$</code></dt>
+            <dd className="col-10">jQuery instance</dd>
+            <dt className="col-2 text-right"><code>appContainer</code></dt>
+            <dd className="col-10">GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
+            <dt className="col-2 text-right"><code>growiRenderer</code></dt>
+            <dd className="col-10">GROWI Renderer origin instance</dd>
+            <dt className="col-2 text-right"><code>growiPlugin</code></dt>
+            <dd className="col-10">GROWI Plugin Manager instance</dd>
+            <dt className="col-2 text-right"><code>Crowi</code></dt>
+            <dd className="col-10">Crowi legacy instance (jQuery based)</dd>
           </dl>
         </div>
 
-        <div className="help-block">
+        <div className="form-text">
           Examples:
           <pre className="hljs"><code>{this.getExampleCode()}</code></pre>
         </div>
 
         <div className="form-group">
-          <div className="col-xs-12">
+          <div className="col-12">
             <CustomScriptEditor
               // The value passed must be immutable
               value={this.state.editorInputValue}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
             />
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             <p className="help-block text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
               { t('customize_page.ctrl_space') }
