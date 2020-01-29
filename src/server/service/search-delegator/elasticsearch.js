@@ -156,45 +156,42 @@ class ElasticsearchDelegator {
 
     const tmpIndexName = `${indexName}-tmp`;
 
-    // reindex to tmp index
-    await this.createIndex(tmpIndexName);
-    await client.reindex({
-      waitForCompletion: false,
-      body: {
-        source: { index: indexName },
-        dest: { index: tmpIndexName },
-      },
-    });
+    try {
+      // reindex to tmp index
+      await this.createIndex(tmpIndexName);
+      await client.reindex({
+        waitForCompletion: false,
+        body: {
+          source: { index: indexName },
+          dest: { index: tmpIndexName },
+        },
+      });
 
-    // update alias
-    await client.indices.updateAliases({
-      body: {
-        actions: [
-          { add: { alias: aliasName, index: tmpIndexName } },
-          { remove: { alias: aliasName, index: indexName } },
-        ],
-      },
-    });
+      // update alias
+      await client.indices.updateAliases({
+        body: {
+          actions: [
+            { add: { alias: aliasName, index: tmpIndexName } },
+            { remove: { alias: aliasName, index: indexName } },
+          ],
+        },
+      });
 
-    // flush index
-    await client.indices.delete({
-      index: indexName,
-    });
-    await this.createIndex(indexName);
-    await this.addAllPages();
+      // flush index
+      await client.indices.delete({
+        index: indexName,
+      });
+      await this.createIndex(indexName);
+      await this.addAllPages();
+    }
+    catch (err) {
+      logger.warn('An error occured while \'buildIndex\', normalize indices anyway.');
+      throw err;
+    }
+    finally {
+      await this.normalizeIndices();
+    }
 
-    // update alias
-    await client.indices.updateAliases({
-      body: {
-        actions: [
-          { add: { alias: aliasName, index: indexName } },
-          { remove: { alias: aliasName, index: tmpIndexName } },
-        ],
-      },
-    });
-
-    // remove tmp index
-    await client.indices.delete({ index: tmpIndexName });
   }
 
   async normalizeIndices() {
