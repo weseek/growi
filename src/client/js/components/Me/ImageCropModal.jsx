@@ -23,7 +23,6 @@ class ImageCropModal extends React.Component {
     this.crop = this.crop.bind(this);
     this.reset = this.reset.bind(this);
     this.imageRef = null;
-    // imageRefのgetttorとして定義
   }
 
   onImageLoaded(image) {
