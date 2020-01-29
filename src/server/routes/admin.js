@@ -994,23 +994,6 @@ module.exports = function(crowi, app) {
     }
   };
 
-
-  actions.api.searchBuildIndex = async function(req, res) {
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
-    }
-
-    try {
-      search.buildIndex();
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-
-    return res.json(ApiResponse.success());
-  };
-
   /**
    * validate setting form values for SAML
    *

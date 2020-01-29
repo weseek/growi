@@ -48,13 +48,9 @@ class RebuildIndex extends React.Component {
   async buildIndex() {
 
     const { appContainer } = this.props;
-    const pageId = this.pageId;
 
     try {
-      const res = await appContainer.apiPost('/admin/search/build', { page_id: pageId });
-      if (!res.ok) {
-        throw new Error(res.message);
-      }
+      await appContainer.apiv3Put('/search/indices', { operation: 'rebuild' });
 
       this.setState({ isProcessing: true });
       toastSuccess('Rebuilding is requested');

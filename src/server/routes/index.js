@@ -93,7 +93,6 @@ module.exports = function(crowi, app) {
 
   // search admin
   app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);
-  app.post('/_api/admin/search/build'  , loginRequiredStrictly , adminRequired , csrf, admin.api.searchBuildIndex);
 
   // notification admin
   app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
