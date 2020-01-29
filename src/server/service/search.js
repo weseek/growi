@@ -71,6 +71,9 @@ class SearchService {
   }
 
   async initClient() {
+    // reset error flag
+    this.isErrorOccured = false;
+
     return this.delegator.initClient();
   }
 
@@ -79,7 +82,7 @@ class SearchService {
       return await this.delegator.getInfo();
     }
     catch (err) {
-      // switch error flag
+      // switch error flag, `isReachable` to be `false`
       this.isErrorOccured = true;
       throw err;
     }
@@ -102,7 +105,7 @@ class SearchService {
       return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
-      // switch error flag
+      // switch error flag, `isReachable` to be `false`
       this.isErrorOccured = true;
       throw err;
     }

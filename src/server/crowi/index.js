@@ -335,7 +335,8 @@ Crowi.prototype.setupSearcher = async function() {
 
   if (searchService.isConfigured) {
     try {
-      this.searcher = searchService;
+      this.searchService = searchService;
+      this.searcher = searchService; // TODO: use `searchService` instead of `searcher`
     }
     catch (e) {
       logger.error('Error on setup searcher', e);
