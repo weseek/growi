@@ -8,6 +8,7 @@ import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import IndicesStatusTable from './IndicesStatusTable';
+import ReconnectControls from './ReconnectControls';
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
 
@@ -17,6 +18,7 @@ class ElasticsearchManagement extends React.Component {
     super(props);
 
     this.state = {
+      isConnected: null,
       isRebuildingProcessing: false,
       isRebuildingCompleted: false,
 
@@ -25,6 +27,7 @@ class ElasticsearchManagement extends React.Component {
       aliasesData: null,
     };
 
+    this.reconnect = this.reconnect.bind(this);
     this.normalizeIndices = this.normalizeIndices.bind(this);
     this.rebuildIndices = this.rebuildIndices.bind(this);
   }
@@ -65,14 +68,32 @@ class ElasticsearchManagement extends React.Component {
       const { info } = await appContainer.apiv3Get('/search/indices');
 
       this.setState({
+        isConnected: true,
+
         indicesData: info.indices,
         aliasesData: info.aliases,
         isNormalized: info.isNormalized,
       });
     }
     catch (e) {
+      this.setState({ isConnected: false });
       toastError(e);
     }
+  }
+
+  async reconnect() {
+    const { appContainer } = this.props;
+
+    try {
+      await appContainer.apiv3Post('/search/connection');
+      toastSuccess('Reconnecting to Elasticsearch has succeeded');
+    }
+    catch (e) {
+      toastError(e);
+      return;
+    }
+
+    await this.retrieveIndicesStatus();
   }
 
   async normalizeIndices() {
@@ -109,7 +130,8 @@ class ElasticsearchManagement extends React.Component {
   render() {
     const { t } = this.props;
     const {
-      isRebuildingProcessing, isRebuildingCompleted, isNormalized, indicesData, aliasesData,
+      isConnected, isRebuildingProcessing, isRebuildingCompleted,
+      isNormalized, indicesData, aliasesData,
     } = this.state;
 
     return (
@@ -127,6 +149,18 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         {/* Controls */}
+        <div className="row">
+          <label className="col-xs-3 control-label">{ t('full_text_search_management.reconnect') }</label>
+          <div className="col-xs-6">
+            <ReconnectControls
+              isConnected={isConnected}
+              onReconnectingRequested={this.reconnect}
+            />
+          </div>
+        </div>
+
+        <hr />
+
         <div className="row">
           <label className="col-xs-3 control-label">{ t('full_text_search_management.normalize') }</label>
           <div className="col-xs-6">
