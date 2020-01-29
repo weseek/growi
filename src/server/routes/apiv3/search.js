@@ -3,7 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:search'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { query } = require('express-validator');
+const { body } = require('express-validator');
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ module.exports = (crowi) => {
 
 
   const validatorForPutIndices = [
-    query('operation').isString().isIn(['rebuild', 'normalize']),
+    body('operation').isString().isIn(['rebuild', 'normalize']),
   ];
 
   /**
@@ -65,21 +65,24 @@ module.exports = (crowi) => {
    *      tags: [Search]
    *      summary: /search/indices
    *      description: Operate indices
-   *      parameters:
-   *        - in: query
-   *          name: operation
-   *          description: Operation type against to indices >
-   *            * `normalize` - Normalize indices
-   *            * `rebuild` - Rebuild indices
-   *          schema:
-   *            type: string
-   *            enum: [normalize, rebuild]
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              properties:
+   *                operation:
+   *                  type: string
+   *                  description: Operation type against to indices >
+   *                    * `normalize` - Normalize indices
+   *                    * `rebuild` - Rebuild indices
+   *                  enum: [normalize, rebuild]
    *      responses:
    *        200:
    *          description: Return 200
    */
   router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, ApiV3FormValidator, async(req, res) => {
-    const operation = req.query.operation;
+    const operation = req.body.operation;
 
     try {
       const search = crowi.getSearcher();
