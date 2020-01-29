@@ -85,7 +85,9 @@ class RebuildIndex extends React.Component {
       toastError(e);
     }
 
-    this.retrieveIndicesStatus();
+    await this.retrieveIndicesStatus();
+
+    toastSuccess('Normalizing has succeeded');
   }
 
   async rebuildIndices() {
