@@ -95,6 +95,9 @@ module.exports = function(crowi, app) {
   searchEvent.on('finishAddPage', (total, current, skip) => {
     crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
   });
+  searchEvent.on('rebuildingFailed', (error) => {
+    crowi.getIo().sockets.emit('admin:rebuildingFailed', { error: error.message });
+  });
 
   actions.index = function(req, res) {
     return res.render('admin/index');

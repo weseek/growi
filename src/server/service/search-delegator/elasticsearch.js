@@ -184,9 +184,13 @@ class ElasticsearchDelegator {
       await this.createIndex(indexName);
       await this.addAllPages();
     }
-    catch (err) {
+    catch (error) {
       logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
-      throw err;
+
+      const { searchEvent } = this;
+      searchEvent.emit('rebuildingFailed', error);
+
+      throw error;
     }
     finally {
       await this.normalizeIndices();
