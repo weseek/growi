@@ -4,9 +4,11 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import IndicesStatusTable from './IndicesStatusTable';
+import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
 
 class ElasticsearchManagement extends React.Component {
@@ -15,7 +17,10 @@ class ElasticsearchManagement extends React.Component {
     super(props);
 
     this.state = {
-      isNormalized: undefined,
+      isRebuildingProcessing: false,
+      isRebuildingCompleted: false,
+
+      isNormalized: null,
       indicesData: null,
       aliasesData: null,
     };
@@ -26,6 +31,31 @@ class ElasticsearchManagement extends React.Component {
 
   async componentWillMount() {
     this.retrieveIndicesStatus();
+  }
+
+  componentDidMount() {
+    this.initWebSockets();
+  }
+
+  initWebSockets() {
+    const socket = this.props.websocketContainer.getWebSocket();
+
+    socket.on('admin:addPageProgress', (data) => {
+      this.setState({
+        isRebuildingProcessing: true,
+      });
+    });
+
+    socket.on('admin:finishAddPage', (data) => {
+      this.setState({
+        isRebuildingProcessing: false,
+        isRebuildingCompleted: true,
+      });
+    });
+
+    socket.on('admin:rebuildingFailed', (data) => {
+      toastError(new Error(data.error), 'Rebuilding Index has failed.');
+    });
   }
 
   async retrieveIndicesStatus() {
@@ -63,6 +93,8 @@ class ElasticsearchManagement extends React.Component {
   async rebuildIndices() {
     const { appContainer } = this.props;
 
+    this.setState({ isRebuildingProcessing: true });
+
     try {
       await appContainer.apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
@@ -74,32 +106,11 @@ class ElasticsearchManagement extends React.Component {
     await this.retrieveIndicesStatus();
   }
 
-  renderNormalizeControls() {
-    const { t } = this.props;
-
-    const isEnabled = !this.state.isNormalized && !this.state.isProcessing;
-
-    return (
-      <>
-        <button
-          type="submit"
-          className={`btn btn-outline ${isEnabled ? 'btn-info' : 'btn-default'}`}
-          onClick={this.normalizeIndices}
-          disabled={!isEnabled}
-        >
-          { t('full_text_search_management.normalize_button') }
-        </button>
-
-        <p className="help-block">
-          { t('full_text_search_management.normalize_description') }<br />
-        </p>
-      </>
-    );
-  }
-
   render() {
     const { t } = this.props;
-    const { isNormalized, indicesData, aliasesData } = this.state;
+    const {
+      isRebuildingProcessing, isRebuildingCompleted, isNormalized, indicesData, aliasesData,
+    } = this.state;
 
     return (
       <>
@@ -119,7 +130,12 @@ class ElasticsearchManagement extends React.Component {
         <div className="row">
           <label className="col-xs-3 control-label">{ t('full_text_search_management.normalize') }</label>
           <div className="col-xs-6">
-            { this.renderNormalizeControls() }
+            <NormalizeIndicesControls
+              isRebuildingProcessing={isRebuildingProcessing}
+              isRebuildingCompleted={isRebuildingCompleted}
+              isNormalized={isNormalized}
+              onNormalizingRequested={this.normalizeIndices}
+            />
           </div>
         </div>
 
@@ -129,6 +145,8 @@ class ElasticsearchManagement extends React.Component {
           <label className="col-xs-3 control-label">{ t('full_text_search_management.rebuild') }</label>
           <div className="col-xs-6">
             <RebuildIndexControls
+              isRebuildingProcessing={isRebuildingProcessing}
+              isRebuildingCompleted={isRebuildingCompleted}
               isNormalized={isNormalized}
               onRebuildingRequested={this.rebuildIndices}
             />
@@ -145,12 +163,13 @@ class ElasticsearchManagement extends React.Component {
  * Wrapper component for using unstated
  */
 const ElasticsearchManagementWrapper = (props) => {
-  return createSubscribedElement(ElasticsearchManagement, props, [AppContainer]);
+  return createSubscribedElement(ElasticsearchManagement, props, [AppContainer, WebsocketContainer]);
 };
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
 export default withTranslation()(ElasticsearchManagementWrapper);

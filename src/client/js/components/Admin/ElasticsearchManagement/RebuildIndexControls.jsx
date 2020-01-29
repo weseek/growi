@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
-import { toastError } from '../../../util/apiNotification';
 
 import ProgressBar from '../Common/ProgressBar';
 
@@ -15,15 +14,10 @@ class RebuildIndexControls extends React.Component {
     super(props);
 
     this.state = {
-      isProcessing: false,
-      isCompleted: false,
-
       total: 0,
       current: 0,
       skip: 0,
     };
-
-    this.rebuildIndices = this.rebuildIndices.bind(this);
   }
 
   componentDidMount() {
@@ -35,40 +29,32 @@ class RebuildIndexControls extends React.Component {
 
     socket.on('admin:addPageProgress', (data) => {
       this.setState({
-        isProcessing: true,
         ...data,
       });
     });
 
     socket.on('admin:finishAddPage', (data) => {
       this.setState({
-        isProcessing: false,
-        isCompleted: true,
         ...data,
       });
     });
 
-    socket.on('admin:rebuildingFailed', (data) => {
-      toastError(new Error(data.error), 'Rebuilding Index has failed.');
-    });
-  }
-
-  async rebuildIndices() {
-    this.setState({ isProcessing: true });
-    this.props.onRebuildingRequested();
   }
 
   renderProgressBar() {
     const {
-      total, current, skip, isProcessing, isCompleted,
+      isRebuildingProcessing, isRebuildingCompleted,
+    } = this.props;
+    const {
+      total, current, skip,
     } = this.state;
-    const showProgressBar = isProcessing || isCompleted;
+    const showProgressBar = isRebuildingProcessing || isRebuildingCompleted;
 
     if (!showProgressBar) {
       return null;
     }
 
-    const header = isCompleted ? 'Completed' : `Processing.. (${skip} skips)`;
+    const header = isRebuildingCompleted ? 'Completed' : `Processing.. (${skip} skips)`;
 
     return (
       <ProgressBar
@@ -80,9 +66,9 @@ class RebuildIndexControls extends React.Component {
   }
 
   render() {
-    const { t, isNormalized } = this.props;
+    const { t, isNormalized, isRebuildingProcessing } = this.props;
 
-    const isEnabled = isNormalized && !this.state.isProcessing;
+    const isEnabled = isNormalized && !isRebuildingProcessing;
 
     return (
       <>
@@ -91,7 +77,7 @@ class RebuildIndexControls extends React.Component {
         <button
           type="submit"
           className="btn btn-inverse"
-          onClick={this.rebuildIndices}
+          onClick={() => { this.props.onRebuildingRequested() }}
           disabled={!isEnabled}
         >
           { t('full_text_search_management.rebuild_button') }
@@ -120,11 +106,11 @@ RebuildIndexControls.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 
+  isRebuildingProcessing: PropTypes.bool.isRequired,
+  isRebuildingCompleted: PropTypes.bool.isRequired,
+
   isNormalized: PropTypes.bool,
   onRebuildingRequested: PropTypes.func.isRequired,
-};
-RebuildIndexControls.defaultProps = {
-  isNormalized: false,
 };
 
 export default withTranslation()(RebuildIndexControlsWrapper);
