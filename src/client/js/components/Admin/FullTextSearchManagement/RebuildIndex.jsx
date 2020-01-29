@@ -15,6 +15,10 @@ class RebuildIndex extends React.Component {
     super(props);
 
     this.state = {
+      isNormalized: undefined,
+      indicesData: null,
+      aliasesData: null,
+
       isProcessing: false,
       isCompleted: false,
 
@@ -23,10 +27,19 @@ class RebuildIndex extends React.Component {
       skip: 0,
     };
 
-    this.buildIndex = this.buildIndex.bind(this);
+    this.normalizeIndices = this.normalizeIndices.bind(this);
+    this.rebuildIndices = this.rebuildIndices.bind(this);
+  }
+
+  async componentWillMount() {
+    this.retrieveIndicesStatus();
   }
 
   componentDidMount() {
+    this.initWebSockets();
+  }
+
+  initWebSockets() {
     const socket = this.props.websocketContainer.getWebSocket();
 
     socket.on('admin:addPageProgress', (data) => {
@@ -45,8 +58,28 @@ class RebuildIndex extends React.Component {
     });
   }
 
-  async buildIndex() {
+  async retrieveIndicesStatus() {
+    const { appContainer } = this.props;
 
+    try {
+      const { info } = await appContainer.apiv3Get('/search/indices');
+
+      this.setState({
+        indicesData: info.indices,
+        aliasesData: info.aliases,
+        isNormalized: info.isNormalized,
+      });
+    }
+    catch (e) {
+      toastError(e);
+    }
+  }
+
+  async normalizeIndices() {
+
+  }
+
+  async rebuildIndices() {
     const { appContainer } = this.props;
 
     try {
@@ -58,6 +91,84 @@ class RebuildIndex extends React.Component {
     catch (e) {
       toastError(e);
     }
+  }
+
+  renderIndexInfoPanel(indexName, body = {}, aliases = []) {
+    const collapseId = `collapse-${indexName}`;
+
+    return (
+      <div className="panel panel-default">
+        <div className="panel-heading" role="tab">
+          <h4 className="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
+              <i className="fa fa-fw fa-database"></i> {indexName}
+            </a>
+          </h4>
+        </div>
+        <div id={collapseId} className="panel-collapse collapse" role="tabpanel">
+          <div className="panel-body">
+            <pre>
+              {JSON.stringify(body, null, 2)}
+            </pre>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderIndexInfoPanels() {
+    const {
+      indicesData,
+      aliasesData,
+    } = this.state;
+
+    // data is null
+    if (indicesData == null) {
+      return null;
+    }
+
+    /*
+      "indices": {
+        "growi": {
+          ...
+        }
+      },
+    */
+    const indexNameToDataMap = {};
+    for (const [indexName, indexData] of Object.entries(indicesData)) {
+      indexNameToDataMap[indexName] = indexData;
+    }
+
+    // no indices
+    if (indexNameToDataMap.length === 0) {
+      return null;
+    }
+
+    /*
+      "aliases": {
+        "growi": {
+          "aliases": {
+            "growi-alias": {}
+          }
+        }
+      },
+    */
+    const indexNameToAliasMap = {};
+    for (const [indexName, aliasData] of Object.entries(aliasesData)) {
+      indexNameToAliasMap[indexName] = Object.keys(aliasData);
+    }
+
+    return (
+      <div className="row">
+        { Object.keys(indexNameToDataMap).map((indexName) => {
+          return (
+            <div key={`col-${indexName}`} className="col-xs-6">
+              { this.renderIndexInfoPanel(indexName, indexNameToDataMap[indexName], indexNameToAliasMap[indexName]) }
+            </div>
+          );
+        }) }
+      </div>
+    );
   }
 
   renderProgressBar() {
@@ -83,9 +194,29 @@ class RebuildIndex extends React.Component {
 
   render() {
     const { t } = this.props;
+    const { isNormalized } = this.state;
 
     return (
       <>
+        <div className="row">
+          <div className="col-xs-12">
+            <table className="table table-bordered">
+              <tbody>
+                <tr>
+                  <th className="col-sm-4">Indices</th>
+                  <td className="p-4">
+                    { this.renderIndexInfoPanels() }
+                  </td>
+                </tr>
+                <tr>
+                  <th>Status</th>
+                  <td>{isNormalized}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div className="row">
           <div className="col-xs-3 control-label"></div>
           <div className="col-xs-9">
@@ -94,7 +225,7 @@ class RebuildIndex extends React.Component {
             <button
               type="submit"
               className="btn btn-inverse"
-              onClick={this.buildIndex}
+              onClick={this.rebuildIndices}
               disabled={this.state.isProcessing}
             >
               { t('full_text_search_management.build_button') }
