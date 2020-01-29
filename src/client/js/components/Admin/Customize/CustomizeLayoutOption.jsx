@@ -10,9 +10,15 @@ class CustomizeLayoutOption extends React.Component {
     return (
       <React.Fragment>
         <h4>
-          <div className="radio radio-primary">
-            <input type="radio" id={`radio-layout-${layoutType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
-            <label htmlFor={`radio-layout-${layoutType}`}>
+          <div className="custom-control custom-radio">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id={`radio-layout-${layoutType}`}
+              checked={this.props.isSelected}
+              onChange={this.props.onSelected}
+            />
+            <label className="custom-control-label" htmlFor={`radio-layout-${layoutType}`}>
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: this.props.labelHtml }} />
             </label>
