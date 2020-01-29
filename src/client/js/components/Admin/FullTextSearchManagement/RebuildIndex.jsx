@@ -96,6 +96,14 @@ class RebuildIndex extends React.Component {
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
     const collapseId = `collapse-${indexName}`;
 
+    const aliasLabels = aliases.map((aliasName) => {
+      return (
+        <span key={`label-${indexName}-${aliasName}`} className="label label-primary mr-2">
+          <i className="icon-tag"></i> {aliasName}
+        </span>
+      );
+    });
+
     return (
       <div className="panel panel-default">
         <div className="panel-heading" role="tab">
@@ -103,6 +111,7 @@ class RebuildIndex extends React.Component {
             <a role="button" data-toggle="collapse" data-parent="#accordion" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
               <i className="fa fa-fw fa-database"></i> {indexName}
             </a>
+            <span className="ml-3">{aliasLabels}</span>
           </h4>
         </div>
         <div id={collapseId} className="panel-collapse collapse" role="tabpanel">
@@ -155,7 +164,7 @@ class RebuildIndex extends React.Component {
     */
     const indexNameToAliasMap = {};
     for (const [indexName, aliasData] of Object.entries(aliasesData)) {
-      indexNameToAliasMap[indexName] = Object.keys(aliasData);
+      indexNameToAliasMap[indexName] = Object.keys(aliasData.aliases);
     }
 
     return (
