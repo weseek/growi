@@ -131,19 +131,19 @@ class ElasticsearchDelegator {
 
     const tmpIndexName = `${indexName}-tmp`;
 
-    const isExistsMainIndex = await client.indices.exists({ index: indexName });
-    const isMainIndexHasAlias = isExistsMainIndex && await client.indices.existsAlias({ name: aliasName, index: indexName });
+    const { indices } = await client.indices.stats({ index: `${indexName}*`, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
 
-    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
-    const isTmpIndexHasAlias = isExistsTmpIndex && await client.indices.existsAlias({ name: aliasName, index: tmpIndexName });
+    const aliases = await client.indices.getAlias({ index: `${indexName}*` });
+    const isExistsMainIndex = aliases[indexName] != null;
+    const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
+    const isExistsTmpIndex = aliases[tmpIndexName] != null;
+    const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
 
     const isNormalized = isExistsMainIndex && isMainIndexHasAlias && !isExistsTmpIndex && !isTmpIndexHasAlias;
 
     return {
-      isExistsMainIndex,
-      isExistsTmpIndex,
-      isMainIndexHasAlias,
-      isTmpIndexHasAlias,
+      indices,
+      aliases,
       isNormalized,
     };
   }
