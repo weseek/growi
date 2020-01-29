@@ -65,6 +65,15 @@ module.exports = (crowi) => {
    *      tags: [Search]
    *      summary: /search/indices
    *      description: Operate indices
+   *      parameters:
+   *        - in: query
+   *          name: operation
+   *          description: Operation type against to indices >
+   *            * `normalize` - Normalize indices
+   *            * `rebuild` - Rebuild indices
+   *          schema:
+   *            type: string
+   *            enum: [normalize, rebuild]
    *      responses:
    *        200:
    *          description: Return 200
@@ -86,7 +95,7 @@ module.exports = (crowi) => {
           throw new Error(`Unimplemented operation: ${operation}`);
       }
 
-      return res.status(200).send();
+      return res.status(200).send({ message: 'Operation is successfully requested.' });
     }
     catch (err) {
       return res.apiv3Err(err);
