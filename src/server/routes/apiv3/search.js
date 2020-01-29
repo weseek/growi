@@ -77,7 +77,7 @@ module.exports = (crowi) => {
 
       switch (operation) {
         case 'normalize':
-          search.initIndices();
+          search.normalizeIndices();
           break;
         case 'rebuild':
           search.buildIndex();

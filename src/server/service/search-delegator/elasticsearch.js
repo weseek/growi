@@ -94,7 +94,7 @@ class ElasticsearchDelegator {
   }
 
   async init() {
-    return this.initIndices();
+    return this.normalizeIndices();
   }
 
   async getInfo() {
@@ -197,7 +197,7 @@ class ElasticsearchDelegator {
     await client.indices.delete({ index: tmpIndexName });
   }
 
-  async initIndices() {
+  async normalizeIndices() {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;

@@ -72,6 +72,10 @@ class SearchService {
     return this.delegator.getInfoForAdmin();
   }
 
+  async normalizeIndices() {
+    return this.delegator.normalizeIndices();
+  }
+
   async buildIndex() {
     return this.delegator.buildIndex();
   }
