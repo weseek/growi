@@ -48,10 +48,32 @@ module.exports = (crowi) => {
       return res.status(200).send({ info });
     }
     catch (err) {
-      return res.apiv3Err(err);
+      return res.apiv3Err(err, 503);
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  /search/connection:
+   *    get:
+   *      tags: [Search]
+   *      summary: /search/connection
+   *      description: Reconnect to Elasticsearch
+   *      responses:
+   *        200:
+   *          description: Successfully connected
+   */
+  router.post('/connection', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    try {
+      const search = crowi.getSearcher();
+      await search.initClient();
+      return res.status(200).send();
+    }
+    catch (err) {
+      return res.apiv3Err(err, 503);
+    }
+  });
 
   const validatorForPutIndices = [
     body('operation').isString().isIn(['rebuild', 'normalize']),

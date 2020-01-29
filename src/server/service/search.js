@@ -64,6 +64,10 @@ class SearchService {
     tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
   }
 
+  async initClient() {
+    return this.delegator.initClient();
+  }
+
   async getInfo() {
     return this.delegator.getInfo();
   }
