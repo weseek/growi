@@ -7,7 +7,7 @@ import AppContainer from '../../../services/AppContainer';
 import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import IndicesStatusTable from './IndicesStatusTable';
+import StatusTable from './StatusTable';
 import ReconnectControls from './ReconnectControls';
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
@@ -138,7 +138,7 @@ class ElasticsearchManagement extends React.Component {
       <>
         <div className="row">
           <div className="col-xs-12">
-            <IndicesStatusTable
+            <StatusTable
               isConnected={isConnected}
               isNormalized={isNormalized}
               indicesData={indicesData}

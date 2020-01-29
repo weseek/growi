@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 
-class IndicesStatusTable extends React.PureComponent {
+class StatusTable extends React.PureComponent {
 
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
     const collapseId = `collapse-${indexName}`;
@@ -139,11 +139,11 @@ class IndicesStatusTable extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const IndicesStatusTableWrapper = (props) => {
-  return createSubscribedElement(IndicesStatusTable, props, []);
+const StatusTableWrapper = (props) => {
+  return createSubscribedElement(StatusTable, props, []);
 };
 
-IndicesStatusTable.propTypes = {
+StatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   isConnected: PropTypes.bool,
@@ -152,4 +152,4 @@ IndicesStatusTable.propTypes = {
   aliasesData: PropTypes.object,
 };
 
-export default withTranslation()(IndicesStatusTableWrapper);
+export default withTranslation()(StatusTableWrapper);
