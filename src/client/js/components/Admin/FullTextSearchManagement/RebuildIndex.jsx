@@ -56,6 +56,10 @@ class RebuildIndex extends React.Component {
         ...data,
       });
     });
+
+    socket.on('admin:rebuildingFailed', (data) => {
+      toastError(new Error(data.error), 'Rebuilding Index has failed.');
+    });
   }
 
   async retrieveIndicesStatus() {
