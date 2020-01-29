@@ -69,9 +69,10 @@ class HeaderSearchBox extends React.Component {
       : 'All pages';
 
     const config = appContainer.getConfig();
+    const isReachable = config.isSearchServiceReachable;
 
     return (
-      <FormGroup className={config.isSearchServiceReachable ? '' : 'has-error'}>
+      <FormGroup className={isReachable ? '' : 'has-error'}>
         <InputGroup>
           <InputGroup.Button className="btn-group-dropdown-scope">
             <DropdownButton id="dbScope" title={scopeLabel}>
