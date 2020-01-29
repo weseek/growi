@@ -95,11 +95,19 @@ class IndicesStatusTable extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-    const { isNormalized } = this.props;
+    const { isConnected, isNormalized } = this.props;
 
-    let statusLabel = <span className="label label-default">――</span>;
+
+    let connectionStatusLabel = <span className="label label-default">――</span>;
+    if (isConnected != null) {
+      connectionStatusLabel = isConnected
+        ? <span className="label label-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="label label-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+    }
+
+    let indicesStatusLabel = <span className="label label-default">――</span>;
     if (isNormalized != null) {
-      statusLabel = isNormalized
+      indicesStatusLabel = isNormalized
         ? <span className="label label-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
         : <span className="label label-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
     }
@@ -108,8 +116,12 @@ class IndicesStatusTable extends React.PureComponent {
       <table className="table table-bordered">
         <tbody>
           <tr>
+            <th>{ t('full_text_search_management.connection_status') }</th>
+            <td>{connectionStatusLabel}</td>
+          </tr>
+          <tr>
             <th>{ t('full_text_search_management.indices_status') }</th>
-            <td>{statusLabel}</td>
+            <td>{indicesStatusLabel}</td>
           </tr>
           <tr>
             <th className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
@@ -134,6 +146,7 @@ const IndicesStatusTableWrapper = (props) => {
 IndicesStatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  isConnected: PropTypes.bool,
   isNormalized: PropTypes.bool,
   indicesData: PropTypes.object,
   aliasesData: PropTypes.object,

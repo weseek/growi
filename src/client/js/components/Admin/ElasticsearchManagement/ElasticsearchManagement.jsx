@@ -139,6 +139,7 @@ class ElasticsearchManagement extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <IndicesStatusTable
+              isConnected={isConnected}
               isNormalized={isNormalized}
               indicesData={indicesData}
               aliasesData={aliasesData}

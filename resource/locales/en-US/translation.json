@@ -806,6 +806,9 @@
   },
   "full_text_search_management": {
     "elasticsearch_management": "Elasticsearch Management",
+    "connection_status": "Connection Status",
+    "connection_status_label_connected": "CONNECTED",
+    "connection_status_label_disconnected": "DISCONNECTED",
     "indices_status": "Indices Status",
     "indices_status_label_normalized": "NORMALIZED",
     "indices_status_label_unnormalized": "REBUILDING or BROKEN",
