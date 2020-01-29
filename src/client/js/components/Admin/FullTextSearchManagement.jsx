@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import RebuildIndex from './FullTextSearchManagement/RebuildIndex';
+import ElasticsearchManagement from './ElasticsearchManagement/ElasticsearchManagement';
 
 
 class FullTextSearchManagement extends React.Component {
@@ -16,7 +16,7 @@ class FullTextSearchManagement extends React.Component {
     return (
       <Fragment>
         <h2> { t('full_text_search_management.elasticsearch_management') } </h2>
-        <RebuildIndex />
+        <ElasticsearchManagement />
       </Fragment>
     );
   }

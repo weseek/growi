@@ -4,12 +4,11 @@ import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import WebsocketContainer from '../../../services/WebsocketContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import ProgressBar from '../Common/ProgressBar';
+import RebuildIndexControls from './RebuildIndexControls';
 
-class RebuildIndex extends React.Component {
+class ElasticsearchManagement extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,13 +17,6 @@ class RebuildIndex extends React.Component {
       isNormalized: undefined,
       indicesData: null,
       aliasesData: null,
-
-      isProcessing: false,
-      isCompleted: false,
-
-      total: 0,
-      current: 0,
-      skip: 0,
     };
 
     this.normalizeIndices = this.normalizeIndices.bind(this);
@@ -33,33 +25,6 @@ class RebuildIndex extends React.Component {
 
   async componentWillMount() {
     this.retrieveIndicesStatus();
-  }
-
-  componentDidMount() {
-    this.initWebSockets();
-  }
-
-  initWebSockets() {
-    const socket = this.props.websocketContainer.getWebSocket();
-
-    socket.on('admin:addPageProgress', (data) => {
-      this.setState({
-        isProcessing: true,
-        ...data,
-      });
-    });
-
-    socket.on('admin:finishAddPage', (data) => {
-      this.setState({
-        isProcessing: false,
-        isCompleted: true,
-        ...data,
-      });
-    });
-
-    socket.on('admin:rebuildingFailed', (data) => {
-      toastError(new Error(data.error), 'Rebuilding Index has failed.');
-    });
   }
 
   async retrieveIndicesStatus() {
@@ -99,8 +64,6 @@ class RebuildIndex extends React.Component {
 
     try {
       await appContainer.apiv3Put('/search/indices', { operation: 'rebuild' });
-
-      this.setState({ isProcessing: true });
       toastSuccess('Rebuilding is requested');
     }
     catch (e) {
@@ -197,27 +160,6 @@ class RebuildIndex extends React.Component {
     );
   }
 
-  renderProgressBar() {
-    const {
-      total, current, skip, isProcessing, isCompleted,
-    } = this.state;
-    const showProgressBar = isProcessing || isCompleted;
-
-    if (!showProgressBar) {
-      return null;
-    }
-
-    const header = isCompleted ? 'Completed' : `Processing.. (${skip} skips)`;
-
-    return (
-      <ProgressBar
-        header={header}
-        currentCount={current}
-        totalCount={total}
-      />
-    );
-  }
-
   renderNormalizeControls() {
     const { t } = this.props;
 
@@ -240,33 +182,6 @@ class RebuildIndex extends React.Component {
       </>
     );
   }
-
-  renderRebuildControls() {
-    const { t } = this.props;
-
-    const isEnabled = this.state.isNormalized && !this.state.isProcessing;
-
-    return (
-      <>
-        { this.renderProgressBar() }
-
-        <button
-          type="submit"
-          className="btn btn-inverse"
-          onClick={this.rebuildIndices}
-          disabled={!isEnabled}
-        >
-          { t('full_text_search_management.rebuild_button') }
-        </button>
-
-        <p className="help-block">
-          { t('full_text_search_management.rebuild_description_1') }<br />
-          { t('full_text_search_management.rebuild_description_2') }<br />
-        </p>
-      </>
-    );
-  }
-
 
   render() {
     const { t } = this.props;
@@ -315,7 +230,10 @@ class RebuildIndex extends React.Component {
         <div className="row">
           <label className="col-xs-3 control-label">{ t('full_text_search_management.rebuild') }</label>
           <div className="col-xs-6">
-            { this.renderRebuildControls() }
+            <RebuildIndexControls
+              isNormalized={isNormalized}
+              onRebuildingRequested={this.rebuildIndices}
+            />
           </div>
         </div>
 
@@ -328,14 +246,13 @@ class RebuildIndex extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RebuildIndexWrapper = (props) => {
-  return createSubscribedElement(RebuildIndex, props, [AppContainer, WebsocketContainer]);
+const ElasticsearchManagementWrapper = (props) => {
+  return createSubscribedElement(ElasticsearchManagement, props, [AppContainer]);
 };
 
-RebuildIndex.propTypes = {
+ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
 };
 
-export default withTranslation()(RebuildIndexWrapper);
+export default withTranslation()(ElasticsearchManagementWrapper);
