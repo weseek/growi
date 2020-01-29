@@ -75,7 +75,7 @@ class CustomizeHighlightSetting extends React.Component {
         <h2 className="admin-setting-header">{t('customize_page.Code Highlight')}</h2>
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <div className="my-0 btn-group">
               <label>{t('customize_page.Theme')}</label>
               <div className="dropdown">
@@ -97,7 +97,7 @@ class CustomizeHighlightSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <div className="checkbox checkbox-success">
               <input
                 type="checkbox"

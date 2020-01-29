@@ -51,7 +51,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledTimeline"
               label={t('customize_page.Timeline function')}
@@ -68,7 +68,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isSavedStatesOfTabChanges"
               label={t('customize_page.tab_switch')}
@@ -84,7 +84,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledAttachTitleHeader"
               label={t('customize_page.attach_title_header')}
@@ -99,7 +99,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <div className="my-0 btn-group">
               <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
               <div className="dropdown">
@@ -130,7 +130,7 @@ class CustomizeBehaviorSetting extends React.Component {
         </div>
 
         <div className="form-group row">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledStaleNotification"
               label={t('customize_page.stale_notification')}

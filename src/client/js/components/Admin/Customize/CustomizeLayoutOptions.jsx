@@ -15,7 +15,7 @@ class CustomizeLayoutOptions extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-sm-4">
+        <div className="col-md-4">
           <CustomizeLayoutOption
             layoutType="crowi-plus"
             isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
@@ -31,7 +31,7 @@ class CustomizeLayoutOptions extends React.Component {
           </CustomizeLayoutOption>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-md-4">
           <CustomizeLayoutOption
             layoutType="kibela"
             isSelected={adminCustomizeContainer.state.currentLayout === 'kibela'}
@@ -47,7 +47,7 @@ class CustomizeLayoutOptions extends React.Component {
           </CustomizeLayoutOption>
         </div>
 
-        <div className="col-sm-4">
+        <div className="col-md-4">
           <CustomizeLayoutOption
             layoutType="classic"
             isSelected={adminCustomizeContainer.state.currentLayout === 'crowi'}

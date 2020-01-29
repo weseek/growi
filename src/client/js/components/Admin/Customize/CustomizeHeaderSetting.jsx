@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { Card, CardBody } from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -52,11 +53,14 @@ class CustomizeHeaderSetting extends React.Component {
       <React.Fragment>
         <h2 className="admin-setting-header">{t('customize_page.custom_header')}</h2>
 
-        <p
-          className="well"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('customize_page.custom_header_detail') }}
-        />
+        <Card className="card-well my-3">
+          <CardBody>
+            <span
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('customize_page.custom_header_detail') }}
+            />
+          </CardBody>
+        </Card>
 
         <div className="help-block">
           { t('Example') }:

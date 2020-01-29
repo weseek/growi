@@ -44,7 +44,7 @@ class CustomizeBehaviorSetting extends React.Component {
       <React.Fragment>
         <h2 className="admin-setting-header">{t('customize_page.Behavior')}</h2>
         <div className="row">
-          <div className="col-xs-6">
+          <div className="col-6">
             <CustomizeBehaviorOption
               behaviorType="growi"
               isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
@@ -59,7 +59,7 @@ class CustomizeBehaviorSetting extends React.Component {
             </CustomizeBehaviorOption>
           </div>
 
-          <div className="col-xs-6">
+          <div className="col-6">
             <CustomizeBehaviorOption
               behaviorType="crowi-plus"
               isSelected={adminCustomizeContainer.state.currentBehavior === 'crowi-plus'}
