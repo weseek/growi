@@ -106,6 +106,8 @@ class RebuildIndex extends React.Component {
     catch (e) {
       toastError(e);
     }
+
+    await this.retrieveIndicesStatus();
   }
 
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
