@@ -294,7 +294,7 @@ class Comment extends React.Component {
             commentCreator={creator.username}
           />
         ) : (
-          <div className={rootClassName}>
+          <div id={commentId} className={rootClassName}>
             <UserPicture user={creator} />
             <div className="page-comment-main">
               <div className="page-comment-creator">
@@ -303,7 +303,7 @@ class Comment extends React.Component {
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
                 <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
-                  <span>{commentDate}</span>
+                  <span><a className={commentDate} href={`#${commentId}`}>{commentDate}</a></span>
                 </OverlayTrigger>
                 { isEdited && (
                   <OverlayTrigger overlay={editedDateTooltip} placement="bottom">
