@@ -3,12 +3,12 @@
 @import 'variables';
 
 @import 'mixins';
+@import 'override-bootstrap-variables';
 
 // vendor
 @import 'vendor';
 
 // override bootstrap
-@import 'override-bootstrap-variables';
 @import 'override-bootstrap';
 
 // override react-bootstrap-typeahead styles
