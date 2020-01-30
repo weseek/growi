@@ -45,6 +45,7 @@ import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
 import ExportArchiveDataPage from './components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
+import PersonalSettings from './components/Me/PersonalSettings';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
@@ -59,7 +60,6 @@ import AdminAppContainer from './services/AdminAppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
-import PersonalSettings from './components/Me/PersonalSettings';
 import PersonalContainer from './services/PersonalContainer';
 
 const logger = loggerFactory('growi:app');

@@ -2,6 +2,8 @@ import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
 
+import { toastError } from '../util/apiNotification';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
@@ -31,6 +33,19 @@ export default class PersonalContainer extends Container {
    */
   static getClassName() {
     return 'PersonalContainer';
+  }
+
+  /**
+ * retrieve personal data
+ */
+  async retrievePersonalData() {
+    try {
+      // TODO GW-1036 retrieve data
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
   }
 
   /**

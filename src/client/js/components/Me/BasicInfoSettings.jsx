@@ -85,7 +85,7 @@ class BasicInfoSettings extends React.Component {
                 id="radioEmailShow"
                 name="userForm[isEmailPublished]"
                 checked={personalContainer.state.isEmailPublished}
-                onClick={() => { personalContainer.changeIsEmailPublished(true) }}
+                onChange={() => { personalContainer.changeIsEmailPublished(true) }}
               />
               <label htmlFor="radioEmailShow">{t('Show')}</label>
             </div>
@@ -95,7 +95,7 @@ class BasicInfoSettings extends React.Component {
                 id="radioEmailHide"
                 name="userForm[isEmailPublished]"
                 checked={!personalContainer.state.isEmailPublished}
-                onClick={() => { personalContainer.changeIsEmailPublished(false) }}
+                onChange={() => { personalContainer.changeIsEmailPublished(false) }}
               />
               <label htmlFor="radioEmailHide">{t('Hide')}</label>
             </div>
@@ -111,7 +111,7 @@ class BasicInfoSettings extends React.Component {
                 id="radioLangEn"
                 name="userForm[lang]"
                 checked={personalContainer.state.lang === 'English'}
-                onClick={() => { personalContainer.changeLang('English') }}
+                onChange={() => { personalContainer.changeLang('English') }}
               />
               <label htmlFor="radioLangEn">{t('English')}</label>
             </div>
@@ -121,7 +121,7 @@ class BasicInfoSettings extends React.Component {
                 id="radioLangJa"
                 name="userForm[lang]"
                 checked={personalContainer.state.lang === 'Japanese'}
-                onClick={() => { personalContainer.changeLang('Japanese') }}
+                onChange={() => { personalContainer.changeLang('Japanese') }}
               />
               <label htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
