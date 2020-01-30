@@ -32,6 +32,8 @@
 // Well (substitute Well of bootstrap3)
 .card.well {
   padding: $card-spacer-y $card-spacer-x;
+  min-height: 20px;
+  border-radius: 3px;
 }
 
 // Dropdowns
