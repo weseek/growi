@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Card, CardBody } from 'reactstrap';
+import {
+  Card, CardBody,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -102,26 +105,28 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="offset-3 col-6 text-left">
             <div className="my-0 btn-group">
               <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
-              <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              <UncontrolledDropdown data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <DropdownToggle caret>
                   <span className="pull-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
                   </span>
-                </button>
-                {/* TODO adjust dropdown after BS4 */}
-                <ul className="dropdown-menu" role="menu">
-                  <li key={10} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
-                    <a role="menuitem">10</a>
-                  </li>
-                  <li key={30} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
-                    <a role="menuitem">30</a>
-                  </li>
-                  <li key={50} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
-                    <a role="menuitem">50</a>
-                  </li>
-                </ul>
-              </div>
+                </DropdownToggle>
+              </UncontrolledDropdown>
+              {/* TODO adjust dropdown after BS4 */}
+              <DropdownMenu className="dropdown-menu" role="menu">
+                <DropdownItem key={10} role="presentation" type="button" onClick={adminCustomizeContainer.switchRecentCreatedLimit(10)}>
+                  <a role="menuitem">10</a>
+                </DropdownItem>
+                <DropdownItem key={30} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
+                  <a role="menuitem">30</a>
+                </DropdownItem>
+                <DropdownItem key={50} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
+                  <a role="menuitem">50</a>
+                </DropdownItem>
+              </DropdownMenu>
+
               <p className="help-block">
                 { t('customize_page.recently_created_n_draft_num_desc') }
               </p>
