@@ -126,6 +126,7 @@ class SearchTypeahead extends React.Component {
     const { emptyLabel, helpElement } = this.props;
     const { input } = this.state;
 
+    // show help element if empty
     if (input.length === 0) {
       return helpElement;
     }
