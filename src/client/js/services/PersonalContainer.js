@@ -2,8 +2,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../util/apiNotification';
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
@@ -19,7 +17,10 @@ export default class PersonalContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      hoge: 'huga',
+      name: '',
+      email: '',
+      isEmailPublished: false,
+      lang: 'English',
     };
 
   }
@@ -31,5 +32,41 @@ export default class PersonalContainer extends Container {
     return 'PersonalContainer';
   }
 
+  /**
+   * Change name
+   */
+  changeName(inputValue) {
+    this.setState({ name: inputValue });
+  }
+
+  /**
+   * Change email
+   */
+  changeEmail(inputValue) {
+    this.setState({ email: inputValue });
+  }
+
+  /**
+   * Change isEmailPublished
+   */
+  changeIsEmailPublished(boolean) {
+    this.setState({ isEmailPublished: boolean });
+  }
+
+  /**
+   * Change lang
+   */
+  changeLang(lang) {
+    this.setState({ lang });
+  }
+
+  /**
+   * Update basic info
+   * @memberOf PersonalContainer
+   * @return {Array} basic info
+   */
+  async updateBasicInfo() {
+    // TODO GW-1036 create apiV3
+  }
 
 }
