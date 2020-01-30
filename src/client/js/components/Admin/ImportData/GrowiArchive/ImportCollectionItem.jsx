@@ -201,8 +201,8 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="card">
-        <div className="card-header">
+      <div className="card border-light">
+        <div className="card-header bg-light">
           <div className="d-flex justify-content-between align-items-center">
             {/* left */}
             <div className="pl-4">

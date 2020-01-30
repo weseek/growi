@@ -33,6 +33,10 @@
   }
 }
 
+// Border light
+.border-light {
+  border-color: $light !important;
+}
 // Link buttons
 .btn-link {
   color: $link-color;
@@ -155,13 +159,8 @@ legend {
 /*
  * cards
  */
-.card {
-  border: 1px solid #f0f0f0;
-}
-
 .card-header {
-  background-color: #f0f0f0;
-  border: 1px solid #f0f0f0;
+  border: 0;
 }
 
 .card.well {
