@@ -1,11 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+import { Button } from 'reactstrap';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
@@ -41,17 +44,18 @@ class LineBreakForm extends React.Component {
     const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
 
     return (
-      <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
-          <div className="checkbox checkbox-success">
+      <div className="form-group text-left my-3">
+        <div className="col-8 offset-4">
+          <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
+              className="custom-control-input"
               id="isEnabledLinebreaks"
               checked={isEnabledLinebreaks}
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
             />
-            <label htmlFor="isEnabledLinebreaks">
-              {t('markdown_setting.Enable Line Break')}
+            <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
+              { t('markdown_setting.Enable Line Break') }
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
@@ -67,17 +71,18 @@ class LineBreakForm extends React.Component {
     const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
 
     return (
-      <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
-          <div className="checkbox checkbox-success">
+      <div className="form-group text-left my-3">
+        <div className="col-8 offset-4">
+          <div className="custom-control custom-switch checkbox-success">
             <input
               type="checkbox"
+              className="custom-control-input"
               id="isEnabledLinebreaksInComments"
               checked={isEnabledLinebreaksInComments}
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
             />
-            <label htmlFor="isEnabledLinebreaksInComments">
-              {t('markdown_setting.Enable Line Break for comment')}
+            <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
+              { t('markdown_setting.Enable Line Break for comment') }
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
@@ -91,20 +96,20 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="row">
+        <fieldset className="col-12">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
-        <div className="form-group my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <button
+        <div className="form-group col-12 m-3">
+          <div className="offset-4 col-8">
+            <Button
               type="submit"
-              className="btn btn-primary"
+              color="primary"
               onClick={this.onClickSubmit}
               disabled={adminMarkDownContainer.state.retrieveError != null}
             >
               {t('Update')}
-            </button>
+            </Button>
           </div>
         </div>
       </React.Fragment>

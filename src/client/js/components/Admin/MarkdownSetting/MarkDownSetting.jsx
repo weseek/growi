@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -38,22 +39,28 @@ class MarkdownSetting extends React.Component {
       <React.Fragment>
         {/* Line Break Setting */}
         <div className="row mb-5">
-          <h2 className="border-bottom">{ t('markdown_setting.line_break_setting') }</h2>
-          <p className="well">{ t('markdown_setting.line_break_setting_desc') }</p>
+          <h2 className="border-bottom col-12">{ t('markdown_setting.line_break_setting') }</h2>
+          <Card className="card-well col-12">
+            <CardBody className="px-2 py-3">{ t('markdown_setting.line_break_setting_desc') }</CardBody>
+          </Card>
           <LineBreakForm />
         </div>
 
         {/* Presentation Setting */}
         <div className="row mb-5">
-          <h2 className="border-bottom">{ t('markdown_setting.presentation_setting') }</h2>
-          <p className="well">{ t('markdown_setting.presentation_setting_desc') }</p>
+          <h2 className="border-bottom col-12">{ t('markdown_setting.presentation_setting') }</h2>
+          <Card className="card-well col-12">
+            <CardBody className="px-2 py-3">{ t('markdown_setting.presentation_setting_desc') }</CardBody>
+          </Card>
           <PresentationForm />
         </div>
 
         {/* XSS Setting */}
         <div className="row mb-5">
-          <h2 className="border-bottom">{ t('markdown_setting.XSS_setting') }</h2>
-          <p className="well">{ t('markdown_setting.XSS_setting_desc') }</p>
+          <h2 className="border-bottom col-12">{ t('markdown_setting.XSS_setting') }</h2>
+          <Card className="card-well col-12">
+            <CardBody className="px-2 py-3">{ t('markdown_setting.XSS_setting_desc') }</CardBody>
+          </Card>
           <XssForm />
         </div>
       </React.Fragment>
