@@ -116,7 +116,7 @@ class CustomizeBehaviorSetting extends React.Component {
               </UncontrolledDropdown>
               {/* TODO adjust dropdown after BS4 */}
               <DropdownMenu className="dropdown-menu" role="menu">
-                <DropdownItem key={10} role="presentation" type="button" onClick={adminCustomizeContainer.switchRecentCreatedLimit(10)}>
+                <DropdownItem key={10} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
                   <a role="menuitem">10</a>
                 </DropdownItem>
                 <DropdownItem key={30} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
