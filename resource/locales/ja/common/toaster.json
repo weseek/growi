@@ -1,5 +1,5 @@
 {
-  "update_successed": "{{target}}設定を更新しました",
+  "update_successed": "{{target}}を更新しました",
   "give_user_admin": "{{username}}を管理者に設定しました",
   "remove_user_admin": "{{username}}を管理者から外しました",
   "activate_user_success": "{{username}}を有効化しました",
