@@ -97,3 +97,9 @@ $input-bg-disabled:              $btn-default-bgcolor;
 
 //** `<input>` border color
 $input-border:                   $border;
+
+//== Progress bar
+$progress-height: 4px;
+$progress-border-radius: 0;
+$progress-bg: #f0f0f0;
+$progress-box-shadow: none;
