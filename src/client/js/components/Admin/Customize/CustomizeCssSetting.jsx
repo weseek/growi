@@ -59,14 +59,14 @@ class CustomizeCssSetting extends React.Component {
           </CardBody>
         </Card>
         <div className="form-group">
-          <div className="col-xs-12">
+          <div className="col-12">
             <CustomCssEditor
               // The value passed must be immutable
               value={this.state.editorInputValue}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
             />
           </div>
-          <div className="col-xs-12">
+          <div className="col-12">
             <p className="help-block text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
               { t('customize_page.ctrl_space') }

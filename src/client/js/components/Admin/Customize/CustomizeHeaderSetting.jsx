@@ -70,14 +70,14 @@ class CustomizeHeaderSetting extends React.Component {
           </pre>
         </div>
 
-        <div className="col-xs-12">
+        <div className="col-12">
           <CustomHeaderEditor
             // The value passed must be immutable
             value={this.state.editorInputValue}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
         </div>
-        <div className="col-xs-12">
+        <div className="col-12">
           <p className="help-block text-right">
             <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
             { t('customize_page.ctrl_space') }

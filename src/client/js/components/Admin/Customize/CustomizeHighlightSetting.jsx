@@ -98,14 +98,15 @@ class CustomizeHighlightSetting extends React.Component {
 
         <div className="form-group row">
           <div className="offset-3 col-6 text-left">
-            <div className="checkbox checkbox-success">
+            <div className="custom-control custom-checkbox">
               <input
                 type="checkbox"
+                className="custom-control-input"
                 id="highlightBorder"
                 checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
                 onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
               />
-              <label htmlFor="highlightBorder">
+              <label className="custom-control-label" htmlFor="highlightBorder">
                 <strong>Border</strong>
               </label>
             </div>
