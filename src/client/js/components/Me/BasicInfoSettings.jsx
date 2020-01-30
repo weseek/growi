@@ -64,6 +64,7 @@ class BasicInfoSettings extends React.Component {
               onChange={(e) => { personalContainer.changeEmail(e.target.value) }}
             />
           </div>
+          {personalContainer.state.registrationWhiteList.length !== 0 && (
           <div className="col-sm-offset-2 col-sm-10">
             <p className="help-block">
               { t('page_register.form_help.email') }
@@ -72,6 +73,7 @@ class BasicInfoSettings extends React.Component {
               </ul>
             </p>
           </div>
+          )}
         </div>
 
         <div className="row mb-3">

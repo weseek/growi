@@ -19,6 +19,7 @@ export default class PersonalContainer extends Container {
     this.state = {
       name: '',
       email: '',
+      registrationWhiteList: [],
       isEmailPublished: false,
       lang: 'English',
     };
