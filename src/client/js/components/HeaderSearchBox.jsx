@@ -8,6 +8,9 @@ import DropdownButton from 'react-bootstrap/es/DropdownButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 import InputGroup from 'react-bootstrap/es/InputGroup';
 
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+
 import SearchForm from './SearchForm';
 
 
@@ -60,13 +63,16 @@ class HeaderSearchBox extends React.Component {
   }
 
   render() {
-    const t = this.props.t;
+    const { t, appContainer } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
       : 'All pages';
 
+    const config = appContainer.getConfig();
+    const isReachable = config.isSearchServiceReachable;
+
     return (
-      <FormGroup>
+      <FormGroup className={isReachable ? '' : 'has-error'}>
         <InputGroup>
           <InputGroup.Button className="btn-group-dropdown-scope">
             <DropdownButton id="dbScope" title={scopeLabel}>
@@ -76,7 +82,7 @@ class HeaderSearchBox extends React.Component {
           </InputGroup.Button>
           <SearchForm
             t={this.props.t}
-            crowi={this.props.crowi}
+            crowi={this.props.appContainer}
             onInputChange={this.onInputChange}
             onSubmit={this.search}
             placeholder="Search ..."
@@ -93,9 +99,17 @@ class HeaderSearchBox extends React.Component {
 
 }
 
-HeaderSearchBox.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+
+/**
+ * Wrapper component for using unstated
+ */
+const HeaderSearchBoxWrapper = (props) => {
+  return createSubscribedElement(HeaderSearchBox, props, [AppContainer]);
 };
 
-export default withTranslation()(HeaderSearchBox);
+HeaderSearchBox.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default withTranslation()(HeaderSearchBoxWrapper);

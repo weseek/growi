@@ -1,10 +1,12 @@
 // override react-bootstrap-typeahead styles
 // see: https://github.com/ericgio/react-bootstrap-typeahead
-.rbt-input.form-control {
-  // focus
-  &.focus {
-    border-color: inherit;
-    box-shadow: none;
+.form-group:not(.has-error) {
+  .rbt-input.form-control {
+    // focus
+    &.focus {
+      border-color: inherit;
+      box-shadow: none;
+    }
   }
 }
 // hide loading icon

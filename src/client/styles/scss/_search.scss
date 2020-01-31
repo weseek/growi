@@ -76,12 +76,16 @@
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
     height: 30px;
-    border: none;
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
 
     .rbt-input-wrapper {
       margin-left: 8px;
+    }
+  }
+  .form-group:not(.has-error) {
+    .rbt-input.form-control {
+      border: none;
     }
   }
 
