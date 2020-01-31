@@ -182,10 +182,10 @@ class SelectCollectionsModal extends React.Component {
           <ModalBody>
             <div className="row">
               <div className="col-sm-12">
-                <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+                <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.checkAll}>
                   <i className="fa fa-check-square-o"></i> {t('export_management.check_all')}
                 </button>
-                <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+                <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.uncheckAll}>
                   <i className="fa fa-square-o"></i> {t('export_management.uncheck_all')}
                 </button>
               </div>
@@ -218,7 +218,7 @@ class SelectCollectionsModal extends React.Component {
           </ModalBody>
 
           <ModalFooter>
-            <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
+            <button type="button" className="btn btn-sm btn-light" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
             <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
           </ModalFooter>
         </form>
