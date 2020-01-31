@@ -203,7 +203,7 @@ class ImportCollectionConfigurationModal extends React.Component {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" className="btn btn-sm page-link text-dark d-inline-block" onClick={this.props.onClose}>{t('Cancel')}</button>
+          <button type="button" className="btn btn-sm btn-light" onClick={this.props.onClose}>{t('Cancel')}</button>
           <button type="button" className="btn btn-sm btn-primary" onClick={this.updateOption}>{t('Update')}</button>
         </ModalFooter>
       </Modal>

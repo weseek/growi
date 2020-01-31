@@ -149,7 +149,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <button
         type="button"
-        className="btn page-link text-dark d-inline-block btn-sm p-1 ml-2"
+        className="btn btn-light btn-sm p-1 ml-2"
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >
@@ -201,8 +201,8 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="card">
-        <div className="card-header">
+      <div className="card border-light">
+        <div className="card-header bg-light">
           <div className="d-flex justify-content-between align-items-center">
             {/* left */}
             <div className="pl-4">

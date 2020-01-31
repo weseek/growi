@@ -171,7 +171,7 @@ class ImportDataPage extends React.Component {
               </tbody>
             </table>
 
-            <div className="card card-well mb-0 small">
+            <div className="card well mb-0 small">
               <ul>
                 <li>{ t('importer_management.page_skip') }</li>
               </ul>
@@ -216,7 +216,7 @@ class ImportDataPage extends React.Component {
                     name="Esa"
                     type="button"
                     id="importFromEsa"
-                    className="btn page-link text-dark d-inline-block btn-esa"
+                    className="btn btn-light btn-esa"
                     onClick={this.esaHandleSubmitTest}
                     value={t('importer_management.esa_settings.test_connection')}
                   />
@@ -265,7 +265,7 @@ class ImportDataPage extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="card card-well mb-0 small">
+            <div className="card well mb-0 small">
               <ul>
                 <li>{ t('importer_management.page_skip') }</li>
               </ul>
@@ -309,7 +309,7 @@ class ImportDataPage extends React.Component {
                     name="Qiita"
                     type="button"
                     id="importFromQiita"
-                    className="btn page-link text-dark d-inline-block btn-qiita"
+                    className="btn btn-light btn-qiita"
                     onClick={this.qiitaHandleSubmitTest}
                     value={t('importer_management.qiita_settings.test_connection')}
                   />

@@ -16,23 +16,24 @@
 // card (substitute panel of bootstrap3)
 .card {
   margin-bottom: 20px;
-  border-radius: 0;
+  border-radius: $card-border-radius;
 }
 
-.card-header:not(.card-well) {
-  padding: 7px 15px;
+.card-header {
   font-weight: 700;
   text-transform: none;
-  border-radius: 0;
+  border-radius: $card-border-radius;
 }
 
 .card-header:first-child {
-  border-radius: 0;
+  border-radius: $card-border-radius;
 }
 
-// card-well (substitute well of bootstrap3)
-.card.card-well {
-  padding: 7px 15px;
+// Well (substitute Well of bootstrap3)
+.card.well {
+  padding: $card-spacer-y $card-spacer-x;
+  min-height: 20px;
+  border-radius: 3px;
 }
 
 // Dropdowns
@@ -48,8 +49,6 @@
   margin-top: 0px;
   border: 1px solid $border;
   border-radius: $radius;
-  -webkit-box-shadow: 0px !important;
-  -moz-box-shadow: 0px !important;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
 }
 
@@ -63,9 +62,9 @@
   background: $extralight;
 }
 
-// page-link (substitute for btn-default of bootstrap3)  (agile-admin style)
-.page-link.text-dark.d-inline-block,
-.page-link.text-dark.d-inline-block.disabled {
+// btn-light (substitute for btn-default of bootstrap3)  (agile-admin style)
+.btn-light,
+.btn-light.disabled {
   color: $bodytext;
   $this-color: $btn-default-bgcolor;
   background: $this-color;
@@ -78,14 +77,14 @@
     background: $this-color;
     border: 1px solid $this-color;
     opacity: 0.8;
-    box-shadow: none;
+    box-shadow: none !important;
   }
   &:active &.active {
     box-shadow: none;
   }
 }
 
-.page-link.text-dark.d-inline-block.btn-outline {
+.btn-light.btn-outline {
   background-color: transparent;
 
   &:hover,
@@ -118,7 +117,8 @@ label {
   font-weight: 700;
 }
 
-// disabled button (reproduction from bootstrap3)
+// disabled button (reproduction from bootstrap3.)
+// see https://cccabinet.jpn.org/bootstrap4/components/buttons#disabled-state
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn {
@@ -131,4 +131,10 @@ fieldset[disabled] .btn {
   &.focus {
     box-shadow: none;
   }
+}
+
+// progress bar
+.progress {
+  margin-bottom: 18px;
+  overflow: hidden;
 }
