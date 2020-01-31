@@ -303,7 +303,7 @@ class Comment extends React.Component {
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
                 <OverlayTrigger overlay={commentDateTooltip} placement="bottom">
-                  <span><a className={commentDate} href={`#${commentId}`}>{commentDate}</a></span>
+                  <span><a href={`#${commentId}`}>{commentDate}</a></span>
                 </OverlayTrigger>
                 { isEdited && (
                   <OverlayTrigger overlay={editedDateTooltip} placement="bottom">
