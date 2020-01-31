@@ -25,7 +25,7 @@ class SiteUrlSetting extends React.Component {
 
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('app_setting.updated_site_url'));
+      toastSuccess(t('toaster:update_successed', { target: 'URL' }));
     }
     catch (err) {
       toastError(err);
@@ -38,8 +38,8 @@ class SiteUrlSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('app_setting.Site URL desc')}</p>
-        {!adminAppContainer.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting.Site URL warn')}</p>)}
+        <p className="well">{t('app_setting:site_url_desc')}</p>
+        {!adminAppContainer.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting:site_url_warn')}</p>)}
 
         <div className="row">
           <div className="col-md-12">
@@ -68,14 +68,14 @@ class SiteUrlSetting extends React.Component {
                       />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
-                        <div dangerouslySetInnerHTML={{ __html: t('app_setting.siteurl_help') }} />
+                        <div dangerouslySetInnerHTML={{ __html: t('app_setting:siteurl_help') }} />
                       </p>
                     </td>
                     <td>
                       <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl} readOnly />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
-                        <div dangerouslySetInnerHTML={{ __html: t('app_setting.Use env var if empty', { variable: 'APP_SITE_URL' }) }} />
+                        <div dangerouslySetInnerHTML={{ __html: t('app_setting:use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
                       </p>
                     </td>
                   </tr>

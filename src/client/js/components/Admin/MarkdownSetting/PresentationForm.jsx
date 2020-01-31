@@ -24,7 +24,7 @@ class PresentationForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updatePresentationSetting();
-      toastSuccess(t('markdown_setting.updated_presentation'));
+      toastSuccess(t('toaster:update_successed', { target: 'Presentation' }));
     }
     catch (err) {
       toastError(err);
@@ -41,7 +41,7 @@ class PresentationForm extends React.Component {
       <fieldset className="form-group row my-2">
 
         <label className="col-xs-3 control-label text-right">
-          { t('markdown_setting.Page break setting') }
+          {t('markdown_setting:presentation_options.page_break_setting')}
         </label>
 
         <div className="col-xs-3 radio radio-primary">
@@ -52,10 +52,10 @@ class PresentationForm extends React.Component {
             onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
           />
           <label htmlFor="pageBreakOption1">
-            <p className="font-weight-bold">{ t('markdown_setting.Preset one separator') }</p>
+            <p className="font-weight-bold">{t('markdown_setting:presentation_options.preset_one_separator')}</p>
             <div className="mt-3">
-              { t('markdown_setting.Preset one separator desc') }
-              <pre><code>{ t('markdown_setting.Preset one separator value') }</code></pre>
+              {t('markdown_setting:presentation_options.preset_one_separator_desc')}
+              <pre><code>{t('markdown_setting:presentation_options.preset_one_separator_value')}</code></pre>
             </div>
           </label>
         </div>
@@ -68,10 +68,10 @@ class PresentationForm extends React.Component {
             onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
           />
           <label htmlFor="pageBreakOption2">
-            <p className="font-weight-bold">{ t('markdown_setting.Preset two separator') }</p>
+            <p className="font-weight-bold">{t('markdown_setting:presentation_options.preset_two_separator')}</p>
             <div className="mt-3">
-              { t('markdown_setting.Preset two separator desc') }
-              <pre><code>{ t('markdown_setting.Preset two separator value') }</code></pre>
+              {t('markdown_setting:presentation_options.preset_two_separator_desc')}
+              <pre><code>{t('markdown_setting:presentation_options.preset_two_separator_value')}</code></pre>
             </div>
           </label>
         </div>
@@ -84,9 +84,9 @@ class PresentationForm extends React.Component {
             onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
           />
           <label htmlFor="pageBreakOption3">
-            <p className="font-weight-bold">{ t('markdown_setting.Custom separator') }</p>
+            <p className="font-weight-bold">{t('markdown_setting:presentation_options.custom_separator')}</p>
             <div className="mt-3">
-              { t('markdown_setting.Custom separator desc') }
+              {t('markdown_setting:presentation_options.custom_separator_desc')}
               <input
                 className="form-control"
                 defaultValue={pageBreakCustomSeparator}
@@ -98,7 +98,7 @@ class PresentationForm extends React.Component {
 
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <div className="btn btn-primary" onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null}>{ t('Update') }</div>
+            <div className="btn btn-primary" onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null}>{t('Update')}</div>
           </div>
         </div>
 

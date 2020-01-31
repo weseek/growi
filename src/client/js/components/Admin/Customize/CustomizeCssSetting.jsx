@@ -37,7 +37,7 @@ class CustomizeCssSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeCss();
-      toastSuccess(t('customize_page.update_customCss_success'));
+      toastSuccess(t('toaster:update_successed', { target: 'CustomCss' }));
     }
     catch (err) {
       toastError(err);
@@ -50,10 +50,10 @@ class CustomizeCssSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Custom CSS')}</h2>
+        <h2 className="admin-setting-header">{t('customize_setting:custom_css')}</h2>
         <p className="well">
-          { t('customize_page.write_CSS') }<br />
-          { t('customize_page.reflect_change') }
+          {t('customize_setting:write_css')}<br />
+          {t('customize_setting:reflect_change')}
         </p>
         <div className="form-group">
           <div className="col-xs-12">
@@ -66,7 +66,7 @@ class CustomizeCssSetting extends React.Component {
           <div className="col-xs-12">
             <p className="help-block text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              { t('customize_page.ctrl_space') }
+              {t('customize_setting:ctrl_space')}
             </p>
           </div>
         </div>

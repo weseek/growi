@@ -25,7 +25,7 @@ class MailSetting extends React.Component {
 
     try {
       await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('app_setting.updated_app_setting'));
+      toastSuccess(t('toster.update_successed', { target: 'Mail' }));
     }
     catch (err) {
       toastError(err);
@@ -38,9 +38,9 @@ class MailSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('app_setting.SMTP_used')} {t('app_setting.SMTP_but_AWS')}<br />{t('app_setting.neihter_of')}</p>
+        <p className="well">{t('app_setting:smtp_used')} {t('app_setting:smtp_but_aws')}<br />{t('app_setting:neihter_of')}</p>
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting.From e-mail address')}</label>
+          <label className="col-xs-3 control-label">{t('app_setting:from_e-mail_address')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -53,9 +53,9 @@ class MailSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{ t('app_setting.SMTP settings') }</label>
+          <label className="col-xs-3 control-label">{t('app_setting:smtp_settings')}</label>
           <div className="col-xs-4">
-            <label>{ t('app_setting.Host') }</label>
+            <label>{t('app_setting:host')}</label>
             <input
               className="form-control"
               type="text"
@@ -64,7 +64,7 @@ class MailSetting extends React.Component {
             />
           </div>
           <div className="col-xs-2">
-            <label>{ t('app_setting.Port') }</label>
+            <label>{t('app_setting:port')}</label>
             <input
               className="form-control"
               defaultValue={adminAppContainer.state.smtpPort}
@@ -75,7 +75,7 @@ class MailSetting extends React.Component {
 
         <div className="row mb-5">
           <div className="col-xs-3 col-xs-offset-3">
-            <label>{ t('app_setting.User') }</label>
+            <label>{t('app_setting:user')}</label>
             <input
               className="form-control"
               type="text"
@@ -84,7 +84,7 @@ class MailSetting extends React.Component {
             />
           </div>
           <div className="col-xs-3">
-            <label>{ t('Password') }</label>
+            <label>{t('Password')}</label>
             <input
               className="form-control"
               type="password"
