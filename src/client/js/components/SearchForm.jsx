@@ -50,7 +50,7 @@ class SearchForm extends React.Component {
       return (
         <>
           <h5 className="text-danger">Error occured on Search Service</h5>
-          Try to reconnect from <a href="/admin/search">management page <i className="icon-login"></i></a>
+          Try to reconnect in management page.
         </>
       );
     }
