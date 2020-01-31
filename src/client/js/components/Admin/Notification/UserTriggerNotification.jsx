@@ -124,7 +124,7 @@ class UserTriggerNotification extends React.Component {
               </td>
             </tr>
             {adminNotificationContainer.state.userNotifications.map((notification) => {
-              return <UserNotificationRow notification={notification} onClickDeleteBtn={this.onClickDeleteBtn} />;
+              return <UserNotificationRow notification={notification} onClickDeleteBtn={this.onClickDeleteBtn} key={notification._id} />;
             })
             }
           </tbody>
