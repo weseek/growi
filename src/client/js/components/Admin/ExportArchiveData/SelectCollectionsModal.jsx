@@ -122,7 +122,7 @@ class SelectCollectionsModal extends React.Component {
     const html = this.props.t('export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
-    return <div className="well well-sm" dangerouslySetInnerHTML={{ __html: html }}></div>;
+    return <div className="card well" dangerouslySetInnerHTML={{ __html: html }}></div>;
   }
 
   renderGroups(groupList, color) {
