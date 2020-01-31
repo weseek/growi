@@ -27,7 +27,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('markdown_setting.updated_xss'));
+      toastSuccess(t('toaster:update_successed', { target: 'XSS' }));
     }
     catch (err) {
       toastError(err);
@@ -50,9 +50,9 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
           />
           <label htmlFor="xssOption1">
-            <p className="font-weight-bold">{t('markdown_setting.Ignore all tags')}</p>
+            <p className="font-weight-bold">{t('markdown_setting:xss_options.ignore_all_tags')}</p>
             <div className="m-t-15">
-              {t('markdown_setting.Ignore all tags desc')}
+              {t('markdown_setting:xss_options.ignore_all_tags_desc')}
             </div>
           </label>
         </div>
@@ -66,10 +66,10 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
           />
           <label htmlFor="xssOption2">
-            <p className="font-weight-bold">{t('markdown_setting.Recommended setting')}</p>
+            <p className="font-weight-bold">{t('markdown_setting:xss_options.recommended_setting')}</p>
             <div className="m-t-15">
               <div className="d-flex justify-content-between">
-                {t('markdown_setting.Tag names')}
+                {t('markdown_setting:xss_options.tag_names')}
               </div>
               <textarea
                 className="form-control xss-list"
@@ -82,7 +82,7 @@ class XssForm extends React.Component {
             </div>
             <div className="m-t-15">
               <div className="d-flex justify-content-between">
-                {t('markdown_setting.Tag attributes')}
+                {t('markdown_setting:xss_options.tag_attributes')}
               </div>
               <textarea
                 className="form-control xss-list"
@@ -105,7 +105,7 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
           />
           <label htmlFor="xssOption3">
-            <p className="font-weight-bold">{t('markdown_setting.Custom Whitelist')}</p>
+            <p className="font-weight-bold">{t('markdown_setting:xss_options.custom_whitelist')}</p>
             <WhiteListInput />
           </label>
         </div>
@@ -132,7 +132,7 @@ class XssForm extends React.Component {
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label htmlFor="XssEnable">
-                  {t('markdown_setting.Enable XSS prevention')}
+                  {t('markdown_setting:xss_options.enable_xss_prevention')}
                 </label>
               </div>
             </div>

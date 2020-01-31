@@ -21,7 +21,7 @@ class UserRemoveButton extends React.Component {
     try {
       await this.props.adminUsersContainer.removeUser(this.props.user._id);
       const { username } = this.props.user;
-      toastSuccess(t('user_management.remove_user_success', { username }));
+      toastSuccess(t('toaster:remove_user_success', { username }));
     }
     catch (err) {
       toastError(err);
@@ -33,7 +33,7 @@ class UserRemoveButton extends React.Component {
 
     return (
       <a className="px-4" onClick={() => { this.onClickDeleteBtn() }}>
-        <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
       </a>
     );
   }
