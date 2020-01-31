@@ -97,8 +97,6 @@ module.exports = function(crowi, app) {
 
   // notification admin
   app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
-  app.post('/admin/notification/slackIwhSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.slackIwhSetting, admin.notification.slackIwhSetting);
-  app.post('/admin/notification/slackSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.slackSetting, admin.notification.slackSetting);
   app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
   app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
   app.post('/_api/admin/notification.remove' , loginRequiredStrictly , adminRequired , csrf, admin.api.notificationRemove);

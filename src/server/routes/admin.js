@@ -162,49 +162,8 @@ module.exports = function(crowi, app) {
   // app.get('/admin/notification'               , admin.notification.index);
   actions.notification = {};
   actions.notification.index = async(req, res) => {
-    const UpdatePost = crowi.model('UpdatePost');
-    let slackSetting = configManager.getConfigByPrefix('notification', 'slack:');
-    const hasSlackIwhUrl = !!configManager.getConfig('notification', 'slack:incomingWebhookUrl');
-    const hasSlackToken = !!configManager.getConfig('notification', 'slack:token');
 
-    if (!hasSlackIwhUrl) {
-      slackSetting['slack:incomingWebhookUrl'] = '';
-    }
-
-    if (req.session.slackSetting) {
-      slackSetting = req.session.slackSetting;
-      req.session.slackSetting = null;
-    }
-
-    const globalNotifications = await GlobalNotificationSetting.findAll();
-    const userNotifications = await UpdatePost.findAll();
-
-    return res.render('admin/notification', {
-      userNotifications,
-      slackSetting,
-      hasSlackIwhUrl,
-      hasSlackToken,
-      globalNotifications,
-    });
-  };
-
-  // app.post('/admin/notification/slackSetting' , admin.notification.slackauth);
-  actions.notification.slackSetting = async function(req, res) {
-    const slackSetting = req.form.slackSetting;
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('notification', slackSetting);
-      req.flash('successMessage', ['Successfully Updated!']);
-
-      // Re-setup
-      crowi.setupSlack().then(() => {
-      });
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-    }
-
-    return res.redirect('/admin/notification');
+    return res.render('admin/notification');
   };
 
   // app.get('/admin/notification/slackAuth'     , admin.notification.slackauth);
@@ -235,25 +194,6 @@ module.exports = function(crowi, app) {
         req.flash('errorMessage', ['Failed to fetch access_token. Please do connect again.']);
         return res.redirect('/admin/notification');
       });
-  };
-
-  // app.post('/admin/notification/slackIwhSetting' , admin.notification.slackIwhSetting);
-  actions.notification.slackIwhSetting = async function(req, res) {
-    const slackIwhSetting = req.form.slackIwhSetting;
-
-    if (req.form.isValid) {
-      await configManager.updateConfigsInTheSameNamespace('notification', slackIwhSetting);
-      req.flash('successMessage', ['Successfully Updated!']);
-
-      // Re-setup
-      crowi.setupSlack().then(() => {
-        return res.redirect('/admin/notification#slack-incoming-webhooks');
-      });
-    }
-    else {
-      req.flash('errorMessage', req.form.errors);
-      return res.redirect('/admin/notification#slack-incoming-webhooks');
-    }
   };
 
   // app.post('/admin/notification/slackSetting/disconnect' , admin.notification.disconnectFromSlack);
