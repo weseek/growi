@@ -21,6 +21,5 @@ module.exports = {
     securityPassportTwitter: require('./admin/securityPassportTwitter'),
     securityPassportOidc: require('./admin/securityPassportOidc'),
     userGroupCreate: require('./admin/userGroupCreate'),
-    notificationGlobal: require('./admin/notificationGlobal'),
   },
 };

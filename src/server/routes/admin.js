@@ -221,100 +221,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/global-notification-detail', { globalNotification });
   };
 
-  actions.globalNotification.create = (req, res) => {
-    const form = req.form.notificationGlobal;
-    let setting;
-
-    switch (form.notifyToType) {
-      case GlobalNotificationSetting.TYPE.MAIL:
-        setting = new GlobalNotificationMailSetting(crowi);
-        setting.toEmail = form.toEmail;
-        break;
-      case GlobalNotificationSetting.TYPE.SLACK:
-        setting = new GlobalNotificationSlackSetting(crowi);
-        setting.slackChannels = form.slackChannels;
-        break;
-      default:
-        logger.error('GlobalNotificationSetting Type Error: undefined type');
-        req.flash('errorMessage', 'Error occurred in creating a new global notification setting: undefined notification type');
-        return res.redirect('/admin/notification#global-notification');
-    }
-
-    setting.triggerPath = form.triggerPath;
-    setting.triggerEvents = getNotificationEvents(form);
-    setting.save();
-
-    return res.redirect('/admin/notification#global-notification');
-  };
-
-  actions.globalNotification.update = async(req, res) => {
-    const form = req.form.notificationGlobal;
-
-    const models = {
-      [GlobalNotificationSetting.TYPE.MAIL]: GlobalNotificationMailSetting,
-      [GlobalNotificationSetting.TYPE.SLACK]: GlobalNotificationSlackSetting,
-    };
-
-    let setting = await GlobalNotificationSetting.findOne({ _id: form.id });
-    setting = setting.toObject();
-
-    // when switching from one type to another,
-    // remove toEmail from slack setting and slackChannels from mail setting
-    if (setting.__t !== form.notifyToType) {
-      setting = models[setting.__t].hydrate(setting);
-      setting.toEmail = undefined;
-      setting.slackChannels = undefined;
-      await setting.save();
-      setting = setting.toObject();
-    }
-
-    switch (form.notifyToType) {
-      case GlobalNotificationSetting.TYPE.MAIL:
-        setting = GlobalNotificationMailSetting.hydrate(setting);
-        setting.toEmail = form.toEmail;
-        break;
-      case GlobalNotificationSetting.TYPE.SLACK:
-        setting = GlobalNotificationSlackSetting.hydrate(setting);
-        setting.slackChannels = form.slackChannels;
-        break;
-      default:
-        logger.error('GlobalNotificationSetting Type Error: undefined type');
-        req.flash('errorMessage', 'Error occurred in updating the global notification setting: undefined notification type');
-        return res.redirect('/admin/notification#global-notification');
-    }
-
-    setting.__t = form.notifyToType;
-    setting.triggerPath = form.triggerPath;
-    setting.triggerEvents = getNotificationEvents(form);
-    await setting.save();
-
-    return res.redirect('/admin/notification#global-notification');
-  };
-
-  actions.globalNotification.remove = async(req, res) => {
-    const id = req.params.id;
-
-    try {
-      await GlobalNotificationSetting.findOneAndRemove({ _id: id });
-      return res.redirect('/admin/notification#global-notification');
-    }
-    catch (err) {
-      req.flash('errorMessage', 'Error in deleting global notification setting');
-      return res.redirect('/admin/notification#global-notification');
-    }
-  };
-
-  const getNotificationEvents = (form) => {
-    const triggerEvents = [];
-    const triggerEventKeys = Object.keys(form).filter((key) => { return key.match(/^triggerEvent/) });
-    triggerEventKeys.forEach((key) => {
-      if (form[key]) {
-        triggerEvents.push(form[key]);
-      }
-    });
-    return triggerEvents;
-  };
-
   actions.search = {};
   actions.search.index = function(req, res) {
     const search = crowi.getSearcher();
@@ -740,23 +646,6 @@ module.exports = function(crowi, app) {
     return res.json({ status: true });
   };
 
-  // app.post('/_api/admin/notifications.remove' , admin.api.notificationRemove);
-  actions.api.notificationRemove = function(req, res) {
-    const UpdatePost = crowi.model('UpdatePost');
-    const id = req.body.id;
-
-    UpdatePost.remove(id)
-      .then(() => {
-        debug('Successfully remove updatePost');
-
-        return res.json(ApiResponse.success({}));
-      })
-      .catch((err) => {
-        debug('Failed to remove updatePost', err);
-        return res.json(ApiResponse.error());
-      });
-  };
-
   // app.get('/_api/admin/users.search' , admin.api.userSearch);
   actions.api.usersSearch = function(req, res) {
     const User = crowi.model('User');
@@ -772,25 +661,6 @@ module.exports = function(crowi, app) {
       .catch((err) => {
         return res.json(ApiResponse.error());
       });
-  };
-
-  actions.api.toggleIsEnabledForGlobalNotification = async(req, res) => {
-    const id = req.query.id;
-    const isEnabled = (req.query.isEnabled === 'true');
-
-    try {
-      if (isEnabled) {
-        await GlobalNotificationSetting.enable(id);
-      }
-      else {
-        await GlobalNotificationSetting.disable(id);
-      }
-
-      return res.json(ApiResponse.success());
-    }
-    catch (err) {
-      return res.json(ApiResponse.error());
-    }
   };
 
   /**
