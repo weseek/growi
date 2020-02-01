@@ -1,9 +1,0 @@
-{
-  "update_successed": "Succeeded to update {{target}} setting",
-  "give_user_admin": "Succeeded to give {{username}} admin",
-  "remove_user_admin": "Succeeded to remove {{username}} admin ",
-  "activate_user_success": "Succeeded to activating {{username}}",
-  "deactivate_user_success": "Succeeded to deactivate {{username}}",
-  "remove_user_success": "Succeeded to removing {{username}} ",
-  "remove_external_user_success": "Succeeded to remove {{accountId}} "
-}
