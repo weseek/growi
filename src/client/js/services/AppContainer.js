@@ -218,6 +218,11 @@ export default class AppContainer extends Container {
     });
   }
 
+  getCurrentUser() {
+    const currentUser = this.findUser(this.me);
+    return currentUser;
+  }
+
   fetchUsers() {
     const interval = 1000 * 60 * 15; // 15min
     const currentTime = new Date();
