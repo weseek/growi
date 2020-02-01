@@ -66,17 +66,17 @@ class SiteUrlSetting extends React.Component {
                         onChange={(e) => { adminAppContainer.changeSiteUrl(e.target.value) }}
                         placeholder="e.g. https://my.growi.org"
                       />
-                      <p className="help-block">
+                      <div className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
-                        <div dangerouslySetInnerHTML={{ __html: t('app_setting:siteurl_help') }} />
-                      </p>
+                        <span dangerouslySetInnerHTML={{ __html: t('app_setting:siteurl_help') }} />
+                      </div>
                     </td>
                     <td>
                       <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl} readOnly />
-                      <p className="help-block">
+                      <div className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
-                        <div dangerouslySetInnerHTML={{ __html: t('app_setting:use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
-                      </p>
+                        <span dangerouslySetInnerHTML={{ __html: t('app_setting:use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
+                      </div>
                     </td>
                   </tr>
                 </tbody>
