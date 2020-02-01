@@ -26,7 +26,7 @@ class ExternalAccountTable extends React.Component {
 
     try {
       const accountId = await this.props.adminExternalAccountsContainer.removeExternalAccountById(externalAccountId);
-      toastSuccess(t('toaster:remove_external_user_success', { accountId }));
+      toastSuccess(t('toaster.remove_external_user_success', { accountId }));
     }
     catch (err) {
       toastError(err);
@@ -41,11 +41,11 @@ class ExternalAccountTable extends React.Component {
         <table className="table table-bordered table-user-list">
           <thead>
             <tr>
-              <th width="120px">{t('user_management:authentication_provider')}</th>
+              <th width="120px">{t('admin:user_management.authentication_provider')}</th>
               <th><code>accountId</code></th>
-              <th>{t('user_management:related_username')}<code>username</code></th>
+              <th>{t('admin:user_management.related_username')}<code>username</code></th>
               <th>
-                {t('user_management:password_setting')}
+                {t('admin:user_management.password_setting')}
                 <div
                   className="text-muted"
                   data-toggle="popover"
@@ -55,7 +55,7 @@ class ExternalAccountTable extends React.Component {
                   role="button"
                   data-animation="false"
                   data-html="true"
-                  data-content={t('user_management:password_setting_help')}
+                  data-content={t('admin:user_management.password_setting_help')}
                 >
                   <small>
                     <i className="icon-question" aria-hidden="true"></i>
@@ -81,12 +81,12 @@ class ExternalAccountTable extends React.Component {
                     {ea.user.password
                       ? (
                         <span className="label label-info">
-                          {t('user_management:set')}
+                          {t('admin:user_management.set')}
                         </span>
                       )
                       : (
                         <span className="label label-warning">
-                          {t('user_management:unset')}
+                          {t('admin:user_management.unset')}
                         </span>
                       )
                     }
@@ -98,7 +98,7 @@ class ExternalAccountTable extends React.Component {
                         <i className="icon-settings"></i> <span className="caret"></span>
                       </button>
                       <ul className="dropdown-menu" role="menu">
-                        <li className="dropdown-header">{t('user_management:user_table.edit_menu')}</li>
+                        <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
                         <li>
                           <a onClick={() => { return this.removeExtenalAccount(ea._id) }}>
                             <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}

@@ -33,10 +33,10 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="dropdown-header">{t('user_management:user_table.edit_menu')}</li>
+        <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
         <li onClick={this.onPasswordResetClicked}>
           <a>
-            <i className="icon-fw icon-key"></i>{t('user_management:user_table.reset_password')}
+            <i className="icon-fw icon-key"></i>{t('admin:user_management.user_table.reset_password')}
           </a>
         </li>
       </Fragment>
@@ -65,7 +65,7 @@ class UserMenu extends React.Component {
     return (
       <Fragment>
         <li className="divider pl-0"></li>
-        <li className="dropdown-header">{t('user_management:user_table.administrator_menu')}</li>
+        <li className="dropdown-header">{t('admin:user_management.user_table.administrator_menu')}</li>
         <li>
           {user.admin === true && <RemoveAdminButton user={user} />}
           {user.admin === false && <GiveAdminButton user={user} />}
