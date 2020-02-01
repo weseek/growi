@@ -26,7 +26,7 @@ class BasicInfoSettings extends React.Component {
 
     try {
       await personalContainer.updateBasicInfo();
-      toastSuccess(t('toaster:update_successed', { target: t('Basic Info') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {
       toastError(err);
@@ -65,14 +65,14 @@ class BasicInfoSettings extends React.Component {
             />
           </div>
           {personalContainer.state.registrationWhiteList.length !== 0 && (
-          <div className="col-sm-offset-2 col-sm-10">
-            <p className="help-block">
-              { t('page_register.form_help.email') }
-              <ul>
-                <li><code></code></li>
-              </ul>
-            </p>
-          </div>
+            <div className="col-sm-offset-2 col-sm-10">
+              <p className="help-block">
+                {t('page_register.form_help.email')}
+                <ul>
+                  <li><code></code></li>
+                </ul>
+              </p>
+            </div>
           )}
         </div>
 

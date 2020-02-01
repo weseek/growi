@@ -25,7 +25,7 @@ class CustomizeTitle extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeTitle();
-      toastSuccess(t('customize_page.update_customTitle_success'));
+      toastSuccess(t('toaster:update_successed', { target: 'CustomTitle' }));
     }
     catch (err) {
       toastError(err);
@@ -39,11 +39,11 @@ class CustomizeTitle extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.custom_title')}</h2>
+        <h2 className="admin-setting-header">{t('customize_setting:custom_title')}</h2>
         <p
           className="well"
           // eslint-disable-next-line react/no-danger, max-len
-          dangerouslySetInnerHTML={{ __html: '<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。<br><code>&#123;&#123;sitename&#125;&#125;</code>がサイト名、<code>&#123;&#123;page&#125;&#125;</code>がページ名またはページパスに置換されます。' }}
+          dangerouslySetInnerHTML={{ __html: t('customize_setting:custom_title_detail') }}
         />
         {/* TODO i18n */}
         <div className="help-block">

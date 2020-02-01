@@ -44,6 +44,7 @@ module.exports = (options) => {
       'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
       'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',
       'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
+      'styles/theme-spring':      './src/client/styles/scss/theme/spring.scss',
       'styles/theme-antarctic':      './src/client/styles/scss/theme/antarctic.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
