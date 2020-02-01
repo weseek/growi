@@ -93,6 +93,9 @@ module.exports = function(crowi, app) {
   searchEvent.on('finishAddPage', (total, current, skip) => {
     crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
   });
+  searchEvent.on('rebuildingFailed', (error) => {
+    crowi.getIo().sockets.emit('admin:rebuildingFailed', { error: error.message });
+  });
 
   actions.index = function(req, res) {
     return res.render('admin/index');
@@ -778,23 +781,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-  };
-
-
-  actions.api.searchBuildIndex = async function(req, res) {
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
-    }
-
-    try {
-      search.buildIndex();
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-
-    return res.json(ApiResponse.success());
   };
 
   /**

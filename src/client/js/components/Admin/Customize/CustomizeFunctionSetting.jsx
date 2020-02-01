@@ -28,7 +28,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
-      toastSuccess(t('customize_page.update_function_success'));
+      toastSuccess(t('toaster:update_successed', { target: 'Function' }));
     }
     catch (err) {
       toastError(err);
@@ -41,21 +41,21 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Function')}</h2>
-        <p className="well">{ t('customize_page.function_choose') }</p>
+        <h2 className="admin-setting-header">{t('customize_setting:function')}</h2>
+        <p className="well">{t('customize_setting:function_desc')}</p>
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledTimeline"
-              label={t('customize_page.Timeline function')}
+              label={t('customize_setting:function_options.timeline')}
               isChecked={adminCustomizeContainer.state.isEnabledTimeline}
               onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
             >
               <p className="help-block">
-                { t('customize_page.subpage_display') }<br />
-                { t('customize_page.performance_decrease') }<br />
-                { t('customize_page.list_page_display') }
+                {t('customize_setting:function_options.timeline_desc1')}<br />
+                {t('customize_setting:function_options.timeline_desc2')}<br />
+                {t('customize_setting:function_options.timeline_desc3')}
               </p>
             </CustomizeFunctionOption>
           </div>
@@ -65,13 +65,13 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isSavedStatesOfTabChanges"
-              label={t('customize_page.tab_switch')}
+              label={t('customize_setting:function_options.tab_switch')}
               isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
               onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
             >
               <p className="help-block">
-                { t('customize_page.save_edit') }<br />
-                { t('customize_page.by_invalidating') }
+                {t('customize_setting:function_options.tab_switch_desc1')}<br />
+                {t('customize_setting:function_options.tab_switch_desc2')}
               </p>
             </CustomizeFunctionOption>
           </div>
@@ -81,12 +81,12 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledAttachTitleHeader"
-              label={t('customize_page.attach_title_header')}
+              label={t('customize_setting:function_options.attach_title_header')}
               isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
               onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
             >
               <p className="help-block">
-                { t('customize_page.attach_title_header_desc') }
+                {t('customize_setting:function_options.attach_title_header_desc')}
               </p>
             </CustomizeFunctionOption>
           </div>
@@ -95,7 +95,7 @@ class CustomizeBehaviorSetting extends React.Component {
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <div className="my-0 btn-group">
-              <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
+              <label>{t('customize_setting:function_options.recent_created__n_draft_num_desc')}</label>
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span className="pull-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
@@ -117,7 +117,7 @@ class CustomizeBehaviorSetting extends React.Component {
                 </ul>
               </div>
               <p className="help-block">
-                { t('customize_page.recently_created_n_draft_num_desc') }
+                {t('customize_setting:function_options.recently_created_n_draft_num_desc')}
               </p>
             </div>
           </div>
@@ -127,12 +127,12 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledStaleNotification"
-              label={t('customize_page.stale_notification')}
+              label={t('customize_setting:function_options.stale_notification')}
               isChecked={adminCustomizeContainer.state.isEnabledStaleNotification}
               onChecked={() => { adminCustomizeContainer.switchEnableStaleNotification() }}
             >
               <p className="help-block">
-                { t('customize_page.stale_notification_desc') }
+                {t('customize_setting:function_options.stale_notification_desc')}
               </p>
             </CustomizeFunctionOption>
           </div>

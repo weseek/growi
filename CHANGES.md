@@ -2,7 +2,13 @@
 
 ## v3.6.5-RC
 
+* Feature: Reconnect to Elasticsearch from Full Text Search Management
+* Feature: Normalize indices of Elasticsearch from Full Text Search Management
+* Improvement: Add 'spring' theme
 * Impromvement: Add `checkMiddlewaresStrictly` query option to Healthcheck API
+* Improvement: Accessibility for History component under dark themes
+* Support: Upgrade libs
+    * react-bootstrap-typeahead
 
 ## v3.6.4
 
