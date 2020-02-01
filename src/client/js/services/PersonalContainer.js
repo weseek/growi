@@ -2,8 +2,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../util/apiNotification';
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
@@ -21,9 +19,9 @@ export default class PersonalContainer extends Container {
     this.state = {
       name: '',
       email: '',
-      registrationWhiteList: [],
+      registrationWhiteList: appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
-      lang: 'English',
+      lang: 'en-US',
     };
 
   }
@@ -39,13 +37,13 @@ export default class PersonalContainer extends Container {
    * retrieve personal data
    */
   async retrievePersonalData() {
-    try {
-      // TODO GW-1036 retrieve data
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+    const currentUser = this.appContainer.getCurrentUser();
+    const {
+      name, email, isEmailPublished, lang,
+    } = currentUser;
+    this.setState({
+      name, email, isEmailPublished, lang,
+    });
   }
 
   /**
