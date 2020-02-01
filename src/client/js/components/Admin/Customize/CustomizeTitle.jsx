@@ -25,7 +25,7 @@ class CustomizeTitle extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeTitle();
-      toastSuccess(t('toaster:update_successed', { target: 'CustomTitle' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_title') }));
     }
     catch (err) {
       toastError(err);

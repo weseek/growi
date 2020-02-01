@@ -28,7 +28,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
-      toastSuccess(t('toaster:update_successed', { target: 'Function' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.function') }));
     }
     catch (err) {
       toastError(err);

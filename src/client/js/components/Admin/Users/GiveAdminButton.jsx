@@ -20,7 +20,7 @@ class GiveAdminButton extends React.Component {
 
     try {
       const username = await this.props.adminUsersContainer.giveUserAdmin(this.props.user._id);
-      toastSuccess(t('toaster:give_user_admin', { username }));
+      toastSuccess(t('toaster.give_user_admin', { username }));
     }
     catch (err) {
       toastError(err);

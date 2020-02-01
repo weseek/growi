@@ -37,7 +37,7 @@ class CustomizeHeaderSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeHeader();
-      toastSuccess(t('toaster:update_successed', { target: 'CustomHeader' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_header') }));
     }
     catch (err) {
       toastError(err);

@@ -25,7 +25,7 @@ class AppSetting extends React.Component {
 
     try {
       await adminAppContainer.updateAppSettingHandler();
-      toastSuccess(t('toaster:update_successed', { target: 'App' }));
+      toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
     }
     catch (err) {
       toastError(err);

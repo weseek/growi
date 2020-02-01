@@ -20,7 +20,7 @@ class RemoveAdminButton extends React.Component {
 
     try {
       const username = await this.props.adminUsersContainer.removeUserAdmin(this.props.user._id);
-      toastSuccess(t('toaster:remove_user_admin', { username }));
+      toastSuccess(t('toaster.remove_user_admin', { username }));
     }
     catch (err) {
       toastError(err);

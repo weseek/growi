@@ -37,7 +37,7 @@ class CustomizeCssSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeCss();
-      toastSuccess(t('toaster:update_successed', { target: 'CustomCss' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_css') }));
     }
     catch (err) {
       toastError(err);

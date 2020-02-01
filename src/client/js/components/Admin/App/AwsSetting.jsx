@@ -25,7 +25,7 @@ class AwsSetting extends React.Component {
 
     try {
       await adminAppContainer.updateAwsSettingHandler();
-      toastSuccess(t('toaster:update_successed', { target: 'AWS' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.aws_settings') }));
     }
     catch (err) {
       toastError(err);

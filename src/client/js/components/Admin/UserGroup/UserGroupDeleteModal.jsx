@@ -129,7 +129,8 @@ class UserGroupDeleteModal extends React.Component {
       return <option key={group._id} value={group._id} data-content={dataContent}>{this.xss.process(group.name)}</option>;
     });
 
-    const defaultOptionText = groups.length === 0 ? t('admin:user_group_management.delete_modal.no_groups') : t('admin:user_group_management.delete_modal.select_group');
+    const defaultOptionText = groups.length === 0 ? t('admin:user_group_management.delete_modal.no_groups')
+      : t('admin:user_group_management.delete_modal.select_group');
 
     return (
       <select

@@ -30,7 +30,7 @@ class CustomizeLayoutSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeLayoutAndTheme();
-      toastSuccess(t('toaster:update_successed', { target: 'Layout' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
     }
     catch (err) {
       toastError(err);

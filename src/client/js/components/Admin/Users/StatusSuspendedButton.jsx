@@ -20,7 +20,7 @@ class StatusSuspendedButton extends React.Component {
 
     try {
       const username = await this.props.adminUsersContainer.deactivateUser(this.props.user._id);
-      toastSuccess(t('toaster:deactivate_user_success', { username }));
+      toastSuccess(t('toaster.deactivate_user_success', { username }));
     }
     catch (err) {
       toastError(err);

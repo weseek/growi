@@ -28,7 +28,7 @@ class CustomizeHighlightSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateHighlightJsStyle();
-      toastSuccess(t('toaster:update_successed', { target: 'Highlight' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
     }
     catch (err) {
       toastError(err);

@@ -37,7 +37,7 @@ class CustomizeScriptSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeScript();
-      toastSuccess(t('toaster:update_successed', { target: 'CustomScript' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_script') }));
     }
     catch (err) {
       toastError(err);

@@ -26,7 +26,7 @@ class PluginSetting extends React.Component {
 
     try {
       await adminAppContainer.updatePluginSettingHandler();
-      toastSuccess(t('toaster:update_successed', { target: 'Plugin' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings') }));
     }
     catch (err) {
       toastError(err);

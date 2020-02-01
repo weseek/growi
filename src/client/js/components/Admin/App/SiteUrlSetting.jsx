@@ -25,7 +25,7 @@ class SiteUrlSetting extends React.Component {
 
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('toaster:update_successed', { target: 'URL' }));
+      toastSuccess(t('toaster.update_successed', { target: t('Site URL settings') }));
     }
     catch (err) {
       toastError(err);
@@ -39,7 +39,8 @@ class SiteUrlSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="well">{t('admin:app_setting.site_url_desc')}</p>
-        {!adminAppContainer.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
+        {!adminAppContainer.state.isSetSiteUrl
+          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
 
         <div className="row">
           <div className="col-md-12">
