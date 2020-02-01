@@ -36,8 +36,8 @@ export default class PersonalContainer extends Container {
   }
 
   /**
- * retrieve personal data
- */
+   * retrieve personal data
+   */
   async retrievePersonalData() {
     try {
       // TODO GW-1036 retrieve data
