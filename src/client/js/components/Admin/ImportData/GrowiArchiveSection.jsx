@@ -83,7 +83,7 @@ class GrowiArchiveSection extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('importer_management:import_growi_archive')}</h2>
+        <h2>{t('admin:importer_management.import_growi_archive')}</h2>
 
         {this.state.fileName != null ? (
           <div className="px-4">

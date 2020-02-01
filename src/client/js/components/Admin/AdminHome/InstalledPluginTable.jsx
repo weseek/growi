@@ -15,9 +15,9 @@ class InstalledPluginTable extends React.Component {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th className="text-center">{t('admin_top:package_name')}</th>
-            <th className="text-center">{t('admin_top:specified_version')}</th>
-            <th className="text-center">{t('admin_top:installed_version')}</th>
+            <th className="text-center">{t('admin:admin_top.package_name')}</th>
+            <th className="text-center">{t('admin:admin_top.specified_version')}</th>
+            <th className="text-center">{t('admin:admin_top.installed_version')}</th>
           </tr>
         </thead>
         <tbody>

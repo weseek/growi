@@ -72,12 +72,12 @@ class CustomizeHighlightSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_setting:code_highlight')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
 
         <div className="form-group row">
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <div className="my-0 btn-group">
-              <label>{t('customize_setting:theme')}</label>
+              <label>{t('admin:customize_setting.theme')}</label>
               <div className="dropdown">
                 <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span className="pull-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
@@ -91,7 +91,7 @@ class CustomizeHighlightSetting extends React.Component {
                 </ul>
               </div>
               {/* eslint-disable-next-line react/no-danger */}
-              <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html: t('customize_setting:nocdn_desc') }} /></p>
+              <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} /></p>
             </div>
           </div>
         </div>

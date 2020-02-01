@@ -43,7 +43,7 @@ class UserGroupTable extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('user_group_management:group_list')}</h2>
+        <h2>{t('admin:user_group_management.group_list')}</h2>
 
         <table className="table table-bordered table-user-list">
           <thead>

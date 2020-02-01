@@ -39,20 +39,20 @@ class AwsSetting extends React.Component {
     return (
       <React.Fragment>
         <p className="well">
-          {t('app_setting:aws_access')}
+          {t('admin:app_setting.aws_access')}
           <br />
-          {t('app_setting:no_smtp_setting')}
+          {t('admin:app_setting.no_smtp_setting')}
           <br />
           <br />
           <span className="text-danger">
             <i className="ti-unlink"></i>
-            {t('app_setting:change_setting')}
+            {t('admin:app_setting.change_setting')}
           </span>
         </p>
 
         <div className="row mb-5">
           <label className="col-xs-3 control-label">
-            {t('app_setting:region')}
+            {t('admin:app_setting.region')}
           </label>
           <div className="col-xs-6">
             <input
@@ -68,7 +68,7 @@ class AwsSetting extends React.Component {
 
         <div className="row mb-5">
           <label className="col-xs-3 control-label">
-            {t('app_setting:custom_endpoint')}
+            {t('admin:app_setting.custom_endpoint')}
           </label>
           <div className="col-xs-6">
             <input
@@ -80,13 +80,13 @@ class AwsSetting extends React.Component {
                 adminAppContainer.changeCustomEndpoint(e.target.value);
               }}
             />
-            <p className="help-block">{t('app_setting:custom_endpoint_change')}</p>
+            <p className="help-block">{t('admin:app_setting.custom_endpoint_change')}</p>
           </div>
         </div>
 
         <div className="row mb-5">
           <label className="col-xs-3 control-label">
-            {t('app_setting:bucket_name')}
+            {t('admin:app_setting.bucket_name')}
           </label>
           <div className="col-xs-6">
             <input

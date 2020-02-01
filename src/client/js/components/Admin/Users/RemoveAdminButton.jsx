@@ -33,7 +33,7 @@ class RemoveAdminButton extends React.Component {
 
     return (
       <a className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
-        <i className="icon-fw icon-user-unfollow"></i> {t('user_management:user_table.remove_admin_access')}
+        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
       </a>
     );
   }
@@ -43,8 +43,8 @@ class RemoveAdminButton extends React.Component {
 
     return (
       <div className="px-4">
-        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('user_management:user_table.remove_admin_access')}
-        <p className="alert alert-danger">{t('user_management:user_table.cannot_remove')}</p>
+        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.remove_admin_access')}
+        <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_remove')}</p>
       </div>
     );
   }

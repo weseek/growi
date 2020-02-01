@@ -39,11 +39,11 @@ class CustomizeTitle extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_setting:custom_title')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_title')}</h2>
         <p
           className="well"
           // eslint-disable-next-line react/no-danger, max-len
-          dangerouslySetInnerHTML={{ __html: t('customize_setting:custom_title_detail') }}
+          dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
         />
         {/* TODO i18n */}
         <div className="help-block">

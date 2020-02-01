@@ -32,7 +32,7 @@ class StatusActivateButton extends React.Component {
 
     return (
       <a className="px-4" onClick={() => { this.onClickAcceptBtn() }}>
-        <i className="icon-fw icon-user-following"></i> {t('user_management:user_table.accept')}
+        <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.accept')}
       </a>
     );
   }

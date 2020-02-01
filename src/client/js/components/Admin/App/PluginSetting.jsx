@@ -39,7 +39,7 @@ class PluginSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('app_setting:enable_plugin_loading')}</p>
+        <p className="well">{t('admin:app_setting.enable_plugin_loading')}</p>
 
         <div className="row mb-5">
           <div className="col-xs-offset-3 col-xs-6 text-left">
@@ -52,7 +52,7 @@ class PluginSetting extends React.Component {
                   adminAppContainer.changeIsEnabledPlugins(e.target.checked);
                 }}
               />
-              <label htmlFor="isEnabledPlugins">{t('app_setting:load_plugins')}</label>
+              <label htmlFor="isEnabledPlugins">{t('admin:app_setting.load_plugins')}</label>
             </div>
           </div>
         </div>
