@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import UserSettings from './UserSettings';
+import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 
 class PersonalSettings extends React.Component {
 
@@ -34,7 +35,7 @@ class PersonalSettings extends React.Component {
                 <UserSettings />
               </div>
               <div id="external-accounts" className="tab-pane" role="tabpanel">
-                {/* TODO GW-1029 create component */}
+                <ExternalAccountLinkedMe />
               </div>
               <div id="password-settings" className="tab-pane" role="tabpanel">
                 {/* TODO GW-1030 create component */}

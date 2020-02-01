@@ -24,6 +24,7 @@ export default class PersonalContainer extends Container {
       registrationWhiteList: [],
       isEmailPublished: false,
       lang: 'English',
+      externalAccounts: [],
     };
 
   }
