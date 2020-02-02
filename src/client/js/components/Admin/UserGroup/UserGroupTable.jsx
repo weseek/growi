@@ -89,7 +89,7 @@ class UserGroupTable extends React.Component {
                             </li>
 
                             <li>
-                              <a href="#" onClick={this.onDelete} data-user-group-id={group._id}>
+                              <a role="button" onClick={this.onDelete} data-user-group-id={group._id}>
                                 <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                               </a>
                             </li>

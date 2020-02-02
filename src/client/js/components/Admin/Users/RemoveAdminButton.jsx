@@ -32,7 +32,7 @@ class RemoveAdminButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
+      <a role="button" className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
         <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
       </a>
     );

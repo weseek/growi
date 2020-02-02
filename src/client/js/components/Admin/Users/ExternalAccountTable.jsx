@@ -100,7 +100,7 @@ class ExternalAccountTable extends React.Component {
                       <ul className="dropdown-menu" role="menu">
                         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
                         <li>
-                          <a onClick={() => { return this.removeExtenalAccount(ea._id) }}>
+                          <a role="button" onClick={() => { return this.removeExtenalAccount(ea._id) }}>
                             <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                           </a>
                         </li>
