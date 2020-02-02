@@ -26,13 +26,32 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /personal-setting:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getPersonalSetting
+   *        summary: /personal-setting
+   *        description: Get personal parameters
+   *        responses:
+   *          200:
+   *            description: params of personal
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    personalParams:
+   *                      type: object
+   *                      description: personal params
+   */
   router.get('/', loginRequiredStrictly, async(req, res) => {
     const personalParams = {
       currentUser: await User.findUserByUsername(req.user.username),
       registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
     };
-    return res.apiv3(personalParams);
+    return res.apiv3({ personalParams });
   });
 
   return router;

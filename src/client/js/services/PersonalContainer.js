@@ -22,7 +22,7 @@ export default class PersonalContainer extends Container {
       retrieveError: null,
       name: '',
       email: '',
-      registrationWhiteList: appContainer.getConfig().registrationWhiteList,
+      registrationWhiteList: [],
       isEmailPublished: false,
       lang: 'en-US',
     };
@@ -42,7 +42,7 @@ export default class PersonalContainer extends Container {
   async retrievePersonalData() {
     try {
       const response = await this.appContainer.apiv3.get('/personal-setting/');
-      const { currentUser, registrationWhiteList } = response.data;
+      const { currentUser, registrationWhiteList } = response.data.personalParams;
 
       this.setState({
         name: currentUser.name,

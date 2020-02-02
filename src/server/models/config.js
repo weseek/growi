@@ -179,7 +179,6 @@ module.exports = function(crowi) {
         image: crowi.fileUploadService.getIsUploadable(),
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
-      registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
