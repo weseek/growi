@@ -89,7 +89,7 @@ Development
 
 ## Dependencies
 
-- Node.js v10.x (DON'T USE 11.x)
+- Node.js v12.x (DON'T USE 13.x)
 - npm 6.x
 - yarn
 - MongoDB 3.x
