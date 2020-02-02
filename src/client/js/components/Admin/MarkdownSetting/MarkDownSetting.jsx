@@ -38,22 +38,22 @@ class MarkdownSetting extends React.Component {
       <React.Fragment>
         {/* Line Break Setting */}
         <div className="row mb-5">
-          <h2 className="border-bottom">{t('markdown_setting:lineBreak_header')}</h2>
-          <p className="well">{t('markdown_setting:lineBreak_desc')}</p>
+          <h2 className="border-bottom">{t('admin:markdown_setting.lineBreak_header')}</h2>
+          <p className="well">{t('admin:markdown_setting.lineBreak_desc')}</p>
           <LineBreakForm />
         </div>
 
         {/* Presentation Setting */}
         <div className="row mb-5">
-          <h2 className="border-bottom">{t('markdown_setting:presentation_header')}</h2>
-          <p className="well">{t('markdown_setting:presentation_desc')}</p>
+          <h2 className="border-bottom">{t('admin:markdown_setting.presentation_header')}</h2>
+          <p className="well">{t('admin:markdown_setting.presentation_desc')}</p>
           <PresentationForm />
         </div>
 
         {/* XSS Setting */}
         <div className="row mb-5">
-          <h2 className="border-bottom">{t('markdown_setting:xss_header')}</h2>
-          <p className="well">{t('markdown_setting:xss_desc')}</p>
+          <h2 className="border-bottom">{t('admin:markdown_setting.xss_header')}</h2>
+          <p className="well">{t('admin:markdown_setting.xss_desc')}</p>
           <XssForm />
         </div>
       </React.Fragment>

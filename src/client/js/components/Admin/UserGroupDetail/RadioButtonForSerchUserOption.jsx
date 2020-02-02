@@ -17,7 +17,7 @@ class RadioButtonForSerchUserOption extends React.Component {
           onChange={this.props.onChange}
         />
         <label className="text-capitalize form-check-label ml-3" htmlFor={`${searchType}Match`}>
-          {t(`user_group_management:add_modal.${searchType}_match`)}
+          {t(`admin:user_group_management.add_modal.${searchType}_match`)}
         </label>
       </div>
     );

@@ -117,7 +117,7 @@ class SelectCollectionsModal extends React.Component {
       return <></>;
     }
 
-    const html = this.props.t('export_management:desc_password_seed');
+    const html = this.props.t('admin:export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
     return <div className="well well-sm" dangerouslySetInnerHTML={{ __html: html }}></div>;
@@ -172,7 +172,7 @@ class SelectCollectionsModal extends React.Component {
     return (
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{t('export_management:export_collections')}</Modal.Title>
+          <Modal.Title>{t('admin:export_management.export_collections')}</Modal.Title>
         </Modal.Header>
 
         <form onSubmit={this.export}>
@@ -180,10 +180,10 @@ class SelectCollectionsModal extends React.Component {
             <div className="row">
               <div className="col-sm-12">
                 <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
-                  <i className="fa fa-check-square-o"></i> {t('export_management:check_all')}
+                  <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
                 </button>
                 <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
-                  <i className="fa fa-square-o"></i> {t('export_management:uncheck_all')}
+                  <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
                 </button>
               </div>
             </div>
@@ -215,8 +215,8 @@ class SelectCollectionsModal extends React.Component {
           </Modal.Body>
 
           <Modal.Footer>
-            <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('export_management:cancel')}</button>
-            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management:export')}</button>
+            <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('admin:export_management.cancel')}</button>
+            <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('admin:export_management.export')}</button>
           </Modal.Footer>
         </form>
       </Modal>

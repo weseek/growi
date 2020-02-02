@@ -25,7 +25,7 @@ class SiteUrlSetting extends React.Component {
 
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('toaster:update_successed', { target: 'URL' }));
+      toastSuccess(t('toaster.update_successed', { target: t('Site URL settings') }));
     }
     catch (err) {
       toastError(err);
@@ -38,8 +38,9 @@ class SiteUrlSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('app_setting:site_url_desc')}</p>
-        {!adminAppContainer.state.isSetSiteUrl && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('app_setting:site_url_warn')}</p>)}
+        <p className="well">{t('admin:app_setting.site_url_desc')}</p>
+        {!adminAppContainer.state.isSetSiteUrl
+          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
 
         <div className="row">
           <div className="col-md-12">
@@ -68,14 +69,14 @@ class SiteUrlSetting extends React.Component {
                       />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
-                        <span dangerouslySetInnerHTML={{ __html: t('app_setting:siteurl_help') }} />
+                        <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.siteurl_help') }} />
                       </p>
                     </td>
                     <td>
                       <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl} readOnly />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
-                        <span dangerouslySetInnerHTML={{ __html: t('app_setting:use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
+                        <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
                       </p>
                     </td>
                   </tr>

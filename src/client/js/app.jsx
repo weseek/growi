@@ -36,6 +36,8 @@ import TableOfContents from './components/TableOfContents';
 
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
+import NotificationSetting from './components/Admin/Notification/NotificationSetting';
+import ManageGlobalNotification from './components/Admin/Notification/ManageGlobalNotification';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import AppSettingsPage from './components/Admin/App/AppSettingsPage';
@@ -59,6 +61,7 @@ import AdminAppContainer from './services/AdminAppContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
+import AdminNotificationContainer from './services/AdminNotificationContainer';
 
 const logger = loggerFactory('growi:app');
 
@@ -163,12 +166,15 @@ const adminHomeContainer = new AdminHomeContainer(appContainer);
 const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
+const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminContainers = {
   'admin-home': adminHomeContainer,
   'admin-customize': adminCustomizeContainer,
   'admin-user-page': adminUsersContainer,
   'admin-external-account-setting': adminExternalAccountsContainer,
+  'admin-notification-setting': adminNotificationContainer,
+  'admin-global-notification-setting': adminNotificationContainer,
   'admin-markdown-setting': adminMarkDownContainer,
   'admin-export-page': websocketContainer,
 };
@@ -197,6 +203,8 @@ const adminComponentMappings = {
   'admin-customize': <Customize />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
+  'admin-notification-setting': <NotificationSetting />,
+  'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
 };

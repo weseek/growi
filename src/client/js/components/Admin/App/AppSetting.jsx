@@ -25,7 +25,7 @@ class AppSetting extends React.Component {
 
     try {
       await adminAppContainer.updateAppSettingHandler();
-      toastSuccess(t('toaster:update_successed', { target: 'App' }));
+      toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
     }
     catch (err) {
       toastError(err);
@@ -39,7 +39,7 @@ class AppSetting extends React.Component {
     return (
       <React.Fragment>
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting:site_name')}</label>
+          <label className="col-xs-3 control-label">{t('admin:app_setting.site_name')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -48,26 +48,26 @@ class AppSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
               placeholder="GROWI"
             />
-            <p className="help-block">{t('app_setting:sitename_change')}</p>
+            <p className="help-block">{t('admin:app_setting.sitename_change')}</p>
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting:confidential_name')}</label>
+          <label className="col-xs-3 control-label">{t('admin:app_setting.confidential_name')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
               type="text"
               defaultValue={adminAppContainer.state.confidential}
               onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
-              placeholder={t('app_setting:confidential_example')}
+              placeholder={t('admin:app_setting.confidential_example')}
             />
-            <p className="help-block">{t('app_setting:header_content')}</p>
+            <p className="help-block">{t('admin:app_setting.header_content')}</p>
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting:default_language')}</label>
+          <label className="col-xs-3 control-label">{t('admin:app_setting.default_language')}</label>
           <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
               <input
@@ -95,7 +95,7 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting:file_uploading')}</label>
+          <label className="col-xs-3 control-label">{t('admin:app_setting.file_uploading')}</label>
           <div className="col-xs-6">
             <div className="checkbox checkbox-info">
               <input
@@ -105,13 +105,13 @@ class AppSetting extends React.Component {
                 checked={adminAppContainer.state.fileUpload}
                 onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
               />
-              <label htmlFor="cbFileUpload">{t('app_setting:enable_files_except_image')}</label>
+              <label htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
             </div>
 
             <p className="help-block">
-              {t('app_setting:enable_files_except_image')}
+              {t('admin:app_setting.enable_files_except_image')}
               <br />
-              {t('app_setting:attach_enable')}
+              {t('admin:app_setting.attach_enable')}
             </p>
           </div>
         </div>

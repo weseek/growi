@@ -44,7 +44,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label> {t('user_management:invite_modal.emails')}</label>
+        <label> {t('admin:user_management.invite_modal.emails')}</label>
         <textarea
           className="form-control"
           placeholder="e.g. user@growi.org"
@@ -52,7 +52,7 @@ class UserInviteModal extends React.Component {
           value={this.state.emailInputValue}
           onChange={this.handleInput}
         />
-        {!this.validEmail() && <p className="m-2 text-danger">{t('user_management:invite_modal.valid_email')}</p>}
+        {!this.validEmail() && <p className="m-2 text-danger">{t('admin:user_management.invite_modal.valid_email')}</p>}
       </>
     );
   }
@@ -63,8 +63,8 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <p>{t('user_management:invite_modal.temporary_password')}</p>
-        <p>{t('user_management:invite_modal.send_new_password')}</p>
+        <p>{t('admin:user_management.invite_modal.temporary_password')}</p>
+        <p>{t('admin:user_management.invite_modal.send_new_password')}</p>
         {invitedEmailList.createdUserList.length > 0 && this.renderCreatedEmail(invitedEmailList.createdUserList)}
         {invitedEmailList.existingEmailList.length > 0 && this.renderExistingEmail(invitedEmailList.existingEmailList)}
       </>
@@ -79,7 +79,7 @@ class UserInviteModal extends React.Component {
         <div className="checkbox checkbox-success text-left" onChange={this.handleCheckBox} style={{ flex: 1 }}>
           <input type="checkbox" id="sendEmail" className="form-check-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
           <label htmlFor="sendEmail">
-            {t('user_management:invite_modal.invite_thru_email')}
+            {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
         </div>
         <div>
@@ -105,7 +105,7 @@ class UserInviteModal extends React.Component {
     return (
       <>
         <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
-          {t('user_management:invite_modal.send_temporary_password')}
+          {t('admin:user_management.invite_modal.send_temporary_password')}
         </label>
         <Button
           bsStyle="primary"
@@ -138,7 +138,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <p className="text-warning">{t('user_management:existing_email')}</p>
+        <p className="text-warning">{t('admin:user_management.existing_email')}</p>
         <ul>
           {emailList.map((user) => {
             return (
@@ -188,7 +188,7 @@ class UserInviteModal extends React.Component {
       <Modal show={adminUsersContainer.state.isUserInviteModalShown} onHide={this.onToggleModal}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
-            {t('user_management:invite_users')}
+            {t('admin:user_management.invite_users')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

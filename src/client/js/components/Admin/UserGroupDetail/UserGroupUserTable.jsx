@@ -70,7 +70,7 @@ class UserGroupUserTable extends React.Component {
                     <ul className="dropdown-menu" role="menu">
                       <li>
                         <a onClick={() => { return this.removeUser(relatedUser.username) }}>
-                          <i className="icon-fw icon-user-unfollow"></i> {t('user_group_management:remove_from_group')}
+                          <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
                         </a>
                       </li>
                     </ul>

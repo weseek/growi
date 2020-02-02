@@ -21,6 +21,8 @@ module.exports = (crowi) => {
 
   router.use('/customize-setting', require('./customize-setting')(crowi));
 
+  router.use('/notification-setting', require('./notification-setting')(crowi));
+
   router.use('/users', require('./users')(crowi));
 
   router.use('/user-groups', require('./user-group')(crowi));

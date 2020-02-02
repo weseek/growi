@@ -305,6 +305,15 @@
       "Post": "Post"
     }
   },
+  "toaster": {
+    "update_successed": "Succeeded to update {{target}}",
+    "give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+    "activate_user_success": "Succeeded to activating {{username}}",
+    "deactivate_user_success": "Succeeded to deactivate {{username}}",
+    "remove_user_success": "Succeeded to removing {{username}} ",
+    "remove_external_user_success": "Succeeded to remove {{accountId}} "
+  },
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit Template Page",
@@ -510,10 +519,30 @@
     }
   },
   "notification_setting": {
+    "slack_incoming_configuration": "Slack Incoming Webhooks Configuration",
+    "prioritize_webhook": "Prioritize Incoming Webhook than Slack App",
+    "prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
+    "slack_app_configuration": "Slack App Configuration",
+    "slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
+    "use_instead":"Please use Slack Incoming Webhooks Configuration instead.",
+    "how_to": {
+      "header": "How to configure Incoming Webhooks?",
+      "workspace": "(At Workspace) Add a hook",
+      "workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks Configuration page</a>.",
+      "workspace_desc2": "Choose the default channel to post.",
+      "workspace_desc3": "Add.",
+      "at_growi": "(At GROWI admin page) Set Webhook URL",
+      "at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
+    },
+    "user_trigger_notification_header": "Default Notification Settings for Patterns",
+    "pattern": "Pattern",
+    "channel": "Channel",
+    "pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
+    "channel_desc": "Slack channel name. Without <code>#</code>.",
     "notification_list": "List of Notification Settings",
     "add_notification": "Add New",
     "trigger_path": "Trigger Path",
-    "trigger_path_help": "(expression with %s is supported)",
+    "trigger_path_help": "(expression with <code>*</code> is supported)",
     "trigger_events": "Trigger Events",
     "notify_to": "Notify To",
     "back_to_list": "Go back to list",
@@ -526,7 +555,13 @@
     "event_comment": "When someone \"COMMENTS\" on page",
     "email": {
       "ifttt_link": "Create a new IFTTT applet with Email trigger"
-    }
+    },
+    "updated_slackApp": "Succeeded to update Slack App Configuration setting",
+    "add_notification_pattern": "Add user trigger notification patterns",
+    "delete_notification_pattern": "Delete notification pattern",
+    "delete_notification_pattern_desc1": "Delete Path: {{path}}",
+    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
+    "toggle_notification": "Updated setting of {{path}}"
   },
   "full_text_search_management": {
     "elasticsearch_management": "Elasticsearch Management",

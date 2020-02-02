@@ -37,7 +37,7 @@ class CustomizeScriptSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeScript();
-      toastSuccess(t('toaster:update_successed', { target: 'CustomScript' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_script') }));
     }
     catch (err) {
       toastError(err);
@@ -58,10 +58,10 @@ class CustomizeScriptSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_setting:custom_script')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_script')}</h2>
         <p className="well">
-          {t('customize_setting:write_java')}<br />
-          {t('customize_setting:reflect_change')}
+          {t('admin:customize_setting.write_java')}<br />
+          {t('admin:customize_setting.reflect_change')}
         </p>
 
         <div className="help-block">
@@ -97,7 +97,7 @@ class CustomizeScriptSetting extends React.Component {
           <div className="col-xs-12">
             <p className="help-block text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              {t('customize_setting:ctrl_space')}
+              {t('admin:customize_setting.ctrl_space')}
             </p>
           </div>
         </div>
