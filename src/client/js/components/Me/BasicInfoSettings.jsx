@@ -18,22 +18,11 @@ class BasicInfoSettings extends React.Component {
   constructor(appContainer) {
     super();
 
-    this.state = {
-      retrieveError: null,
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   componentDidMount() {
-    try {
-      this.props.personalContainer.retrievePersonalData();
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-      this.setState({ retrieveError: err.message });
-    }
+    this.props.personalContainer.retrievePersonalData();
   }
 
   async onClickSubmit() {
@@ -146,7 +135,9 @@ class BasicInfoSettings extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={this.state.retrieveError != null}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
+              {t('Update')}
+            </button>
           </div>
         </div>
 
