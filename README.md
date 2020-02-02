@@ -28,6 +28,9 @@ GROWI
 | :-: |
 |![sample image](https://user-images.githubusercontent.com/42988650/70600974-6b29cc80-1c34-11ea-94ef-33c39c6a00dc.gif)|
 
+Table Of Contents
+---------------
+
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
     - [Heroku](#heroku)
@@ -75,13 +78,13 @@ Quick Start for Production
 
 
 Configuration
-============
+------------
 
 See [GROWI Docs: Admin Guide](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/)).
 
-## Environment Variables
+### Environment Variables
 
-- [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)
+See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html) ([en](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)/[ja](https://docs.growi.org/ja/admin-guide/admin-cookbook/env-vars.html)).
 
 
 Development
