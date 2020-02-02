@@ -95,7 +95,7 @@ export default class AdminAppContainer extends Container {
         bucket: appSettingsParams.bucket,
         accessKeyId: appSettingsParams.accessKeyId,
         secretKey: appSettingsParams.secretKey,
-        isEnabledPlugins: appSettingsParams.isEnabledPlugins || false,
+        isEnabledPlugins: appSettingsParams.isEnabledPlugins,
       });
 
     }
