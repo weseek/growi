@@ -10,6 +10,10 @@ import ExternalAccountRow from './ExternalAccountRow';
 
 class ExternalAccountLinkedMe extends React.Component {
 
+  async componentDidMount() {
+    this.props.personalContainer.retrieveExternalAccounts();
+  }
+
   render() {
     const { t, personalContainer } = this.props;
     const { externalAccounts } = personalContainer.state;
@@ -38,7 +42,7 @@ class ExternalAccountLinkedMe extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {externalAccounts !== 0 && externalAccounts.map(account => <ExternalAccountRow account={account} />)}
+                {externalAccounts !== 0 && externalAccounts.map(account => <ExternalAccountRow account={account} key={account._id} />)}
               </tbody>
             </table>
           </div>

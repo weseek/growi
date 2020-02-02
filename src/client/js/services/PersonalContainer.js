@@ -61,6 +61,23 @@ export default class PersonalContainer extends Container {
   }
 
   /**
+   * retrieve external accounts that linked me
+   */
+  async retrieveExternalAccounts() {
+    try {
+      const response = await this.appContainer.apiv3.get('/personal-setting/external-accounts');
+      const { externalAccounts } = response.data;
+
+      this.setState({ externalAccounts });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err.message });
+      logger.error(err);
+      toastError(new Error('Failed to fetch data'));
+    }
+  }
+
+  /**
    * Change name
    */
   changeName(inputValue) {

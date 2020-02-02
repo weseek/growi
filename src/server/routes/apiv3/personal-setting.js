@@ -21,7 +21,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
   const { customizeService } = crowi;
 
-  const { User } = crowi.models;
+  const { User, ExternalAccount } = crowi.models;
 
 
   const { ApiV3FormValidator } = crowi.middlewares;
@@ -52,6 +52,21 @@ module.exports = (crowi) => {
       registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
     };
     return res.apiv3({ personalParams });
+  });
+
+  // TODO swagger
+  router.get('/external-accounts', loginRequiredStrictly, async(req, res) => {
+    const userData = req.user;
+
+    try {
+      const externalAccounts = await ExternalAccount.find({ user: userData });
+      return res.apiv3({ externalAccounts });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('get-external-accounts-failed');
+    }
+
   });
 
   return router;
