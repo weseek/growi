@@ -35,10 +35,6 @@ module.exports = function(crowi, app) {
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
-    const { searchService } = crowi;
-    if (!searchService.isReachable) {
-      return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
-    }
 
     return res.render('search', {
       q: keyword,
@@ -127,7 +123,7 @@ module.exports = function(crowi, app) {
 
     const { searchService } = crowi;
     if (!searchService.isReachable) {
-      return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
+      return res.json(ApiResponse.error('SearchService is not reachable.'));
     }
 
     let userGroups = [];
