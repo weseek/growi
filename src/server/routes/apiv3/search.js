@@ -9,6 +9,7 @@ const router = express.Router();
 
 const helmet = require('helmet');
 
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
@@ -43,8 +44,10 @@ module.exports = (crowi) => {
    */
   router.get('/indices', helmet.noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
-      const search = crowi.getSearcher();
-      const info = await search.getInfoForAdmin();
+      const { searchService } = crowi;
+      const info = searchService.isReachable
+        ? await searchService.getInfoForAdmin()
+        : {};
       return res.status(200).send({ info });
     }
     catch (err) {
@@ -66,8 +69,8 @@ module.exports = (crowi) => {
    */
   router.post('/connection', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
-      const search = crowi.getSearcher();
-      await search.initClient();
+      const { searchService } = crowi;
+      await searchService.initClient();
       return res.status(200).send();
     }
     catch (err) {
@@ -106,24 +109,28 @@ module.exports = (crowi) => {
   router.put('/indices', accessTokenParser, loginRequired, adminRequired, csrf, validatorForPutIndices, ApiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;
 
-    try {
-      const search = crowi.getSearcher();
+    const { searchService } = crowi;
 
+    if (!searchService.isReachable) {
+      return res.apiv3Err(new ErrorV3('SearchService is not reachable', 'search-service-unreachable'));
+    }
+
+    try {
       switch (operation) {
         case 'normalize':
           // wait the processing is terminated
-          await search.normalizeIndices();
+          await searchService.normalizeIndices();
           return res.status(200).send({ message: 'Operation is successfully processed.' });
         case 'rebuild':
           // NOT wait the processing is terminated
-          search.rebuildIndex();
+          searchService.rebuildIndex();
           return res.status(200).send({ message: 'Operation is successfully requested.' });
         default:
           throw new Error(`Unimplemented operation: ${operation}`);
       }
     }
     catch (err) {
-      return res.apiv3Err(err);
+      return res.apiv3Err(err, 503);
     }
   });
 

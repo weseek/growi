@@ -224,8 +224,9 @@ module.exports = function(crowi, app) {
 
   actions.search = {};
   actions.search.index = function(req, res) {
-    const search = crowi.getSearcher();
-    if (!search) {
+    const { searchService } = crowi;
+    if (!searchService.isConfigured) {
+      logger.warn('SearchService has not configured');
       return res.redirect('/admin');
     }
 

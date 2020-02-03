@@ -116,12 +116,17 @@ module.exports = (crowi) => {
     }
 
     // connect to search service
-    try {
-      const search = crowi.getSearcher();
-      info.searchInfo = await search.getInfo();
+    const { searchService } = crowi;
+    if (!searchService.isConfigured) {
+      errors.push(new ErrorV3('The Search Service is not configured', 'healthcheck-search-not-configured'));
     }
-    catch (err) {
-      errors.push(new ErrorV3(`The Search Service is not connectable - ${err.message}`, 'healthcheck-search-unhealthy', err.stack));
+    else {
+      try {
+        info.searchInfo = await searchService.getInfo();
+      }
+      catch (err) {
+        errors.push(new ErrorV3(`The Search Service is not connectable - ${err.message}`, 'healthcheck-search-unhealthy', err.stack));
+      }
     }
 
     if (errors.length > 0) {
