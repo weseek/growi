@@ -40,18 +40,18 @@ export default class AdminLdapSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { ldapAuth } = response.data.securityParams;
     this.setState({
-      serverUrl: ldapAuth.serverUrl || '',
-      isUserBind: ldapAuth.isUserBind || false,
-      ldapBindDN: ldapAuth.ldapBindDN || '',
-      ldapBindDNPassword: ldapAuth.ldapBindDNPassword || '',
-      ldapSearchFilter: ldapAuth.ldapSearchFilter || '',
-      ldapAttrMapUsername: ldapAuth.ldapAttrMapUsername || '',
-      isSameUsernameTreatedAsIdenticalUser: ldapAuth.isSameUsernameTreatedAsIdenticalUser || false,
-      ldapAttrMapMail: ldapAuth.ldapAttrMapMail || '',
-      ldapAttrMapName: ldapAuth.ldapAttrMapName || '',
-      ldapGroupSearchBase: ldapAuth.ldapGroupSearchBase || '',
-      ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter || '',
-      ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty || '',
+      serverUrl: ldapAuth.serverUrl,
+      isUserBind: ldapAuth.isUserBind,
+      ldapBindDN: ldapAuth.ldapBindDN,
+      ldapBindDNPassword: ldapAuth.ldapBindDNPassword,
+      ldapSearchFilter: ldapAuth.ldapSearchFilter,
+      ldapAttrMapUsername: ldapAuth.ldapAttrMapUsername,
+      isSameUsernameTreatedAsIdenticalUser: ldapAuth.isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail: ldapAuth.ldapAttrMapMail,
+      ldapAttrMapName: ldapAuth.ldapAttrMapName,
+      ldapGroupSearchBase: ldapAuth.ldapGroupSearchBase,
+      ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter,
+      ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty,
     });
   }
 

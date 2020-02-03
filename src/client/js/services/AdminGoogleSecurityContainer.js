@@ -36,9 +36,9 @@ export default class AdminGoogleSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { googleOAuth } = response.data.securityParams;
     this.setState({
-      googleClientId: googleOAuth.googleClientId || '',
-      googleClientSecret: googleOAuth.googleClientSecret || '',
-      isSameUsernameTreatedAsIdenticalUser: googleOAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      googleClientId: googleOAuth.googleClientId,
+      googleClientSecret: googleOAuth.googleClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: googleOAuth.isSameUsernameTreatedAsIdenticalUser,
     });
   }
 

@@ -35,9 +35,9 @@ export default class AdminGitHubSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { githubOAuth } = response.data.securityParams;
     this.setState({
-      githubClientId: githubOAuth.githubClientId || '',
-      githubClientSecret: githubOAuth.githubClientSecret || '',
-      isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      githubClientId: githubOAuth.githubClientId,
+      githubClientSecret: githubOAuth.githubClientSecret,
+      isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser,
     });
   }
 
