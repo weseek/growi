@@ -45,16 +45,16 @@ export default class AdminSamlSecurityContainer extends Container {
     const { samlAuth } = response.data.securityParams;
     this.setState({
       missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
-      samlEntryPoint: samlAuth.samlEntryPoint || '',
-      samlIssuer: samlAuth.samlIssuer || '',
-      samlCert: samlAuth.samlCert || '',
-      samlAttrMapId: samlAuth.samlAttrMapId || '',
-      samlAttrMapUserName: samlAuth.samlAttrMapUserName || '',
-      samlAttrMapMail: samlAuth.samlAttrMapMail || '',
-      samlAttrMapFirstName: samlAuth.samlAttrMapFirstName || '',
-      samlAttrMapLastName: samlAuth.samlAttrMapLastName || '',
-      isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser || false,
-      isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser || false,
+      samlEntryPoint: samlAuth.samlEntryPoint,
+      samlIssuer: samlAuth.samlIssuer,
+      samlCert: samlAuth.samlCert,
+      samlAttrMapId: samlAuth.samlAttrMapId,
+      samlAttrMapUserName: samlAuth.samlAttrMapUserName,
+      samlAttrMapMail: samlAuth.samlAttrMapMail,
+      samlAttrMapFirstName: samlAuth.samlAttrMapFirstName,
+      samlAttrMapLastName: samlAuth.samlAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser,
     });
     return samlAuth;
   }

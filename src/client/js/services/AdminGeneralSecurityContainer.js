@@ -44,18 +44,18 @@ export default class AdminGeneralSecurityContainer extends Container {
     const { generalSetting, generalAuth } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
-      currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority || 'anyOne',
-      isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner || false,
-      isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup || false,
-      wikiMode: generalSetting.wikiMode || '',
-      isLocalEnabled: generalAuth.isLocalEnabled || false,
-      isLdapEnabled: generalAuth.isLdapEnabled || false,
-      isSamlEnabled: generalAuth.isSamlEnabled || false,
-      isOidcEnabled: generalAuth.isOidcEnabled || false,
-      isBasicEnabled: generalAuth.isBasicEnabled || false,
-      isGoogleEnabled: generalAuth.isGoogleEnabled || false,
-      isGitHubEnabled: generalAuth.isGitHubEnabled || false,
-      isTwitterEnabled: generalAuth.isTwitterEnabled || false,
+      currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
+      isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
+      isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
+      wikiMode: generalSetting.wikiMode,
+      isLocalEnabled: generalAuth.isLocalEnabled,
+      isLdapEnabled: generalAuth.isLdapEnabled,
+      isSamlEnabled: generalAuth.isSamlEnabled,
+      isOidcEnabled: generalAuth.isOidcEnabled,
+      isBasicEnabled: generalAuth.isBasicEnabled,
+      isGoogleEnabled: generalAuth.isGoogleEnabled,
+      isGitHubEnabled: generalAuth.isGitHubEnabled,
+      isTwitterEnabled: generalAuth.isTwitterEnabled,
     });
   }
 

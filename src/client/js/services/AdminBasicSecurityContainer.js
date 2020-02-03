@@ -29,7 +29,7 @@ export default class AdminBasicSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { basicAuth } = response.data.securityParams;
     this.setState({
-      isSameUsernameTreatedAsIdenticalUser: basicAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      isSameUsernameTreatedAsIdenticalUser: basicAuth.isSameUsernameTreatedAsIdenticalUser,
     });
   }
 

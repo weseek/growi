@@ -74,7 +74,7 @@ class GitHubSecurityManagement extends React.Component {
               <input
                 id="isGitHubEnabled"
                 type="checkbox"
-                checked={adminGeneralSecurityContainer.state.isGitHubEnabled}
+                checked={adminGeneralSecurityContainer.state.isGitHubEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
               <label htmlFor="isGitHubEnabled">

@@ -74,7 +74,7 @@ class GoogleSecurityManagement extends React.Component {
               <input
                 id="isGoogleEnabled"
                 type="checkbox"
-                checked={adminGeneralSecurityContainer.state.isGoogleEnabled}
+                checked={adminGeneralSecurityContainer.state.isGoogleEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
               <label htmlFor="isGoogleEnabled">

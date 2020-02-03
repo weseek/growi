@@ -35,9 +35,9 @@ export default class AdminTwitterSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { twitterOAuth } = response.data.securityParams;
     this.setState({
-      twitterConsumerKey: twitterOAuth.twitterConsumerKey || '',
-      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret || '',
-      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser || false,
+      twitterConsumerKey: twitterOAuth.twitterConsumerKey,
+      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser,
     });
   }
 
@@ -83,7 +83,6 @@ export default class AdminTwitterSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
 
     this.setState({
-      isTwitterStrategySetup: securitySettingParams.isTwitterStrategySetup,
       twitterConsumerKey: securitySettingParams.twitterConsumerKey,
       twitterConsumerSecret: securitySettingParams.twitterConsumerSecret,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
