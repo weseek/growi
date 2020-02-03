@@ -46,7 +46,7 @@ class MailSetting extends React.Component {
               className="form-control"
               type="text"
               placeholder={`${t('eg')} mail@growi.org`}
-              defaultValue={adminAppContainer.state.fromAddress}
+              defaultValue={adminAppContainer.state.fromAddress || ''}
               onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
             />
           </div>
@@ -59,7 +59,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.smtpHost}
+              defaultValue={adminAppContainer.state.smtpHost || ''}
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
           </div>
@@ -67,7 +67,7 @@ class MailSetting extends React.Component {
             <label>{t('admin:app_setting.port')}</label>
             <input
               className="form-control"
-              defaultValue={adminAppContainer.state.smtpPort}
+              defaultValue={adminAppContainer.state.smtpPort || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
             />
           </div>
@@ -79,7 +79,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.SmtpUser}
+              defaultValue={adminAppContainer.state.SmtpUser || ''}
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
           </div>
@@ -88,7 +88,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="password"
-              defaultValue={adminAppContainer.state.smtpPassword}
+              defaultValue={adminAppContainer.state.smtpPassword || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
             />
           </div>

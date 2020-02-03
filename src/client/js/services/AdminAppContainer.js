@@ -83,7 +83,7 @@ export default class AdminAppContainer extends Container {
         globalLang: appSettingsParams.globalLang,
         fileUpload: appSettingsParams.fileUpload,
         siteUrl: appSettingsParams.siteUrl,
-        envSiteUrl: appSettingsParams.envSiteUrl || '',
+        envSiteUrl: appSettingsParams.envSiteUrl,
         isSetSiteUrl: !!appSettingsParams.siteUrl,
         fromAddress: appSettingsParams.fromAddress,
         smtpHost: appSettingsParams.smtpHost,
