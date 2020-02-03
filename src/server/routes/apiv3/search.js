@@ -43,11 +43,14 @@ module.exports = (crowi) => {
    *                    type: object
    */
   router.get('/indices', helmet.noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    const { searchService } = crowi;
+
+    if (!searchService.isConfigured) {
+      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unused'), 503);
+    }
+
     try {
-      const { searchService } = crowi;
-      const info = searchService.isReachable
-        ? await searchService.getInfoForAdmin()
-        : {};
+      const info = await searchService.getInfoForAdmin();
       return res.status(200).send({ info });
     }
     catch (err) {
@@ -68,8 +71,13 @@ module.exports = (crowi) => {
    *          description: Successfully connected
    */
   router.post('/connection', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    const { searchService } = crowi;
+
+    if (!searchService.isConfigured) {
+      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unused'));
+    }
+
     try {
-      const { searchService } = crowi;
       await searchService.initClient();
       return res.status(200).send();
     }
@@ -111,6 +119,9 @@ module.exports = (crowi) => {
 
     const { searchService } = crowi;
 
+    if (!searchService.isConfigured) {
+      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unused'));
+    }
     if (!searchService.isReachable) {
       return res.apiv3Err(new ErrorV3('SearchService is not reachable', 'search-service-unreachable'));
     }
