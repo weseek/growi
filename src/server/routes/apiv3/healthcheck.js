@@ -117,10 +117,7 @@ module.exports = (crowi) => {
 
     // connect to search service
     const { searchService } = crowi;
-    if (!searchService.isConfigured) {
-      errors.push(new ErrorV3('The Search Service is not configured', 'healthcheck-search-not-configured'));
-    }
-    else {
+    if (searchService.isConfigured) {
       try {
         info.searchInfo = await searchService.getInfo();
       }
