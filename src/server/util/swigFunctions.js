@@ -115,8 +115,8 @@ module.exports = function(crowi, req, locals) {
   };
 
   locals.isSearchServiceConfigured = function() {
-    const searchService = crowi.getSearcher();
-    return searchService != null && searchService.isConfigured;
+    const { searchService } = crowi;
+    return searchService.isConfigured;
   };
 
   locals.isHackmdSetup = function() {

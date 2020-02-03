@@ -7,6 +7,8 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
+import { toastError } from '../util/apiNotification';
+
 import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
 
@@ -83,9 +85,7 @@ class SearchPage extends React.Component {
         });
       })
       .catch((err) => {
-        // TODO error
-        // this.setState({
-        // });
+        toastError(err);
       });
   }
 

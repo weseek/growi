@@ -18,6 +18,7 @@ class ElasticsearchManagement extends React.Component {
     super(props);
 
     this.state = {
+      isConfigured: null,
       isConnected: null,
       isRebuildingProcessing: false,
       isRebuildingCompleted: false,
@@ -68,6 +69,7 @@ class ElasticsearchManagement extends React.Component {
       const { info } = await appContainer.apiv3Get('/search/indices');
 
       this.setState({
+        isConfigured: true,
         isConnected: true,
 
         indicesData: info.indices,
@@ -75,9 +77,17 @@ class ElasticsearchManagement extends React.Component {
         isNormalized: info.isNormalized,
       });
     }
-    catch (e) {
+    catch (errors) {
       this.setState({ isConnected: false });
-      toastError(e);
+
+      // evaluate whether configured or not
+      for (const error of errors) {
+        if (error.code === 'search-service-unconfigured') {
+          this.setState({ isConfigured: false });
+        }
+      }
+
+      toastError(errors);
     }
   }
 
@@ -130,7 +140,7 @@ class ElasticsearchManagement extends React.Component {
   render() {
     const { t } = this.props;
     const {
-      isConnected, isRebuildingProcessing, isRebuildingCompleted,
+      isConfigured, isConnected, isRebuildingProcessing, isRebuildingCompleted,
       isNormalized, indicesData, aliasesData,
     } = this.state;
 
@@ -139,6 +149,7 @@ class ElasticsearchManagement extends React.Component {
         <div className="row">
           <div className="col-xs-12">
             <StatusTable
+              isConfigured={isConfigured}
               isConnected={isConnected}
               isNormalized={isNormalized}
               indicesData={indicesData}
@@ -154,6 +165,7 @@ class ElasticsearchManagement extends React.Component {
           <label className="col-xs-3 control-label">{ t('full_text_search_management.reconnect') }</label>
           <div className="col-xs-6">
             <ReconnectControls
+              isConfigured={isConfigured}
               isConnected={isConnected}
               onReconnectingRequested={this.reconnect}
             />
