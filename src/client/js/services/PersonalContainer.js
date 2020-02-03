@@ -19,11 +19,12 @@ export default class PersonalContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       name: '',
       email: '',
-      registrationWhiteList: [],
+      registrationWhiteList: this.appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
-      lang: 'English',
+      lang: 'en-US',
     };
 
   }
@@ -40,9 +41,18 @@ export default class PersonalContainer extends Container {
    */
   async retrievePersonalData() {
     try {
-      // TODO GW-1036 retrieve data
+      const response = await this.appContainer.apiv3.get('/personal-setting/');
+      const { currentUser } = response.data;
+
+      this.setState({
+        name: currentUser.name,
+        email: currentUser.email,
+        isEmailPublished: currentUser.isEmailPublished,
+        lang: currentUser.lang,
+      });
     }
     catch (err) {
+      this.setState({ retrieveError: err.message });
       logger.error(err);
       toastError(new Error('Failed to fetch data'));
     }

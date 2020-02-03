@@ -21,6 +21,10 @@ class BasicInfoSettings extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
+  componentDidMount() {
+    this.props.personalContainer.retrievePersonalData();
+  }
+
   async onClickSubmit() {
     const { t, personalContainer } = this.props;
 
@@ -36,6 +40,7 @@ class BasicInfoSettings extends React.Component {
 
   render() {
     const { t, personalContainer } = this.props;
+    const { registrationWhiteList } = personalContainer.state;
 
     return (
       <Fragment>
@@ -64,14 +69,14 @@ class BasicInfoSettings extends React.Component {
               onChange={(e) => { personalContainer.changeEmail(e.target.value) }}
             />
           </div>
-          {personalContainer.state.registrationWhiteList.length !== 0 && (
+          {registrationWhiteList.length !== 0 && (
             <div className="col-sm-offset-2 col-sm-10">
-              <p className="help-block">
+              <div className="help-block">
                 {t('page_register.form_help.email')}
                 <ul>
-                  <li><code></code></li>
+                  {registrationWhiteList.map(data => <li key={data}><code>{data}</code></li>)}
                 </ul>
-              </p>
+              </div>
             </div>
           )}
         </div>
@@ -110,8 +115,8 @@ class BasicInfoSettings extends React.Component {
                 type="radio"
                 id="radioLangEn"
                 name="userForm[lang]"
-                checked={personalContainer.state.lang === 'English'}
-                onChange={() => { personalContainer.changeLang('English') }}
+                checked={personalContainer.state.lang === 'en-US'}
+                onChange={() => { personalContainer.changeLang('en-US') }}
               />
               <label htmlFor="radioLangEn">{t('English')}</label>
             </div>
@@ -120,8 +125,8 @@ class BasicInfoSettings extends React.Component {
                 type="radio"
                 id="radioLangJa"
                 name="userForm[lang]"
-                checked={personalContainer.state.lang === 'Japanese'}
-                onChange={() => { personalContainer.changeLang('Japanese') }}
+                checked={personalContainer.state.lang === 'ja'}
+                onChange={() => { personalContainer.changeLang('ja') }}
               />
               <label htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
@@ -130,7 +135,9 @@ class BasicInfoSettings extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
+              {t('Update')}
+            </button>
           </div>
         </div>
 
