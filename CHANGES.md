@@ -1,6 +1,6 @@
 # CHANGES
 
-## v3.6.5
+## v3.6.6
 
 * Feature: Reconnect to Elasticsearch from Full Text Search Management
 * Feature: Normalize indices of Elasticsearch from Full Text Search Management
@@ -8,8 +8,11 @@
 * Improvement: Reactify admin pages (Notification)
 * Impromvement: Add `checkMiddlewaresStrictly` query option to Healthcheck API
 * Improvement: Accessibility for History component under dark themes
+* Fix: Warning on client console when developing /admin/app
 * Support: Upgrade libs
     * react-bootstrap-typeahead
+
+## v3.6.5 (Missing number)
 
 ## v3.6.4
 

@@ -35,10 +35,6 @@ module.exports = function(crowi, app) {
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
-    }
 
     return res.render('search', {
       q: keyword,
@@ -125,9 +121,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('keyword should not empty.'));
     }
 
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
+    const { searchService } = crowi;
+    if (!searchService.isReachable) {
+      return res.json(ApiResponse.error('SearchService is not reachable.'));
     }
 
     let userGroups = [];
@@ -140,7 +136,7 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      const esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
+      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
 
       // create score map for sorting
       // key: id , value: score

@@ -224,11 +224,6 @@ module.exports = function(crowi, app) {
 
   actions.search = {};
   actions.search.index = function(req, res) {
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.redirect('/admin');
-    }
-
     return res.render('admin/search', {});
   };
 
