@@ -1,12 +1,16 @@
 # CHANGES
 
+## 3.6.7-RC
+
+*
+
 ## v3.6.6
 
 * Feature: Reconnect to Elasticsearch from Full Text Search Management
 * Feature: Normalize indices of Elasticsearch from Full Text Search Management
 * Improvement: Add 'spring' theme
 * Improvement: Reactify admin pages (Notification)
-* Impromvement: Add `checkMiddlewaresStrictly` query option to Healthcheck API
+* Impromvement: Add `checkMiddlewaresStrictly` option to Healthcheck API
 * Improvement: Accessibility for History component under dark themes
 * Fix: Warning on client console when developing /admin/app
 * Support: Upgrade libs
