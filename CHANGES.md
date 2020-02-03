@@ -1,5 +1,9 @@
 # CHANGES
 
+## v3.6.6-RC
+
+* 
+
 ## v3.6.5
 
 * Feature: Reconnect to Elasticsearch from Full Text Search Management
