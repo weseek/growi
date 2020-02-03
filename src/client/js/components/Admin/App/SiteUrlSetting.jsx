@@ -73,7 +73,7 @@ class SiteUrlSetting extends React.Component {
                       </p>
                     </td>
                     <td>
-                      <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl} readOnly />
+                      <input className="form-control" type="text" value={adminAppContainer.state.envSiteUrl || ''} readOnly />
                       <p className="help-block">
                         {/* eslint-disable-next-line react/no-danger */}
                         <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.use_env_var_if_empty', { variable: 'APP_SITE_URL' }) }} />
