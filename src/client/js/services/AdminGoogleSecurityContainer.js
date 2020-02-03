@@ -84,7 +84,6 @@ export default class AdminGoogleSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
 
     this.setState({
-      isGoogleStrategySetup: securitySettingParams.isGoogleStrategySetup,
       googleClientId: securitySettingParams.googleClientId,
       googleClientSecret: securitySettingParams.googleClientSecret,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,

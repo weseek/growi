@@ -83,7 +83,6 @@ export default class AdminTwitterSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
 
     this.setState({
-      isTwitterStrategySetup: securitySettingParams.isTwitterStrategySetup,
       twitterConsumerKey: securitySettingParams.twitterConsumerKey,
       twitterConsumerSecret: securitySettingParams.twitterConsumerSecret,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,

@@ -83,7 +83,6 @@ export default class AdminGitHubSecurityContainer extends Container {
     const { securitySettingParams } = response.data;
 
     this.setState({
-      isGitHubStrategySetup: securitySettingParams.isGitHubStrategySetup,
       githubClientId: securitySettingParams.githubClientId,
       githubClientSecret: securitySettingParams.githubClientSecret,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
