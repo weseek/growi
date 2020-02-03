@@ -115,7 +115,7 @@
         </li>
         #}
         <li>
-          {% if searchConfigured() %}
+          {% if isSearchServiceConfigured() %}
           <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
           {% endif %}
         </li>
@@ -177,7 +177,7 @@
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
       <ul class="nav" id="side-menu">
         <li class="sidebar-search hidden-sm hidden-md hidden-lg">
-          {% if searchConfigured() %}
+          {% if isSearchServiceConfigured() %}
           <div class="search-sidebar" role="search" id="search-sidebar"></div>
           {% endif %}
         </li>

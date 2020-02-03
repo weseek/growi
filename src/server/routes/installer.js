@@ -17,7 +17,7 @@ module.exports = function(crowi, app) {
       return;
     }
 
-    await search.buildIndex();
+    await search.rebuildIndex();
   }
 
   async function createInitialPages(owner, lang) {

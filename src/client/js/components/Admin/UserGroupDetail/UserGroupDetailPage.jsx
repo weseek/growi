@@ -18,15 +18,15 @@ class UserGroupDetailPage extends React.Component {
       <div>
         <a href="/admin/user-groups" className="btn btn-default">
           <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-          {t('user_group_management.back_to_list')}
+          {t('admin:user_group_management.back_to_list')}
         </a>
         <div className="m-t-20 form-box">
           <UserGroupEditForm />
         </div>
-        <legend className="m-t-20">{ t('user_group_management.user_list') }</legend>
+        <legend className="m-t-20">{t('admin:user_group_management.user_list')}</legend>
         <UserGroupUserTable />
         <UserGroupUserModal />
-        <legend className="m-t-20">{ t('Page') }</legend>
+        <legend className="m-t-20">{t('Page')}</legend>
         <div className="page-list">
           <UserGroupPageList />
         </div>

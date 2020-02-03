@@ -2,8 +2,9 @@ name: Release Docker Images
 
 on:
   push:
-    tags:
-      - v3.*.*
+    branches:
+      - tmp/release-**
+
 
 jobs:
 
@@ -16,7 +17,7 @@ jobs:
         flavor: [default, nocdn]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Determine suffix
       run: |
@@ -71,7 +72,7 @@ jobs:
     needs: build
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v2.1.0

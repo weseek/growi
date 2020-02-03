@@ -20,7 +20,7 @@ class StatusActivateButton extends React.Component {
 
     try {
       const username = await this.props.adminUsersContainer.activateUser(this.props.user._id);
-      toastSuccess(t('user_management.activate_user_success', { username }));
+      toastSuccess(t('toaster.activate_user_success', { username }));
     }
     catch (err) {
       toastError(err);
@@ -32,7 +32,7 @@ class StatusActivateButton extends React.Component {
 
     return (
       <a className="px-4" onClick={() => { this.onClickAcceptBtn() }}>
-        <i className="icon-fw icon-user-following"></i> { t('user_management.accept') }
+        <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.accept')}
       </a>
     );
   }
