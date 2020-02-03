@@ -46,7 +46,7 @@ module.exports = (crowi) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
-      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unused'), 503);
+      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'), 503);
     }
 
     try {
@@ -74,7 +74,7 @@ module.exports = (crowi) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
-      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unused'));
+      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'));
     }
 
     try {
@@ -120,7 +120,7 @@ module.exports = (crowi) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
-      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unused'));
+      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'));
     }
     if (!searchService.isReachable) {
       return res.apiv3Err(new ErrorV3('SearchService is not reachable', 'search-service-unreachable'));
