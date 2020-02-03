@@ -579,7 +579,7 @@ module.exports = (crowi) => {
       'security:passport-ldap:bindDN': req.body.ldapBindDN,
       'security:passport-ldap:bindDNPassword': req.body.ldapBindDNPassword,
       'security:passport-ldap:searchFilter': req.body.ldapSearchFilter,
-      'security:passport-ldap:attrMapUsername': req.body.ldapAttrMapUserName,
+      'security:passport-ldap:attrMapUsername': req.body.ldapAttrMapUsername,
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
       'security:passport-ldap:attrMapMail': req.body.ldapAttrMapMail,
       'security:passport-ldap:attrMapName': req.body.ldapAttrMapName,
