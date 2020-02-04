@@ -15,6 +15,25 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *  tags:
  *    name: PsersonalSetting
  */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      PersonalSettings:
+ *        description: personal settings
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string
+ *          email:
+ *            type: string
+ *          lang:
+ *            type: string
+ *          isEmailPublished:
+ *            type: boolean
+ */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
@@ -23,6 +42,15 @@ module.exports = (crowi) => {
 
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const validator = {
+    personal: [
+      body('name').isString().not().isEmpty(),
+      body('email').isEmail(),
+      body('lang').isString().isIn(['en-US', 'ja']),
+      body('isEmailPublished').isBoolean(),
+    ],
+  };
 
   /**
    * @swagger
@@ -49,8 +77,33 @@ module.exports = (crowi) => {
     return res.apiv3({ currentUser });
   });
 
-  // TODO swagger & validation
-  router.put('/', loginRequiredStrictly, csrf, async(req, res) => {
+  /**
+   * @swagger
+   *
+   *    /personal-setting:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: updatePersonalSetting
+   *        summary: /personal-setting
+   *        description: Update personal setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/PersonalSettings'
+   *        responses:
+   *          200:
+   *            description: params of personal
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: personal params
+   */
+  router.put('/', loginRequiredStrictly, csrf, validator.personal, ApiV3FormValidator, async(req, res) => {
     const {
       name, email, lang, isEmailPublished,
     } = req.body;

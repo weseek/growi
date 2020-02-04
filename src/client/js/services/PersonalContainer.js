@@ -117,8 +117,6 @@ export default class PersonalContainer extends Container {
       });
       const { updatedUser } = response.data;
 
-      console.log(updatedUser.lang);
-
       this.setState({
         name: updatedUser.name,
         email: updatedUser.email,

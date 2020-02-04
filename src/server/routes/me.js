@@ -52,7 +52,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:me');
   const logger = require('@alias/logger')('growi:routes:me');
   const models = crowi.models;
-  const User = models.User;
   const UserGroupRelation = models.UserGroupRelation;
   const ExternalAccount = models.ExternalAccount;
   const ApiResponse = require('../util/apiResponse');
