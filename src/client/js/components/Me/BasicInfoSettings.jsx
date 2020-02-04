@@ -23,7 +23,7 @@ class BasicInfoSettings extends React.Component {
 
   async componentDidMount() {
     try {
-      await this.props.personalContainer.retrieveExternalAccounts();
+      await this.props.personalContainer.retrievePersonalData();
     }
     catch (err) {
       toastError(err);
