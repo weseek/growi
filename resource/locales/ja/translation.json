@@ -161,11 +161,13 @@
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
   "Set new Password": "パスワードを新規に設定",
-  "Update Password": "パスワードを更新",
-  "Current password": "現在のパスワード",
-  "New password": "新しいパスワード",
-  "Re-enter new password": "(確認用)",
-  "Password is not set": "パスワードが設定されていません",
+  "personal_settings":{
+    "update_password": "パスワードを更新",
+    "current_password": "現在のパスワード",
+    "new_password": "新しいパスワード",
+    "new_password_confirm": "(確認用)",
+    "password_is_not_set": "パスワードが設定されていません"
+  },
   "security_settings": "セキュリティ設定",
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",

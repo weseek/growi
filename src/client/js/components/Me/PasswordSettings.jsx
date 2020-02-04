@@ -32,7 +32,7 @@ class PasswordSettings extends React.Component {
     try {
       // await personalContainer.updateBasicInfo();
       // TODO
-      toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
+      // toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
     }
     catch (err) {
       toastError(err);
@@ -58,10 +58,10 @@ class PasswordSettings extends React.Component {
     return (
       <React.Fragment>
         <div className="mb-5 container-fluid">
-          <h2 className="border-bottom">{t('Update Password')}</h2>
+          <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
         </div>
         <div className="row mb-3">
-          <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('Current password') }</label>
+          <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('personal_settings.current_password') }</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -73,7 +73,7 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
         <div className="row mb-3">
-          <label htmlFor="newPassword" className="col-xs-3 text-right">{ t('New password') }</label>
+          <label htmlFor="newPassword" className="col-xs-3 text-right">{t('personal_settings.new_password') }</label>
           <div className="col-xs-6">
             <input
               className="form-control"
@@ -85,7 +85,7 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
         <div className="row mb-3">
-          <label htmlFor="newPasswordConfirm" className="col-xs-3 text-right">{ t('Re-enter new password') }</label>
+          <label htmlFor="newPasswordConfirm" className="col-xs-3 text-right">{t('personal_settings.new_password_confirm') }</label>
           <div className="col-xs-6">
             <input
               className="form-control col-xs-4"
