@@ -108,7 +108,29 @@ export default class PersonalContainer extends Container {
    * @return {Array} basic info
    */
   async updateBasicInfo() {
-    // TODO GW-1036 create apiV3
+    try {
+      const response = await this.appContainer.apiv3.put('/personal-setting/', {
+        name: this.state.name,
+        email: this.state.email,
+        isEmailPublished: this.state.isEmailPublished,
+        lang: this.state.lang,
+      });
+      const { updatedUser } = response.data;
+
+      console.log(updatedUser.lang);
+
+      this.setState({
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isEmailPublished: updatedUser.isEmailPublished,
+        lang: updatedUser.lang,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to update personal data');
+    }
   }
 
 }

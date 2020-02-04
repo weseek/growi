@@ -17,9 +17,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
-  const adminRequired = require('../../middleware/admin-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
-  const { customizeService } = crowi;
 
   const { User, ExternalAccount } = crowi.models;
 
@@ -49,6 +47,30 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, async(req, res) => {
     const currentUser = await User.findUserByUsername(req.user.username);
     return res.apiv3({ currentUser });
+  });
+
+  // TODO swagger & validation
+  router.put('/', loginRequiredStrictly, csrf, async(req, res) => {
+    const {
+      name, email, lang, isEmailPublished,
+    } = req.body;
+
+    try {
+      const user = await User.findOne({ email });
+      user.name = name;
+      user.email = email;
+      user.lang = lang;
+      user.isEmailPublished = isEmailPublished;
+
+      const updatedUser = await user.save();
+      req.i18n.changeLanguage(lang);
+      return res.apiv3({ updatedUser });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-personal-settings-failed');
+    }
+
   });
 
   /**

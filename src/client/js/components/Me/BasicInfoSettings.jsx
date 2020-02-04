@@ -3,15 +3,11 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { createSubscribedElement } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
-
-const logger = loggerFactory('growi:basicInfoSettings');
 
 class BasicInfoSettings extends React.Component {
 
@@ -23,7 +19,7 @@ class BasicInfoSettings extends React.Component {
 
   async componentDidMount() {
     try {
-      await this.props.personalContainer.retrieveExternalAccounts();
+      await this.props.personalContainer.retrievePersonalData();
     }
     catch (err) {
       toastError(err);
@@ -39,7 +35,6 @@ class BasicInfoSettings extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -88,7 +83,7 @@ class BasicInfoSettings extends React.Component {
 
         <div className="row mb-3">
           <label className="col-xs-2 text-right">{t('Disclose E-mail')}</label>
-          <div className="col-xs-4">
+          <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
               <input
                 type="radio"
@@ -114,7 +109,7 @@ class BasicInfoSettings extends React.Component {
 
         <div className="row mb-3">
           <label className="col-xs-2 text-right">{t('Language')}</label>
-          <div className="col-xs-4">
+          <div className="col-xs-6">
             <div className="radio radio-primary radio-inline">
               <input
                 type="radio"

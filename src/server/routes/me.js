@@ -104,58 +104,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.index = function(req, res) {
-    const userForm = req.body.userForm;
-    const userData = req.user;
-
-    if (req.method === 'POST' && req.form.isValid) {
-      const name = userForm.name;
-      const email = userForm.email;
-      const lang = userForm.lang;
-      const isEmailPublished = userForm.isEmailPublished;
-
-      /*
-       * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
-       *
-      if (!User.isEmailValid(email)) {
-        req.form.errors.push('You can\'t update to that email address');
-        return res.render('me/index', {});
-      }
-      */
-
-      User.findOneAndUpdate(
-        /* eslint-disable object-curly-newline */
-        { email: userData.email }, //                   query
-        { name, email, lang, isEmailPublished }, //     updating data
-        { runValidators: true, context: 'query' }, //   for validation
-        // see https://www.npmjs.com/package/mongoose-unique-validator#find--updates -- 2017.09.24 Yuki Takei
-        /* eslint-enable object-curly-newline */
-        (err) => {
-          if (err) {
-            Object.keys(err.errors).forEach((e) => {
-              req.form.errors.push(err.errors[e].message);
-            });
-
-            return res.render('me/index', {});
-          }
-          req.i18n.changeLanguage(lang);
-          req.flash('successMessage', req.t('Updated'));
-          return res.redirect('/me');
-        },
-      );
-    }
-    else { // method GET
-      /*
-       * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
-       *
-      /// そのうちこのコードはいらなくなるはず
-      if (!userData.isEmailSet()) {
-        req.flash('warningMessage', 'メールアドレスが設定されている必要があります');
-      }
-      */
-
-      return res.render('me/index', {
-      });
-    }
+    return res.render('me/index');
   };
 
   actions.imagetype = function(req, res) {
