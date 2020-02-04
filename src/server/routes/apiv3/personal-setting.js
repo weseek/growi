@@ -66,8 +66,8 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  externalAccounts:
-   *                    currentUser:
+   *                  properties:
+   *                    externalAccounts:
    *                      type: object
    *                      description: array of external accounts
    */
