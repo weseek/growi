@@ -25,6 +25,7 @@ export default class PersonalContainer extends Container {
       registrationWhiteList: this.appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
       lang: 'en-US',
+      password: '',
     };
 
   }
@@ -49,6 +50,7 @@ export default class PersonalContainer extends Container {
         email: currentUser.email,
         isEmailPublished: currentUser.isEmailPublished,
         lang: currentUser.lang,
+        password: currentUser.password,
       });
     }
     catch (err) {

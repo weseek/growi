@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import UserSettings from './UserSettings';
+import PasswordSettings from './PasswordSettings';
 
 class PersonalSettings extends React.Component {
 
@@ -37,7 +38,7 @@ class PersonalSettings extends React.Component {
                 {/* TODO GW-1029 create component */}
               </div>
               <div id="password-settings" className="tab-pane" role="tabpanel">
-                {/* TODO GW-1030 create component */}
+                <PasswordSettings />
               </div>
               <div id="apiToken" className="tab-pane" role="tabpanel">
                 {/* TODO GW-1031 create component */}
