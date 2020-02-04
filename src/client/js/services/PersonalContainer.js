@@ -2,8 +2,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../util/apiNotification';
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
@@ -53,9 +51,9 @@ export default class PersonalContainer extends Container {
       });
     }
     catch (err) {
-      this.setState({ retrieveError: err.message });
+      this.setState({ retrieveError: err });
       logger.error(err);
-      toastError(new Error('Failed to fetch data'));
+      throw new Error('Failed to fetch personal data');
     }
   }
 
@@ -70,9 +68,9 @@ export default class PersonalContainer extends Container {
       this.setState({ externalAccounts });
     }
     catch (err) {
-      this.setState({ retrieveError: err.message });
+      this.setState({ retrieveError: err });
       logger.error(err);
-      toastError(new Error('Failed to fetch data'));
+      throw new Error('Failed to fetch external accounts');
     }
   }
 

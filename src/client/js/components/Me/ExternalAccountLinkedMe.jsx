@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
+import { toastError } from '../../util/apiNotification';
+
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 import ExternalAccountRow from './ExternalAccountRow';
@@ -11,7 +13,12 @@ import ExternalAccountRow from './ExternalAccountRow';
 class ExternalAccountLinkedMe extends React.Component {
 
   async componentDidMount() {
-    this.props.personalContainer.retrieveExternalAccounts();
+    try {
+      await this.props.personalContainer.retrieveExternalAccounts();
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {

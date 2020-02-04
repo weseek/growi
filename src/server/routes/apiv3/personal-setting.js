@@ -52,25 +52,25 @@ module.exports = (crowi) => {
   });
 
   /**
- * @swagger
- *
- *    /personal-setting/external-accounts:
- *      get:
- *        tags: [PersonalSetting]
- *        operationId: getExternalAccounts
- *        summary: /personal-setting/external-accounts
- *        description: Get external accounts that linked current user
- *        responses:
- *          200:
- *            description: external accounts
- *            content:
- *              application/json:
- *                schema:
- *                  externalAccounts:
- *                    currentUser:
- *                      type: object
- *                      description: array of external accounts
- */
+   * @swagger
+   *
+   *    /personal-setting/external-accounts:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getExternalAccounts
+   *        summary: /personal-setting/external-accounts
+   *        description: Get external accounts that linked current user
+   *        responses:
+   *          200:
+   *            description: external accounts
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  externalAccounts:
+   *                    currentUser:
+   *                      type: object
+   *                      description: array of external accounts
+   */
   router.get('/external-accounts', loginRequiredStrictly, async(req, res) => {
     const userData = req.user;
 
