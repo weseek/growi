@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import {
+  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col,
+} from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -18,6 +21,16 @@ const logger = loggerFactory('growi:NotificationSetting');
 
 class NotificationSetting extends React.Component {
 
+  constructor() {
+    super();
+
+    this.state = {
+      activeTab: 'slack-configuration',
+    };
+
+    this.toggleActiveTab = this.toggleActiveTab.bind(this);
+  }
+
   async componentDidMount() {
     const { adminNotificationContainer } = this.props;
 
@@ -32,34 +45,52 @@ class NotificationSetting extends React.Component {
 
   }
 
+  toggleActiveTab(activeTab) {
+    this.setState({ activeTab });
+  }
+
   render() {
+    const { activeTab } = this.state;
 
     return (
       <React.Fragment>
-        <div className="notification-settings">
-          <ul className="nav nav-tabs" role="tablist">
-            <li className="active">
-              <a href="#slack-configuration" data-toggle="tab" role="tab"><i className="icon-settings"></i> Slack Configuration</a>
-            </li>
-            <li>
-              <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User Trigger Notification</a>
-            </li>
-            <li>
-              <a href="#global-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> Global Notification</a>
-            </li>
-          </ul>
-          <div className="tab-content m-t-15">
-            <div id="slack-configuration" className="tab-pane active" role="tabpanel">
-              <SlackAppConfiguration />
-            </div>
-            <div id="user-trigger-notification" className="tab-pane" role="tabpanel">
-              <UserTriggerNotification />
-            </div>
-            <div id="global-notification" className="tab-pane" role="tabpanel">
-              <GlobalNotification />
-            </div>
-          </div>
-        </div>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={`${activeTab === 'slack-configuration' && 'active'} `}
+              onClick={() => { this.toggleActiveTab('slack-configuration') }}
+            >
+              <i className="icon-settings"></i> Slack Configuration
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={`${activeTab === 'user-trigger-notification' && 'active'} `}
+              onClick={() => { this.toggleActiveTab('user-trigger-notification') }}
+            >
+              <i className="icon-settings"></i> User Trigger Notification
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={`${activeTab === 'global-notification' && 'active'} `}
+              onClick={() => { this.toggleActiveTab('global-notification') }}
+            >
+              <i className="icon-settings"></i> Global Notification
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId="slack-configuration">
+            <SlackAppConfiguration />
+          </TabPane>
+          <TabPane tabId="user-trigger-notification">
+            <UserTriggerNotification />
+          </TabPane>
+          <TabPane tabId="global-notification">
+            <GlobalNotification />
+          </TabPane>
+        </TabContent>
       </React.Fragment>
     );
   }
