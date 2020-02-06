@@ -21,9 +21,6 @@ class ElasticsearchDelegator {
     this.configManager = configManager;
     this.searchEvent = searchEvent;
 
-    this.esVersion = 'unknown';
-    this.esNodeInfos = {};
-
     this.client = null;
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
@@ -68,13 +65,6 @@ class ElasticsearchDelegator {
     this.indexName = indexName;
   }
 
-  getInfo() {
-    return {
-      esVersion: this.esVersion,
-      esNodeInfos: this.esNodeInfos,
-    };
-  }
-
   /**
    * return information object to connect to ES
    * @return {object} { host, httpAuth, indexName}
@@ -104,93 +94,111 @@ class ElasticsearchDelegator {
   }
 
   async init() {
-    return this.initIndices();
+    return this.normalizeIndices();
   }
 
-  /**
-   * build index
-   */
-  async buildIndex() {
+  async getInfo() {
+    const info = await this.client.nodes.info();
+    if (!info._nodes || !info.nodes) {
+      throw new Error('There is no nodes');
+    }
+
+    let esVersion = 'unknown';
+    const esNodeInfos = {};
+
+    for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
+      esVersion = nodeInfo.version;
+
+      const filteredInfo = {
+        name: nodeInfo.name,
+        version: nodeInfo.version,
+        plugins: nodeInfo.plugins.map((pluginInfo) => {
+          return {
+            name: pluginInfo.name,
+            version: pluginInfo.version,
+          };
+        }),
+      };
+
+      esNodeInfos[nodeName] = filteredInfo;
+    }
+
+    return { esVersion, esNodeInfos };
+  }
+
+  async getInfoForAdmin() {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
 
-    // reindex to tmp index
-    await this.createIndex(tmpIndexName);
-    await client.reindex({
-      waitForCompletion: false,
-      body: {
-        source: { index: indexName },
-        dest: { index: tmpIndexName },
-      },
-    });
+    const { indices } = await client.indices.stats({ index: `${indexName}*`, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
 
-    // update alias
-    await client.indices.updateAliases({
-      body: {
-        actions: [
-          { add: { alias: aliasName, index: tmpIndexName } },
-          { remove: { alias: aliasName, index: indexName } },
-        ],
-      },
-    });
+    const aliases = await client.indices.getAlias({ index: `${indexName}*` });
+    const isExistsMainIndex = aliases[indexName] != null;
+    const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
+    const isExistsTmpIndex = aliases[tmpIndexName] != null;
+    const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
 
-    // flush index
-    await client.indices.delete({
-      index: indexName,
-    });
-    await this.createIndex(indexName);
-    await this.addAllPages();
+    const isNormalized = isExistsMainIndex && isMainIndexHasAlias && !isExistsTmpIndex && !isTmpIndexHasAlias;
 
-    // update alias
-    await client.indices.updateAliases({
-      body: {
-        actions: [
-          { add: { alias: aliasName, index: indexName } },
-          { remove: { alias: aliasName, index: tmpIndexName } },
-        ],
-      },
-    });
-
-    // remove tmp index
-    await client.indices.delete({ index: tmpIndexName });
+    return {
+      indices,
+      aliases,
+      isNormalized,
+    };
   }
 
   /**
-   * retrieve elasticsearch node information
+   * rebuild index
    */
-  async checkESVersion() {
+  async rebuildIndex() {
+    const { client, indexName, aliasName } = this;
+
+    const tmpIndexName = `${indexName}-tmp`;
+
     try {
-      const info = await this.client.nodes.info();
-      if (!info._nodes || !info.nodes) {
-        throw new Error('no nodes info');
-      }
+      // reindex to tmp index
+      await this.createIndex(tmpIndexName);
+      await client.reindex({
+        waitForCompletion: false,
+        body: {
+          source: { index: indexName },
+          dest: { index: tmpIndexName },
+        },
+      });
 
-      for (const [nodeName, nodeInfo] of Object.entries(info.nodes)) {
-        this.esVersion = nodeInfo.version;
+      // update alias
+      await client.indices.updateAliases({
+        body: {
+          actions: [
+            { add: { alias: aliasName, index: tmpIndexName } },
+            { remove: { alias: aliasName, index: indexName } },
+          ],
+        },
+      });
 
-        const filteredInfo = {
-          name: nodeInfo.name,
-          version: nodeInfo.version,
-          plugins: nodeInfo.plugins.map((pluginInfo) => {
-            return {
-              name: pluginInfo.name,
-              version: pluginInfo.version,
-            };
-          }),
-        };
-
-        this.esNodeInfos[nodeName] = filteredInfo;
-      }
+      // flush index
+      await client.indices.delete({
+        index: indexName,
+      });
+      await this.createIndex(indexName);
+      await this.addAllPages();
     }
     catch (error) {
-      logger.error('Couldn\'t check ES version:', error);
+      logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
+
+      const { searchEvent } = this;
+      searchEvent.emit('rebuildingFailed', error);
+
+      throw error;
     }
+    finally {
+      await this.normalizeIndices();
+    }
+
   }
 
-  async initIndices() {
-    await this.checkESVersion();
-
+  async normalizeIndices() {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;

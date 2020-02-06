@@ -7,6 +7,7 @@ import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
@@ -28,7 +29,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('markdown_setting.updated_xss'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.xss_desc') }));
     }
     catch (err) {
       toastError(err);
@@ -53,30 +54,53 @@ class XssForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
             />
             <label className="custom-control-label" htmlFor="xssOption1">
-              <p className="font-weight-bold">{ t('markdown_setting.Ignore all tags') }</p>
+              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.ignore_all_tags') }</p>
               <div className="mt-4">
-                { t('markdown_setting.Ignore all tags desc') }
+                {t('admin:markdown_setting.xss_options.ignore_all_tags_desc') }
               </div>
             </label>
           </div>
         </div>
 
-        <div className="col-4 align-self-start">
-          <div className="custom-control custom-radio">
-            <input
-              type="radio"
-              className="custom-control-input"
-              id="xssOption2"
-              name="XssOption"
-              checked={xssOption === 2}
-              onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
-            />
-            <label className="custom-control-label" htmlFor="xssOption2">
-              <p className="font-weight-bold">{ t('markdown_setting.Recommended setting') }</p>
-              <WhiteListInput customizable={false} />
-            </label>
-          </div>
+        <div className="col-xs-4 radio radio-primary">
+          <input
+            type="radio"
+            id="xssOption2"
+            name="XssOption"
+            checked={xssOption === 2}
+            onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
+          />
+          <label htmlFor="xssOption2">
+            <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
+                {t('admin:markdown_setting.xss_options.tag_names')}
+              </div>
+              <textarea
+                className="form-control xss-list"
+                name="recommendedTags"
+                rows="6"
+                cols="40"
+                readOnly
+                defaultValue={tags}
+              />
+            </div>
+            <div className="m-t-15">
+              <div className="d-flex justify-content-between">
+                {t('admin:markdown_setting.xss_options.tag_attributes')}
+              </div>
+              <textarea
+                className="form-control xss-list"
+                name="recommendedAttrs"
+                rows="6"
+                cols="40"
+                readOnly
+                defaultValue={attrs}
+              />
+            </div>
+          </label>
         </div>
+
 
         <div className="col-4 align-self-start">
           <div className="custom-control custom-radio">
@@ -89,7 +113,7 @@ class XssForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
             />
             <label className="custom-control-label" htmlFor="xssOption3">
-              <p className="font-weight-bold">{ t('markdown_setting.Custom Whitelist') }</p>
+              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist') }</p>
               <WhiteListInput customizable />
             </label>
           </div>
@@ -117,7 +141,7 @@ class XssForm extends React.Component {
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label className="custom-control-label" htmlFor="XssEnable">
-                  { t('markdown_setting.Enable XSS prevention') }
+                  {t('admin:markdown_setting.xss_options.enable_xss_prevention') }
                 </label>
               </div>
             </div>

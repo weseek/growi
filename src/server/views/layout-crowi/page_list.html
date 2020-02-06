@@ -39,7 +39,7 @@
   # so now bind the values through the hidden fields.
   #}
   {% if false %} {# Disable temporaly -- 2018.03.08 Yuki Takei #}
-  {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
+  {% if isSearchServiceConfigured() && !isTopPage() && !isTrashPage() %}
   <div id="page-list-search">
   </div>
   {% endif %}

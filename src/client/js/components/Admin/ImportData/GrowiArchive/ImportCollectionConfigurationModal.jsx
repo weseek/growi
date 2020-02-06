@@ -62,7 +62,7 @@ class ImportCollectionConfigurationModal extends React.Component {
     const { t } = this.props;
     const { option } = this.state;
 
-    const translationBase = 'importer_management.growi_settings.configuration.pages';
+    const translationBase = 'admin:importer_management.growi_settings.configuration.pages';
 
     /* eslint-disable react/no-unescaped-entities */
     return (
@@ -154,7 +154,7 @@ class ImportCollectionConfigurationModal extends React.Component {
     const { t } = this.props;
     const { option } = this.state;
 
-    const translationBase = 'importer_management.growi_settings.configuration.revisions';
+    const translationBase = 'admin:importer_management.growi_settings.configuration.revisions';
 
     /* eslint-disable react/no-unescaped-entities */
     return (

@@ -57,11 +57,11 @@ class UserManagement extends React.Component {
           <InviteUserControl />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
             <i className="icon-user-follow" aria-hidden="true"></i>
-            { t('user_management.external_account') }
+            {t('admin:user_management.external_account')}
           </a>
         </p>
 
-        <h2>{ t('User_Management') }</h2>
+        <h2>{t('User_Management')}</h2>
 
         {pager}
         <UserTable />

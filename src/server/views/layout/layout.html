@@ -104,11 +104,37 @@
         <a class="nav-link" href="/tags">
           <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
         </a>
-      </li>
-      #}
-      <form class="form-inline">
-        {% if searchConfigured() %}
-        <span class="navbar-form search-top" role="search" id="search-top"></span>
+      </div>
+
+      <ul class="nav navbar-top-links navbar-left hidden-xs">
+        <li>
+          <a class="open-close hidden-xs waves-effect waves-light">
+            <i class="ti-menu"></i>
+          </a>
+        </li>
+        {#  disabled temporary -- 2019.05.13 Yuki Takei
+        <li>
+          <li class="nav-item-admin">
+            <a href="/tags">
+              <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
+            </a>
+          </li>
+        </li>
+        #}
+        <li>
+          {% if isSearchServiceConfigured() %}
+          <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
+          {% endif %}
+        </li>
+      </ul>
+
+      <ul class="nav navbar-top-links navbar-right pull-right">
+        {% if user and user.admin %}
+        <li class="nav-item-admin">
+          <a href="/admin">
+            <i class="icon-settings"></i><span>{{ t('Admin') }}</span>
+          </a>
+        </li>
         {% endif %}
       </form>
     </ul>
@@ -169,6 +195,21 @@
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
   {% block sidebar %}
+  <!-- Left navbar-header -->
+  <div class="navbar-default sidebar hidden-print" role="navigation">
+    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+      <ul class="nav" id="side-menu">
+        <li class="sidebar-search hidden-sm hidden-md hidden-lg">
+          {% if isSearchServiceConfigured() %}
+          <div class="search-sidebar" role="search" id="search-sidebar"></div>
+          {% endif %}
+        </li>
+
+        <li class="tbd"><a href="#">(TBD) Create /Sidebar</a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- Left navbar-header end -->
   {% endblock %}
 
   <!-- 8 Page Content -->

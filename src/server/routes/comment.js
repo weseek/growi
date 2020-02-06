@@ -62,11 +62,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/comments.get:
+   *    /comments.get:
    *      get:
-   *        tags: [Comments, apiv1]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: getComments
-   *        summary: /_api/comments.get
+   *        summary: /comments.get
    *        description: Get comments of the page of the revision
    *        parameters:
    *          - in: query
@@ -156,11 +156,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/comments.add:
+   *    /comments.add:
    *      post:
-   *        tags: [Comments, apiv1]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: addComment
-   *        summary: /_api/comments.add
+   *        summary: /comments.add
    *        description: Post comment for the page
    *        requestBody:
    *          content:
@@ -285,11 +285,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/comments.update:
+   *    /comments.update:
    *      post:
-   *        tags: [Comments, apiv1]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: updateComment
-   *        summary: /_api/comments.update
+   *        summary: /comments.update
    *        description: Update comment dody
    *        requestBody:
    *          content:
@@ -377,11 +377,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/comments.remove:
+   *    /comments.remove:
    *      post:
-   *        tags: [Comments, apiv1]
+   *        tags: [Comments, CrowiCompatibles]
    *        operationId: removeComment
-   *        summary: /_api/comments.remove
+   *        summary: /comments.remove
    *        description: Remove specified comment
    *        requestBody:
    *          content:

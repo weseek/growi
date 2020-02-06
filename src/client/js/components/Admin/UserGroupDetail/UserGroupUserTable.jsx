@@ -39,46 +39,46 @@ class UserGroupUserTable extends React.Component {
           <tr>
             <th width="100px">#</th>
             <th>
-              { t('username') }
+              {t('username')}
             </th>
-            <th>{ t('Name') }</th>
-            <th width="100px">{ t('Created') }</th>
-            <th width="160px">{ t('Last_Login')}</th>
+            <th>{t('Name')}</th>
+            <th width="100px">{t('Created')}</th>
+            <th width="160px">{t('Last_Login')}</th>
             <th width="70px"></th>
           </tr>
         </thead>
         <tbody>
           {userGroupDetailContainer.state.userGroupRelations.map((sRelation) => {
-              const { relatedUser } = sRelation;
+            const { relatedUser } = sRelation;
 
-              return (
-                <tr key={sRelation._id}>
-                  <td>
-                    <UserPicture user={relatedUser} className="picture img-circle" />
-                  </td>
-                  <td>
-                    <strong>{relatedUser.username}</strong>
-                  </td>
-                  <td>{relatedUser.name}</td>
-                  <td>{relatedUser.createdAt ? dateFnsFormat(new Date(relatedUser.createdAt), 'yyyy-MM-dd') : ''}</td>
-                  <td>{relatedUser.lastLoginAt ? dateFnsFormat(new Date(relatedUser.lastLoginAt), 'yyyy-MM-dd HH:mm:ss') : ''}</td>
-                  <td>
-                    <div className="btn-group admin-user-menu">
-                      <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                        <i className="icon-settings"></i> <span className="caret"></span>
-                      </button>
-                      <ul className="dropdown-menu" role="menu">
-                        <li>
-                          <a onClick={() => { return this.removeUser(relatedUser.username) }}>
-                            <i className="icon-fw icon-user-unfollow"></i> { t('user_group_management.remove_from_group')}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+            return (
+              <tr key={sRelation._id}>
+                <td>
+                  <UserPicture user={relatedUser} className="picture img-circle" />
+                </td>
+                <td>
+                  <strong>{relatedUser.username}</strong>
+                </td>
+                <td>{relatedUser.name}</td>
+                <td>{relatedUser.createdAt ? dateFnsFormat(new Date(relatedUser.createdAt), 'yyyy-MM-dd') : ''}</td>
+                <td>{relatedUser.lastLoginAt ? dateFnsFormat(new Date(relatedUser.lastLoginAt), 'yyyy-MM-dd HH:mm:ss') : ''}</td>
+                <td>
+                  <div className="btn-group admin-user-menu">
+                    <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                      <i className="icon-settings"></i> <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                      <li>
+                        <a onClick={() => { return this.removeUser(relatedUser.username) }}>
+                          <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
 
           <tr>
             <td></td>

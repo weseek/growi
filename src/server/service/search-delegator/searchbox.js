@@ -25,7 +25,7 @@ class SearchboxDelegator extends ElasticsearchDelegator {
   /**
    * @inheritdoc
    */
-  async buildIndex() {
+  async rebuildIndex() {
     const { client, indexName, aliasName } = this;
 
     // flush index

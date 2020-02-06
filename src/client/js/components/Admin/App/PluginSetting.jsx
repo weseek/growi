@@ -26,7 +26,7 @@ class PluginSetting extends React.Component {
 
     try {
       await adminAppContainer.updatePluginSettingHandler();
-      toastSuccess(t('app_setting.updated_plugin_setting'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -39,7 +39,7 @@ class PluginSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('app_setting.Enable plugin loading')}</p>
+        <p className="well">{t('admin:app_setting.enable_plugin_loading')}</p>
 
         <div className="row mb-5">
           <div className="col-xs-offset-3 col-xs-6 text-left">
@@ -52,7 +52,7 @@ class PluginSetting extends React.Component {
                   adminAppContainer.changeIsEnabledPlugins(e.target.checked);
                 }}
               />
-              <label htmlFor="isEnabledPlugins">{t('app_setting.Load plugins')}</label>
+              <label htmlFor="isEnabledPlugins">{t('admin:app_setting.load_plugins')}</label>
             </div>
           </div>
         </div>
