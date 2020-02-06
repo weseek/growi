@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 
-import { toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 import { createSubscribedElement } from '../UnstatedUtils';
 
 import AppContainer from '../../services/AppContainer';
@@ -15,6 +15,8 @@ class PasswordSettings extends React.Component {
 
   constructor(appContainer) {
     super();
+
+    this.appContainer = appContainer;
 
     this.state = {
       oldPassword: '',
@@ -27,11 +29,12 @@ class PasswordSettings extends React.Component {
   }
 
   async onClickSubmit() {
+    const { t } = this.props;
 
     try {
       // await personalContainer.updateBasicInfo();
-      // TODO
-      // toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
+      console.log(this.state);
+      toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
     }
     catch (err) {
       toastError(err);
