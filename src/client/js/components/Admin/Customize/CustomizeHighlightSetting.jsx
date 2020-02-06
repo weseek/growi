@@ -2,6 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -76,10 +79,25 @@ class CustomizeHighlightSetting extends React.Component {
 
         <div className="form-group row">
           <div className="offset-3 col-6 text-left">
-            <div className="my-0 btn-group">
+            <div className="my-0 w-100">
               <label>{t('customize_page.Theme')}</label>
+              <Dropdown>
+                <DropdownToggle data-toggle="dropdown" aria-haspopup="true" caret>
+                  <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
+                  <span className="bs-caret float-right">
+                    <span className="caret" />
+                  </span>
+                </DropdownToggle>
+                <DropdownMenu className="dropdown-menu" role="menu">
+                  <DropdownItem>
+                    <ul className="dropdown-menu" role="menu">
+                      {menuItem}
+                    </ul>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
               <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button className="btn dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span className="pull-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
@@ -91,7 +109,7 @@ class CustomizeHighlightSetting extends React.Component {
                 </ul>
               </div>
               {/* eslint-disable-next-line react/no-danger */}
-              <p className="help-block text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
+              <p className="form-text text-muted text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
             </div>
           </div>
         </div>

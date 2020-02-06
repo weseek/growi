@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Card, CardBody,
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
@@ -103,33 +103,32 @@ class CustomizeBehaviorSetting extends React.Component {
 
         <div className="form-group row">
           <div className="offset-3 col-6 text-left">
-            <div className="my-0 btn-group">
+            <div className="my-0 w-100">
               <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
-
-              <Dropdown data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <DropdownToggle caret>
-                  <span className="pull-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
-                  <span className="bs-caret pull-right">
-                    <span className="caret" />
-                  </span>
-                </DropdownToggle>
-              </Dropdown>
+            </div>
+            <ButtonDropdown className="">
+              <DropdownToggle className="" data-toggle="dropdown" aria-haspopup="true" caret>
+                <span className="float-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
+                <span className="bs-caret">
+                  <span className="caret" />
+                </span>
+              </DropdownToggle>
               {/* TODO adjust dropdown after BS4 */}
               <DropdownMenu className="dropdown-menu" role="menu">
-                <DropdownItem key={10} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
+                <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
                   <a role="menuitem">10</a>
                 </DropdownItem>
-                <DropdownItem key={30} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
+                <DropdownItem key={30} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(30) }}>
                   <a role="menuitem">30</a>
                 </DropdownItem>
-                <DropdownItem key={50} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
+                <DropdownItem key={50} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(50) }}>
                   <a role="menuitem">50</a>
                 </DropdownItem>
               </DropdownMenu>
-              <p className="form-text text-muted">
-                { t('customize_page.recently_created_n_draft_num_desc') }
-              </p>
-            </div>
+            </ButtonDropdown>
+            <p className="form-text text-muted">
+              { t('customize_page.recently_created_n_draft_num_desc') }
+            </p>
           </div>
         </div>
 
