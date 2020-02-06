@@ -21,7 +21,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middleware/csrf')(crowi);
   const { customizeService } = crowi;
 
-  const { User } = crowi.models;
+  const { User, ExternalAccount } = crowi.models;
 
 
   const { ApiV3FormValidator } = crowi.middlewares;
@@ -49,6 +49,40 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, async(req, res) => {
     const currentUser = await User.findUserByUsername(req.user.username);
     return res.apiv3({ currentUser });
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/external-accounts:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getExternalAccounts
+   *        summary: /personal-setting/external-accounts
+   *        description: Get external accounts that linked current user
+   *        responses:
+   *          200:
+   *            description: external accounts
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    externalAccounts:
+   *                      type: object
+   *                      description: array of external accounts
+   */
+  router.get('/external-accounts', loginRequiredStrictly, async(req, res) => {
+    const userData = req.user;
+
+    try {
+      const externalAccounts = await ExternalAccount.find({ user: userData });
+      return res.apiv3({ externalAccounts });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('get-external-accounts-failed');
+    }
+
   });
 
   return router;

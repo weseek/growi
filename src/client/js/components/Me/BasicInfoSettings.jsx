@@ -21,8 +21,13 @@ class BasicInfoSettings extends React.Component {
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
-  componentDidMount() {
-    this.props.personalContainer.retrievePersonalData();
+  async componentDidMount() {
+    try {
+      await this.props.personalContainer.retrievePersonalData();
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   async onClickSubmit() {
