@@ -51,7 +51,7 @@ export default class AdminLocalSecurityContainer extends Container {
    * Change registration white list
    */
   changeRegistrationWhiteList(value) {
-    this.setState({ registrationWhiteList: value });
+    this.setState({ registrationWhiteList: value.split('\n') });
   }
 
   /**
@@ -68,8 +68,8 @@ export default class AdminLocalSecurityContainer extends Container {
     const { localSettingParams } = response.data;
 
     this.setState({
-      registrationMode: localSettingParams.registrationMode || 'Open',
-      registrationWhiteList: localSettingParams.registrationWhiteList || '',
+      registrationMode: localSettingParams.registrationMode,
+      registrationWhiteList: localSettingParams.registrationWhiteList,
     });
 
     return localSettingParams;
