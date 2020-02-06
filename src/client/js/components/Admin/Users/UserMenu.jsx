@@ -35,13 +35,15 @@ class UserMenu extends React.Component {
       <Fragment>
         <li className="dropdown-divider"></li>
         <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
-        <a className="btn btn-outline-secondary ml-6" onClick={this.onPasswordResetClicked} role="button">
-          <a>
-            <div className="px-4">
-              <i className="icon-fw icon-key mb-2"></i>{ t('user_management.reset_password') }
-            </div>
-          </a>
-        </a>
+        <li>
+          <button type="button" onClick={this.onPasswordResetClicked}>
+            <a>
+              <div className="px-4">
+                <i className="icon-fw icon-key mb-2"></i>{ t('user_management.reset_password') }
+              </div>
+            </a>
+          </button>
+        </li>
       </Fragment>
     );
   }
