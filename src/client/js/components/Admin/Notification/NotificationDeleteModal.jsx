@@ -23,7 +23,7 @@ class NotificationDeleteModal extends React.PureComponent {
             {t('notification_setting.delete_notification_pattern_desc2')}
           </p>
         </ModalBody>
-        <ModalFooter className="text-right">
+        <ModalFooter>
           <button type="button" className="btn btn-sm btn-danger" onClick={this.props.onClickSubmit}>
             <i className="icon icon-fire"></i> {t('Delete')}
           </button>
