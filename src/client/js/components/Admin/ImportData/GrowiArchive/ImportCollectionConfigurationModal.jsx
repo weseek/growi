@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-/* import Modal from 'react-bootstrap/es/Modal'; */
+import { Modal } from 'reactstrap';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 

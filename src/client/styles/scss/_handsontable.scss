@@ -42,7 +42,8 @@
   }
 
   .data-import-form {
-    background-color: #f8f8f8;
+    color: $headingtext;
+    background-color: $navbar-default-bg;
 
     .btn + .btn {
       margin-left: 5px;

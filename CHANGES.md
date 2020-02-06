@@ -1,9 +1,17 @@
 # CHANGES
 
-## v3.6.4-RC
+## v3.6.5-RC
+
+*
+
+## v3.6.4
 
 * Feature: Alert for stale page
+* Improvement: Reactify admin pages (Home)
 * Improvement: Reactify admin pages (App)
+* Improvement: Accessibility for editor icons of dark themes
+* Improvement: Accessibility for importing table data pane
+* Improvement: Resolve username and email when logging in with Google OAuth
 
 ## v3.6.3
 
