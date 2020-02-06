@@ -33,10 +33,13 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
+        <li className="dropdown-divider"></li>
         <li className="dropdown-header">{ t('user_management.edit_menu') }</li>
         <li onClick={this.onPasswordResetClicked}>
           <a>
-            <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
+            <div className="px-4">
+              <i className="icon-fw icon-key mb-2"></i>{ t('user_management.reset_password') }
+            </div>
           </a>
         </li>
       </Fragment>
@@ -48,7 +51,7 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="divider"></li>
+        <li className="dropdown-divider"></li>
         <li className="dropdown-header">{ t('status') }</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
@@ -64,7 +67,7 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="divider pl-0"></li>
+        <li className="dropdown-divider pl-0"></li>
         <li className="dropdown-header">{ t('user_management.administrator_menu') }</li>
         <li>
           {user.admin === true && <RemoveAdminButton user={user} />}
@@ -80,14 +83,14 @@ class UserMenu extends React.Component {
     return (
       <Fragment>
         <div className="btn-group admin-user-menu" role="group">
-          <button type="button" className="btn page-link text-dark d-inline-block btn-sm dropdown-toggle" data-toggle="dropdown">
-            <i className="icon-settings"></i> <span className="caret"></span>
+          <button type="button" className="btn btn-light btn-sm dropdown-toggle" data-toggle="dropdown">
+            <i className="icon-settings"></i>
           </button>
-          <ul className="dropdown-menu" role="menu">
+          <div className="dropdown-menu" role="menu">
             {this.renderEditMenu()}
             {user.status !== 4 && this.renderStatusMenu()}
             {user.status === 2 && this.renderAdminMenu()}
-          </ul>
+          </div>
         </div>
       </Fragment>
     );
