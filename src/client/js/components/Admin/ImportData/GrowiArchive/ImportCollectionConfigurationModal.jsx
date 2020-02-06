@@ -3,7 +3,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { Modal } from 'reactstrap';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
@@ -188,19 +193,19 @@ class ImportCollectionConfigurationModal extends React.Component {
     }
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose} onEnter={this.initialize}>
-        <Modal.Header closeButton>
-          <Modal.Title>{`'${collectionName}'`} Configuration</Modal.Title>
-        </Modal.Header>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} onEnter={this.initialize}>
+        <ModalHeader toggle={this.props.onClose}>
+          {`'${collectionName}'`} Configuration
+        </ModalHeader>
 
-        <Modal.Body>
+        <ModalBody>
           {contents}
-        </Modal.Body>
+        </ModalBody>
 
-        <Modal.Footer>
-          <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>{t('Cancel')}</button>
+        <ModalFooter>
+          <button type="button" className="btn btn-sm btn-light" onClick={this.props.onClose}>{t('Cancel')}</button>
           <button type="button" className="btn btn-sm btn-primary" onClick={this.updateOption}>{t('Update')}</button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }
