@@ -84,7 +84,7 @@ class CustomizeScriptSetting extends React.Component {
           </dl>
         </div>
 
-        <div className="form-text">
+        <div className="form-text text-muted">
           Examples:
           <pre className="hljs"><code>{this.getExampleCode()}</code></pre>
         </div>
@@ -98,7 +98,7 @@ class CustomizeScriptSetting extends React.Component {
             />
           </div>
           <div className="col-12">
-            <p className="help-block text-right">
+            <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
               { t('customize_page.ctrl_space') }
             </p>

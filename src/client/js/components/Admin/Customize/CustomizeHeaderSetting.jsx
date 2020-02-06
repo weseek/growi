@@ -62,7 +62,7 @@ class CustomizeHeaderSetting extends React.Component {
           </CardBody>
         </Card>
 
-        <div className="help-block">
+        <div className="form-text text-muted">
           { t('Example') }:
           <pre className="hljs">
             {/* eslint-disable-next-line react/no-unescaped-entities */}
@@ -78,7 +78,7 @@ class CustomizeHeaderSetting extends React.Component {
           />
         </div>
         <div className="col-12">
-          <p className="help-block text-right">
+          <p className="form-text text-muted text-right">
             <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
             { t('customize_page.ctrl_space') }
           </p>
