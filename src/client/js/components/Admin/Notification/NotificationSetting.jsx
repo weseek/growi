@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
-  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col,
+  TabContent, TabPane, Nav, NavItem, NavLink,
 } from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
@@ -26,6 +26,8 @@ class NotificationSetting extends React.Component {
 
     this.state = {
       activeTab: 'slack-configuration',
+      // Prevent unnecessary rendering
+      activeComponents: new Set(['slack-configuration']),
     };
 
     this.toggleActiveTab = this.toggleActiveTab.bind(this);
@@ -46,11 +48,13 @@ class NotificationSetting extends React.Component {
   }
 
   toggleActiveTab(activeTab) {
-    this.setState({ activeTab });
+    this.setState({
+      activeTab, activeComponents: this.state.activeComponents.add(activeTab),
+    });
   }
 
   render() {
-    const { activeTab } = this.state;
+    const { activeTab, activeComponents } = this.state;
 
     return (
       <React.Fragment>
@@ -82,13 +86,13 @@ class NotificationSetting extends React.Component {
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId="slack-configuration">
-            <SlackAppConfiguration />
+            {activeComponents.has('slack-configuration') && <SlackAppConfiguration />}
           </TabPane>
           <TabPane tabId="user-trigger-notification">
-            <UserTriggerNotification />
+            {activeComponents.has('user-trigger-notification') && <UserTriggerNotification />}
           </TabPane>
           <TabPane tabId="global-notification">
-            <GlobalNotification />
+            {activeComponents.has('global-notification') && <GlobalNotification />}
           </TabPane>
         </TabContent>
       </React.Fragment>
