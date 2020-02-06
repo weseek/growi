@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Card, CardBody,
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
@@ -61,7 +61,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isEnabledTimeline}
               onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 { t('customize_page.subpage_display') }<br />
                 { t('customize_page.performance_decrease') }<br />
                 { t('customize_page.list_page_display') }
@@ -78,7 +78,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
               onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 { t('customize_page.save_edit') }<br />
                 { t('customize_page.by_invalidating') }
               </p>
@@ -94,7 +94,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
               onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 { t('customize_page.attach_title_header_desc') }
               </p>
             </CustomizeFunctionOption>
@@ -106,14 +106,14 @@ class CustomizeBehaviorSetting extends React.Component {
             <div className="my-0 btn-group">
               <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
 
-              <UncontrolledDropdown data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <Dropdown data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <DropdownToggle caret>
                   <span className="pull-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
                   <span className="bs-caret pull-right">
                     <span className="caret" />
                   </span>
                 </DropdownToggle>
-              </UncontrolledDropdown>
+              </Dropdown>
               {/* TODO adjust dropdown after BS4 */}
               <DropdownMenu className="dropdown-menu" role="menu">
                 <DropdownItem key={10} role="presentation" type="button" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
@@ -126,8 +126,7 @@ class CustomizeBehaviorSetting extends React.Component {
                   <a role="menuitem">50</a>
                 </DropdownItem>
               </DropdownMenu>
-
-              <p className="help-block">
+              <p className="form-text text-muted">
                 { t('customize_page.recently_created_n_draft_num_desc') }
               </p>
             </div>
@@ -142,7 +141,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isEnabledStaleNotification}
               onChecked={() => { adminCustomizeContainer.switchEnableStaleNotification() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 { t('customize_page.stale_notification_desc') }
               </p>
             </CustomizeFunctionOption>
