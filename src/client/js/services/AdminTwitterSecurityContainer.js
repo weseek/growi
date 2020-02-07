@@ -26,6 +26,7 @@ export default class AdminTwitterSecurityContainer extends Container {
       isSameUsernameTreatedAsIdenticalUser: false,
     };
 
+    this.updateTwitterSetting = this.updateTwitterSetting.bind(this);
   }
 
   /**
@@ -73,12 +74,15 @@ export default class AdminTwitterSecurityContainer extends Container {
    * Update twitterSetting
    */
   async updateTwitterSetting() {
+    const { twitterConsumerKey, twitterConsumerSecret, isSameUsernameTreatedAsIdenticalUser } = this.state;
 
-    const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', {
-      twitterConsumerKey: this.state.twitterConsumerKey,
-      twitterConsumerSecret: this.state.twitterConsumerSecret,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-    });
+    const requestParams = [];
+
+    if (twitterConsumerKey != null) { requestParams.push({ twitterConsumerKey }) }
+    if (twitterConsumerSecret != null) { requestParams.push({ twitterConsumerSecret }) }
+    if (isSameUsernameTreatedAsIdenticalUser != null) { requestParams.push({ isSameUsernameTreatedAsIdenticalUser }) }
+
+    const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', ...requestParams);
 
     const { securitySettingParams } = response.data;
 
