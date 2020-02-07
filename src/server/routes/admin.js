@@ -405,7 +405,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  };
 
   // app.get('/_api/admin/users.search' , admin.api.userSearch);
   actions.api.usersSearch = function(req, res) {
