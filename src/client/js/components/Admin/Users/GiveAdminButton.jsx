@@ -20,7 +20,7 @@ class GiveAdminButton extends React.Component {
 
     try {
       const username = await this.props.adminUsersContainer.giveUserAdmin(this.props.user._id);
-      toastSuccess(t('user_management.give_user_admin', { username }));
+      toastSuccess(t('toaster.give_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
@@ -31,8 +31,8 @@ class GiveAdminButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="px-4" onClick={() => { this.onClickGiveAdminBtn() }}>
-        <i className="icon-fw icon-user-following"></i> { t('user_management.give_admin_access') }
+      <a role="button" className="px-4" onClick={() => { this.onClickGiveAdminBtn() }}>
+        <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.give_admin_access')}
       </a>
     );
   }

@@ -20,9 +20,6 @@ module.exports = {
     securityPassportGitHub: require('./admin/securityPassportGitHub'),
     securityPassportTwitter: require('./admin/securityPassportTwitter'),
     securityPassportOidc: require('./admin/securityPassportOidc'),
-    slackIwhSetting: require('./admin/slackIwhSetting'),
-    slackSetting: require('./admin/slackSetting'),
     userGroupCreate: require('./admin/userGroupCreate'),
-    notificationGlobal: require('./admin/notificationGlobal'),
   },
 };

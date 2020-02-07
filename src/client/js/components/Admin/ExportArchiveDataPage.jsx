@@ -214,19 +214,19 @@ class ExportArchiveDataPage extends React.Component {
         <h2>{t('Export Archive Data')}</h2>
 
         <button type="button" className="btn btn-default" disabled={isExporting} onClick={this.openExportModal}>
-          {t('export_management.create_new_archive_data')}
+          {t('admin:export_management.create_new_archive_data')}
         </button>
 
         { showExportingData && (
           <div className="mt-5">
-            <h3>{t('export_management.exporting_collection_list')}</h3>
+            <h3>{t('admin:export_management.exporting_collection_list')}</h3>
             { this.renderProgressBarsForCollections() }
             { this.renderProgressBarForZipping() }
           </div>
         ) }
 
         <div className="mt-5">
-          <h3>{t('export_management.exported_data_list')}</h3>
+          <h3>{t('admin:export_management.exported_data_list')}</h3>
           <ArchiveFilesTable
             zipFileStats={this.state.zipFileStats}
             onZipFileStatRemove={this.onZipFileStatRemove}

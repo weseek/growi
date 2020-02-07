@@ -50,15 +50,15 @@ class ManageExternalAccount extends React.Component {
         <p>
           <a className="btn btn-default" href="/admin/users">
             <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-            { t('user_management.back_to_user_management') }
+            {t('admin:user_management.back_to_user_management')}
           </a>
         </p>
 
-        <h2>{ t('user_management.external_account_list') }</h2>
+        <h2>{t('admin:user_management.external_account_list')}</h2>
 
-        { pager }
+        {pager}
         <ExternalAccountTable />
-        { pager }
+        {pager}
 
       </Fragment>
     );

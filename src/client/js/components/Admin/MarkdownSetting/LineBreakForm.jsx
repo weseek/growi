@@ -29,7 +29,7 @@ class LineBreakForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateLineBreakSetting();
-      toastSuccess(t('markdown_setting.updated_lineBreak'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.lineBreak_header') }));
     }
     catch (err) {
       toastError(err);
@@ -41,7 +41,7 @@ class LineBreakForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { isEnabledLinebreaks } = adminMarkDownContainer.state;
 
-    const helpLineBreak = { __html: t('markdown_setting.Enable Line Break desc') };
+    const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
 
     return (
       <div className="form-group text-left my-3">
@@ -55,7 +55,7 @@ class LineBreakForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
             />
             <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
-              { t('markdown_setting.Enable Line Break') }
+              {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
@@ -68,7 +68,7 @@ class LineBreakForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { isEnabledLinebreaksInComments } = adminMarkDownContainer.state;
 
-    const helpLineBreakInComment = { __html: t('markdown_setting.Enable Line Break for comment desc') };
+    const helpLineBreakInComment = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment_desc') };
 
     return (
       <div className="form-group text-left my-3">
@@ -82,7 +82,7 @@ class LineBreakForm extends React.Component {
               onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
             />
             <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
-              { t('markdown_setting.Enable Line Break for comment') }
+              {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
             </label>
           </div>
           <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />

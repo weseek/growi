@@ -15,21 +15,21 @@ class InstalledPluginTable extends React.Component {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th className="text-center">{ t('admin_top.Package name') }</th>
-            <th className="text-center">{ t('admin_top.Specified version') }</th>
-            <th className="text-center">{ t('admin_top.Installed version') }</th>
+            <th className="text-center">{t('admin:admin_top.package_name')}</th>
+            <th className="text-center">{t('admin:admin_top.specified_version')}</th>
+            <th className="text-center">{t('admin:admin_top.installed_version')}</th>
           </tr>
         </thead>
         <tbody>
-          { adminHomeContainer.state.installedPlugins.map((plugin) => {
+          {adminHomeContainer.state.installedPlugins.map((plugin) => {
             return (
               <tr key={plugin.name}>
-                <td>{ plugin.name }</td>
-                <td className="text-center">{ plugin.requiredVersion }</td>
-                <td className="text-center">{ plugin.installedVersion }</td>
+                <td>{plugin.name}</td>
+                <td className="text-center">{plugin.requiredVersion}</td>
+                <td className="text-center">{plugin.installedVersion}</td>
               </tr>
             );
-          }) }
+          })}
         </tbody>
       </table>
     );

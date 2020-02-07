@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+
 import SearchForm from './SearchForm';
 
 
@@ -54,13 +57,16 @@ class HeaderSearchBox extends React.Component {
   }
 
   render() {
-    const t = this.props.t;
+    const { t, appContainer } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
       : 'All pages';
 
+    const config = appContainer.getConfig();
+    const isReachable = config.isSearchServiceReachable;
+
     return (
-      <div className="form-group">
+      <div className={`form-group ${isReachable ? '' : 'has-error'}`}>
         <div className="input-group flex-nowrap">
           <div className="input-group-prepend">
             <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true">
@@ -73,7 +79,7 @@ class HeaderSearchBox extends React.Component {
           </div>
           <SearchForm
             t={this.props.t}
-            crowi={this.props.crowi}
+            crowi={this.props.appContainer}
             onInputChange={this.onInputChange}
             onSubmit={this.search}
             placeholder="Search ..."
@@ -90,9 +96,17 @@ class HeaderSearchBox extends React.Component {
 
 }
 
-HeaderSearchBox.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+
+/**
+ * Wrapper component for using unstated
+ */
+const HeaderSearchBoxWrapper = (props) => {
+  return createSubscribedElement(HeaderSearchBox, props, [AppContainer]);
 };
 
-export default withTranslation()(HeaderSearchBox);
+HeaderSearchBox.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default withTranslation()(HeaderSearchBoxWrapper);

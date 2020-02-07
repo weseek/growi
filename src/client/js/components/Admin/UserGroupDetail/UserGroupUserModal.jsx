@@ -20,13 +20,13 @@ class UserGroupUserModal extends React.Component {
     return (
       <Modal isOpen={userGroupDetailContainer.state.isUserGroupUserModalOpen} toggle={userGroupDetailContainer.closeUserGroupUserModal}>
         <ModalHeader toggle={userGroupDetailContainer.closeUserGroupUserModal}>
-          { t('user_group_management.add_user') }
+          {t('admin:user_group_management.add_modal.add_user') }
         </ModalHeader>
         <ModalBody>
           <div className="p-3">
             <UserGroupUserFormByInput />
           </div>
-          <h2 className="border-bottom">{t('user_group_management.search_option')}</h2>
+          <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>
           <div className="row mt-4">
             <div className="col-xs-6">
               <div className="mb-5">

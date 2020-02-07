@@ -7,6 +7,8 @@ class SearchService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
+    this.isErrorOccured = null;
+
     try {
       this.delegator = this.initDelegator();
     }
@@ -14,14 +16,18 @@ class SearchService {
       logger.error(err);
     }
 
-    if (this.isAvailable) {
+    if (this.isConfigured) {
       this.delegator.init();
       this.registerUpdateEvent();
     }
   }
 
-  get isAvailable() {
+  get isConfigured() {
     return this.delegator != null;
+  }
+
+  get isReachable() {
+    return this.isConfigured && !this.isErrorOccured;
   }
 
   get isSearchboxEnabled() {
@@ -64,16 +70,45 @@ class SearchService {
     tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
   }
 
-  getInfo() {
-    return this.delegator.getInfo();
+  async initClient() {
+    // reset error flag
+    this.isErrorOccured = false;
+
+    return this.delegator.initClient();
   }
 
-  async buildIndex() {
-    return this.delegator.buildIndex();
+  async getInfo() {
+    try {
+      return await this.delegator.getInfo();
+    }
+    catch (err) {
+      // switch error flag, `isReachable` to be `false`
+      this.isErrorOccured = true;
+      throw err;
+    }
+  }
+
+  async getInfoForAdmin() {
+    return this.delegator.getInfoForAdmin();
+  }
+
+  async normalizeIndices() {
+    return this.delegator.normalizeIndices();
+  }
+
+  async rebuildIndex() {
+    return this.delegator.rebuildIndex();
   }
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {
-    return this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
+    try {
+      return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
+    }
+    catch (err) {
+      // switch error flag, `isReachable` to be `false`
+      this.isErrorOccured = true;
+      throw err;
+    }
   }
 
 }
