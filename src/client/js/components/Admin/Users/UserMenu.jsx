@@ -37,7 +37,7 @@ class UserMenu extends React.Component {
         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
         <li>
           <a className="dropdown-item" href="#" onClick={this.onPasswordResetClicked}>
-            <i className="icon-fw icon-key mb-2"></i>{ t('admin:user_management.reset_password') }
+            <i className="icon-fw icon-key"></i>{ t('admin:user_management.reset_password') }
           </a>
         </li>
       </Fragment>
