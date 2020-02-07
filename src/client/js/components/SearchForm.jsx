@@ -41,7 +41,19 @@ class SearchForm extends React.Component {
   }
 
   getHelpElement() {
-    const t = this.props.t;
+    const { t, appContainer } = this.props;
+
+    const config = appContainer.getConfig();
+    const isReachable = config.isSearchServiceReachable;
+
+    if (!isReachable) {
+      return (
+        <>
+          <h5 className="text-danger">Error occured on Search Service</h5>
+          Try to reconnect from management page.
+        </>
+      );
+    }
 
     return (
       <table className="table m-1 search-help">
@@ -89,7 +101,14 @@ class SearchForm extends React.Component {
   }
 
   render() {
-    const t = this.props.t;
+    const { t, appContainer } = this.props;
+
+    const config = appContainer.getConfig();
+    const isReachable = config.isSearchServiceReachable;
+
+    const placeholder = isReachable
+      ? 'Search ...'
+      : 'Error on Search Service';
     const emptyLabel = (this.state.searchError !== null)
       ? 'Error on searching.'
       : t('search.search page bodies');
@@ -101,8 +120,8 @@ class SearchForm extends React.Component {
         onInputChange={this.props.onInputChange}
         onSearchError={this.onSearchError}
         emptyLabel={emptyLabel}
-        placeholder="Search ..."
-        promptText={this.getHelpElement()}
+        placeholder={placeholder}
+        helpElement={this.getHelpElement()}
         keywordOnInit={this.props.keyword}
       />
     );

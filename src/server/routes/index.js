@@ -84,23 +84,14 @@ module.exports = function(crowi, app) {
 
   // search admin
   app.get('/admin/search'              , loginRequiredStrictly , adminRequired , admin.search.index);
-  app.post('/_api/admin/search/build'  , loginRequiredStrictly , adminRequired , csrf, admin.api.searchBuildIndex);
 
   // notification admin
   app.get('/admin/notification'              , loginRequiredStrictly , adminRequired , admin.notification.index);
-  app.post('/admin/notification/slackIwhSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.slackIwhSetting, admin.notification.slackIwhSetting);
-  app.post('/admin/notification/slackSetting', loginRequiredStrictly , adminRequired , csrf, form.admin.slackSetting, admin.notification.slackSetting);
   app.get('/admin/notification/slackAuth'    , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
   app.get('/admin/notification/slackSetting/disconnect', loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  app.post('/_api/admin/notification.add'    , loginRequiredStrictly , adminRequired , csrf, admin.api.notificationAdd);
-  app.post('/_api/admin/notification.remove' , loginRequiredStrictly , adminRequired , csrf, admin.api.notificationRemove);
   app.get('/_api/admin/users.search'         , loginRequiredStrictly , adminRequired , admin.api.usersSearch);
   app.get('/admin/global-notification/new'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
   app.get('/admin/global-notification/:id'   , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  app.post('/admin/global-notification/new'  , loginRequiredStrictly , adminRequired , form.admin.notificationGlobal, admin.globalNotification.create);
-  app.post('/_api/admin/global-notification/toggleIsEnabled', loginRequiredStrictly , adminRequired , admin.api.toggleIsEnabledForGlobalNotification);
-  app.post('/admin/global-notification/:id/update', loginRequiredStrictly , adminRequired , form.admin.notificationGlobal, admin.globalNotification.update);
-  app.post('/admin/global-notification/:id/remove', loginRequiredStrictly , adminRequired , admin.globalNotification.remove);
 
   app.get('/admin/users'                , loginRequiredStrictly , adminRequired , admin.user.index);
   app.post('/admin/user/:id/removeCompletely' , loginRequiredStrictly , adminRequired , csrf, admin.user.removeCompletely);

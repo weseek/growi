@@ -11,9 +11,6 @@ module.exports = {
     apiToken: require('./me/apiToken'),
   },
   admin: {
-    slackIwhSetting: require('./admin/slackIwhSetting'),
-    slackSetting: require('./admin/slackSetting'),
     userGroupCreate: require('./admin/userGroupCreate'),
-    notificationGlobal: require('./admin/notificationGlobal'),
   },
 };

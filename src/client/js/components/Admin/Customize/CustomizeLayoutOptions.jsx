@@ -20,13 +20,13 @@ class CustomizeLayoutOptions extends React.Component {
             layoutType="crowi-plus"
             isSelected={adminCustomizeContainer.state.currentLayout === 'growi'}
             onSelected={() => adminCustomizeContainer.switchLayoutType('growi')}
-            labelHtml={`GROWI Enhanced Layout <small class="text-success">${t('customize_page.recommended')}</small>`}
+            labelHtml={`GROWI Enhanced Layout <small class="text-success">${t('admin:customize_setting.recommended')}</small>`}
           >
-            <h4>{t('customize_page.layout_description.growi_title')}</h4>
+            <h4>{t('admin:customize_setting.layout_desc.growi_title')}</h4>
             <ul>
-              <li>{t('customize_page.layout_description.growi_text1')}</li>
-              <li>{t('customize_page.layout_description.growi_text2')}</li>
-              <li>{t('customize_page.layout_description.growi_text3')}</li>
+              <li>{t('admin:customize_setting.layout_desc.growi_text1')}</li>
+              <li>{t('admin:customize_setting.layout_desc.growi_text2')}</li>
+              <li>{t('admin:customize_setting.layout_desc.growi_text3')}</li>
             </ul>
           </CustomizeLayoutOption>
         </div>
@@ -38,11 +38,11 @@ class CustomizeLayoutOptions extends React.Component {
             onSelected={() => adminCustomizeContainer.switchLayoutType('kibela')}
             labelHtml="Kibela Like Layout"
           >
-            <h4>{t('customize_page.layout_description.kibela_title')}</h4>
+            <h4>{t('admin:customize_setting.layout_desc.kibela_title')}</h4>
             <ul>
-              <li>{t('customize_page.layout_description.kibela_text1')}</li>
-              <li>{t('customize_page.layout_description.kibela_text2')}</li>
-              <li>{t('customize_page.layout_description.kibela_text3')}</li>
+              <li>{t('admin:customize_setting.layout_desc.kibela_text1')}</li>
+              <li>{t('admin:customize_setting.layout_desc.kibela_text2')}</li>
+              <li>{t('admin:customize_setting.layout_desc.kibela_text3')}</li>
             </ul>
           </CustomizeLayoutOption>
         </div>
@@ -54,11 +54,11 @@ class CustomizeLayoutOptions extends React.Component {
             onSelected={() => adminCustomizeContainer.switchLayoutType('crowi')}
             labelHtml="Crowi Classic Layout"
           >
-            <h4>{t('customize_page.layout_description.crowi_title')}</h4>
+            <h4>{t('admin:customize_setting.layout_desc.crowi_title')}</h4>
             <ul>
-              <li>{t('customize_page.layout_description.crowi_text1')}</li>
-              <li>{t('customize_page.layout_description.crowi_text2')}</li>
-              <li>{t('customize_page.layout_description.crowi_text3')}</li>
+              <li>{t('admin:customize_setting.layout_desc.crowi_text1')}</li>
+              <li>{t('admin:customize_setting.layout_desc.crowi_text2')}</li>
+              <li>{t('admin:customize_setting.layout_desc.crowi_text3')}</li>
             </ul>
           </CustomizeLayoutOption>
         </div>

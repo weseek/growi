@@ -114,11 +114,9 @@ module.exports = function(crowi, req, locals) {
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
   };
 
-  locals.searchConfigured = function() {
-    if (crowi.getSearcher()) {
-      return true;
-    }
-    return false;
+  locals.isSearchServiceConfigured = function() {
+    const { searchService } = crowi;
+    return searchService.isConfigured;
   };
 
   locals.isHackmdSetup = function() {

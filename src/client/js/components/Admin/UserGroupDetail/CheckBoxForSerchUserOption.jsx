@@ -17,7 +17,7 @@ class CheckBoxForSerchUserOption extends React.Component {
           onChange={this.props.onChange}
         />
         <label className="text-capitalize form-check-label ml-3" htmlFor={`isAlso${option}Searched`}>
-          {t('user_group_management.enable_option', { option })}
+          {t('admin:user_group_management.add_modal.enable_option', { option })}
         </label>
       </div>
     );

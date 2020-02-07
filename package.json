@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.6.5-RC",
+  "version": "3.6.7-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -215,7 +215,7 @@
     "prettier": "^1.19.1",
     "react": "^16.8.3",
     "react-bootstrap": "^0.32.1",
-    "react-bootstrap-typeahead": "^3.4.2",
+    "react-bootstrap-typeahead": "^3.4.7",
     "react-codemirror2": "^6.0.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.3",

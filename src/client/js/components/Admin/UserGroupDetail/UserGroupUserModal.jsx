@@ -18,13 +18,13 @@ class UserGroupUserModal extends React.Component {
     return (
       <Modal show={userGroupDetailContainer.state.isUserGroupUserModalOpen} onHide={userGroupDetailContainer.closeUserGroupUserModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{t('user_group_management.add_user')}</Modal.Title>
+          <Modal.Title>{t('admin:user_group_management.add_modal.add_user')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="p-3">
             <UserGroupUserFormByInput />
           </div>
-          <h2 className="border-bottom">{t('user_group_management.search_option')}</h2>
+          <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>
           <div className="row mt-4">
             <div className="col-xs-6">
               <div className="mb-5">
