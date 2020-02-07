@@ -162,7 +162,8 @@ class SecuritySetting extends React.Component {
                     <span className="pull-left">
                       {currentPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
                       {currentPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
-                      {currentPageCompleteDeletionAuthority === 'adminAndAuthor' && t('security_setting.admin_and_author')}
+                      {(currentPageCompleteDeletionAuthority === 'adminAndAuthor' || currentPageCompleteDeletionAuthority == null)
+                        && t('security_setting.admin_and_author')}
                     </span>
                     <span className="bs-caret pull-right">
                       <span className="caret" />
