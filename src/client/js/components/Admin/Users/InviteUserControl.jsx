@@ -14,7 +14,7 @@ class InviteUserControl extends React.Component {
 
     return (
       <Fragment>
-        <button type="button" className="btn-light text-dark ml-2" onClick={adminUsersContainer.toggleUserInviteModal}>
+        <button type="button" className="btn btn-light" onClick={adminUsersContainer.toggleUserInviteModal}>
           { t('user_management.invite_users') }
         </button>
         <UserInviteModal />

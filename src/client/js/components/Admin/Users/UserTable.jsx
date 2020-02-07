@@ -85,7 +85,7 @@ class UserTable extends React.Component {
                 <tr key={user._id}>
                   <td>
                     <UserPicture user={user} className="picture img-circle" />
-                    {user.admin && <span className="label label-inverse label-admin ml-2">{ t('administrator') }</span>}
+                    {user.admin && <span className="badge badge-primary label-admin ml-2">{ t('administrator') }</span>}
                   </td>
                   <td>{this.getUserStatusLabel(user.status)}</td>
                   <td>
