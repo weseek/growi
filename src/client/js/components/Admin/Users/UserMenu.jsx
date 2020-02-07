@@ -33,7 +33,7 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="dropdown-divider pl-0"></li>
+        <li className="dropdown-divider"></li>
         <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
         <li>
           <a className="dropdown-item" href="#" onClick={this.onPasswordResetClicked}>
@@ -49,7 +49,7 @@ class UserMenu extends React.Component {
 
     return (
       <Fragment>
-        <li className="dropdown-divider pl-0"></li>
+        <li className="dropdown-divider"></li>
         <li className="dropdown-header">{t('status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
