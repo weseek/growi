@@ -112,7 +112,6 @@
     "md5": "^2.2.1",
     "method-override": "^3.0.0",
     "migrate-mongo": "^7.0.1",
-    "mini-css-extract-plugin": "^0.9.0",
     "mkdirp": "~0.5.1",
     "module-alias": "^2.0.6",
     "mongoose": "5.4.4",
