@@ -72,14 +72,16 @@ const componentMappings = {
   'admin-markdown-setting': <MarkdownSetting />,
   'admin-customize': <Customize />,
   'admin-importer': <ImportDataPage />,
-  'admin-export-page': <ExportArchiveDataPage crowi={appContainer} />,
+  'admin-export-page': <ExportArchiveDataPage />,
   'admin-notification-setting': <NotificationSetting />,
   'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
   'admin-user-group-detail': <UserGroupDetailPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
+  'admin-user-group-page': <UserGroupPage />,
 };
+
 
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
@@ -94,20 +96,3 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
-
-
-const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
-if (adminUserGroupPageElem != null) {
-  const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[injectableContainers]}>
-        <UserGroupPage
-          crowi={appContainer}
-          isAclEnabled={isAclEnabled}
-        />
-      </Provider>
-    </I18nextProvider>,
-    adminUserGroupPageElem,
-  );
-}
