@@ -143,7 +143,6 @@ jobs:
         key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get Date
       run: |
-        echo ::set-env name=DateYmdHM::$(date '+%Y%m%d%H%M')
         echo ::set-env name=DateYmdH::$(date '+%Y%m%d%H')
         echo ::set-env name=DateYmd::$(date '+%Y%m%d')
         echo ::set-env name=DateYm::$(date '+%Y%m')
@@ -152,9 +151,8 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules/.cache
-        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmdHM }}
+        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmdH }}
         restore-keys: |
-          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmdH }}
           ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmd }}
           ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYm }}
           ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateY }}
