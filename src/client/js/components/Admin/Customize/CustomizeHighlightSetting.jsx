@@ -65,7 +65,7 @@ class CustomizeHighlightSetting extends React.Component {
 
       menuItem.push(
         <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
-          <a role="menuitem">{styleName}</a>
+          <a role="button">{styleName}</a>
         </li>,
       );
     });
