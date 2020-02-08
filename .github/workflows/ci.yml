@@ -208,9 +208,9 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:prod
+    - name: yarn build:prod:analyze
       run: |
-        yarn build:prod
+        yarn build:prod:analyze
     - name: yarn install --production
       run: |
         yarn install --production
@@ -228,6 +228,11 @@ jobs:
         yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Report
+        path: report
 
     - name: Slack Notification
       uses: homoluctus/slatify@master
