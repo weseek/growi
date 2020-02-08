@@ -4,8 +4,10 @@
 
 * Fix: Admin Customise missed preview functions
     * Introduced by 3.6.2
-* AWS doesn't work
+* Fix: AWS doesn't work
     * Introduced by 3.6.4
+* Fix: Ensure not to get unrelated indices information in Elasticsearch Management
+    * Introduced by 3.6.6
 
 ## v3.6.6
 
