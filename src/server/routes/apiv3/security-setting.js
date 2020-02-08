@@ -11,6 +11,7 @@ const router = express.Router();
 
 const { body } = require('express-validator/check');
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const removeNullPropertyFromObject = require('../../../lib/util/removeNullPropertyFromObject');
 
 const validator = {
   generalSetting: [
@@ -86,9 +87,9 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   twitterOAuth: [
-    body('twitterConsumerKey').isString(),
-    body('twitterConsumerSecret').isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('twitterConsumerKey').if((value, { req }) => req.body.twitterConsumerKey).isString(),
+    body('twitterConsumerSecret').if((value, { req }) => req.body.twitterConsumerSecret).isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameUsernameTreatedAsIdenticalUser).isBoolean(),
   ],
 };
 
@@ -888,11 +889,14 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
-    const requestParams = {
+
+    let requestParams = {
       'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
       'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
       'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
     };
+
+    requestParams = removeNullPropertyFromObject(requestParams);
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
