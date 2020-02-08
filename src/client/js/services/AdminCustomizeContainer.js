@@ -213,6 +213,10 @@ export default class AdminCustomizeContainer extends Container {
       // get theme asset path
       const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
       assetPath = response.data.assetPath;
+    }
+    catch (err) {
+      toastError(err);
+    }
 
       const themeLink = document.getElementById('grw-theme-link');
       themeLink.setAttribute('href', assetPath);
