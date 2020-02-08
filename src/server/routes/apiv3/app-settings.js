@@ -83,7 +83,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          accessKeyId:
  *            type: string
  *            description: accesskey id for authentification of AWS
- *          secretKey:
+ *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
  *      PluginSettingParams:
@@ -126,7 +126,7 @@ module.exports = (crowi) => {
       body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
       body('bucket').trim(),
       body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
-      body('secretKey').trim(),
+      body('secretAccessKey').trim(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -170,7 +170,7 @@ module.exports = (crowi) => {
       customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
       accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-      secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+      secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
@@ -410,7 +410,7 @@ module.exports = (crowi) => {
       'aws:customEndpoint': req.body.customEndpoint,
       'aws:bucket': req.body.bucket,
       'aws:accessKeyId': req.body.accessKeyId,
-      'aws:secretKey': req.body.secretKey,
+      'aws:secretAccessKey': req.body.secretAccessKey,
     };
 
     try {
@@ -420,7 +420,7 @@ module.exports = (crowi) => {
         customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
         bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
         accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-        secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+        secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
     }

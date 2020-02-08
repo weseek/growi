@@ -1,19 +1,28 @@
 # CHANGES
 
-## v3.6.6-RC
+## 3.6.7-RC
 
-* 
+* Imprv: Show error toastr when saving page is failed because of empty document
+* Fix: Admin Customise missed preview functions
+    * Introduced by 3.6.2
+* Fix: AWS doesn't work
+    * Introduced by 3.6.4
+* Fix: Ensure not to get unrelated indices information in Elasticsearch Management
+    * Introduced by 3.6.6
 
-## v3.6.5
+## v3.6.6
 
 * Feature: Reconnect to Elasticsearch from Full Text Search Management
 * Feature: Normalize indices of Elasticsearch from Full Text Search Management
 * Improvement: Add 'spring' theme
 * Improvement: Reactify admin pages (Notification)
-* Impromvement: Add `checkMiddlewaresStrictly` query option to Healthcheck API
+* Impromvement: Add `checkMiddlewaresStrictly` option to Healthcheck API
 * Improvement: Accessibility for History component under dark themes
+* Fix: Warning on client console when developing /admin/app
 * Support: Upgrade libs
     * react-bootstrap-typeahead
+
+## v3.6.5 (Missing number)
 
 ## v3.6.4
 
