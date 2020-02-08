@@ -103,26 +103,17 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch themeType
    */
-  async switchThemeType(themeName) {
+  switchThemeType(themeName) {
     // can't choose theme when kibela
     if (this.state.currentLayout === 'kibela') {
       return;
     }
-
-    let assetPath;
-    try {
-      // get theme asset path
-      const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
-      assetPath = response.data.assetPath;
-    }
-    catch (err) {
-      toastError(err);
-    }
-
     this.setState({ currentTheme: themeName });
 
-    const themeLink = document.getElementById('grw-theme-link');
-    themeLink.setAttribute('href', assetPath);
+    // preview if production
+    if (process.env.NODE_ENV !== 'development') {
+      this.previewTheme(themeName);
+    }
   }
 
   /**
@@ -212,6 +203,24 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentCustomizeScript: inpuValue });
   }
 
+  /**
+   * Preview theme
+   * @param {string} themeName
+   */
+  async previewTheme(themeName) {
+    let assetPath;
+    try {
+      // get theme asset path
+      const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
+      assetPath = response.data.assetPath;
+
+      const themeLink = document.getElementById('grw-theme-link');
+      themeLink.setAttribute('href', assetPath);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   /**
    * Update layout
