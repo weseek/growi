@@ -36,16 +36,19 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   async addUserBySubmit() {
+    const { adminUserGroupDetailContainer } = this.props;
+    const { userGroup } = adminUserGroupDetailContainer.state;
+
     if (this.state.inputUser.length === 0) { return }
     const userName = this.state.inputUser[0].username;
 
     try {
-      await this.props.adminUserGroupDetailContainer.addUserByUsername(userName);
-      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.adminUserGroupDetailContainer.state.userGroup.name)}"`);
+      await adminUserGroupDetailContainer.addUserByUsername(userName);
+      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`);
       this.setState({ inputUser: '' });
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.adminUserGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`));
     }
   }
 
@@ -54,8 +57,10 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   async searhApplicableUsers() {
+    const { adminUserGroupDetailContainer } = this.props;
+
     try {
-      const users = await this.props.adminUserGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
+      const users = await adminUserGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
       this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
