@@ -2,7 +2,10 @@
 
 ## 3.6.7-RC
 
-*
+* Fix: Admin Customise missed preview functions
+    * Introduced by 3.6.2
+* AWS doesn't work
+    * Introduced by 3.6.4
 
 ## v3.6.6
 
