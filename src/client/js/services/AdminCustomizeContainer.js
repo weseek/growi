@@ -166,6 +166,8 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentHighlightJsStyleName: styleName });
     // recommended settings are applied
     this.setState({ isHighlightJsStyleBorderEnabled: isBorderEnable });
+
+    this.previewHighlightJsStyle(styleId);
   }
 
   /**
@@ -218,12 +220,19 @@ export default class AdminCustomizeContainer extends Container {
       toastError(err);
     }
 
-      const themeLink = document.getElementById('grw-theme-link');
-      themeLink.setAttribute('href', assetPath);
-    }
-    catch (err) {
-      toastError(err);
-    }
+    const themeLink = document.getElementById('grw-theme-link');
+    themeLink.setAttribute('href', assetPath);
+  }
+
+  /**
+   * Preview hljs style
+   * @param {string} styleId
+   */
+  previewHighlightJsStyle(styleId) {
+    const styleLInk = document.querySelectorAll('#grw-hljs-container-for-demo link')[0];
+    // replace css url
+    // see https://regex101.com/r/gBNZYu/4
+    styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
   }
 
   /**
