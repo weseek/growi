@@ -140,7 +140,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get Date
       run: |
         echo ::set-env name=DateYmdHM::$(date '+%Y%m%d%H%M')
@@ -148,16 +148,16 @@ jobs:
         echo ::set-env name=DateYmd::$(date '+%Y%m%d')
         echo ::set-env name=DateYm::$(date '+%Y%m')
         echo ::set-env name=DateY::$(date '+%Y')
-    - name: Cache/Restore node_modules/.cache
+    - name: Cache/Restore node_modules/.cache/hard-source
       uses: actions/cache@v1
       with:
         path: node_modules/.cache
-        key: ${{ runner.OS }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYmdHM }}
+        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmdHM }}
         restore-keys: |
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYmdH }}
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYmd }}
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYm }}
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateY }}
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmdH }}
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYmd }}
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateYm }}
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ env.DateY }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
@@ -213,16 +213,16 @@ jobs:
         echo ::set-env name=DateYmd::$(date '+%Y%m%d')
         echo ::set-env name=DateYm::$(date '+%Y%m')
         echo ::set-env name=DateY::$(date '+%Y')
-    - name: Cache/Restore node_modules/.cache
+    - name: Cache/Restore node_modules
       uses: actions/cache@v1
       with:
-        path: node_modules/.cache
-        key: ${{ runner.OS }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYmdHM }}
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ env.DateYmdHM }}
         restore-keys: |
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYmdH }}
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYmd }}
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateYm }}
-          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-${{ env.DateY }}
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ env.DateYmdH }}
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ env.DateYmd }}
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ env.DateYm }}
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ env.DateY }}
     - name: Get yarn cache dir
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
