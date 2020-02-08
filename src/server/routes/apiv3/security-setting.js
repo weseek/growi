@@ -888,13 +888,16 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
   router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, ApiV3FormValidator, async(req, res) => {
-    const { twitterConsumerKey, twitterConsumerSecret, isSameUsernameTreatedAsIdenticalUser } = req.body;
 
-    const requestParams = {};
+    const requestParams = {
+      'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
+      'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
+      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+    };
 
-    if (twitterConsumerKey != null) { requestParams['security:passport-twitter:consumerKey'] = twitterConsumerKey }
-    if (twitterConsumerSecret != null) { requestParams['security:passport-twitter:consumerSecret'] = twitterConsumerSecret }
-    if (isSameUsernameTreatedAsIdenticalUser != null) { requestParams['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] = isSameUsernameTreatedAsIdenticalUser }
+    for (const [key, value] of Object.entries(requestParams)) {
+      if (req.body[value] != null) { delete requestParams[key] }
+    }
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);

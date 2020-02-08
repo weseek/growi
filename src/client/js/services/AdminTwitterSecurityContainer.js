@@ -76,11 +76,15 @@ export default class AdminTwitterSecurityContainer extends Container {
   async updateTwitterSetting() {
     const { twitterConsumerKey, twitterConsumerSecret, isSameUsernameTreatedAsIdenticalUser } = this.state;
 
-    const requestParams = {};
+    const requestParams = {
+      twitterConsumerKey,
+      twitterConsumerSecret,
+      isSameUsernameTreatedAsIdenticalUser,
+    };
 
-    if (twitterConsumerKey != null) { requestParams.twitterConsumerKey = twitterConsumerKey }
-    if (twitterConsumerSecret != null) { requestParams.twitterConsumerSecret = twitterConsumerSecret }
-    if (isSameUsernameTreatedAsIdenticalUser != null) { requestParams.isSameUsernameTreatedAsIdenticalUser = isSameUsernameTreatedAsIdenticalUser }
+    for (const [key, value] of Object.entries(requestParams)) {
+      if (value == null) { delete requestParams[key] }
+    }
 
     const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', requestParams);
 
