@@ -165,9 +165,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
@@ -228,9 +228,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
