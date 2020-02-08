@@ -185,11 +185,11 @@ module.exports = (crowi) => {
    *        summary: /customize-setting/layout-theme/asset-path
    *        description: Get layout theme asset path
    *        parameters:
-   *          -in: query
-   *            name: themeName
+   *          - name: themeName
+   *            in: query
    *            required: true
-   *              schema:
-   *                type: string
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: Succeeded to update layout and theme
