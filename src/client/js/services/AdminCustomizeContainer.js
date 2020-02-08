@@ -109,6 +109,11 @@ export default class AdminCustomizeContainer extends Container {
       return;
     }
     this.setState({ currentTheme: themeName });
+
+    // preview if production
+    if (process.env.NODE_ENV !== 'development') {
+      this.previewTheme(themeName);
+    }
   }
 
   /**
@@ -161,6 +166,8 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentHighlightJsStyleName: styleName });
     // recommended settings are applied
     this.setState({ isHighlightJsStyleBorderEnabled: isBorderEnable });
+
+    this.previewHighlightJsStyle(styleId);
   }
 
   /**
@@ -198,6 +205,34 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentCustomizeScript: inpuValue });
   }
 
+  /**
+   * Preview theme
+   * @param {string} themeName
+   */
+  async previewTheme(themeName) {
+    try {
+      // get theme asset path
+      const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
+      const { assetPath } = response.data;
+
+      const themeLink = document.getElementById('grw-theme-link');
+      themeLink.setAttribute('href', assetPath);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
+   * Preview hljs style
+   * @param {string} styleId
+   */
+  previewHighlightJsStyle(styleId) {
+    const styleLInk = document.querySelectorAll('#grw-hljs-container-for-demo link')[0];
+    // replace css url
+    // see https://regex101.com/r/gBNZYu/4
+    styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
+  }
 
   /**
    * Update layout
@@ -205,7 +240,7 @@ export default class AdminCustomizeContainer extends Container {
    * @return {Array} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/layoutTheme', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
       layoutType: this.state.currentLayout,
       themeType: this.state.currentTheme,
     });
