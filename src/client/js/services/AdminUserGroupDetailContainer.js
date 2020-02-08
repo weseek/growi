@@ -5,13 +5,13 @@ import loggerFactory from '@alias/logger';
 import { toastError } from '../util/apiNotification';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:UserGroupDetailContainer');
+const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
 
 /**
  * Service container for admin user group detail page (UserGroupDetailPage.jsx)
  * @extends {Container} unstated Container
  */
-export default class UserGroupDetailContainer extends Container {
+export default class AdminAdminUserGroupDetailContainer extends Container {
 
   constructor(appContainer) {
     super();
@@ -49,7 +49,7 @@ export default class UserGroupDetailContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'UserGroupDetailContainer';
+    return 'AdminUserGroupDetailContainer';
   }
 
   /**
@@ -100,7 +100,7 @@ export default class UserGroupDetailContainer extends Container {
   /**
    * update user group
    *
-   * @memberOf UserGroupDetailContainer
+   * @memberOf AdminUserGroupDetailContainer
    * @param {object} param update param for user group
    * @return {object} response object
    */
@@ -116,7 +116,7 @@ export default class UserGroupDetailContainer extends Container {
   /**
    * open a modal
    *
-   * @memberOf UserGroupDetailContainer
+   * @memberOf AdminUserGroupDetailContainer
    */
   async openUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: true });
@@ -125,7 +125,7 @@ export default class UserGroupDetailContainer extends Container {
   /**
    * close a modal
    *
-   * @memberOf UserGroupDetailContainer
+   * @memberOf AdminUserGroupDetailContainer
    */
   async closeUserGroupUserModal() {
     await this.setState({ isUserGroupUserModalOpen: false });
@@ -152,7 +152,7 @@ export default class UserGroupDetailContainer extends Container {
   /**
    * update user group
    *
-   * @memberOf UserGroupDetailContainer
+   * @memberOf AdminUserGroupDetailContainer
    * @param {string} username username of the user to be added to the group
    */
   async addUserByUsername(username) {
@@ -173,7 +173,7 @@ export default class UserGroupDetailContainer extends Container {
   /**
    * update user group
    *
-   * @memberOf UserGroupDetailContainer
+   * @memberOf AdminUserGroupDetailContainer
    * @param {string} username username of the user to be removed from the group
    */
   async removeUserByUsername(username) {

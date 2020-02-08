@@ -6,7 +6,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
+import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import UserPicture from '../../User/UserPicture';
 
@@ -40,12 +40,12 @@ class UserGroupUserFormByInput extends React.Component {
     const userName = this.state.inputUser[0].username;
 
     try {
-      await this.props.userGroupDetailContainer.addUserByUsername(userName);
-      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
+      await this.props.adminUserGroupDetailContainer.addUserByUsername(userName);
+      toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(this.props.adminUserGroupDetailContainer.state.userGroup.name)}"`);
       this.setState({ inputUser: '' });
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(this.props.adminUserGroupDetailContainer.state.userGroup.name)}"`));
     }
   }
 
@@ -55,7 +55,7 @@ class UserGroupUserFormByInput extends React.Component {
 
   async searhApplicableUsers() {
     try {
-      const users = await this.props.userGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
+      const users = await this.props.adminUserGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
       this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
@@ -89,14 +89,14 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   renderMenuItemChildren(option) {
-    const { userGroupDetailContainer } = this.props;
+    const { adminUserGroupDetailContainer } = this.props;
     const user = option;
     return (
       <React.Fragment>
         <UserPicture user={user} size="sm" withoutLink />
         <strong className="ml-2">{user.username}</strong>
-        {userGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
-        {userGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+        {adminUserGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
+        {adminUserGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
       </React.Fragment>
     );
   }
@@ -151,14 +151,14 @@ class UserGroupUserFormByInput extends React.Component {
 UserGroupUserFormByInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  userGroupDetailContainer: PropTypes.instanceOf(UserGroupDetailContainer).isRequired,
+  adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
 const UserGroupUserFormByInputWrapper = (props) => {
-  return createSubscribedElement(UserGroupUserFormByInput, props, [AppContainer, UserGroupDetailContainer]);
+  return createSubscribedElement(UserGroupUserFormByInput, props, [AppContainer, AdminUserGroupDetailContainer]);
 };
 
 export default withTranslation()(UserGroupUserFormByInputWrapper);

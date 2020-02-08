@@ -21,7 +21,7 @@ import FullTextSearchManagement from './components/Admin/FullTextSearchManagemen
 
 import AdminHomeContainer from './services/AdminHomeContainer';
 import AdminCustomizeContainer from './services/AdminCustomizeContainer';
-import UserGroupDetailContainer from './services/UserGroupDetailContainer';
+import AdminUserGroupDetailContainer from './services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from './services/AdminUsersContainer';
 import AdminAppContainer from './services/AdminAppContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
@@ -44,7 +44,7 @@ const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
 const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
-const userGroupDetailContainer = new UserGroupDetailContainer(appContainer);
+const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const injectableContainers = [
   appContainer,
   websocketContainer,
@@ -56,7 +56,7 @@ const injectableContainers = [
   adminNotificationContainer,
   adminNotificationContainer,
   adminMarkDownContainer,
-  userGroupDetailContainer,
+  adminUserGroupDetailContainer,
 ];
 
 logger.info('unstated containers have been initialized');
