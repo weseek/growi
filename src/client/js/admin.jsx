@@ -28,6 +28,8 @@ import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
 
+import './app';
+
 const logger = loggerFactory('growi:admin');
 
 const appContainer = window.appContainer;
