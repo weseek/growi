@@ -189,6 +189,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Cache/Restore node_modules/.cache
+      uses: actions/cache@v1
+      with:
+        path: node_modules/.cache
+        key: ${{ runner.OS }}-node_modules_cache-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-
     - name: Get yarn cache dir
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
