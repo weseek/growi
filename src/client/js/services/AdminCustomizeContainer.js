@@ -103,12 +103,26 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch themeType
    */
-  switchThemeType(themeName) {
+  async switchThemeType(themeName) {
     // can't choose theme when kibela
     if (this.state.currentLayout === 'kibela') {
       return;
     }
+
+    let assetPath;
+    try {
+      // get theme asset path
+      const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
+      assetPath = response.data.assetPath;
+    }
+    catch (err) {
+      toastError(err);
+    }
+
     this.setState({ currentTheme: themeName });
+
+    const themeLink = document.getElementById('grw-theme-link');
+    themeLink.setAttribute('href', assetPath);
   }
 
   /**
@@ -205,7 +219,7 @@ export default class AdminCustomizeContainer extends Container {
    * @return {Array} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/layoutTheme', {
+    const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
       layoutType: this.state.currentLayout,
       themeType: this.state.currentTheme,
     });

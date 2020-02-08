@@ -1,5 +1,5 @@
 {% if env === 'development' %}
   <script src="{{ webpack_asset('styles/theme-' + themeName + '.js') }}"></script>
 {% else %}
-  <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + themeName + '.css') }}">
+  <link rel="stylesheet" id="grw-theme-link" href="{{ webpack_asset('styles/theme-' + themeName + '.css') }}">
 {% endif %}
