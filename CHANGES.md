@@ -9,6 +9,8 @@
     * Introduced by 3.6.4
 * Fix: Ensure not to get unrelated indices information in Elasticsearch Management
     * Introduced by 3.6.6
+* Support: Optimize bundles
+* Support: Optimize build-prod job with caching node_modules/.cache
 
 ## v3.6.6
 
