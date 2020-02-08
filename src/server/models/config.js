@@ -90,8 +90,8 @@ module.exports = function(crowi) {
       'security:passport-github:clientId': undefined,
       'security:passport-github:clientSecret': undefined,
 
-      'security:passport-twitter:clientId': undefined,
-      'security:passport-twitter:clientSecret': undefined,
+      'security:passport-twitter:consumerKey': undefined,
+      'security:passport-twitter:consumerSecret': undefined,
 
       'plugin:isEnabledPlugins' : true,
 
