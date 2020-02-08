@@ -210,18 +210,17 @@ export default class AdminCustomizeContainer extends Container {
    * @param {string} themeName
    */
   async previewTheme(themeName) {
-    let assetPath;
     try {
       // get theme asset path
       const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
-      assetPath = response.data.assetPath;
+      const { assetPath } = response.data;
+
+      const themeLink = document.getElementById('grw-theme-link');
+      themeLink.setAttribute('href', assetPath);
     }
     catch (err) {
       toastError(err);
     }
-
-    const themeLink = document.getElementById('grw-theme-link');
-    themeLink.setAttribute('href', assetPath);
   }
 
   /**
