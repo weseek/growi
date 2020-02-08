@@ -86,9 +86,9 @@ const validator = {
     body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
   ],
   twitterOAuth: [
-    body('twitterConsumerKey').isString(),
-    body('twitterConsumerSecret').isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').isBoolean(),
+    body('twitterConsumerKey').if((value, { req }) => req.body.twitterConsumerKey).isString(),
+    body('twitterConsumerSecret').if((value, { req }) => req.body.twitterConsumerSecret).isString(),
+    body('isSameUsernameTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameUsernameTreatedAsIdenticalUser).isBoolean(),
   ],
 };
 
@@ -897,7 +897,7 @@ module.exports = (crowi) => {
     if (isSameUsernameTreatedAsIdenticalUser != null) { requestParams.push({ 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': isSameUsernameTreatedAsIdenticalUser }) }
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', ...requestParams);
       await crowi.passportService.setupStrategyById('twitter');
       const securitySettingParams = {
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
