@@ -229,7 +229,8 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:27017/growi
 
-    - uses: actions/upload-artifact@v1
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v1
       with:
         name: Report
         path: report
