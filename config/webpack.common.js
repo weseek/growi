@@ -21,6 +21,7 @@ module.exports = (options) => {
     mode: options.mode,
     entry: Object.assign({
       'js/app':                       './src/client/js/app',
+      'js/admin':                     './src/client/js/admin',
       'js/installer':                 './src/client/js/installer',
       'js/legacy':                    './src/client/js/legacy/crowi',
       'js/legacy-presentation':       './src/client/js/legacy/crowi-presentation',

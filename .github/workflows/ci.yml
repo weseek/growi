@@ -189,6 +189,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Cache/Restore node_modules/.cache
+      uses: actions/cache@v1
+      with:
+        path: node_modules/.cache
+        key: ${{ runner.OS }}-node_modules_cache-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules_cache-${{ matrix.node-version }}-
     - name: Get yarn cache dir
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -208,9 +215,9 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:prod
+    - name: yarn build:prod:analyze
       run: |
-        yarn build:prod
+        yarn build:prod:analyze
     - name: yarn install --production
       run: |
         yarn install --production
@@ -228,6 +235,12 @@ jobs:
         yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
+
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: Report
+        path: report
 
     - name: Slack Notification
       uses: homoluctus/slatify@master
