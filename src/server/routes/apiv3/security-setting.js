@@ -897,7 +897,7 @@ module.exports = (crowi) => {
     if (isSameUsernameTreatedAsIdenticalUser != null) { requestParams['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] = isSameUsernameTreatedAsIdenticalUser }
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', ...requestParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       await crowi.passportService.setupStrategyById('twitter');
       const securitySettingParams = {
         twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
