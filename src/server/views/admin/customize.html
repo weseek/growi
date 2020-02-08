@@ -35,6 +35,10 @@
   </div>
   {% endif %}
 
+  <div id="grw-hljs-container-for-demo">
+    {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
+  </div>
+
   <div class="row">
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'customize'} %}
