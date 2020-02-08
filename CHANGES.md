@@ -2,6 +2,7 @@
 
 ## 3.6.7-RC
 
+* Imprv: Show error toastr when saving page is failed because of empty document
 * Fix: Admin Customise missed preview functions
     * Introduced by 3.6.2
 * Fix: AWS doesn't work
