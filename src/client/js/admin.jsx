@@ -28,11 +28,10 @@ import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
 
-import './app';
+import { appContainer, componentMappings } from './bootstrap';
 
 const logger = loggerFactory('growi:admin');
 
-const appContainer = window.appContainer;
 const { i18n } = appContainer;
 const websocketContainer = appContainer.getContainer('WebsocketContainer');
 
@@ -66,7 +65,7 @@ logger.info('unstated containers have been initialized');
  *  key: id of element
  *  value: React Element
  */
-const componentMappings = {
+Object.assign(componentMappings, {
   'admin-home': <AdminHome />,
   'admin-app': <AppSettingsPage />,
   'admin-markdown-setting': <MarkdownSetting />,
@@ -80,7 +79,7 @@ const componentMappings = {
   'admin-user-group-detail': <UserGroupDetailPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-user-group-page': <UserGroupPage />,
-};
+});
 
 
 Object.keys(componentMappings).forEach((key) => {

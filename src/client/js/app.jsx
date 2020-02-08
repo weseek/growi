@@ -4,9 +4,7 @@ import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
-import Xss from '@commons/service/xss';
 
-import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
@@ -29,31 +27,23 @@ import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import StaffCredit from './components/StaffCredit/StaffCredit';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
-import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
-import WebsocketContainer from './services/WebsocketContainer';
+
+import { appContainer, componentMappings } from './bootstrap';
 
 const logger = loggerFactory('growi:app');
 
-if (!window) {
-  window = {};
-}
-
-// setup xss library
-const xss = new Xss();
-window.xss = xss;
+const { i18n } = appContainer;
+const websocketContainer = appContainer.getContainer('WebsocketContainer');
 
 // create unstated container instance
-const appContainer = new AppContainer();
-const websocketContainer = new WebsocketContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
@@ -64,19 +54,12 @@ const injectableContainers = [
 
 logger.info('unstated containers have been initialized');
 
-appContainer.initPlugins();
-appContainer.injectToWindow();
-
-const i18n = appContainer.i18n;
-
 /**
  * define components
  *  key: id of element
  *  value: React Element
  */
-let componentMappings = {
-  'search-top': <HeaderSearchBox />,
-  'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
+Object.assign(componentMappings, {
   'search-page': <SearchPage crowi={appContainer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
@@ -91,13 +74,11 @@ let componentMappings = {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
-
-  'staff-credit': <StaffCredit />,
-};
+});
 
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
-  componentMappings = Object.assign({
+  Object.assign(componentMappings, {
     'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment': <PageAttachment />,
@@ -111,15 +92,15 @@ if (pageContainer.state.pageId != null) {
     'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
-  }, componentMappings);
+  });
 }
 if (pageContainer.state.path != null) {
-  componentMappings = Object.assign({
+  Object.assign(componentMappings, {
     // eslint-disable-next-line quote-props
     'page': <Page />,
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
-  }, componentMappings);
+  });
 }
 
 Object.keys(componentMappings).forEach((key) => {
