@@ -349,14 +349,21 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update customHeader
    * @memberOf AdminCustomizeContainer
-   * @return {string} Customize html header
    */
   async updateCustomizeHeader() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
-      customizeHeader: this.state.currentCustomizeHeader,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
+        customizeHeader: this.state.currentCustomizeHeader,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        customizeHeader: customizedParams.customizeHeader,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**

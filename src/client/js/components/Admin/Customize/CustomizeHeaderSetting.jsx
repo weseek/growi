@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -12,8 +10,6 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomHeaderEditor from '../CustomHeaderEditor';
-
-const logger = loggerFactory('growi:Customize');
 
 class CustomizeHeaderSetting extends React.Component {
 
@@ -32,7 +28,6 @@ class CustomizeHeaderSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -59,8 +54,7 @@ class CustomizeHeaderSetting extends React.Component {
 
         <div className="col-xs-12">
           <CustomHeaderEditor
-            // The value passed must be immutable
-            defaultValue={adminCustomizeContainer.state.currentCustomizeHeader}
+            value={adminCustomizeContainer.state.currentCustomizeHeader}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
         </div>
