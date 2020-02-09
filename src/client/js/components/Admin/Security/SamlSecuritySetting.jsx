@@ -427,7 +427,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   <input
                     id="bindByUserName-SAML"
                     type="checkbox"
-                    checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
@@ -447,7 +447,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   <input
                     id="bindByEmail-SAML"
                     type="checkbox"
-                    checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser}
+                    checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
