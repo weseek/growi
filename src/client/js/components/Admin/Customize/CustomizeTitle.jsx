@@ -2,15 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-
-const logger = loggerFactory('growi:Customize');
 
 class CustomizeTitle extends React.Component {
 
@@ -29,7 +25,6 @@ class CustomizeTitle extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -42,7 +37,7 @@ class CustomizeTitle extends React.Component {
         <h2 className="admin-setting-header">{t('admin:customize_setting.custom_title')}</h2>
         <p
           className="well"
-          // eslint-disable-next-line react/no-danger, max-len
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
         />
         {/* TODO i18n */}

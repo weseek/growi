@@ -329,14 +329,21 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update customTitle
    * @memberOf AdminCustomizeContainer
-   * @return {string} Customize title
    */
   async updateCustomizeTitle() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
-      customizeTitle: this.state.currentCustomizeTitle,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
+        customizeTitle: this.state.currentCustomizeTitle,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        customizeTitle: customizedParams.customizeTitle,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
