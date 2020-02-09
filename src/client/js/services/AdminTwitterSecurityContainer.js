@@ -1,13 +1,9 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
 import { pathUtils } from 'growi-commons';
-
 import urljoin from 'url-join';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
 /**
  * Service container for admin security page (TwitterSecurityManagement.jsx)
@@ -77,16 +73,10 @@ export default class AdminTwitterSecurityContainer extends Container {
   async updateTwitterSetting() {
     const { twitterConsumerKey, twitterConsumerSecret, isSameUsernameTreatedAsIdenticalUser } = this.state;
 
-    let requestParams = {
-      twitterConsumerKey,
-      twitterConsumerSecret,
-      isSameUsernameTreatedAsIdenticalUser,
-    };
+    let requestParams = { twitterConsumerKey, twitterConsumerSecret, isSameUsernameTreatedAsIdenticalUser };
 
-    requestParams = removeNullPropertyFromObject(requestParams);
-
+    requestParams = await removeNullPropertyFromObject(requestParams);
     const response = await this.appContainer.apiv3.put('/security-setting/twitter-oauth', requestParams);
-
     const { securitySettingParams } = response.data;
 
     this.setState({

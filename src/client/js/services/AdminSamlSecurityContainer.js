@@ -1,12 +1,8 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
 import { pathUtils } from 'growi-commons';
-
 import urljoin from 'url-join';
-
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
+import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 /**
  * Service container for admin security page (SecuritySamlSetting.jsx)
@@ -140,34 +136,40 @@ export default class AdminSamlSecurityContainer extends Container {
    * Update saml option
    */
   async updateSamlSetting() {
+    const {
+      samlEntryPoint, samlIssuer, samlCert, samlAttrMapId, samlAttrMapUserName, samlAttrMapMail,
+      samlAttrMapFirstName, samlAttrMapLastName, isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser,
+    } = this.state;
 
-    const response = await this.appContainer.apiv3.put('/security-setting/saml', {
-      samlEntryPoint: this.state.samlEntryPoint,
-      samlIssuer: this.state.samlIssuer,
-      samlCert: this.state.samlCert,
-      samlAttrMapId: this.state.samlAttrMapId,
-      samlAttrMapUserName: this.state.samlAttrMapUserName,
-      samlAttrMapMail: this.state.samlAttrMapMail,
-      samlAttrMapFirstName: this.state.samlAttrMapFirstName,
-      samlAttrMapLastName: this.state.samlAttrMapLastName,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
-    });
+    let requestParams = {
+      samlEntryPoint,
+      samlIssuer,
+      samlCert,
+      samlAttrMapId,
+      samlAttrMapUserName,
+      samlAttrMapMail,
+      samlAttrMapFirstName,
+      samlAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser,
+    };
 
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/saml', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({
       missingMandatoryConfigKeys: securitySettingParams.missingMandatoryConfigKeys,
-      samlEntryPoint: securitySettingParams.samlEntryPoint || '',
-      samlIssuer: securitySettingParams.samlIssuer || '',
-      samlCert: securitySettingParams.samlCert || '',
-      samlAttrMapId: securitySettingParams.samlAttrMapId || '',
-      samlAttrMapUserName: securitySettingParams.samlAttrMapUserName || '',
-      samlAttrMapMail: securitySettingParams.samlAttrMapMail || '',
-      samlAttrMapFirstName: securitySettingParams.samlAttrMapFirstName || '',
-      samlAttrMapLastName: securitySettingParams.samlAttrMapLastName || '',
-      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
-      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser || false,
+      samlEntryPoint: securitySettingParams.samlEntryPoint,
+      samlIssuer: securitySettingParams.samlIssuer,
+      samlCert: securitySettingParams.samlCert,
+      samlAttrMapId: securitySettingParams.samlAttrMapId,
+      samlAttrMapUserName: securitySettingParams.samlAttrMapUserName,
+      samlAttrMapMail: securitySettingParams.samlAttrMapMail,
+      samlAttrMapFirstName: securitySettingParams.samlAttrMapFirstName,
+      samlAttrMapLastName: securitySettingParams.samlAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser,
     });
     return response;
   }

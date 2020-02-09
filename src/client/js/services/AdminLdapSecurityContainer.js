@@ -1,9 +1,6 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
+import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 /**
  * Service container for admin security page (SecurityLdapSetting.jsx)
@@ -151,37 +148,43 @@ export default class AdminLdapSecurityContainer extends Container {
    * Update ldap option
    */
   async updateLdapSetting() {
+    const {
+      serverUrl, isUserBind, ldapBindDN, ldapBindDNPassword, ldapSearchFilter, ldapAttrMapUsername, isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail, ldapAttrMapName, ldapGroupSearchBase, ldapGroupSearchFilter, ldapGroupDnProperty,
+    } = this.state;
 
-    const response = await this.appContainer.apiv3.put('/security-setting/ldap', {
-      serverUrl: this.state.serverUrl,
-      isUserBind: this.state.isUserBind,
-      ldapBindDN: this.state.ldapBindDN,
-      ldapBindDNPassword: this.state.ldapBindDNPassword,
-      ldapSearchFilter: this.state.ldapSearchFilter,
-      ldapAttrMapUsername: this.state.ldapAttrMapUsername,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-      ldapAttrMapMail: this.state.ldapAttrMapMail,
-      ldapAttrMapName: this.state.ldapAttrMapName,
-      ldapGroupSearchBase: this.state.ldapGroupSearchBase,
-      ldapGroupSearchFilter: this.state.ldapGroupSearchFilter,
-      ldapGroupDnProperty: this.state.ldapGroupDnProperty,
-    });
+    let requestParams = {
+      serverUrl,
+      isUserBind,
+      ldapBindDN,
+      ldapBindDNPassword,
+      ldapSearchFilter,
+      ldapAttrMapUsername,
+      isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail,
+      ldapAttrMapName,
+      ldapGroupSearchBase,
+      ldapGroupSearchFilter,
+      ldapGroupDnProperty,
+    };
 
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/ldap', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({
-      serverUrl: securitySettingParams.serverUrl || '',
-      isUserBind: securitySettingParams.isUserBind || false,
-      ldapBindDN: securitySettingParams.ldapBindDN || '',
-      ldapBindDNPassword: securitySettingParams.ldapBindDNPassword || '',
-      ldapSearchFilter: securitySettingParams.ldapSearchFilter || '',
-      ldapAttrMapUsername: securitySettingParams.ldapAttrMapUsername || '',
-      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser || false,
-      ldapAttrMapMail: securitySettingParams.ldapAttrMapMail || '',
-      ldapAttrMapName: securitySettingParams.ldapAttrMapName || '',
-      ldapGroupSearchBase: securitySettingParams.ldapGroupSearchBase || '',
-      ldapGroupSearchFilter: securitySettingParams.ldapGroupSearchFilter || '',
-      ldapGroupDnProperty: securitySettingParams.ldapGroupDnProperty || '',
+      serverUrl: securitySettingParams.serverUrl,
+      isUserBind: securitySettingParams.isUserBind,
+      ldapBindDN: securitySettingParams.ldapBindDN,
+      ldapBindDNPassword: securitySettingParams.ldapBindDNPassword,
+      ldapSearchFilter: securitySettingParams.ldapSearchFilter,
+      ldapAttrMapUsername: securitySettingParams.ldapAttrMapUsername,
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail: securitySettingParams.ldapAttrMapMail,
+      ldapAttrMapName: securitySettingParams.ldapAttrMapName,
+      ldapGroupSearchBase: securitySettingParams.ldapGroupSearchBase,
+      ldapGroupSearchFilter: securitySettingParams.ldapGroupSearchFilter,
+      ldapGroupDnProperty: securitySettingParams.ldapGroupDnProperty,
     });
     return response;
   }

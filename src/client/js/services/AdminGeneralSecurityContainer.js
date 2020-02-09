@@ -1,10 +1,7 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
 import { toastError } from '../util/apiNotification';
-
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminGeneralSecurityContainer');
+import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 /**
  * Service container for admin security page (SecuritySetting.jsx)
@@ -111,12 +108,16 @@ export default class AdminGeneralSecurityContainer extends Container {
    * @return {string} Appearance
    */
   async updateGeneralSecuritySetting() {
-    const response = await this.appContainer.apiv3.put('/security-setting/general-setting', {
+
+    let requestParams = {
       restrictGuestMode: this.state.currentRestrictGuestMode,
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
-    });
+    };
+
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/general-setting', requestParams);
     const { securitySettingParams } = response.data;
     return securitySettingParams;
   }
