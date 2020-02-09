@@ -88,6 +88,7 @@ export default class AdminCustomizeContainer extends Container {
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
     }
     catch (err) {
+      this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
     }
