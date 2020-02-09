@@ -117,7 +117,7 @@ class GitHubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientId"
-                  value={adminGitHubSecurityContainer.state.githubClientId ||''}
+                  value={adminGitHubSecurityContainer.state.githubClientId || ''}
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
                 />
                 <p className="help-block">
@@ -133,7 +133,7 @@ class GitHubSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
-                  defaultValue={adminGitHubSecurityContainer.state.githubClientSecret ||''}
+                  defaultValue={adminGitHubSecurityContainer.state.githubClientSecret || ''}
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
                 <p className="help-block">
