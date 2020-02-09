@@ -20,16 +20,7 @@ class CustomizeHeaderSetting extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      editorInputValue: '',
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const { customizeHeader } = this.props.appContainer.getConfig();
-    this.setState({ editorInputValue: customizeHeader || '' });
   }
 
   async onClickSubmit() {
@@ -69,7 +60,7 @@ class CustomizeHeaderSetting extends React.Component {
         <div className="col-xs-12">
           <CustomHeaderEditor
             // The value passed must be immutable
-            value={this.state.editorInputValue}
+            defaultValue={adminCustomizeContainer.state.currentCustomizeHeader}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
         </div>
