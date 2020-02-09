@@ -237,7 +237,6 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update layout
    * @memberOf AdminCustomizeContainer
-   * @return {Array} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
     try {
@@ -260,14 +259,21 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update behavior
    * @memberOf AdminCustomizeContainer
-   * @return {string} Behavior
    */
   async updateCustomizeBehavior() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/behavior', {
-      behaviorType: this.state.currentBehavior,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/behavior', {
+        behaviorType: this.state.currentBehavior,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        behaviorType: customizedParams.behaviorType,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
