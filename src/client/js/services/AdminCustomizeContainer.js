@@ -279,18 +279,29 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update function
    * @memberOf AdminCustomizeContainer
-   * @return {string} Functions
    */
   async updateCustomizeFunction() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/function', {
-      isEnabledTimeline: this.state.isEnabledTimeline,
-      isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
-      isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-      recentCreatedLimit: this.state.currentRecentCreatedLimit,
-      isEnabledStaleNotification: this.state.isEnabledStaleNotification,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/function', {
+        isEnabledTimeline: this.state.isEnabledTimeline,
+        isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
+        isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+        recentCreatedLimit: this.state.currentRecentCreatedLimit,
+        isEnabledStaleNotification: this.state.isEnabledStaleNotification,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        isEnabledTimeline: customizedParams.isEnabledTimeline,
+        isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
+        isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
+        recentCreatedLimit: customizedParams.currentRecentCreatedLimit,
+        isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
