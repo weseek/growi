@@ -307,15 +307,23 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update code highlight
    * @memberOf AdminCustomizeContainer
-   * @return {Array} Code highlight
    */
   async updateHighlightJsStyle() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
-      highlightJsStyle: this.state.currentHighlightJsStyleId,
-      highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
+        highlightJsStyle: this.state.currentHighlightJsStyleId,
+        highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        highlightJsStyle: customizedParams.highlightJsStyle,
+        highlightJsStyleBorder: customizedParams.highlightJsStyleBorder,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
