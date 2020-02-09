@@ -369,14 +369,21 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Update customCss
    * @memberOf AdminCustomizeContainer
-   * @return {string} Customize css
    */
   async updateCustomizeCss() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
-      customizeCss: this.state.currentCustomizeCss,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
+        customizeCss: this.state.currentCustomizeCss,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        customizeCss: customizedParams.customizeCss,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**

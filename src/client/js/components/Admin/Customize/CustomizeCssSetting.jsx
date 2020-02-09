@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -13,23 +11,12 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomCssEditor from '../CustomCssEditor';
 
-const logger = loggerFactory('growi:Customize');
-
 class CustomizeCssSetting extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      editorInputValue: '',
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const { customizeCss } = this.props.appContainer.getConfig();
-    this.setState({ editorInputValue: customizeCss || '' });
   }
 
   async onClickSubmit() {
@@ -41,7 +28,6 @@ class CustomizeCssSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -58,8 +44,7 @@ class CustomizeCssSetting extends React.Component {
         <div className="form-group">
           <div className="col-xs-12">
             <CustomCssEditor
-              // The value passed must be immutable
-              value={this.state.editorInputValue}
+              value={adminCustomizeContainer.state.currentCustomizeCss}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
             />
           </div>
