@@ -240,12 +240,21 @@ export default class AdminCustomizeContainer extends Container {
    * @return {Array} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
-      layoutType: this.state.currentLayout,
-      themeType: this.state.currentTheme,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
+        layoutType: this.state.currentLayout,
+        themeType: this.state.currentTheme,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        layoutType: customizedParams.layoutType,
+        themeType: customizedParams.themeType,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
