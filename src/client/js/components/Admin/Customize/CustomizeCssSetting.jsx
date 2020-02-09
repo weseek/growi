@@ -44,7 +44,7 @@ class CustomizeCssSetting extends React.Component {
         <div className="form-group">
           <div className="col-xs-12">
             <CustomCssEditor
-              value={adminCustomizeContainer.state.currentCustomizeCss}
+              value={adminCustomizeContainer.state.currentCustomizeCss || ''}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
             />
           </div>

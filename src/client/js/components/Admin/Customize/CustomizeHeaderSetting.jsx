@@ -54,7 +54,7 @@ class CustomizeHeaderSetting extends React.Component {
 
         <div className="col-xs-12">
           <CustomHeaderEditor
-            value={adminCustomizeContainer.state.currentCustomizeHeader}
+            value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
         </div>

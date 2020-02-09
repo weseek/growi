@@ -21,6 +21,7 @@ export default class CustomScriptEditor extends React.Component {
       <CodeMirror
         value={this.props.value}
         autoFocus
+        detach
         options={{
           mode: 'javascript',
           lineNumbers: true,

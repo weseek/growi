@@ -357,7 +357,7 @@ export default class AdminCustomizeContainer extends Container {
       });
       const { customizedParams } = response.data;
       this.setState({
-        customizeHeader: customizedParams.customizeHeader,
+        currentCustomizeHeader: customizedParams.customizeHeader,
       });
     }
     catch (err) {
@@ -377,7 +377,7 @@ export default class AdminCustomizeContainer extends Container {
       });
       const { customizedParams } = response.data;
       this.setState({
-        customizeCss: customizedParams.customizeCss,
+        currentCustomizeCss: customizedParams.customizeCss,
       });
     }
     catch (err) {
@@ -392,11 +392,19 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
-      customizeScript: this.state.currentCustomizeScript,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
+        customizeScript: this.state.currentCustomizeScript,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        currentCustomizeScript: customizedParams.customizeScript,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
 }
