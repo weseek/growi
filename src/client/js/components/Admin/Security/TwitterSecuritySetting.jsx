@@ -117,7 +117,7 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerId"
-                  defaultValue={adminTwitterSecurityContainer.state.twitterConsumerKey}
+                  defaultValue={adminTwitterSecurityContainer.state.twitterConsumerKey || ''}
                   onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerKey(e.target.value)}
                 />
                 <p className="help-block">
@@ -133,7 +133,7 @@ class TwitterSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="TwitterConsumerSecret"
-                  defaultValue={adminTwitterSecurityContainer.state.twitterConsumerSecret}
+                  defaultValue={adminTwitterSecurityContainer.state.twitterConsumerSecret || ''}
                   onChange={e => adminTwitterSecurityContainer.changeTwitterConsumerSecret(e.target.value)}
                 />
                 <p className="help-block">
@@ -148,7 +148,7 @@ class TwitterSecurityManagement extends React.Component {
                   <input
                     id="bindByUserNameTwitter"
                     type="checkbox"
-                    checked={adminTwitterSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    checked={adminTwitterSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminTwitterSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label

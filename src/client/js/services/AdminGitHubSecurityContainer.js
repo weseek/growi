@@ -20,7 +20,7 @@ export default class AdminGitHubSecurityContainer extends Container {
       appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
       githubClientId: '',
       githubClientSecret: '',
-      isSameUsernameTreatedAsIdenticalUser: true,
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
 
   }
