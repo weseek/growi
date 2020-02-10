@@ -55,7 +55,6 @@ class LineBreakForm extends React.Component {
     this.props.adminMarkDownContainer.setState({ isEnabledLinebreaks: bool });
   }
 
-
   render() {
     const { t, adminMarkDownContainer } = this.props;
     const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = this.state;
