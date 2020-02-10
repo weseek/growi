@@ -1,12 +1,9 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
 import { pathUtils } from 'growi-commons';
-
 import urljoin from 'url-join';
+import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
 /**
  * Service container for admin security page (GitHubSecurityManagement.jsx)
@@ -23,7 +20,7 @@ export default class AdminGitHubSecurityContainer extends Container {
       appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
       githubClientId: '',
       githubClientSecret: '',
-      isSameUsernameTreatedAsIdenticalUser: true,
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
 
   }
@@ -73,13 +70,12 @@ export default class AdminGitHubSecurityContainer extends Container {
    * Update githubSetting
    */
   async updateGitHubSetting() {
+    const { githubClientId, githubClientSecret, isSameUsernameTreatedAsIdenticalUser } = this.state;
 
-    const response = await this.appContainer.apiv3.put('/security-setting/github-oauth', {
-      githubClientId: this.state.githubClientId,
-      githubClientSecret: this.state.githubClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-    });
+    let requestParams = { githubClientId, githubClientSecret, isSameUsernameTreatedAsIdenticalUser };
 
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/github-oauth', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

@@ -1,9 +1,6 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminBasicSecurityContainer');
+import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 /**
  * Service container for admin security page (BasicSecuritySetting.jsx)
@@ -51,11 +48,10 @@ export default class AdminBasicSecurityContainer extends Container {
    * Update basicSetting
    */
   async updateBasicSetting() {
+    let requestParams = { isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser };
 
-    const response = await this.appContainer.apiv3.put('/security-setting/basic', {
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-    });
-
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/basic', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

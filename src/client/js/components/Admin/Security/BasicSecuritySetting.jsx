@@ -98,7 +98,7 @@ class BasicSecurityManagement extends React.Component {
                 <input
                   id="bindByEmail-basic"
                   type="checkbox"
-                  checked={adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                  checked={adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                   onChange={() => { adminBasicSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                 />
                 <label

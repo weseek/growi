@@ -287,7 +287,7 @@ class OidcSecurityManagement extends React.Component {
                   <input
                     id="bindByEmail-oidc"
                     type="checkbox"
-                    checked={adminOidcSecurityContainer.state.isSameEmailTreatedAsIdenticalUser}
+                    checked={adminOidcSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminOidcSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label

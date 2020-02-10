@@ -1,12 +1,8 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
 import { pathUtils } from 'growi-commons';
-
 import urljoin from 'url-join';
-
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
+import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 /**
  * Service container for admin security page (GoogleSecurityManagement.jsx)
@@ -74,13 +70,14 @@ export default class AdminGoogleSecurityContainer extends Container {
    * Update googleSetting
    */
   async updateGoogleSetting() {
+    const { googleClientId, googleClientSecret, isSameUsernameTreatedAsIdenticalUser } = this.state;
 
-    const response = await this.appContainer.apiv3.put('/security-setting/google-oauth', {
-      googleClientId: this.state.googleClientId,
-      googleClientSecret: this.state.googleClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
-    });
+    let requestParams = {
+      googleClientId, googleClientSecret, isSameUsernameTreatedAsIdenticalUser,
+    };
 
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/google-oauth', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

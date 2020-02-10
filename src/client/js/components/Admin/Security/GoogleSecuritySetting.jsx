@@ -117,7 +117,7 @@ class GoogleSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="googleClientId"
-                  defaultValue={adminGoogleSecurityContainer.state.googleClientId}
+                  defaultValue={adminGoogleSecurityContainer.state.googleClientId || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
                 />
                 <p className="help-block">
@@ -133,7 +133,7 @@ class GoogleSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="googleClientSecret"
-                  defaultValue={adminGoogleSecurityContainer.state.googleClientSecret}
+                  defaultValue={adminGoogleSecurityContainer.state.googleClientSecret || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
                 />
                 <p className="help-block">
@@ -148,7 +148,7 @@ class GoogleSecurityManagement extends React.Component {
                   <input
                     id="bindByUserNameGoogle"
                     type="checkbox"
-                    checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser}
+                    checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminGoogleSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
