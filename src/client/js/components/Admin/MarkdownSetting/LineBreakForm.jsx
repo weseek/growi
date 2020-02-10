@@ -17,7 +17,13 @@ class LineBreakForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isEnabledLinebreaks: false,
+      isEnabledLinebreaksInComments: false,
+    };
+
     this.onClickSubmit = this.onClickSubmit.bind(this);
+    this.onChangeIsEnabledLinebreaks = this.onChangeIsEnabledLinebreaks.bind(this);
   }
 
 
@@ -34,66 +40,61 @@ class LineBreakForm extends React.Component {
     }
   }
 
-  renderLineBreakOption() {
-    const { t, adminMarkDownContainer } = this.props;
-    const { isEnabledLinebreaks } = adminMarkDownContainer.state;
+  onChangeIsEnabledLinebreaks() {
+    const bool = !this.state.isEnabledLinebreaksInComments;
 
-    const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
-
-    return (
-      <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
-          <div className="checkbox checkbox-success">
-            <input
-              type="checkbox"
-              id="isEnabledLinebreaks"
-              checked={isEnabledLinebreaks}
-              onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
-            />
-            <label htmlFor="isEnabledLinebreaks">
-              {t('admin:markdown_setting.lineBreak_options.enable_lineBreak')}
-            </label>
-          </div>
-          <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
-        </div>
-      </div>
-    );
+    this.setState({ isEnabledLinebreaksInComments: bool });
+    this.props.adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: bool });
   }
 
-  renderLineBreakInCommentOption() {
-    const { t, adminMarkDownContainer } = this.props;
-    const { isEnabledLinebreaksInComments } = adminMarkDownContainer.state;
 
-    const helpLineBreakInComment = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment_desc') };
+  onChangeIsEnabledLinebreaksInComments() {
+    const bool = !this.state.isEnabledLinebreaks;
 
-    return (
-      <div className="form-group row">
-        <div className="col-xs-offset-4 col-xs-6 text-left">
-          <div className="checkbox checkbox-success">
-            <input
-              type="checkbox"
-              id="isEnabledLinebreaksInComments"
-              checked={isEnabledLinebreaksInComments}
-              onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
-            />
-            <label htmlFor="isEnabledLinebreaksInComments">
-              {t('admin:markdown_setting.lineBreak_options.enable_lineBreak')}
-            </label>
-          </div>
-          <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
-        </div>
-      </div>
-    );
+    this.setState({ isEnabledLinebreaks: bool });
+    this.props.adminMarkDownContainer.setState({ isEnabledLinebreaks: bool });
   }
+
 
   render() {
     const { t, adminMarkDownContainer } = this.props;
+    const { isEnabledLinebreaks, isEnabledLinebreaksInComments } = this.state;
 
     return (
       <React.Fragment>
         <fieldset className="row">
-          {this.renderLineBreakOption()}
-          {this.renderLineBreakInCommentOption()}
+          <div className="form-group row">
+            <div className="col-xs-offset-4 col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  type="checkbox"
+                  id="isEnabledLinebreaks"
+                  checked={isEnabledLinebreaks}
+                  onChange={this.onChangeIsEnabledLinebreaks}
+                />
+                <label htmlFor="isEnabledLinebreaks">
+                  {t('admin:markdown_setting.lineBreak_options.enable_lineBreak')}
+                </label>
+              </div>
+              <p className="help-block" dangerouslySetInnerHTML={{ __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') }} />
+            </div>
+          </div>
+          <div className="form-group row">
+            <div className="col-xs-offset-4 col-xs-6 text-left">
+              <div className="checkbox checkbox-success">
+                <input
+                  type="checkbox"
+                  id="isEnabledLinebreaksInComments"
+                  checked={isEnabledLinebreaksInComments}
+                  onChange={this.onChangeIsEnabledLinebreaksInComments}
+                />
+                <label htmlFor="isEnabledLinebreaksInComments">
+                  {t('admin:markdown_setting.lineBreak_options.enable_lineBreak')}
+                </label>
+              </div>
+              <p className="help-block" dangerouslySetInnerHTML={{ __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment_desc') }} />
+            </div>
+          </div>
         </fieldset>
         <div className="form-group my-3">
           <div className="col-xs-offset-4 col-xs-5">
