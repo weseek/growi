@@ -18,8 +18,8 @@ class LineBreakForm extends React.Component {
     super(props);
 
     this.state = {
-      isEnabledLinebreaks: false,
-      isEnabledLinebreaksInComments: false,
+      isEnabledLinebreaks: this.props.adminMarkDownContainer.state.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: this.props.adminMarkDownContainer.state.isEnabledLinebreaksInComments,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -42,18 +42,18 @@ class LineBreakForm extends React.Component {
   }
 
   onChangeIsEnabledLinebreaks() {
-    const bool = !this.state.isEnabledLinebreaksInComments;
-
-    this.setState({ isEnabledLinebreaksInComments: bool });
-    this.props.adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: bool });
-  }
-
-
-  onChangeIsEnabledLinebreaksInComments() {
     const bool = !this.state.isEnabledLinebreaks;
 
     this.setState({ isEnabledLinebreaks: bool });
     this.props.adminMarkDownContainer.setState({ isEnabledLinebreaks: bool });
+  }
+
+
+  onChangeIsEnabledLinebreaksInComments() {
+    const bool = !this.state.isEnabledLinebreaksInComments;
+
+    this.setState({ isEnabledLinebreaksInComments: bool });
+    this.props.adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: bool });
   }
 
   render() {
