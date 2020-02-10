@@ -126,17 +126,36 @@ class ElasticsearchDelegator {
     return { esVersion, esNodeInfos };
   }
 
+  /**
+   * Return information for Admin Full Text Search Management page
+   */
   async getInfoForAdmin() {
     const { client, indexName, aliasName } = this;
 
     const tmpIndexName = `${indexName}-tmp`;
 
-    const { indices } = await client.indices.stats({ index: `${indexName}*`, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
+    // check existence
+    const isExistsMainIndex = await client.indices.exists({ index: indexName });
+    const isExistsTmpIndex = await client.indices.exists({ index: tmpIndexName });
 
-    const aliases = await client.indices.getAlias({ index: `${indexName}*` });
-    const isExistsMainIndex = aliases[indexName] != null;
+    // create indices name list
+    const existingIndices = [];
+    if (isExistsMainIndex) { existingIndices.push(indexName) }
+    if (isExistsTmpIndex) { existingIndices.push(tmpIndexName) }
+
+    // results when there is no indices
+    if (existingIndices.length === 0) {
+      return {
+        indices: [],
+        aliases: [],
+        isNormalized: false,
+      };
+    }
+
+    const { indices } = await client.indices.stats({ index: existingIndices, ignore_unavailable: true, metric: ['docs', 'store', 'indexing'] });
+    const aliases = await client.indices.getAlias({ index: existingIndices });
+
     const isMainIndexHasAlias = isExistsMainIndex && aliases[indexName].aliases != null && aliases[indexName].aliases[aliasName] != null;
-    const isExistsTmpIndex = aliases[tmpIndexName] != null;
     const isTmpIndexHasAlias = isExistsTmpIndex && aliases[tmpIndexName].aliases != null && aliases[tmpIndexName].aliases[aliasName] != null;
 
     const isNormalized = isExistsMainIndex && isMainIndexHasAlias && !isExistsTmpIndex && !isTmpIndexHasAlias;

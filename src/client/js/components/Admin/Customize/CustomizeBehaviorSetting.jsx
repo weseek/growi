@@ -3,8 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -14,7 +12,6 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import CustomizeBehaviorOption from './CustomizeBehaviorOption';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const logger = loggerFactory('growi:Customize');
 
 class CustomizeBehaviorSetting extends React.Component {
 
@@ -33,7 +30,6 @@ class CustomizeBehaviorSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
