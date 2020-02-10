@@ -24,6 +24,7 @@ class LineBreakForm extends React.Component {
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
     this.onChangeIsEnabledLinebreaks = this.onChangeIsEnabledLinebreaks.bind(this);
+    this.onChangeIsEnabledLinebreaksInComments = this.onChangeIsEnabledLinebreaksInComments.bind(this);
   }
 
 
