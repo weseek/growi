@@ -125,9 +125,9 @@ class AwsSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.secretKey || ''}
+              defaultValue={adminAppContainer.state.secretAccessKey || ''}
               onChange={(e) => {
-                adminAppContainer.changeSecretKey(e.target.value);
+                adminAppContainer.changeSecretAccessKey(e.target.value);
               }}
             />
           </div>

@@ -6,7 +6,7 @@ import dateFnsFormat from 'date-fns/format';
 import UserPicture from '../../User/UserPicture';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
+import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserGroupUserTable extends React.Component {
@@ -21,17 +21,17 @@ class UserGroupUserTable extends React.Component {
 
   async removeUser(username) {
     try {
-      await this.props.userGroupDetailContainer.removeUserByUsername(username);
-      toastSuccess(`Removed "${this.xss.process(username)}" from "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`);
+      await this.props.adminUserGroupDetailContainer.removeUserByUsername(username);
+      toastSuccess(`Removed "${this.xss.process(username)}" from "${this.xss.process(this.props.adminUserGroupDetailContainer.state.userGroup.name)}"`);
     }
     catch (err) {
       // eslint-disable-next-line max-len
-      toastError(new Error(`Unable to remove "${this.xss.process(username)}" from "${this.xss.process(this.props.userGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to remove "${this.xss.process(username)}" from "${this.xss.process(this.props.adminUserGroupDetailContainer.state.userGroup.name)}"`));
     }
   }
 
   render() {
-    const { t, userGroupDetailContainer } = this.props;
+    const { t, adminUserGroupDetailContainer } = this.props;
 
     return (
       <table className="table table-bordered table-user-list">
@@ -48,7 +48,7 @@ class UserGroupUserTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {userGroupDetailContainer.state.userGroupRelations.map((sRelation) => {
+          {adminUserGroupDetailContainer.state.userGroupRelations.map((sRelation) => {
             const { relatedUser } = sRelation;
 
             return (
@@ -83,7 +83,7 @@ class UserGroupUserTable extends React.Component {
           <tr>
             <td></td>
             <td className="text-center">
-              <button className="btn btn-default" type="button" onClick={userGroupDetailContainer.openUserGroupUserModal}>
+              <button className="btn btn-default" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
                 <i className="ti-plus"></i>
               </button>
             </td>
@@ -103,14 +103,14 @@ class UserGroupUserTable extends React.Component {
 UserGroupUserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  userGroupDetailContainer: PropTypes.instanceOf(UserGroupDetailContainer).isRequired,
+  adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
 const UserGroupUserTableWrapper = (props) => {
-  return createSubscribedElement(UserGroupUserTable, props, [AppContainer, UserGroupDetailContainer]);
+  return createSubscribedElement(UserGroupUserTable, props, [AppContainer, AdminUserGroupDetailContainer]);
 };
 
 export default withTranslation()(UserGroupUserTableWrapper);

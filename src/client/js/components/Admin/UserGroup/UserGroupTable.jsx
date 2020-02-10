@@ -127,7 +127,7 @@ UserGroupTable.propTypes = {
 
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   userGroupRelations: PropTypes.object.isRequired,
-  isAclEnabled: PropTypes.bool,
+  isAclEnabled: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 

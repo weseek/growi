@@ -3,8 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -12,8 +10,6 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-
-const logger = loggerFactory('growi:customizeHighlight');
 
 class CustomizeHighlightSetting extends React.Component {
 
@@ -32,25 +28,29 @@ class CustomizeHighlightSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
-  getDemoFunction() {
-    return `function $initHighlight(block, cls) {
-    try {
+  renderHljsDemo() {
+    const { adminCustomizeContainer } = this.props;
 
-      if (cls.search(/\bno\-highlight\b/) !== -1) {
-        return \`\${process(block, true, 0x0F)} class="\${cls}"\`;
-      }
-    }
-    catch (e) {
-      /* handle exception */
-    }
-    for (let i = 0 / 2; i < classes.length; i++) {
-      if (checkCondition(classes[i]) === undefined) { console.log('undefined') }
-    }
-  };`;
+    /* eslint-disable max-len */
+    const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
+    seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
+  }
+
+  <span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
+  <span class="hljs-keyword">this</span>.setSeed(seed);
+}</span>`;
+    /* eslint-enable max-len */
+
+    return (
+      <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
+        {/* eslint-disable-next-line react/no-danger */}
+        <code dangerouslySetInnerHTML={{ __html: html }}></code>
+      </pre>
+    );
   }
 
   render() {
@@ -65,7 +65,7 @@ class CustomizeHighlightSetting extends React.Component {
 
       menuItem.push(
         <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
-          <a role="menuitem">{styleName}</a>
+          <a role="button">{styleName}</a>
         </li>,
       );
     });
@@ -115,11 +115,7 @@ class CustomizeHighlightSetting extends React.Component {
         <div className="help-block">
           <label>Examples:</label>
           <div className="wiki">
-            <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
-              <code className="highlightjs-demo">
-                {this.getDemoFunction()}
-              </code>
-            </pre>
+            {this.renderHljsDemo()}
           </div>
         </div>
 

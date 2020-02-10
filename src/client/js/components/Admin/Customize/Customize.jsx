@@ -3,8 +3,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 
@@ -20,25 +18,34 @@ import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
 
-const logger = loggerFactory('growi:Customize');
-
 class Customize extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isRetrieving: true,
+    };
+
+  }
 
   async componentDidMount() {
     const { adminCustomizeContainer } = this.props;
 
     try {
       await adminCustomizeContainer.retrieveCustomizeData();
+      this.setState({ isRetrieving: false });
     }
     catch (err) {
       toastError(err);
-      adminCustomizeContainer.setState({ retrieveError: err.message });
-      logger.error(err);
     }
 
   }
 
   render() {
+    if (this.state.isRetrieving) {
+      return null;
+    }
 
     return (
       <Fragment>

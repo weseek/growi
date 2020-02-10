@@ -65,7 +65,7 @@ module.exports = (crowi) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const result = await UserGroup.findUserGroupsWithPagination({ page });
-      const { docs: userGroups, total: totalUserGroups, limit: pagingLimit } = result;
+      const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
       return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
     }
     catch (err) {
