@@ -168,7 +168,7 @@ module.exports = (crowi) => {
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
-      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
     };
 

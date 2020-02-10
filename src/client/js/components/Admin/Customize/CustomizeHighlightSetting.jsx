@@ -3,8 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -12,8 +10,6 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-
-const logger = loggerFactory('growi:customizeHighlight');
 
 class CustomizeHighlightSetting extends React.Component {
 
@@ -32,7 +28,6 @@ class CustomizeHighlightSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
