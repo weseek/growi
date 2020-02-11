@@ -3,7 +3,6 @@ import loggerFactory from '@alias/logger';
 
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
-// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminLdapSecurityContainer');
 
 /**

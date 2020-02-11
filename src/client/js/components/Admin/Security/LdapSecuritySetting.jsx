@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -11,7 +10,6 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 import LdapAuthTestModal from './LdapAuthTestModal';
 
-const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
 class LdapSecuritySetting extends React.Component {
 
@@ -49,7 +47,6 @@ class LdapSecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 

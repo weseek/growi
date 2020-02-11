@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -11,15 +10,13 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminOidcSecurityContainer from '../../../services/AdminOidcSecurityContainer';
 
-const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
-
 class OidcSecurityManagement extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      retrieveError: null,
+      isRetrieving: true,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -33,9 +30,8 @@ class OidcSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err.message });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
   }
 
   async onClickSubmit() {
@@ -47,12 +43,15 @@ class OidcSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminOidcSecurityContainer } = this.props;
+
+    if (this.state.isRetrieving) {
+      return null;
+    }
 
     return (
 
@@ -61,12 +60,6 @@ class OidcSecurityManagement extends React.Component {
         <h2 className="alert-anchor border-bottom">
           {t('security_setting.OAuth.OIDC.name')} {t('security_setting.configuration')}
         </h2>
-
-        {this.state.retrieveError != null && (
-          <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {this.state.err}</p>
-          </div>
-        )}
 
         <div className="row mb-5">
           <strong className="col-xs-3 text-right">{t('security_setting.OAuth.OIDC.name')}</strong>
@@ -117,7 +110,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcProviderName"
-                  value={adminOidcSecurityContainer.state.oidcProviderName || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcProviderName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcProviderName(e.target.value)}
                 />
               </div>
@@ -130,7 +123,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcIssuerHost"
-                  value={adminOidcSecurityContainer.state.oidcIssuerHost || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcIssuerHost || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcIssuerHost(e.target.value)}
                 />
                 <p className="help-block">
@@ -146,7 +139,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcClientId"
-                  value={adminOidcSecurityContainer.state.oidcClientId || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcClientId || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcClientId(e.target.value)}
                 />
                 <p className="help-block">
@@ -162,7 +155,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcClientSecret"
-                  value={adminOidcSecurityContainer.state.oidcClientSecret || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcClientSecret || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcClientSecret(e.target.value)}
                 />
                 <p className="help-block">
@@ -182,7 +175,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapId"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapId || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapId || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapId(e.target.value)}
                 />
                 <p className="help-block">
@@ -198,7 +191,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapUserName"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapUserName || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapUserName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapUserName(e.target.value)}
                 />
                 <p className="help-block">
@@ -214,7 +207,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapName"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapName || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapName(e.target.value)}
                 />
                 <p className="help-block">
@@ -230,7 +223,7 @@ class OidcSecurityManagement extends React.Component {
                   className="form-control"
                   type="text"
                   name="oidcAttrMapEmail"
-                  value={adminOidcSecurityContainer.state.oidcAttrMapEmail || ''}
+                  defaultValue={adminOidcSecurityContainer.state.oidcAttrMapEmail || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapEmail(e.target.value)}
                 />
                 <p className="help-block">
@@ -245,7 +238,7 @@ class OidcSecurityManagement extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  value={adminOidcSecurityContainer.state.callbackUrl || ''}
+                  defaultValue={adminOidcSecurityContainer.state.callbackUrl || ''}
                   readOnly
                 />
                 <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
@@ -306,7 +299,9 @@ class OidcSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" disabled={adminOidcSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+              {t('Update')}
+            </button>
           </div>
         </div>
 
