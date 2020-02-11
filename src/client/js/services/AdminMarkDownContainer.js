@@ -2,8 +2,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../util/apiNotification';
-
 const logger = loggerFactory('growi:services:AdminMarkdownContainer');
 
 /**
@@ -60,8 +58,9 @@ export default class AdminMarkDownContainer extends Container {
 
     }
     catch (err) {
+      this.setState({ retrieveError: err });
       logger.error(err);
-      toastError(new Error('Failed to fetch data'));
+      throw new Error('Failed to fetch data');
     }
   }
 

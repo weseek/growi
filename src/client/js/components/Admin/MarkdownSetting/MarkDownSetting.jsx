@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
@@ -13,9 +11,16 @@ import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
-const logger = loggerFactory('growi:MarkDown');
-
 class MarkdownSetting extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isRetrieving: true,
+    };
+
+  }
 
   async componentDidMount() {
     const { adminMarkDownContainer } = this.props;
@@ -25,14 +30,17 @@ class MarkdownSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      adminMarkDownContainer.setState({ retrieveError: err });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
 
   }
 
   render() {
     const { t } = this.props;
+
+    if (this.state.isRetrieving) {
+      return null;
+    }
 
     return (
       <React.Fragment>
