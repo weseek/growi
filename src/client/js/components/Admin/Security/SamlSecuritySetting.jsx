@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -11,15 +10,13 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
 
-const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
-
 class SamlSecurityManagement extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      retrieveError: null,
+      isRetrieving: true,
       envEntryPoint: '',
       envIssuer: '',
       envCert: '',
@@ -51,9 +48,8 @@ class SamlSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err.message });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
   }
 
   async onClickSubmit() {
@@ -65,7 +61,6 @@ class SamlSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -73,18 +68,15 @@ class SamlSecurityManagement extends React.Component {
     const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
 
+    if (this.state.isRetrieving) {
+      return null;
+    }
     return (
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
           {t('security_setting.SAML.name')} {t('security_setting.configuration')}
         </h2>
-
-        {this.state.retrieveError != null && (
-          <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {this.state.err}</p>
-          </div>
-        )}
 
         {useOnlyEnvVars && (
           <p
@@ -219,7 +211,7 @@ class SamlSecurityManagement extends React.Component {
                       rows="5"
                       name="samlCert"
                       readOnly={useOnlyEnvVars}
-                      value={adminSamlSecurityContainer.state.samlCert}
+                      defaultValue={adminSamlSecurityContainer.state.samlCert}
                       onChange={e => adminSamlSecurityContainer.changeSamlCert(e.target.value)}
                     />
                     <p className="help-block">
@@ -467,7 +459,9 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" disabled={adminSamlSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+              {t('Update')}
+            </button>
           </div>
         </div>
 

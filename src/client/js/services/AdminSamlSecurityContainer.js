@@ -1,8 +1,12 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+
+const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
 
 /**
  * Service container for admin security page (SecuritySamlSetting.jsx)
@@ -16,6 +20,7 @@ export default class AdminSamlSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       useOnlyEnvVars: false,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
@@ -37,22 +42,28 @@ export default class AdminSamlSecurityContainer extends Container {
    * retrieve security data
    */
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { samlAuth } = response.data.securityParams;
-    this.setState({
-      missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
-      samlEntryPoint: samlAuth.samlEntryPoint,
-      samlIssuer: samlAuth.samlIssuer,
-      samlCert: samlAuth.samlCert,
-      samlAttrMapId: samlAuth.samlAttrMapId,
-      samlAttrMapUserName: samlAuth.samlAttrMapUserName,
-      samlAttrMapMail: samlAuth.samlAttrMapMail,
-      samlAttrMapFirstName: samlAuth.samlAttrMapFirstName,
-      samlAttrMapLastName: samlAuth.samlAttrMapLastName,
-      isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser,
-      isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser,
-    });
-    return samlAuth;
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { samlAuth } = response.data.securityParams;
+      this.setState({
+        missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
+        samlEntryPoint: samlAuth.samlEntryPoint,
+        samlIssuer: samlAuth.samlIssuer,
+        samlCert: samlAuth.samlCert,
+        samlAttrMapId: samlAuth.samlAttrMapId,
+        samlAttrMapUserName: samlAuth.samlAttrMapUserName,
+        samlAttrMapMail: samlAuth.samlAttrMapMail,
+        samlAttrMapFirstName: samlAuth.samlAttrMapFirstName,
+        samlAttrMapLastName: samlAuth.samlAttrMapLastName,
+        isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser,
+        isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
   }
 
   /**
