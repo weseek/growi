@@ -34,11 +34,11 @@ class Customize extends React.Component {
 
     try {
       await adminCustomizeContainer.retrieveCustomizeData();
-      this.setState({ isRetrieving: false });
     }
     catch (err) {
       toastError(err);
     }
+    this.setState({ isRetrieving: false });
 
   }
 

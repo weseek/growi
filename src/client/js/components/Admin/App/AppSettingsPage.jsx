@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
@@ -15,9 +14,16 @@ import MailSetting from './MailSetting';
 import AwsSetting from './AwsSetting';
 import PluginSetting from './PluginSetting';
 
-const logger = loggerFactory('growi:appSettings');
-
 class AppSettingsPage extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isRetrieving: true,
+    };
+
+  }
 
   async componentDidMount() {
     const { adminAppContainer } = this.props;
@@ -27,12 +33,16 @@ class AppSettingsPage extends React.Component {
     }
     catch (err) {
       toastError(err);
-      adminAppContainer.setState({ retrieveError: err });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
+
   }
 
   render() {
+    if (this.state.isRetrieving) {
+      return null;
+    }
+
     const { t } = this.props;
 
     return (
