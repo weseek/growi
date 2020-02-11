@@ -1,5 +1,8 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
 
+// eslint-disable-next-line no-unused-vars
+const logger = loggerFactory('growi:services:AdminLocalSecurityContainer');
 /**
  * Service container for admin security page (LocalSecuritySetting.jsx)
  * @extends {Container} unstated Container
@@ -12,6 +15,7 @@ export default class AdminLocalSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       registrationMode: 'Open',
       registrationWhiteList: [],
     };
@@ -19,12 +23,20 @@ export default class AdminLocalSecurityContainer extends Container {
   }
 
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { localSetting } = response.data.securityParams;
-    this.setState({
-      registrationMode: localSetting.registrationMode,
-      registrationWhiteList: localSetting.registrationWhiteList,
-    });
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { localSetting } = response.data.securityParams;
+      this.setState({
+        registrationMode: localSetting.registrationMode,
+        registrationWhiteList: localSetting.registrationWhiteList,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
+
   }
 
   /**
