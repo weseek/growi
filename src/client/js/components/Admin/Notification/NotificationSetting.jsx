@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
@@ -14,9 +12,16 @@ import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
 import GlobalNotification from './GlobalNotification';
 
-const logger = loggerFactory('growi:NotificationSetting');
-
 class NotificationSetting extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isRetrieving: true,
+    };
+
+  }
 
   async componentDidMount() {
     const { adminNotificationContainer } = this.props;
@@ -26,13 +31,15 @@ class NotificationSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      adminNotificationContainer.setState({ retrieveError: err });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
 
   }
 
   render() {
+    if (this.state.isRetrieving) {
+      return null;
+    }
 
     return (
       <React.Fragment>
