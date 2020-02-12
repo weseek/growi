@@ -289,7 +289,7 @@ class Comment extends React.Component {
             commentCreator={creator.username}
           />
         ) : (
-          <div className={rootClassName}>
+          <div id={commentId} className={rootClassName}>
             <UserPicture user={creator} />
             <div className="page-comment-main">
               <div className="page-comment-creator">
