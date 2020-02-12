@@ -1,9 +1,11 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
 
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
+const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
 /**
  * Service container for admin security page (TwitterSecurityManagement.jsx)
@@ -30,13 +32,20 @@ export default class AdminTwitterSecurityContainer extends Container {
    * retrieve security data
    */
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { twitterOAuth } = response.data.securityParams;
-    this.setState({
-      twitterConsumerKey: twitterOAuth.twitterConsumerKey,
-      twitterConsumerSecret: twitterOAuth.twitterConsumerSecret,
-      isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser,
-    });
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { twitterOAuth } = response.data.securityParams;
+      this.setState({
+        twitterConsumerKey: twitterOAuth.twitterConsumerKey,
+        twitterConsumerSecret: twitterOAuth.twitterConsumerSecret,
+        isSameUsernameTreatedAsIdenticalUser: twitterOAuth.isSameUsernameTreatedAsIdenticalUser,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
   }
 
   /**
