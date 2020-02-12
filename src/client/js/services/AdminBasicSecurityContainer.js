@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
 
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+
+const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
 /**
  * Service container for admin security page (BasicSecuritySetting.jsx)
@@ -14,6 +17,7 @@ export default class AdminBasicSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       isSameUsernameTreatedAsIdenticalUser: false,
     };
 
@@ -23,11 +27,18 @@ export default class AdminBasicSecurityContainer extends Container {
    * retrieve security data
    */
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { basicAuth } = response.data.securityParams;
-    this.setState({
-      isSameUsernameTreatedAsIdenticalUser: basicAuth.isSameUsernameTreatedAsIdenticalUser,
-    });
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { basicAuth } = response.data.securityParams;
+      this.setState({
+        isSameUsernameTreatedAsIdenticalUser: basicAuth.isSameUsernameTreatedAsIdenticalUser,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
   }
 
   /**
