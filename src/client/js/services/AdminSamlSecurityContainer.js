@@ -58,6 +58,7 @@ export default class AdminSamlSecurityContainer extends Container {
         isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser,
         isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser,
       });
+      return samlAuth;
     }
     catch (err) {
       this.setState({ retrieveError: err });
