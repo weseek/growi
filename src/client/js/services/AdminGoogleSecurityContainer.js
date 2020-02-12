@@ -1,8 +1,11 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
 
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+
+const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
 
 /**
  * Service container for admin security page (GoogleSecurityManagement.jsx)
@@ -16,6 +19,7 @@ export default class AdminGoogleSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
       googleClientId: '',
       googleClientSecret: '',
@@ -29,13 +33,20 @@ export default class AdminGoogleSecurityContainer extends Container {
    * retrieve security data
    */
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { googleOAuth } = response.data.securityParams;
-    this.setState({
-      googleClientId: googleOAuth.googleClientId,
-      googleClientSecret: googleOAuth.googleClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: googleOAuth.isSameUsernameTreatedAsIdenticalUser,
-    });
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { googleOAuth } = response.data.securityParams;
+      this.setState({
+        googleClientId: googleOAuth.googleClientId,
+        googleClientSecret: googleOAuth.googleClientSecret,
+        isSameUsernameTreatedAsIdenticalUser: googleOAuth.isSameUsernameTreatedAsIdenticalUser,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
   }
 
   /**

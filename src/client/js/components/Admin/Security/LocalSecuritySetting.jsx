@@ -16,7 +16,7 @@ class LocalSecuritySetting extends React.Component {
     super(props);
 
     this.state = {
-      retrieveError: null,
+      isRetrieving: true,
     };
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
@@ -29,8 +29,8 @@ class LocalSecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err.message });
     }
+    this.setState({ isRetrieving: false });
   }
 
 
@@ -48,6 +48,10 @@ class LocalSecuritySetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
     const { registrationMode } = adminLocalSecurityContainer.state;
+
+    if (this.state.isRetrieving) {
+      return null;
+    }
 
     return (
       <React.Fragment>
@@ -142,7 +146,7 @@ class LocalSecuritySetting extends React.Component {
                     className="form-control"
                     type="textarea"
                     name="registrationWhiteList"
-                    value={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
+                    defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
                     onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
                   <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
@@ -157,7 +161,9 @@ class LocalSecuritySetting extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" disabled={adminLocalSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+              {t('Update')}
+            </button>
           </div>
         </div>
 

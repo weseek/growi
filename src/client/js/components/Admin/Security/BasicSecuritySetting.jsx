@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -11,15 +10,13 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminBasicSecurityContainer from '../../../services/AdminBasicSecurityContainer';
 
-const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
-
 class BasicSecurityManagement extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      retrieveError: null,
+      isRetrieving: true,
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -33,9 +30,8 @@ class BasicSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err.message });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
   }
 
   async onClickSubmit() {
@@ -47,13 +43,15 @@ class BasicSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminBasicSecurityContainer } = this.props;
 
+    if (this.state.isRetrieving) {
+      return null;
+    }
     return (
       <React.Fragment>
 
@@ -116,7 +114,9 @@ class BasicSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{ t('Update') }</button>
+            <button type="button" className="btn btn-primary" disabled={adminBasicSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+              { t('Update') }
+            </button>
           </div>
         </div>
 

@@ -1,6 +1,9 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
 
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+
+const logger = loggerFactory('growi:services:AdminLdapSecurityContainer');
 
 /**
  * Service container for admin security page (SecurityLdapSetting.jsx)
@@ -14,6 +17,7 @@ export default class AdminLdapSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       serverUrl: '',
       isUserBind: false,
       ldapBindDN: '',
@@ -34,22 +38,29 @@ export default class AdminLdapSecurityContainer extends Container {
    * retrieve security data
    */
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { ldapAuth } = response.data.securityParams;
-    this.setState({
-      serverUrl: ldapAuth.serverUrl,
-      isUserBind: ldapAuth.isUserBind,
-      ldapBindDN: ldapAuth.ldapBindDN,
-      ldapBindDNPassword: ldapAuth.ldapBindDNPassword,
-      ldapSearchFilter: ldapAuth.ldapSearchFilter,
-      ldapAttrMapUsername: ldapAuth.ldapAttrMapUsername,
-      isSameUsernameTreatedAsIdenticalUser: ldapAuth.isSameUsernameTreatedAsIdenticalUser,
-      ldapAttrMapMail: ldapAuth.ldapAttrMapMail,
-      ldapAttrMapName: ldapAuth.ldapAttrMapName,
-      ldapGroupSearchBase: ldapAuth.ldapGroupSearchBase,
-      ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter,
-      ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty,
-    });
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { ldapAuth } = response.data.securityParams;
+      this.setState({
+        serverUrl: ldapAuth.serverUrl,
+        isUserBind: ldapAuth.isUserBind,
+        ldapBindDN: ldapAuth.ldapBindDN,
+        ldapBindDNPassword: ldapAuth.ldapBindDNPassword,
+        ldapSearchFilter: ldapAuth.ldapSearchFilter,
+        ldapAttrMapUsername: ldapAuth.ldapAttrMapUsername,
+        isSameUsernameTreatedAsIdenticalUser: ldapAuth.isSameUsernameTreatedAsIdenticalUser,
+        ldapAttrMapMail: ldapAuth.ldapAttrMapMail,
+        ldapAttrMapName: ldapAuth.ldapAttrMapName,
+        ldapGroupSearchBase: ldapAuth.ldapGroupSearchBase,
+        ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter,
+        ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
   }
 
 

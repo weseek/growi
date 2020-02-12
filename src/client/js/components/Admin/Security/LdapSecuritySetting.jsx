@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -11,7 +10,6 @@ import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurit
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 import LdapAuthTestModal from './LdapAuthTestModal';
 
-const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
 class LdapSecuritySetting extends React.Component {
 
@@ -19,7 +17,7 @@ class LdapSecuritySetting extends React.Component {
     super(props);
 
     this.state = {
-      retrieveError: null,
+      isRetrieving: true,
       isLdapAuthTestModalShown: false,
     };
 
@@ -36,9 +34,8 @@ class LdapSecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err.message });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
   }
 
   async onClickSubmit() {
@@ -50,7 +47,6 @@ class LdapSecuritySetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -66,6 +62,9 @@ class LdapSecuritySetting extends React.Component {
     const { t, adminGeneralSecurityContainer, adminLdapSecurityContainer } = this.props;
     const { isLdapEnabled } = adminGeneralSecurityContainer.state;
 
+    if (this.state.isRetrieving) {
+      return null;
+    }
     return (
       <React.Fragment>
 
@@ -389,7 +388,9 @@ class LdapSecuritySetting extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" disabled={adminLdapSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+              {t('Update')}
+            </button>
             {adminGeneralSecurityContainer.state.isLdapEnabled
               && <button type="button" className="btn btn-default ml-2" onClick={this.openLdapAuthTestModal}>{t('security_setting.ldap.test_config')}</button>
             }

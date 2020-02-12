@@ -12,6 +12,7 @@ import ManageGlobalNotification from './components/Admin/Notification/ManageGlob
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
 import UserManagement from './components/Admin/UserManagement';
 import AppSettingsPage from './components/Admin/App/AppSettingsPage';
+import SecurityManagement from './components/Admin/Security/SecurityManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import Customize from './components/Admin/Customize/Customize';
@@ -26,6 +27,15 @@ import AdminUsersContainer from './services/AdminUsersContainer';
 import AdminAppContainer from './services/AdminAppContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
+import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
+import AdminLdapSecurityContainer from './services/AdminLdapSecurityContainer';
+import AdminLocalSecurityContainer from './services/AdminLocalSecurityContainer';
+import AdminSamlSecurityContainer from './services/AdminSamlSecurityContainer';
+import AdminOidcSecurityContainer from './services/AdminOidcSecurityContainer';
+import AdminBasicSecurityContainer from './services/AdminBasicSecurityContainer';
+import AdminGoogleSecurityContainer from './services/AdminGoogleSecurityContainer';
+import AdminGitHubSecurityContainer from './services/AdminGitHubSecurityContainer';
+import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
 import AdminNotificationContainer from './services/AdminNotificationContainer';
 
 import { appContainer, componentMappings } from './bootstrap';
@@ -95,3 +105,28 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
+
+const adminSecuritySettingElem = document.getElementById('admin-security-setting');
+if (adminSecuritySettingElem != null) {
+  const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer(appContainer);
+  const adminLocalSecurityContainer = new AdminLocalSecurityContainer(appContainer);
+  const adminLdapSecurityContainer = new AdminLdapSecurityContainer(appContainer);
+  const adminSamlSecurityContainer = new AdminSamlSecurityContainer(appContainer);
+  const adminOidcSecurityContainer = new AdminOidcSecurityContainer(appContainer);
+  const adminBasicSecurityContainer = new AdminBasicSecurityContainer(appContainer);
+  const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer(appContainer);
+  const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer(appContainer);
+  const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer(appContainer);
+  const adminSecurityContainers = [
+    adminGeneralSecurityContainer, adminLocalSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer,
+    adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGitHubSecurityContainer, adminTwitterSecurityContainer,
+  ];
+  ReactDOM.render(
+    <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
+      <I18nextProvider i18n={i18n}>
+        <SecurityManagement />
+      </I18nextProvider>
+    </Provider>,
+    adminSecuritySettingElem,
+  );
+}

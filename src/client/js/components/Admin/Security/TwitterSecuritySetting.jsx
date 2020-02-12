@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -10,8 +9,6 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurityContainer';
-
-const logger = loggerFactory('growi:security:AdminTwitterSecurityContainer');
 
 class TwitterSecurityManagement extends React.Component {
 
@@ -33,9 +30,8 @@ class TwitterSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      this.setState({ retrieveError: err.message });
-      logger.error(err);
     }
+    this.setState({ isRetrieving: false });
   }
 
   async onClickSubmit() {
@@ -47,12 +43,15 @@ class TwitterSecurityManagement extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
   render() {
     const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
+
+    if (this.state.isRetrieving) {
+      return null;
+    }
     return (
 
       <React.Fragment>
@@ -167,7 +166,9 @@ class TwitterSecurityManagement extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.onClickSubmit}>{t('Update')}</button>
+            <button type="button" className="btn btn-primary" disabled={adminTwitterSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+              {t('Update')}
+            </button>
           </div>
         </div>
 
