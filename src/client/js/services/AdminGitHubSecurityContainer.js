@@ -1,9 +1,11 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
 
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
+const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
 
 /**
  * Service container for admin security page (GitHubSecurityManagement.jsx)
@@ -17,6 +19,7 @@ export default class AdminGitHubSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       appSiteUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/github/callback'),
       githubClientId: '',
       githubClientSecret: '',
@@ -29,13 +32,20 @@ export default class AdminGitHubSecurityContainer extends Container {
    * retrieve security data
    */
   async retrieveSecurityData() {
-    const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { githubOAuth } = response.data.securityParams;
-    this.setState({
-      githubClientId: githubOAuth.githubClientId,
-      githubClientSecret: githubOAuth.githubClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser,
-    });
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const { githubOAuth } = response.data.securityParams;
+      this.setState({
+        githubClientId: githubOAuth.githubClientId,
+        githubClientSecret: githubOAuth.githubClientSecret,
+        isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch data');
+    }
   }
 
   /**
