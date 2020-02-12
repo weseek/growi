@@ -167,9 +167,9 @@ export default class ImportCollectionItem extends React.Component {
 
     return (
       <Progress multi className="mb-0">
-        <Progress bar max={total} color="info" animated={isImporting} value={insertedCount} />
-        <Progress bar max={total} color="success" animated={isImporting} value={modifiedCount} />
-        <Progress bar max={total} color="danger" animated={isImporting} value={errorsCount} />
+        <Progress bar max={total} color="info" striped={isImporting} animated={isImporting} value={insertedCount} />
+        <Progress bar max={total} color="success" striped={isImporting} animated={isImporting} value={modifiedCount} />
+        <Progress bar max={total} color="danger" striped={isImporting} animated={isImporting} value={errorsCount} />
       </Progress>
     );
   }

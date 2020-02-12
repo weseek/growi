@@ -83,7 +83,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          accessKeyId:
  *            type: string
  *            description: accesskey id for authentification of AWS
- *          secretKey:
+ *          secretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
  *      PluginSettingParams:
@@ -126,7 +126,7 @@ module.exports = (crowi) => {
       body('customEndpoint').trim().matches(/^(https?:\/\/[^/]+|)$/).withMessage('カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。'),
       body('bucket').trim(),
       body('accessKeyId').trim().matches(/^[\da-zA-Z]+$/),
-      body('secretKey').trim(),
+      body('secretAccessKey').trim(),
     ],
     pluginSetting: [
       body('isEnabledPlugins').isBoolean(),
@@ -136,11 +136,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/app-settings:
+   *    /app-settings:
    *      get:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: getAppSettings
-   *        summary: /_api/v3/app-settings
+   *        summary: /app-settings
    *        description: get app setting params
    *        responses:
    *          200:
@@ -170,7 +170,7 @@ module.exports = (crowi) => {
       customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
       bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
       accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-      secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+      secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
     return res.apiv3({ appSettingsParams });
@@ -181,10 +181,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/app-settings/app-setting:
+   *    /app-settings/app-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
-   *        summary: /_api/v3/app-settings/app-setting
+   *        tags: [AppSettings]
+   *        summary: /app-settings/app-setting
    *        operationId: updateAppSettings
    *        description: Update app setting
    *        requestBody:
@@ -230,11 +230,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/app-settings/site-url-setting:
+   *    /app-settings/site-url-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingSiteUrlSetting
-   *        summary: /_api/v3/app-settings/site-url-setting
+   *        summary: /app-settings/site-url-setting
    *        description: Update site url setting
    *        requestBody:
    *          required: true
@@ -322,11 +322,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/app-settings/mail-setting:
+   *    /app-settings/mail-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingMailSetting
-   *        summary: /_api/v3/app-settings/site-url-setting
+   *        summary: /app-settings/site-url-setting
    *        description: Update mail setting
    *        requestBody:
    *          required: true
@@ -384,11 +384,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/app-settings/aws-setting:
+   *    /app-settings/aws-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingAwsSetting
-   *        summary: /_api/v3/app-settings/aws-setting
+   *        summary: /app-settings/aws-setting
    *        description: Update aws setting
    *        requestBody:
    *          required: true
@@ -410,7 +410,7 @@ module.exports = (crowi) => {
       'aws:customEndpoint': req.body.customEndpoint,
       'aws:bucket': req.body.bucket,
       'aws:accessKeyId': req.body.accessKeyId,
-      'aws:secretKey': req.body.secretKey,
+      'aws:secretAccessKey': req.body.secretAccessKey,
     };
 
     try {
@@ -420,7 +420,7 @@ module.exports = (crowi) => {
         customEndpoint: crowi.configManager.getConfig('crowi', 'aws:customEndpoint'),
         bucket: crowi.configManager.getConfig('crowi', 'aws:bucket'),
         accessKeyId: crowi.configManager.getConfig('crowi', 'aws:accessKeyId'),
-        secretKey: crowi.configManager.getConfig('crowi', 'aws:secretKey'),
+        secretAccessKey: crowi.configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
       return res.apiv3({ awsSettingParams });
     }
@@ -435,11 +435,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/app-settings/plugin-setting:
+   *    /app-settings/plugin-setting:
    *      put:
-   *        tags: [AppSettings, apiv3]
+   *        tags: [AppSettings]
    *        operationId: updateAppSettingPluginSetting
-   *        summary: /_api/v3/app-settings/plugin-setting
+   *        summary: /app-settings/plugin-setting
    *        description: Update plugin setting
    *        requestBody:
    *          required: true

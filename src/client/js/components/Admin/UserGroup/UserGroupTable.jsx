@@ -43,14 +43,14 @@ class UserGroupTable extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('user_group_management.group_list')}</h2>
+        <h2>{t('admin:user_group_management.group_list')}</h2>
 
         <table className="table table-bordered table-user-list">
           <thead>
             <tr>
-              <th>{ t('Name') }</th>
-              <th>{ t('User') }</th>
-              <th width="100px">{ t('Created') }</th>
+              <th>{t('Name')}</th>
+              <th>{t('User')}</th>
+              <th width="100px">{t('Created')}</th>
               <th width="70px"></th>
             </tr>
           </thead>
@@ -84,13 +84,13 @@ class UserGroupTable extends React.Component {
                           <ul className="dropdown-menu" role="menu">
                             <li>
                               <a href={`/admin/user-group-detail/${group._id}`}>
-                                <i className="icon-fw icon-note"></i> { t('Edit') }
+                                <i className="icon-fw icon-note"></i> {t('Edit')}
                               </a>
                             </li>
 
                             <li>
-                              <a href="#" onClick={this.onDelete} data-user-group-id={group._id}>
-                                <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+                              <a role="button" onClick={this.onDelete} data-user-group-id={group._id}>
+                                <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                               </a>
                             </li>
 
@@ -127,7 +127,7 @@ UserGroupTable.propTypes = {
 
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   userGroupRelations: PropTypes.object.isRequired,
-  isAclEnabled: PropTypes.bool,
+  isAclEnabled: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 

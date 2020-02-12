@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -13,23 +11,12 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomScriptEditor from '../CustomScriptEditor';
 
-const logger = loggerFactory('growi:customizeScript');
-
 class CustomizeScriptSetting extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      editorInputValue: '',
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const { customizeScript } = this.props.appContainer.getConfig();
-    this.setState({ editorInputValue: customizeScript || '' });
   }
 
   async onClickSubmit() {
@@ -37,11 +24,10 @@ class CustomizeScriptSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeScript();
-      toastSuccess(t('customize_page.update_script_success'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_script') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -58,10 +44,10 @@ class CustomizeScriptSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Custom script')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_script')}</h2>
         <p className="well">
-          { t('customize_page.write_java') }<br />
-          { t('customize_page.reflect_change') }
+          {t('admin:customize_setting.write_java')}<br />
+          {t('admin:customize_setting.reflect_change')}
         </p>
 
         <div className="help-block">
@@ -89,15 +75,14 @@ class CustomizeScriptSetting extends React.Component {
         <div className="form-group">
           <div className="col-xs-12">
             <CustomScriptEditor
-              // The value passed must be immutable
-              value={this.state.editorInputValue}
+              value={adminCustomizeContainer.state.currentCustomizeScript || ''}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
             />
           </div>
           <div className="col-xs-12">
             <p className="help-block text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              { t('customize_page.ctrl_space') }
+              {t('admin:customize_setting.ctrl_space')}
             </p>
           </div>
         </div>

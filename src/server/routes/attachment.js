@@ -42,10 +42,6 @@ const ApiResponse = require('../util/apiResponse');
  *            type: string
  *            description: original file name
  *            example: file.txt
- *          filePath:
- *            type: string
- *            description: file path
- *            example: attachment/5e07345972560e001761fa63/6b0b3facf3628699263d760e18efd446.txt
  *          creator:
  *            $ref: '#/components/schemas/User'
  *          page:
@@ -64,6 +60,71 @@ const ApiResponse = require('../util/apiResponse');
  *            type: string
  *            description: attachment URL
  *            example: http://localhost/files/5e0734e072560e001761fa67
+ *          filePathProxied:
+ *            type: string
+ *            description: file path proxied
+ *            example: "/attachment/5e0734e072560e001761fa67"
+ *          downloadPathProxied:
+ *            type: string
+ *            description: download path proxied
+ *            example: "/download/5e0734e072560e001761fa67"
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      AttachmentProfile:
+ *        description: Attachment
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: string
+ *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
+ *          _id:
+ *            type: string
+ *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
+ *          __v:
+ *            type: number
+ *            description: attachment version
+ *            example: 0
+ *          fileFormat:
+ *            type: string
+ *            description: file format in MIME
+ *            example: image/png
+ *          fileName:
+ *            type: string
+ *            description: file name
+ *            example: 601b7c59d43a042c0117e08dd37aad0a.png
+ *          originalName:
+ *            type: string
+ *            description: original file name
+ *            example: profile.png
+ *          creator:
+ *            $ref: '#/components/schemas/User/properties/_id'
+ *          page:
+ *            type: string
+ *            description: page ID attached at
+ *            example: null
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          fileSize:
+ *            type: number
+ *            description: file size
+ *            example: 3494332
+ *          filePathProxied:
+ *            type: string
+ *            description: file path proxied
+ *            example: "/attachment/5e0734e072560e001761fa67"
+ *          downloadPathProxied:
+ *            type: string
+ *            description: download path proxied
+ *            example: "/download/5e0734e072560e001761fa67"
  */
 
 module.exports = function(crowi, app) {
@@ -247,11 +308,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.list:
+   *    /attachments.list:
    *      get:
-   *        tags: [Attachments, apiv1]
+   *        tags: [Attachments, CrowiCompatibles]
    *        operationId: listAttachments
-   *        summary: /_api/attachments.list
+   *        summary: /attachments.list
    *        description: Get list of attachments in page
    *        parameters:
    *          - in: query
@@ -303,6 +364,41 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /attachments.limit:
+   *      get:
+   *        tags: [Attachments]
+   *        operationId: getAttachmentsLimit
+   *        summary: /attachments.limit
+   *        description: Get available capacity of uploaded file with GridFS
+   *        parameters:
+   *          - in: query
+   *            name: fileSize
+   *            schema:
+   *              type: number
+   *              description: file size
+   *              example: 23175
+   *            required: true
+   *        responses:
+   *          200:
+   *            description: Succeeded to get available capacity of uploaded file with GridFS.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    isUploadable:
+   *                      type: boolean
+   *                      description: uploadable
+   *                      example: true
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {get} /attachments.limit get available capacity of uploaded file with GridFS
    * @apiName AddAttachments
    * @apiGroup Attachment
@@ -315,11 +411,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.add:
+   *    /attachments.add:
    *      post:
-   *        tags: [Attachments, apiv1]
+   *        tags: [Attachments, CrowiCompatibles]
    *        operationId: addAttachment
-   *        summary: /_api/attachments.add
+   *        summary: /attachments.add
    *        description: Add attachment to the page
    *        requestBody:
    *          content:
@@ -439,6 +535,59 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @swagger
+   *
+   *    /attachments.uploadProfileImage:
+   *      post:
+   *        tags: [Attachments]
+   *        operationId: uploadProfileImage
+   *        summary: /attachments.uploadProfileImage
+   *        description: Upload profile image
+   *        requestBody:
+   *          content:
+   *            "multipart/form-data":
+   *              schema:
+   *                properties:
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *                  user:
+   *                    type: string
+   *                    description: user to set profile image
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
+   *            "*\/*":
+   *              schema:
+   *                properties:
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *                  user:
+   *                    type: string
+   *                    description: user to set profile
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
+   *        responses:
+   *          200:
+   *            description: Succeeded to add attachment.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    attachment:
+   *                      $ref: '#/components/schemas/AttachmentProfile'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
    * @api {post} /attachments.uploadProfileImage Add attachment for profile image
    * @apiName UploadProfileImage
    * @apiGroup Attachment
@@ -483,11 +632,11 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /_api/attachments.remove:
+   *    /attachments.remove:
    *      post:
-   *        tags: [Attachments, apiv1]
+   *        tags: [Attachments, CrowiCompatibles]
    *        operationId: removeAttachment
-   *        summary: /_api/attachments.remove
+   *        summary: /attachments.remove
    *        description: Remove attachment
    *        requestBody:
    *          content:
@@ -544,6 +693,37 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success({}));
   };
 
+  /**
+   * @swagger
+   *
+   *    /attachments.removeProfileImage:
+   *      post:
+   *        tags: [Attachments]
+   *        operationId: removeProfileImage
+   *        summary: /attachments.removeProfileImage
+   *        description: Remove profile image
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  user:
+   *                    type: string
+   *                    description: user to remove profile image
+   *        responses:
+   *          200:
+   *            description: Succeeded to add attachment.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   /**
    * @api {post} /attachments.removeProfileImage Remove profile image attachments
    * @apiGroup Attachment

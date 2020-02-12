@@ -119,7 +119,7 @@ class SelectCollectionsModal extends React.Component {
       return <></>;
     }
 
-    const html = this.props.t('export_management.desc_password_seed');
+    const html = this.props.t('admin:export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
     return <div className="card well" dangerouslySetInnerHTML={{ __html: html }}></div>;
@@ -175,7 +175,7 @@ class SelectCollectionsModal extends React.Component {
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
         <ModalHeader toggle={this.props.onClose}>
-          {t('export_management.export_collections')}
+          {t('admin:export_management.export_collections')}
         </ModalHeader>
 
         <form onSubmit={this.export}>
@@ -183,36 +183,36 @@ class SelectCollectionsModal extends React.Component {
             <div className="row">
               <div className="col-sm-12">
                 <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.checkAll}>
-                  <i className="fa fa-check-square-o"></i> {t('export_management.check_all')}
+                  <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
                 </button>
                 <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.uncheckAll}>
-                  <i className="fa fa-square-o"></i> {t('export_management.uncheck_all')}
+                  <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
                 </button>
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
                 <legend>Page Collections</legend>
-                { this.renderGroups(GROUPS_PAGE) }
+                {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
                 <legend>User Collections</legend>
-                { this.renderGroups(GROUPS_USER, 'danger') }
-                { this.renderWarnForUser() }
+                {this.renderGroups(GROUPS_USER, 'danger')}
+                {this.renderWarnForUser()}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
                 <legend>Config Collections</legend>
-                { this.renderGroups(GROUPS_CONFIG) }
+                {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
                 <legend>Other Collections</legend>
-                { this.renderOthers() }
+                {this.renderOthers()}
               </div>
             </div>
           </ModalBody>
