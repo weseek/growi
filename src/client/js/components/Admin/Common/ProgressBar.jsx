@@ -21,7 +21,7 @@ class ProgressBar extends React.Component {
           {header}
           <div className="float-right">{currentCount} / {totalCount}</div>
         </h6>
-        <div className="progress progress-sm">
+        <div className="progress">
           <div
             className={`progress-bar ${isActive ? 'bg-info progress-bar-striped active' : 'bg-success'}`}
             style={{ width: `${percentage}%` }}

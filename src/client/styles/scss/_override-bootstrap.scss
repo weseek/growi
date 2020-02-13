@@ -127,7 +127,6 @@ fieldset[disabled] .btn {
 
 // input form (disabled box-shadow added in bootstrap4)
 .form-group .form-control {
-
   &:focus,
   &.focus {
     box-shadow: none;
@@ -138,7 +137,4 @@ fieldset[disabled] .btn {
 .progress {
   margin-bottom: 18px;
   overflow: hidden;
-}
-.progress.progress-sm {
-  height: 8px;
 }
