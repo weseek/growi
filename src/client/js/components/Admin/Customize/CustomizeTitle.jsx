@@ -48,7 +48,7 @@ class CustomizeTitle extends React.Component {
         </Card>
 
         {/* TODO i18n */}
-        <div className="help-block">
+        <div className="form-text text-muted">
           Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
           <br />
           Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>

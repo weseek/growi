@@ -56,7 +56,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isEnabledTimeline}
               onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 {t('admin:customize_setting.function_options.timeline_desc1')}<br />
                 {t('admin:customize_setting.function_options.timeline_desc2')}<br />
                 {t('admin:customize_setting.function_options.timeline_desc3')}
@@ -73,7 +73,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
               onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 {t('admin:customize_setting.function_options.tab_switch_desc1')}<br />
                 {t('admin:customize_setting.function_options.tab_switch_desc2')}
               </p>
@@ -89,7 +89,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
               onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 {t('admin:customize_setting.function_options.attach_title_header_desc')}
               </p>
             </CustomizeFunctionOption>
@@ -135,7 +135,7 @@ class CustomizeBehaviorSetting extends React.Component {
               isChecked={adminCustomizeContainer.state.isEnabledStaleNotification}
               onChecked={() => { adminCustomizeContainer.switchEnableStaleNotification() }}
             >
-              <p className="help-block">
+              <p className="form-text text-muted">
                 {t('admin:customize_setting.function_options.stale_notification_desc')}
               </p>
             </CustomizeFunctionOption>
