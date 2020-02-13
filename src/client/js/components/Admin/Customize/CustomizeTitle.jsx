@@ -36,7 +36,7 @@ class CustomizeTitle extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('admin:customize_page.custom_title')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_title')}</h2>
 
         <Card className="card-well my-3">
           <CardBody>
