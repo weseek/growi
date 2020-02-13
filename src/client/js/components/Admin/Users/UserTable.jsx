@@ -23,9 +23,9 @@ class UserTable extends React.Component {
   }
 
   /**
-   * user.statusをみてステータスのラベルを返す
+   * return status label element by `userStatus`
    * @param {string} userStatus
-   * @return ステータスラベル
+   * @return status label element
    */
   getUserStatusLabel(userStatus) {
     let additionalClassName;
@@ -33,32 +33,45 @@ class UserTable extends React.Component {
 
     switch (userStatus) {
       case 1:
-        additionalClassName = 'label-info';
+        additionalClassName = 'badge-info';
         text = 'Approval Pending';
         break;
       case 2:
-        additionalClassName = 'label-success';
+        additionalClassName = 'badge-success';
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'label-warning';
+        additionalClassName = 'badge-warning';
         text = 'Suspended';
         break;
       case 4:
-        additionalClassName = 'label-danger';
+        additionalClassName = 'badge-danger';
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'label-info';
+        additionalClassName = 'badge-info';
         text = 'Invited';
         break;
     }
 
     return (
-      <span className={`label ${additionalClassName}`}>
+      <span className={`badge ${additionalClassName}`}>
         {text}
       </span>
     );
+  }
+
+  /**
+   * return admin label element by `isAdmin`
+   * @param {string} isAdmin
+   * @return admin label element
+   */
+  getUserAdminLabel(isAdmin) {
+    const { t } = this.props;
+
+    if (isAdmin) {
+      return <span className="badge badge-primary ml-2">{t('admin:user_management.user_table.administrator')}</span>;
+    }
   }
 
   render() {
@@ -70,12 +83,12 @@ class UserTable extends React.Component {
           <thead>
             <tr>
               <th width="100px">#</th>
-              <th>{ t('status') }</th>
+              <th>{t('status')}</th>
               <th><code>username</code></th>
-              <th>{ t('Name') }</th>
-              <th>{ t('Email') }</th>
-              <th width="100px">{ t('Created') }</th>
-              <th width="150px">{ t('Last_Login') }</th>
+              <th>{t('Name')}</th>
+              <th>{t('Email')}</th>
+              <th width="100px">{t('Created')}</th>
+              <th width="150px">{t('Last_Login')}</th>
               <th width="70px"></th>
             </tr>
           </thead>
@@ -85,9 +98,8 @@ class UserTable extends React.Component {
                 <tr key={user._id}>
                   <td>
                     <UserPicture user={user} className="picture img-circle" />
-                    {user.admin && <span className="label label-inverse label-admin ml-2">{ t('administrator') }</span>}
                   </td>
-                  <td>{this.getUserStatusLabel(user.status)}</td>
+                  <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
                   <td>
                     <strong>{user.username}</strong>
                   </td>
@@ -95,7 +107,7 @@ class UserTable extends React.Component {
                   <td>{user.email}</td>
                   <td>{dateFnsFormat(new Date(user.createdAt), 'yyyy-MM-dd')}</td>
                   <td>
-                    { user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span> }
+                    {user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span>}
                   </td>
                   <td>
                     <UserMenu user={user} />

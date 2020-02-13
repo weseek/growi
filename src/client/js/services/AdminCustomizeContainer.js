@@ -88,8 +88,9 @@ export default class AdminCustomizeContainer extends Container {
       this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
     }
     catch (err) {
+      this.setState({ retrieveError: err });
       logger.error(err);
-      toastError(new Error('Failed to fetch data'));
+      throw new Error('Failed to fetch data');
     }
   }
 
@@ -109,6 +110,11 @@ export default class AdminCustomizeContainer extends Container {
       return;
     }
     this.setState({ currentTheme: themeName });
+
+    // preview if production
+    if (process.env.NODE_ENV !== 'development') {
+      this.previewTheme(themeName);
+    }
   }
 
   /**
@@ -161,6 +167,8 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentHighlightJsStyleName: styleName });
     // recommended settings are applied
     this.setState({ isHighlightJsStyleBorderEnabled: isBorderEnable });
+
+    this.previewHighlightJsStyle(styleId);
   }
 
   /**
@@ -198,102 +206,185 @@ export default class AdminCustomizeContainer extends Container {
     this.setState({ currentCustomizeScript: inpuValue });
   }
 
+  /**
+   * Preview theme
+   * @param {string} themeName
+   */
+  async previewTheme(themeName) {
+    try {
+      // get theme asset path
+      const response = await this.appContainer.apiv3.get('/customize-setting/layout-theme/asset-path', { themeName });
+      const { assetPath } = response.data;
+
+      const themeLink = document.getElementById('grw-theme-link');
+      themeLink.setAttribute('href', assetPath);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
+   * Preview hljs style
+   * @param {string} styleId
+   */
+  previewHighlightJsStyle(styleId) {
+    const styleLInk = document.querySelectorAll('#grw-hljs-container-for-demo link')[0];
+    // replace css url
+    // see https://regex101.com/r/gBNZYu/4
+    styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
+  }
 
   /**
    * Update layout
    * @memberOf AdminCustomizeContainer
-   * @return {Array} Appearance
    */
   async updateCustomizeLayoutAndTheme() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/layoutTheme', {
-      layoutType: this.state.currentLayout,
-      themeType: this.state.currentTheme,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/layout-theme', {
+        layoutType: this.state.currentLayout,
+        themeType: this.state.currentTheme,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        layoutType: customizedParams.layoutType,
+        themeType: customizedParams.themeType,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
    * Update behavior
    * @memberOf AdminCustomizeContainer
-   * @return {string} Behavior
    */
   async updateCustomizeBehavior() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/behavior', {
-      behaviorType: this.state.currentBehavior,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/behavior', {
+        behaviorType: this.state.currentBehavior,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        behaviorType: customizedParams.behaviorType,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
    * Update function
    * @memberOf AdminCustomizeContainer
-   * @return {string} Functions
    */
   async updateCustomizeFunction() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/function', {
-      isEnabledTimeline: this.state.isEnabledTimeline,
-      isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
-      isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
-      recentCreatedLimit: this.state.currentRecentCreatedLimit,
-      isEnabledStaleNotification: this.state.isEnabledStaleNotification,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/function', {
+        isEnabledTimeline: this.state.isEnabledTimeline,
+        isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
+        isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
+        recentCreatedLimit: this.state.currentRecentCreatedLimit,
+        isEnabledStaleNotification: this.state.isEnabledStaleNotification,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        isEnabledTimeline: customizedParams.isEnabledTimeline,
+        isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
+        isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
+        recentCreatedLimit: customizedParams.currentRecentCreatedLimit,
+        isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
    * Update code highlight
    * @memberOf AdminCustomizeContainer
-   * @return {Array} Code highlight
    */
   async updateHighlightJsStyle() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
-      highlightJsStyle: this.state.currentHighlightJsStyleId,
-      highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/highlight', {
+        highlightJsStyle: this.state.currentHighlightJsStyleId,
+        highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        highlightJsStyle: customizedParams.highlightJsStyle,
+        highlightJsStyleBorder: customizedParams.highlightJsStyleBorder,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
    * Update customTitle
    * @memberOf AdminCustomizeContainer
-   * @return {string} Customize title
    */
   async updateCustomizeTitle() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
-      customizeTitle: this.state.currentCustomizeTitle,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-title', {
+        customizeTitle: this.state.currentCustomizeTitle,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        customizeTitle: customizedParams.customizeTitle,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
    * Update customHeader
    * @memberOf AdminCustomizeContainer
-   * @return {string} Customize html header
    */
   async updateCustomizeHeader() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
-      customizeHeader: this.state.currentCustomizeHeader,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-header', {
+        customizeHeader: this.state.currentCustomizeHeader,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        currentCustomizeHeader: customizedParams.customizeHeader,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
    * Update customCss
    * @memberOf AdminCustomizeContainer
-   * @return {string} Customize css
    */
   async updateCustomizeCss() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
-      customizeCss: this.state.currentCustomizeCss,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-css', {
+        customizeCss: this.state.currentCustomizeCss,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        currentCustomizeCss: customizedParams.customizeCss,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
   /**
@@ -302,11 +393,19 @@ export default class AdminCustomizeContainer extends Container {
    * @return {string} Customize scripts
    */
   async updateCustomizeScript() {
-    const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
-      customizeScript: this.state.currentCustomizeScript,
-    });
-    const { customizedParams } = response.data;
-    return customizedParams;
+    try {
+      const response = await this.appContainer.apiv3.put('/customize-setting/customize-script', {
+        customizeScript: this.state.currentCustomizeScript,
+      });
+      const { customizedParams } = response.data;
+      this.setState({
+        currentCustomizeScript: customizedParams.customizeScript,
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to update data');
+    }
   }
 
 }

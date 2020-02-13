@@ -1,3 +1,29 @@
+/**
+ * @swagger
+ *
+ *   components:
+ *     schemas:
+ *       ElasticsearchResult:
+ *         description: Elasticsearch result v1
+ *         type: object
+ *         properties:
+ *           meta:
+ *             type: object
+ *             properties:
+ *               took:
+ *                 type: number
+ *                 description: Time Elasticsearch took to execute a search(milliseconds)
+ *                 example: 34
+ *               total:
+ *                 type: number
+ *                 description: Number of documents matching search criteria
+ *                 example: 2
+ *               results:
+ *                 type: number
+ *                 description: Actual array length of search results
+ *                 example: 2
+ *
+ */
 module.exports = function(crowi, app) {
   // var debug = require('debug')('growi:routes:search')
   const Page = crowi.model('Page');
@@ -9,16 +35,66 @@ module.exports = function(crowi, app) {
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
-    }
 
     return res.render('search', {
       q: keyword,
     });
   };
 
+  /**
+   * @swagger
+   *
+   *   /search:
+   *     get:
+   *       tags: [Search, CrowiCompatibles]
+   *       operationId: searchPages
+   *       summary: /search
+   *       description: Search pages
+   *       parameters:
+   *         - in: query
+   *           name: q
+   *           schema:
+   *             type: string
+   *             description: keyword
+   *             example: daily report
+   *           required: true
+   *         - in: query
+   *           name: path
+   *           schema:
+   *             $ref: '#/components/schemas/Page/properties/path'
+   *         - in: query
+   *           name: offset
+   *           schema:
+   *             $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
+   *         - in: query
+   *           name: limit
+   *           schema:
+   *             $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
+   *       responses:
+   *         200:
+   *           description: Succeeded to get list of pages.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 properties:
+   *                   ok:
+   *                     $ref: '#/components/schemas/V1Response/properties/ok'
+   *                   meta:
+   *                     $ref: '#/components/schemas/ElasticsearchResult/properties/meta'
+   *                   totalCount:
+   *                     type: integer
+   *                     description: total count of pages
+   *                     example: 35
+   *                   data:
+   *                     type: array
+   *                     items:
+   *                       $ref: '#/components/schemas/Page'
+   *                     description: page list
+   *         403:
+   *           $ref: '#/components/responses/403'
+   *         500:
+   *           $ref: '#/components/responses/500'
+   */
   /**
    * @api {get} /search search page
    * @apiName Search
@@ -45,9 +121,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('keyword should not empty.'));
     }
 
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
+    const { searchService } = crowi;
+    if (!searchService.isReachable) {
+      return res.json(ApiResponse.error('SearchService is not reachable.'));
     }
 
     let userGroups = [];
@@ -60,7 +136,7 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      const esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
+      const esResult = await searchService.searchKeyword(keyword, user, userGroups, searchOpts);
 
       // create score map for sorting
       // key: id , value: score

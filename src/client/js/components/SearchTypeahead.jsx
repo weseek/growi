@@ -123,8 +123,16 @@ class SearchTypeahead extends React.Component {
   }
 
   getEmptyLabel() {
+    const { emptyLabel, helpElement } = this.props;
+    const { input } = this.state;
+
+    // show help element if empty
+    if (input.length === 0) {
+      return helpElement;
+    }
+
     // use props.emptyLabel as is if defined
-    if (this.props.emptyLabel !== undefined) {
+    if (emptyLabel !== undefined) {
       return this.props.emptyLabel;
     }
 
@@ -184,11 +192,8 @@ class SearchTypeahead extends React.Component {
           labelKey="path"
           minLength={0}
           options={this.state.pages} // Search result (Some page names)
+          promptText={this.props.helpElement}
           emptyLabel={this.getEmptyLabel()}
-          searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
-              // DIRTY HACK
-              //  note: The default searchText string has been shown wrongly even if isLoading is false
-              //        since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
           align="left"
           submitFormOnEnter
           onSearch={this.search}
@@ -197,7 +202,6 @@ class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
-          promptText={this.props.promptText}
         />
         {restoreFormButton}
       </div>
@@ -229,7 +233,7 @@ SearchTypeahead.propTypes = {
   emptyLabelExceptError: PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
-  promptText:      PropTypes.object,
+  helpElement:     PropTypes.object,
 };
 
 /**

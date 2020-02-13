@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -14,23 +12,12 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomCssEditor from '../CustomCssEditor';
 
-const logger = loggerFactory('growi:Customize');
-
 class CustomizeCssSetting extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      editorInputValue: '',
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const { customizeCss } = this.props.appContainer.getConfig();
-    this.setState({ editorInputValue: customizeCss || '' });
   }
 
   async onClickSubmit() {
@@ -38,11 +25,10 @@ class CustomizeCssSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeCss();
-      toastSuccess(t('customize_page.update_customCss_success'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_css') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -51,25 +37,24 @@ class CustomizeCssSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Custom CSS')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_css')}</h2>
         <Card className="card-well my-3">
           <CardBody>
-            { t('customize_page.write_CSS') }<br />
-            { t('customize_page.reflect_change') }
+            { t('admin:customize_setting.write_css') }<br />
+            { t('admin:customize_setting.reflect_change') }
           </CardBody>
         </Card>
         <div className="form-group">
           <div className="col-12">
             <CustomCssEditor
-              // The value passed must be immutable
-              value={this.state.editorInputValue}
+              value={adminCustomizeContainer.state.currentCustomizeCss || ''}
               onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
             />
           </div>
           <div className="col-12">
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              { t('customize_page.ctrl_space') }
+              {t('admin:customize_setting.ctrl_space')}
             </p>
           </div>
         </div>

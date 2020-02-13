@@ -1,7 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:routes:apiv3:user-group');
+const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 
 const express = require('express');
 
@@ -92,11 +91,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/markdown-setting:
+   *    /markdown-setting:
    *      get:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: getMarkdownSetting
-   *        summary: /_api/v3/markdown-setting
+   *        summary: /markdown-setting
    *        description: Get markdown parameters
    *        responses:
    *          200:
@@ -127,11 +126,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/markdown-setting/lineBreak:
+   *    /markdown-setting/lineBreak:
    *      put:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: updateLineBreakMarkdownSetting
-   *        summary: /_api/v3/markdown-setting/lineBreak
+   *        summary: /markdown-setting/lineBreak
    *        description: Update lineBreak setting
    *        requestBody:
    *          required: true
@@ -173,11 +172,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/markdown-setting/presentation:
+   *    /markdown-setting/presentation:
    *      put:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: updatePresentationMarkdownSetting
-   *        summary: /_api/v3/markdown-setting/presentation
+   *        summary: /markdown-setting/presentation
    *        description: Update presentation
    *        requestBody:
    *          required: true
@@ -222,11 +221,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/markdown-setting/xss:
+   *    /markdown-setting/xss:
    *      put:
-   *        tags: [MarkDownSetting, apiv3]
+   *        tags: [MarkDownSetting]
    *        operationId: updateXssMarkdownSetting
-   *        summary: /_api/v3/markdown-setting/xss
+   *        summary: /markdown-setting/xss
    *        description: Update xss
    *        requestBody:
    *          required: true

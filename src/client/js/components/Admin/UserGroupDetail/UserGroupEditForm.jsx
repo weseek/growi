@@ -5,7 +5,7 @@ import dateFnsFormat from 'date-fns/format';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
+import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class UserGroupEditForm extends React.Component {
@@ -13,9 +13,12 @@ class UserGroupEditForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const { adminUserGroupDetailContainer } = props;
+    const { userGroup } = adminUserGroupDetailContainer.state;
+
     this.state = {
-      name: props.userGroupDetailContainer.state.userGroup.name,
-      nameCache: props.userGroupDetailContainer.state.userGroup.name, // cache for name. update every submit
+      name: userGroup.name,
+      nameCache: userGroup.name, // cache for name. update every submit
     };
 
     this.xss = window.xss;
@@ -35,7 +38,7 @@ class UserGroupEditForm extends React.Component {
     e.preventDefault();
 
     try {
-      const res = await this.props.userGroupDetailContainer.updateUserGroup({
+      const res = await this.props.adminUserGroupDetailContainer.updateUserGroup({
         name: this.state.name,
       });
 
@@ -55,32 +58,32 @@ class UserGroupEditForm extends React.Component {
   }
 
   render() {
-    const { t, userGroupDetailContainer } = this.props;
+    const { t, adminUserGroupDetailContainer } = this.props;
 
     return (
       <form className="form-horizontal" onSubmit={this.handleSubmit}>
         <fieldset>
-          <legend>{ t('user_group_management.basic_info') }</legend>
+          <legend>{t('admin:user_group_management.basic_info')}</legend>
           <div className="form-group">
-            <label htmlFor="name" className="col-sm-2 control-label">{ t('Name') }</label>
+            <label htmlFor="name" className="col-sm-2 control-label">{t('Name')}</label>
             <div className="col-sm-4">
               <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.changeUserGroupName} />
             </div>
           </div>
           <div className="form-group">
-            <label className="col-sm-2 control-label">{ t('Created') }</label>
+            <label className="col-sm-2 control-label">{t('Created')}</label>
             <div className="col-sm-4">
               <input
                 type="text"
                 className="form-control"
-                value={dateFnsFormat(new Date(userGroupDetailContainer.state.userGroup.createdAt), 'yyyy-MM-dd')}
+                value={dateFnsFormat(new Date(adminUserGroupDetailContainer.state.userGroup.createdAt), 'yyyy-MM-dd')}
                 disabled
               />
             </div>
           </div>
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
-              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{ t('Update') }</button>
+              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{t('Update')}</button>
             </div>
           </div>
         </fieldset>
@@ -93,14 +96,14 @@ class UserGroupEditForm extends React.Component {
 UserGroupEditForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  userGroupDetailContainer: PropTypes.instanceOf(UserGroupDetailContainer).isRequired,
+  adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
 const UserGroupEditFormWrapper = (props) => {
-  return createSubscribedElement(UserGroupEditForm, props, [AppContainer, UserGroupDetailContainer]);
+  return createSubscribedElement(UserGroupEditForm, props, [AppContainer, AdminUserGroupDetailContainer]);
 };
 
 export default withTranslation()(UserGroupEditFormWrapper);

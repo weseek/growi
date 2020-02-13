@@ -38,7 +38,6 @@ function Crowi(rootdir) {
 
   this.config = {};
   this.configManager = null;
-  this.searcher = null;
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
@@ -51,6 +50,7 @@ function Crowi(rootdir) {
   this.growiBridgeService = null;
   this.exportService = null;
   this.importService = null;
+  this.searchService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
@@ -279,10 +279,6 @@ Crowi.prototype.scanRuntimeVersions = async function() {
   });
 };
 
-Crowi.prototype.getSearcher = function() {
-  return this.searcher;
-};
-
 Crowi.prototype.getMailer = function() {
   return this.mailer;
 };
@@ -331,17 +327,7 @@ Crowi.prototype.setupPassport = async function() {
 
 Crowi.prototype.setupSearcher = async function() {
   const SearchService = require('@server/service/search');
-  const searchService = new SearchService(this);
-
-  if (searchService.isAvailable) {
-    try {
-      this.searcher = searchService;
-    }
-    catch (e) {
-      logger.error('Error on setup searcher', e);
-      this.searcher = null;
-    }
-  }
+  this.searchService = new SearchService(this);
 };
 
 Crowi.prototype.setupMailer = async function() {

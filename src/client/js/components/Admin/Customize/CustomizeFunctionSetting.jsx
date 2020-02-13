@@ -6,8 +6,6 @@ import {
   ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -16,8 +14,6 @@ import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeFunctionOption from './CustomizeFunctionOption';
-
-const logger = loggerFactory('growi:importer');
 
 class CustomizeBehaviorSetting extends React.Component {
 
@@ -32,11 +28,10 @@ class CustomizeBehaviorSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
-      toastSuccess(t('customize_page.update_function_success'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.function') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -45,10 +40,10 @@ class CustomizeBehaviorSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Function')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.function')}</h2>
         <Card className="card-well my-3">
           <CardBody>
-            { t('customize_page.function_choose') }
+            {t('admin:customize_setting.function_desc')}
           </CardBody>
         </Card>
 
@@ -57,14 +52,14 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledTimeline"
-              label={t('customize_page.Timeline function')}
+              label={t('admin:customize_setting.function_options.timeline')}
               isChecked={adminCustomizeContainer.state.isEnabledTimeline}
               onChecked={() => { adminCustomizeContainer.switchEnableTimeline() }}
             >
-              <p className="form-text text-muted">
-                { t('customize_page.subpage_display') }<br />
-                { t('customize_page.performance_decrease') }<br />
-                { t('customize_page.list_page_display') }
+              <p className="help-block">
+                {t('admin:customize_setting.function_options.timeline_desc1')}<br />
+                {t('admin:customize_setting.function_options.timeline_desc2')}<br />
+                {t('admin:customize_setting.function_options.timeline_desc3')}
               </p>
             </CustomizeFunctionOption>
           </div>
@@ -74,13 +69,13 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isSavedStatesOfTabChanges"
-              label={t('customize_page.tab_switch')}
+              label={t('admin:customize_setting.function_options.tab_switch')}
               isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
               onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
             >
-              <p className="form-text text-muted">
-                { t('customize_page.save_edit') }<br />
-                { t('customize_page.by_invalidating') }
+              <p className="help-block">
+                {t('admin:customize_setting.function_options.tab_switch_desc1')}<br />
+                {t('admin:customize_setting.function_options.tab_switch_desc2')}
               </p>
             </CustomizeFunctionOption>
           </div>
@@ -90,12 +85,12 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledAttachTitleHeader"
-              label={t('customize_page.attach_title_header')}
+              label={t('admin:customize_setting.function_options.attach_title_header')}
               isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
               onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
             >
-              <p className="form-text text-muted">
-                { t('customize_page.attach_title_header_desc') }
+              <p className="help-block">
+                {t('admin:customize_setting.function_options.attach_title_header_desc')}
               </p>
             </CustomizeFunctionOption>
           </div>
@@ -104,7 +99,7 @@ class CustomizeBehaviorSetting extends React.Component {
         <div className="form-group row">
           <div className="offset-3 col-6 text-left">
             <div className="my-0 w-100">
-              <label>{t('customize_page.recent_created__n_draft_num_desc')}</label>
+              <label>{t('admin:customize_setting.function_options.recent_created__n_draft_num_desc')}</label>
             </div>
             <ButtonDropdown className="">
               <DropdownToggle className="" data-toggle="dropdown" aria-haspopup="true" caret>
@@ -127,7 +122,7 @@ class CustomizeBehaviorSetting extends React.Component {
               </DropdownMenu>
             </ButtonDropdown>
             <p className="form-text text-muted">
-              { t('customize_page.recently_created_n_draft_num_desc') }
+              {t('admin:customize_setting.function_options.recently_created_n_draft_num_desc')}
             </p>
           </div>
         </div>
@@ -136,12 +131,12 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="offset-3 col-6 text-left">
             <CustomizeFunctionOption
               optionId="isEnabledStaleNotification"
-              label={t('customize_page.stale_notification')}
+              label={t('admin:customize_setting.function_options.stale_notification')}
               isChecked={adminCustomizeContainer.state.isEnabledStaleNotification}
               onChecked={() => { adminCustomizeContainer.switchEnableStaleNotification() }}
             >
-              <p className="form-text text-muted">
-                { t('customize_page.stale_notification_desc') }
+              <p className="help-block">
+                {t('admin:customize_setting.function_options.stale_notification_desc')}
               </p>
             </CustomizeFunctionOption>
           </div>

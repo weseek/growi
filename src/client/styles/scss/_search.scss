@@ -70,11 +70,18 @@
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
+    height: 30px;
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
 
     .rbt-input-wrapper {
       margin-left: 8px;
+    }
+  }
+
+  .form-group:not(.has-error) {
+    .rbt-input.form-control {
+      border: none;
     }
   }
 
@@ -191,6 +198,7 @@
   caption {
     display: table-header-group;
   }
+
   code {
     padding: 0.25em;
     background: $grw-alice-blue;

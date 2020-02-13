@@ -4,15 +4,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import loggerFactory from '@alias/logger';
-
 import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-
-const logger = loggerFactory('growi:Customize');
 
 class CustomizeTitle extends React.Component {
 
@@ -27,11 +23,10 @@ class CustomizeTitle extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeTitle();
-      toastSuccess(t('customize_page.update_customTitle_success'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_title') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -41,13 +36,13 @@ class CustomizeTitle extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.custom_title')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_page.custom_title')}</h2>
 
         <Card className="card-well my-3">
           <CardBody>
             <span
               // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: '<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。<br><code>&#123;&#123;sitename&#125;&#125;</code>がサイト名、<code>&#123;&#123;page&#125;&#125;</code>がページ名またはページパスに置換されます。' }}
+              dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
             />
           </CardBody>
         </Card>

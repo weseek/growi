@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from 'reactstrap';
+
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
@@ -27,7 +29,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('markdown_setting.updated_xss'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.xss_desc') }));
     }
     catch (err) {
       toastError(err);
@@ -40,21 +42,24 @@ class XssForm extends React.Component {
     const { xssOption } = adminMarkDownContainer.state;
 
     return (
-      <fieldset className="row col-xs-12 my-3">
-        <div className="col-xs-4 radio radio-primary">
-          <input
-            type="radio"
-            id="xssOption1"
-            name="XssOption"
-            checked={xssOption === 1}
-            onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
-          />
-          <label htmlFor="xssOption1">
-            <p className="font-weight-bold">{t('markdown_setting.Ignore all tags')}</p>
-            <div className="mt-4">
-              {t('markdown_setting.Ignore all tags desc')}
-            </div>
-          </label>
+      <div className="form-group form-check-inline col-12 my-3">
+        <div className="col-4 align-self-start">
+          <div className="custom-control custom-radio ">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="xssOption1"
+              name="XssOption"
+              checked={xssOption === 1}
+              onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
+            />
+            <label className="custom-control-label" htmlFor="xssOption1">
+              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.ignore_all_tags') }</p>
+              <div className="mt-4">
+                {t('admin:markdown_setting.xss_options.ignore_all_tags_desc') }
+              </div>
+            </label>
+          </div>
         </div>
 
         <div className="col-xs-4 radio radio-primary">
@@ -66,10 +71,10 @@ class XssForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
           />
           <label htmlFor="xssOption2">
-            <p className="font-weight-bold">{t('markdown_setting.Recommended setting')}</p>
+            <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
             <div className="m-t-15">
               <div className="d-flex justify-content-between">
-                {t('markdown_setting.Tag names')}
+                {t('admin:markdown_setting.xss_options.tag_names')}
               </div>
               <textarea
                 className="form-control xss-list"
@@ -82,7 +87,7 @@ class XssForm extends React.Component {
             </div>
             <div className="m-t-15">
               <div className="d-flex justify-content-between">
-                {t('markdown_setting.Tag attributes')}
+                {t('admin:markdown_setting.xss_options.tag_attributes')}
               </div>
               <textarea
                 className="form-control xss-list"
@@ -96,20 +101,24 @@ class XssForm extends React.Component {
           </label>
         </div>
 
-        <div className="col-xs-4 radio radio-primary">
-          <input
-            type="radio"
-            id="xssOption3"
-            name="XssOption"
-            checked={xssOption === 3}
-            onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
-          />
-          <label htmlFor="xssOption3">
-            <p className="font-weight-bold">{t('markdown_setting.Custom Whitelist')}</p>
-            <WhiteListInput />
-          </label>
+
+        <div className="col-4 align-self-start">
+          <div className="custom-control custom-radio">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="xssOption3"
+              name="XssOption"
+              checked={xssOption === 3}
+              onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
+            />
+            <label className="custom-control-label" htmlFor="xssOption3">
+              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist') }</p>
+              <WhiteListInput customizable />
+            </label>
+          </div>
         </div>
-      </fieldset>
+      </div>
     );
   }
 
@@ -119,31 +128,41 @@ class XssForm extends React.Component {
 
     return (
       <React.Fragment>
-        <form className="row">
+        <fieldset className="col-12">
           <div className="form-group">
-            <div className="col-xs-offset-4 col-xs-4 text-left">
-              <div className="checkbox checkbox-success">
+            <div className="col-8 offset-4 my-3">
+              <div className="custom-control custom-switch checkbox-success">
                 <input
                   type="checkbox"
+                  className="custom-control-input"
                   id="XssEnable"
-                  className="form-check-input"
                   name="isEnabledXss"
                   checked={isEnabledXss}
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
-                <label htmlFor="XssEnable">
-                  {t('markdown_setting.Enable XSS prevention')}
+                <label className="custom-control-label" htmlFor="XssEnable">
+                  {t('admin:markdown_setting.xss_options.enable_xss_prevention') }
                 </label>
               </div>
             </div>
+          </div>
+
+          <div className="col-12">
             {isEnabledXss && this.xssOptions()}
           </div>
-          <div className="form-group my-3">
-            <div className="col-xs-offset-4 col-xs-5">
-              <div className="btn btn-primary" onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null}> {t('Update')}</div>
-            </div>
+        </fieldset>
+        <div className="form-group col-12 m-3">
+          <div className="offset-4 col-8">
+            <Button
+              type="submit"
+              color="primary"
+              onClick={this.onClickSubmit}
+              disabled={adminMarkDownContainer.state.retrieveError != null}
+            >
+              {t('Update')}
+            </Button>
           </div>
-        </form>
+        </div>
       </React.Fragment>
     );
   }

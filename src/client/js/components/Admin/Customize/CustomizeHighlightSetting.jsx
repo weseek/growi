@@ -6,8 +6,6 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -15,8 +13,6 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-
-const logger = loggerFactory('growi:customizeHighlight');
 
 class CustomizeHighlightSetting extends React.Component {
 
@@ -31,29 +27,33 @@ class CustomizeHighlightSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateHighlightJsStyle();
-      toastSuccess(t('customize_page.update_highlight_success'));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
-  getDemoFunction() {
-    return `function $initHighlight(block, cls) {
-    try {
+  renderHljsDemo() {
+    const { adminCustomizeContainer } = this.props;
 
-      if (cls.search(/\bno\-highlight\b/) !== -1) {
-        return \`\${process(block, true, 0x0F)} class="\${cls}"\`;
-      }
-    }
-    catch (e) {
-      /* handle exception */
-    }
-    for (let i = 0 / 2; i < classes.length; i++) {
-      if (checkCondition(classes[i]) === undefined) { console.log('undefined') }
-    }
-  };`;
+    /* eslint-disable max-len */
+    const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
+  <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
+    seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
+  }
+
+  <span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
+  <span class="hljs-keyword">this</span>.setSeed(seed);
+}</span>`;
+    /* eslint-enable max-len */
+
+    return (
+      <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
+        {/* eslint-disable-next-line react/no-danger */}
+        <code dangerouslySetInnerHTML={{ __html: html }}></code>
+      </pre>
+    );
   }
 
   render() {
@@ -68,19 +68,19 @@ class CustomizeHighlightSetting extends React.Component {
 
       menuItem.push(
         <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
-          <a role="menuitem">{styleName}</a>
+          <a role="button">{styleName}</a>
         </li>,
       );
     });
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_page.Code Highlight')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
 
         <div className="form-group row">
           <div className="offset-3 col-6 text-left">
             <div className="my-0 w-100">
-              <label>{t('customize_page.Theme')}</label>
+              <label>{t('admin:customize_setting.theme')}</label>
               <Dropdown>
                 <DropdownToggle data-toggle="dropdown" aria-haspopup="true" caret>
                   <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
@@ -96,20 +96,6 @@ class CustomizeHighlightSetting extends React.Component {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-              <div className="dropdown">
-                <button className="btn dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span className="pull-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
-                  <span className="bs-caret pull-right">
-                    <span className="caret" />
-                  </span>
-                </button>
-                {/* TODO adjust dropdown after BS4 */}
-                <ul className="dropdown-menu" role="menu">
-                  {menuItem}
-                </ul>
-              </div>
-              {/* eslint-disable-next-line react/no-danger */}
-              <p className="form-text text-muted text-warning"><span dangerouslySetInnerHTML={{ __html:  t('customize_page.nocdn_desc') }} /></p>
             </div>
           </div>
         </div>
@@ -134,11 +120,7 @@ class CustomizeHighlightSetting extends React.Component {
         <div className="form-text text-muted">
           <label>Examples:</label>
           <div className="wiki">
-            <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
-              <code className="highlightjs-demo">
-                {this.getDemoFunction()}
-              </code>
-            </pre>
+            {this.renderHljsDemo()}
           </div>
         </div>
 

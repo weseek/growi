@@ -8,6 +8,8 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
+import loggerFactory from '@alias/logger';
+
 import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -16,6 +18,7 @@ import { createSubscribedElement } from './UnstatedUtils';
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
+const logger = loggerFactory('growi:SavePageControls');
 
 class SavePageControls extends React.Component {
 
@@ -46,12 +49,19 @@ class SavePageControls extends React.Component {
     this.props.editorContainer.setState(data);
   }
 
-  save() {
+  async save() {
     const { pageContainer, editorContainer } = this.props;
     // disable unsaved warning
     editorContainer.disableUnsavedWarning();
-    // save
-    pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
+
+    try {
+      // save
+      await pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
   }
 
   saveAndOverwriteScopesOfDescendants() {
