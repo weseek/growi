@@ -104,19 +104,16 @@ module.exports = (crowi) => {
    *                      description: personal params
    */
   router.put('/', loginRequiredStrictly, csrf, validator.personal, ApiV3FormValidator, async(req, res) => {
-    const {
-      name, email, lang, isEmailPublished,
-    } = req.body;
 
     try {
       const user = await User.findOne({ _id: req.user.id });
-      user.name = name;
-      user.email = email;
-      user.lang = lang;
-      user.isEmailPublished = isEmailPublished;
+      user.name = req.body.name;
+      user.email = req.body.email;
+      user.lang = req.body.lang;
+      user.isEmailPublished = req.body.isEmailPublished;
 
       const updatedUser = await user.save();
-      req.i18n.changeLanguage(lang);
+      req.i18n.changeLanguage(req.body.lang);
       return res.apiv3({ updatedUser });
     }
     catch (err) {
