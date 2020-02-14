@@ -116,6 +116,7 @@ module.exports = (crowi) => {
       user.isEmailPublished = isEmailPublished;
 
       const updatedUser = await user.save();
+      req.i18n.changeLanguage(lang);
       return res.apiv3({ updatedUser });
     }
     catch (err) {
