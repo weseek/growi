@@ -176,26 +176,28 @@ class LdapSecuritySetting extends React.Component {
             <div className="row mb-5">
               <label htmlFor="bindDNPassword" className="col-xs-3 text-right">{t('security_setting.ldap.bind_DN_password')}</label>
               <div className="col-xs-6">
-                <input
-                  className="form-control passport-ldap-managerbind"
-                  type="password"
-                  name="bindDNPassword"
-                  defaultValue={adminLdapSecurityContainer.state.ldapBindDNPassword || ''}
-                  onChange={e => adminLdapSecurityContainer.changeBindDNPassword(e.target.value)}
-                />
-                {(adminLdapSecurityContainer.state.bindMode === 'manager') ? (
-                  <p className="help-block passport-ldap-managerbind">
+                {(adminLdapSecurityContainer.state.isUserBind === true) ? (
+                  <p className="help-block passport-ldap-userbind">
                     <small>
-                      {t('security_setting.ldap.bind_DN_password_manager_detail')}
+                      {t('security_setting.ldap.bind_DN_password_user_detail')}
                     </small>
                   </p>
                 )
                   : (
-                    <p className="help-block passport-ldap-userbind">
-                      <small>
-                        {t('security_setting.ldap.bind_DN_password_user_detail')}
-                      </small>
-                    </p>
+                    <>
+                      <p className="help-block passport-ldap-managerbind">
+                        <small>
+                          {t('security_setting.ldap.bind_DN_password_manager_detail')}
+                        </small>
+                      </p>
+                      <input
+                        className="form-control passport-ldap-managerbind"
+                        type="password"
+                        name="bindDNPassword"
+                        defaultValue={adminLdapSecurityContainer.state.ldapBindDNPassword || ''}
+                        onChange={e => adminLdapSecurityContainer.changeBindDNPassword(e.target.value)}
+                      />
+                    </>
                   )}
               </div>
             </div>
