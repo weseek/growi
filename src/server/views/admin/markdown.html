@@ -12,16 +12,7 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'markdown'} %}
-    </div>
-
-    <div class="col-md-9" id="admin-markdown-setting"></div>
-  </div>
-
-</div>
+<div class="content-main" id="admin-markdown-setting"></div>
 {% endblock content_main %}
 
 {% block content_footer %}
