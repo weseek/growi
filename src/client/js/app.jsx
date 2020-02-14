@@ -36,6 +36,8 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 
+import ProfileImageUploader from './components/Me/ProfileImageUploader';
+
 import { appContainer, componentMappings } from './bootstrap';
 
 const logger = loggerFactory('growi:app');

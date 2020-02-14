@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import AppContainer from '../../services/AppContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
-import 'react-image-crop/dist/ReactCrop.css';
 import ImageCropModal from './ImageCropModal';
 
 class ProfileImageUploader extends React.Component {
