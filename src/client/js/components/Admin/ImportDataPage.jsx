@@ -143,7 +143,7 @@ class ImportDataPage extends React.Component {
           role="form"
         >
           <fieldset>
-            <legend>{ t('importer_management.import_from', { from: 'esa.io' }) }</legend>
+            <legend>{t('admin:importer_management.import_from', { from: 'esa.io' })}</legend>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -154,17 +154,17 @@ class ImportDataPage extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{ t('Article') }</th>
+                  <th>{t('Article')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{ t('Page') }</th>
+                  <th>{t('Page')}</th>
                 </tr>
                 <tr>
-                  <th>{ t('Category') }</th>
+                  <th>{t('Category')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{ t('Page Path') }</th>
+                  <th>{t('Page Path')}</th>
                 </tr>
                 <tr>
-                  <th>{ t('User') }</th>
+                  <th>{t('User')}</th>
                   <th></th>
                   <th>(TBD)</th>
                 </tr>
@@ -173,7 +173,7 @@ class ImportDataPage extends React.Component {
 
             <div className="well well-sm mb-0 small">
               <ul>
-                <li>{ t('importer_management.page_skip') }</li>
+                <li>{t('admin:importer_management.page_skip')}</li>
               </ul>
             </div>
 
@@ -183,7 +183,7 @@ class ImportDataPage extends React.Component {
 
             <div className="form-group">
               <label htmlFor="settingForm[importer:esa:team_name]" className="col-xs-3 control-label">
-                { t('importer_management.esa_settings.team_name') }
+                {t('admin:importer_management.esa_settings.team_name')}
               </label>
               <div className="col-xs-6">
                 <input className="form-control" type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
@@ -193,7 +193,7 @@ class ImportDataPage extends React.Component {
 
             <div className="form-group">
               <label htmlFor="settingForm[importer:esa:access_token]" className="col-xs-3 control-label">
-                { t('importer_management.esa_settings.access_token') }
+                {t('admin:importer_management.esa_settings.access_token')}
               </label>
               <div className="col-xs-6">
                 <input className="form-control" type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
@@ -208,7 +208,7 @@ class ImportDataPage extends React.Component {
                   className="btn btn-primary btn-esa"
                   name="Esa"
                   onClick={this.esaHandleSubmit}
-                  value={t('importer_management.import')}
+                  value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
                 <span className="col-xs-offset-1">
@@ -218,7 +218,7 @@ class ImportDataPage extends React.Component {
                     id="importFromEsa"
                     className="btn btn-default btn-esa"
                     onClick={this.esaHandleSubmitTest}
-                    value={t('importer_management.esa_settings.test_connection')}
+                    value={t('admin:importer_management.esa_settings.test_connection')}
                   />
                 </span>
 
@@ -233,7 +233,7 @@ class ImportDataPage extends React.Component {
           role="form"
         >
           <fieldset>
-            <legend>{ t('importer_management.import_from', { from: 'Qiita:Team' }) }</legend>
+            <legend>{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</legend>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -244,22 +244,22 @@ class ImportDataPage extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{ t('Article') }</th>
+                  <th>{t('Article')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{ t('Page') }</th>
+                  <th>{t('Page')}</th>
                 </tr>
                 <tr>
-                  <th>{ t('Tag')}</th>
+                  <th>{t('Tag')}</th>
                   <th></th>
                   <th>-</th>
                 </tr>
                 <tr>
-                  <th>{ t('importer_management.Directory_hierarchy_tag') }</th>
+                  <th>{t('admin:importer_management.Directory_hierarchy_tag')}</th>
                   <th></th>
                   <th>(TBD)</th>
                 </tr>
                 <tr>
-                  <th>{ t('User') }</th>
+                  <th>{t('User')}</th>
                   <th></th>
                   <th>(TBD)</th>
                 </tr>
@@ -267,7 +267,7 @@ class ImportDataPage extends React.Component {
             </table>
             <div className="well well-sm mb-0 small">
               <ul>
-                <li>{ t('importer_management.page_skip') }</li>
+                <li>{t('admin:importer_management.page_skip')}</li>
               </ul>
             </div>
 
@@ -276,7 +276,7 @@ class ImportDataPage extends React.Component {
             </div>
             <div className="form-group">
               <label htmlFor="settingForm[importer:qiita:team_name]" className="col-xs-3 control-label">
-                { t('importer_management.qiita_settings.team_name') }
+                {t('admin:importer_management.qiita_settings.team_name')}
               </label>
               <div className="col-xs-6">
                 <input className="form-control" type="text" name="qiitaTeamName" value={qiitaTeamName} onChange={this.handleInputValue} />
@@ -285,7 +285,7 @@ class ImportDataPage extends React.Component {
 
             <div className="form-group">
               <label htmlFor="settingForm[importer:qiita:access_token]" className="col-xs-3 control-label">
-                { t('importer_management.qiita_settings.access_token') }
+                {t('admin:importer_management.qiita_settings.access_token')}
               </label>
               <div className="col-xs-6">
                 <input className="form-control" type="password" name="qiitaAccessToken" value={qiitaAccessToken} onChange={this.handleInputValue} />
@@ -301,7 +301,7 @@ class ImportDataPage extends React.Component {
                   className="btn btn-primary btn-qiita"
                   name="Qiita"
                   onClick={this.qiitaHandleSubmit}
-                  value={t('importer_management.import')}
+                  value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
                 <span className="col-xs-offset-1">
@@ -311,7 +311,7 @@ class ImportDataPage extends React.Component {
                     id="importFromQiita"
                     className="btn btn-default btn-qiita"
                     onClick={this.qiitaHandleSubmitTest}
-                    value={t('importer_management.qiita_settings.test_connection')}
+                    value={t('admin:importer_management.qiita_settings.test_connection')}
                   />
                 </span>
 

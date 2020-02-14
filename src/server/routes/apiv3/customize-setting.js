@@ -7,7 +7,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
+const { body, query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -92,10 +92,15 @@ module.exports = (crowi) => {
   const { ApiV3FormValidator } = crowi.middlewares;
 
   const validator = {
+    themeAssetPath: [
+      query('themeName').isString().isIn([
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween', 'spring',
+      ]),
+    ],
     layoutTheme: [
       body('layoutType').isString().isIn(['growi', 'kibela', 'crowi']),
       body('themeType').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween',
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween', 'spring',
       ]),
     ],
     behavior: [
@@ -131,11 +136,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting:
+   *    /customize-setting:
    *      get:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: getCustomizeSetting
-   *        summary: /_api/v3/customize-setting
+   *        summary: /customize-setting
    *        description: Get customize parameters
    *        responses:
    *          200:
@@ -163,7 +168,7 @@ module.exports = (crowi) => {
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
-      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:header'),
+      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
     };
 
@@ -173,11 +178,49 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/layoutTheme:
+   *    /customize-setting/layout-theme/asset-path:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
+   *        operationId: getLayoutThemeAssetPath
+   *        summary: /customize-setting/layout-theme/asset-path
+   *        description: Get layout theme asset path
+   *        parameters:
+   *          - name: themeName
+   *            in: query
+   *            required: true
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to update layout and theme
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    assetPath:
+   *                      type: string
+   */
+  router.get('/layout-theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, ApiV3FormValidator, async(req, res) => {
+    const themeName = req.query.themeName;
+
+    const webpackAssetKey = `styles/theme-${themeName}.css`;
+    const assetPath = res.locals.webpack_asset(webpackAssetKey);
+
+    if (assetPath == null) {
+      return res.apiv3Err(new ErrorV3(`The asset for '${webpackAssetKey}' is undefined.`, 'invalid-asset'));
+    }
+
+    return res.apiv3({ assetPath });
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/layout-theme:
+   *      put:
+   *        tags: [CustomizeSetting]
    *        operationId: updateLayoutThemeCustomizeSetting
-   *        summary: /_api/v3/customize-setting/layoutTheme
+   *        summary: /customize-setting/layout-theme
    *        description: Update layout and theme
    *        requestBody:
    *          required: true
@@ -193,7 +236,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayoutTheme'
    */
-  router.put('/layoutTheme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
+  router.put('/layout-theme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, ApiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
@@ -217,11 +260,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/behavior:
+   *    /customize-setting/behavior:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateBehaviorCustomizeSetting
-   *        summary: /_api/v3/customize-setting/behavior
+   *        summary: /customize-setting/behavior
    *        description: Update behavior
    *        requestBody:
    *          required: true
@@ -259,11 +302,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/function:
+   *    /customize-setting/function:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateFunctionCustomizeSetting
-   *        summary: /_api/v3/customize-setting/function
+   *        summary: /customize-setting/function
    *        description: Update function
    *        requestBody:
    *          required: true
@@ -309,11 +352,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/highlight:
+   *    /customize-setting/highlight:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateHighlightCustomizeSetting
-   *        summary: /_api/v3/customize-setting/highlight
+   *        summary: /customize-setting/highlight
    *        description: Update highlight
    *        requestBody:
    *          required: true
@@ -353,11 +396,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeTitle:
+   *    /customize-setting/customizeTitle:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeTitleCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeTitle
+   *        summary: /customize-setting/customizeTitle
    *        description: Update customizeTitle
    *        requestBody:
    *          required: true
@@ -396,11 +439,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeHeader:
+   *    /customize-setting/customizeHeader:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeHeaderCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeHeader
+   *        summary: /customize-setting/customizeHeader
    *        description: Update customizeHeader
    *        requestBody:
    *          required: true
@@ -437,11 +480,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeCss:
+   *    /customize-setting/customizeCss:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeCssCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeCss
+   *        summary: /customize-setting/customizeCss
    *        description: Update customizeCss
    *        requestBody:
    *          required: true
@@ -479,11 +522,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/customize-setting/customizeScript:
+   *    /customize-setting/customizeScript:
    *      put:
-   *        tags: [CustomizeSetting, apiv3]
+   *        tags: [CustomizeSetting]
    *        operationId: updateCustomizeScriptCustomizeSetting
-   *        summary: /_api/v3/customize-setting/customizeScript
+   *        summary: /customize-setting/customizeScript
    *        description: Update customizeScript
    *        requestBody:
    *          required: true

@@ -30,13 +30,25 @@ class UserGroupDeleteModal extends React.Component {
 
     this.availableOptions = [
       {
-        id: 1, actionForPages: this.actionForPages.public, iconClass: 'icon-people', styleClass: '', label: t('user_group_management.publish_pages'),
+        id: 1,
+        actionForPages: this.actionForPages.public,
+        iconClass: 'icon-people',
+        styleClass: '',
+        label: t('admin:user_group_management.delete_modal.publish_pages'),
       },
       {
-        id: 2, actionForPages: this.actionForPages.delete, iconClass: 'icon-trash', styleClass: 'text-danger', label: t('user_group_management.delete_pages'),
+        id: 2,
+        actionForPages: this.actionForPages.delete,
+        iconClass: 'icon-trash',
+        styleClass: 'text-danger',
+        label: t('admin:user_group_management.delete_modal.delete_pages'),
       },
       {
-        id: 3, actionForPages: this.actionForPages.transfer, iconClass: 'icon-options', styleClass: '', label: t('user_group_management.transfer_pages'),
+        id: 3,
+        actionForPages: this.actionForPages.transfer,
+        iconClass: 'icon-options',
+        styleClass: '',
+        label: t('admin:user_group_management.delete_modal.transfer_pages'),
       },
     ];
 
@@ -99,7 +111,7 @@ class UserGroupDeleteModal extends React.Component {
         value={this.state.actionName}
         onChange={this.handleActionChange}
       >
-        <option value="" disabled>{t('user_group_management.choose_action')}</option>
+        <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
         {optoins}
       </select>
     );
@@ -117,7 +129,8 @@ class UserGroupDeleteModal extends React.Component {
       return <option key={group._id} value={group._id} data-content={dataContent}>{this.xss.process(group.name)}</option>;
     });
 
-    const defaultOptionText = groups.length === 0 ? t('user_group_management.no_groups') : t('user_group_management.select_group');
+    const defaultOptionText = groups.length === 0 ? t('admin:user_group_management.delete_modal.no_groups')
+      : t('admin:user_group_management.delete_modal.select_group');
 
     return (
       <select
@@ -152,15 +165,15 @@ class UserGroupDeleteModal extends React.Component {
       <Modal show={this.props.isShow} onHide={this.onHide}>
         <Modal.Header className="modal-header bg-danger" closeButton>
           <Modal.Title>
-            <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
+            <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
-            <span className="font-weight-bold">{t('user_group_management.group_name')}</span> : &quot;{this.props.deleteUserGroup.name}&quot;
+            <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{this.props.deleteUserGroup.name}&quot;
           </div>
           <div className="text-danger mt-5">
-            {t('user_group_management.group_and_pages_not_retrievable')}
+            {t('admin:user_group_management.delete_modal.desc')}
           </div>
         </Modal.Body>
         <Modal.Footer>

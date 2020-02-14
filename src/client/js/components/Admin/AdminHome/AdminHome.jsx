@@ -34,20 +34,23 @@ class AdminHome extends React.Component {
     return (
       <Fragment>
         <p>
-          {t('admin_top.wiki_administrator')}
+          {t('admin:admin_top.wiki_administrator')}
           <br></br>
-          {t('admin_top.assign_administrator')}
+          {t('admin:admin_top.assign_administrator')}
         </p>
 
         <div className="row mb-5">
-          <h2>{t('admin_top.System Information')}</h2>
-          <SystemInfomationTable />
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
+            <SystemInfomationTable />
+          </div>
         </div>
 
         <div className="row mb-5">
-          <h2>{t('admin_top.List of installed plugins')}</h2>
-          <InstalledPluginTable />
-
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
+            <InstalledPluginTable />
+          </div>
         </div>
       </Fragment>
     );

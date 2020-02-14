@@ -62,11 +62,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/export/status:
+   *  /export/status:
    *    get:
-   *      tags: [Export, apiv3]
+   *      tags: [Export]
    *      operationId: getExportStatus
-   *      summary: /_api/v3/export/status
+   *      summary: /export/status
    *      description: get properties of stored zip files for export
    *      responses:
    *        200:
@@ -91,11 +91,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/export:
+   *  /export:
    *    post:
-   *      tags: [Export, apiv3]
+   *      tags: [Export]
    *      operationId: createExport
-   *      summary: /_api/v3/export
+   *      summary: /export
    *      description: generate zipped jsons for collections
    *      responses:
    *        200:
@@ -129,11 +129,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  /_api/v3/export/{fileName}:
+   *  /export/{fileName}:
    *    delete:
-   *      tags: [Export, apiv3]
+   *      tags: [Export]
    *      operationId: deleteExport
-   *      summary: /_api/v3/export/{fileName}
+   *      summary: /export/{fileName}
    *      description: delete the file
    *      parameters:
    *        - name: fileName

@@ -20,7 +20,7 @@ class RemoveAdminButton extends React.Component {
 
     try {
       const username = await this.props.adminUsersContainer.removeUserAdmin(this.props.user._id);
-      toastSuccess(t('user_management.remove_user_admin', { username }));
+      toastSuccess(t('toaster.remove_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
@@ -32,8 +32,8 @@ class RemoveAdminButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
-        <i className="icon-fw icon-user-unfollow"></i> { t('user_management.remove_admin_access') }
+      <a role="button" className="px-4" onClick={() => { this.onClickRemoveAdminBtn() }}>
+        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
       </a>
     );
   }
@@ -43,8 +43,8 @@ class RemoveAdminButton extends React.Component {
 
     return (
       <div className="px-4">
-        <i className="icon-fw icon-user-unfollow mb-2"></i>{ t('user_management.remove_admin_access') }
-        <p className="alert alert-danger">{ t('user_management.cannot_remove') }</p>
+        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('admin:user_management.user_table.remove_admin_access')}
+        <p className="alert alert-danger">{t('admin:user_management.user_table.cannot_remove')}</p>
       </div>
     );
   }

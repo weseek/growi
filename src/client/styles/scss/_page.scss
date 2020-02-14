@@ -8,6 +8,7 @@
    * header
    */
   header {
+
     // the container of h1
     div.title-container {
       padding-right: 5px;
@@ -38,6 +39,7 @@
 
     // change button opacity
     &:hover {
+
       .btn.btn-copy,
       .btn-copy-link,
       .btn.btn-edit,
@@ -114,6 +116,7 @@
 .main-container .main .content-main .revision-history {
   .revision-history-list {
     .revision-history-outer {
+
       // add border-top except of first element
       &:not(:first-of-type) {
         border-top: 1px solid $border;
@@ -150,6 +153,7 @@
 
       .revision-history-diff {
         padding-left: 40px;
+        color: #333;
       }
     }
 

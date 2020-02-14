@@ -16,15 +16,7 @@
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'user-group'} %}
     </div>
-    <div
-      id ="admin-user-group-page"
-      class="col-md-9"
-      data-isAclEnabled="{{ isAclEnabled }}"
-    >
-      <!-- Reactify Paginator start -->
-      <!-- {% include '../widget/pager.html' with {path: "/admin/user-groups", pager: pager} %} -->
-      <!-- Reactify Paginator end -->
-    </div>
+    <div id ="admin-user-group-page" class="col-md-9"></div>
   </div>
 </div>
 {% endblock content_main %}

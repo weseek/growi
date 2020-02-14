@@ -11,9 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v2
 
     - name: Init Git
       run: |
@@ -41,5 +39,6 @@ jobs:
       uses: Roang-zero1/github-create-release-action@master
       with:
         created_tag: v${{ env.RELEASE_VERSION }}
+        changelog_file: CHANGES.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

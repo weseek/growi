@@ -35,7 +35,7 @@ export default class AdminAppContainer extends Container {
       customEndpoint: '',
       bucket: '',
       accessKeyId: '',
-      secretKey: '',
+      secretAccessKey: '',
       isEnabledPlugins: true,
     };
 
@@ -53,7 +53,7 @@ export default class AdminAppContainer extends Container {
     this.changeCustomEndpoint = this.changeCustomEndpoint.bind(this);
     this.changeBucket = this.changeBucket.bind(this);
     this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
-    this.changeSecretKey = this.changeSecretKey.bind(this);
+    this.changeSecretAccessKey = this.changeSecretAccessKey.bind(this);
     this.changeIsEnabledPlugins = this.changeIsEnabledPlugins.bind(this);
     this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
     this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
@@ -94,7 +94,7 @@ export default class AdminAppContainer extends Container {
         customEndpoint: appSettingsParams.customEndpoint,
         bucket: appSettingsParams.bucket,
         accessKeyId: appSettingsParams.accessKeyId,
-        secretKey: appSettingsParams.secretKey,
+        secretAccessKey: appSettingsParams.secretAccessKey,
         isEnabledPlugins: appSettingsParams.isEnabledPlugins,
       });
 
@@ -205,10 +205,10 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change secret key
+   * Change secret access key
    */
-  changeSecretKey(secretKey) {
-    this.setState({ secretKey });
+  changeSecretAccessKey(secretAccessKey) {
+    this.setState({ secretAccessKey });
   }
 
   /**
@@ -276,7 +276,7 @@ export default class AdminAppContainer extends Container {
       customEndpoint: this.state.customEndpoint,
       bucket: this.state.bucket,
       accessKeyId: this.state.accessKeyId,
-      secretKey: this.state.secretKey,
+      secretAccessKey: this.state.secretAccessKey,
     });
     const { awsSettingParams } = response.data;
     return awsSettingParams;

@@ -21,9 +21,9 @@ module.exports = (options) => {
     mode: options.mode,
     entry: Object.assign({
       'js/app':                       './src/client/js/app',
+      'js/admin':                     './src/client/js/admin',
       'js/installer':                 './src/client/js/installer',
       'js/legacy':                    './src/client/js/legacy/crowi',
-      'js/legacy-admin':              './src/client/js/legacy/crowi-admin',
       'js/legacy-presentation':       './src/client/js/legacy/crowi-presentation',
       'js/plugin':                    './src/client/js/plugin',
       'js/ie11-polyfill':             './src/client/js/ie11-polyfill',
@@ -44,6 +44,7 @@ module.exports = (options) => {
       'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
       'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',
       'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
+      'styles/theme-spring':      './src/client/styles/scss/theme/spring.scss',
       'styles/theme-antarctic':      './src/client/styles/scss/theme/antarctic.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
@@ -157,7 +158,7 @@ module.exports = (options) => {
             test: /\.(sc|sa|c)ss$/,
             chunks: (chunk) => {
               // ignore patterns
-              return chunk.name != null && !chunk.name.match(/style-|theme-|legacy-admin|legacy-presentation/);
+              return chunk.name != null && !chunk.name.match(/style-|theme-|legacy-presentation/);
             },
             name: 'styles/style-commons',
             minSize: 1,
