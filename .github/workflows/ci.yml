@@ -140,7 +140,23 @@ jobs:
       uses: actions/cache@v1
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - name: Get Date
+      id: date
+      run: |
+        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
+        echo ::set-output name=Ymd::$(date '+%Y%m%d')
+        echo ::set-output name=Ym::$(date '+%Y%m')
+        echo ::set-output name=Y::$(date '+%Y')
+    - name: Cache/Restore node_modules/.cache/hard-source
+      uses: actions/cache@v1
+      with:
+        path: node_modules/.cache
+        key: ${{ runner.OS }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
+        restore-keys: |
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
+          ${{ runner.os }}-hard_source_webpack_dev-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
@@ -150,9 +166,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
@@ -189,6 +205,22 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Get Date
+      id: date
+      run: |
+        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
+        echo ::set-output name=Ymd::$(date '+%Y%m%d')
+        echo ::set-output name=Ym::$(date '+%Y%m')
+        echo ::set-output name=Y::$(date '+%Y')
+    - name: Cache/Restore node_modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
+        restore-keys: |
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
+          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
     - name: Get yarn cache dir
       id: cache-yarn
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -196,9 +228,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+          ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
         yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
@@ -208,9 +240,9 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:prod
+    - name: yarn build:prod:analyze
       run: |
-        yarn build:prod
+        yarn build:prod:analyze
     - name: yarn install --production
       run: |
         yarn install --production
@@ -228,6 +260,12 @@ jobs:
         yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
+
+    - name: Upload report as artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: Report
+        path: report
 
     - name: Slack Notification
       uses: homoluctus/slatify@master

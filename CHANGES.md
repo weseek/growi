@@ -1,12 +1,31 @@
 # CHANGES
 
+## v3.6.8-RC
+
+*
+
+## v3.6.7
+
+* Feature: Anchor link for comments
+* Improvement: Show error toastr when saving page is failed because of empty document
+* Fix: Admin Customise couldn't restore stored config value
+    * Introduced by 3.6.2
+* Fix: Admin Customise missed preview functions
+    * Introduced by 3.6.2
+* Fix: AWS doesn't work
+    * Introduced by 3.6.4
+* Fix: Ensure not to get unrelated indices information in Elasticsearch Management
+    * Introduced by 3.6.6
+* Support: Optimize bundles
+* Support: Optimize build-prod job with caching node_modules/.cache
+
 ## v3.6.6
 
 * Feature: Reconnect to Elasticsearch from Full Text Search Management
 * Feature: Normalize indices of Elasticsearch from Full Text Search Management
 * Improvement: Add 'spring' theme
 * Improvement: Reactify admin pages (Notification)
-* Impromvement: Add `checkMiddlewaresStrictly` query option to Healthcheck API
+* Impromvement: Add `checkMiddlewaresStrictly` option to Healthcheck API
 * Improvement: Accessibility for History component under dark themes
 * Fix: Warning on client console when developing /admin/app
 * Support: Upgrade libs

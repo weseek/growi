@@ -113,7 +113,7 @@ UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  isAclEnabled: PropTypes.bool,
+  isAclEnabled: PropTypes.bool.isRequired,
   onCreate: PropTypes.func.isRequired,
 };
 

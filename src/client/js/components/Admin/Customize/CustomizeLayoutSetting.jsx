@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -13,9 +11,6 @@ import CustomizeLayoutOptions from './CustomizeLayoutOptions';
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-
-const logger = loggerFactory('growi:importer');
-
 
 class CustomizeLayoutSetting extends React.Component {
 
@@ -34,7 +29,6 @@ class CustomizeLayoutSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 

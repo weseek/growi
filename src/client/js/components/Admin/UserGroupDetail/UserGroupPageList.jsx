@@ -6,7 +6,7 @@ import Page from '../../PageList/Page';
 import PaginationWrapper from '../../PaginationWrapper';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import UserGroupDetailContainer from '../../../services/UserGroupDetailContainer';
+import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastError } from '../../../util/apiNotification';
 
 class UserGroupPageList extends React.Component {
@@ -33,7 +33,7 @@ class UserGroupPageList extends React.Component {
     const offset = (pageNum - 1) * limit;
 
     try {
-      const res = await this.props.appContainer.apiv3.get(`/user-groups/${this.props.userGroupDetailContainer.state.userGroup._id}/pages`, {
+      const res = await this.props.appContainer.apiv3.get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
         limit,
         offset,
       });
@@ -51,14 +51,14 @@ class UserGroupPageList extends React.Component {
   }
 
   render() {
-    const { t, userGroupDetailContainer } = this.props;
+    const { t, adminUserGroupDetailContainer } = this.props;
 
     return (
       <Fragment>
         <ul className="page-list-ul page-list-ul-flat">
           {this.state.currentPages.map((page) => { return <Page key={page._id} page={page} /> })}
         </ul>
-        {userGroupDetailContainer.state.relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : null}
+        {adminUserGroupDetailContainer.state.relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : null}
         <PaginationWrapper
           activePage={this.state.activePage}
           changePage={this.handlePageChange}
@@ -74,14 +74,14 @@ class UserGroupPageList extends React.Component {
 UserGroupPageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  userGroupDetailContainer: PropTypes.instanceOf(UserGroupDetailContainer).isRequired,
+  adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
 const UserGroupPageListWrapper = (props) => {
-  return createSubscribedElement(UserGroupPageList, props, [AppContainer, UserGroupDetailContainer]);
+  return createSubscribedElement(UserGroupPageList, props, [AppContainer, AdminUserGroupDetailContainer]);
 };
 
 export default withTranslation()(UserGroupPageListWrapper);

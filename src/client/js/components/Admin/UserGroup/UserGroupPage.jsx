@@ -138,15 +138,17 @@ class UserGroupPage extends React.Component {
   }
 
   render() {
+    const { isAclEnabled } = this.props.appContainer.config;
+
     return (
       <Fragment>
         <UserGroupCreateForm
-          isAclEnabled={this.props.isAclEnabled}
+          isAclEnabled={isAclEnabled}
           onCreate={this.addUserGroup}
         />
         <UserGroupTable
           userGroups={this.state.userGroups}
-          isAclEnabled={this.props.isAclEnabled}
+          isAclEnabled={isAclEnabled}
           onDelete={this.showDeleteModal}
           userGroupRelations={this.state.userGroupRelations}
         />
@@ -179,8 +181,6 @@ const UserGroupPageWrapper = (props) => {
 
 UserGroupPage.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  isAclEnabled: PropTypes.bool,
 };
 
 export default UserGroupPageWrapper;
