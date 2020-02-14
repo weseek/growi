@@ -109,14 +109,13 @@ module.exports = (crowi) => {
     } = req.body;
 
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ _id: req.user.id });
       user.name = name;
       user.email = email;
       user.lang = lang;
       user.isEmailPublished = isEmailPublished;
 
       const updatedUser = await user.save();
-      req.i18n.changeLanguage(lang);
       return res.apiv3({ updatedUser });
     }
     catch (err) {
