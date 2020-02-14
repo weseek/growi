@@ -150,23 +150,23 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapBindDN || ''}
                   onChange={e => adminLdapSecurityContainer.changeBindDN(e.target.value)}
                 />
-                {(adminLdapSecurityContainer.state.isUserBind === false) ? (
-                  <p className="help-block passport-ldap-managerbind">
+                {(adminLdapSecurityContainer.state.isUserBind === true) ? (
+                  <p className="help-block passport-ldap-userbind">
                     <small>
-                      {t('security_setting.ldap.bind_DN_manager_detail')}<br />
-                      {t('security_setting.example')}1: <code>uid=admin,dc=domain,dc=com</code><br />
-                      {t('security_setting.example')}2: <code>admin@domain.com</code>
+                      {t('security_setting.ldap.bind_DN_user_detail1')}<br />
+                      {/* eslint-disable-next-line react/no-danger */}
+                      <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.bind_DN_user_detail2') }} /><br />
+                      {t('security_setting.example')}1: <code>uid={'{{ username }}'},dc=domain,dc=com</code><br />
+                      {t('security_setting.example')}2: <code>{'{{ username }}'}@domain.com</code>
                     </small>
                   </p>
                 )
                   : (
-                    <p className="help-block passport-ldap-userbind">
+                    <p className="help-block passport-ldap-managerbind">
                       <small>
-                        {t('security_setting.ldap.bind_DN_user_detail1')}<br />
-                        {/* eslint-disable-next-line react/no-danger */}
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.bind_DN_user_detail2') }} /><br />
-                        {t('security_setting.example')}1: <code>uid={'{{ username }}'},dc=domain,dc=com</code><br />
-                        {t('security_setting.example')}2: <code>{'{{ username }}'}@domain.com</code>
+                        {t('security_setting.ldap.bind_DN_manager_detail')}<br />
+                        {t('security_setting.example')}1: <code>uid=admin,dc=domain,dc=com</code><br />
+                        {t('security_setting.example')}2: <code>admin@domain.com</code>
                       </small>
                     </p>
                   )}
