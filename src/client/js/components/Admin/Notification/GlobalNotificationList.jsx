@@ -82,7 +82,7 @@ class GlobalNotificationList extends React.Component {
                     className="custom-control-input"
                     id={notification._id}
                     defaultChecked={notification.isEnabled}
-                    onClick={e => this.toggleIsEnabled(notification)}
+                    onClick={() => this.toggleIsEnabled(notification)}
                   />
                   <label className="custom-control-label" htmlFor={notification._id} />
                 </div>

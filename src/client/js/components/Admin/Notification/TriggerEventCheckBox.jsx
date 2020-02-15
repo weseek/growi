@@ -6,15 +6,15 @@ const TriggerEventCheckBox = (props) => {
   const { t } = props;
 
   return (
-    <div className="checkbox checkbox-inverse">
+    <div className="custom-control custom-switch checkbox-success">
       <input
         type="checkbox"
+        className="custom-control-input"
         id={`trigger-event-${props.event}`}
-        value={props.event}
         checked={props.checked}
         onChange={props.onChange}
       />
-      <label htmlFor={`trigger-event-${props.event}`}>
+      <label className="custom-control-label" htmlFor={`trigger-event-${props.event}`}>
         {props.children}{' '}
         {t(`notification_setting.event_${props.event}`)}
       </label>
