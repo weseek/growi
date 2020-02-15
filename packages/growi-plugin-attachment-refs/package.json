@@ -1,6 +1,6 @@
 {
   "name": "growi-plugin-attachment-refs",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "keywords": [
     "growi",
