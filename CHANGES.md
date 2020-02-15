@@ -2,7 +2,7 @@
 
 ## v3.6.8-RC
 
-*
+* Improvement: Optimize markdown rendering
 
 ## v3.6.7
 
