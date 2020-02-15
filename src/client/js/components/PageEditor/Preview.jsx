@@ -34,6 +34,7 @@ class Preview extends React.PureComponent {
     const { markdown: prevMarkdown } = prevProps;
     const { markdown } = this.props;
 
+    // render only when props.markdown is updated
     if (markdown !== prevMarkdown) {
       this.initCurrentRenderingContext();
       this.renderPreview();

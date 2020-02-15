@@ -37,6 +37,7 @@ class RevisionRenderer extends React.PureComponent {
     const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
     const { markdown, highlightKeywords } = this.props;
 
+    // render only when props.markdown is updated
     if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
       this.initCurrentRenderingContext();
       this.renderHtml();
