@@ -92,32 +92,32 @@ class GlobalNotificationList extends React.Component {
               </td>
               <td>
                 {notification.triggerEvents.includes('pageCreate') && (
-                  <span className="label label-success" data-toggle="tooltip" data-placement="top" title="Page Create">
+                  <span className="badge badge-success" data-toggle="tooltip" data-placement="top" title="Page Create">
                     <i className="icon-doc"></i> CREATE
                   </span>
                 )}
                 {notification.triggerEvents.includes('pageEdit') && (
-                  <span className="label label-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
+                  <span className="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
                     <i className="icon-pencil"></i> EDIT
                   </span>
                 )}
                 {notification.triggerEvents.includes('pageMove') && (
-                  <span className="label label-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  <span className="badge badge-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
                     <i className="icon-action-redo"></i> MOVE
                   </span>
                 )}
                 {notification.triggerEvents.includes('pageDelete') && (
-                  <span className="label label-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
+                  <span className="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
                     <i className="icon-fire"></i> DELETE
                   </span>
                 )}
                 {notification.triggerEvents.includes('pageLike') && (
-                  <span className="label label-info" data-toggle="tooltip" data-placement="top" title="Page Like">
+                  <span className="badge badge-info" data-toggle="tooltip" data-placement="top" title="Page Like">
                     <i className="icon-like"></i> LIKE
                   </span>
                 )}
                 {notification.triggerEvents.includes('comment') && (
-                  <span className="label label-default" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  <span className="badge badge-light" data-toggle="tooltip" data-placement="top" title="New Comment">
                     <i className="icon-fw icon-bubble"></i> POST
                   </span>
                 )}
