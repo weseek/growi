@@ -38,9 +38,6 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         <div className="row">
-          <div className="col-md-3">
-            <AdminNavigation activeMenu="markdown" />
-          </div>
 
           <div className="col-md-9">
             {/* Line Break Setting */}
