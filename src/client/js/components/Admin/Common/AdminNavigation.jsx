@@ -5,15 +5,15 @@ import urljoin from 'url-join';
 
 const AdminNavigation = (props) => {
   const { t } = props;
+  const pathname = window.location.pathname;
 
   const isActiveMenu = (path) => {
-    const pathname = window.location.pathname;
     return (pathname.startsWith(urljoin('/admin', path)));
   };
 
   return (
     <ul className="nav nav-pills nav-stacked">
-      <li className={`${isActiveMenu('/home') && 'active'}`}>
+      <li className={`${pathname === '/' && 'active'}`}>
         <a href="/admin/home"><i className="icon-fw icon-home"></i> { t('Management Wiki Home') }</a>
       </li>
       <li className={`${isActiveMenu('/app') && 'active'}`}>
