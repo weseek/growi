@@ -11,7 +11,8 @@
 </div>
 {% endblock %}
 
-{% block content_main_after %}
+{% block content_main %}
+  {% parent %}
 <div class="content-main col-md-9" id="admin-markdown-setting"></div>
 {% endblock content_main %}
 
