@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-const ContentHeader = (props) => {
+const AdminNavigation = (props) => {
   const { t, activeMenu } = props;
 
   return (
@@ -45,10 +45,10 @@ const ContentHeader = (props) => {
 };
 
 
-ContentHeader.propTypes = {
+AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   activeMenu: PropTypes.string.isRequired,
 };
 
-export default withTranslation()(ContentHeader);
+export default withTranslation()(AdminNavigation);

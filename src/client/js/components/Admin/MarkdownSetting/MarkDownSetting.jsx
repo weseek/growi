@@ -12,7 +12,7 @@ import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
-import ContentHeader from '../Common/ContentHeader';
+import AdminNavigation from '../Common/AdminNavigation';
 
 const logger = loggerFactory('growi:MarkDown');
 
@@ -39,7 +39,7 @@ class MarkdownSetting extends React.Component {
       <React.Fragment>
         <div className="row">
           <div className="col-md-3">
-            <ContentHeader activeMenu="markdown" />
+            <AdminNavigation activeMenu="markdown" />
           </div>
 
           <div className="col-md-9">
