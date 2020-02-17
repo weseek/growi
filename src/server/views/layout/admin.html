@@ -8,6 +8,10 @@
 <script src="{{ webpack_asset('js/admin.js') }}" defer></script>
 {% endblock %}
 
+{% block content_main %}
+  <div class="col-md-3" id="admin-navigation"></div>
+{% endblock content_main %}
+
 {# disable custom script in admin page #}
 {% block custom_script %}
 {% endblock %}

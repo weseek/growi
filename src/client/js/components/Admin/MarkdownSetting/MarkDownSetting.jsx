@@ -12,7 +12,6 @@ import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
-import AdminNavigation from '../Common/AdminNavigation';
 
 const logger = loggerFactory('growi:MarkDown');
 
@@ -37,33 +36,26 @@ class MarkdownSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row">
-
-          <div className="col-md-9">
-            {/* Line Break Setting */}
-            <div className="row mb-5">
-              <h2 className="border-bottom">{t('admin:markdown_setting.lineBreak_header')}</h2>
-              <p className="well">{t('admin:markdown_setting.lineBreak_desc')}</p>
-              <LineBreakForm />
-            </div>
-
-            {/* Presentation Setting */}
-            <div className="row mb-5">
-              <h2 className="border-bottom">{t('admin:markdown_setting.presentation_header')}</h2>
-              <p className="well">{t('admin:markdown_setting.presentation_desc')}</p>
-              <PresentationForm />
-            </div>
-
-            {/* XSS Setting */}
-            <div className="row mb-5">
-              <h2 className="border-bottom">{t('admin:markdown_setting.xss_header')}</h2>
-              <p className="well">{t('admin:markdown_setting.xss_desc')}</p>
-              <XssForm />
-            </div>
-          </div>
-
+        {/* Line Break Setting */}
+        <div className="row mb-5">
+          <h2 className="border-bottom">{t('admin:markdown_setting.lineBreak_header')}</h2>
+          <p className="well">{t('admin:markdown_setting.lineBreak_desc')}</p>
+          <LineBreakForm />
         </div>
 
+        {/* Presentation Setting */}
+        <div className="row mb-5">
+          <h2 className="border-bottom">{t('admin:markdown_setting.presentation_header')}</h2>
+          <p className="well">{t('admin:markdown_setting.presentation_desc')}</p>
+          <PresentationForm />
+        </div>
+
+        {/* XSS Setting */}
+        <div className="row mb-5">
+          <h2 className="border-bottom">{t('admin:markdown_setting.xss_header')}</h2>
+          <p className="well">{t('admin:markdown_setting.xss_desc')}</p>
+          <XssForm />
+        </div>
       </React.Fragment>
     );
   }

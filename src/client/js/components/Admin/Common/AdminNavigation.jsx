@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 const AdminNavigation = (props) => {
-  const { t, activeMenu } = props;
+  const { t } = props;
+
+  const pathname = window.location.pathname;
+  const activeMenu = pathname.split('/')[2];
 
   return (
     <ul className="nav nav-pills nav-stacked">
@@ -48,7 +51,6 @@ const AdminNavigation = (props) => {
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  activeMenu: PropTypes.string.isRequired,
 };
 
 export default withTranslation()(AdminNavigation);
