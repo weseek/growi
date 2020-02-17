@@ -57,7 +57,7 @@ module.exports = function(crowi, app) {
   app.get('/register'                , middlewares.applicationInstalled    , login.register);
   app.get('/logout'                  , logout.logout);
 
-  app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
+  app.get('/admin/home'                          , loginRequiredStrictly , adminRequired , admin.index);
   app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
 
   // security admin
