@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Card, CardBody,
-  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -20,7 +20,16 @@ class CustomizeBehaviorSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isDropdownOpen: false,
+    };
+
+    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  onToggleDropdown() {
+    this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
   async onClickSubmit() {
@@ -101,10 +110,10 @@ class CustomizeBehaviorSetting extends React.Component {
             <div className="my-0 w-100">
               <label>{t('admin:customize_setting.function_options.recent_created__n_draft_num_desc')}</label>
             </div>
-            <ButtonDropdown className="">
-              <DropdownToggle className="" data-toggle="dropdown" aria-haspopup="true" caret>
+            <Dropdown className="w-100" isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+              <DropdownToggle caret>
                 <span className="float-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
-                <span className="bs-caret">
+                <span className="bs-caret float-right">
                   <span className="caret" />
                 </span>
               </DropdownToggle>
@@ -120,7 +129,7 @@ class CustomizeBehaviorSetting extends React.Component {
                   <a role="menuitem">50</a>
                 </DropdownItem>
               </DropdownMenu>
-            </ButtonDropdown>
+            </Dropdown>
             <p className="form-text text-muted">
               {t('admin:customize_setting.function_options.recently_created_n_draft_num_desc')}
             </p>

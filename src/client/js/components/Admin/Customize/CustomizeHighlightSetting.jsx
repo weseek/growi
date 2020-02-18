@@ -19,7 +19,16 @@ class CustomizeHighlightSetting extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isDropdownOpen: false,
+    };
+
+    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  onToggleDropdown() {
+    this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
   async onClickSubmit() {
@@ -67,9 +76,13 @@ class CustomizeHighlightSetting extends React.Component {
       const isBorderEnable = option[1].border;
 
       menuItem.push(
-        <li key={styleId} role="presentation" type="button" onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}>
-          <a role="button">{styleName}</a>
-        </li>,
+        <DropdownItem
+          key={styleId}
+          role="presentation"
+          onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}
+        >
+          <a role="menuitem">{styleName}</a>
+        </DropdownItem>,
       );
     });
 
@@ -79,24 +92,24 @@ class CustomizeHighlightSetting extends React.Component {
 
         <div className="form-group row">
           <div className="offset-3 col-6 text-left">
-            <div className="my-0 w-100">
+            <div className="my-0">
               <label>{t('admin:customize_setting.theme')}</label>
-              <Dropdown>
-                <DropdownToggle data-toggle="dropdown" aria-haspopup="true" caret>
-                  <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
-                  <span className="bs-caret float-right">
-                    <span className="caret" />
-                  </span>
-                </DropdownToggle>
-                <DropdownMenu className="dropdown-menu" role="menu">
-                  <DropdownItem>
-                    <ul className="dropdown-menu" role="menu">
-                      {menuItem}
-                    </ul>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
             </div>
+            <Dropdown className="w-100" isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+              <DropdownToggle caret>
+                <span className="float-left col-6">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
+                <span className="bs-caret caret col-6">
+                  <span className="caret" />
+                </span>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu" role="menu">
+                {menuItem}
+              </DropdownMenu>
+            </Dropdown>
+            <p className="form-text text-warning">
+              {/* eslint-disable-next-line react/no-danger */}
+              <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
+            </p>
           </div>
         </div>
 
