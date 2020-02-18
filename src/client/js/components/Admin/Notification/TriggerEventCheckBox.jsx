@@ -6,7 +6,7 @@ const TriggerEventCheckBox = (props) => {
   const { t } = props;
 
   return (
-    <div className="checkbox checkbox-inverse">
+    <div className="checkbox checkbox-primary">
       <input
         type="checkbox"
         id={`trigger-event-${props.event}`}

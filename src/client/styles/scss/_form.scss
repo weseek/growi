@@ -74,11 +74,89 @@
   }
 }
 
-.checkbox-inverse {
+.checkbox-primary {
   input[type='checkbox']:checked + label {
     &::before {
-      background-color: $inverse;
-      border-color: $inverse;
+      background-color: $primary;
+      border-color: $primary;
+    }
+
+    &::after {
+      color: $white;
+    }
+  }
+}
+
+.checkbox-danger {
+  input[type='checkbox']:checked + label {
+    &::before {
+      background-color: $danger;
+      border-color: $danger;
+    }
+
+    &::after {
+      color: $white;
+    }
+  }
+}
+
+.checkbox-info {
+  input[type='checkbox']:checked + label {
+    &::before {
+      background-color: $info;
+      border-color: $info;
+    }
+
+    &::after {
+      color: $white;
+    }
+  }
+}
+
+.checkbox-warning {
+  input[type='checkbox']:checked + label {
+    &::before {
+      background-color: $warning;
+      border-color: $warning;
+    }
+
+    &::after {
+      color: $white;
+    }
+  }
+}
+
+.checkbox-success {
+  input[type='checkbox']:checked + label {
+    &::before {
+      background-color: $success;
+      border-color: $success;
+    }
+
+    &::after {
+      color: $white;
+    }
+  }
+}
+
+.checkbox-purple {
+  input[type='checkbox']:checked + label {
+    &::before {
+      background-color: $purple;
+      border-color: $purple;
+    }
+
+    &::after {
+      color: $white;
+    }
+  }
+}
+
+.checkbox-red {
+  input[type='checkbox']:checked + label {
+    &::before {
+      background-color: $danger;
+      border-color: $danger;
     }
 
     &::after {
