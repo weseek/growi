@@ -11,18 +11,9 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main admin-export">
-
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'export'} %}
-    </div>
-    <div
-      id="admin-export-page"
-      class="col-md-9"
-    >
-    </div>
-  </div>
+<div class="content-main admin-export row">
+  {% parent %}
+  <div id="admin-export-page" class="col-md-9"></div>
 </div>
 
 {% endblock content_main %}
