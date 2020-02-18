@@ -86,14 +86,15 @@ class SlackAppConfiguration extends React.Component {
 
             <div className="row mb-5">
               <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+                <div className="custom-control custom-switch checkbox-success">
                   <input
-                    id="cbPrioritizeIWH"
                     type="checkbox"
+                    className="custom-control-input"
+                    id="cbPrioritizeIWH"
                     checked={adminNotificationContainer.state.isIncomingWebhookPrioritized}
                     onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
                   />
-                  <label htmlFor="cbPrioritizeIWH">
+                  <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_setting.prioritize_webhook')}
                   </label>
                 </div>
@@ -120,7 +121,7 @@ class SlackAppConfiguration extends React.Component {
                   onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}
                 >
                   {t('notification_setting.use_instead')}
-                </a>{' '}
+                </a>
               </div>
 
               <div className="row mb-5">
