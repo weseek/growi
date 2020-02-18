@@ -111,7 +111,7 @@ class CustomizeBehaviorSetting extends React.Component {
               <label>{t('admin:customize_setting.function_options.recent_created__n_draft_num_desc')}</label>
             </div>
             <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-              <DropdownToggle className="text-right col-9" caret>
+              <DropdownToggle className="text-right col-6" caret>
                 <span className="float-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
               </DropdownToggle>
               {/* TODO adjust dropdown after BS4 */}
