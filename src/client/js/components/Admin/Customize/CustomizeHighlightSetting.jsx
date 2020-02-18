@@ -95,12 +95,9 @@ class CustomizeHighlightSetting extends React.Component {
             <div className="my-0">
               <label>{t('admin:customize_setting.theme')}</label>
             </div>
-            <Dropdown className="w-100" isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-              <DropdownToggle caret>
-                <span className="float-left col-6">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
-                <span className="bs-caret caret col-6">
-                  <span className="caret" />
-                </span>
+            <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+              <DropdownToggle className="text-right col-8" caret>
+                <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu" role="menu">
                 {menuItem}
