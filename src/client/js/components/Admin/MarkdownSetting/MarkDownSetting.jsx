@@ -40,7 +40,7 @@ class MarkdownSetting extends React.Component {
         {/* Line Break Setting */}
         <div className="row mb-5">
           <h2 className="border-bottom col-12">{t('admin:markdown_setting.lineBreak_header') }</h2>
-          <Card className="card-well col-12">
+          <Card className="card well col-12">
             <CardBody className="px-2 py-3">{ t('admin:markdown_setting.line_break_setting_desc') }</CardBody>
           </Card>
           <LineBreakForm />
@@ -49,7 +49,7 @@ class MarkdownSetting extends React.Component {
         {/* Presentation Setting */}
         <div className="row mb-5">
           <h2 className="border-bottom col-12">{ t('admin:markdown_setting.presentation_setting') }</h2>
-          <Card className="card-well col-12">
+          <Card className="card well col-12">
             <CardBody className="px-2 py-3">{ t('admin:markdown_setting.presentation_setting_desc') }</CardBody>
           </Card>
           <PresentationForm />
@@ -58,7 +58,7 @@ class MarkdownSetting extends React.Component {
         {/* XSS Setting */}
         <div className="row mb-5">
           <h2 className="border-bottom col-12">{ t('admin:markdown_setting.XSS_setting') }</h2>
-          <Card className="card-well col-12">
+          <Card className="card well col-12">
             <CardBody className="px-2 py-3">{ t('admin:markdown_setting.XSS_setting_desc') }</CardBody>
           </Card>
           <XssForm />
