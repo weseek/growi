@@ -39,8 +39,8 @@ class CustomizeHeaderSetting extends React.Component {
       <React.Fragment>
         <h2 className="admin-setting-header">{t('admin:customize_setting.custom_header')}</h2>
 
-        <Card className="card-well my-3">
-          <CardBody>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">
             <span
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_header_detail') }}

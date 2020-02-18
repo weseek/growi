@@ -46,8 +46,8 @@ class CustomizeScriptSetting extends React.Component {
     return (
       <React.Fragment>
         <h2 className="admin-setting-header">{t('admin:customize_setting.custom_script')}</h2>
-        <Card className="card-well my-3">
-          <CardBody>
+        <Card className="card well">
+          <CardBody className="px-0 py-2">
             {t('admin:customize_setting.write_java')}<br />
             {t('admin:customize_setting.reflect_change')}
           </CardBody>
