@@ -32,8 +32,7 @@ class PasswordSettings extends React.Component {
     const { t } = this.props;
 
     try {
-      // await personalContainer.updateBasicInfo();
-      console.log(this.state);
+      // TODO GW-1136 create apiV3 for updating password
       toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
     }
     catch (err) {
