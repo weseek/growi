@@ -8,7 +8,7 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
 
-class RevisionRenderer extends React.Component {
+class RevisionRenderer extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -21,12 +21,32 @@ class RevisionRenderer extends React.Component {
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
   }
 
-  componentWillMount() {
-    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
+  initCurrentRenderingContext() {
+    this.currentRenderingContext = {
+      markdown: this.props.markdown,
+      currentPagePath: this.props.pageContainer.state.path,
+    };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.markdown, this.props.highlightKeywords);
+  componentDidMount() {
+    this.initCurrentRenderingContext();
+    this.renderHtml();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { markdown: prevMarkdown, highlightKeywords: prevHighlightKeywords } = prevProps;
+    const { markdown, highlightKeywords } = this.props;
+
+    // render only when props.markdown is updated
+    if (markdown !== prevMarkdown || highlightKeywords !== prevHighlightKeywords) {
+      this.initCurrentRenderingContext();
+      this.renderHtml();
+      return;
+    }
+
+    const { interceptorManager } = this.props.appContainer;
+
+    interceptorManager.process('postRenderHtml', this.currentRenderingContext);
   }
 
   /**
@@ -51,42 +71,30 @@ class RevisionRenderer extends React.Component {
     return returnBody;
   }
 
-  renderHtml(markdown) {
-    const { pageContainer } = this.props;
+  async renderHtml() {
+    const {
+      appContainer, growiRenderer,
+      highlightKeywords,
+    } = this.props;
 
-    const context = {
-      markdown,
-      currentPagePath: pageContainer.state.path,
-    };
+    const { interceptorManager } = appContainer;
+    const context = this.currentRenderingContext;
 
-    const growiRenderer = this.props.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    interceptorManager.process('preRender', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.process(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+    await interceptorManager.process('preRender', context);
+    await interceptorManager.process('prePreProcess', context);
+    context.markdown = growiRenderer.preProcess(context.markdown);
+    await interceptorManager.process('postPreProcess', context);
+    context.parsedHTML = growiRenderer.process(context.markdown);
+    await interceptorManager.process('prePostProcess', context);
+    context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
-        // highlight
-        if (this.props.highlightKeywords != null) {
-          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, this.props.highlightKeywords);
-        }
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderHtml', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML });
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderHtml', context) });
+    if (this.props.highlightKeywords != null) {
+      context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
+    }
+    await interceptorManager.process('postPostProcess', context);
+    await interceptorManager.process('preRenderHtml', context);
 
+    this.setState({ html: context.parsedHTML });
   }
 
   render() {

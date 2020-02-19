@@ -23,9 +23,9 @@ class UserTable extends React.Component {
   }
 
   /**
-   * user.statusをみてステータスのラベルを返す
+   * return status label element by `userStatus`
    * @param {string} userStatus
-   * @return ステータスラベル
+   * @return status label element
    */
   getUserStatusLabel(userStatus) {
     let additionalClassName;
@@ -61,6 +61,19 @@ class UserTable extends React.Component {
     );
   }
 
+  /**
+   * return admin label element by `isAdmin`
+   * @param {string} isAdmin
+   * @return admin label element
+   */
+  getUserAdminLabel(isAdmin) {
+    const { t } = this.props;
+
+    if (isAdmin) {
+      return <span className="label label-inverse label-admin ml-2">{t('admin:user_management.user_table.administrator')}</span>;
+    }
+  }
+
   render() {
     const { t, adminUsersContainer } = this.props;
 
@@ -85,9 +98,8 @@ class UserTable extends React.Component {
                 <tr key={user._id}>
                   <td>
                     <UserPicture user={user} className="picture img-circle" />
-                    {user.admin && <span className="label label-inverse label-admin ml-2">{t('user_management:user_table.administrator')}</span>}
                   </td>
-                  <td>{this.getUserStatusLabel(user.status)}</td>
+                  <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
                   <td>
                     <strong>{user.username}</strong>
                   </td>

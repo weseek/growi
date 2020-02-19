@@ -95,11 +95,14 @@ class StatusTable extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-    const { isConnected, isNormalized } = this.props;
+    const { isConfigured, isConnected, isNormalized } = this.props;
 
 
     let connectionStatusLabel = <span className="label label-default">――</span>;
-    if (isConnected != null) {
+    if (isConfigured != null && !isConfigured) {
+      connectionStatusLabel = <span className="label label-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+    }
+    else if (isConnected != null) {
       connectionStatusLabel = isConnected
         ? <span className="label label-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
         : <span className="label label-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
@@ -146,6 +149,7 @@ const StatusTableWrapper = (props) => {
 StatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
+  isConfigured: PropTypes.bool,
   isConnected: PropTypes.bool,
   isNormalized: PropTypes.bool,
   indicesData: PropTypes.object,

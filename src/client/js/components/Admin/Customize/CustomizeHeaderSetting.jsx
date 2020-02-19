@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
-
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -13,23 +11,12 @@ import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomHeaderEditor from '../CustomHeaderEditor';
 
-const logger = loggerFactory('growi:Customize');
-
 class CustomizeHeaderSetting extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      editorInputValue: '',
-    };
-
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    const { customizeHeader } = this.props.appContainer.getConfig();
-    this.setState({ editorInputValue: customizeHeader || '' });
   }
 
   async onClickSubmit() {
@@ -37,11 +24,10 @@ class CustomizeHeaderSetting extends React.Component {
 
     try {
       await adminCustomizeContainer.updateCustomizeHeader();
-      toastSuccess(t('toaster:update_successed', { target: 'CustomHeader' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_header') }));
     }
     catch (err) {
       toastError(err);
-      logger.error(err);
     }
   }
 
@@ -50,12 +36,12 @@ class CustomizeHeaderSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('customize_setting:custom_header')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_header')}</h2>
 
         <p
           className="well"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('customize_setting:custom_header_detail') }}
+          dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_header_detail') }}
         />
 
         <div className="help-block">
@@ -68,15 +54,14 @@ class CustomizeHeaderSetting extends React.Component {
 
         <div className="col-xs-12">
           <CustomHeaderEditor
-            // The value passed must be immutable
-            value={this.state.editorInputValue}
+            value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
         </div>
         <div className="col-xs-12">
           <p className="help-block text-right">
             <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
-            {t('customize_setting:ctrl_space')}
+            {t('admin:customize_setting.ctrl_space')}
           </p>
         </div>
 

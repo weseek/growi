@@ -25,7 +25,7 @@ class MailSetting extends React.Component {
 
     try {
       await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('toster.update_successed', { target: 'Mail' }));
+      toastSuccess(t('toster.update_successed', { target: t('admin:app_setting.mail_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -38,36 +38,36 @@ class MailSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('app_setting:smtp_used')} {t('app_setting:smtp_but_aws')}<br />{t('app_setting:neihter_of')}</p>
+        <p className="well">{t('admin:app_setting.smtp_used')} {t('admin:app_setting.smtp_but_aws')}<br />{t('admin:app_setting.neihter_of')}</p>
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting:from_e-mail_address')}</label>
+          <label className="col-xs-3 control-label">{t('admin:app_setting.from_e-mail_address')}</label>
           <div className="col-xs-6">
             <input
               className="form-control"
               type="text"
               placeholder={`${t('eg')} mail@growi.org`}
-              defaultValue={adminAppContainer.state.fromAddress}
+              defaultValue={adminAppContainer.state.fromAddress || ''}
               onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
             />
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('app_setting:smtp_settings')}</label>
+          <label className="col-xs-3 control-label">{t('admin:app_setting.smtp_settings')}</label>
           <div className="col-xs-4">
-            <label>{t('app_setting:host')}</label>
+            <label>{t('admin:app_setting.host')}</label>
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.smtpHost}
+              defaultValue={adminAppContainer.state.smtpHost || ''}
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
           </div>
           <div className="col-xs-2">
-            <label>{t('app_setting:port')}</label>
+            <label>{t('admin:app_setting.port')}</label>
             <input
               className="form-control"
-              defaultValue={adminAppContainer.state.smtpPort}
+              defaultValue={adminAppContainer.state.smtpPort || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPort(e.target.value) }}
             />
           </div>
@@ -75,11 +75,11 @@ class MailSetting extends React.Component {
 
         <div className="row mb-5">
           <div className="col-xs-3 col-xs-offset-3">
-            <label>{t('app_setting:user')}</label>
+            <label>{t('admin:app_setting.user')}</label>
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.SmtpUser}
+              defaultValue={adminAppContainer.state.SmtpUser || ''}
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
           </div>
@@ -88,7 +88,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="password"
-              defaultValue={adminAppContainer.state.smtpPassword}
+              defaultValue={adminAppContainer.state.smtpPassword || ''}
               onChange={(e) => { adminAppContainer.changeSmtpPassword(e.target.value) }}
             />
           </div>

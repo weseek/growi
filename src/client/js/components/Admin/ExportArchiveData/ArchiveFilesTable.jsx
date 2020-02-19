@@ -5,24 +5,22 @@ import { format } from 'date-fns';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 
 class ArchiveFilesTable extends React.Component {
 
   render() {
-    // eslint-disable-next-line no-unused-vars
     const { t } = this.props;
 
     return (
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>{t('export_management:file')}</th>
-            <th>{t('export_management:growi_version')}</th>
-            <th>{t('export_management:collections')}</th>
-            <th>{t('export_management:exported_at')}</th>
+            <th>{t('admin:export_management.file')}</th>
+            <th>{t('admin:export_management.growi_version')}</th>
+            <th>{t('admin:export_management.collections')}</th>
+            <th>{t('admin:export_management.exported_at')}</th>
             <th></th>
           </tr>
         </thead>

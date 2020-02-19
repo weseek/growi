@@ -21,6 +21,7 @@ export default class CustomCssEditor extends React.Component {
       <CodeMirror
         value={this.props.value}
         autoFocus
+        detach
         options={{
           mode: 'css',
           lineNumbers: true,
