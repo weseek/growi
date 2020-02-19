@@ -1,9 +1,8 @@
-{% extends '../layout/admin.html' %} {% block html_title %}{{ customizeService.generateCustomTitle(t('Customize')) }} {% endblock %} {% block theme_css_block %}
-{% set themeName = getConfig('crowi', 'customize:theme') %} {% if env === 'development' %}
-<script src="{{ webpack_asset('styles/theme-' + themeName + '.js') }}"></script>
-{% else %}
-<link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + themeName + '.css') }}" />
-{% endif %} {% endblock %} {% block html_additional_headers %} {% parent %}
+{% extends '../layout/admin.html' %}
+{% block html_title %}{{ customizeService.generateCustomTitle(t('Customize')) }}{% endblock %}
+
+{% block html_additional_headers %}
+{% parent %}
 <!-- CodeMirror -->
 {{ cdnStyleTag('jquery-ui') }}
 <style>
@@ -11,31 +10,21 @@
     border: 1px solid #eee;
   }
 </style>
-{% endblock %} {% block content_header %}
+{% endblock %}
+
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 id="admin-title" class="title">{{ t('Customize') }}</h1>
   </header>
 </div>
-{% endblock %} {% block content_main %}
-<div class="content-main admin-customize">
-  {% set smessage = req.flash('successMessage') %} {% if smessage.length %}
-  <div class="alert alert-success">
-    {{ smessage }}
-  </div>
-  {% endif %} {% set emessage = req.flash('errorMessage') %} {% if emessage.length %}
-  <div class="alert alert-danger">
-    {{ emessage }}
-  </div>
-  {% endif %}
+{% endblock %}
 
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'customize'} %}
-    </div>
-    <div class="col-md-9">
-      <div id="admin-customize"></div>
-    </div>
-  </div>
-  {% endblock content_main %} {% block content_footer %} {% endblock content_footer %}
+{% block content_main %}
+<div class="content-main admin-customize row">
+  {% parent %}
+  <div class="col-md-9" id="admin-customize"></div>
 </div>
+{% endblock content_main %}
+
+{% block content_footer %} {% endblock content_footer %}

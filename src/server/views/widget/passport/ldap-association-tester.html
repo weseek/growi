@@ -79,7 +79,7 @@
           // add logs
           if ('true' === '{{showLog}}') {
             if (data.err) {
-              addLogs($id, data.err);
+              addLogs($id, JSON.stringify(data.err, null, 2));
             }
             if (data.ldapConfiguration) {
               const prettified = JSON.stringify(data.ldapConfiguration.server, undefined, 4);

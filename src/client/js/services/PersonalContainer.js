@@ -2,8 +2,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../util/apiNotification';
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
@@ -26,6 +24,7 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en-US',
       password: '',
+      externalAccounts: [],
     };
 
   }
@@ -54,9 +53,26 @@ export default class PersonalContainer extends Container {
       });
     }
     catch (err) {
-      this.setState({ retrieveError: err.message });
+      this.setState({ retrieveError: err });
       logger.error(err);
-      toastError(new Error('Failed to fetch data'));
+      throw new Error('Failed to fetch personal data');
+    }
+  }
+
+  /**
+   * retrieve external accounts that linked me
+   */
+  async retrieveExternalAccounts() {
+    try {
+      const response = await this.appContainer.apiv3.get('/personal-setting/external-accounts');
+      const { externalAccounts } = response.data;
+
+      this.setState({ externalAccounts });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to fetch external accounts');
     }
   }
 
@@ -94,7 +110,27 @@ export default class PersonalContainer extends Container {
    * @return {Array} basic info
    */
   async updateBasicInfo() {
-    // TODO GW-1036 create apiV3
+    try {
+      const response = await this.appContainer.apiv3.put('/personal-setting/', {
+        name: this.state.name,
+        email: this.state.email,
+        isEmailPublished: this.state.isEmailPublished,
+        lang: this.state.lang,
+      });
+      const { updatedUser } = response.data;
+
+      this.setState({
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isEmailPublished: updatedUser.isEmailPublished,
+        lang: updatedUser.lang,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to update personal data');
+    }
   }
 
 }

@@ -305,6 +305,15 @@
       "Post": "投稿"
     }
   },
+  "toaster": {
+    "update_successed": "{{target}}を更新しました",
+    "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました",
+    "remove_external_user_success": "{{accountId}}を削除しました "
+  },
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
@@ -495,10 +504,30 @@
     }
   },
   "notification_setting": {
+    "slack_incoming_configuration": "Slack Incoming Webhooks 設定",
+    "prioritize_webhook": "Slack アプリより Incoming Webhook を優先する",
+    "prioritize_webhook_desc": "このオプションをオンにすると、 Slack App が有効になっていても GROWI は Incoming Webhook を使用します。",
+    "slack_app_configuration": "Slack App 設定",
+    "slack_app_configuration_desc": "Crowi 互換の機能です。<br /> <strong>設定が複雑すぎる</strong>のでオススメしません。",
+    "use_instead": "代わりに Slack Incoming Webhooks 設定を使用してください。",
+    "how_to": {
+      "header": "Incoming Webhooks の設定方法",
+      "workspace": "ワークスペースで Webhook を追加します。",
+      "workspace_desc1": "<a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks Configuration page</a> にアクセスします。",
+      "workspace_desc2": "投稿するチャンネルを選びます。",
+      "workspace_desc3": "追加します。",
+      "at_growi": "GROWI 管理画面で Webhook URL を設定します。",
+      "at_growi_desc": "このページで &rdquo;Webhook URL&rdquo; を入力して送信します。"
+    },
+    "user_trigger_notification_header": "デフォルトパターンの通知設定",
+    "pattern": "パターン",
+    "channel": "チャンネル名",
+    "pattern_desc": "Wiki のパス名。 パスには <code>*</code> を使用できます。",
+    "channel_desc": "<code>#</code> を除いた Slack チャンネル名",
     "notification_list": "通知設定の一覧",
     "add_notification": "通知設定の追加",
     "trigger_path": "トリガーパス",
-    "trigger_path_help": "(%sが使用できます)",
+    "trigger_path_help": "(<code>*</code>が使用できます)",
     "trigger_events": "トリガーイベント",
     "notify_to": "通知先",
     "back_to_list": "通知設定一覧に戻る",
@@ -511,11 +540,18 @@
     "event_comment": "コメントが投稿されたとき",
     "email": {
       "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
-    }
+    },
+    "updated_slackApp": "SlackApp設定を更新しました",
+    "add_notification_pattern": "通知パターンを追加しました。",
+    "delete_notification_pattern": "通知パターンを削除しました。",
+    "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
+    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
+    "toggle_notification": "{{path}}の通知設定を変更しました"
   },
   "full_text_search_management": {
     "elasticsearch_management": "Elasticsearch 管理",
     "connection_status": "接続の状態",
+    "connection_status_label_unconfigured": "設定されていません",
     "connection_status_label_connected": "接続されています",
     "connection_status_label_disconnected": "切断されています",
     "indices_status": "インデックスの状態",
