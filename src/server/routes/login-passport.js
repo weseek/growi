@@ -7,6 +7,7 @@ module.exports = function(crowi, app) {
   const { URL } = require('url');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
+  const ApiResponse = require('../util/apiResponse');
 
   /**
    * success handler
@@ -145,10 +146,10 @@ module.exports = function(crowi, app) {
   const testLdapCredentials = (req, res) => {
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
-      return res.json({
+      return res.json(ApiResponse.success({
         status: 'warning',
         message: 'LdapStrategy has not been set up',
-      });
+      }));
     }
 
     passport.authenticate('ldapauth', (err, user, info) => {
@@ -158,36 +159,36 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('LDAP Server Error: ', err);
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: 'LDAP Server Error occured.',
           err,
-        });
+        }));
       }
       if (info && info.message) {
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: info.message,
           ldapConfiguration: req.ldapConfiguration,
           ldapAccountInfo: req.ldapAccountInfo,
-        });
+        }));
       }
       if (user) {
         // check groups
         if (!isValidLdapUserByGroupFilter(user)) {
-          return res.json({
+          return res.json(ApiResponse.success({
             status: 'warning',
             message: 'This user does not belong to any groups designated by the group search filter.',
             ldapConfiguration: req.ldapConfiguration,
             ldapAccountInfo: req.ldapAccountInfo,
-          });
+          }));
         }
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'success',
           message: 'Successfully authenticated.',
           ldapConfiguration: req.ldapConfiguration,
           ldapAccountInfo: req.ldapAccountInfo,
-        });
+        }));
       }
     })(req, res, () => {});
   };
