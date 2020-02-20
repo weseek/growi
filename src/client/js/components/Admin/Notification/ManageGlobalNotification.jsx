@@ -199,7 +199,7 @@ class ManageGlobalNotification extends React.Component {
                 checked={this.state.triggerEvents.has('pageCreate')}
                 onChange={() => this.onChangeTriggerEvents('pageCreate')}
               >
-                <span className="label label-success">
+                <span className="badge badge-pill badge-success">
                   <i className="icon-doc"></i> CREATE
                 </span>
               </TriggerEventCheckBox>
@@ -208,7 +208,7 @@ class ManageGlobalNotification extends React.Component {
                 checked={this.state.triggerEvents.has('pageEdit')}
                 onChange={() => this.onChangeTriggerEvents('pageEdit')}
               >
-                <span className="label label-warning">
+                <span className="badge badge-pill badge-warning">
                   <i className="icon-pencil"></i>EDIT
                 </span>
               </TriggerEventCheckBox>
@@ -217,7 +217,7 @@ class ManageGlobalNotification extends React.Component {
                 checked={this.state.triggerEvents.has('pageMove')}
                 onChange={() => this.onChangeTriggerEvents('pageMove')}
               >
-                <span className="label label-warning">
+                <span className="badge badge-pill badge-warning">
                   <i className="icon-action-redo"></i>MOVE
                 </span>
               </TriggerEventCheckBox>
@@ -226,7 +226,7 @@ class ManageGlobalNotification extends React.Component {
                 checked={this.state.triggerEvents.has('pageDelete')}
                 onChange={() => this.onChangeTriggerEvents('pageDelete')}
               >
-                <span className="label label-danger">
+                <span className="badge badge-pill badge-danger">
                   <i className="icon-fire"></i>DELETE
                 </span>
               </TriggerEventCheckBox>
@@ -235,7 +235,7 @@ class ManageGlobalNotification extends React.Component {
                 checked={this.state.triggerEvents.has('pageLike')}
                 onChange={() => this.onChangeTriggerEvents('pageLike')}
               >
-                <span className="label label-info">
+                <span className="badge badge-pill badge-info">
                   <i className="icon-like"></i>LIKE
                 </span>
               </TriggerEventCheckBox>
@@ -244,7 +244,7 @@ class ManageGlobalNotification extends React.Component {
                 checked={this.state.triggerEvents.has('comment')}
                 onChange={() => this.onChangeTriggerEvents('comment')}
               >
-                <span className="label label-default">
+                <span className="badge badge-pill badge-light">
                   <i className="icon-bubble"></i>POST
                 </span>
               </TriggerEventCheckBox>
