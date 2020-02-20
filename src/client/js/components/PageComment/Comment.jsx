@@ -16,6 +16,7 @@ import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
+import CommentControl from './CommentControl';
 
 /**
  *
@@ -233,18 +234,6 @@ class Comment extends React.Component {
     );
   }
 
-  renderCommentControl(comment) {
-    return (
-      <div className="page-comment-control">
-        <button type="button" className="btn btn-link p-2" onClick={() => { this.editBtnClickedHandler(comment._id) }}>
-          <i className="ti-pencil"></i>
-        </button>
-        <button type="button" className="btn btn-link p-2 mr-2" onClick={this.deleteBtnClickedHandler}>
-          <i className="ti-close"></i>
-        </button>
-      </div>
-    );
-  }
 
   render() {
     const comment = this.props.comment;
@@ -308,7 +297,8 @@ class Comment extends React.Component {
                 ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              { this.checkPermissionToControlComment() && this.renderCommentControl(comment) }
+              { this.checkPermissionToControlComment()
+                  && <CommentControl comment={comment} onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={this.editBtnClickedHandler} />}
             </div>
           </div>
         )
