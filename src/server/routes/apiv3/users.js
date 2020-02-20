@@ -424,13 +424,14 @@ module.exports = (crowi) => {
     }
   });
 
-
-    validator.defineStatus = [
-    body('userType').not().isEmpty().isString().isIn(['admin', 'active', 'suspended']),
+  validator.defineStatus = [
+    body('userType').not().isEmpty().isString()
+      .isIn(['admin', 'active', 'suspended']),
   ];
-   router.get('/selected-status-users/', validator.defineStatus, ApiV3FormValidator, async (req, res) => {
+
+  router.get('/selected-status-users/', validator.defineStatus, ApiV3FormValidator, async(req, res) => {
     return res.apiv3({});
-  }); 
+  });
 
   /**
    * @swagger
