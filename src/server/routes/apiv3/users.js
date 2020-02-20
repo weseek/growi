@@ -426,7 +426,7 @@ module.exports = (crowi) => {
 
   validator.defineStatus = [
     body('userType').not().isEmpty().isString()
-      .isIn(['admin', 'active', 'suspended']),
+      .isIn(['registed', 'active', 'suspended', 'invited']),
   ];
 
   router.get('/selected-status-users/', validator.defineStatus, ApiV3FormValidator, async(req, res) => {
