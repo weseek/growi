@@ -19,13 +19,27 @@ class PasswordSettings extends React.Component {
     this.appContainer = appContainer;
 
     this.state = {
+      retrieveError: null,
       oldPassword: '',
       newPassword: '',
       newPasswordConfirm: '',
     };
 
+    this.retrievePassword();
+
+    this.retrievePassword = this.retrievePassword.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
+  }
+
+  async retrievePassword() {
+    try {
+    // TODO GW-1136 create apiV3 for updating password
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      toastError(err);
+    }
   }
 
   async onClickSubmit() {
@@ -54,13 +68,18 @@ class PasswordSettings extends React.Component {
 
 
   render() {
-    const { t, personalContainer } = this.props;
+    const { t } = this.props;
 
     return (
       <React.Fragment>
+        {(this.state.password == null) && <div className="alert alert-warning m-t-10">{ t('Password is not set') }</div>}
         <div className="mb-5 container-fluid">
-          <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
+          {(this.state.password == null)
+            ? <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>
+          : <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>}
         </div>
+        {(this.state.password != null)
+        && (
         <div className="row mb-3">
           <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('personal_settings.current_password') }</label>
           <div className="col-xs-6">
@@ -73,6 +92,7 @@ class PasswordSettings extends React.Component {
             />
           </div>
         </div>
+        )}
         <div className="row mb-3">
           <label htmlFor="newPassword" className="col-xs-3 text-right">{t('personal_settings.new_password') }</label>
           <div className="col-xs-6">
@@ -102,7 +122,7 @@ class PasswordSettings extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
+            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={this.state.retrieveError != null}>
               {t('Update')}
             </button>
           </div>
@@ -121,7 +141,6 @@ const PasswordSettingsWrapper = (props) => {
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
 export default withTranslation()(PasswordSettingsWrapper);
