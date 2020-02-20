@@ -26,7 +26,7 @@ import CommentControl from './CommentControl';
  * @class Comment
  * @extends {React.Component}
  */
-class Comment extends React.Component {
+class Comment extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -62,13 +62,20 @@ class Comment extends React.Component {
     this.renderHtml();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.comment.comment);
-  }
+  componentDidUpdate(prevProps) {
+    const { comment: prevComment } = prevProps;
+    const { comment } = this.props;
 
-  // not used
-  setMarkdown(markdown) {
-    this.renderHtml(markdown);
+    // render only when props.markdown is updated
+    if (comment !== prevComment) {
+      this.initCurrentRenderingContext();
+      this.renderHtml();
+      return;
+    }
+
+    const { interceptorManager } = this.props.appContainer;
+
+    interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
 
   checkPermissionToControlComment() {
