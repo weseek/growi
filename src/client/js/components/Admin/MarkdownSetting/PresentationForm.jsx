@@ -57,10 +57,10 @@ class PresentationForm extends React.Component {
                 onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
               />
               <label className="custom-control-label" htmlFor="pageBreakOption1">
-                <p className="font-weight-bold">{t('admin:markdown_setting.presentation_options.preset_one_separator')}</p>
+                <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
                 <div className="mt-3">
-                  { t('markdown_setting.Preset one separator desc') }
-                  <pre><code>{ t('markdown_setting.Preset one separator value') }</code></pre>
+                  { t('admin:markdown_setting.presentation_options.preset_one_separator_desc') }
+                  <pre><code>{ t('admin:markdown_setting.presentation_options.preset_one_separator_value') }</code></pre>
                 </div>
               </label>
             </div>
