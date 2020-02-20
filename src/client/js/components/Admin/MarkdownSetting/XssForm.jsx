@@ -72,7 +72,7 @@ class XssForm extends React.Component {
               checked={xssOption === 2}
               onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
             />
-            <label htmlFor="xssOption2">
+            <label className="custom-control-label" htmlFor="xssOption2">
               <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
               <div className="m-t-15">
                 <div className="d-flex justify-content-between">
