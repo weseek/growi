@@ -160,8 +160,8 @@
   },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
-  "Set new Password": "パスワードを新規に設定",
   "personal_settings":{
+    "set_new_password": "パスワードを新規に設定",
     "update_password": "パスワードを更新",
     "current_password": "現在のパスワード",
     "new_password": "新しいパスワード",

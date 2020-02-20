@@ -161,9 +161,9 @@
   },
   "Password": "Password",
   "Password Settings": "Password Settings",
-  "Set new Password": "Set new Password",
     "personal_settings": {
-      "update_password": "Update Password",
+    "set_new_password": "Set new Password",
+    "update_password": "Update Password",
       "current_password": "Current password",
       "new_password": "New password",
       "new_password_confirm": "Re-enter new password",
