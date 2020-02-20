@@ -34,7 +34,7 @@ class Comment extends React.Component {
     this.state = {
       html: '',
       isOlderRepliesShown: false,
-      showReEditorIds: new Set(),
+      isReEdit: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
@@ -43,6 +43,7 @@ class Comment extends React.Component {
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
+    this.editBtnClickedHandler = this.editBtnClickedHandler.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
@@ -108,18 +109,12 @@ class Comment extends React.Component {
       this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
   }
 
-  editBtnClickedHandler(commentId) {
-    const ids = this.state.showReEditorIds.add(commentId);
-    this.setState({ showReEditorIds: ids });
+  editBtnClickedHandler() {
+    this.setState({ isReEdit: !this.state.isReEdit });
   }
 
-  commentButtonClickedHandler(commentId) {
-    this.setState((prevState) => {
-      prevState.showReEditorIds.delete(commentId);
-      return {
-        showReEditorIds: prevState.showReEditorIds,
-      };
-    });
+  commentButtonClickedHandler() {
+    this.editBtnClickedHandler();
   }
 
   deleteBtnClickedHandler() {
@@ -244,8 +239,6 @@ class Comment extends React.Component {
     const updatedAt = new Date(comment.updatedAt);
     const isEdited = createdAt < updatedAt;
 
-    const showReEditor = this.state.showReEditorIds.has(commentId);
-
     const rootClassName = this.getRootClassName(comment);
     const commentDate = formatDistanceStrict(createdAt, new Date());
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
@@ -269,7 +262,7 @@ class Comment extends React.Component {
     return (
       <React.Fragment>
 
-        {showReEditor ? (
+        {this.state.isReEdit ? (
           <CommentEditor
             growiRenderer={this.growiRenderer}
             currentCommentId={commentId}
@@ -298,7 +291,7 @@ class Comment extends React.Component {
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
               { this.checkPermissionToControlComment()
-                  && <CommentControl comment={comment} onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={this.editBtnClickedHandler} />}
+                  && <CommentControl onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={this.editBtnClickedHandler} />}
             </div>
           </div>
         )
