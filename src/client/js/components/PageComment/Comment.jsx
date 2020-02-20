@@ -48,8 +48,16 @@ class Comment extends React.Component {
     this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
-  componentWillMount() {
-    this.renderHtml(this.props.comment.comment);
+
+  initCurrentRenderingContext() {
+    this.currentRenderingContext = {
+      markdown: this.props.comment.comment,
+    };
+  }
+
+  componentDidMount() {
+    this.initCurrentRenderingContext();
+    this.renderHtml();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -142,35 +150,23 @@ class Comment extends React.Component {
     });
   }
 
-  renderHtml(markdown) {
-    const context = {
-      markdown,
-    };
+  async renderHtml() {
 
-    const growiRenderer = this.props.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    interceptorManager.process('preRenderComment', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderCommentHtml', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML });
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderCommentHtml', context) });
+    const { growiRenderer, appContainer } = this.props;
+    const { interceptorManager } = appContainer;
+    const context = this.currentRenderingContext;
 
+    await interceptorManager.process('preRenderComment', context);
+    await interceptorManager.process('prePreProcess', context);
+    context.markdown = await growiRenderer.preProcess(context.markdown);
+    await interceptorManager.process('postPreProcess', context);
+    context.parsedHTML = await growiRenderer.process(context.markdown);
+    await interceptorManager.process('prePostProcess', context);
+    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
+    await interceptorManager.process('postPostProcess', context);
+    await interceptorManager.process('preRenderCommentHtml', context);
+    this.setState({ html: context.parsedHTML });
+    await interceptorManager.process('postRenderCommentHtml', context);
   }
 
   renderReply(reply) {
