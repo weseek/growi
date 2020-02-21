@@ -6,7 +6,7 @@ import loggerFactory from '@alias/logger';
 import Modal from 'react-bootstrap/es/Modal';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
@@ -22,6 +22,7 @@ class LdapAuthTestModal extends React.Component {
       username: '',
       password: '',
       logs: '',
+      errorMessage: null,
     };
 
     this.onChangeUsername = this.onChangeUsername.bind(this);
@@ -68,8 +69,20 @@ class LdapAuthTestModal extends React.Component {
 
       // add logs
       if (response.err) {
+        toastError(response.err);
         this.addLogs(response.err);
       }
+
+      if (response.status === 'warning') {
+        this.addLogs(response.message);
+        this.setState({ errorMessage: response.message });
+      }
+
+      if (response.status === 'success') {
+        toastSuccess(response.message);
+        this.setState({ errorMessage: null });
+      }
+
       if (response.ldapConfiguration) {
         const prettified = JSON.stringify(response.ldapConfiguration.server, undefined, 4);
         this.addLogs(`LDAP Configuration : ${prettified}`);
@@ -98,6 +111,7 @@ class LdapAuthTestModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {this.state.errorMessage != null && <div className="alert alert-warning">{this.state.errorMessage}</div>}
           <div className="row p-3">
             <label htmlFor="username" className="col-xs-3 text-right">{t('username')}</label>
             <div className="col-xs-6">
