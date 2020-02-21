@@ -11,7 +11,7 @@ import Comment from './Comment';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 
-class ReplayComments extends React.Component {
+class ReplayComments extends React.PureComponent {
 
   constructor() {
     super();

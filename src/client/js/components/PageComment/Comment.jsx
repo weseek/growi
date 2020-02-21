@@ -248,10 +248,6 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  replyList: PropTypes.array,
-};
-Comment.defaultProps = {
-  replyList: [],
 };
 
 export default CommentWrapper;
