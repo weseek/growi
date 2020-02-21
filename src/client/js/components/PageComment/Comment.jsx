@@ -5,7 +5,6 @@ import { format, formatDistanceStrict } from 'date-fns';
 
 import Tooltip from 'react-bootstrap/es/Tooltip';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
-import Collapse from 'react-bootstrap/es/Collapse';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
