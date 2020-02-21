@@ -44,12 +44,25 @@ class ReplayComments extends React.Component {
     const layoutType = this.props.appContainer.getConfig().layoutType;
     const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
+    // TODO GW-1143 Switchable in admin page
+    const isAllReplyShown = this.props.appContainer.getConfig().isAllReplyShown || false;
+
     let replyList = this.props.replyList;
     if (!isBaloonStyle) {
       replyList = replyList.slice().reverse();
     }
 
-    const areThereHiddenReplies = replyList.length > 2;
+    if (isAllReplyShown) {
+      return (
+        <React.Fragment>
+          {replyList.map((reply) => {
+            return this.renderReply(reply);
+          })}
+        </React.Fragment>
+      );
+    }
+
+    const areThereHiddenReplies = (replyList.length > 2);
 
     const { isOlderRepliesShown } = this.state;
     const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
