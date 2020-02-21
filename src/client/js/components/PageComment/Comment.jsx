@@ -230,7 +230,7 @@ class Comment extends React.PureComponent {
         )
       }
 
-        <ReplyComments replyList={this.props.replyList} />
+        <ReplyComments {...this.props} />
 
       </React.Fragment>
     );

@@ -19,10 +19,10 @@ const ReplyComments = (props) => {
   const renderReply = (reply) => {
     return (
       <div key={reply._id} className="page-comment-reply">
-        {reply.comment}
-        {/* <CommentWrapper
+        {/* <Comment
           comment={reply}
-          deleteBtnClicked={props.deleteBtnClicked}
+          editBtnClicked={props.confirmToEditComment}
+          deleteBtnClicked={props.confirmToDeleteComment}
           growiRenderer={props.growiRenderer}
         /> */}
       </div>
