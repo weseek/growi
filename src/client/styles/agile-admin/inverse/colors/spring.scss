@@ -20,10 +20,9 @@ $background-color: rgba(171, 224, 174, 0.4);
 $third-main-color: antiquewhite;
 $textcolor: dimgray;
 $primary: $themecolor;
-
 $logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
-$wikilinktext: lighten($themecolor, 20%);
-$wikilinktext-hover: lighten($wikilinktext, 20%);
+$wikilinktext: $subthemecolor;
+$wikilinktext-hover: gba(171, 224, 174, 0.9);
 
 @import 'apply-colors';
 @import 'apply-colors-light';
