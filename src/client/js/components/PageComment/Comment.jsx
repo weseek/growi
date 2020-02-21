@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { format, formatDistanceStrict } from 'date-fns';
 
-import Button from 'react-bootstrap/es/Button';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 import Collapse from 'react-bootstrap/es/Collapse';
@@ -17,6 +16,7 @@ import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
 import CommentControl from './CommentControl';
+import ReplyComments from './ReplyComments';
 
 /**
  *
@@ -33,7 +33,6 @@ class Comment extends React.PureComponent {
 
     this.state = {
       html: '',
-      isOlderRepliesShown: false,
       isReEdit: false,
     };
 
@@ -145,14 +144,6 @@ class Comment extends React.PureComponent {
     );
   }
 
-  toggleOlderReplies() {
-    this.setState((prevState) => {
-      return {
-        showOlderReplies: !prevState.showOlderReplies,
-      };
-    });
-  }
-
   async renderHtml() {
 
     const { growiRenderer, appContainer } = this.props;
@@ -171,71 +162,6 @@ class Comment extends React.PureComponent {
     this.setState({ html: context.parsedHTML });
     await interceptorManager.process('postRenderCommentHtml', context);
   }
-
-  renderReply(reply) {
-    return (
-      <div key={reply._id} className="page-comment-reply">
-        <CommentWrapper
-          comment={reply}
-          deleteBtnClicked={this.props.deleteBtnClicked}
-          growiRenderer={this.props.growiRenderer}
-        />
-      </div>
-    );
-  }
-
-  renderReplies() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
-    let replyList = this.props.replyList;
-    if (!isBaloonStyle) {
-      replyList = replyList.slice().reverse();
-    }
-
-    const areThereHiddenReplies = replyList.length > 2;
-
-    const { isOlderRepliesShown } = this.state;
-    const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
-    const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
-    const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
-    const toggleButton = (
-      <Button
-        bsStyle="link"
-        className="page-comments-list-toggle-older"
-        onClick={() => { this.setState({ isOlderRepliesShown: !isOlderRepliesShown }) }}
-      >
-        {toggleButtonIcon} {toggleButtonLabel}
-      </Button>
-    );
-
-    const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
-    const hiddenReplies = replyList.slice(0, replyList.length - 2);
-
-    const hiddenElements = hiddenReplies.map((reply) => {
-      return this.renderReply(reply);
-    });
-
-    const shownElements = shownReplies.map((reply) => {
-      return this.renderReply(reply);
-    });
-
-    return (
-      <React.Fragment>
-        { areThereHiddenReplies && (
-          <div className="page-comments-hidden-replies">
-            <Collapse in={this.state.isOlderRepliesShown}>
-              <div>{hiddenElements}</div>
-            </Collapse>
-            <div className="text-center">{toggleButton}</div>
-          </div>
-        ) }
-
-        {shownElements}
-      </React.Fragment>
-    );
-  }
-
 
   render() {
     const comment = this.props.comment;
@@ -303,7 +229,8 @@ class Comment extends React.PureComponent {
           </div>
         )
       }
-        {this.renderReplies()}
+
+        <ReplyComments replyList={this.props.replyList} />
 
       </React.Fragment>
     );
