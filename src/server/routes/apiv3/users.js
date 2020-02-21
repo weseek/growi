@@ -424,12 +424,22 @@ module.exports = (crowi) => {
     }
   });
 
-  validator.defineStatus = [
-    body('userType').not().isEmpty().isString()
-      .isIn(['registed', 'active', 'suspended', 'invited']),
+  const correctStatusList = ['registered', 'active', 'suspended', 'invited'];
+
+  validator.statusList = [
+    body('statusList').custom((value) => {
+      const error = [];
+      value.map((status) => {
+        if (!correctStatusList.includes(status)) {
+          error.push(status);
+        }
+        return (error.length === 0);
+      });
+      return (error.length === 0);
+    }),
   ];
 
-  router.get('/selected-status-users/', validator.defineStatus, ApiV3FormValidator, async(req, res) => {
+  router.get('/selected-status-users/', validator.statusList, ApiV3FormValidator, async(req, res) => {
     return res.apiv3({});
   });
 
