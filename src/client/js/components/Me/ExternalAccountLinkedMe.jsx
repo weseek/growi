@@ -27,13 +27,15 @@ class ExternalAccountLinkedMe extends React.Component {
 
     return (
       <Fragment>
-        <h2 className="border-bottom">
-          <button type="button" className="btn btn-default btn-sm pull-right">
-            <i className="icon-plus" aria-hidden="true" />
+        <div className="container-fluid">
+          <h2 className="border-bottom">
+            <button type="button" className="btn btn-default btn-sm pull-right">
+              <i className="icon-plus" aria-hidden="true" />
             Add
-          </button>
-          { t('External Accounts') }
-        </h2>
+            </button>
+            { t('External Accounts') }
+          </h2>
+        </div>
 
         <div className="row">
           <div className="col-md-12">
