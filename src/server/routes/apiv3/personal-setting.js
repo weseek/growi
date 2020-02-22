@@ -35,6 +35,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
@@ -72,7 +73,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.get('/', loginRequiredStrictly, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const currentUser = await User.findUserByUsername(req.user.username);
     return res.apiv3({ currentUser });
   });
@@ -103,7 +104,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', loginRequiredStrictly, csrf, validator.personal, ApiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.personal, ApiV3FormValidator, async(req, res) => {
 
     try {
       const user = await User.findOne({ _id: req.user.id });
@@ -143,7 +144,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: array of external accounts
    */
-  router.get('/external-accounts', loginRequiredStrictly, async(req, res) => {
+  router.get('/external-accounts', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const userData = req.user;
 
     try {
@@ -156,6 +157,21 @@ module.exports = (crowi) => {
     }
 
   });
+
+  // TODO swagger
+  router.get('/password', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+
+    try {
+      const user = await User.findOne({ _id: req.user.id });
+      const { password } = user;
+      return res.apiv3({ password });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('get-accounts-password');
+    }
+  });
+
 
   return router;
 };

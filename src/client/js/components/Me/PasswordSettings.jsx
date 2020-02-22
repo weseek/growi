@@ -20,21 +20,28 @@ class PasswordSettings extends React.Component {
 
     this.state = {
       retrieveError: null,
+      password: '',
       oldPassword: '',
       newPassword: '',
       newPasswordConfirm: '',
     };
-
-    this.retrievePassword();
 
     this.retrievePassword = this.retrievePassword.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
   }
 
+  componentDidMount() {
+    this.retrievePassword();
+  }
+
   async retrievePassword() {
+    const { appContainer } = this.props;
+
     try {
-    // TODO GW-1136 create apiV3 for updating password
+      const res = await appContainer.apiv3Get('/personal-setting/password');
+      const { password } = res.data;
+      this.setState({ password });
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -80,18 +87,18 @@ class PasswordSettings extends React.Component {
         </div>
         {(this.state.password != null)
         && (
-        <div className="row mb-3">
-          <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('personal_settings.current_password') }</label>
-          <div className="col-xs-6">
-            <input
-              className="form-control"
-              type="password"
-              name="oldPassword"
-              value={this.state.oldPassword}
-              onChange={(e) => { this.onChangeOldPassword(e.target.value) }}
-            />
+          <div className="row mb-3">
+            <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('personal_settings.current_password') }</label>
+            <div className="col-xs-6">
+              <input
+                className="form-control"
+                type="password"
+                name="oldPassword"
+                value={this.state.oldPassword}
+                onChange={(e) => { this.onChangeOldPassword(e.target.value) }}
+              />
+            </div>
           </div>
-        </div>
         )}
         <div className="row mb-3">
           <label htmlFor="newPassword" className="col-xs-3 text-right">{t('personal_settings.new_password') }</label>
