@@ -128,7 +128,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
-  app.get('/me/password'              , loginRequiredStrictly , me.password);
   app.get('/me/apiToken'              , loginRequiredStrictly , me.apiToken);
   app.post('/me'                      , loginRequiredStrictly , csrf , form.me.user , me.index);
   // external-accounts
@@ -136,7 +135,6 @@ module.exports = function(crowi, app) {
   app.post('/me/external-accounts/disassociate'           , loginRequiredStrictly , me.externalAccounts.disassociate);
   app.post('/me/external-accounts/associateLdap'          , loginRequiredStrictly , form.login , me.externalAccounts.associateLdap);
 
-  app.post('/me/password'             , form.me.password          , loginRequiredStrictly , me.password);
   app.post('/me/imagetype'            , form.me.imagetype         , loginRequiredStrictly , me.imagetype);
   app.post('/me/apiToken'             , form.me.apiToken          , loginRequiredStrictly , me.apiToken);
 

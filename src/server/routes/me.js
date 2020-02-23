@@ -254,10 +254,6 @@ module.exports = function(crowi, app) {
     })(req, res, () => {});
   };
 
-  actions.password = function(req, res) {
-    return res.render('me/password');
-  };
-
   actions.apiToken = function(req, res) {
     const userData = req.user;
 
