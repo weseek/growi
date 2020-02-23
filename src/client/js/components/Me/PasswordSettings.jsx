@@ -50,10 +50,13 @@ class PasswordSettings extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t } = this.props;
+    const { t, appContainer } = this.props;
+    const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
-      // TODO GW-1136 create apiV3 for updating password
+      await appContainer.apiv3Put('/personal-setting/password', {
+        oldPassword, newPassword, newPasswordConfirm,
+      });
       toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
     }
     catch (err) {
@@ -76,7 +79,7 @@ class PasswordSettings extends React.Component {
   render() {
     const { t } = this.props;
     const { newPassword, newPasswordConfirm } = this.state;
-    const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm && newPasswordConfirm !== '');
+    const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
 
     return (
       <React.Fragment>
@@ -130,7 +133,12 @@ class PasswordSettings extends React.Component {
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
-            <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={this.state.retrieveError != null}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={this.state.retrieveError != null || this.isIncorrectConfirmPassword}
+            >
               {t('Update')}
             </button>
           </div>

@@ -172,6 +172,12 @@ module.exports = (crowi) => {
     }
   });
 
+  // TODO swagger
+  router.put('/password', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { oldPassword, newPassword, newPasswordConfirm } = req.body;
+
+    return res.apiv3();
+  });
 
   return router;
 };
