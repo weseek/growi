@@ -33,6 +33,16 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *          isEmailPublished:
  *            type: boolean
+ *      Passwords:
+ *        description: passwords for update
+ *        type: object
+ *        properties:
+ *          oldPassword:
+ *            type: string
+ *          newPassword:
+ *            type: string
+ *          newPasswordConfirm:
+ *            type: string
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
@@ -168,7 +178,26 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /personal-setting/password:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getUserPassword
+   *        summary: /personal-setting/password
+   *        description: Get user password
+   *        responses:
+   *          200:
+   *            description: user password
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    password:
+   *                      type: string
+   *                      description: user password
+   */
   router.get('/password', accessTokenParser, loginRequiredStrictly, async(req, res) => {
 
     try {
@@ -182,7 +211,32 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO swagger
+  /**
+   * @swagger
+   *
+   *    /personal-setting/password:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: putUserPassword
+   *        summary: /personal-setting/password
+   *        description: Update user password
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/Passwords'
+   *        responses:
+   *          200:
+   *            description: user password
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: user data updated
+   */
   router.put('/password', accessTokenParser, loginRequiredStrictly, csrf, validator.password, ApiV3FormValidator, async(req, res) => {
     const { body, user } = req;
     const { oldPassword, newPassword } = body;
