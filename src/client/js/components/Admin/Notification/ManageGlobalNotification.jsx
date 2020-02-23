@@ -100,10 +100,15 @@ class ManageGlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <a href="/admin/notification#global-notification" className="btn btn-default">
-          <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-          {t('notification_setting.back_to_list')}
-        </a>
+        <div className="my-3">
+          <a href="/admin/notification#global-notification">
+            <button type="button" className="btn page-link text-dark d-inline-block">
+              <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
+              {t('notification_setting.back_to_list')}
+            </button>
+          </a>
+        </div>
+
 
         <div className="row">
           <div className="m-t-20 form-box col-md-12">
