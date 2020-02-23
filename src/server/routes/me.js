@@ -255,56 +255,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.password = function(req, res) {
-    const passwordForm = req.body.mePassword;
-    const userData = req.user;
-
-    /*
-      * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
-      *
-    // パスワードを設定する前に、emailが設定されている必要がある (schemaを途中で変更したため、最初の方の人は登録されていないかもしれないため)
-    // そのうちこのコードはいらなくなるはず
-    if (!userData.isEmailSet()) {
-      return res.redirect('/me');
-    }
-    */
-
-    if (req.method === 'POST' && req.form.isValid) {
-      const newPassword = passwordForm.newPassword;
-      const newPasswordConfirm = passwordForm.newPasswordConfirm;
-      const oldPassword = passwordForm.oldPassword;
-
-      if (userData.isPasswordSet() && !userData.isPasswordValid(oldPassword)) {
-        req.form.errors.push('Wrong current password');
-        return res.render('me/password', {
-        });
-      }
-
-      // check password confirm
-      if (newPassword !== newPasswordConfirm) {
-        req.form.errors.push('Failed to verify passwords');
-      }
-      else {
-        userData.updatePassword(newPassword, (err, userData) => {
-          if (err) {
-            /* eslint-disable no-restricted-syntax, no-prototype-builtins */
-            for (const e in err.errors) {
-              if (err.errors.hasOwnProperty(e)) {
-                req.form.errors.push(err.errors[e].message);
-              }
-            }
-            return res.render('me/password', {});
-          }
-          /* eslint-enable no-restricted-syntax, no-prototype-builtins */
-
-          req.flash('successMessage', 'Password updated');
-          return res.redirect('/me/password');
-        });
-      }
-    }
-    else { // method GET
-      return res.render('me/password', {
-      });
-    }
+    return res.render('me/password');
   };
 
   actions.apiToken = function(req, res) {

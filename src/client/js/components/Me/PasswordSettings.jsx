@@ -57,11 +57,14 @@ class PasswordSettings extends React.Component {
       await appContainer.apiv3Put('/personal-setting/password', {
         oldPassword, newPassword, newPasswordConfirm,
       });
+      this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
       toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
     }
     catch (err) {
       toastError(err);
     }
+
+    this.retrievePassword();
   }
 
   onChangeOldPassword(oldPassword) {
@@ -137,7 +140,7 @@ class PasswordSettings extends React.Component {
               type="button"
               className="btn btn-primary"
               onClick={this.onClickSubmit}
-              disabled={this.state.retrieveError != null || this.isIncorrectConfirmPassword}
+              disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
             >
               {t('Update')}
             </button>

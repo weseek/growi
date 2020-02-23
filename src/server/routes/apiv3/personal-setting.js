@@ -51,6 +51,14 @@ module.exports = (crowi) => {
       body('lang').isString().isIn(['en-US', 'ja']),
       body('isEmailPublished').isBoolean(),
     ],
+    password: [
+      body('oldPassword').isString(),
+      body('newPassword').isString().not().isEmpty(),
+      body('newPasswordConfirm').isString().not().isEmpty()
+        .custom((value, { req }) => {
+          return (value === req.body.newPassword);
+        }),
+    ],
   };
 
   /**
@@ -173,10 +181,22 @@ module.exports = (crowi) => {
   });
 
   // TODO swagger
-  router.put('/password', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { oldPassword, newPassword, newPasswordConfirm } = req.body;
+  router.put('/password', accessTokenParser, loginRequiredStrictly, csrf, validator.password, ApiV3FormValidator, async(req, res) => {
+    const { body, user } = req;
+    const { oldPassword, newPassword } = body;
 
-    return res.apiv3();
+    if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
+      return res.apiv3Err('wrong-current-password', 400);
+    }
+    try {
+      const userData = await user.updatePassword(newPassword);
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-password-failed');
+    }
+
   });
 
   return router;
