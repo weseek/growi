@@ -29,9 +29,7 @@ class PasswordSettings extends React.Component {
     this.retrievePassword = this.retrievePassword.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
-  }
 
-  componentDidMount() {
     this.retrievePassword();
   }
 
