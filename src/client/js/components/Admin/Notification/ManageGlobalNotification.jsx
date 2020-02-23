@@ -111,25 +111,26 @@ class ManageGlobalNotification extends React.Component {
           </div>
 
           <div className="col-sm-4">
+            <h3 htmlFor="triggerPath">{t('notification_setting.trigger_path')}
+              {/* eslint-disable-next-line react/no-danger */}
+              <small dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help', '<code>*</code>') }} />
+            </h3>
             <div className="form-group">
-              <h3 htmlFor="triggerPath">{t('notification_setting.trigger_path')}
-                {/* eslint-disable-next-line react/no-danger */}
-                <small dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help', '<code>*</code>') }} />
-                <input
-                  className="form-control"
-                  type="text"
-                  name="triggerPath"
-                  value={this.state.triggerPath}
-                  onChange={(e) => { this.onChangeTriggerPath(e.target.value) }}
-                  required
-                />
-              </h3>
+              <input
+                className="form-control"
+                type="text"
+                name="triggerPath"
+                value={this.state.triggerPath}
+                onChange={(e) => { this.onChangeTriggerPath(e.target.value) }}
+                required
+              />
             </div>
 
+            <h3>{t('notification_setting.notify_to')}</h3>
             <div className="form-group form-inline">
-              <h3>{t('notification_setting.notify_to')}</h3>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio">
                 <input
+                  className="custom-control-input"
                   type="radio"
                   id="mail"
                   name="notifyToType"
@@ -137,12 +138,13 @@ class ManageGlobalNotification extends React.Component {
                   checked={this.state.notifyToType === 'mail'}
                   onChange={() => { this.onChangeNotifyToType('mail') }}
                 />
-                <label htmlFor="mail">
+                <label className="custom-control-label" htmlFor="mail">
                   <p className="font-weight-bold">Email</p>
                 </label>
               </div>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio">
                 <input
+                  className="custom-control-input"
                   type="radio"
                   id="slack"
                   name="notifyToType"
@@ -150,7 +152,7 @@ class ManageGlobalNotification extends React.Component {
                   checked={this.state.notifyToType === 'slack'}
                   onChange={() => { this.onChangeNotifyToType('slack') }}
                 />
-                <label htmlFor="slack">
+                <label className="custom-control-label" htmlFor="slack">
                   <p className="font-weight-bold">Slack</p>
                 </label>
               </div>
@@ -187,11 +189,9 @@ class ManageGlobalNotification extends React.Component {
                   />
                 </div>
               )}
-
           </div>
 
-
-          <div className="col-sm-offset-1 col-sm-5">
+          <div className="offset-1 col-sm-5">
             <div className="form-group">
               <h3>{t('notification_setting.trigger_events')}</h3>
               <TriggerEventCheckBox
@@ -251,13 +251,12 @@ class ManageGlobalNotification extends React.Component {
 
             </div>
           </div>
-
-          <AdminUpdateButtonRow
-            onClick={this.submitHandler}
-            disabled={this.state.retrieveError != null}
-          />
-
         </div>
+
+        <AdminUpdateButtonRow
+          onClick={this.submitHandler}
+          disabled={this.state.retrieveError != null}
+        />
 
       </React.Fragment>
 
