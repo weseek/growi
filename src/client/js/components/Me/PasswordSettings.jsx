@@ -73,9 +73,10 @@ class PasswordSettings extends React.Component {
     this.setState({ newPasswordConfirm });
   }
 
-
   render() {
     const { t } = this.props;
+    const { newPassword, newPasswordConfirm } = this.state;
+    const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm && newPasswordConfirm !== '');
 
     return (
       <React.Fragment>
@@ -112,7 +113,7 @@ class PasswordSettings extends React.Component {
             />
           </div>
         </div>
-        <div className="row mb-3">
+        <div className={`row mb-3 ${isIncorrectConfirmPassword && 'has-error'}`}>
           <label htmlFor="newPasswordConfirm" className="col-xs-3 text-right">{t('personal_settings.new_password_confirm') }</label>
           <div className="col-xs-6">
             <input
