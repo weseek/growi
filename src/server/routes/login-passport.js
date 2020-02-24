@@ -461,6 +461,11 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
 
+    // Attribute-based Login Control
+    if (!crowi.passportService.verifySAMLResponseByABLCRule(response)) {
+      return loginFailure(req, res);
+    }
+
     // login
     req.logIn(user, (err) => {
       if (err != null) {

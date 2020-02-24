@@ -247,6 +247,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  SAML_ABLC_RULE: {
+    ns:      'crowi',
+    key:     'security:passport-saml:ABLCRule',
+    type:    TYPES.STRING,
+    default: null,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
