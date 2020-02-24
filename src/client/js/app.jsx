@@ -6,7 +6,6 @@ import { I18nextProvider } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import SearchPage from './components/SearchPage';
-import PersonalDropdown from './components/Navbar/PersonalDropdown';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
 // eslint-disable-next-line import/no-duplicates
@@ -62,7 +61,6 @@ logger.info('unstated containers have been initialized');
  */
 Object.assign(componentMappings, {
   'search-page': <SearchPage crowi={appContainer} />,
-  'personal-dropdown': <PersonalDropdown />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={appContainer} />,
