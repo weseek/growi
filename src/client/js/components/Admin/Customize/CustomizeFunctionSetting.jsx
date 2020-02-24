@@ -137,12 +137,12 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <CustomizeFunctionOption
               optionId="isAllReplyShown"
-              label="コメントへの返信を全て表示する"
+              label={t('admin:customize_setting.function_options.show_all_reply_comments')}
               isChecked={adminCustomizeContainer.state.isAllReplyShown || false}
               onChecked={() => { adminCustomizeContainer.switchIsAllReplyShown() }}
             >
               <p className="help-block">
-                OFFの場合3件目以降のコメントが省略されます。
+                {t('admin:customize_setting.function_options.show_all_reply_comments_desc')}
               </p>
             </CustomizeFunctionOption>
           </div>
