@@ -67,7 +67,7 @@ class ConfigManager {
   }
 
   /**
-   * get a config specified by namespace and regular expresssion
+   * get a config specified by namespace and regular expression
    */
   getConfigByRegExp(namespace, regexp) {
     const result = {};
