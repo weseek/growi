@@ -14,6 +14,18 @@ const PersonalDropdown = (props) => {
   const username = appContainer.me;
   const user = appContainer.findUser(username);
 
+  const logoutHandler = () => {
+    const { interceptorManager } = appContainer;
+
+    const context = {
+      user,
+      currentPagePath: decodeURIComponent(window.location.pathname),
+    };
+    interceptorManager.process('logout', context);
+
+    window.location.href = '/logout';
+  };
+
   return (
     <>
       <a className="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
@@ -26,7 +38,7 @@ const PersonalDropdown = (props) => {
         <li><a href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a></li>
         <li><a href="/trash"><i className="icon-fw icon-trash"></i>{ t('Deleted Pages') }</a></li>
         <li role="separator" className="divider"></li>
-        <li><a href="/logout"><i className="icon-fw icon-power"></i>{ t('Sign out') }</a></li>
+        <li><a role="button" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</a></li>
       </ul>
     </>
   );
