@@ -147,7 +147,7 @@ class ManageGlobalNotification extends React.Component {
                   <p className="font-weight-bold">Email</p>
                 </label>
               </div>
-              <div className="custom-control custom-radio">
+              <div className="custom-control custom-radio ml-2">
                 <input
                   className="custom-control-input"
                   type="radio"
