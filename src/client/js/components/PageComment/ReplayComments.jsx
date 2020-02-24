@@ -44,7 +44,6 @@ class ReplayComments extends React.PureComponent {
     const layoutType = this.props.appContainer.getConfig().layoutType;
     const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
-    // TODO GW-1143 Switchable in admin page
     const isAllReplyShown = this.props.appContainer.getConfig().isAllReplyShown || false;
 
     let replyList = this.props.replyList;

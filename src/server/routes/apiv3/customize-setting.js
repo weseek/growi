@@ -49,6 +49,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: number
  *          isEnabledStaleNotification:
  *            type: boolean
+ *          isAllReplyShown:
+ *            type: boolean
  *      CustomizeHighlight:
  *        description: CustomizeHighlight
  *        type: object
@@ -112,6 +114,7 @@ module.exports = (crowi) => {
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
       body('isEnabledStaleNotification').isBoolean(),
+      body('isAllReplyShown').isBoolean(),
     ],
     customizeTitle: [
       body('customizeTitle').isString(),
@@ -164,6 +167,7 @@ module.exports = (crowi) => {
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
+      isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
@@ -329,6 +333,7 @@ module.exports = (crowi) => {
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       'customize:showRecentCreatedNumber': req.body.recentCreatedLimit,
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
+      'customize:isAllReplyShown': req.body.isAllReplyShown,
     };
 
     try {
@@ -339,6 +344,7 @@ module.exports = (crowi) => {
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
+        isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       };
       return res.apiv3({ customizedParams });
     }
