@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'reactstrap';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -10,6 +9,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:markdown:presentation');
 
@@ -42,7 +42,7 @@ class PresentationForm extends React.Component {
     return (
       <fieldset className="form-group col-12 my-2">
 
-        <label className="col-12 col-sm-3 control-label font-weight-bold text-left mt-3">
+        <label className="col-12 control-label font-weight-bold text-left mt-3">
           {t('admin:markdown_setting.presentation_options.page_break_setting')}
         </label>
 
@@ -108,18 +108,7 @@ class PresentationForm extends React.Component {
           </div>
         </div>
 
-        <div className="form-group col-12 m-3">
-          <div className="offset-4 col-8">
-            <Button
-              type="submit"
-              color="primary"
-              onClick={this.onClickSubmit}
-              disabled={adminMarkDownContainer.state.retrieveError != null}
-            >
-              {t('Update')}
-            </Button>
-          </div>
-        </div>
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} />
       </fieldset>
     );
   }
