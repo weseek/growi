@@ -20,35 +20,18 @@ class PasswordSettings extends React.Component {
 
     this.state = {
       retrieveError: null,
-      password: '',
       oldPassword: '',
       newPassword: '',
       newPasswordConfirm: '',
     };
 
-    this.retrievePassword = this.retrievePassword.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
     this.onChangeOldPassword = this.onChangeOldPassword.bind(this);
 
-    this.retrievePassword();
-  }
-
-  async retrievePassword() {
-    const { appContainer } = this.props;
-
-    try {
-      const res = await appContainer.apiv3Get('/personal-setting/password');
-      const { password } = res.data;
-      this.setState({ password });
-    }
-    catch (err) {
-      this.setState({ retrieveError: err });
-      toastError(err);
-    }
   }
 
   async onClickSubmit() {
-    const { t, appContainer } = this.props;
+    const { t, appContainer, personalContainer } = this.props;
     const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
@@ -56,13 +39,13 @@ class PasswordSettings extends React.Component {
         oldPassword, newPassword, newPasswordConfirm,
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
+      await personalContainer.retrievePersonalData();
       toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
     }
     catch (err) {
       toastError(err);
     }
 
-    this.retrievePassword();
   }
 
   onChangeOldPassword(oldPassword) {
@@ -78,19 +61,19 @@ class PasswordSettings extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, personalContainer } = this.props;
     const { newPassword, newPasswordConfirm } = this.state;
     const isIncorrectConfirmPassword = (newPassword !== newPasswordConfirm);
 
     return (
       <React.Fragment>
-        {(this.state.password == null) && <div className="alert alert-warning m-t-10">{ t('Password is not set') }</div>}
+        {(!personalContainer.state.isPasswordSet) && <div className="alert alert-warning m-t-10">{ t('Password is not set') }</div>}
         <div className="mb-5 container-fluid">
-          {(this.state.password == null)
-            ? <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>
-          : <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>}
+          {(personalContainer.state.isPasswordSet)
+            ? <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
+          : <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>}
         </div>
-        {(this.state.password != null)
+        {(personalContainer.state.isPasswordSet)
         && (
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('personal_settings.current_password') }</label>
@@ -158,6 +141,7 @@ const PasswordSettingsWrapper = (props) => {
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 
 export default withTranslation()(PasswordSettingsWrapper);

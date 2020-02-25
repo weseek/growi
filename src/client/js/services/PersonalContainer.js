@@ -24,6 +24,7 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en-US',
       externalAccounts: [],
+      isPasswordSet: false,
     };
 
   }
@@ -48,6 +49,7 @@ export default class PersonalContainer extends Container {
         email: currentUser.email,
         isEmailPublished: currentUser.isEmailPublished,
         lang: currentUser.lang,
+        isPasswordSet: (currentUser.password != null),
       });
     }
     catch (err) {

@@ -182,39 +182,6 @@ module.exports = (crowi) => {
    * @swagger
    *
    *    /personal-setting/password:
-   *      get:
-   *        tags: [PersonalSetting]
-   *        operationId: getUserPassword
-   *        summary: /personal-setting/password
-   *        description: Get user password
-   *        responses:
-   *          200:
-   *            description: user password
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    password:
-   *                      type: string
-   *                      description: user password
-   */
-  router.get('/password', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-
-    try {
-      const user = await User.findOne({ _id: req.user.id });
-      const { password } = user;
-      return res.apiv3({ password });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('get-accounts-password');
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /personal-setting/password:
    *      put:
    *        tags: [PersonalSetting]
    *        operationId: putUserPassword
