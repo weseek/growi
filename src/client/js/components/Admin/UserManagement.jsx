@@ -63,6 +63,23 @@ class UserManagement extends React.Component {
 
         <h2>{t('User_Management')}</h2>
 
+        <div className="row">
+          <div className="col-md-4">
+            <label>絞り込み：</label>
+            <input type="text" name="name" />
+          </div>
+          <div className="col-md-6">
+            <form>
+              <input type="checkbox" ref="globalSelector" onChange={this.__changeAllChecks} />全て
+              <input type="checkbox" ref="globalSelector" onChange={this.__changeAllChecks} />Approval Pending
+              <input type="checkbox" ref="globalSelector" onChange={this.__changeAllChecks} />Active
+              <input type="checkbox" ref="globalSelector" onChange={this.__changeAllChecks} />Suspended
+              <input type="checkbox" ref="globalSelector" onChange={this.__changeAllChecks} />Invited
+              <br />
+            </form>
+          </div>
+        </div>
+
         {pager}
         <UserTable />
         {pager}
