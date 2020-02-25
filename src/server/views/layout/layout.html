@@ -141,21 +141,7 @@
             <i class="icon-question"></i><span>{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
           </a>
         </li>
-        <li class="dropdown">
-          <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
-            <img src="{{ user|picture }}" class="picture img-circle" width="25" /> <span class="user-name">{{ user.name }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-right">
-            <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
-            <li><a href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/user/{{ user.username }}#user-draft-list"><i class="icon-fw icon-docs"></i>{{ t('List Drafts') }}</a></li>
-            <li><a href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a></li>
-          </ul>
-          <!-- /.dropdown-messages -->
-        </li>
+        <li id="personal-dropdown" class="dropdown"></li>
         {% else %}
         <li id="login-user"><a href="/login">Login</a></li>
         {% endif %}

@@ -1,11 +1,17 @@
 .main-container {
   .page-comment-main {
+    pointer-events: auto;
+
     // delete button
     .page-comment-control {
       position: absolute;
       top: 0;
       right: 0;
-      display: none; // default hidden
+      visibility: hidden;
+    }
+
+    &:hover > .page-comment-control {
+      visibility: visible;
     }
   }
 
@@ -19,6 +25,12 @@
       }
     }
   }
+}
+
+.page-comment {
+  padding-top: 50px;
+  margin-top: -50px;
+  pointer-events: none;
 }
 
 .main-container {

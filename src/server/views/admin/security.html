@@ -11,13 +11,9 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main admin-security">
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'security'} %}
-    </div>
-    <div class="col-md-9" id="admin-security-setting"></div>
-  </div>
+<div class="content-main admin-security row">
+  {% parent %}
+  <div class="col-md-9" id="admin-security-setting"></div>
 </div>
 {% endblock content_main %}
 

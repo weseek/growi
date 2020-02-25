@@ -19,6 +19,7 @@ import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
 import ExportArchiveDataPage from './components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
+import AdminNavigation from './components/Admin/Common/AdminNavigation';
 
 import AdminHomeContainer from './services/AdminHomeContainer';
 import AdminCustomizeContainer from './services/AdminCustomizeContainer';
@@ -89,6 +90,7 @@ Object.assign(componentMappings, {
   'admin-user-group-detail': <UserGroupDetailPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-user-group-page': <UserGroupPage />,
+  'admin-navigation': <AdminNavigation />,
 });
 
 

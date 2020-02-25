@@ -126,7 +126,9 @@
       "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
       "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
       "stale_notification": "古いページに通知を表示する",
-      "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。"
+      "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
+      "show_all_reply_comments": "返信コメントを全て表示する",
+      "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。"
     },
     "code_highlight": "コードハイライト",
     "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",

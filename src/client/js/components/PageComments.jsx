@@ -14,6 +14,7 @@ import { createSubscribedElement } from './UnstatedUtils';
 import CommentEditor from './PageComment/CommentEditor';
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
+import ReplayComments from './PageComment/ReplayComments';
 
 
 /**
@@ -138,11 +139,16 @@ class PageComments extends React.Component {
       <div key={commentId} className={`mb-5 ${rootClassNames}`}>
         <Comment
           comment={comment}
-          editBtnClicked={this.confirmToEditComment}
           deleteBtnClicked={this.confirmToDeleteComment}
           growiRenderer={this.growiRenderer}
-          replyList={replies}
         />
+        {replies.length !== 0 && (
+        <ReplayComments
+          replyList={replies}
+          deleteBtnClicked={this.confirmToDeleteComment}
+          growiRenderer={this.growiRenderer}
+        />
+        )}
         { !showEditor && isLoggedIn && (
           <div className="text-right">
             <Button

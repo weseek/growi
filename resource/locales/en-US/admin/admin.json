@@ -126,7 +126,9 @@
       "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
       "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
       "stale_notification": "Display Notification on Stale Pages",
-      "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update."
+      "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
+      "show_all_reply_comments": "Show all reply comments",
+      "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted."
     },
     "code_highlight": "Code Highlight",
     "nocdn_desc": "This function is disabled when the environment variable <code>NO_CDN=true</code>.<br>Github style has been forcibly applied.",

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { debounce } from 'throttle-debounce';
 
-export default class RevisionBody extends React.Component {
+export default class RevisionBody extends React.PureComponent {
 
   constructor(props) {
     super(props);
