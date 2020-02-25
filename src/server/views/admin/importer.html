@@ -11,38 +11,9 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main admin-importer">
-
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'importer'} %}
-    </div>
-    <div class="col-lg-7 col-md-9">
-
-      <!-- Flash message for success -->
-      {% set smessage = req.flash('successMessage') %}
-      {% if smessage.length %}
-      <div class="alert alert-success">
-        {% for e in smessage %}
-        {{ e }}<br>
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      <!-- Flash message for error -->
-      {% set emessage = req.flash('errorMessage') %}
-      {% if emessage.length %}
-      <div class="alert alert-danger">
-        {% for e in emessage %}
-        {{ e }}<br>
-        {% endfor %}
-      </div>
-      {% endif %}
-
-      <div id="admin-importer"></div>
-
-    </div>
-  </div>
+<div class="content-main admin-importer row">
+  {% parent %}
+  <div class="col-md-9" id="admin-importer"></div>
 </div>
 
 {% endblock content_main %}
