@@ -67,26 +67,28 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="checkbox checkbox-warning">
+        <div className="custom-control custom-checkbox custom-checkbox-danger">
           <input
             id="cbOpt4"
             type="checkbox"
+            className="custom-control-input"
             checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
-          <label htmlFor="cbOpt4">
+          <label htmlFor="cbOpt4" className="custom-control-label">
             {t(`${translationBase}.overwrite_author.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
-        <div className="checkbox checkbox-warning">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt1"
             type="checkbox"
+            className="custom-control-input"
             checked={option.makePublicForGrant2 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant2: !option.makePublicForGrant2 })}
           />
-          <label htmlFor="cbOpt1">
+          <label htmlFor="cbOpt1" className="custom-control-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Anyone with the link') })}
             <p
               className="help-block mt-0"
@@ -94,26 +96,28 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="checkbox checkbox-warning">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt2"
             type="checkbox"
+            className="custom-control-input"
             checked={option.makePublicForGrant4 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant4: !option.makePublicForGrant4 })}
           />
-          <label htmlFor="cbOpt2">
+          <label htmlFor="cbOpt2" className="custom-control-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Just me') })}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }} />
           </label>
         </div>
-        <div className="checkbox checkbox-warning">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt3"
             type="checkbox"
+            className="custom-control-input"
             checked={option.makePublicForGrant5 || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ makePublicForGrant5: !option.makePublicForGrant5 })}
           />
-          <label htmlFor="cbOpt3">
+          <label htmlFor="cbOpt3" className="custom-control-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Only inside the group') })}
             <p
               className="help-block mt-0"
@@ -121,26 +125,28 @@ class ImportCollectionConfigurationModal extends React.Component {
             />
           </label>
         </div>
-        <div className="checkbox checkbox-default">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt5"
             type="checkbox"
+            className="custom-control-input"
             checked={option.initPageMetadatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initPageMetadatas: !option.initPageMetadatas })}
           />
-          <label htmlFor="cbOpt5">
+          <label htmlFor="cbOpt5" className="custom-control-label">
             {t(`${translationBase}.initialize_meta_datas.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
         </div>
-        <div className="checkbox checkbox-default">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt6"
             type="checkbox"
+            className="custom-control-input"
             checked={option.initHackmdDatas || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ initHackmdDatas: !option.initHackmdDatas })}
           />
-          <label htmlFor="cbOpt6">
+          <label htmlFor="cbOpt6" className="custom-control-label">
             {t(`${translationBase}.initialize_hackmd_related_datas.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
           </label>
@@ -159,14 +165,15 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="checkbox checkbox-warning">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt1"
             type="checkbox"
+            className="custom-control-input"
             checked={option.isOverwriteAuthorWithCurrentUser || false} // add ' || false' to avoid uncontrolled input warning
             onChange={() => this.changeHandler({ isOverwriteAuthorWithCurrentUser: !option.isOverwriteAuthorWithCurrentUser })}
           />
-          <label htmlFor="cbOpt1">
+          <label htmlFor="cbOpt1" className="custom-control-label">
             {t(`${translationBase}.overwrite_author.label`)}
             <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
