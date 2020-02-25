@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'reactstrap';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -11,6 +10,7 @@ import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelis
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import WhiteListInput from './WhiteListInput';
 
@@ -29,7 +29,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.xss_desc') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.xss_header') }));
     }
     catch (err) {
       toastError(err);
@@ -62,45 +62,47 @@ class XssForm extends React.Component {
           </div>
         </div>
 
-        <div className="col-xs-4 radio radio-primary">
-          <input
-            type="radio"
-            id="xssOption2"
-            name="XssOption"
-            checked={xssOption === 2}
-            onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
-          />
-          <label htmlFor="xssOption2">
-            <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
-            <div className="m-t-15">
-              <div className="d-flex justify-content-between">
-                {t('admin:markdown_setting.xss_options.tag_names')}
+        <div className="col-4 align-self-start">
+          <div className="custom-control custom-radio">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id="xssOption2"
+              name="XssOption"
+              checked={xssOption === 2}
+              onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
+            />
+            <label className="custom-control-label" htmlFor="xssOption2">
+              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
+              <div className="m-t-15">
+                <div className="d-flex justify-content-between">
+                  {t('admin:markdown_setting.xss_options.tag_names')}
+                </div>
+                <textarea
+                  className="form-control xss-list"
+                  name="recommendedTags"
+                  rows="6"
+                  cols="40"
+                  readOnly
+                  defaultValue={tags}
+                />
               </div>
-              <textarea
-                className="form-control xss-list"
-                name="recommendedTags"
-                rows="6"
-                cols="40"
-                readOnly
-                defaultValue={tags}
-              />
-            </div>
-            <div className="m-t-15">
-              <div className="d-flex justify-content-between">
-                {t('admin:markdown_setting.xss_options.tag_attributes')}
+              <div className="m-t-15">
+                <div className="d-flex justify-content-between">
+                  {t('admin:markdown_setting.xss_options.tag_attributes')}
+                </div>
+                <textarea
+                  className="form-control xss-list"
+                  name="recommendedAttrs"
+                  rows="6"
+                  cols="40"
+                  readOnly
+                  defaultValue={attrs}
+                />
               </div>
-              <textarea
-                className="form-control xss-list"
-                name="recommendedAttrs"
-                rows="6"
-                cols="40"
-                readOnly
-                defaultValue={attrs}
-              />
-            </div>
-          </label>
+            </label>
+          </div>
         </div>
-
 
         <div className="col-4 align-self-start">
           <div className="custom-control custom-radio">
@@ -151,18 +153,7 @@ class XssForm extends React.Component {
             {isEnabledXss && this.xssOptions()}
           </div>
         </fieldset>
-        <div className="form-group col-12 m-3">
-          <div className="offset-4 col-8">
-            <Button
-              type="submit"
-              color="primary"
-              onClick={this.onClickSubmit}
-              disabled={adminMarkDownContainer.state.retrieveError != null}
-            >
-              {t('Update')}
-            </Button>
-          </div>
-        </div>
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
