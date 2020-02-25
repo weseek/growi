@@ -53,16 +53,11 @@ class CustomizeScriptSetting extends React.Component {
           </CardBody>
         </Card>
 
-        <table className="table table-borderless table-sm form-text text-muted">
-          <tbody>
-            <tr>
-              <th className="">
-                Placeholders:<br />
-                (Available after <code>load</code> event)
-              </th>
-            </tr>
-          </tbody>
-
+        <div className="form-text text-muted">
+          Placeholders:<br />
+          (Available after <code>load</code> event)
+        </div>
+        <table className="table table-borderless table-sm form-text text-muted offset-1">
           <tbody>
             <tr>
               <th className="text-right"><code>$</code></th>
@@ -97,26 +92,7 @@ class CustomizeScriptSetting extends React.Component {
               <td>Crowi legacy instance (jQuery based)</td>
             </tr>
           </tbody>
-
-
         </table>
-
-        <div className="form-text text-muted">
-          Placeholders:<br />
-          (Available after <code>load</code> event)
-          <dl className="row">
-            <dt className="col-2 text-right"><code>$</code></dt>
-            <dd className="col-10">jQuery instance</dd>
-            <dt className="col-2 text-right"><code>appContainer</code></dt>
-            <dd className="col-10">GROWI App <a href="https://github.com/jamiebuilds/unstated">Unstated Container</a></dd>
-            <dt className="col-2 text-right"><code>growiRenderer</code></dt>
-            <dd className="col-10">GROWI Renderer origin instance</dd>
-            <dt className="col-2 text-right"><code>growiPlugin</code></dt>
-            <dd className="col-10">GROWI Plugin Manager instance</dd>
-            <dt className="col-2 text-right"><code>Crowi</code></dt>
-            <dd className="col-10">Crowi legacy instance (jQuery based)</dd>
-          </dl>
-        </div>
 
         <div className="form-text text-muted">
           Examples:
