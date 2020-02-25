@@ -62,6 +62,27 @@ class UserManagement extends React.Component {
         </p>
 
         <h2>{t('User_Management')}</h2>
+<<<<<<< Updated upstream
+=======
+        <label>
+          絞り込み:
+          <input type="text" name="name" />
+        </label>
+
+        <form>
+          <input type="checkbox" onChange={this.__changeAllChecks} />全て
+          <br />
+          <input type="checkbox" onChange={this.__changeAllChecks} />Approval Pending
+          <br />
+          <input type="checkbox" onChange={this.__changeAllChecks} />Active
+          <br />
+          <input type="checkbox" onChange={this.__changeAllChecks} />Suspended
+          <br />
+          <input type="checkbox" onChange={this.__changeAllChecks} />Invited
+          <br />
+        </form>
+
+>>>>>>> Stashed changes
 
         {pager}
         <UserTable />
