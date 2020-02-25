@@ -1,10 +1,15 @@
 # CHANGES
 
-## v3.6.8-RC
+## v3.6.9-RC
+
+*
+
+## v3.6.8
 
 * Improvement: Show page history side-by-side
 * Improvement: Optimize markdown rendering
 * Improvement: Reactify admin pages (Navigation)
+* Fix: Reply comments collapsed are broken
 * Support: Update libs
     * cross-env
     * mkdirp
