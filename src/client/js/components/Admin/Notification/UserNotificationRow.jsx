@@ -22,7 +22,7 @@ class UserNotificationRow extends React.PureComponent {
             {notification.channel}
           </td>
           <td>
-            <button type="submit" className="btn btn-default" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
+            <button type="submit" className="btn btn-light" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
           </td>
         </tr>
       </React.Fragment>
