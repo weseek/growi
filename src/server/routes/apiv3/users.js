@@ -424,6 +424,23 @@ module.exports = (crowi) => {
     }
   });
 
+  const correctStatusList = ['registered', 'active', 'suspended', 'invited'];
+
+  validator.statusList = [
+    body('statusList').custom((value) => {
+      const error = [];
+      value.forEach((status) => {
+        if (!correctStatusList.includes(status)) {
+          error.push(status);
+        }
+      });
+      return (error.length === 0);
+    }),
+  ];
+
+  router.get('/selected-status-users/', validator.statusList, ApiV3FormValidator, async(req, res) => {
+    return res.apiv3({});
+  });
 
   /**
    * @swagger
