@@ -34,7 +34,10 @@ const AdminNavigation = (props) => {
       <a href="/admin/export" className={`list-group-item list-group-item-action ${isActiveMenu('/export') && 'active'}`}>
         <i className="icon-fw icon-cloud-download"></i> {t('Export Archive Data')}
       </a>
-      <a href="/admin/notification" className={`list-group-item list-group-item-action ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}>
+      <a
+        href="/admin/notification"
+        className={`list-group-item list-group-item-action ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}
+      >
         <i className="icon-fw icon-bell"></i> {t('Notification Settings')}
       </a>
       <a href="/admin/users" className={`list-group-item list-group-item-action ${(isActiveMenu('/users')) && 'active'}`}>
