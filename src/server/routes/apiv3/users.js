@@ -429,11 +429,10 @@ module.exports = (crowi) => {
   validator.statusList = [
     body('statusList').custom((value) => {
       const error = [];
-      value.map((status) => {
+      value.forEach((status) => {
         if (!correctStatusList.includes(status)) {
           error.push(status);
         }
-        return (error.length === 0);
       });
       return (error.length === 0);
     }),
