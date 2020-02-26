@@ -64,29 +64,32 @@ class UserManagement extends React.Component {
         <h2>{t('User_Management')}</h2>
 
         <div className="row container">
-          <div className="col-md-3 filter-container">
+          <div className="col-md-4 filter-container my-2">
             <label>
-            絞り込み:
+            絞り込み
               <input type="text" name="name" />
             </label>
           </div>
           {/* form BootStrap確認 */}
 
-          <div className="col-md-9 check-container">
-            <input type="checkbox" onChange={this.__changeAllChecks} />
-            <label>全て</label>
+          <div className="col-md-8 py-2 check-container border" style={{ width: 500 }}>
+            <input type="checkbox" className="mr-1" onChange={this.__changeAllChecks} />
+            <label className="mr-2">全て</label>
 
-            <input type="checkbox" onChange={this.__ApprovalPending} />
-            <label className="label label-info">Approval Pending</label>
+            <input type="checkbox" className="mr-1" onChange={this.__ApprovalPending} />
+            <label className="label label-info mr-2">Approval Pending</label>
 
-            <input type="checkbox" onChange={this.__Active} />
-            <label className="label label-success">Active</label>
+            <input type="checkbox" className="mr-1" onChange={this.__Active} />
+            <label className="label label-success mr-2">Active</label>
 
-            <input type="checkbox" onChange={this.__Suspended} />
-            <label className="label label-warning">Suspended</label>
+            <input type="checkbox" className="mr-1" onChange={this.__Suspended} />
+            <label className="label label-warning mr-2">Suspended</label>
 
-            <input type="checkbox" onChange={this.__Invited} />
-            <label className="label label-info">Invited</label>
+            <input type="checkbox" className="mr-1" onChange={this.__Invited} />
+            <label className="label label-info mr-2">Invited</label>
+
+            <input type="checkbox" className="mr-1" onChange={this.__Status} />
+            <label className="label label-info">Status</label>
           </div>
         </div>
 
