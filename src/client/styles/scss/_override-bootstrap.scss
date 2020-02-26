@@ -4,6 +4,39 @@
 
 :root {
   font-size: $font-size-root;
+  > body {
+    font-family: $font-family-sans-serif;
+  }
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 48px;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+h3 {
+  font-size: 21px;
+  line-height: 30px;
+}
+
+h4 {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+h5 {
+  font-size: 16px;
+  line-height: 18px;
+}
+
+h5 {
+  font-size: 14px;
+  line-height: 16px;
 }
 
 // Navs
