@@ -158,10 +158,6 @@
   }
 }
 
-.admin-navigation > a {
-  border: 0px;
-
-  & + a {
-    margin-top: 2px;
-  }
+.admin-navigation > a + a {
+  margin-top: 2px;
 }
