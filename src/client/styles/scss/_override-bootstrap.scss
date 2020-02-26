@@ -4,6 +4,10 @@
 
 :root {
   font-size: $font-size-root;
+  > body {
+    font-family: $font-family-sans-serif;
+  }
+}
 
 h1 {
   font-size: 36px;
