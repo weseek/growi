@@ -79,6 +79,14 @@ module.exports = {
         integrity: '',
       },
     },
+    {
+      name: 'drawio-viewer',
+      url: 'https://www.draw.io/js/viewer.min.js',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      },
+    },
   ],
   style: [
     {

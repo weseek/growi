@@ -10,12 +10,20 @@ export default class RevisionBody extends React.PureComponent {
 
     // create debounced method for rendering MathJax
     this.renderMathJaxWithDebounce = debounce(200, this.renderMathJax);
+
+    // create debounced method for rendering draw.io
+    this.renderDrawioWithDebounce = debounce(200, this.renderDrawio);
   }
 
   componentDidMount() {
     const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       this.renderMathJaxWithDebounce();
+    }
+
+    const DrawioViewer = window.GraphViewer;
+    if (DrawioViewer != null) {
+      this.renderDrawioWithDebounce();
     }
   }
 
@@ -24,6 +32,11 @@ export default class RevisionBody extends React.PureComponent {
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
     }
+
+    const DrawioViewer = window.GraphViewer;
+    if (DrawioViewer != null) {
+      this.renderDrawioWithDebounce();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -31,11 +44,21 @@ export default class RevisionBody extends React.PureComponent {
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       this.renderMathJaxWithDebounce();
     }
+
+    const DrawioViewer = window.GraphViewer;
+    if (DrawioViewer != null) {
+      this.renderDrawioWithDebounce();
+    }
   }
 
   renderMathJax() {
     const MathJax = window.MathJax;
     MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
+  }
+
+  renderDrawio() {
+    const DrawioViewer = window.GraphViewer;
+    DrawioViewer.processElements();
   }
 
   generateInnerHtml(html) {

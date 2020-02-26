@@ -14,6 +14,7 @@ import TableConfigurer from './markdown-it/table';
 import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 import BlockdiagConfigurer from './markdown-it/blockdiag';
+import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
 import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
 import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
@@ -67,6 +68,7 @@ export default class GrowiRenderer {
       new HeaderConfigurer(appContainer),
       new EmojiConfigurer(appContainer),
       new MathJaxConfigurer(appContainer),
+      new DrawioViewerConfigurer(appContainer),
       new PlantUMLConfigurer(appContainer),
       new BlockdiagConfigurer(appContainer),
     ];
