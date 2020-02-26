@@ -1,6 +1,5 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import { Button } from 'reactstrap';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -12,6 +11,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:importer');
 
@@ -92,7 +92,7 @@ class LineBreakForm extends React.Component {
   }
 
   render() {
-    const { t, adminMarkDownContainer } = this.props;
+    const { adminMarkDownContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -100,18 +100,7 @@ class LineBreakForm extends React.Component {
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
-        <div className="form-group col-12 m-3">
-          <div className="offset-4 col-8">
-            <Button
-              type="submit"
-              color="primary"
-              onClick={this.onClickSubmit}
-              disabled={adminMarkDownContainer.state.retrieveError != null}
-            >
-              {t('Update')}
-            </Button>
-          </div>
-        </div>
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
