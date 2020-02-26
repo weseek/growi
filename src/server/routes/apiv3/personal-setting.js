@@ -33,8 +33,19 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *          isEmailPublished:
  *            type: boolean
+ *      Passwords:
+ *        description: passwords for update
+ *        type: object
+ *        properties:
+ *          oldPassword:
+ *            type: string
+ *          newPassword:
+ *            type: string
+ *          newPasswordConfirm:
+ *            type: string
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middleware/login-required')(crowi);
   const csrf = require('../../middleware/csrf')(crowi);
 
@@ -49,6 +60,16 @@ module.exports = (crowi) => {
       body('email').isEmail(),
       body('lang').isString().isIn(['en-US', 'ja']),
       body('isEmailPublished').isBoolean(),
+    ],
+    password: [
+      body('oldPassword').isString(),
+      body('newPassword').isString().not().isEmpty()
+        .isLength({ min: 6 })
+        .withMessage('password must be at least 6 characters long'),
+      body('newPasswordConfirm').isString().not().isEmpty()
+        .custom((value, { req }) => {
+          return (value === req.body.newPassword);
+        }),
     ],
   };
 
@@ -72,7 +93,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.get('/', loginRequiredStrictly, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const currentUser = await User.findUserByUsername(req.user.username);
     return res.apiv3({ currentUser });
   });
@@ -103,7 +124,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', loginRequiredStrictly, csrf, validator.personal, ApiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, validator.personal, ApiV3FormValidator, async(req, res) => {
 
     try {
       const user = await User.findOne({ _id: req.user.id });
@@ -143,7 +164,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: array of external accounts
    */
-  router.get('/external-accounts', loginRequiredStrictly, async(req, res) => {
+  router.get('/external-accounts', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const userData = req.user;
 
     try {
@@ -153,6 +174,50 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error(err);
       return res.apiv3Err('get-external-accounts-failed');
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/password:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: putUserPassword
+   *        summary: /personal-setting/password
+   *        description: Update user password
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/Passwords'
+   *        responses:
+   *          200:
+   *            description: user password
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: user data updated
+   */
+  router.put('/password', accessTokenParser, loginRequiredStrictly, csrf, validator.password, ApiV3FormValidator, async(req, res) => {
+    const { body, user } = req;
+    const { oldPassword, newPassword } = body;
+
+    if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
+      return res.apiv3Err('wrong-current-password', 400);
+    }
+    try {
+      const userData = await user.updatePassword(newPassword);
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-password-failed');
     }
 
   });
