@@ -109,6 +109,7 @@ module.exports = function(crowi) {
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
       'customize:isEnabledStaleNotification': false,
+      'customize:isAllReplyShown': false,
 
       'importer:esa:team_name': undefined,
       'importer:esa:access_token': undefined,
@@ -189,6 +190,7 @@ module.exports = function(crowi) {
       pageBreakCustomSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
       isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
+      isAllReplyShown: crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
       tagWhiteList: crowi.xssService.getTagWhiteList(),
       attrWhiteList: crowi.xssService.getAttrWhiteList(),
