@@ -62,27 +62,34 @@ class UserManagement extends React.Component {
         </p>
 
         <h2>{t('User_Management')}</h2>
-<<<<<<< Updated upstream
-=======
-        <label>
-          絞り込み:
-          <input type="text" name="name" />
-        </label>
 
-        <form>
-          <input type="checkbox" onChange={this.__changeAllChecks} />全て
-          <br />
-          <input type="checkbox" onChange={this.__changeAllChecks} />Approval Pending
-          <br />
-          <input type="checkbox" onChange={this.__changeAllChecks} />Active
-          <br />
-          <input type="checkbox" onChange={this.__changeAllChecks} />Suspended
-          <br />
-          <input type="checkbox" onChange={this.__changeAllChecks} />Invited
-          <br />
-        </form>
+        <div className="row container">
+          <div className="col-md-3 filter-container">
+            <label>
+            絞り込み:
+              <input type="text" name="name" />
+            </label>
+          </div>
+          {/* form BootStrap確認 */}
 
->>>>>>> Stashed changes
+          <div className="col-md-9 check-container">
+            <input type="checkbox" onChange={this.__changeAllChecks} />
+            <label>全て</label>
+
+            <input type="checkbox" onChange={this.__ApprovalPending} />
+            <label className="label label-info">Approval Pending</label>
+
+            <input type="checkbox" onChange={this.__Active} />
+            <label className="label label-success">Active</label>
+
+            <input type="checkbox" onChange={this.__Suspended} />
+            <label className="label label-warning">Suspended</label>
+
+            <input type="checkbox" onChange={this.__Invited} />
+            <label className="label label-info">Invited</label>
+          </div>
+        </div>
+
 
         {pager}
         <UserTable />
