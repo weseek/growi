@@ -12,41 +12,41 @@ const AdminNavigation = (props) => {
   };
 
   return (
-    <div className="list-group admin-navigation">
-      <a href="/admin" className={`list-group-item list-group-item-action ${pathname === '/admin' && 'active'}`}>
-        <i className="icon-fw icon-home"></i> { t('Management Wiki Home') }
-      </a>
-      <a href="/admin/app" className={`list-group-item list-group-item-action ${isActiveMenu('/app') && 'active'}`}>
-        <i className="icon-fw icon-settings"></i> { t('App Settings') }
-      </a>
-      <a href="/admin/security" className={`list-group-item list-group-item-action ${isActiveMenu('/security') && 'active'}`}>
-        <i className="icon-fw icon-shield"></i> { t('security_settings') }
-      </a>
-      <a href="/admin/markdown" className={`list-group-item list-group-item-action ${isActiveMenu('/markdown') && 'active'}`}>
-        <i className="icon-fw icon-note"></i> { t('Markdown Settings') }
-      </a>
-      <a href="/admin/customize" className={`list-group-item list-group-item-action ${isActiveMenu('/customize') && 'active'}`}>
-        <i className="icon-fw icon-wrench"></i> { t('Customize') }
-      </a>
-      <a href="/admin/importer" className={`list-group-item list-group-item-action ${isActiveMenu('/importer') && 'active'}`}>
-        <i className="icon-fw icon-cloud-upload"></i> { t('Import Data') }
-      </a>
-      <a href="/admin/export" className={`list-group-item list-group-item-action ${isActiveMenu('/export') && 'active'}`}>
-        <i className="icon-fw icon-cloud-download"></i> { t('Export Archive Data') }
-      </a>
-      <a href="/admin/notification" className={`list-group-item list-group-item-action ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}>
-        <i className="icon-fw icon-bell"></i> { t('Notification Settings') }
-      </a>
-      <a href="/admin/users" className={`list-group-item list-group-item-action ${(isActiveMenu('/users')) && 'active'}`}>
-        <i className="icon-fw icon-user"></i> { t('User_Management') }
-      </a>
-      <a href="/admin/user-groups" className={`list-group-item list-group-item-action ${isActiveMenu('/user-group') && 'active'}`}>
-        <i className="icon-fw icon-people"></i> { t('UserGroup Management') }
-      </a>
-      <a href="/admin/search" className={`list-group-item list-group-item-action ${isActiveMenu('/search') && 'active'}`}>
-        <i className="icon-fw icon-magnifier"></i> { t('Full Text Search Management') }
-      </a>
-    </div>
+    <ul className="nav nav-pills nav-stacked">
+      <li className={`${pathname === '/admin' && 'active'}`}>
+        <a href="/admin"><i className="icon-fw icon-home"></i> { t('Management Wiki Home') }</a>
+      </li>
+      <li className={`${isActiveMenu('/app') && 'active'}`}>
+        <a href="/admin/app"><i className="icon-fw icon-settings"></i> { t('App Settings') }</a>
+      </li>
+      <li className={`${isActiveMenu('/security') && 'active'}`}>
+        <a href="/admin/security"><i className="icon-fw icon-shield"></i> { t('security_settings') }</a>
+      </li>
+      <li className={`${isActiveMenu('/markdown') && 'active'}`}>
+        <a href="/admin/markdown"><i className="icon-fw icon-note"></i> { t('Markdown Settings') }</a>
+      </li>
+      <li className={`${isActiveMenu('/customize') && 'active'}`}>
+        <a href="/admin/customize"><i className="icon-fw icon-wrench"></i> { t('Customize') }</a>
+      </li>
+      <li className={`${isActiveMenu('/importer') && 'active'}`}>
+        <a href="/admin/importer"><i className="icon-fw icon-cloud-upload"></i> { t('Import Data') }</a>
+      </li>
+      <li className={`${isActiveMenu('/export') && 'active'}`}>
+        <a href="/admin/export"><i className="icon-fw icon-cloud-download"></i> { t('Export Archive Data') }</a>
+      </li>
+      <li className={`${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}>
+        <a href="/admin/notification"><i className="icon-fw icon-bell"></i> { t('Notification Settings') }</a>
+      </li>
+      <li className={`${(isActiveMenu('/users')) && 'active'}`}>
+        <a href="/admin/users"><i className="icon-fw icon-user"></i> { t('User_Management') }</a>
+      </li>
+      <li className={`${isActiveMenu('/user-group') && 'active'}`}>
+        <a href="/admin/user-groups"><i className="icon-fw icon-people"></i> { t('UserGroup Management') }</a>
+      </li>
+      <li className={`${isActiveMenu('/search') && 'active'}`}>
+        <a href="/admin/search"><i className="icon-fw icon-magnifier"></i> { t('Full Text Search Management') }</a>
+      </li>
+    </ul>
   );
 };
 
