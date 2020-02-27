@@ -51,8 +51,8 @@ class SlackAppConfiguration extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="mb-5">
-          <div className="col-xs-6 mt-3 text-left">
+        <div className="row my-3">
+          <div className="col-6 text-left">
             <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
               <DropdownToggle caret>
                 {`Slack ${adminNotificationContainer.state.selectSlackOption}`}
@@ -72,9 +72,9 @@ class SlackAppConfiguration extends React.Component {
           <React.Fragment>
             <h2 className="border-bottom mb-5">{t('notification_setting.slack_incoming_configuration')}</h2>
 
-            <div className="row mb-5">
-              <label className="col-xs-3 text-right">Webhook URL</label>
-              <div className="col-xs-6">
+            <div className="row mb-3">
+              <label className="col-3 text-right">Webhook URL</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -84,8 +84,8 @@ class SlackAppConfiguration extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
+            <div className="row mb-3">
+              <div className="offset-3 col-6 text-left">
                 <div className="custom-control custom-switch checkbox-success">
                   <input
                     type="checkbox"
@@ -125,7 +125,7 @@ class SlackAppConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="col-xs-3 text-right">OAuth Access Token</label>
+                <label className="col-3 text-right">OAuth Access Token</label>
                 <div className="col-xs-6">
                   <input
                     className="form-control"
