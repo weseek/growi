@@ -36,32 +36,39 @@ class CustomizeTitle extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_title')}</h2>
+        <div className="row">
+          <div className="col-12">
+            <h2 className="admin-setting-header">{t('admin:customize_setting.custom_title')}</h2>
+          </div>
 
-        <Card className="card well my-3">
-          <CardBody className="px-0 py-2">
-            <span
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
+          <div className="col-12">
+            <Card className="card well">
+              <CardBody className="px-0 py-2">
+                <span
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_title_detail') }}
+                />
+              </CardBody>
+            </Card>
+          </div>
+
+          {/* TODO i18n */}
+          <div className="form-text text-muted col-12">
+            Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
+            <br />
+            Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>
+          </div>
+          <div className="form-group col-12">
+            <input
+              className="form-control"
+              defaultValue={currentCustomizeTitle}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeTitle(e.target.value) }}
             />
-          </CardBody>
-        </Card>
-
-        {/* TODO i18n */}
-        <div className="form-text text-muted">
-          Default Value: <code>&#123;&#123;page&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
-          <br />
-          Default Output: <pre><code className="xml">&lt;title&gt;/Sandbox - {'GROWI'}&lt;&#047;title&gt;</code></pre>
+          </div>
+          <div className="col-12">
+            <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+          </div>
         </div>
-        <div className="form-group">
-          <input
-            className="form-control"
-            defaultValue={currentCustomizeTitle}
-            onChange={(e) => { adminCustomizeContainer.changeCustomizeTitle(e.target.value) }}
-          />
-        </div>
-
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
