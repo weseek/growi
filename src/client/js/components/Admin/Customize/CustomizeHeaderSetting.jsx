@@ -56,13 +56,11 @@ class CustomizeHeaderSetting extends React.Component {
           </pre>
         </div>
 
-        <div className="col-12">
+        <div className="form-group w-100">
           <CustomHeaderEditor
             value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
           />
-        </div>
-        <div className="col-12">
           <p className="form-text text-muted text-right">
             <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
             {t('admin:customize_setting.ctrl_space')}

@@ -44,19 +44,16 @@ class CustomizeCssSetting extends React.Component {
             { t('admin:customize_setting.reflect_change') }
           </CardBody>
         </Card>
-        <div className="form-group">
-          <div className="col-12">
-            <CustomCssEditor
-              value={adminCustomizeContainer.state.currentCustomizeCss || ''}
-              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
-            />
-          </div>
-          <div className="col-12">
-            <p className="form-text text-muted text-right">
-              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              {t('admin:customize_setting.ctrl_space')}
-            </p>
-          </div>
+
+        <div className="form-group w-100">
+          <CustomCssEditor
+            value={adminCustomizeContainer.state.currentCustomizeCss || ''}
+            onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
+          />
+          <p className="form-text text-muted text-right">
+            <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
+            {t('admin:customize_setting.ctrl_space')}
+          </p>
         </div>
 
         <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />

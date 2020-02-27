@@ -87,19 +87,15 @@ class CustomizeScriptSetting extends React.Component {
           <pre className="hljs"><code>{this.getExampleCode()}</code></pre>
         </div>
 
-        <div className="form-group">
-          <div className="col-12">
-            <CustomScriptEditor
-              value={adminCustomizeContainer.state.currentCustomizeScript || ''}
-              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
-            />
-          </div>
-          <div className="col-12">
-            <p className="form-text text-muted text-right">
-              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              {t('admin:customize_setting.ctrl_space')}
-            </p>
-          </div>
+        <div className="form-group w-100">
+          <CustomScriptEditor
+            value={adminCustomizeContainer.state.currentCustomizeScript || ''}
+            onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}
+          />
+          <p className="form-text text-muted text-right">
+            <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
+            {t('admin:customize_setting.ctrl_space')}
+          </p>
         </div>
 
         <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
