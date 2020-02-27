@@ -222,7 +222,26 @@ module.exports = (crowi) => {
 
   });
 
-  // TODO
+  /**
+   * @swagger
+   *
+   *    /personal-setting/api-token:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: putUserApiToken
+   *        summary: /personal-setting/api-token
+   *        description: Update user api token
+   *        responses:
+   *          200:
+   *            description: succeded to update user api token
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: user data
+   */
   router.put('/api-token', loginRequiredStrictly, csrf, async(req, res) => {
     const { user } = req;
 
