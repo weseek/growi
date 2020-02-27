@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
@@ -21,16 +18,7 @@ class SlackAppConfiguration extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isDropdownOpen: false,
-    };
-
-    this.onToggleDropdown = this.onToggleDropdown.bind(this);
     this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  onToggleDropdown() {
-    this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
   }
 
   async onClickSubmit() {
@@ -53,19 +41,22 @@ class SlackAppConfiguration extends React.Component {
       <React.Fragment>
         <div className="row my-3">
           <div className="col-6 text-left">
-            <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-              <DropdownToggle caret>
-                {`Slack ${adminNotificationContainer.state.selectSlackOption}`}
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu" role="menu">
-                <DropdownItem key="Incoming Webhooks" role="presentation" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
-                  <a role="menuitem">Slack Incoming Webhooks</a>
-                </DropdownItem>
-                <DropdownItem key="App" role="presentation" onClick={() => adminNotificationContainer.switchSlackOption('App')}>
-                  <a role="menuitem">Slack App</a>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <div className="dropdown">
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                {`Slack ${adminNotificationContainer.state.selectSlackOption}`} <span className="caret"></span>
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a className="dropdown-item" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>Slack Incoming Webhooks</a>
+                <a className="dropdown-item" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</a>
+              </div>
+            </div>
           </div>
         </div>
         {adminNotificationContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
