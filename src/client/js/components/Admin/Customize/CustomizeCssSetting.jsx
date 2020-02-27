@@ -37,26 +37,31 @@ class CustomizeCssSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('admin:customize_setting.custom_css')}</h2>
-        <Card className="card well my-3">
-          <CardBody className="px-0 py-2">
-            { t('admin:customize_setting.write_css') }<br />
-            { t('admin:customize_setting.reflect_change') }
-          </CardBody>
-        </Card>
+        <div className="row">
+          <div className="col-12">
+            <h2 className="admin-setting-header">{t('admin:customize_setting.custom_css')}</h2>
 
-        <div className="form-group">
-          <CustomCssEditor
-            value={adminCustomizeContainer.state.currentCustomizeCss || ''}
-            onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
-          />
-          <p className="form-text text-muted text-right">
-            <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-            {t('admin:customize_setting.ctrl_space')}
-          </p>
+            <Card className="card well my-3">
+              <CardBody className="px-0 py-2">
+                { t('admin:customize_setting.write_css') }<br />
+                { t('admin:customize_setting.reflect_change') }
+              </CardBody>
+            </Card>
+
+            <div className="form-group">
+              <CustomCssEditor
+                value={adminCustomizeContainer.state.currentCustomizeCss || ''}
+                onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
+              />
+              <p className="form-text text-muted text-right">
+                <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
+                {t('admin:customize_setting.ctrl_space')}
+              </p>
+            </div>
+
+            <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+          </div>
         </div>
-
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }

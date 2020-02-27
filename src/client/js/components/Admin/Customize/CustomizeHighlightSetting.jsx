@@ -88,53 +88,57 @@ class CustomizeHighlightSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
+        <div className="row">
+          <div className="col-12">
+            <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
 
-        <div className="form-group row">
-          <div className="offset-3 col-6 text-left">
-            <div className="my-0">
-              <label>{t('admin:customize_setting.theme')}</label>
+            <div className="form-group row">
+              <div className="offset-3 col-6 text-left">
+                <div className="my-0">
+                  <label>{t('admin:customize_setting.theme')}</label>
+                </div>
+                <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
+                  <DropdownToggle className="text-right col-6" caret>
+                    <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
+                  </DropdownToggle>
+                  <DropdownMenu className="dropdown-menu" role="menu">
+                    {menuItem}
+                  </DropdownMenu>
+                </Dropdown>
+                <p className="form-text text-warning">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
+                </p>
+              </div>
             </div>
-            <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-              <DropdownToggle className="text-right col-6" caret>
-                <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu" role="menu">
-                {menuItem}
-              </DropdownMenu>
-            </Dropdown>
-            <p className="form-text text-warning">
-              {/* eslint-disable-next-line react/no-danger */}
-              <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
-            </p>
-          </div>
-        </div>
 
-        <div className="form-group row">
-          <div className="offset-3 col-6 text-left">
-            <div className="custom-control custom-switch checkbox-success">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="highlightBorder"
-                checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-                onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
-              />
-              <label className="custom-control-label" htmlFor="highlightBorder">
-                <strong>Border</strong>
-              </label>
+            <div className="form-group row">
+              <div className="offset-3 col-6 text-left">
+                <div className="custom-control custom-switch checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="highlightBorder"
+                    checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
+                    onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+                  />
+                  <label className="custom-control-label" htmlFor="highlightBorder">
+                    <strong>Border</strong>
+                  </label>
+                </div>
+              </div>
             </div>
+
+            <div className="form-text text-muted">
+              <label>Examples:</label>
+              <div className="wiki">
+                {this.renderHljsDemo()}
+              </div>
+            </div>
+
+            <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
           </div>
         </div>
-
-        <div className="form-text text-muted">
-          <label>Examples:</label>
-          <div className="wiki">
-            {this.renderHljsDemo()}
-          </div>
-        </div>
-
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
