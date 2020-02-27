@@ -55,7 +55,7 @@ class ApiSettings extends React.Component {
               />
             )
             : (
-              <p className="form-control-static">
+              <p>
                 { t('page_me_apitoken.notice.apitoken_issued') }
               </p>
             )}
