@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import UserSettings from './UserSettings';
 import PasswordSettings from './PasswordSettings';
 import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
+import ApiSettings from './ApiSettings';
 
 class PersonalSettings extends React.Component {
 
@@ -42,7 +43,7 @@ class PersonalSettings extends React.Component {
                 <PasswordSettings />
               </div>
               <div id="apiToken" className="tab-pane" role="tabpanel">
-                {/* TODO GW-1031 create component */}
+                <ApiSettings />
               </div>
             </div>
           </div>
