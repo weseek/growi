@@ -81,7 +81,7 @@ class UserTriggerNotification extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="border-bottom mb-5">{t('notification_setting.user_trigger_notification_header')}</h2>
+        <h2 className="border-bottom my-5">{t('notification_setting.user_trigger_notification_header')}</h2>
 
         <table className="table table-bordered">
           <thead>

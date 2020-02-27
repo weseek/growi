@@ -129,22 +129,25 @@ class GlobalNotificationList extends React.Component {
                   && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-slack"></i> {notification.slackChannels}</span>}
               </td>
               <td className="td-abs-center">
-                <div className="btn-group admin-group-menu">
-                  <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                <div className="dropdown">
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
                     <i className="icon-settings"></i> <span className="caret"></span>
                   </button>
-                  <ul className="dropdown-menu" role="menu">
-                    <li>
-                      <a href={urljoin('/admin/global-notification/', notification._id)}>
-                        <i className="icon-fw icon-note"></i> {t('Edit')}
-                      </a>
-                    </li>
-                    <li onClick={() => this.openConfirmationModal(notification)}>
-                      <a>
-                        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                      </a>
-                    </li>
-                  </ul>
+                  <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
+                      <i className="icon-fw icon-note"></i> {t('Edit')}
+                    </a>
+                    <a className="dropdown-item" onClick={() => this.openConfirmationModal(notification)}>
+                      <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                    </a>
+                  </div>
                 </div>
               </td>
             </tr>
