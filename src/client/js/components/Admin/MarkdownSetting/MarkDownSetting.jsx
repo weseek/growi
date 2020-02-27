@@ -38,31 +38,25 @@ class MarkdownSetting extends React.Component {
     return (
       <React.Fragment>
         {/* Line Break Setting */}
-        <div className="row mb-5">
-          <h2 className="border-bottom col-12">{t('admin:markdown_setting.lineBreak_header') }</h2>
-          <Card className="card-well col-12">
-            <CardBody className="px-2 py-3">{ t('admin:markdown_setting.line_break_setting_desc') }</CardBody>
-          </Card>
-          <LineBreakForm />
-        </div>
+        <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
+        </Card>
+        <LineBreakForm />
 
         {/* Presentation Setting */}
-        <div className="row mb-5">
-          <h2 className="border-bottom col-12">{ t('admin:markdown_setting.presentation_setting') }</h2>
-          <Card className="card-well col-12">
-            <CardBody className="px-2 py-3">{ t('admin:markdown_setting.presentation_setting_desc') }</CardBody>
-          </Card>
-          <PresentationForm />
-        </div>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.presentation_header') }</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
+        </Card>
+        <PresentationForm />
 
         {/* XSS Setting */}
-        <div className="row mb-5">
-          <h2 className="border-bottom col-12">{ t('admin:markdown_setting.XSS_setting') }</h2>
-          <Card className="card-well col-12">
-            <CardBody className="px-2 py-3">{ t('admin:markdown_setting.XSS_setting_desc') }</CardBody>
-          </Card>
-          <XssForm />
-        </div>
+        <h2 className="admin-setting-header">{ t('admin:markdown_setting.xss_header') }</h2>
+        <Card className="card well my-3">
+          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
+        </Card>
+        <XssForm />
       </React.Fragment>
     );
   }
