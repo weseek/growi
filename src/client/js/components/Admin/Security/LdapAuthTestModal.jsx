@@ -23,6 +23,7 @@ class LdapAuthTestModal extends React.Component {
       password: '',
       logs: '',
       errorMessage: null,
+      successMessage: null,
     };
 
     this.onChangeUsername = this.onChangeUsername.bind(this);
@@ -75,12 +76,12 @@ class LdapAuthTestModal extends React.Component {
 
       if (response.status === 'warning') {
         this.addLogs(response.message);
-        this.setState({ errorMessage: response.message });
+        this.setState({ errorMessage: response.message, successMessage: null });
       }
 
       if (response.status === 'success') {
         toastSuccess(response.message);
-        this.setState({ errorMessage: null });
+        this.setState({ successMessage: response.message, errorMessage: null });
       }
 
       if (response.ldapConfiguration) {
@@ -111,6 +112,7 @@ class LdapAuthTestModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {this.state.successMessage != null && <div className="alert alert-success">{this.state.successMessage}</div>}
           {this.state.errorMessage != null && <div className="alert alert-warning">{this.state.errorMessage}</div>}
           <div className="row p-3">
             <label htmlFor="username" className="col-xs-3 text-right">{t('username')}</label>
