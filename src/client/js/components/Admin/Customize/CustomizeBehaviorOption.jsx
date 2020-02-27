@@ -9,9 +9,15 @@ class CustomizeBehaviorOption extends React.PureComponent {
     return (
       <React.Fragment>
         <h4>
-          <div className="radio radio-primary">
-            <input type="radio" id={`radioBehavior${this.props.behaviorType}`} checked={this.props.isSelected} onChange={this.props.onSelected} />
-            <label htmlFor={`radioBehavior${this.props.behaviorType}`}>
+          <div className="custom-control custom-radio">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id={`radioBehavior${this.props.behaviorType}`}
+              checked={this.props.isSelected}
+              onChange={this.props.onSelected}
+            />
+            <label className="custom-control-label" htmlFor={`radioBehavior${this.props.behaviorType}`}>
               {/* eslint-disable-next-line react/no-danger */}
               <span dangerouslySetInnerHTML={{ __html: this.props.labelHtml }} />
             </label>
