@@ -67,7 +67,7 @@ class UserManagement extends React.Component {
           <div className="col-md-4 filter-container my-2">
 
             <label>
-              <i className="icon-magnifier"></i>
+              <i className="icon-magnifier mr-1"></i>
               <input type="text" name="name" />
             </label>
           </div>
