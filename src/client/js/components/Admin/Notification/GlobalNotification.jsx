@@ -16,9 +16,11 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <a href="/admin/global-notification/new">
-          <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
-        </a>
+        <div className="my-3">
+          <a href="/admin/global-notification/new">
+            <button type="button" className="btn page-link text-dark d-inline-block">{t('notification_setting.add_notification')}</button>
+          </a>
+        </div>
 
         <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}</h2>
 
