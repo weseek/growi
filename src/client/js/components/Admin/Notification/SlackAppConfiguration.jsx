@@ -109,12 +109,12 @@ class SlackAppConfiguration extends React.Component {
             <React.Fragment>
               <h2 className="border-bottom mb-5">{t('notification_setting.slack_app_configuration')}</h2>
 
-              <div className="well">
-                <i className="icon-fw icon-exclamation text-danger"></i><span className="text-danger">NOT RECOMMENDED</span>
-                <br /><br />
+              <div className="well card">
+                <span className="text-danger"><i className="icon-fw icon-exclamation"></i>NOT RECOMMENDED</span>
+                <br />
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.slack_app_configuration_desc') }} />
-                <br /><br />
+                <br />
                 <a
                   href="#slack-incoming-webhooks"
                   data-toggle="tab"
@@ -126,7 +126,7 @@ class SlackAppConfiguration extends React.Component {
 
               <div className="row mb-5">
                 <label className="col-3 text-right">OAuth Access Token</label>
-                <div className="col-xs-6">
+                <div className="col-6">
                   <input
                     className="form-control"
                     type="text"
