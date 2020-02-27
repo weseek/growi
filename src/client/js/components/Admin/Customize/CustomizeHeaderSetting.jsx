@@ -56,7 +56,7 @@ class CustomizeHeaderSetting extends React.Component {
           </pre>
         </div>
 
-        <div className="form-group w-100">
+        <div className="form-group">
           <CustomHeaderEditor
             value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}

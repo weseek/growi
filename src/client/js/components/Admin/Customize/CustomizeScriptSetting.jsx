@@ -87,7 +87,7 @@ class CustomizeScriptSetting extends React.Component {
           <pre className="hljs"><code>{this.getExampleCode()}</code></pre>
         </div>
 
-        <div className="form-group w-100">
+        <div className="form-group">
           <CustomScriptEditor
             value={adminCustomizeContainer.state.currentCustomizeScript || ''}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeScript(inputValue) }}

@@ -45,7 +45,7 @@ class CustomizeCssSetting extends React.Component {
           </CardBody>
         </Card>
 
-        <div className="form-group w-100">
+        <div className="form-group">
           <CustomCssEditor
             value={adminCustomizeContainer.state.currentCustomizeCss || ''}
             onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
