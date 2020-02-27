@@ -222,5 +222,20 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO
+  router.put('/api-token', loginRequiredStrictly, csrf, async(req, res) => {
+    const { user } = req;
+
+    try {
+      const userData = await user.updateApiToken();
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-api-token-failed');
+    }
+
+  });
+
   return router;
 };

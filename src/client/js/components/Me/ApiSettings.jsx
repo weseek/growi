@@ -19,10 +19,11 @@ class ApiSettings extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, personalContainer } = this.props;
+    const { t, appContainer, personalContainer } = this.props;
 
     try {
-      // TODO
+      await appContainer.apiv3Put('/personal-setting/api-token');
+
       await personalContainer.retrievePersonalData();
       toastSuccess(t('toaster.update_successed', { target: t('personal_settings.update_password') }));
     }

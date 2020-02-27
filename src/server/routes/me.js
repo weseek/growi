@@ -254,28 +254,6 @@ module.exports = function(crowi, app) {
     })(req, res, () => {});
   };
 
-  actions.apiToken = function(req, res) {
-    const userData = req.user;
-
-    if (req.method === 'POST' && req.form.isValid) {
-      userData.updateApiToken()
-        .then((userData) => {
-          req.flash('successMessage', 'API Token updated');
-          return res.redirect('/me/apiToken');
-        })
-        .catch((err) => {
-        // req.flash('successMessage',);
-          req.form.errors.push('Failed to update API Token');
-          return res.render('me/api_token', {
-          });
-        });
-    }
-    else {
-      return res.render('me/api_token', {
-      });
-    }
-  };
-
   actions.updates = function(req, res) {
     res.render('me/update', {
     });
