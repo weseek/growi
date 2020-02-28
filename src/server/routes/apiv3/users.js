@@ -426,6 +426,13 @@ module.exports = (crowi) => {
 
   const correctStatusList = ['registered', 'active', 'suspended', 'invited'];
 
+  const statusNo = {
+    registered: User.STATUS_REGISTERED,
+    active: User.STATUS_ACTIVE,
+    suspended: User.STATUS_SUSPENDED,
+    invited: User.STATUS_INVITED,
+  };
+
   validator.statusList = [
     body('statusList').custom((value) => {
       const error = [];
@@ -442,12 +449,6 @@ module.exports = (crowi) => {
 
     const page = parseInt(req.query.page) || 1;
     const { statusList } = req.body;
-    const statusNo = {
-      registered: User.STATUS_REGISTERED,
-      active: User.STATUS_ACTIVE,
-      suspended: User.STATUS_SUSPENDED,
-      invited: User.STATUS_INVITED,
-    };
 
     const statusNoList = statusList.map(element => statusNo[element]);
 
