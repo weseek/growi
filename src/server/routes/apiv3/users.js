@@ -424,8 +424,6 @@ module.exports = (crowi) => {
     }
   });
 
-  const correctStatusList = ['registered', 'active', 'suspended', 'invited'];
-
   const statusNo = {
     registered: User.STATUS_REGISTERED,
     active: User.STATUS_ACTIVE,
@@ -437,7 +435,7 @@ module.exports = (crowi) => {
     body('statusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
-        if (!correctStatusList.includes(status)) {
+        if (!Object.keys(statusNo)) {
           error.push(status);
         }
       });
