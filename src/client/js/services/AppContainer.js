@@ -37,7 +37,7 @@ export default class AppContainer extends Container {
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
     this.isLoggedin = document.querySelector('.main-container.nologin') == null;
 
-    this.config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+    this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
