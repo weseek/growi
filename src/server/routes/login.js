@@ -15,7 +15,9 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   const loginSuccess = function(req, res, userData) {
-    req.user = req.session.user = userData;
+    // transforming attributes
+    // see User model
+    req.user = req.session.user = userData.toObject();
 
     // update lastLoginAt
     userData.updateLastLoginAt(new Date(), (err, uData) => {
