@@ -19,7 +19,9 @@ class UserManagement extends React.Component {
 
   constructor(props) {
     super();
-
+    this.state = {
+      statusList: new Set(),
+    };
     this.handlePage = this.handlePage.bind(this);
   }
 
@@ -34,6 +36,24 @@ class UserManagement extends React.Component {
     catch (err) {
       toastError(err);
     }
+  }
+
+
+  /**
+   * 全て
+   */
+
+  onChangeStatusList(status) {
+    // const { statusList } = this.state;
+    const temp = new Set(this.state.statusList);
+
+    if (temp.has(status)) {
+      temp.delete(status);
+    }
+    else {
+      temp.add(status);
+    }
+    this.setState({ statusList: temp });
   }
 
   render() {
@@ -63,34 +83,36 @@ class UserManagement extends React.Component {
 
         <h2>{t('User_Management')}</h2>
 
-        <div className="row container">
-          <div className="col-md-4 filter-container my-2">
+        <div className="row container border-top border-bottom">
+          <div className="col-md-">
+            <div className="px-0">
 
-            <label>
-              <i className="icon-magnifier mr-1"></i>
-              <input type="text" name="name" />
-            </label>
-          </div>
-          {/* form BootStrap確認 */}
+              <label className="mb-0 my-3">
+                <i className="icon-magnifier mr-1"></i>
+                <input type="text" name="name" />
+              </label>
+            </div>
+            {/* form BootStrap確認 */}
 
-          <div className="col-md-8 py-2 check-container border" style={{ width: 500 }}>
-            <input type="checkbox" className="mr-1" onChange={this.__changeAllChecks} />
-            <label className="mr-2">全て</label>
+            <div className="py-2 my-2" style={{ width: 500 }}>
+              <input type="checkbox" className="mr-1" onChange={this.onChangeStatusList('test')} />
+              <label className="mr-2">全て</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.__ApprovalPending} />
-            <label className="label label-info mr-2">Approval Pending</label>
+              <input type="checkbox" className="mr-1" onChange={this.ApprovalPending} />
+              <label className="label label-info mr-2">Approval Pending</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.__Active} />
-            <label className="label label-success mr-2">Active</label>
+              <input type="checkbox" className="mr-1" onChange={this.Active} />
+              <label className="label label-success mr-2">Active</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.__Suspended} />
-            <label className="label label-warning mr-2">Suspended</label>
+              <input type="checkbox" className="mr-1" onChange={this.Suspended} />
+              <label className="label label-warning mr-2">Suspended</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.__Invited} />
-            <label className="label label-info mr-2">Invited</label>
+              <input type="checkbox" className="mr-1" onChange={this.__Invited} />
+              <label className="label label-info mr-2">Invited</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.__Status} />
-            <label className="label label-info">Status</label>
+              <input type="checkbox" className="mr-1" onChange={this.__Status} />
+              <label className="label label-info">Status</label>
+            </div>
           </div>
         </div>
 
