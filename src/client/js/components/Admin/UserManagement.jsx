@@ -15,6 +15,8 @@ import PasswordResetModal from './Users/PasswordResetModal';
 import InviteUserControl from './Users/InviteUserControl';
 import UserTable from './Users/UserTable';
 
+import UserExtractionField from './Users/UserExtraction/UserExtractionField';
+
 class UserManagement extends React.Component {
 
   constructor(props) {
@@ -62,6 +64,8 @@ class UserManagement extends React.Component {
         </p>
 
         <h2>{t('User_Management')}</h2>
+
+        <UserExtractionField />
 
         {pager}
         <UserTable />
