@@ -23,6 +23,7 @@ export default class PersonalContainer extends Container {
       registrationWhiteList: this.appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
       lang: 'en-US',
+      isGravatarEnabled: false,
       externalAccounts: [],
       isPasswordSet: false,
       apiToken: '',
@@ -50,6 +51,7 @@ export default class PersonalContainer extends Container {
         email: currentUser.email,
         isEmailPublished: currentUser.isEmailPublished,
         lang: currentUser.lang,
+        isGravatarEnabled: currentUser.isGravatarEnabled,
         isPasswordSet: (currentUser.password != null),
         apiToken: currentUser.apiToken,
       });
@@ -104,6 +106,13 @@ export default class PersonalContainer extends Container {
    */
   changeLang(lang) {
     this.setState({ lang });
+  }
+
+  /**
+   * Change isGravatarEnabled
+   */
+  changeIsGravatarEnabled(boolean) {
+    this.setState({ isGravatarEnabled: boolean });
   }
 
   /**
