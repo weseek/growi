@@ -128,7 +128,7 @@ class PageComments extends React.Component {
   renderThread(comment, replies) {
     const commentId = comment._id;
     const showEditor = this.state.showEditorIds.has(commentId);
-    const isLoggedIn = this.props.appContainer.me != null;
+    const isLoggedIn = this.props.appContainer.currentUser != null;
 
     let rootClassNames = 'page-comment-thread';
     if (replies.length === 0) {

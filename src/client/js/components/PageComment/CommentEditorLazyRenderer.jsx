@@ -27,9 +27,8 @@ class CommentEditorLazyRenderer extends React.Component {
 
   render() {
     const { appContainer } = this.props;
-    const username = appContainer.me;
-    const isLoggedIn = username != null;
-    const user = appContainer.findUser(username);
+    const user = appContainer.currentUser;
+    const isLoggedIn = user != null;
 
     const layoutType = this.props.appContainer.getConfig().layoutType;
     const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
