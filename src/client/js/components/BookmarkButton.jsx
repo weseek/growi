@@ -56,7 +56,7 @@ export default class BookmarkButton extends React.Component {
   }
 
   isUserLoggedIn() {
-    return this.props.crowi.me != null;
+    return this.props.crowi.currentUserId != null;
   }
 
   render() {
