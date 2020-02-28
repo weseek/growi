@@ -289,14 +289,6 @@ export default class AppContainer extends Container {
     return users;
   }
 
-  findUser(username) {
-    if (this.userByName && this.userByName[username]) {
-      return this.userByName[username];
-    }
-
-    return null;
-  }
-
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
