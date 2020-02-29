@@ -781,10 +781,8 @@ module.exports = function(crowi, app) {
   /**
    * validate setting form values for SAML
    *
-   * The following are checked.
-   *
    * - For the value of each mandatory items,
-   *     check whether it from the environment variables is empty and form value to update it is empty.
+   *     check whether it from the environment variables is empty and form value to update it is empty
    * - validate the syntax of a attribute-based login control rule
    */
   function validateSamlSettingForm(form, t) {
