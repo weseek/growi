@@ -800,7 +800,7 @@ module.exports = function(crowi, app) {
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
     if (rule !== '' && rule != null && crowi.passportService.parseABLCRule(rule) === null) {
-      form.errors.push('Rule syntax is invalid');
+      form.errors.push(t('form_validation.invalid_syntax', t('security_setting.form_item_name.security:passport-saml:ABLCRule')));
     }
   }
 
