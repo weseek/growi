@@ -53,6 +53,11 @@ module.exports = function(crowi, app) {
     return res.redirect('/login');
   };
 
+  const loginFailureByABLC = (req, res, next) => {
+    req.flash('errorMessage', 'Sign in failure due to insufficient privileges.');
+    return res.redirect('/login');
+  };
+
   /**
    * return true(valid) or false(invalid)
    *
@@ -463,7 +468,7 @@ module.exports = function(crowi, app) {
 
     // Attribute-based Login Control
     if (!crowi.passportService.verifySAMLResponseByABLCRule(response)) {
-      return loginFailure(req, res);
+      return loginFailureByABLC(req, res);
     }
 
     // login
