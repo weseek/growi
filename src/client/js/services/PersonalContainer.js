@@ -144,4 +144,12 @@ export default class PersonalContainer extends Container {
     }
   }
 
+  /**
+   * Update profile image
+   * @memberOf PersonalContainer
+   */
+  async updateProfileImage() {
+    // TODO create apiV3
+  }
+
 }
