@@ -2,7 +2,8 @@
 
 ## v3.6.9-RC
 
-*
+* Fix: Client crashed when the first login
+    * Introduced by 3.6.8
 
 ## v3.6.8
 
@@ -10,6 +11,7 @@
 * Improvement: Optimize markdown rendering
 * Improvement: Reactify admin pages (Navigation)
 * Fix: Reply comments collapsed are broken
+    * Introduced by 3.6.7
 * Support: Update libs
     * cross-env
     * mkdirp
