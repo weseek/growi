@@ -52,7 +52,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:me');
   const logger = require('@alias/logger')('growi:routes:me');
   const models = crowi.models;
-  const User = models.User;
   const UserGroupRelation = models.UserGroupRelation;
   const ExternalAccount = models.ExternalAccount;
   const ApiResponse = require('../util/apiResponse');
@@ -104,90 +103,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.index = function(req, res) {
-    const userForm = req.body.userForm;
-    const userData = req.user;
-
-    if (req.method === 'POST' && req.form.isValid) {
-      const name = userForm.name;
-      const email = userForm.email;
-      const lang = userForm.lang;
-      const isEmailPublished = userForm.isEmailPublished;
-
-      /*
-       * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
-       *
-      if (!User.isEmailValid(email)) {
-        req.form.errors.push('You can\'t update to that email address');
-        return res.render('me/index', {});
-      }
-      */
-
-      User.findOneAndUpdate(
-        /* eslint-disable object-curly-newline */
-        { email: userData.email }, //                   query
-        { name, email, lang, isEmailPublished }, //     updating data
-        { runValidators: true, context: 'query' }, //   for validation
-        // see https://www.npmjs.com/package/mongoose-unique-validator#find--updates -- 2017.09.24 Yuki Takei
-        /* eslint-enable object-curly-newline */
-        (err) => {
-          if (err) {
-            Object.keys(err.errors).forEach((e) => {
-              req.form.errors.push(err.errors[e].message);
-            });
-
-            return res.render('me/index', {});
-          }
-          req.i18n.changeLanguage(lang);
-          req.flash('successMessage', req.t('Updated'));
-          return res.redirect('/me');
-        },
-      );
-    }
-    else { // method GET
-      /*
-       * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
-       *
-      /// そのうちこのコードはいらなくなるはず
-      if (!userData.isEmailSet()) {
-        req.flash('warningMessage', 'メールアドレスが設定されている必要があります');
-      }
-      */
-
-      return res.render('me/index', {
-      });
-    }
-  };
-
-  actions.imagetype = function(req, res) {
-    if (req.method !== 'POST') {
-      // do nothing
-      return;
-    }
-    if (!req.form.isValid) {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return;
-    }
-
-    const imagetypeForm = req.body.imagetypeForm;
-    const userData = req.user;
-
-    const isGravatarEnabled = imagetypeForm.isGravatarEnabled;
-
-    userData.updateIsGravatarEnabled(isGravatarEnabled, (err, userData) => {
-      if (err) {
-        /* eslint-disable no-restricted-syntax, no-prototype-builtins */
-        for (const e in err.errors) {
-          if (err.errors.hasOwnProperty(e)) {
-            req.form.errors.push(err.errors[e].message);
-          }
-        }
-        /* eslint-enable no-restricted-syntax, no-prototype-builtins */
-        return res.render('me/index', {});
-      }
-
-      req.flash('successMessage', req.t('Updated'));
-      return res.redirect('/me');
-    });
+    return res.render('me/index');
   };
 
   actions.externalAccounts = {};
@@ -304,81 +220,6 @@ module.exports = function(crowi, app) {
           });
       }
     })(req, res, () => {});
-  };
-
-  actions.password = function(req, res) {
-    const passwordForm = req.body.mePassword;
-    const userData = req.user;
-
-    /*
-      * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
-      *
-    // パスワードを設定する前に、emailが設定されている必要がある (schemaを途中で変更したため、最初の方の人は登録されていないかもしれないため)
-    // そのうちこのコードはいらなくなるはず
-    if (!userData.isEmailSet()) {
-      return res.redirect('/me');
-    }
-    */
-
-    if (req.method === 'POST' && req.form.isValid) {
-      const newPassword = passwordForm.newPassword;
-      const newPasswordConfirm = passwordForm.newPasswordConfirm;
-      const oldPassword = passwordForm.oldPassword;
-
-      if (userData.isPasswordSet() && !userData.isPasswordValid(oldPassword)) {
-        req.form.errors.push('Wrong current password');
-        return res.render('me/password', {
-        });
-      }
-
-      // check password confirm
-      if (newPassword !== newPasswordConfirm) {
-        req.form.errors.push('Failed to verify passwords');
-      }
-      else {
-        userData.updatePassword(newPassword, (err, userData) => {
-          if (err) {
-            /* eslint-disable no-restricted-syntax, no-prototype-builtins */
-            for (const e in err.errors) {
-              if (err.errors.hasOwnProperty(e)) {
-                req.form.errors.push(err.errors[e].message);
-              }
-            }
-            return res.render('me/password', {});
-          }
-          /* eslint-enable no-restricted-syntax, no-prototype-builtins */
-
-          req.flash('successMessage', 'Password updated');
-          return res.redirect('/me/password');
-        });
-      }
-    }
-    else { // method GET
-      return res.render('me/password', {
-      });
-    }
-  };
-
-  actions.apiToken = function(req, res) {
-    const userData = req.user;
-
-    if (req.method === 'POST' && req.form.isValid) {
-      userData.updateApiToken()
-        .then((userData) => {
-          req.flash('successMessage', 'API Token updated');
-          return res.redirect('/me/apiToken');
-        })
-        .catch((err) => {
-        // req.flash('successMessage',);
-          req.form.errors.push('Failed to update API Token');
-          return res.render('me/api_token', {
-          });
-        });
-    }
-    else {
-      return res.render('me/api_token', {
-      });
-    }
   };
 
   actions.updates = function(req, res) {

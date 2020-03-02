@@ -1,8 +1,28 @@
 # CHANGES
 
-## 3.6.7-RC
+## v3.6.9-RC
 
-* Imprv: Show error toastr when saving page is failed because of empty document
+*
+
+## v3.6.8
+
+* Improvement: Show page history side-by-side
+* Improvement: Optimize markdown rendering
+* Improvement: Reactify admin pages (Navigation)
+* Fix: Reply comments collapsed are broken
+* Support: Update libs
+    * cross-env
+    * mkdirp
+    * diff2html
+    * jest
+    * stylelint
+
+## v3.6.7
+
+* Feature: Anchor link for comments
+* Improvement: Show error toastr when saving page is failed because of empty document
+* Fix: Admin Customise couldn't restore stored config value
+    * Introduced by 3.6.2
 * Fix: Admin Customise missed preview functions
     * Introduced by 3.6.2
 * Fix: AWS doesn't work

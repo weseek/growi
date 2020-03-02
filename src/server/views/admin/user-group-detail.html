@@ -11,17 +11,13 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'user-group'} %}
-    </div>
-    <div
-      id="admin-user-group-detail"
-      class="col-md-9"
-      data-user-group="{{ userGroup|json }}"
-    >
-    </div>
+<div class="content-main row">
+  {% parent %}
+  <div
+    id="admin-user-group-detail"
+    class="col-md-9"
+    data-user-group="{{ userGroup|json }}"
+  >
   </div>
 </div>
 {% endblock content_main %}

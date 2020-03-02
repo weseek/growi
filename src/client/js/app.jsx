@@ -31,10 +31,12 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
+import PersonalSettings from './components/Me/PersonalSettings';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import PersonalContainer from './services/PersonalContainer';
 
 import ProfileImageUploader from './components/Me/ProfileImageUploader';
 
@@ -120,6 +122,22 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
+
+const personalSettingsElem = document.getElementById('personal-setting');
+if (personalSettingsElem != null) {
+  const personalContainer = new PersonalContainer(appContainer);
+  ReactDOM.render(
+    <Provider inject={[injectableContainers, personalContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <PersonalSettings
+          crowi={appContainer}
+        />
+      </I18nextProvider>
+    </Provider>,
+    personalSettingsElem,
+  );
+}
+
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

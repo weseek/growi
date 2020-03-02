@@ -44,9 +44,6 @@ class PageEditor extends React.Component {
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
 
-    // get renderer
-    this.growiRenderer = this.props.appContainer.getRenderer('editor');
-
     // for scrolling
     this.lastScrolledDateWithCursor = null;
     this.isOriginOfScrollSyncEditor = false;
@@ -56,15 +53,14 @@ class PageEditor extends React.Component {
     this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
     this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
-    this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
+    this.setMarkdownStateWithDebounce = debounce(50, throttle(100, (value) => {
+      this.setState({ markdown: value });
+    }));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
 
   componentWillMount() {
     this.props.appContainer.registerComponentInstance('PageEditor', this);
-
-    // initial rendering
-    this.renderPreview(this.state.markdown);
   }
 
   getMarkdown() {
@@ -93,7 +89,7 @@ class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
-    this.renderPreviewWithDebounce(value);
+    this.setMarkdownStateWithDebounce(value);
     this.saveDraftWithDebounce();
   }
 
@@ -285,41 +281,6 @@ class PageEditor extends React.Component {
     this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
   }
 
-  renderPreview(value) {
-    this.setState({ markdown: value });
-
-    // render html
-    const context = {
-      markdown: this.state.markdown,
-      currentPagePath: decodeURIComponent(window.location.pathname),
-    };
-
-    const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    interceptorManager.process('preRenderPreview', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderPreviewHtml', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML });
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderPreviewHtml', context) });
-
-  }
-
   render() {
     const config = this.props.appContainer.getConfig();
     const noCdn = envUtils.toBoolean(config.env.NO_CDN);
@@ -345,7 +306,7 @@ class PageEditor extends React.Component {
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
           <Preview
-            html={this.state.html}
+            markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign
             inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
