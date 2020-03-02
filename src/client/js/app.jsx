@@ -38,8 +38,6 @@ import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import PersonalContainer from './services/PersonalContainer';
 
-import ProfileImageUploader from './components/Me/ProfileImageUploader';
-
 import { appContainer, componentMappings } from './bootstrap';
 
 const logger = loggerFactory('growi:app');
@@ -75,8 +73,6 @@ Object.assign(componentMappings, {
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
-
-  'profile-image-uploader': <ProfileImageUploader />,
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,

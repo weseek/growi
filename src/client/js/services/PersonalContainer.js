@@ -24,6 +24,7 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en-US',
       isGravatarEnabled: false,
+      croppedImageUrl: '',
       externalAccounts: [],
       isPasswordSet: false,
       apiToken: '',
@@ -45,7 +46,7 @@ export default class PersonalContainer extends Container {
     try {
       const response = await this.appContainer.apiv3.get('/personal-setting/');
       const { currentUser } = response.data;
-
+      const croppedImageUrl = this.getUploadedPictureSrc(currentUser);
       this.setState({
         name: currentUser.name,
         email: currentUser.email,
@@ -54,6 +55,7 @@ export default class PersonalContainer extends Container {
         isGravatarEnabled: currentUser.isGravatarEnabled,
         isPasswordSet: (currentUser.password != null),
         apiToken: currentUser.apiToken,
+        croppedImageUrl,
       });
     }
     catch (err) {
@@ -61,6 +63,20 @@ export default class PersonalContainer extends Container {
       logger.error(err);
       throw new Error('Failed to fetch personal data');
     }
+  }
+
+  /**
+   * define a function for uploaded picture
+   */
+  getUploadedPictureSrc(user) {
+    if (user.image) {
+      return user.image;
+    }
+    if (user.imageAttachment != null) {
+      return user.imageAttachment.filePathProxied;
+    }
+
+    return '/images/icons/user.svg';
   }
 
   /**
