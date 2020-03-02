@@ -10,9 +10,6 @@ export default class RevisionBody extends React.PureComponent {
 
     // create debounced method for rendering MathJax
     this.renderMathJaxWithDebounce = debounce(200, this.renderMathJax);
-
-    // create debounced method for rendering draw.io
-    this.renderDrawioWithDebounce = debounce(200, this.renderDrawio);
   }
 
   componentDidMount() {
