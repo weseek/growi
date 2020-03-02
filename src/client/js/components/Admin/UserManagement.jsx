@@ -44,7 +44,18 @@ class UserManagement extends React.Component {
    */
 
   // onChangeStatusList(status) {
-  //   // const { statusList } = this.state;
+  // const { statusList } = this.state;
+
+  //   if (temp.has(status)) {
+  //     temp.delete(status);
+  //   }
+  //   else {
+  //     temp.add(status);
+  //   }
+  //   this.setState({ statusList: temp });
+  // }
+
+
   //   const temp = new Set(this.state.statusList);
 
   //   if (temp.has(status)) {
