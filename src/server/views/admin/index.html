@@ -11,24 +11,9 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
-
-  {% set emessage = req.flash('errorMessage') %}
-  {% if emessage.length %}
-  <div class="alert alert-danger">
-    {{ emessage }}
-  </div>
-  {% endif %}
-
-  <div class="row">
-    <div class="col-md-3">
-      {% include './widget/menu.html' %}
-    </div>
-    <div class="col-md-9">
-      <div id="admin-home"></div>
-    </div>
-  </div>
-
+<div class="content-main row">
+  {% parent %}
+  <div class="col-md-9" id="admin-home"></div>
 </div>
 {% endblock content_main %}
 
