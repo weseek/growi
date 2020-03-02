@@ -47,14 +47,14 @@ module.exports = function(crowi, app) {
   }
 
   app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , middlewares.applicationInstalled    , login.login);
+  app.get('/login'                   , middlewares.applicationInstalled     , login.login);
   app.get('/login/invited'           , login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
   app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
   app.post('/register'               , form.register                        , csrf, login.register);
-  app.get('/register'                , middlewares.applicationInstalled    , login.register);
+  app.get('/register'                , middlewares.applicationInstalled     , login.register);
   app.get('/logout'                  , logout.logout);
 
   app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
