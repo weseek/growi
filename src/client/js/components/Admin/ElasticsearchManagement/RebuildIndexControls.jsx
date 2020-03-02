@@ -76,7 +76,7 @@ class RebuildIndexControls extends React.Component {
 
         <button
           type="submit"
-          className="btn btn-inverse"
+          className="btn btn-primary"
           onClick={() => { this.props.onRebuildingRequested() }}
           disabled={!isEnabled}
         >
