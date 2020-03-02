@@ -118,6 +118,50 @@ module.exports = (crowi) => {
     }
   });
 
+  const statusNo = {
+    registered: User.STATUS_REGISTERED,
+    active: User.STATUS_ACTIVE,
+    suspended: User.STATUS_SUSPENDED,
+    invited: User.STATUS_INVITED,
+  };
+
+  validator.statusList = [
+    body('statusList').custom((value) => {
+      const error = [];
+      value.forEach((status) => {
+        if (!Object.keys(statusNo)) {
+          error.push(status);
+        }
+      });
+      return (error.length === 0);
+    }),
+  ];
+
+  router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
+
+    const page = parseInt(req.query.page) || 1;
+    const { statusList } = req.body;
+
+    const statusNoList = statusList.map(element => statusNo[element]);
+
+    try {
+      const paginateResult = await User.paginate(
+        { status: { $in: statusNoList } },
+        {
+          sort: { status: 1, username: 1, createdAt: 1 },
+          page,
+          limit: PAGE_ITEMS,
+        },
+      );
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching user group list';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
+    }
+  });
+
   validator.inviteEmail = [
     // isEmail prevents line breaks, so use isString
     body('shapedEmailList').custom((value) => {
@@ -421,50 +465,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in fetching external-account list  ';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg + err.message, 'external-account-list-fetch-failed'), 500);
-    }
-  });
-
-  const statusNo = {
-    registered: User.STATUS_REGISTERED,
-    active: User.STATUS_ACTIVE,
-    suspended: User.STATUS_SUSPENDED,
-    invited: User.STATUS_INVITED,
-  };
-
-  validator.statusList = [
-    body('statusList').custom((value) => {
-      const error = [];
-      value.forEach((status) => {
-        if (!Object.keys(statusNo)) {
-          error.push(status);
-        }
-      });
-      return (error.length === 0);
-    }),
-  ];
-
-  router.get('/selected-status-users/', validator.statusList, ApiV3FormValidator, async(req, res) => {
-
-    const page = parseInt(req.query.page) || 1;
-    const { statusList } = req.body;
-
-    const statusNoList = statusList.map(element => statusNo[element]);
-
-    try {
-      const paginateResult = await User.paginate(
-        { status: { $in: statusNoList } },
-        {
-          sort: { status: 1, username: 1, createdAt: 1 },
-          page,
-          limit: PAGE_ITEMS,
-        },
-      );
-      return res.apiv3({ paginateResult });
-    }
-    catch (err) {
-      const msg = 'Error occurred in fetching user group list';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
     }
   });
 
