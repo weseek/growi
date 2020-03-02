@@ -8,7 +8,7 @@ module.exports = function(crowi, app) {
       // parse referer url
       const referer = new URL(req.headers.referer);
       // redirect
-      return res.redirect(`${referer.pathname}${referer.search}${referer.hash}`);
+      return res.safeRedirect(`${referer.pathname}${referer.search}${referer.hash}`);
     },
   };
 };

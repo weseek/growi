@@ -30,25 +30,7 @@ module.exports = function(crowi, app) {
       return res.redirect('/me/password');
     }
 
-    const jumpTo = req.session.jumpTo;
-    if (jumpTo) {
-      req.session.jumpTo = null;
-
-      // prevention from open redirect
-      try {
-        const redirectUrl = new URL(jumpTo, `${req.protocol}://${req.get('host')}`);
-        if (redirectUrl.hostname === req.hostname) {
-          return res.redirect(redirectUrl);
-        }
-        logger.warn('Requested redirect URL is invalid, redirect to root page');
-      }
-      catch (err) {
-        logger.warn('Requested redirect URL is invalid, redirect to root page', err);
-        return res.redirect('/');
-      }
-    }
-
-    return res.redirect('/');
+    return res.safeRedirect(req.session.redirectTo);
   };
 
   const loginFailure = function(req, res) {
