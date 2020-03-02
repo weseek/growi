@@ -11,7 +11,7 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`label-${indexName}-${aliasName}`} className="label label-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="label badge-primary mr-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );
@@ -98,36 +98,36 @@ class StatusTable extends React.PureComponent {
     const { isConfigured, isConnected, isNormalized } = this.props;
 
 
-    let connectionStatusLabel = <span className="label label-default">――</span>;
+    let connectionStatusLabel = <span className="badge badge-default">――</span>;
     if (isConfigured != null && !isConfigured) {
-      connectionStatusLabel = <span className="label label-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+      connectionStatusLabel = <span className="badge badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
     }
     else if (isConnected != null) {
       connectionStatusLabel = isConnected
-        ? <span className="label label-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="label label-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+        ? <span className="badge badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
     }
 
-    let indicesStatusLabel = <span className="label label-default">――</span>;
+    let indicesStatusLabel = <span className="label badge-default">――</span>;
     if (isNormalized != null) {
       indicesStatusLabel = isNormalized
-        ? <span className="label label-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-        : <span className="label label-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+        ? <span className="badge badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+        : <span className="badge badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
     }
 
     return (
       <table className="table table-bordered">
         <tbody>
           <tr>
-            <th>{ t('full_text_search_management.connection_status') }</th>
+            <th scope="row">{ t('full_text_search_management.connection_status') }</th>
             <td>{connectionStatusLabel}</td>
           </tr>
           <tr>
-            <th>{ t('full_text_search_management.indices_status') }</th>
+            <th scope="row">{ t('full_text_search_management.indices_status') }</th>
             <td>{indicesStatusLabel}</td>
           </tr>
           <tr>
-            <th className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
+            <th scope="row" className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
             <td className="p-4">
               { this.renderIndexInfoPanels() }
             </td>
