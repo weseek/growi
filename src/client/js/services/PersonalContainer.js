@@ -23,6 +23,7 @@ export default class PersonalContainer extends Container {
       registrationWhiteList: this.appContainer.getConfig().registrationWhiteList,
       isEmailPublished: false,
       lang: 'en-US',
+      isGravatarEnabled: false,
       externalAccounts: [],
       isPasswordSet: false,
       apiToken: '',
@@ -50,6 +51,7 @@ export default class PersonalContainer extends Container {
         email: currentUser.email,
         isEmailPublished: currentUser.isEmailPublished,
         lang: currentUser.lang,
+        isGravatarEnabled: currentUser.isGravatarEnabled,
         isPasswordSet: (currentUser.password != null),
         apiToken: currentUser.apiToken,
       });
@@ -107,6 +109,13 @@ export default class PersonalContainer extends Container {
   }
 
   /**
+   * Change isGravatarEnabled
+   */
+  changeIsGravatarEnabled(boolean) {
+    this.setState({ isGravatarEnabled: boolean });
+  }
+
+  /**
    * Update basic info
    * @memberOf PersonalContainer
    * @return {Array} basic info
@@ -132,6 +141,27 @@ export default class PersonalContainer extends Container {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to update personal data');
+    }
+  }
+
+  /**
+   * Update profile image
+   * @memberOf PersonalContainer
+   */
+  async updateProfileImage() {
+    try {
+      const response = await this.appContainer.apiv3.put('/personal-setting/image-type', {
+        isGravatarEnabled: this.state.isGravatarEnabled,
+      });
+      const { userData } = response.data;
+      this.setState({
+        isGravatarEnabled: userData.isGravatarEnabled,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to update profile image');
     }
   }
 

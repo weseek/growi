@@ -4,12 +4,6 @@ module.exports = {
   invited: require('./invited'),
   revision: require('./revision'),
   comment: require('./comment'),
-  me: {
-    user: require('./me/user'),
-    password: require('./me/password'),
-    imagetype: require('./me/imagetype'),
-    apiToken: require('./me/apiToken'),
-  },
   admin: {
     securityGeneral: require('./admin/securityGeneral'),
     securityPassportLocal: require('./admin/securityPassportLocal'),

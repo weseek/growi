@@ -106,38 +106,6 @@ module.exports = function(crowi, app) {
     return res.render('me/index');
   };
 
-  actions.imagetype = function(req, res) {
-    if (req.method !== 'POST') {
-      // do nothing
-      return;
-    }
-    if (!req.form.isValid) {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return;
-    }
-
-    const imagetypeForm = req.body.imagetypeForm;
-    const userData = req.user;
-
-    const isGravatarEnabled = imagetypeForm.isGravatarEnabled;
-
-    userData.updateIsGravatarEnabled(isGravatarEnabled, (err, userData) => {
-      if (err) {
-        /* eslint-disable no-restricted-syntax, no-prototype-builtins */
-        for (const e in err.errors) {
-          if (err.errors.hasOwnProperty(e)) {
-            req.form.errors.push(err.errors[e].message);
-          }
-        }
-        /* eslint-enable no-restricted-syntax, no-prototype-builtins */
-        return res.render('me/index', {});
-      }
-
-      req.flash('successMessage', req.t('Updated'));
-      return res.redirect('/me');
-    });
-  };
-
   actions.externalAccounts = {};
   actions.externalAccounts.list = function(req, res) {
     const userData = req.user;

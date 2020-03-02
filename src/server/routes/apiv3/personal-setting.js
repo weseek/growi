@@ -61,6 +61,9 @@ module.exports = (crowi) => {
       body('lang').isString().isIn(['en-US', 'ja']),
       body('isEmailPublished').isBoolean(),
     ],
+    imageType: [
+      body('isGravatarEnabled').isBoolean(),
+    ],
     password: [
       body('oldPassword').isString(),
       body('newPassword').isString().not().isEmpty()
@@ -142,6 +145,39 @@ module.exports = (crowi) => {
       return res.apiv3Err('update-personal-settings-failed');
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/image-type:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: putUserImageType
+   *        summary: /personal-setting/image-type
+   *        description: Update user image type
+   *        responses:
+   *          200:
+   *            description: succeded to update user image type
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: user data
+   */
+  router.put('/image-type', accessTokenParser, loginRequiredStrictly, csrf, validator.imageType, ApiV3FormValidator, async(req, res) => {
+    const { isGravatarEnabled } = req.body;
+
+    try {
+      const userData = await req.user.updateIsGravatarEnabled(isGravatarEnabled);
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-personal-settings-failed');
+    }
   });
 
   /**

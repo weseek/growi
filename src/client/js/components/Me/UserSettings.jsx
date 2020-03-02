@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import BasicInfoSettings from './BasicInfoSettings';
+import ProfileImageSettings from './ProfileImageSettings';
 
 class UserSettings extends React.Component {
 
@@ -19,7 +20,7 @@ class UserSettings extends React.Component {
 
         <div className="mb-5 container-fluid">
           <h2 className="border-bottom">{t('Set Profile Image')}</h2>
-          {/* TODO GW-1032 create component */}
+          <ProfileImageSettings />
         </div>
 
       </Fragment>
