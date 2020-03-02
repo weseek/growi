@@ -162,7 +162,7 @@ class ElasticsearchManagement extends React.Component {
 
         {/* Controls */}
         <div className="row">
-          <label className="col-sm-3 control-label">{ t('full_text_search_management.reconnect') }</label>
+          <label className="col-sm-3 col-form-label">{ t('full_text_search_management.reconnect') }</label>
           <div className="col-sm-6">
             <ReconnectControls
               isConfigured={isConfigured}
@@ -175,7 +175,7 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-sm-3 control-label">{ t('full_text_search_management.normalize') }</label>
+          <label className="col-sm-3 col-form-label">{ t('full_text_search_management.normalize') }</label>
           <div className="col-sm-6">
             <NormalizeIndicesControls
               isRebuildingProcessing={isRebuildingProcessing}
@@ -189,7 +189,7 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-sm-3 control-label">{ t('full_text_search_management.rebuild') }</label>
+          <label className="col-sm-3 col-form-label">{ t('full_text_search_management.rebuild') }</label>
           <div className="col-sm-6">
             <RebuildIndexControls
               isRebuildingProcessing={isRebuildingProcessing}
