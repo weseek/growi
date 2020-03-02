@@ -40,32 +40,21 @@ class UserManagement extends React.Component {
 
 
   /**
-   * 全て
+   * onChange 全て
    */
 
-  // onChangeStatusList(status) {
-  // const { statusList } = this.state;
+  onChangeStatusList(status) {
+    const { statusList } = this.state;
 
-  //   if (temp.has(status)) {
-  //     temp.delete(status);
-  //   }
-  //   else {
-  //     temp.add(status);
-  //   }
-  //   this.setState({ statusList: temp });
-  // }
+    if (statusList.has(status)) {
+      statusList.delete(status);
+    }
+    else {
+      statusList.add(status);
+    }
+    this.setState({ statusList });
+  }
 
-
-  //   const temp = new Set(this.state.statusList);
-
-  //   if (temp.has(status)) {
-  //     temp.delete(status);
-  //   }
-  //   else {
-  //     temp.add(status);
-  //   }
-  //   this.setState({ statusList: temp });
-  // }
 
   render() {
     const { t, adminUsersContainer } = this.props;
@@ -103,10 +92,9 @@ class UserManagement extends React.Component {
                 <input type="text" name="name" />
               </label>
             </div>
-            {/* form BootStrap確認 */}
 
             <div className="py-2 my-2" style={{ width: 500 }}>
-              <input type="checkbox" className="mr-1" onChange={this.onChangeStatusList('test')} />
+              <input type="checkbox" className="mr-1" onChange={() => { this.onChangeStatusList() }} />
               <label className="mr-2">全て</label>
 
               <input type="checkbox" className="mr-1" onChange={this.ApprovalPending} />
