@@ -424,13 +424,18 @@ module.exports = (crowi) => {
     }
   });
 
-  const correctStatusList = ['registered', 'active', 'suspended', 'invited'];
+  const statusNo = {
+    registered: User.STATUS_REGISTERED,
+    active: User.STATUS_ACTIVE,
+    suspended: User.STATUS_SUSPENDED,
+    invited: User.STATUS_INVITED,
+  };
 
   validator.statusList = [
     body('statusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
-        if (!correctStatusList.includes(status)) {
+        if (!Object.keys(statusNo)) {
           error.push(status);
         }
       });
@@ -439,7 +444,28 @@ module.exports = (crowi) => {
   ];
 
   router.get('/selected-status-users/', validator.statusList, ApiV3FormValidator, async(req, res) => {
-    return res.apiv3({});
+
+    const page = parseInt(req.query.page) || 1;
+    const { statusList } = req.body;
+
+    const statusNoList = statusList.map(element => statusNo[element]);
+
+    try {
+      const paginateResult = await User.paginate(
+        { status: { $in: statusNoList } },
+        {
+          sort: { status: 1, username: 1, createdAt: 1 },
+          page,
+          limit: PAGE_ITEMS,
+        },
+      );
+      return res.apiv3({ paginateResult });
+    }
+    catch (err) {
+      const msg = 'Error occurred in fetching user group list';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
+    }
   });
 
   /**
