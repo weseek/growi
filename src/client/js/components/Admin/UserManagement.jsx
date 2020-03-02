@@ -44,7 +44,7 @@ class UserManagement extends React.Component {
    */
 
 
-  // To do GW-1206 setting of onChange
+  // To do GW-1206: setting of onChange
   onChangeStatusList(status) {
     const { statusList } = this.state;
 
