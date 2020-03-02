@@ -6,6 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
+const { query } = require('express-validator/check');
 const { body } = require('express-validator/check');
 const { isEmail } = require('validator');
 
@@ -135,6 +136,8 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
+
+    query('page').isInt({ min: 1 }),
   ];
 
   router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
