@@ -1,7 +1,12 @@
+/**
+ * Redirect with prevention from Open Redirect
+ *
+ * Usage: app.use(require('middleware/safe-redirect')(['example.com', 'some.example.com:8080']))
+ */
+
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:middleware:safe-redirect');
-
 
 /**
  * Check whether the redirect url host is in specified whitelist
@@ -17,11 +22,7 @@ function isInWhitelist(whitelistOfHosts, redirectToFqdn) {
   return whitelistOfHosts.includes(redirectUrl.hostname) || whitelistOfHosts.includes(redirectUrl.host);
 }
 
-/**
- * Redirect with prevention from Open Redirect
- *
- * Usage: app.use(require('middleware/safe-redirect'))
- */
+
 module.exports = (whitelistOfHosts) => {
 
   return function(req, res, next) {
