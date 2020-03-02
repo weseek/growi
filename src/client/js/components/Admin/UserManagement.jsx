@@ -40,11 +40,11 @@ class UserManagement extends React.Component {
 
 
   /**
-   * onChange 全て
+   * onChange
    */
 
 
-  // To do GW-1206 チェックボックスのonChangeの設定
+  // To do GW-1206 setting of onChange
   onChangeStatusList(status) {
     const { statusList } = this.state;
 
@@ -96,7 +96,7 @@ class UserManagement extends React.Component {
 
           <div className="col-md-6 py-2 my-2" style={{ width: 500 }}>
             <input type="checkbox" className="mr-1" onChange={() => { this.onChangeStatusList() }} />
-            <label className="mr-2">全て</label>
+            <label className="mr-2">All</label>
 
             <input type="checkbox" className="mr-1" onChange={this.ApprovalPending} />
             <label className="label label-info mr-2">Approval Pending</label>
