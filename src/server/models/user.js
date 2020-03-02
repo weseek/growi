@@ -188,25 +188,16 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.updateIsGravatarEnabled = function(isGravatarEnabled, callback) {
+  userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    const userData = await this.save();
+    return userData;
   };
 
-  userSchema.methods.updateIsEmailPublished = function(isEmailPublished, callback) {
-    this.isEmailPublished = isEmailPublished;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
-  };
-
-  userSchema.methods.updatePassword = function(password, callback) {
+  userSchema.methods.updatePassword = async function(password) {
     this.setPassword(password);
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
+    const userData = await this.save();
+    return userData;
   };
 
   userSchema.methods.canDeleteCompletely = function(creatorId) {

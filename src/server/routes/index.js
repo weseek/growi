@@ -134,8 +134,6 @@ module.exports = function(crowi, app) {
   app.post('/me/external-accounts/disassociate'           , loginRequiredStrictly , me.externalAccounts.disassociate);
   app.post('/me/external-accounts/associateLdap'          , loginRequiredStrictly , form.login , me.externalAccounts.associateLdap);
 
-  app.post('/me/imagetype'            , form.me.imagetype         , loginRequiredStrictly , me.imagetype);
-
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
   app.get('/attachment/:pageId/:fileName'  , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below

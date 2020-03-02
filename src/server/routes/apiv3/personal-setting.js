@@ -144,6 +144,20 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger validator
+  router.put('/image-type', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
+    const { isGravatarEnabled } = req.body;
+
+    try {
+      const userData = await req.user.updateIsGravatarEnabled(isGravatarEnabled);
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-personal-settings-failed');
+    }
+  });
+
   /**
    * @swagger
    *

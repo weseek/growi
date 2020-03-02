@@ -149,7 +149,20 @@ export default class PersonalContainer extends Container {
    * @memberOf PersonalContainer
    */
   async updateProfileImage() {
-    // TODO create apiV3
+    try {
+      const response = await this.appContainer.apiv3.put('/personal-setting/image-type', {
+        isGravatarEnabled: this.state.isGravatarEnabled,
+      });
+      const { userData } = response.data;
+      this.setState({
+        isGravatarEnabled: userData.isGravatarEnabled,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to update profile image');
+    }
   }
 
 }

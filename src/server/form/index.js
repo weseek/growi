@@ -7,7 +7,6 @@ module.exports = {
   me: {
     user: require('./me/user'),
     password: require('./me/password'),
-    imagetype: require('./me/imagetype'),
     apiToken: require('./me/apiToken'),
   },
   admin: {
