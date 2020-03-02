@@ -128,7 +128,6 @@ module.exports = function(crowi, app) {
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
-  app.post('/me'                      , loginRequiredStrictly , csrf , form.me.user , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
   app.post('/me/external-accounts/disassociate'           , loginRequiredStrictly , me.externalAccounts.disassociate);

@@ -215,19 +215,12 @@ module.exports = function(crowi) {
     return false;
   };
 
-  userSchema.methods.updateApiToken = function(callback) {
+  userSchema.methods.updateApiToken = async function() {
     const self = this;
 
     self.apiToken = generateApiToken(this);
-    return new Promise(((resolve, reject) => {
-      self.save((err, userData) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(userData);
-      });
-    }));
+    const userData = await self.save();
+    return userData;
   };
 
   userSchema.methods.updateImage = async function(attachment) {
