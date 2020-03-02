@@ -19,7 +19,9 @@ class UserManagement extends React.Component {
 
   constructor(props) {
     super();
-
+    this.state = {
+      statusList: new Set(),
+    };
     this.handlePage = this.handlePage.bind(this);
   }
 
@@ -35,6 +37,26 @@ class UserManagement extends React.Component {
       toastError(err);
     }
   }
+
+
+  /**
+   * onChange
+   */
+
+
+  // To do GW-1206: setting of onChange
+  onChangeStatusList(status) {
+    const { statusList } = this.state;
+
+    if (statusList.has(status)) {
+      statusList.delete(status);
+    }
+    else {
+      statusList.add(status);
+    }
+    this.setState({ statusList });
+  }
+
 
   render() {
     const { t, adminUsersContainer } = this.props;
@@ -62,6 +84,37 @@ class UserManagement extends React.Component {
         </p>
 
         <h2>{t('User_Management')}</h2>
+
+        <div className="row border-top border-bottom mr-2">
+          <div className="px-0">
+
+            <label className="col-md-3 mb-0 my-3">
+              <i className="icon-magnifier mr-1"></i>
+              <input type="text" name="name" />
+            </label>
+          </div>
+
+          <div className="col-md-6 py-2 my-2" style={{ width: 500 }}>
+            <input type="checkbox" className="mr-1" onChange={() => { this.onChangeStatusList() }} />
+            <label className="mr-2">All</label>
+
+            <input type="checkbox" className="mr-1" onChange={this.ApprovalPending} />
+            <label className="label label-info mr-2">Approval Pending</label>
+
+            <input type="checkbox" className="mr-1" onChange={this.Active} />
+            <label className="label label-success mr-2">Active</label>
+
+            <input type="checkbox" className="mr-1" onChange={this.Suspended} />
+            <label className="label label-warning mr-2">Suspended</label>
+
+            <input type="checkbox" className="mr-1" onChange={this.__Invited} />
+            <label className="label label-info mr-2">Invited</label>
+
+            <input type="checkbox" className="mr-1" onChange={this.__Status} />
+            <label className="label label-info">Status</label>
+          </div>
+        </div>
+
 
         {pager}
         <UserTable />
