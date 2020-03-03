@@ -33,11 +33,6 @@ module.exports = function(crowi, app) {
     return res.safeRedirect(req.session.redirectTo);
   };
 
-  const loginFailure = function(req, res) {
-    req.flash('warningMessage', 'Sign in failure.');
-    return res.redirect('/login');
-  };
-
   actions.error = function(req, res) {
     const reason = req.params.reason;
 
@@ -57,29 +52,11 @@ module.exports = function(crowi, app) {
   };
 
   actions.login = function(req, res) {
-    const loginForm = req.body.loginForm;
-
-    if (req.method == 'POST' && req.form.isValid) {
-      const username = loginForm.username;
-      const password = loginForm.password;
-
-      // find user
-      User.findUserByUsernameOrEmail(username, password, (err, user) => {
-        if (err) { return loginFailure(req, res) }
-        // check existence and password
-        if (!user || !user.isPasswordValid(password)) {
-          return loginFailure(req, res);
-        }
-        return loginSuccess(req, res, user);
-      });
-    }
-    else { // method GET
       if (req.form) {
         debug(req.form.errors);
       }
-      return res.render('login', {
-      });
-    }
+
+    return res.render('login', {});
   };
 
   actions.register = function(req, res) {
