@@ -38,25 +38,6 @@ class UserManagement extends React.Component {
     }
   }
 
-
-  /**
-   * onChange
-   */
-
-
-  // To do GW-1206: setting of onChange
-  onChangeStatusList(status) {
-    const { statusList } = this.state;
-
-    if (statusList.has(status)) {
-      statusList.delete(status);
-    }
-    else {
-      statusList.add(status);
-    }
-    this.setState({ statusList });
-  }
-
   handleClick(statusType) {
     this.props.adminUsersContainer.handleClick(statusType);
   }
