@@ -20,7 +20,11 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      statusList: new Set(),
+      all: true,
+      approvalpending: false,
+      active: false,
+      suspended: false,
+      invited: false,
     };
     this.handlePage = this.handlePage.bind(this);
   }
@@ -46,15 +50,7 @@ class UserManagement extends React.Component {
 
   // To do GW-1206: setting of onChange
   onChangeStatusList(status) {
-    const { statusList } = this.state;
-
-    if (statusList.has(status)) {
-      statusList.delete(status);
-    }
-    else {
-      statusList.add(status);
-    }
-    this.setState({ statusList });
+    this.setState({ [status]: !this.state[status] });
   }
 
 
@@ -94,22 +90,20 @@ class UserManagement extends React.Component {
             </label>
           </div>
 
-          <div className="col-md-8 py-2 my-2" style={{ width: 600 }}>
-            <input type="checkbox" className="mr-1" checked={this.state.all} onChange={() => { this.onChangeStatusList('all') }} />
           <div className="col-md-6 py-2 my-2" style={{ width: 600 }}>
-            <input type="checkbox" className="mr-1" onChange={() => { this.onChangeStatusList('all') }} />
+            <input type="checkbox" className="mr-1" checked={this.state.all} onChange={() => { this.onChangeStatusList('all') }} />
             <label className="mr-2">All</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.ApprovalPending} />
+            <input type="checkbox" className="mr-1" checked={this.state.ApprovalPending} onChange={() => { this.onChangeStatusList('approvalpending') }} />
             <label className="label label-info mr-2">Approval Pending</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.Active} />
+            <input type="checkbox" className="mr-1" checked={this.state.Active} onChange={() => { this.onChangeStatusList('active') }} />
             <label className="label label-success mr-2">Active</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.Suspended} />
+            <input type="checkbox" className="mr-1" checked={this.state.Suspended} onChange={() => { this.onChangeStatusList('suspended') }} />
             <label className="label label-warning mr-2">Suspended</label>
 
-            <input type="checkbox" className="mr-1" onChange={this.__Invited} />
+            <input type="checkbox" className="mr-1" checked={this.state.Invited} onChange={() => { this.onChangeStatusList('invited') }} />
             <label className="label label-info mr-2">Invited</label>
           </div>
         </div>
