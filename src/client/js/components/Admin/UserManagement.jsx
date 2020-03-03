@@ -36,7 +36,15 @@ class UserManagement extends React.Component {
   }
 
   handleClick(statusType) {
-    this.props.adminUsersContainer.handleClick(statusType);
+    if (this.validateToggleStatus(statusType)) this.props.adminUsersContainer.handleClick(statusType);
+  }
+
+  validateToggleStatus(statusType) {
+    if (this.props.adminUsersContainer.isSelected(statusType)) {
+      // if else status is selected, then true
+      return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
+    }
+    return true;
   }
 
 
