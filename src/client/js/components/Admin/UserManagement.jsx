@@ -19,9 +19,6 @@ class UserManagement extends React.Component {
 
   constructor(props) {
     super();
-    this.state = {
-      statusList: new Set(),
-    };
     this.handlePage = this.handlePage.bind(this);
   }
 
