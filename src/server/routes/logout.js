@@ -1,14 +1,11 @@
-const { URL } = require('url');
-
 module.exports = function(crowi, app) {
   return {
     logout(req, res) {
       req.session.destroy();
 
-      // parse referer url
-      const referer = new URL(req.headers.referer);
       // redirect
-      return res.safeRedirect(`${referer.pathname}${referer.search}${referer.hash}`);
+      const redirectTo = req.headers.referer || '/';
+      return res.safeRedirect(redirectTo);
     },
   };
 };

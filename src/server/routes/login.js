@@ -30,7 +30,10 @@ module.exports = function(crowi, app) {
       return res.redirect('/me/password');
     }
 
-    return res.safeRedirect(req.session.redirectTo);
+    const { redirectTo } = req.session;
+    // remove session.redirectTo
+    delete req.session.redirectTo;
+    return res.safeRedirect(redirectTo);
   };
 
   actions.error = function(req, res) {
@@ -51,10 +54,27 @@ module.exports = function(crowi, app) {
     });
   };
 
+  actions.preLogin = function(req, res, next) {
+    // user has already logged in
+    if (req.user != null) {
+      const { redirectTo } = req.session;
+      // remove session.redirectTo
+      delete req.session.redirectTo;
+      return res.safeRedirect(redirectTo);
+    }
+
+    // set referer to 'redirectTo'
+    if (req.session.redirectTo == null && req.headers.referer != null) {
+      req.session.redirectTo = req.headers.referer;
+    }
+
+    next();
+  }
+
   actions.login = function(req, res) {
-      if (req.form) {
-        debug(req.form.errors);
-      }
+    if (req.form) {
+      debug(req.form.errors);
+    }
 
     return res.render('login', {});
   };

@@ -21,7 +21,10 @@ module.exports = function(crowi, app) {
       }
     });
 
-    return res.safeRedirect(req.session.redirectTo);
+    const { redirectTo } = req.session;
+    // remove session.redirectTo
+    delete req.session.redirectTo;
+    return res.safeRedirect(redirectTo);
   };
 
   /**
