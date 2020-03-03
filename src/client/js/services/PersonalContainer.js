@@ -182,7 +182,7 @@ export default class PersonalContainer extends Container {
   /**
    * Upload image
    */
-  async uploadAttachment(file) {
+  async uploadAttachment() {
     try {
       // TODO GW-1218 api
     }
