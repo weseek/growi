@@ -2,6 +2,7 @@
 
 ## v3.6.9-RC
 
+* Improvement: Redirection when login/logout
 * Fix: Client crashed when the first login
     * Introduced by 3.6.8
 
