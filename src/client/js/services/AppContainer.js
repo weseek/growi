@@ -294,6 +294,16 @@ export default class AppContainer extends Container {
     targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
   }
 
+  launchDrawioIFrame(componentKind, beginLineNumber, endLineNumber) {
+    let targetComponent;
+    switch (componentKind) {
+      case 'page':
+        targetComponent = this.getComponentInstance('Page');
+        break;
+    }
+    targetComponent.launchDrawioIFrame(beginLineNumber, endLineNumber);
+  }
+
   async apiGet(path, params) {
     return this.apiRequest('get', path, { params });
   }

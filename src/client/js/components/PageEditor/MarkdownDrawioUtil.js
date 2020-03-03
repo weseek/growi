@@ -28,6 +28,32 @@ class MarkdownDrawioUtil {
     editor.getDoc().replaceRange(drawioData.toString(), { line: curPos.line, ch: 0 }, { line: curPos.line, ch: line.length });
   }
 
+  /**
+   * return markdown where the drawioData specified by line number params is replaced to the drawioData specified by drawioData param
+   * @param {string} drawioData
+   * @param {string} markdown
+   * @param beginLineNumber
+   * @param endLineNumber
+   */
+  replaceDrawioInMarkdown(drawioData, markdown, beginLineNumber, endLineNumber) {
+    const splitMarkdown = markdown.split(/\r\n|\r|\n/);
+    const markdownBeforeDrawio = splitMarkdown.slice(0, beginLineNumber);
+    const markdownAfterDrawio = splitMarkdown.slice(endLineNumber);
+
+    let newMarkdown = '';
+    if (markdownBeforeDrawio.length > 0) {
+      newMarkdown += `${markdownBeforeDrawio.join('\n')}\n`;
+      newMarkdown += '::: drawio\n';
+    }
+    newMarkdown += drawioData;
+    if (markdownAfterDrawio.length > 0) {
+      newMarkdown += '\n:::';
+      newMarkdown += `\n${markdownAfterDrawio.join('\n')}`;
+    }
+
+    return newMarkdown;
+  }
+
 }
 
 // singleton pattern

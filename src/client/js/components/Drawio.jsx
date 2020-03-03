@@ -12,6 +12,22 @@ export default class Drawio extends React.Component {
       // viewer.min.js の Resize による Scroll イベントを抑止するために無効化する
       DrawioViewer.useResizeSensor = false;
     }
+
+    this.style = {
+      borderRadius: 3,
+      border: '1px solid #d7d7d7',
+      margin: '20px 0',
+    };
+
+    this.onEdit = this.onEdit.bind(this);
+  }
+
+  onEdit() {
+    if (window.crowi != null) {
+      window.crowi.launchDrawioIFrame('page',
+        this.props.rangeLineNumberOfMarkdown.beginLineNumber,
+        this.props.rangeLineNumberOfMarkdown.endLineNumber);
+    }
   }
 
   componentDidMount() {
@@ -27,14 +43,20 @@ export default class Drawio extends React.Component {
 
   render() {
     return (
-      <div
-        className="drawio"
-        ref={(c) => { this.drawioContainer = c }}
-        onScroll={(event) => {
-          event.preventDefault();
-        }}
-        dangerouslySetInnerHTML={{ __html: this.renderContents() }}
-      >
+      <div className="editable-with-drawio">
+        <button type="button" className="drawio-iframe-trigger btn" onClick={this.onEdit}>
+          <i className="icon-note"></i> Edit
+        </button>
+        <div
+          className="drawio"
+          style={this.style}
+          ref={(c) => { this.drawioContainer = c }}
+          onScroll={(event) => {
+            event.preventDefault();
+          }}
+          dangerouslySetInnerHTML={{ __html: this.renderContents() }}
+        >
+        </div>
       </div>
     );
   }
@@ -43,6 +65,7 @@ export default class Drawio extends React.Component {
 
 Drawio.propTypes = {
   appContainer: PropTypes.object.isRequired,
-  drawioContent: PropTypes.any,
+  drawioContent: PropTypes.any.isRequired,
   isPreview: PropTypes.bool,
+  rangeLineNumberOfMarkdown: PropTypes.object.isRequired,
 };

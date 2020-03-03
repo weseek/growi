@@ -8332,9 +8332,9 @@ markdown-it-blockdiag@^1.0.2:
     utf8-bytes "0.0.1"
 
 markdown-it-drawio-viewer@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.1.1.tgz#3fb622060ff76c21a63e9b4310c98a5c61942422"
-  integrity sha512-+PTPfOQlqHm3bpZgweADJ/KEhXBQFxqEYkYUkLyR2GRQ9iPbrbOmCVhTFsvMhpSEIwRkDflyYAfO4YsmIKioZg==
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.1.2.tgz#4ae442545d32bd44bb9f8ca18085315cea1ec692"
+  integrity sha512-YD+wZ4SDipZf1+TeHcUDWhGqN+FaiA+77be1flcfCli1a4cGy3fo8r2QnPRAn+rVEhTpMB6cQsUS5I0KxwHFYQ==
   dependencies:
     markdown-it-fence "0.1.3"
     xmldoc "^1.1.2"

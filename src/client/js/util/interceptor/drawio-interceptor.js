@@ -75,7 +75,14 @@ export class DrawioInterceptor extends BasicInterceptor {
     context.DrawioMap = {};
     Array.from(div.querySelectorAll('.mxgraph')).forEach((element) => {
       const domId = `mxgraph-${this.createRandomStr(8)}`;
-      context.DrawioMap[domId] = element.outerHTML;
+
+      context.DrawioMap[domId] = {
+        rangeLineNumberOfMarkdown: {
+          beginLineNumber: element.parentNode.dataset.beginLineNumberOfMarkdown,
+          endLineNumber: element.parentNode.dataset.endLineNumberOfMarkdown,
+        },
+        contentHtml: element.outerHTML,
+      };
       element.outerHTML = `<div id="${domId}"></div>`;
     });
     context.parsedHTML = div.innerHTML;
@@ -106,13 +113,14 @@ export class DrawioInterceptor extends BasicInterceptor {
   /**
    * @inheritdoc
    */
-  renderReactDOM(drawioContent, elem, isPreview) {
+  renderReactDOM(drawioMapEntry, elem, isPreview) {
     ReactDOM.render(
       // eslint-disable-next-line react/jsx-filename-extension
       <Drawio
         appContainer={this.appContainer}
-        drawioContent={drawioContent}
+        drawioContent={drawioMapEntry.contentHtml}
         isPreview={isPreview}
+        rangeLineNumberOfMarkdown={drawioMapEntry.rangeLineNumberOfMarkdown}
       />,
       elem,
     );
