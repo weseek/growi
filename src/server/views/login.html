@@ -26,7 +26,7 @@
 
   <div class="row">
     <div class="login-header offset-sm-4 col-md-4">
-      <div class="logo">{% include 'widget/logo.html' %}</div>
+      <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
       <h1>{{ appService.getAppTitle() }}</h1>
 
       <div class="login-form-errors">
@@ -258,7 +258,7 @@
         {% endif %}
 
         <div class="row">
-          <div class="col-12 text-right">
+          <div class="col-12 text-right pb-2">
             {% if isRegistrationEnabled %}
             <a href="#register" id="register" class="link-switch">
               <i class="ti-check-box"></i> {{ t('Sign up is here') }}
@@ -283,24 +283,30 @@
 
         <form role="form" method="post" action="/register" id="register-form">
           <div class="input-group" id="input-group-username">
-            <span class="input-group-addon"><i class="icon-user"></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-user"></i></span>
+            </div>
             <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
           </div>
-          <p class="help-block">
+          <p class="form-text">
             <span id="help-block-username"></span>
           </p>
 
           <div class="input-group">
-            <span class="input-group-addon"><i class="icon-tag"></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-tag"></i></span>
+            </div>
             <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
           </div>
 
           <div class="input-group">
-            <span class="input-group-addon"><i class="icon-envelope"></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-envelope"></i></span>
+            </div>
             <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ req.body.registerForm.email }}" required>
           </div>
           {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
-          <p class="help-block">
+          <p class="form-text">
             {{ t('page_register.form_help.email') }}
           </p>
           <ul>
@@ -311,7 +317,9 @@
           {% endif %}
 
           <div class="input-group">
-            <span class="input-group-addon"><i class="icon-lock"></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-lock"></i></span>
+            </div>
             <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
           </div>
 
@@ -328,7 +336,7 @@
         <hr>
 
         <div class="row">
-          <div class="col-12 text-right">
+          <div class="col-12 text-right pt-2">
             <a href="#login" id="login" class="link-switch">
               <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
             </a>
