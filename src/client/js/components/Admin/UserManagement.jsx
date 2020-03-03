@@ -96,6 +96,8 @@ class UserManagement extends React.Component {
 
           <div className="col-md-8 py-2 my-2" style={{ width: 600 }}>
             <input type="checkbox" className="mr-1" checked={this.state.all} onChange={() => { this.onChangeStatusList('all') }} />
+          <div className="col-md-6 py-2 my-2" style={{ width: 600 }}>
+            <input type="checkbox" className="mr-1" onChange={() => { this.onChangeStatusList('all') }} />
             <label className="mr-2">All</label>
 
             <input type="checkbox" className="mr-1" onChange={this.ApprovalPending} />
