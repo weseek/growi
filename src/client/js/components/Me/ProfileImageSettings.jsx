@@ -56,8 +56,16 @@ class ProfileImageSettings extends React.Component {
     }
   }
 
-  onCropCompleted(croppedImageUrl) {
-    this.props.personalContainer.setState({ croppedImageUrl });
+  async onCropCompleted(croppedImageUrl) {
+    const { t, personalContainer } = this.props;
+    personalContainer.setState({ croppedImageUrl });
+    try {
+      await personalContainer.uploadAttachment(croppedImageUrl);
+      toastSuccess(t('toaster.update_successed', { target: t('Upload Image') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
     this.hideModal();
   }
 

@@ -181,4 +181,20 @@ export default class PersonalContainer extends Container {
     }
   }
 
+  /**
+   * Upload image
+   */
+  async uploadAttachment(file) {
+
+    try {
+      // TODO create apiV3
+      // await this.appContainer.apiPost('/attachments.uploadProfileImage', { data: formData });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to upload profile image');
+    }
+  }
+
 }
