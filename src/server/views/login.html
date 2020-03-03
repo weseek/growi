@@ -25,7 +25,7 @@
 <div class="main container-fluid">
 
   <div class="row">
-    <div class="login-header col-sm-offset-4 col-sm-4">
+    <div class="login-header offset-sm-4 col-md-4">
       <div class="logo">{% include 'widget/logo.html' %}</div>
       <h1>{{ appService.getAppTitle() }}</h1>
 
@@ -105,7 +105,7 @@
     {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %}
     {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
 
-    <div class="login-dialog p-b-10 col-sm-offset-4 col-sm-4 flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
+    <div class="login-dialog p-b-10 offset-sm-4 col-md-4 flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
 
       <div class="front">
 
@@ -124,9 +124,32 @@
           </div>
 
           <div class="input-group">
+            <div class="input-group-append ">
+              <span><i class="icon-user"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
+            {% if passportService.isLdapStrategySetup %}
+            <span class="input-group-append">
+              <small class="text-success">
+                <i class="icon-fw icon-check"></i> LDAP
+              </small>
+            </span>
+            {% endif %}
+          </div>
+
+
+          <div class="input-group">
             <span class="input-group-addon"><i class="icon-lock"></i></span>
             <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
           </div>
+
+          <div class="input-group">
+            <div class="input-group-append">
+              <span><i class="icon-lock"></i></span>
+            </div>
+            <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
+          </div>
+
 
           <div class="input-group mt-5 m-b-20 d-flex justify-content-center">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
@@ -252,7 +275,7 @@
         {% endif %}
 
         <div class="row">
-          <div class="col-xs-12 text-right">
+          <div class="col-12 text-right">
             {% if isRegistrationEnabled %}
             <a href="#register" id="register" class="link-switch">
               <i class="ti-check-box"></i> {{ t('Sign up is here') }}
@@ -322,7 +345,7 @@
         <hr>
 
         <div class="row">
-          <div class="col-xs-12 text-right">
+          <div class="col-12 text-right">
             <a href="#login" id="login" class="link-switch">
               <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
             </a>
