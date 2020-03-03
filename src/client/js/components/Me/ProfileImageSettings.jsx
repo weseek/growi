@@ -83,7 +83,7 @@ class ProfileImageSettings extends React.Component {
 
   render() {
     const { t, personalContainer } = this.props;
-    const { croppedImageUrl, isGravatarEnabled } = personalContainer.state;
+    const { uploadedPictureSrc, isGravatarEnabled } = personalContainer.state;
 
     return (
       <React.Fragment>
@@ -132,7 +132,8 @@ class ProfileImageSettings extends React.Component {
                 { t('Current Image') }
               </label>
               <div className="col-sm-8">
-                {croppedImageUrl && (<p><img src={croppedImageUrl} className="picture picture-lg img-circle" id="settingUserPicture" /></p>)}
+                {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg img-circle" id="settingUserPicture" /></p>)}
+                {/* TODO create apiV3 for delete image */}
                 <button type="button" className="btn btn-danger">{ t('Delete Image') }</button>
               </div>
             </div>

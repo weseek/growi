@@ -24,7 +24,7 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en-US',
       isGravatarEnabled: false,
-      croppedImageUrl: '',
+      uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       isPasswordSet: false,
       apiToken: '',
@@ -46,7 +46,6 @@ export default class PersonalContainer extends Container {
     try {
       const response = await this.appContainer.apiv3.get('/personal-setting/');
       const { currentUser } = response.data;
-      const croppedImageUrl = this.getUploadedPictureSrc(this.appContainer.currentUser);
       this.setState({
         name: currentUser.name,
         email: currentUser.email,
@@ -55,7 +54,6 @@ export default class PersonalContainer extends Container {
         isGravatarEnabled: currentUser.isGravatarEnabled,
         isPasswordSet: (currentUser.password != null),
         apiToken: currentUser.apiToken,
-        croppedImageUrl,
       });
     }
     catch (err) {
@@ -185,10 +183,13 @@ export default class PersonalContainer extends Container {
    * Upload image
    */
   async uploadAttachment(file) {
+    const formData = new FormData();
+    formData.append('_csrf', this.appContainer.csrfToken);
+    formData.append('file', file);
 
     try {
       // TODO create apiV3
-      // await this.appContainer.apiPost('/attachments.uploadProfileImage', { data: formData });
+      await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
     }
     catch (err) {
       this.setState({ retrieveError: err });
