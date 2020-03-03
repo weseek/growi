@@ -19,9 +19,6 @@ class UserManagement extends React.Component {
 
   constructor(props) {
     super();
-    this.state = {
-      statusList: new Set(),
-    };
     this.handlePage = this.handlePage.bind(this);
   }
 
@@ -38,27 +35,16 @@ class UserManagement extends React.Component {
     }
   }
 
-
-  /**
-   * onChange
-   */
-
-
-  // To do GW-1206: setting of onChange
-  onChangeStatusList(status) {
-    const { statusList } = this.state;
-
-    if (statusList.has(status)) {
-      statusList.delete(status);
-    }
-    else {
-      statusList.add(status);
-    }
-    this.setState({ statusList });
+  handleClick(statusType) {
+    if (this.validateToggleStatus(statusType)) this.props.adminUsersContainer.handleClick(statusType);
   }
 
-  handleClick(statusType) {
-    this.props.adminUsersContainer.handleClick(statusType);
+  validateToggleStatus(statusType) {
+    if (this.props.adminUsersContainer.isSelected(statusType)) {
+      // if else status is selected, then true
+      return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
+    }
+    return true;
   }
 
 
