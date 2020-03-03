@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Drawio extends React.Component {
+import { withTranslation } from 'react-i18next';
+
+class Drawio extends React.Component {
 
   constructor(props) {
     super(props);
@@ -44,9 +46,13 @@ export default class Drawio extends React.Component {
   render() {
     return (
       <div className="editable-with-drawio">
-        <button type="button" className="drawio-iframe-trigger btn" onClick={this.onEdit}>
-          <i className="icon-note"></i> Edit
-        </button>
+        { !this.props.isPreview
+          && (
+          <button type="button" className="drawio-iframe-trigger btn" onClick={this.onEdit}>
+            <i className="icon-note"></i> {this.props.t('Edit')}
+          </button>
+          )
+        }
         <div
           className="drawio"
           style={this.style}
@@ -64,8 +70,11 @@ export default class Drawio extends React.Component {
 }
 
 Drawio.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.object.isRequired,
   drawioContent: PropTypes.any.isRequired,
   isPreview: PropTypes.bool,
   rangeLineNumberOfMarkdown: PropTypes.object.isRequired,
 };
+
+export default withTranslation()(Drawio);
