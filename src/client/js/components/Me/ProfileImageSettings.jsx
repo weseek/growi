@@ -133,7 +133,7 @@ class ProfileImageSettings extends React.Component {
               </label>
               <div className="col-sm-8">
                 {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg img-circle" id="settingUserPicture" /></p>)}
-                {/* TODO create apiV3 for delete image */}
+                {/* TODO GW-1218 create apiV3 for delete image */}
                 <button type="button" className="btn btn-danger">{ t('Delete Image') }</button>
               </div>
             </div>

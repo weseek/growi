@@ -188,8 +188,8 @@ export default class PersonalContainer extends Container {
     formData.append('file', file);
 
     try {
-      // TODO create apiV3
-      await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
+      // TODO GW-1218 api
+      // await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
     }
     catch (err) {
       this.setState({ retrieveError: err });
