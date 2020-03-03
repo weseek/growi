@@ -19,7 +19,7 @@ module.exports = function(crowi, app) {
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
 
-  const safeRedirect = require('../middleware/safe-redirect');
+  const safeRedirect = require('../middleware/safe-redirect')();
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
