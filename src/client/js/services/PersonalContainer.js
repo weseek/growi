@@ -184,7 +184,7 @@ export default class PersonalContainer extends Container {
    */
   async uploadAttachment() {
     try {
-      // TODO GW-1218 api
+      // TODO GW-1218 create api
     }
     catch (err) {
       this.setState({ retrieveError: err });
