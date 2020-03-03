@@ -24,8 +24,6 @@ export default class AdminUsersContainer extends Container {
       totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
-
-      selectedStatusList: new Set(),
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -38,31 +36,6 @@ export default class AdminUsersContainer extends Container {
    */
   static getClassName() {
     return 'AdminUsersContainer';
-  }
-
-  isSelected(statusType) {
-    return this.state.selectedStatusList.has(statusType);
-  }
-
-  handleClick(statusType) {
-    if (this.isSelected(statusType)) {
-      this.deleteStatusFromList(statusType);
-    }
-    else {
-      this.addStatusToList(statusType);
-    }
-  }
-
-  addStatusToList(statusType) {
-    const { selectedStatusList } = this.state();
-    selectedStatusList.add(statusType);
-    this.setState({ selectedStatusList });
-  }
-
-  deleteStatusToList(statusType) {
-    const { selectedStatusList } = this.state();
-    selectedStatusList.delete(statusType);
-    this.setState({ selectedStatusList });
   }
 
   /**
