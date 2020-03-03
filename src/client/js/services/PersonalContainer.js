@@ -46,7 +46,7 @@ export default class PersonalContainer extends Container {
     try {
       const response = await this.appContainer.apiv3.get('/personal-setting/');
       const { currentUser } = response.data;
-      const croppedImageUrl = this.getUploadedPictureSrc(currentUser);
+      const croppedImageUrl = this.getUploadedPictureSrc(this.appContainer.currentUser);
       this.setState({
         name: currentUser.name,
         email: currentUser.email,
