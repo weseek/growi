@@ -98,7 +98,7 @@ class UserManagement extends React.Component {
             </label>
           </div>
 
-          <div className="col-md-6 py-2 my-2" style={{ width: 500 }}>
+          <div className="col-md-6 py-2 my-2">
             <input
               type="checkbox"
               className="mr-1"
