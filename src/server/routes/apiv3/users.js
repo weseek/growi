@@ -135,20 +135,27 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
-
     query('page').isInt({ min: 1 }),
   ];
 
   router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
 
+    // status
     const page = parseInt(req.query.page) || 1;
     const { statusList } = req.body;
-
     const statusNoList = statusList.map(element => statusNo[element]);
+    // Search from input
+    const inputWord = req.body.inputWord || 1;
+    const searchWord = new RegExp(`${inputWord}`);
 
     try {
       const paginateResult = await User.paginate(
-        { status: { $in: statusNoList } },
+        {
+          $and: [
+            { status: { $in: statusNoList } },
+            { $or: [{ name: { $in: searchWord } }, { username: { $in: searchWord } }, { email: { $in: searchWord } }] },
+          ],
+        },
         {
           sort: { status: 1, username: 1, createdAt: 1 },
           page,
