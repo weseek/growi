@@ -111,21 +111,10 @@
 
         {% if isLocalOrLdapStrategiesEnabled %}
         <form role="form" action="/login" method="post">
-          <div class="input-group">
-            <span class="input-group-addon"><i class="icon-user"></i></span>
-            <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
-            {% if passportService.isLdapStrategySetup %}
-            <span class="input-group-addon">
-              <small class="text-success">
-                <i class="icon-fw icon-check"></i> LDAP
-              </small>
-            </span>
-            {% endif %}
-          </div>
 
           <div class="input-group">
-            <div class="input-group-append ">
-              <span><i class="icon-user"></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-user"></i></span>
             </div>
             <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
             {% if passportService.isLdapStrategySetup %}
@@ -137,23 +126,17 @@
             {% endif %}
           </div>
 
-
           <div class="input-group">
-            <span class="input-group-addon"><i class="icon-lock"></i></span>
-            <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
-          </div>
-
-          <div class="input-group">
-            <div class="input-group-append">
-              <span><i class="icon-lock"></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="icon-lock"></i></span>
             </div>
             <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
           </div>
 
 
-          <div class="input-group mt-5 m-b-20 d-flex justify-content-center">
+          <div class="input-group justify-content-center mt-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login">
+            <button type="submit" class="fcbtn btn btn-login">
               <span class="btn-label"><i class="icon-login"></i></span>
               {{ t('Sign in') }}
             </button>
