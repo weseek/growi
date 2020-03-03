@@ -57,6 +57,10 @@ class UserManagement extends React.Component {
     this.setState({ statusList });
   }
 
+  handleClick(statusType) {
+    this.props.adminUsersContainer.handleClick(statusType);
+  }
+
 
   render() {
     const { t, adminUsersContainer } = this.props;
