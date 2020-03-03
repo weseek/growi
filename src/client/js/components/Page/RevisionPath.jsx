@@ -100,9 +100,6 @@ class RevisionPath extends React.Component {
 
   render() {
     // define styles
-    const rootStyle = {
-      marginRight: '0.2em',
-    };
     const separatorStyle = {
       marginLeft: '0.2em',
       marginRight: '0.2em',
@@ -114,6 +111,26 @@ class RevisionPath extends React.Component {
 
     const { isInTrash } = this.state;
     const pageLength = this.state.pages.length;
+
+    const rootElement = isInTrash
+      ? (
+        <>
+          <span className="path-segment">
+            <a href="/trash"><i className="icon-trash"></i></a>
+          </span>
+          <span className="separator" style={separatorStyle}><a href="/">/</a></span>
+        </>
+      )
+      : (
+        <>
+          <span className="path-segment">
+            <a href="/">
+              <i className="icon-home"></i>
+              <span className="separator" style={separatorStyle}>/</span>
+            </a>
+          </span>
+        </>
+      );
 
     const afterElements = [];
     this.state.pages.forEach((page, index) => {
@@ -136,14 +153,8 @@ class RevisionPath extends React.Component {
 
     return (
       <span className="d-flex align-items-center">
-        { isInTrash && (
-          <span className="path-segment">
-            <a href="/trash"><i className="icon-trash"></i></a>
-          </span>
-        ) }
-        <span className="separator" style={isInTrash ? separatorStyle : rootStyle}>
-          <a href="/">/</a>
-        </span>
+
+        {rootElement}
         {afterElements}
 
         <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
