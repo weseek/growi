@@ -608,7 +608,7 @@ class PassportService {
     }
 
     const expr = this.parseABLCRule(rule);
-    if (expr === null) {
+    if (expr == null) {
       return false;
     }
     debug({ 'Parsed Rule': JSON.stringify(expr, null, 2) });
