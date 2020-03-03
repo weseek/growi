@@ -24,6 +24,7 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en-US',
       isGravatarEnabled: false,
+      uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       isPasswordSet: false,
       apiToken: '',
@@ -45,7 +46,6 @@ export default class PersonalContainer extends Container {
     try {
       const response = await this.appContainer.apiv3.get('/personal-setting/');
       const { currentUser } = response.data;
-
       this.setState({
         name: currentUser.name,
         email: currentUser.email,
@@ -61,6 +61,20 @@ export default class PersonalContainer extends Container {
       logger.error(err);
       throw new Error('Failed to fetch personal data');
     }
+  }
+
+  /**
+   * define a function for uploaded picture
+   */
+  getUploadedPictureSrc(user) {
+    if (user.image) {
+      return user.image;
+    }
+    if (user.imageAttachment != null) {
+      return user.imageAttachment.filePathProxied;
+    }
+
+    return '/images/icons/user.svg';
   }
 
   /**
@@ -162,6 +176,20 @@ export default class PersonalContainer extends Container {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to update profile image');
+    }
+  }
+
+  /**
+   * Upload image
+   */
+  async uploadAttachment() {
+    try {
+      // TODO GW-1218 create api
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to upload profile image');
     }
   }
 
