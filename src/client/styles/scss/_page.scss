@@ -4,49 +4,6 @@
 .main-container {
   // padding controll of .header-wrap and .content-main are moved to _layout and _form
 
-  /*
-   * header
-   */
-  header {
-    // the container of h1
-    div.title-container {
-      padding-right: 5px;
-      padding-left: 5px;
-      margin-right: auto;
-    }
-
-    .btn-copy,
-    .btn-copy-link,
-    .btn-edit {
-      color: $text-muted;
-      border: none;
-      opacity: 0.3;
-
-      &:not(:hover) {
-        background-color: transparent;
-      }
-    }
-
-    .btn-edit-tags {
-      color: $text-muted;
-      opacity: 0.5;
-
-      &.no-tags {
-        opacity: 0.7;
-      }
-    }
-
-    // change button opacity
-    &:hover {
-      .btn.btn-copy,
-      .btn-copy-link,
-      .btn.btn-edit,
-      .btn.btn-edit-tags {
-        opacity: unset;
-      }
-    }
-  }
-
   .url-line {
     font-size: 1rem;
     color: #999;

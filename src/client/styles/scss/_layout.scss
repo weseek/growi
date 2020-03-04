@@ -50,6 +50,42 @@
 
   header {
     line-height: 1em;
+    // the container of h1
+    div.title-container {
+      padding-right: 5px;
+      padding-left: 5px;
+      margin-right: auto;
+    }
+
+    .btn-copy,
+    .btn-copy-link,
+    .btn-edit {
+      display: block;
+      color: $text-muted;
+      border: none;
+      opacity: 0.3;
+
+      &:not(:hover) {
+        background-color: transparent;
+      }
+      // change button opacity
+      &:hover {
+        opacity: unset;
+      }
+    }
+
+    .btn-edit-tags {
+      color: $text-muted;
+      opacity: 0.5;
+
+      &.no-tags {
+        opacity: 0.7;
+      }
+      // change button opacity
+      &:hover {
+        opacity: unset;
+      }
+    }
 
     h1 {
       @include variable-font-size(28px);
