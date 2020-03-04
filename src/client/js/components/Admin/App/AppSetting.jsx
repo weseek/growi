@@ -39,7 +39,7 @@ class AppSetting extends React.Component {
     return (
       <React.Fragment>
         <div className="row mb-5">
-          <label className="col-3 control-label">{t('admin:app_setting.site_name')}</label>
+          <label className="col-3 col-form-label">{t('admin:app_setting.site_name')}</label>
           <div className="col-6">
             <input
               className="form-control"
@@ -53,7 +53,7 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-3 control-label">{t('admin:app_setting.confidential_name')}</label>
+          <label className="col-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
           <div className="col-6">
             <input
               className="form-control"
@@ -67,7 +67,7 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-3 control-label">{t('admin:app_setting.default_language')}</label>
+          <label className="col-3 col-form-label">{t('admin:app_setting.default_language')}</label>
           <div className="col-6">
             <div className="radio radio-primary radio-inline">
               <input
@@ -95,7 +95,7 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-3 control-label">{t('admin:app_setting.file_uploading')}</label>
+          <label className="col-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
           <div className="col-6">
             <div className="checkbox checkbox-info">
               <input
