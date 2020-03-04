@@ -83,7 +83,7 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="custom-control custom-checkbox my-0">
+      <div className="custom-control custom-checkbox custom-checkbox-info my-0">
         <input
           type="checkbox"
           id={collectionName}
@@ -205,9 +205,7 @@ export default class ImportCollectionItem extends React.Component {
         <div className="card-header bg-light">
           <div className="d-flex justify-content-between align-items-center">
             {/* left */}
-            <div className="pl-4">
-              {this.renderCheckbox()}
-            </div>
+            {this.renderCheckbox()}
             {/* right */}
             <span className="d-flex align-items-center">
               {this.renderModeSelector()}
