@@ -70,6 +70,18 @@
       }
     }
   }
+
+  #like-button,
+  #bookmark-button {
+    & button {
+      font-size: 1.2em;
+      line-height: 0.8em;
+
+      &:not(:hover):not(.active) {
+        background-color: transparent;
+      }
+    }
+  }
 }
 
 .main {

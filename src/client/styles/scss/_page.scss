@@ -47,47 +47,6 @@
     }
   }
 
-  .btn-like,
-  .btn-bookmark {
-    font-size: 1.2em;
-    line-height: 0.8em;
-    border: none;
-
-    &:not(:hover):not(.active) {
-      background-color: transparent;
-    }
-  }
-
-  .btn-like {
-    &.active {
-      background-color: $info;
-      border: 1px solid $info;
-
-      &:hover,
-      &:focus,
-      &.focus {
-        background-color: $info;
-        border: 1px solid $info;
-        opacity: 0.8;
-      }
-    }
-  }
-
-  .btn-bookmark {
-    &.active {
-      background: $warning;
-      border: 1px solid $warning;
-
-      &:hover,
-      &:focus,
-      &.focus {
-        background: $warning;
-        border: 1px solid $warning;
-        opacity: 0.8;
-      }
-    }
-  }
-
   .url-line {
     font-size: 1rem;
     color: #999;
