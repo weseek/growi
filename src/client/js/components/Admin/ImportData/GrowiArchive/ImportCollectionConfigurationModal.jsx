@@ -67,7 +67,7 @@ class ImportCollectionConfigurationModal extends React.Component {
     /* eslint-disable react/no-unescaped-entities */
     return (
       <>
-        <div className="custom-control custom-checkbox custom-checkbox-danger">
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             id="cbOpt4"
             type="checkbox"
