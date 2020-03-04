@@ -80,7 +80,7 @@ class AwsSetting extends React.Component {
                 adminAppContainer.changeCustomEndpoint(e.target.value);
               }}
             />
-            <p className="help-block">{t('admin:app_setting.custom_endpoint_change')}</p>
+            <p className="form-text text-muted">{t('admin:app_setting.custom_endpoint_change')}</p>
           </div>
         </div>
 

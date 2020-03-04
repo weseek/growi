@@ -48,7 +48,7 @@ class AppSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeTitle(e.target.value) }}
               placeholder="GROWI"
             />
-            <p className="help-block">{t('admin:app_setting.sitename_change')}</p>
+            <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ class AppSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeConfidential(e.target.value) }}
               placeholder={t('admin:app_setting.confidential_example')}
             />
-            <p className="help-block">{t('admin:app_setting.header_content')}</p>
+            <p className="form-text text-muted">{t('admin:app_setting.header_content')}</p>
           </div>
         </div>
 
@@ -108,7 +108,7 @@ class AppSetting extends React.Component {
               <label htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
             </div>
 
-            <p className="help-block">
+            <p className="form-text text-muted">
               {t('admin:app_setting.enable_files_except_image')}
               <br />
               {t('admin:app_setting.attach_enable')}
