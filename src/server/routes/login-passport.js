@@ -4,7 +4,6 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login-passport');
   const logger = require('@alias/logger')('growi:routes:login-passport');
   const passport = require('passport');
-  const { URL } = require('url');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
   const ApiResponse = require('../util/apiResponse');
@@ -23,25 +22,10 @@ module.exports = function(crowi, app) {
       }
     });
 
-    const jumpTo = req.session.jumpTo;
-    if (jumpTo) {
-      req.session.jumpTo = null;
-
-      // prevention from open redirect
-      try {
-        const redirectUrl = new URL(jumpTo, `${req.protocol}://${req.get('host')}`);
-        if (redirectUrl.hostname === req.hostname) {
-          return res.redirect(redirectUrl);
-        }
-        logger.warn('Requested redirect URL is invalid, redirect to root page');
-      }
-      catch (err) {
-        logger.warn('Requested redirect URL is invalid, redirect to root page', err);
-        return res.redirect('/');
-      }
-    }
-
-    return res.redirect('/');
+    const { redirectTo } = req.session;
+    // remove session.redirectTo
+    delete req.session.redirectTo;
+    return res.safeRedirect(redirectTo);
   };
 
   /**
