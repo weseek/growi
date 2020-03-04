@@ -11,24 +11,22 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`label-${indexName}-${aliasName}`} className="label label-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="badge badge-primary mr-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );
     });
 
     return (
-      <div className="panel panel-default">
-        <div className="panel-heading" role="tab">
-          <h4 className="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
-              <i className="fa fa-fw fa-database"></i> {indexName}
-            </a>
-            <span className="ml-3">{aliasLabels}</span>
-          </h4>
+      <div className="card">
+        <div className="card-header">
+          <a role="button" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
+            <i className="fa fa-fw fa-database"></i> {indexName}
+          </a>
+          <span className="ml-3">{aliasLabels}</span>
         </div>
-        <div id={collapseId} className="panel-collapse collapse" role="tabpanel">
-          <div className="panel-body">
+        <div id={collapseId} className="collapse">
+          <div className="card-body">
             <pre>
               {JSON.stringify(body, null, 2)}
             </pre>
@@ -98,21 +96,21 @@ class StatusTable extends React.PureComponent {
     const { isConfigured, isConnected, isNormalized } = this.props;
 
 
-    let connectionStatusLabel = <span className="label label-default">――</span>;
+    let connectionStatusLabel = <span className="badge badge-default">――</span>;
     if (isConfigured != null && !isConfigured) {
-      connectionStatusLabel = <span className="label label-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+      connectionStatusLabel = <span className="badge badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
     }
     else if (isConnected != null) {
       connectionStatusLabel = isConnected
-        ? <span className="label label-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="label label-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+        ? <span className="badge badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
     }
 
-    let indicesStatusLabel = <span className="label label-default">――</span>;
+    let indicesStatusLabel = <span className="label badge-default">――</span>;
     if (isNormalized != null) {
       indicesStatusLabel = isNormalized
-        ? <span className="label label-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-        : <span className="label label-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+        ? <span className="badge badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+        : <span className="badge badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
     }
 
     return (

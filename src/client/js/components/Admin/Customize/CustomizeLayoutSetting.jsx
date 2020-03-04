@@ -48,12 +48,20 @@ class CustomizeLayoutSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
-        <CustomizeLayoutOptions />
-        <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
-        {this.renderDevAlert()}
-        <CustomizeThemeOptions />
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+        <div className="row">
+          <div className="col-12">
+            <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
+            <CustomizeLayoutOptions />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
+            {this.renderDevAlert()}
+            <CustomizeThemeOptions />
+            <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
+          </div>
+        </div>
       </React.Fragment>
     );
   }
