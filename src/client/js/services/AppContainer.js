@@ -31,13 +31,17 @@ export default class AppContainer extends Container {
 
     const body = document.querySelector('body');
 
-    this.me = body.dataset.currentUsername || null; // will be initialized with null when data is empty string
     this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
     this.isLoggedin = document.querySelector('body.nologin') == null;
 
-    this.config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+    this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
+
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
+    }
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
@@ -105,6 +109,20 @@ export default class AppContainer extends Container {
     window.crowi = this;
     window.crowiRenderer = originRenderer;
     window.crowiPlugin = window.growiPlugin;
+  }
+
+  get currentUserId() {
+    if (this.currentUser == null) {
+      return null;
+    }
+    return this.currentUser._id;
+  }
+
+  get currentUsername() {
+    if (this.currentUser == null) {
+      return null;
+    }
+    return this.currentUser.username;
   }
 
   /**
@@ -269,14 +287,6 @@ export default class AppContainer extends Container {
     }
 
     return users;
-  }
-
-  findUser(username) {
-    if (this.userByName && this.userByName[username]) {
-      return this.userByName[username];
-    }
-
-    return null;
   }
 
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {

@@ -12,13 +12,25 @@
 
   {% if !isTrashPage() %}
   <li class="nav-item grw-main-nav-item-left grw-nav-item-edit">
-    <a {% if user %}href="#edit" role="tab" data-toggle="tab" {% endif %} class="nav-link edit-button {% if not user %}edit-button-disabled{% endif %}">
+    <a
+      {% if user %} href="#edit" data-toggle="tab" class="edit-button" {% endif %}
+      {% if not user %}
+        class="edit-button edit-button-disabled"
+        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+      {% endif %}
+    >
       <i class="icon-note"></i> {{ t('Edit') }}
     </a>
   </li>
   {% if isHackmdSetup() %}
-  <li class="nav-item grw-main-nav-item-left grw-nav-item-hackmd">
-    <a {% if user %}href="#hackmd" role="tab" data-toggle="tab" {% endif %} class="nav-link {% if not user %}edit-button-disabled{% endif %}">
+  <li class="nav-item grw-main-nav-item-left grw-nav-tab-hackmd">
+    <a
+      {% if user %} href="#hackmd" data-toggle="tab" class="edit-button" {% endif %}
+      {% if not user %}
+        class="edit-button edit-button-disabled"
+        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+      {% endif %}
+    >
       <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
     </a>
   </li>
@@ -38,7 +50,13 @@
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
     <li class="nav-item">
-      <a class="btn nav-link dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" {% endif %}>
+      <a
+        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if not user %}
+          class="dropdown-toggle dropdown-toggle-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
         <i class="icon-options-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
@@ -54,7 +72,13 @@
     </li>
     {% else %}
     <li class="nav-item dropdown">
-      <a class="btn nav-link dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown"{% endif %}>
+      <a
+        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if not user %}
+          class="dropdown-toggle dropdown-toggle-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
         <i class="icon-options-vertical"></i>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
