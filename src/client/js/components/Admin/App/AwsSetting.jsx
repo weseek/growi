@@ -51,10 +51,10 @@ class AwsSetting extends React.Component {
         </p>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+          <label className="col-3 control-label">
             {t('admin:app_setting.region')}
           </label>
-          <div className="col-xs-6">
+          <div className="col-6">
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
@@ -67,10 +67,10 @@ class AwsSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+          <label className="col-3 control-label">
             {t('admin:app_setting.custom_endpoint')}
           </label>
-          <div className="col-xs-6">
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -85,10 +85,10 @@ class AwsSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+          <label className="col-3 control-label">
             {t('admin:app_setting.bucket_name')}
           </label>
-          <div className="col-xs-6">
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -102,10 +102,10 @@ class AwsSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+          <label className="col-3 control-label">
             Access Key ID
           </label>
-          <div className="col-xs-6">
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -118,10 +118,10 @@ class AwsSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">
+          <label className="col-3 control-label">
             Secret Access Key
           </label>
-          <div className="col-xs-6">
+          <div className="col-6">
             <input
               className="form-control"
               type="text"

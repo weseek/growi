@@ -40,8 +40,8 @@ class MailSetting extends React.Component {
       <React.Fragment>
         <p className="well">{t('admin:app_setting.smtp_used')} {t('admin:app_setting.smtp_but_aws')}<br />{t('admin:app_setting.neihter_of')}</p>
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.from_e-mail_address')}</label>
-          <div className="col-xs-6">
+          <label className="col-3 control-label">{t('admin:app_setting.from_e-mail_address')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -53,8 +53,8 @@ class MailSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 control-label">{t('admin:app_setting.smtp_settings')}</label>
-          <div className="col-xs-4">
+          <label className="col-3 control-label">{t('admin:app_setting.smtp_settings')}</label>
+          <div className="col-4">
             <label>{t('admin:app_setting.host')}</label>
             <input
               className="form-control"
@@ -63,7 +63,7 @@ class MailSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeSmtpHost(e.target.value) }}
             />
           </div>
-          <div className="col-xs-2">
+          <div className="col-2">
             <label>{t('admin:app_setting.port')}</label>
             <input
               className="form-control"
@@ -74,7 +74,7 @@ class MailSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <div className="col-xs-3 col-xs-offset-3">
+          <div className="col-3 col-offset-3">
             <label>{t('admin:app_setting.user')}</label>
             <input
               className="form-control"
@@ -83,7 +83,7 @@ class MailSetting extends React.Component {
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
           </div>
-          <div className="col-xs-3">
+          <div className="col-3">
             <label>{t('Password')}</label>
             <input
               className="form-control"

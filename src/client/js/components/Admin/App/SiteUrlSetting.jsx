@@ -44,7 +44,7 @@ class SiteUrlSetting extends React.Component {
 
         <div className="row">
           <div className="col-md-12">
-            <div className="col-xs-offset-3">
+            <div className="col-offset-3">
               <table className="table settings-table">
                 <colgroup>
                   <col className="from-db" />

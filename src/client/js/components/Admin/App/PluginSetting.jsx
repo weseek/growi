@@ -42,7 +42,7 @@ class PluginSetting extends React.Component {
         <p className="well">{t('admin:app_setting.enable_plugin_loading')}</p>
 
         <div className="row mb-5">
-          <div className="col-xs-offset-3 col-xs-6 text-left">
+          <div className="col-offset-3 col-6 text-left">
             <div className="checkbox checkbox-success">
               <input
                 id="isEnabledPlugins"
