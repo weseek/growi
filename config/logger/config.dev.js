@@ -14,6 +14,7 @@ module.exports = {
   'growi:models:external-account': 'debug',
   // 'growi:routes:login': 'debug',
   'growi:routes:login-passport': 'debug',
+  'growi:middleware:safe-redirect': 'debug',
   'growi:service:PassportService': 'debug',
   // 'growi:service:ConfigManager': 'debug',
   'growi:lib:search': 'debug',

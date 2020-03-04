@@ -12,13 +12,25 @@
 
   {% if !isTrashPage() %}
   <li class="grw-nav-main-left-tab nav-tab-edit">
-    <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="nav-link edit-button {% if not user %}edit-button-disabled{% endif %}">
+    <a
+      {% if user %} href="#edit" data-toggle="tab" class="edit-button" {% endif %}
+      {% if not user %}
+        class="edit-button edit-button-disabled"
+        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+      {% endif %}
+    >
       <i class="icon-note"></i> {{ t('Edit') }}
     </a>
   </li>
   {% if isHackmdSetup() %}
   <li class="grw-nav-main-left-tab nav-tab-hackmd">
-    <a {% if user %}href="#hackmd" data-toggle="tab"{% endif %} class="nav-link {% if not user %}edit-button-disabled{% endif %}">
+    <a
+      {% if user %} href="#hackmd" data-toggle="tab" class="edit-button" {% endif %}
+      {% if not user %}
+        class="edit-button edit-button-disabled"
+        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+      {% endif %}
+    >
       <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
     </a>
   </li>
@@ -30,8 +42,14 @@
   #}
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
-    <li class="dropdown float-right">
-      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
+    <li class="float-right dropdown">
+      <a
+        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if not user %}
+          class="dropdown-toggle dropdown-toggle-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
         <i class="icon-options-vertical"></i>
       </a>
       <ul class="dropdown-menu">
@@ -44,7 +62,13 @@
     </li>
     {% else %}
     <li class="dropdown float-right">
-      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
+      <a
+        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if not user %}
+          class="dropdown-toggle dropdown-toggle-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
         <i class="icon-options-vertical"></i>
       </a>
       <ul class="dropdown-menu">

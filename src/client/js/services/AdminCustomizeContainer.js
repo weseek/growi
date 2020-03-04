@@ -28,6 +28,7 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledAttachTitleHeader: false,
       currentRecentCreatedLimit: 10,
       isEnabledStaleNotification: false,
+      isAllReplyShown: false,
       currentHighlightJsStyleId: '',
       isHighlightJsStyleBorderEnabled: false,
       currentCustomizeTitle: '',
@@ -76,6 +77,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         currentRecentCreatedLimit: customizeParams.recentCreatedLimit,
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
+        isAllReplyShown: customizeParams.isAllReplyShown,
         currentHighlightJsStyleId: customizeParams.styleName,
         isHighlightJsStyleBorderEnabled: customizeParams.styleBorder,
         currentCustomizeTitle: customizeParams.customizeTitle,
@@ -157,6 +159,13 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchEnableStaleNotification() {
     this.setState({ isEnabledStaleNotification:  !this.state.isEnabledStaleNotification });
+  }
+
+  /**
+   * Switch isAllReplyShown
+   */
+  switchIsAllReplyShown() {
+    this.setState({ isAllReplyShown: !this.state.isAllReplyShown });
   }
 
   /**
@@ -289,6 +298,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         recentCreatedLimit: this.state.currentRecentCreatedLimit,
         isEnabledStaleNotification: this.state.isEnabledStaleNotification,
+        isAllReplyShown: this.state.isAllReplyShown,
       });
       const { customizedParams } = response.data;
       this.setState({
@@ -297,6 +307,7 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         recentCreatedLimit: customizedParams.currentRecentCreatedLimit,
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
+        isAllReplyShown: customizedParams.isAllReplyShown,
       });
     }
     catch (err) {
