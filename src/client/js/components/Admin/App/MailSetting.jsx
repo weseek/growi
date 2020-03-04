@@ -74,7 +74,7 @@ class MailSetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <div className="col-3 col-offset-3">
+          <div className="col-3 offset-3">
             <label>{t('admin:app_setting.user')}</label>
             <input
               className="form-control"

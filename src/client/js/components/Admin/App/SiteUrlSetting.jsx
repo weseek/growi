@@ -43,8 +43,8 @@ class SiteUrlSetting extends React.Component {
           && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
 
         <div className="row">
-          <div className="col-md-12">
-            <div className="col-offset-3">
+          <div className="col-lg-12">
+            <div className="offset-3">
               <table className="table settings-table">
                 <colgroup>
                   <col className="from-db" />
