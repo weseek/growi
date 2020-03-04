@@ -38,7 +38,7 @@ class AppSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">{t('admin:app_setting.site_name')}</label>
           <div className="col-6">
             <input
@@ -52,7 +52,7 @@ class AppSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
           <div className="col-6">
             <input
@@ -66,7 +66,7 @@ class AppSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">{t('admin:app_setting.default_language')}</label>
           <div className="col-6">
             <div className="radio radio-primary radio-inline">
@@ -94,18 +94,19 @@ class AppSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
           <div className="col-6">
-            <div className="checkbox checkbox-info">
+            <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
                 id="cbFileUpload"
+                className="custom-control-input"
                 name="fileUpload"
                 checked={adminAppContainer.state.fileUpload}
                 onChange={(e) => { adminAppContainer.changeFileUpload(e.target.checked) }}
               />
-              <label htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
+              <label className="custom-control-label" htmlFor="cbFileUpload">{t('admin:app_setting.enable_files_except_image')}</label>
             </div>
 
             <p className="form-text text-muted">

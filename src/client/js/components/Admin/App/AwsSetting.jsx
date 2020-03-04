@@ -50,7 +50,7 @@ class AwsSetting extends React.Component {
           </span>
         </p>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">
             {t('admin:app_setting.region')}
           </label>
@@ -66,7 +66,7 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">
             {t('admin:app_setting.custom_endpoint')}
           </label>
@@ -84,7 +84,7 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">
             {t('admin:app_setting.bucket_name')}
           </label>
@@ -101,7 +101,7 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">
             Access Key ID
           </label>
@@ -117,7 +117,7 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <label className="col-3 col-form-label">
             Secret Access Key
           </label>

@@ -41,7 +41,7 @@ class PluginSetting extends React.Component {
       <React.Fragment>
         <p className="card well">{t('admin:app_setting.enable_plugin_loading')}</p>
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <div className="offset-3 col-6 text-left">
             <div className="checkbox checkbox-success">
               <input
