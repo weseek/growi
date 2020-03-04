@@ -69,27 +69,29 @@ class AppSetting extends React.Component {
         <div className="row form-group mb-5">
           <label className="col-3 col-form-label">{t('admin:app_setting.default_language')}</label>
           <div className="col-6">
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio d-inline">
               <input
                 type="radio"
                 id="radioLangEn"
+                className="custom-control-input"
                 name="globalLang"
                 value="en-US"
                 checked={adminAppContainer.state.globalLang === 'en-US'}
                 onChange={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
               />
-              <label htmlFor="radioLangEn">{t('English')}</label>
+              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
             </div>
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio d-inline">
               <input
                 type="radio"
                 id="radioLangJa"
+                className="custom-control-input"
                 name="globalLang"
                 value="ja"
                 checked={adminAppContainer.state.globalLang === 'ja'}
                 onChange={(e) => { adminAppContainer.changeGlobalLang(e.target.value) }}
               />
-              <label htmlFor="radioLangJa">{t('Japanese')}</label>
+              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
