@@ -21,7 +21,7 @@ export default class DrawioIFrame extends React.PureComponent {
 
     this.drawioIFrame = React.createRef();
 
-    this.headerColor = '#3c4451';
+    this.headerColor = '#334455';
     this.fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 
     this.init = this.init.bind(this);
@@ -68,8 +68,10 @@ export default class DrawioIFrame extends React.PureComponent {
   receiveFromDrawio(event) {
     if (event.data === 'ready') {
       event.source.postMessage(this.state.drawioMxFile, '*');
+      return;
     }
-    else if (event.data === '{"event":"configure"}') {
+
+    if (event.data === '{"event":"configure"}') {
       if (event.source == null) {
         return;
       }
@@ -87,14 +89,17 @@ export default class DrawioIFrame extends React.PureComponent {
           .geEditor { font-family: ${this.fontFamily} !important; }
           html td.mxPopupMenuItem {
             font-family: ${this.fontFamily} !important;
-            font-size: 9pt !important;
+            font-size: 8pt !important;
           }
           `,
           customFonts: ['Lato', 'Charter'],
         },
       }), '*');
+
+      return;
     }
-    else if (typeof event.data === 'string' && event.data.match(/mxfile/)) {
+
+    if (typeof event.data === 'string' && event.data.match(/mxfile/)) {
       if (event.data.length > 0) {
         const parser = new DOMParser();
         const dom = parser.parseFromString(event.data, 'text/xml');
@@ -105,10 +110,19 @@ export default class DrawioIFrame extends React.PureComponent {
       window.removeEventListener('resize', this.onResizeWindow);
       window.removeEventListener('message', this.receiveFromDrawio);
       this.hide();
+
+      return;
     }
-    else {
-      // NOTHING DONE. (Receive unknown iframe message.)
+
+    if (typeof event.data === 'string' && event.data.length === 0) {
+      window.removeEventListener('resize', this.onResizeWindow);
+      window.removeEventListener('message', this.receiveFromDrawio);
+      this.hide();
+
+      return;
     }
+
+    // NOTHING DONE. (Receive unknown iframe message.)
   }
 
   onResizeWindow(event) {

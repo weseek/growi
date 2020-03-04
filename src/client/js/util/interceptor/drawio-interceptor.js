@@ -16,6 +16,12 @@ export class DrawioInterceptor extends BasicInterceptor {
 
     this.previousPreviewContext = null;
     this.appContainer = appContainer;
+
+    const DrawioViewer = window.GraphViewer;
+    if (DrawioViewer != null) {
+      // viewer.min.js の Resize による Scroll イベントを抑止するために無効化する
+      DrawioViewer.useResizeSensor = false;
+    }
   }
 
   /**
