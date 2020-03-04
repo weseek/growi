@@ -77,7 +77,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt4" className="custom-control-label">
             {t(`${translationBase}.overwrite_author.label`)}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
+            <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -91,7 +91,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           <label htmlFor="cbOpt1" className="custom-control-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Anyone with the link') })}
             <p
-              className="help-block mt-0"
+              className="form-text text-muted mt-0"
               dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Anyone with the link') }) }}
             />
           </label>
@@ -106,7 +106,10 @@ class ImportCollectionConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt2" className="custom-control-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Just me') })}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }} />
+            <p
+              className="form-text text-muted mt-0"
+              dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Just me') }) }}
+            />
           </label>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -120,7 +123,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           <label htmlFor="cbOpt3" className="custom-control-label">
             {t(`${translationBase}.set_public_to_page.label`, { from: t('Only inside the group') })}
             <p
-              className="help-block mt-0"
+              className="form-text text-muted mt-0"
               dangerouslySetInnerHTML={{ __html: t(`${translationBase}.set_public_to_page.desc`, { from: t('Only inside the group') }) }}
             />
           </label>
@@ -135,7 +138,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt5" className="custom-control-label">
             {t(`${translationBase}.initialize_meta_datas.label`)}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
+            <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_meta_datas.desc`) }} />
           </label>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -148,7 +151,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt6" className="custom-control-label">
             {t(`${translationBase}.initialize_hackmd_related_datas.label`)}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
+            <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.initialize_hackmd_related_datas.desc`) }} />
           </label>
         </div>
       </>
@@ -175,7 +178,7 @@ class ImportCollectionConfigurationModal extends React.Component {
           />
           <label htmlFor="cbOpt1" className="custom-control-label">
             {t(`${translationBase}.overwrite_author.label`)}
-            <p className="help-block mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
+            <p className="form-text text-muted mt-0" dangerouslySetInnerHTML={{ __html: t(`${translationBase}.overwrite_author.desc`) }} />
           </label>
         </div>
       </>
