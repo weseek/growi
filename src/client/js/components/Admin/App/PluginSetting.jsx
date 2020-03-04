@@ -43,16 +43,17 @@ class PluginSetting extends React.Component {
 
         <div className="row form-group mb-5">
           <div className="offset-3 col-6 text-left">
-            <div className="checkbox checkbox-success">
+            <div className="custom-control custom-switch checkbox-success">
               <input
                 id="isEnabledPlugins"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminAppContainer.state.isEnabledPlugins}
                 onChange={(e) => {
                   adminAppContainer.changeIsEnabledPlugins(e.target.checked);
                 }}
               />
-              <label htmlFor="isEnabledPlugins">{t('admin:app_setting.load_plugins')}</label>
+              <label className="custom-control-label" htmlFor="isEnabledPlugins">{t('admin:app_setting.load_plugins')}</label>
             </div>
           </div>
         </div>
