@@ -39,7 +39,7 @@ class PluginSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('admin:app_setting.enable_plugin_loading')}</p>
+        <p className="card well">{t('admin:app_setting.enable_plugin_loading')}</p>
 
         <div className="row mb-5">
           <div className="col-offset-3 col-6 text-left">

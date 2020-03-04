@@ -38,7 +38,7 @@ class SiteUrlSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">{t('admin:app_setting.site_url_desc')}</p>
+        <p className="card well">{t('admin:app_setting.site_url_desc')}</p>
         {!adminAppContainer.state.isSetSiteUrl
           && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
 

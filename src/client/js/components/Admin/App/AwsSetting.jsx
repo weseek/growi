@@ -38,7 +38,7 @@ class AwsSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="well">
+        <p className="card well">
           {t('admin:app_setting.aws_access')}
           <br />
           {t('admin:app_setting.no_smtp_setting')}
