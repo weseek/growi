@@ -60,13 +60,31 @@
 
   .btn-like {
     &.active {
-      @extend .btn-info;
+      background-color: $info;
+      border: 1px solid $info;
+
+      &:hover,
+      &:focus,
+      &.focus {
+        background-color: $info;
+        border: 1px solid $info;
+        opacity: 0.8;
+      }
     }
   }
 
   .btn-bookmark {
     &.active {
-      @extend .btn-warning;
+      background: $warning;
+      border: 1px solid $warning;
+
+      &:hover,
+      &:focus,
+      &.focus {
+        background: $warning;
+        border: 1px solid $warning;
+        opacity: 0.8;
+      }
     }
   }
 
