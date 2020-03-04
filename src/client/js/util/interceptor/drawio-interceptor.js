@@ -5,9 +5,9 @@ import { BasicInterceptor } from 'growi-commons';
 import Drawio from '../../components/Drawio';
 
 /**
- * The interceptor for lsx
+ * The interceptor for draw.io
  *
- *  replace lsx tag to a React target element
+ *  replace draw.io tag (render by markdown-it-drawio-viewer) to a React target element
  */
 export class DrawioInterceptor extends BasicInterceptor {
 

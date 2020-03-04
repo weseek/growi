@@ -50,7 +50,7 @@ class Page extends React.Component {
   }
 
   /**
-   * launch DrawioIFRame with data specified by arguments
+   * launch DrawioIFrame with data specified by arguments
    * @param beginLineNumber
    * @param endLineNumber
    */

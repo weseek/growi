@@ -754,7 +754,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Table" />
       </Button>,
       <Button
-        key="nav-item-table"
+        key="nav-item-drawio"
         bsSize="small"
         title="draw.io"
         onClick={this.showDrawioHandler}
