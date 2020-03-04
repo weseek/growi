@@ -127,16 +127,6 @@
           {% endif %}
         </li>
       </ul>
-
-      <ul class="nav navbar-top-links navbar-right pull-right">
-        {% if user and user.admin %}
-        <li class="nav-item-admin">
-          <a href="/admin">
-            <i class="icon-settings"></i><span>{{ t('Admin') }}</span>
-          </a>
-        </li>
-        {% endif %}
-      </form>
     </ul>
 
     <!-- 5 user action -->
@@ -196,6 +186,7 @@
 
   {% block sidebar %}
   <!-- Left navbar-header -->
+  {#
   <div class="navbar-default sidebar hidden-print" role="navigation">
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
       <ul class="nav" id="side-menu">
@@ -209,6 +200,7 @@
       </ul>
     </div>
   </div>
+  #}
   <!-- Left navbar-header end -->
   {% endblock %}
 
