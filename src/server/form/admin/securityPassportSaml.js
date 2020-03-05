@@ -14,4 +14,5 @@ module.exports = form(
   field('settingForm[security:passport-saml:cert]').trim(),
   field('settingForm[security:passport-saml:isSameUsernameTreatedAsIdenticalUser]').trim().toBooleanStrict(),
   field('settingForm[security:passport-saml:isSameEmailTreatedAsIdenticalUser]').trim().toBooleanStrict(),
+  field('settingForm[security:passport-saml:ABLCRule]').trim(),
 );
