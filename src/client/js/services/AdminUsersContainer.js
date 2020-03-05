@@ -90,7 +90,6 @@ export default class AdminUsersContainer extends Container {
       throw new Error('data must conclude \'paginateResult\' property.');
     }
 
-
     const { docs: users, totalDocs: totalUsers, limit: pagingLimit } = data.paginateResult;
 
     this.setState({
