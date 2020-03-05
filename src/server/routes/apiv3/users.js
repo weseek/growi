@@ -140,36 +140,24 @@ module.exports = (crowi) => {
 
   router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
 
-    const page = parseInt(req.query.page) || 1;
     // status
+    const page = parseInt(req.query.page) || 1;
     const { statusList } = req.body;
     const statusNoList = statusList.map(element => statusNo[element]);
     // Search from input
-    const inputWord = req.body.inputWord || '';
+    const inputWord = req.body.inputWord || 1;
     const searchWord = new RegExp(`${inputWord}`);
-    const orColumns = ['name', 'username', 'email'];
-    const orOutput = {};
-    orColumns.forEach((element) => {
-      orOutput[element] = { $in: searchWord };
-    });
-
-    // Sort
-    const { descColumns } = req.body;
-    const sortOutput = {};
-    descColumns.forEach((element) => {
-      sortOutput[element] = -1;
-    });
 
     try {
       const paginateResult = await User.paginate(
         {
           $and: [
             { status: { $in: statusNoList } },
-            { $or: [orOutput] },
+            { $or: [{ name: { $in: searchWord } }, { username: { $in: searchWord } }, { email: { $in: searchWord } }] },
           ],
         },
         {
-          sort: sortOutput,
+          sort: { status: 1, username: 1, createdAt: 1 },
           page,
           limit: PAGE_ITEMS,
         },

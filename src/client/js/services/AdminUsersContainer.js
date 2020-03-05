@@ -18,8 +18,6 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      descColumns: [],
-      statusList: [],
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,

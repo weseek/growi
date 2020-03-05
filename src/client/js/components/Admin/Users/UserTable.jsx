@@ -19,13 +19,7 @@ class UserTable extends React.Component {
 
     };
 
-    // this.onClickColumnSort = this.onClickColumnSort.bind(this);
     this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
-  }
-
-
-  onClickColumnSort(sortName) {
-    console.log(sortName);
   }
 
   /**
@@ -89,31 +83,11 @@ class UserTable extends React.Component {
           <thead>
             <tr>
               <th width="100px">#</th>
-              <th>
-                {t('status')}
-                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true" onClick={() => this.onClickColumnSort('StatusAsc')}></a>
-                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true" onClick={() => this.onClickColumnSort('StatusDesc')}></a>
-              </th>
-              <th>
-                <code>username</code>
-                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true" onClick={() => this.onClickColumnSort('UserNameAsc')}></a>
-                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true" onClick={() => this.onClickColumnSort('UserNameDesc')}></a>
-              </th>
-              <th>
-                {t('Name')}
-                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true" onClick={() => this.onClickColumnSort('NameAsc')}></a>
-                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true" onClick={() => this.onClickColumnSort('NameDesc')}></a>
-              </th>
-              <th>
-                {t('Email')}
-                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true" onClick={() => this.onClickColumnSort('EmailAsc')}></a>
-                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true" onClick={() => this.onClickColumnSort('EmailDesc')}></a>
-              </th>
-              <th width="100px">
-                {t('Created')}
-                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true" onClick={() => this.onClickColumnSort('CreatedAsc')}></a>
-                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true" onClick={() => this.onClickColumnSort('CreatedDesc')}></a>
-              </th>
+              <th>{t('status')}</th>
+              <th><code>username</code></th>
+              <th>{t('Name')}</th>
+              <th>{t('Email')}</th>
+              <th width="100px">{t('Created')}</th>
               <th width="150px">{t('Last_Login')}</th>
               <th width="70px"></th>
             </tr>
