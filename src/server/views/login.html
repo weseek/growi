@@ -135,12 +135,25 @@
 
 
           <div class="input-group justify-content-center mt-5">
+            <div class="input-group-prepend">
+
+              <button type="submit" class="fcbtn btn btn-login">
+                <div class="eff-3"></div>
+                <span class="btn-label"><i class="icon-login"></i>{{ t('Sign in') }}</span>
+              </button>
+
+            </div>
+          </div>
+
+          <div class="input-group justify-content-center mt-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-login">
-              <span class="btn-label"><i class="icon-login"></i></span>
-              {{ t('Sign in') }}
+
+            <button type="submit" class="btn button-3 fcbtn">
+              <div class="eff-3"></div>
+              <span class="btn-label"><i class="icon-login"></i>{{ t('Sign in') }}</span>
             </button>
           </div>
+
         </form>
         {% endif %}
 
