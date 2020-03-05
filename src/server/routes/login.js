@@ -15,7 +15,9 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   const loginSuccess = function(req, res, userData) {
-    req.user = req.session.user = userData;
+    // transforming attributes
+    // see User model
+    req.user = req.session.user = userData.toObject();
 
     // update lastLoginAt
     userData.updateLastLoginAt(new Date(), (err, uData) => {
@@ -28,30 +30,10 @@ module.exports = function(crowi, app) {
       return res.redirect('/me/password');
     }
 
-    const jumpTo = req.session.jumpTo;
-    if (jumpTo) {
-      req.session.jumpTo = null;
-
-      // prevention from open redirect
-      try {
-        const redirectUrl = new URL(jumpTo, `${req.protocol}://${req.get('host')}`);
-        if (redirectUrl.hostname === req.hostname) {
-          return res.redirect(redirectUrl);
-        }
-        logger.warn('Requested redirect URL is invalid, redirect to root page');
-      }
-      catch (err) {
-        logger.warn('Requested redirect URL is invalid, redirect to root page', err);
-        return res.redirect('/');
-      }
-    }
-
-    return res.redirect('/');
-  };
-
-  const loginFailure = function(req, res) {
-    req.flash('warningMessage', 'Sign in failure.');
-    return res.redirect('/login');
+    const { redirectTo } = req.session;
+    // remove session.redirectTo
+    delete req.session.redirectTo;
+    return res.safeRedirect(redirectTo);
   };
 
   actions.error = function(req, res) {
@@ -72,30 +54,29 @@ module.exports = function(crowi, app) {
     });
   };
 
+  actions.preLogin = function(req, res, next) {
+    // user has already logged in
+    if (req.user != null) {
+      const { redirectTo } = req.session;
+      // remove session.redirectTo
+      delete req.session.redirectTo;
+      return res.safeRedirect(redirectTo);
+    }
+
+    // set referer to 'redirectTo'
+    if (req.session.redirectTo == null && req.headers.referer != null) {
+      req.session.redirectTo = req.headers.referer;
+    }
+
+    next();
+  }
+
   actions.login = function(req, res) {
-    const loginForm = req.body.loginForm;
-
-    if (req.method == 'POST' && req.form.isValid) {
-      const username = loginForm.username;
-      const password = loginForm.password;
-
-      // find user
-      User.findUserByUsernameOrEmail(username, password, (err, user) => {
-        if (err) { return loginFailure(req, res) }
-        // check existence and password
-        if (!user || !user.isPasswordValid(password)) {
-          return loginFailure(req, res);
-        }
-        return loginSuccess(req, res, user);
-      });
+    if (req.form) {
+      debug(req.form.errors);
     }
-    else { // method GET
-      if (req.form) {
-        debug(req.form.errors);
-      }
-      return res.render('login', {
-      });
-    }
+
+    return res.render('login', {});
   };
 
   actions.register = function(req, res) {
