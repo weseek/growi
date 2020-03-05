@@ -182,9 +182,13 @@ export default class PersonalContainer extends Container {
   /**
    * Upload image
    */
-  async uploadAttachment() {
+  async uploadAttachment(file) {
     try {
-      // TODO GW-1218 create api
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('_csrf', this.appContainer.csrfToken);
+      const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
+      this.setState({ uploadedPictureSrc: response.attachment.filePathProxied });
     }
     catch (err) {
       this.setState({ retrieveError: err });

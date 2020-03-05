@@ -48,10 +48,7 @@ class ImageCropModal extends React.Component {
           reject(new Error('Canvas is empty'));
           return;
         }
-        blob.name = fileName;
-        window.URL.revokeObjectURL(this.fileUrl);
-        this.fileUrl = window.URL.createObjectURL(blob);
-        resolve(this.fileUrl);
+        resolve(blob);
       }, 'image/jpeg');
     });
   }
@@ -59,8 +56,8 @@ class ImageCropModal extends React.Component {
   async crop() {
     // crop immages
     if (this.state.imageRef && this.state.crop.width && this.state.crop.height) {
-      const croppedImageUrl = await this.getCroppedImg(this.state.imageRef, this.state.crop, '/images/icons/user');
-      this.props.onCropCompleted(croppedImageUrl);
+      const croppedImage = await this.getCroppedImg(this.state.imageRef, this.state.crop, '/images/icons/user');
+      this.props.onCropCompleted(croppedImage);
     }
   }
 
