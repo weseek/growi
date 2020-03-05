@@ -9,8 +9,20 @@ import { toastError } from '../../util/apiNotification';
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 import ExternalAccountRow from './ExternalAccountRow';
+import AssociateModal from './AssociateModal';
 
 class ExternalAccountLinkedMe extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isAssociatModalOpen: false,
+    };
+
+    this.openAssociatModal = this.openAssociatModal.bind(this);
+    this.closeAssociatModal = this.closeAssociatModal.bind(this);
+  }
 
   async componentDidMount() {
     try {
@@ -21,6 +33,14 @@ class ExternalAccountLinkedMe extends React.Component {
     }
   }
 
+  openAssociatModal() {
+    this.setState({ isAssociatModalOpen: true });
+  }
+
+  closeAssociatModal() {
+    this.setState({ isAssociatModalOpen: false });
+  }
+
   render() {
     const { t, personalContainer } = this.props;
     const { externalAccounts } = personalContainer.state;
@@ -29,7 +49,7 @@ class ExternalAccountLinkedMe extends React.Component {
       <Fragment>
         <div className="container-fluid">
           <h2 className="border-bottom">
-            <button type="button" className="btn btn-default btn-sm pull-right">
+            <button type="button" className="btn btn-default btn-sm pull-right" onClick={this.openAssociatModal}>
               <i className="icon-plus" aria-hidden="true" />
             Add
             </button>
@@ -56,6 +76,12 @@ class ExternalAccountLinkedMe extends React.Component {
             </table>
           </div>
         </div>
+
+        <AssociateModal
+          isOpen={this.state.isAssociatModalOpen}
+          onClose={this.closeAssociatModal}
+        />
+
       </Fragment>
     );
   }
