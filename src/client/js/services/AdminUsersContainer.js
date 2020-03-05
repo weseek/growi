@@ -44,12 +44,24 @@ export default class AdminUsersContainer extends Container {
   }
 
   handleClick(statusType) {
+    const all = 'All';
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
     }
-    else {
+    else if (statusType === all) {
+      this.clearStatusList();
       this.addStatusToList(statusType);
     }
+    else {
+      this.deleteStatusFromList(all);
+      this.addStatusToList(statusType);
+    }
+  }
+
+  clearStatusList() {
+    const { selectedStatusList } = this.state;
+    selectedStatusList.clear();
+    this.setState({ selectedStatusList });
   }
 
   addStatusToList(statusType) {
@@ -77,6 +89,7 @@ export default class AdminUsersContainer extends Container {
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');
     }
+
 
     const { docs: users, totalDocs: totalUsers, limit: pagingLimit } = data.paginateResult;
 
