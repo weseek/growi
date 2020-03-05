@@ -133,34 +133,10 @@
             <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
           </div>
 
-
-          <div class="input-group justify-content-center mt-5">
-            <div class="input-group-prepend">
-
-              <button type="submit" class="fcbtn btn btn-login">
-                <div class="eff-3"></div>
-                <span class="btn-label"><i class="icon-login"></i>{{ t('Sign in') }}</span>
-              </button>
-
-            </div>
-          </div>
-
-          <div class="input-group justify-content-center mt-5">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-
-              <button type="submit" class="btn button-3 fcbtn px-0 py-2">
-                <div class="eff-3"></div>
-                <span class="btn-label p-3"><i class="icon-login"></i></span>
-                <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-              </button>
-            </div>
-
-
           <div class="input-group justify-content-center mt-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-
-            <button type="submit" class="btn button-3 fcbtn px-0 py-2">
-              <div class="eff-3"></div>
+            <button type="submit" class="btn btn-login px-0 py-2">
+              <div class="eff-login"></div>
               <span class="btn-label p-3"><i class="icon-login"></i></span>
               <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
             </button>
@@ -348,14 +324,15 @@
             <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
           </div>
 
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-
-          <div class="input-group mt-5 m-b-20 d-flex justify-content-center">
-            <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
-              <span class="btn-label"><i class="icon-user-follow"></i></span>
-              <span class="btn-label-text">{{ t('Sign up') }}</span>
+          <div class="input-group justify-content-center mt-5">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-register px-0 py-2">
+              <div class="eff-register"></div>
+              <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
+              <span class="btn-label-text p-3">{{ t('Sign up') }}</span>
             </button>
           </div>
+
         </form>
 
         <hr>

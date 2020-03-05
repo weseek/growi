@@ -131,7 +131,7 @@
   // button style
 
   // ボタンの設定
-  .button-3 {
+  .btn-login {
     position: relative;
     overflow: hidden;
     color: white;
@@ -141,79 +141,47 @@
     border: none;
 
     .btn-label {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-decoration: none;
       background-color: rgba($danger, 0.4);
+      transition: all .5s ease;
+
     }
 
+    .btn-label-text {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-decoration: none;
+      transition: all .5s ease;
+    }
+
+    // エフェクト用
+    .eff-login {
+      position: absolute;
+      top: -50px;
+      left: 0px;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(#7e4153, 0.5);
+      transition: all .5s ease;
+    }
+
+    // ホバー時に変更
+    &:hover {
+      z-index: 1;
+      color: white;
+
+      .eff-login {
+        top: 0;
+      }
+    }
   }
 
-  .button-3 .btn-label {
-    position: relative;
-    z-index: 2;
-    color: white;
-    text-decoration: none;
-    transition: all .5s ease;
-  }
-
-  .button-3 .btn-label-text {
-    position: relative;
-    z-index: 2;
-    color: white;
-    text-decoration: none;
-    transition: all .5s ease;
-  }
-
-
-  // 加えたいエフェクト
-  .eff-3 {
-    position: absolute;
-    top: -50px;
-    left: 0px;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(#7e4153, 0.5);
-    // 変化のスピード
-    transition: all .5s ease;
-  }
-
-
-  // ホバーした時のボタンに与えたい変更(設定)
-  .button-3:hover {
-    z-index: 1;
-    color: white;
-  }
-
-  // ホバーしたときのエフェクトに与えたい変更(設定)
-  .button-3:hover .eff-3 {
-    top: 0;
-  }
-
-  .button-3:hover .btn-label {
-    color: #fff;
-  }
-
-  .button-3:hover .btn-label-text {
-    color: #fff;
-  }
-
-  .btn-login.fcbtn {
-    color: white;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-    transition: all 1s ease 0s;
-
-  }
-
-  .btn-login.fcbtn:hover .eff-3 {
-    top: 0;
-  }
-
-  .btn-login.fcbtn:hover a {
-    color: #fff;
-  }
-
-
-  .btn-login.fcbtn,
+  // .btn-login.fcbtn,
   .btn-register.fcbtn,
   .btn-login-oauth.fcbtn,
   .btn-collapse-external-auth {
@@ -236,18 +204,6 @@
 
     .btn-label-text {
       flex: 1;
-    }
-  }
-
-
-  .btn-login.fcbtn {
-    .btn-label {
-      background-color: rgba($danger, 0.4);
-    }
-
-    &:hover,
-    &:after {
-      background-color: #7e4153;
     }
   }
 
@@ -304,6 +260,7 @@
     }
   }
 
+  /*
   .btn-register.fcbtn {
     .btn-label {
       background-color: rgba($success, 0.4);
@@ -314,11 +271,62 @@
       min-width: 45px;
     }
 
-    &:hover,
     &:after {
       background-color: #3f7263;
     }
   }
+  */
+
+  .btn-register {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    background-color: rgba(lighten(black, 20%), 0.4);
+    border: none;
+
+    .btn-label {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-decoration: none;
+      background-color: rgba($success, 0.4);
+      transition: all .5s ease;
+
+    }
+
+    .btn-label-text {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-decoration: none;
+      transition: all .5s ease;
+    }
+
+    // エフェクト用
+    .eff-register {
+      position: absolute;
+      top: -50px;
+      left: 0px;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(#3f7263, 0.5);
+      transition: all .5s ease;
+    }
+
+    // ホバー時に変更
+    &:hover {
+      z-index: 1;
+      color: white;
+
+      .eff-register {
+        top: 0;
+      }
+    }
+  }
+
 
   hr {
     margin: 10px 0;
