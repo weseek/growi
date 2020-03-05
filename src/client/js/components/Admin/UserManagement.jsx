@@ -62,6 +62,12 @@ class UserManagement extends React.Component {
       </div>
     );
 
+    const clearButton = (
+      adminUsersContainer.getSearchText().length
+        ? <i className="icon-close search-clear"></i>
+        : ''
+    );
+
     return (
       <Fragment>
         {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
@@ -80,7 +86,10 @@ class UserManagement extends React.Component {
 
             <label className="col-md-3 mb-0 my-3">
               <i className="icon-magnifier mr-1"></i>
-              <input type="text" name="name" />
+              <span className="search-typeahead">
+                <input type="text" name="name" value={adminUsersContainer.getSearchText()} onChange={this.handleChange} />
+                { clearButton }
+              </span>
             </label>
           </div>
 
