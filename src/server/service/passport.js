@@ -667,6 +667,120 @@ class PassportService {
   }
 
   /**
+   * Verify that a SAML response meets the attribute-base login control rule
+   */
+  verifySAMLResponseByABLCRule(response) {
+    const rule = this.crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule');
+    if (rule == null) {
+      return true;
+    }
+
+    const expr = this.parseABLCRule(rule);
+    if (expr == null) {
+      return false;
+    }
+    debug({ 'Parsed Rule': JSON.stringify(expr, null, 2) });
+
+    const attributes = this.extractAttributesFromSAMLResponse(response);
+    debug({ 'Extracted Attributes': JSON.stringify(attributes, null, 2) });
+
+    let evaluatedExpr = false;
+    for (const orOp of expr) {
+      let evaluatedOrOp = true;
+      for (const andOp of orOp) {
+        if (attributes[andOp[0]] == null) {
+          evaluatedOrOp = false;
+          break;
+        }
+        evaluatedOrOp = evaluatedOrOp && attributes[andOp[0]].includes(andOp[1]);
+      }
+      evaluatedExpr = evaluatedExpr || evaluatedOrOp;
+    }
+
+    return evaluatedExpr;
+  }
+
+  /**
+   * Parse a rule string for the attribute-based login control
+   *
+   * The syntax rules are as follows.
+   * <attr> and <value> are any characters except "|", "&", "=".
+   *
+   * ## Syntax
+   *    <expr>   ::= <or_op> | <or_op> "|" <expr>
+   *    <or_op>  ::= <and_op> | <and_op> "&" <or_op>
+   *    <and_op> ::= <attr> "=" <value>
+   *
+   * ## Example
+   *  In:  "Department = A | Department = B & Position = Leader"
+   *  Out:
+   *    [
+   *      [
+   *        ["Department", "A"]
+   *      ],
+   *      [
+   *        ["Department","B"],
+   *        ["Position","Leader"]
+   *      ]
+   *    ]
+   *
+   *   In:  Invalid syntax string like a "This is a & bad & rule string."
+   *   Out: null
+   */
+  parseABLCRule(rule) {
+    let expr = rule.split('|');
+    expr = expr.map(orOp => orOp.trim().split('&'));
+    expr = expr.map(orOp => orOp.map(andOp => andOp.trim().split('=')));
+    expr = expr.map(orOp => orOp.map(andOp => andOp.map(v => v.trim())));
+    for (const orOp of expr) {
+      for (const andOp of orOp) {
+        if (andOp.length !== 2) {
+          return null;
+        }
+      }
+    }
+    return expr;
+  }
+
+
+  /**
+   * Extract attributes from a SAML response
+   *
+   * The format of extracted attributes is the following.
+   *
+   * {
+   *    "attribute_name1": ["value1", "value2", ...],
+   *    "attribute_name2": ["value1", "value2", ...],
+   *    ...
+   * }
+   */
+  extractAttributesFromSAMLResponse(response) {
+    const attributeStatement = response.getAssertion().Assertion.AttributeStatement;
+    if (attributeStatement == null || attributeStatement[0] == null) {
+      return {};
+    }
+
+    const attributes = attributeStatement[0].Attribute;
+    if (attributes == null) {
+      return {};
+    }
+
+    const result = {};
+    for (const attribute of attributes) {
+      const name = attribute.$.Name;
+      const attributeValues = attribute.AttributeValue.map(v => v._);
+      if (result[name] == null) {
+        result[name] = attributeValues;
+      }
+      else {
+        result[name] = result[name].concat(attributeValues);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * reset BasicStrategy
    *
    * @memberof PassportService

@@ -124,7 +124,8 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "form_validation": {
-    "required": "<code>%s</code> is required"
+    "required": "<code>%s</code> is required",
+    "invalid_syntax": "The syntax of <code>%s</code> is invalid."
   },
   "installer": {
     "setup": "Setup",
@@ -462,7 +463,10 @@
       "mapping_detail": "Specification of mappings for {{target}} when creating new users",
       "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
-      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
+      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> .",
+      "attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
+      "attr_based_login_control_rule_detail": "A rule is written in the form of concatenating <code>attribute name = value</code> with <code>|</code> and <code>&</code>. The or operator (|) has a lower precedence than the and operator (&).　If operator precedence is equal, left to right associativity is used.",
+      "attr_based_login_control_rule_example": "For example, if a rule is <code>Department = A | Department = B & Position = Leader</code>, users with <code>Department</code> as <code>A</code> or users with <code>Department</code> as <code>B</code> and <code>Position</code> as <code>Leader</code> <strong>can</strong> sign in.",
       "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
@@ -533,7 +537,8 @@
       "attrMapUsername": "Username",
       "attrMapMail": "Mail Address",
       "attrMapFirstName": "First Name",
-      "attrMapLastName": "Last Name"
+      "attrMapLastName": "Last Name",
+      "ABLCRule": "Rule"
     }
   },
   "notification_setting": {

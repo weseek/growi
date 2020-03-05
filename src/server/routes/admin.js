@@ -559,5 +559,29 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success());
   };
 
+  // /**
+  //  * validate setting form values for SAML
+  //  *
+  //  * - For the value of each mandatory items,
+  //  *     check whether it from the environment variables is empty and form value to update it is empty
+  //  * - validate the syntax of a attribute-based login control rule
+  //  */
+  // function validateSamlSettingForm(form, t) {
+  //   for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
+  //     const formValue = form.settingForm[key];
+  //     if (configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
+  //       const formItemName = t(`security_setting.form_item_name.${key}`);
+  //       form.errors.push(t('form_validation.required', formItemName));
+  //     }
+  //   }
+
+  //   const rule = form.settingForm['security:passport-saml:ABLCRule'];
+  //   // Empty string disables attribute-based login control.
+  //   // So, when rule is empty string, validation is passed.
+  //   if (rule !== '' && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
+  //     form.errors.push(t('form_validation.invalid_syntax', t('security_setting.form_item_name.security:passport-saml:ABLCRule')));
+  //   }
+  // }
+
   return actions;
 };
