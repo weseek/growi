@@ -1,8 +1,13 @@
 # CHANGES
 
-## v3.6.9-RC
+## v3.6.10
+
+*
+
+## v3.6.9
 
 * Improvement: Redirection when login/logout
+* Improvement: Add home icon before '/'
 * Fix: Client crashed when the first login
     * Introduced by 3.6.8
 
