@@ -134,19 +134,41 @@
   .button-3 {
     position: relative;
     overflow: hidden;
+    color: white;
     text-align: center;
     cursor: pointer;
     background-color: rgba(lighten(black, 20%), 0.4);
     border: none;
+
+    .btn-label {
+      background-color: rgba($danger, 0.4);
+    }
+
+  }
+
+  .button-3 .btn-label {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-decoration: none;
     transition: all .5s ease;
   }
+
+  .button-3 .btn-label-text {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-decoration: none;
+    transition: all .5s ease;
+  }
+
 
   // 加えたいエフェクト
   .eff-3 {
     position: absolute;
     top: -50px;
     left: 0px;
-    z-index: 1;
+    z-index: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(#7e4153, 0.5);
@@ -154,14 +176,24 @@
     transition: all .5s ease;
   }
 
+
   // ホバーした時のボタンに与えたい変更(設定)
   .button-3:hover {
+    z-index: 1;
     color: white;
   }
 
   // ホバーしたときのエフェクトに与えたい変更(設定)
   .button-3:hover .eff-3 {
     top: 0;
+  }
+
+  .button-3:hover .btn-label {
+    color: #fff;
+  }
+
+  .button-3:hover .btn-label-text {
+    color: #fff;
   }
 
   .btn-login.fcbtn {
@@ -207,7 +239,7 @@
     }
   }
 
-  /*
+
   .btn-login.fcbtn {
     .btn-label {
       background-color: rgba($danger, 0.4);
@@ -218,6 +250,8 @@
       background-color: #7e4153;
     }
   }
+
+  /*
 
   .btn-login-oauth.fcbtn#google {
     .btn-label {
