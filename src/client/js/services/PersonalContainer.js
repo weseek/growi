@@ -5,6 +5,8 @@ import loggerFactory from '@alias/logger';
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:PersonalContainer');
 
+const DEFAULT_IMAGE = '/images/icons/user.svg';
+
 /**
  * Service container for personal settings page (PersonalSettings.jsx)
  * @extends {Container} unstated Container
@@ -24,6 +26,7 @@ export default class PersonalContainer extends Container {
       isEmailPublished: false,
       lang: 'en-US',
       isGravatarEnabled: false,
+      isUploadedPicture: false,
       uploadedPictureSrc: this.getUploadedPictureSrc(this.appContainer.currentUser),
       externalAccounts: [],
       isPasswordSet: false,
@@ -68,13 +71,15 @@ export default class PersonalContainer extends Container {
    */
   getUploadedPictureSrc(user) {
     if (user.image) {
+      this.setState({ isUploadedPicture: true });
       return user.image;
     }
     if (user.imageAttachment != null) {
+      this.setState({ isUploadedPicture: true });
       return user.imageAttachment.filePathProxied;
     }
 
-    return '/images/icons/user.svg';
+    return DEFAULT_IMAGE;
   }
 
   /**
@@ -188,12 +193,27 @@ export default class PersonalContainer extends Container {
       formData.append('file', file);
       formData.append('_csrf', this.appContainer.csrfToken);
       const response = await this.appContainer.apiPost('/attachments.uploadProfileImage', formData);
-      this.setState({ uploadedPictureSrc: response.attachment.filePathProxied });
+      this.setState({ isUploadedPicture: true, uploadedPictureSrc: response.attachment.filePathProxied });
     }
     catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to upload profile image');
+    }
+  }
+
+  /**
+   * Delete image
+   */
+  async deleteProfileImage() {
+    try {
+      await this.appContainer.apiPost('/attachments.removeProfileImage', { _csrf: this.appContainer.csrfToken });
+      this.setState({ isUploadedPicture: false, uploadedPictureSrc: DEFAULT_IMAGE });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to delete profile image');
     }
   }
 
