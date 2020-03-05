@@ -83,11 +83,31 @@ class UserTable extends React.Component {
           <thead>
             <tr>
               <th width="100px">#</th>
-              <th>{t('status')}</th>
-              <th><code>username</code></th>
-              <th>{t('Name')}</th>
-              <th>{t('Email')}</th>
-              <th width="100px">{t('Created')}</th>
+              <th>
+                {t('status')}
+                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true"></a>
+                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></a>
+              </th>
+              <th>
+                <code>username</code>
+                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true"></a>
+                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></a>
+              </th>
+              <th>
+                {t('Name')}
+                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true"></a>
+                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></a>
+              </th>
+              <th>
+                {t('Email')}
+                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true"></a>
+                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></a>
+              </th>
+              <th width="100px">
+                {t('Created')}
+                <a className="glyphicon glyphicon-triangle-top" aria-hidden="true"></a>
+                <a className="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></a>
+              </th>
               <th width="150px">{t('Last_Login')}</th>
               <th width="70px"></th>
             </tr>
