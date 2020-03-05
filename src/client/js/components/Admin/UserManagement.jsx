@@ -20,6 +20,7 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.handlePage = this.handlePage.bind(this);
+    this.setNotifyComment = this.setNotifyComment.bind(this);
   }
 
   componentWillMount() {
@@ -36,7 +37,13 @@ class UserManagement extends React.Component {
   }
 
   handleClick(statusType) {
-    if (this.validateToggleStatus(statusType)) this.props.adminUsersContainer.handleClick(statusType);
+    if (this.validateToggleStatus(statusType)) {
+      if (this.props.adminUsersContainer.state.notifyComment) this.setNotifyComment('');
+      this.props.adminUsersContainer.handleClick(statusType);
+    }
+    else {
+      this.setNotifyComment('You should check at least one checkbox.');
+    }
   }
 
   validateToggleStatus(statusType) {
@@ -47,6 +54,9 @@ class UserManagement extends React.Component {
     return true;
   }
 
+  setNotifyComment(notifyComment) {
+    this.props.adminUsersContainer.setNotifyComment(notifyComment);
+  }
 
   render() {
     const { t, adminUsersContainer } = this.props;
@@ -60,6 +70,12 @@ class UserManagement extends React.Component {
           pagingLimit={adminUsersContainer.state.pagingLimit}
         />
       </div>
+    );
+
+    const notifyComment = (
+      adminUsersContainer.state.notifyComment
+        ? <p className="text-warning">{ adminUsersContainer.state.notifyComment }</p>
+        : null
     );
 
     return (
@@ -85,45 +101,48 @@ class UserManagement extends React.Component {
           </div>
 
           <div className="col-md-6 py-2 my-2">
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('All')}
-              onClick={() => { this.handleClick('All') }}
-            />
-            <label className="mr-2">All</label>
+            <div>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('All')}
+                onClick={() => { this.handleClick('All') }}
+              />
+              <label className="mr-2">All</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Approval Pending')}
-              onClick={() => { this.handleClick('Approval Pending') }}
-            />
-            <label className="label label-info mr-2">Approval Pending</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Approval Pending')}
+                onClick={() => { this.handleClick('Approval Pending') }}
+              />
+              <label className="label label-info mr-2">Approval Pending</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Active')}
-              onClick={() => { this.handleClick('Active') }}
-            />
-            <label className="label label-success mr-2">Active</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Active')}
+                onClick={() => { this.handleClick('Active') }}
+              />
+              <label className="label label-success mr-2">Active</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Suspended')}
-              onClick={() => { this.handleClick('Suspended') }}
-            />
-            <label className="label label-warning mr-2">Suspended</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Suspended')}
+                onClick={() => { this.handleClick('Suspended') }}
+              />
+              <label className="label label-warning mr-2">Suspended</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Invited')}
-              onClick={() => { this.handleClick('Invited') }}
-            />
-            <label className="label label-info mr-2">Invited</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Invited')}
+                onClick={() => { this.handleClick('Invited') }}
+              />
+              <label className="label label-info mr-2">Invited</label>
+            </div>
+            { notifyComment }
           </div>
         </div>
 

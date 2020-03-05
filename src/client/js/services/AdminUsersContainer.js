@@ -25,6 +25,7 @@ export default class AdminUsersContainer extends Container {
       activePage: 1,
       pagingLimit: Infinity,
       selectedStatusList: new Set(),
+      notifyComment: '',
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -37,6 +38,10 @@ export default class AdminUsersContainer extends Container {
    */
   static getClassName() {
     return 'AdminUsersContainer';
+  }
+
+  setNotifyComment(notifyComment) {
+    this.setState({ notifyComment });
   }
 
   isSelected(statusType) {
