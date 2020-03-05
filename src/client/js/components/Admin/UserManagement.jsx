@@ -20,6 +20,7 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.handlePage = this.handlePage.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillMount() {
@@ -47,6 +48,9 @@ class UserManagement extends React.Component {
     return true;
   }
 
+  handleChange(event) {
+    this.props.adminUsersContainer.handleChange(event.target.value);
+  }
 
   render() {
     const { t, adminUsersContainer } = this.props;

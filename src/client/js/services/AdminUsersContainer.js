@@ -25,6 +25,7 @@ export default class AdminUsersContainer extends Container {
       activePage: 1,
       pagingLimit: Infinity,
       selectedStatusList: new Set(),
+      searchText: '',
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -62,6 +63,14 @@ export default class AdminUsersContainer extends Container {
     const { selectedStatusList } = this.state;
     selectedStatusList.delete(statusType);
     this.setState({ selectedStatusList });
+  }
+
+  getSearchText() {
+    return this.state.searchText;
+  }
+
+  handleChange(searchText) {
+    this.setState({ searchText });
   }
 
   /**
