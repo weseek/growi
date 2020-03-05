@@ -91,7 +91,7 @@ class UserManagement extends React.Component {
             <label className="col-md-3 mb-0 my-3">
               <i className="icon-magnifier mr-1"></i>
               <span className="search-typeahead">
-                <input type="text" name="name" value={adminUsersContainer.getSearchText()} onChange={this.handleChange} />
+                <input type="text" name="name" onChange={this.handleChange} />
                 { clearButton }
               </span>
             </label>
