@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
+import canvasToBlob from 'async-canvas-to-blob';
+
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 import { withTranslation } from 'react-i18next';
@@ -7,6 +10,9 @@ import ReactCrop from 'react-image-crop';
 import AppContainer from '../../services/AppContainer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import 'react-image-crop/dist/ReactCrop.css';
+import { toastError } from '../../util/apiNotification';
+
+const logger = loggerFactory('growi:ImageCropModal');
 
 class ImageCropModal extends React.Component {
 
@@ -42,15 +48,14 @@ class ImageCropModal extends React.Component {
     canvas.height = crop.height;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width, crop.height);
-    return new Promise((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          reject(new Error('Canvas is empty'));
-          return;
-        }
-        resolve(blob);
-      }, 'image/jpeg');
-    });
+    try {
+      const blob = await canvasToBlob(canvas);
+      return blob;
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(new Error('Failed to draw image'));
+    }
   }
 
   async crop() {

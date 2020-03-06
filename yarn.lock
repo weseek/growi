@@ -2145,6 +2145,11 @@ astral-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
 
+async-canvas-to-blob@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/async-canvas-to-blob/-/async-canvas-to-blob-1.0.3.tgz#dbea3ecdca99ecdf6d0340d645dc5342b5032be6"
+  integrity sha512-jXuowR9cJC9TzAyGv4sUh6ilOKuGUvjzJ1GAZMwgaa+q0rXO+SFVyo7GUUCp89mJ/OEVYlAT/gIx3Tlv0fChRw==
+
 async-each-series@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/async-each-series/-/async-each-series-0.1.1.tgz#7617c1917401fd8ca4a28aadce3dbae98afeb432"

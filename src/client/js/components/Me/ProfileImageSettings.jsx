@@ -57,6 +57,9 @@ class ProfileImageSettings extends React.Component {
     }
   }
 
+  /**
+   * @param {object} croppedImage cropped profile image for upload
+   */
   async onCropCompleted(croppedImage) {
     const { t, personalContainer } = this.props;
     try {
