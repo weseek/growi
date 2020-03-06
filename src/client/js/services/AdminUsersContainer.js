@@ -44,12 +44,25 @@ export default class AdminUsersContainer extends Container {
   }
 
   handleClick(statusType) {
+    const all = 'All';
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
     }
     else {
+      if (statusType === all) {
+        this.clearStatusList();
+      }
+      else {
+        this.deleteStatusFromList(all);
+      }
       this.addStatusToList(statusType);
     }
+  }
+
+  clearStatusList() {
+    const { selectedStatusList } = this.state;
+    selectedStatusList.clear();
+    this.setState({ selectedStatusList });
   }
 
   addStatusToList(statusType) {
