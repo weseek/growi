@@ -65,11 +65,7 @@ export default class AdminUsersContainer extends Container {
     this.setState({ selectedStatusList });
   }
 
-  getSearchText() {
-    return this.state.searchText;
-  }
-
-  handleChange(searchText) {
+  handleChangeSearchText(searchText) {
     this.setState({ searchText });
   }
 
