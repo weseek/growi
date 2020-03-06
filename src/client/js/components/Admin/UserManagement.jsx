@@ -20,7 +20,6 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.handlePage = this.handlePage.bind(this);
-    this.setNotifyComment = this.setNotifyComment.bind(this);
   }
 
   componentWillMount() {
@@ -55,10 +54,6 @@ class UserManagement extends React.Component {
       return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
     }
     return true;
-  }
-
-  setNotifyComment(notifyComment) {
-    this.props.adminUsersContainer.setNotifyComment(notifyComment);
   }
 
   render() {
