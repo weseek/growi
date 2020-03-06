@@ -51,17 +51,17 @@ const validator = {
     body('ldapGroupDnProperty').if((value, { req }) => req.body.ldapGroupDnProperty).isString(),
   ],
   samlAuth: [
-    body('samlEntryPoint').if((value, { req }) => req.body.samlEntryPoint).isString(),
-    body('samlIssuer').if((value, { req }) => req.body.samlIssuer).isString(),
-    body('samlCert').if((value, { req }) => req.body.samlCert).isString(),
-    body('samlAttrMapId').if((value, { req }) => req.body.samlAttrMapId).isString(),
-    body('samlAttrMapUserName').if((value, { req }) => req.body.samlAttrMapUserName).isString(),
-    body('samlAttrMapMail').if((value, { req }) => req.body.samlAttrMapMail).isString(),
-    body('samlAttrMapFirstName').if((value, { req }) => req.body.samlAttrMapFirstName).isString(),
-    body('samlAttrMapLastName').if((value, { req }) => req.body.samlAttrMapLastName).isString(),
+    body('entryPoint').if((value, { req }) => req.body.samlEntryPoint).isString(),
+    body('issuer').if((value, { req }) => req.body.samlIssuer).isString(),
+    body('cert').if((value, { req }) => req.body.samlCert).isString(),
+    body('attrMapId').if((value, { req }) => req.body.samlAttrMapId).isString(),
+    body('attrMapUserName').if((value, { req }) => req.body.samlAttrMapUserName).isString(),
+    body('attrMapMail').if((value, { req }) => req.body.samlAttrMapMail).isString(),
+    body('attrMapFirstName').if((value, { req }) => req.body.samlAttrMapFirstName).isString(),
+    body('attrMapLastName').if((value, { req }) => req.body.samlAttrMapLastName).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameUsernameTreatedAsIdenticalUser).isBoolean(),
     body('isSameEmailTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameEmailTreatedAsIdenticalUser).isBoolean(),
-    body('samlABLCRule').if((value, { req }) => req.body.samlABLCRule).isString(),
+    body('ABLCRule').if((value, { req }) => req.body.samlABLCRule).isString(),
   ],
   oidcAuth: [
     body('oidcProviderName').if((value, { req }) => req.body.oidcProviderName).isString(),
@@ -643,11 +643,27 @@ module.exports = (crowi) => {
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
 
+    //  For the value of each mandatory items,
+    //  check whether it from the environment variables is empty and form value to update it is empty
+    //  validate the syntax of a attribute - based login control rule
+    res.errors = [];
+    for (const configKey of crowi.passportService.mandatoryConfigKeysForSaml) {
+      const key = configKey.replace('security:passport-saml:', '');
+      const formValue = req.body[key];
+      if (crowi.configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
+        const formItemName = req.t(`security_setting.form_item_name.${key}`);
+        res.errors.push(req.t('form_validation.required', formItemName));
+      }
+    }
+    if (res.errors.length !== 0) {
+      return res.apiv3Err(req.t('form_validation.error_message'), 400);
+    }
+
     const rule = req.body.samlABLCRule;
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
     if (rule !== '' && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
-      return res.apiv3Err(req.t('form_validation.invalid_syntax', { target: req.t('security_setting.form_item_name.ABLCRule') }), 400);
+      return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
     }
 
     const requestParams = {

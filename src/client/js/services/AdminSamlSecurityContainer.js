@@ -157,23 +157,19 @@ export default class AdminSamlSecurityContainer extends Container {
    * Update saml option
    */
   async updateSamlSetting() {
-    const {
-      samlEntryPoint, samlIssuer, samlCert, samlAttrMapId, samlAttrMapUserName, samlAttrMapMail,
-      samlAttrMapFirstName, samlAttrMapLastName, isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser, samlABLCRule,
-    } = this.state;
 
     let requestParams = {
-      samlEntryPoint,
-      samlIssuer,
-      samlCert,
-      samlAttrMapId,
-      samlAttrMapUserName,
-      samlAttrMapMail,
-      samlAttrMapFirstName,
-      samlAttrMapLastName,
-      isSameUsernameTreatedAsIdenticalUser,
-      isSameEmailTreatedAsIdenticalUser,
-      samlABLCRule,
+      entryPoint: this.state.samlEntryPoint,
+      issuer: this.state.samlIssuer,
+      cert: this.state.cert,
+      attrMapId: this.state.samlAttrMapId,
+      attrMapUserName: this.state.samlAttrMapUserName,
+      attrMapMail: this.state.samlAttrMapMail,
+      attrMapFirstName: this.state.samlAttrMapFirstName,
+      attrMapLastName: this.state.samlAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
+      ABLCRule: this.state.ABLCRule,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
