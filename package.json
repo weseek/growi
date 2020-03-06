@@ -75,6 +75,7 @@
     "archiver": "^3.1.1",
     "array.prototype.flatmap": "^1.2.2",
     "async": "^3.0.1",
+    "async-canvas-to-blob": "^1.0.3",
     "aws-sdk": "^2.88.0",
     "axios": "^0.19.0",
     "body-parser": "^1.18.2",
