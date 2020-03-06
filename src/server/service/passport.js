@@ -73,7 +73,6 @@ class PassportService {
      * the keys of mandatory configs for SAML
      */
     this.mandatoryConfigKeysForSaml = [
-      'security:passport-saml:isEnabled',
       'security:passport-saml:entryPoint',
       'security:passport-saml:issuer',
       'security:passport-saml:cert',

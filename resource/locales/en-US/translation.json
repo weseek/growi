@@ -124,8 +124,9 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "form_validation": {
-    "required": "<code>%s</code> is required",
-    "invalid_syntax": "The syntax of <code>%s</code> is invalid."
+    "error_message": "Some values ​​are incorrect",
+    "required": "%s is required",
+    "invalid_syntax": "The syntax of %s is invalid."
   },
   "installer": {
     "setup": "Setup",

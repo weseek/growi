@@ -51,16 +51,17 @@ const validator = {
     body('ldapGroupDnProperty').if((value, { req }) => req.body.ldapGroupDnProperty).isString(),
   ],
   samlAuth: [
-    body('samlEntryPoint').if((value, { req }) => req.body.samlEntryPoint).isString(),
-    body('samlIssuer').if((value, { req }) => req.body.samlIssuer).isString(),
-    body('samlCert').if((value, { req }) => req.body.samlCert).isString(),
-    body('samlAttrMapId').if((value, { req }) => req.body.samlAttrMapId).isString(),
-    body('samlAttrMapUserName').if((value, { req }) => req.body.samlAttrMapUserName).isString(),
-    body('samlAttrMapMail').if((value, { req }) => req.body.samlAttrMapMail).isString(),
-    body('samlAttrMapFirstName').if((value, { req }) => req.body.samlAttrMapFirstName).isString(),
-    body('samlAttrMapLastName').if((value, { req }) => req.body.samlAttrMapLastName).isString(),
+    body('entryPoint').if((value, { req }) => req.body.samlEntryPoint).isString(),
+    body('issuer').if((value, { req }) => req.body.samlIssuer).isString(),
+    body('cert').if((value, { req }) => req.body.samlCert).isString(),
+    body('attrMapId').if((value, { req }) => req.body.samlAttrMapId).isString(),
+    body('attrMapUserName').if((value, { req }) => req.body.samlAttrMapUserName).isString(),
+    body('attrMapMail').if((value, { req }) => req.body.samlAttrMapMail).isString(),
+    body('attrMapFirstName').if((value, { req }) => req.body.samlAttrMapFirstName).isString(),
+    body('attrMapLastName').if((value, { req }) => req.body.samlAttrMapLastName).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameUsernameTreatedAsIdenticalUser).isBoolean(),
     body('isSameEmailTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameEmailTreatedAsIdenticalUser).isBoolean(),
+    body('ABLCRule').if((value, { req }) => req.body.samlABLCRule).isString(),
   ],
   oidcAuth: [
     body('oidcProviderName').if((value, { req }) => req.body.oidcProviderName).isString(),
@@ -207,6 +208,9 @@ const validator = {
  *          isSameEmailTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
+ *          samlABLCRule:
+ *            type: string
+ *            description: ABLCRule for saml
  *      OidcAuthSetting:
  *        type: object
  *        properties:
@@ -366,6 +370,7 @@ module.exports = (crowi) => {
         samlEnvVarAttrMapLastName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+        samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
       },
       oidcAuth: {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
@@ -637,17 +642,42 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
+
+    //  For the value of each mandatory items,
+    //  check whether it from the environment variables is empty and form value to update it is empty
+    //  validate the syntax of a attribute - based login control rule
+    const invalidValues = [];
+    for (const configKey of crowi.passportService.mandatoryConfigKeysForSaml) {
+      const key = configKey.replace('security:passport-saml:', '');
+      const formValue = req.body[key];
+      if (crowi.configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
+        const formItemName = req.t(`security_setting.form_item_name.${key}`);
+        invalidValues.push(req.t('form_validation.required', formItemName));
+      }
+    }
+    if (invalidValues.length !== 0) {
+      return res.apiv3Err(req.t('form_validation.error_message'), 400, invalidValues);
+    }
+
+    const rule = req.body.samlABLCRule;
+    // Empty string disables attribute-based login control.
+    // So, when rule is empty string, validation is passed.
+    if (rule != null && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
+      return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+    }
+
     const requestParams = {
-      'security:passport-saml:entryPoint': req.body.samlEntryPoint,
-      'security:passport-saml:issuer': req.body.samlIssuer,
-      'security:passport-saml:cert': req.body.samlCert,
-      'security:passport-saml:attrMapId': req.body.samlAttrMapId,
-      'security:passport-saml:attrMapUsername': req.body.samlAttrMapUserName,
-      'security:passport-saml:attrMapMail': req.body.samlAttrMapMail,
-      'security:passport-saml:attrMapFirstName': req.body.samlAttrMapFirstName,
-      'security:passport-saml:attrMapLastName': req.body.samlAttrMapLastName,
+      'security:passport-saml:entryPoint': req.body.entryPoint,
+      'security:passport-saml:issuer': req.body.issuer,
+      'security:passport-saml:cert': req.body.cert,
+      'security:passport-saml:attrMapId': req.body.attrMapId,
+      'security:passport-saml:attrMapUsername': req.body.attrMapUserName,
+      'security:passport-saml:attrMapMail': req.body.attrMapMail,
+      'security:passport-saml:attrMapFirstName': req.body.attrMapFirstName,
+      'security:passport-saml:attrMapLastName': req.body.attrMapLastName,
       'security:passport-saml:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
       'security:passport-saml:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
+      'security:passport-saml:ABLCRule': req.body.ABLCRule,
     };
 
     try {
@@ -665,6 +695,7 @@ module.exports = (crowi) => {
         samlAttrMapLastName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+        samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
       };
       return res.apiv3({ securitySettingParams });
     }

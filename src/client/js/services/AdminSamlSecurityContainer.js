@@ -34,6 +34,7 @@ export default class AdminSamlSecurityContainer extends Container {
       samlAttrMapLastName: '',
       isSameUsernameTreatedAsIdenticalUser: false,
       isSameEmailTreatedAsIdenticalUser: false,
+      samlABLCRule: '',
     };
 
   }
@@ -57,6 +58,7 @@ export default class AdminSamlSecurityContainer extends Container {
         samlAttrMapLastName: samlAuth.samlAttrMapLastName,
         isSameUsernameTreatedAsIdenticalUser: samlAuth.isSameUsernameTreatedAsIdenticalUser,
         isSameEmailTreatedAsIdenticalUser: samlAuth.isSameEmailTreatedAsIdenticalUser,
+        samlABLCRule: samlAuth.samlABLCRule,
       });
       return samlAuth;
     }
@@ -145,25 +147,29 @@ export default class AdminSamlSecurityContainer extends Container {
   }
 
   /**
+   * Change samlABLCRule
+   */
+  changeSamlABLCRule(inputValue) {
+    this.setState({ samlABLCRule: inputValue });
+  }
+
+  /**
    * Update saml option
    */
   async updateSamlSetting() {
-    const {
-      samlEntryPoint, samlIssuer, samlCert, samlAttrMapId, samlAttrMapUserName, samlAttrMapMail,
-      samlAttrMapFirstName, samlAttrMapLastName, isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser,
-    } = this.state;
 
     let requestParams = {
-      samlEntryPoint,
-      samlIssuer,
-      samlCert,
-      samlAttrMapId,
-      samlAttrMapUserName,
-      samlAttrMapMail,
-      samlAttrMapFirstName,
-      samlAttrMapLastName,
-      isSameUsernameTreatedAsIdenticalUser,
-      isSameEmailTreatedAsIdenticalUser,
+      entryPoint: this.state.samlEntryPoint,
+      issuer: this.state.samlIssuer,
+      cert: this.state.samlCert,
+      attrMapId: this.state.samlAttrMapId,
+      attrMapUsername: this.state.samlAttrMapUserName,
+      attrMapMail: this.state.samlAttrMapMail,
+      attrMapFirstName: this.state.samlAttrMapFirstName,
+      attrMapLastName: this.state.samlAttrMapLastName,
+      isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
+      ABLCRule: this.state.ABLCRule,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
@@ -182,6 +188,7 @@ export default class AdminSamlSecurityContainer extends Container {
       samlAttrMapLastName: securitySettingParams.samlAttrMapLastName,
       isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
       isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser,
+      samlABLCRule: securitySettingParams.samlABLCRule,
     });
     return response;
   }
