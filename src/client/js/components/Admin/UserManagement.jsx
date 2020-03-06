@@ -124,6 +124,16 @@ class UserManagement extends React.Component {
               onClick={() => { this.handleClick('Invited') }}
             />
             <label className="label label-info mr-2">Invited</label>
+                id="c1"
+              <label htmlFor="c1" className="mr-2">All</label>
+                id="c2"
+              <label htmlFor="c2" className="label label-info mr-2">Approval Pending</label>
+                id="c3"
+              <label htmlFor="c3" className="label label-success mr-2">Active</label>
+                id="c4"
+              <label htmlFor="c4" className="label label-warning mr-2">Suspended</label>
+                id="c5"
+              <label htmlFor="c5" className="label label-info">Invited</label>
           </div>
         </div>
 
