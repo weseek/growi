@@ -123,8 +123,9 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
   "form_validation": {
-    "required": "<code>%s</code> に値を入力してください",
-    "invalid_syntax": "<code>{{target}}</code> の構文が不正です"
+    "error_message": "いくつかの値が設定されていません",
+    "required": "%s に値を入力してください",
+    "invalid_syntax": "%s の構文が不正です"
   },
   "installer": {
     "setup": "セットアップ",
