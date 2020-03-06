@@ -25,6 +25,7 @@ class SamlSecurityManagement extends React.Component {
       envAttrMapMail: '',
       envAttrMapFirstName: '',
       envAttrMapLastName: '',
+      envABLCRule: '',
     };
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
@@ -479,8 +480,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      name="settingForm[security:passport-saml:ABLCRule]"
-                      value=""
+                      value={adminSamlSecurityContainer.state.samlABLCRule || ''}
+                      onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                       readOnly={useOnlyEnvVars}
                     />
                     <p className="help-block">
@@ -495,7 +496,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value=""
+                      value={this.state.envABLCRule || ''}
                       readOnly
                     />
                     <p className="help-block">
