@@ -48,12 +48,13 @@ export default class AdminUsersContainer extends Container {
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
     }
-    else if (statusType === all) {
-      this.clearStatusList();
-      this.addStatusToList(statusType);
-    }
     else {
-      this.deleteStatusFromList(all);
+      if (statusType === all) {
+        this.clearStatusList();
+      }
+      else {
+        this.deleteStatusFromList(all);
+      }
       this.addStatusToList(statusType);
     }
   }
