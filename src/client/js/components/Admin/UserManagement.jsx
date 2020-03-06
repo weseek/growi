@@ -67,7 +67,7 @@ class UserManagement extends React.Component {
     );
 
     const clearButton = (
-      adminUsersContainer.getSearchText().length
+      adminUsersContainer.state.searchText.length > 0
         ? <i className="icon-close search-clear"></i>
         : ''
     );
