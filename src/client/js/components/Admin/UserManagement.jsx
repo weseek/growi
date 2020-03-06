@@ -75,55 +75,61 @@ class UserManagement extends React.Component {
 
         <h2>{t('User_Management')}</h2>
 
-        <div className="row border-top border-bottom mr-2">
-          <div className="px-0">
+        <div className="border-top border-bottom">
 
-            <label className="col-md-3 mb-0 my-3">
+          <div className="d-flex justify-content-start align-items-center my-2">
+            <div>
               <i className="icon-magnifier mr-1"></i>
               <input type="text" name="name" />
-            </label>
-          </div>
+            </div>
 
-          <div className="col-md-6 py-2 my-2">
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('All')}
-              onClick={() => { this.handleClick('All') }}
-            />
-            <label className="mr-2">All</label>
+            {/* To do: when a label is clicked, the check button is checked */}
+            <div className="mx-5">
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('All')}
+                onClick={() => { this.handleClick('All') }}
+              />
+              <label className="mr-2">All</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Approval Pending')}
-              onClick={() => { this.handleClick('Approval Pending') }}
-            />
-            <label className="label label-info mr-2">Approval Pending</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Approval Pending')}
+                onClick={() => { this.handleClick('Approval Pending') }}
+              />
+              <label className="label label-info mr-2">Approval Pending</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Active')}
-              onClick={() => { this.handleClick('Active') }}
-            />
-            <label className="label label-success mr-2">Active</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Active')}
+                onClick={() => { this.handleClick('Active') }}
+              />
+              <label className="label label-success mr-2">Active</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Suspended')}
-              onClick={() => { this.handleClick('Suspended') }}
-            />
-            <label className="label label-warning mr-2">Suspended</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Suspended')}
+                onClick={() => { this.handleClick('Suspended') }}
+              />
+              <label className="label label-warning mr-2">Suspended</label>
 
-            <input
-              type="checkbox"
-              className="mr-1"
-              checked={adminUsersContainer.isSelected('Invited')}
-              onClick={() => { this.handleClick('Invited') }}
-            />
-            <label className="label label-info mr-2">Invited</label>
+              <input
+                type="checkbox"
+                className="mr-1"
+                checked={adminUsersContainer.isSelected('Invited')}
+                onClick={() => { this.handleClick('Invited') }}
+              />
+              <label className="label label-info">Invited</label>
+            </div>
+            <div>
+              <button type="button" className="btn btn-default btn-outline btn-sm">
+              Reset
+              </button>
+            </div>
           </div>
         </div>
 
