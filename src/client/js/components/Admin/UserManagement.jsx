@@ -125,11 +125,6 @@ class UserManagement extends React.Component {
               />
               <label className="label label-info">Invited</label>
             </div>
-            <div>
-              <button type="button" className="btn btn-default btn-outline btn-sm">
-              Reset
-              </button>
-            </div>
           </div>
         </div>
 
