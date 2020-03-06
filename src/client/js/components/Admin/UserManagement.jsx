@@ -20,6 +20,7 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.handlePage = this.handlePage.bind(this);
+    this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
 
   componentWillMount() {
@@ -47,6 +48,9 @@ class UserManagement extends React.Component {
     return true;
   }
 
+  handleChangeSearchText(event) {
+    this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
+  }
 
   render() {
     const { t, adminUsersContainer } = this.props;
@@ -60,6 +64,12 @@ class UserManagement extends React.Component {
           pagingLimit={adminUsersContainer.state.pagingLimit}
         />
       </div>
+    );
+
+    const clearButton = (
+      adminUsersContainer.state.searchText.length > 0
+        ? <i className="icon-close search-clear"></i>
+        : ''
     );
 
     return (
@@ -80,7 +90,10 @@ class UserManagement extends React.Component {
 
             <label className="col-md-3 mb-0 my-3">
               <i className="icon-magnifier mr-1"></i>
-              <input type="text" name="name" />
+              <span className="search-typeahead">
+                <input type="text" name="name" onChange={this.handleChangeSearchText} />
+                { clearButton }
+              </span>
             </label>
           </div>
 
