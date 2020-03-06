@@ -43,11 +43,11 @@ class Drawio extends React.Component {
 
   render() {
     return (
-      <div className="editable-with-drawio">
+      <div className="editable-with-drawio position-relative">
         { !this.isPreview
           && (
-          <button type="button" className="drawio-iframe-trigger btn" onClick={this.onEdit}>
-            <i className="icon-note"></i> {this.props.t('Edit')}
+          <button type="button" className="drawio-iframe-trigger position-absolute btn" onClick={this.onEdit}>
+            <i className="icon-note mr-1"></i>{this.props.t('Edit')}
           </button>
           )
         }

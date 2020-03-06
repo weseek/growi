@@ -11,7 +11,6 @@ export default class DrawioIFrame extends React.PureComponent {
       shown: false,
       drawioMxFile: '',
       style: {
-        position: 'fixed',
         zIndex: 9999,
         top: 0,
         left: 0,
@@ -156,6 +155,7 @@ export default class DrawioIFrame extends React.PureComponent {
             <iframe
               ref={(c) => { this.drawioIFrame = c }}
               src={this.drawioURL()}
+              className="position-fixed"
               style={this.state.style}
             >
             </iframe>

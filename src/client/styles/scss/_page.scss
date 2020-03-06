@@ -213,20 +213,15 @@
  * for drawio with drawio iframe button
  */
 .editable-with-drawio {
-  position: relative;
-
   .drawio-iframe-trigger {
-    position: absolute;
     top: 11px;
     right: 10px;
     z-index: 14;
     font-size: 12px;
     line-height: 1;
     color: $linktext;
-    vertical-align: bottom;
     background-color: transparent;
     border: 1px solid $linktext;
-    border-radius: 3px;
     opacity: 1;
 
     &:hover {
