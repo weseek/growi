@@ -23,7 +23,7 @@ class UserTable extends React.Component {
   }
 
   onClickColumnSort(sortName) {
-    console.log(sortName);
+    console.log(sortName); // テスト用
   }
 
   /**
