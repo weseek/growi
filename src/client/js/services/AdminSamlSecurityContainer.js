@@ -161,9 +161,9 @@ export default class AdminSamlSecurityContainer extends Container {
     let requestParams = {
       entryPoint: this.state.samlEntryPoint,
       issuer: this.state.samlIssuer,
-      cert: this.state.cert,
+      cert: this.state.samlCert,
       attrMapId: this.state.samlAttrMapId,
-      attrMapUserName: this.state.samlAttrMapUserName,
+      attrMapUsername: this.state.samlAttrMapUserName,
       attrMapMail: this.state.samlAttrMapMail,
       attrMapFirstName: this.state.samlAttrMapFirstName,
       attrMapLastName: this.state.samlAttrMapLastName,

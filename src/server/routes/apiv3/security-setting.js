@@ -646,38 +646,38 @@ module.exports = (crowi) => {
     //  For the value of each mandatory items,
     //  check whether it from the environment variables is empty and form value to update it is empty
     //  validate the syntax of a attribute - based login control rule
-    res.errors = [];
+    const invalidValues = [];
     for (const configKey of crowi.passportService.mandatoryConfigKeysForSaml) {
       const key = configKey.replace('security:passport-saml:', '');
       const formValue = req.body[key];
       if (crowi.configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
         const formItemName = req.t(`security_setting.form_item_name.${key}`);
-        res.errors.push(req.t('form_validation.required', formItemName));
+        invalidValues.push(req.t('form_validation.required', formItemName));
       }
     }
-    if (res.errors.length !== 0) {
-      return res.apiv3Err(req.t('form_validation.error_message'), 400);
+    if (invalidValues.length !== 0) {
+      return res.apiv3Err(req.t('form_validation.error_message'), 400, invalidValues);
     }
 
     const rule = req.body.samlABLCRule;
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
-    if (rule !== '' && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
+    if (rule != null && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
       return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
     }
 
     const requestParams = {
-      'security:passport-saml:entryPoint': req.body.samlEntryPoint,
-      'security:passport-saml:issuer': req.body.samlIssuer,
-      'security:passport-saml:cert': req.body.samlCert,
-      'security:passport-saml:attrMapId': req.body.samlAttrMapId,
-      'security:passport-saml:attrMapUsername': req.body.samlAttrMapUserName,
-      'security:passport-saml:attrMapMail': req.body.samlAttrMapMail,
-      'security:passport-saml:attrMapFirstName': req.body.samlAttrMapFirstName,
-      'security:passport-saml:attrMapLastName': req.body.samlAttrMapLastName,
+      'security:passport-saml:entryPoint': req.body.entryPoint,
+      'security:passport-saml:issuer': req.body.issuer,
+      'security:passport-saml:cert': req.body.cert,
+      'security:passport-saml:attrMapId': req.body.attrMapId,
+      'security:passport-saml:attrMapUsername': req.body.attrMapUserName,
+      'security:passport-saml:attrMapMail': req.body.attrMapMail,
+      'security:passport-saml:attrMapFirstName': req.body.attrMapFirstName,
+      'security:passport-saml:attrMapLastName': req.body.attrMapLastName,
       'security:passport-saml:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
       'security:passport-saml:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
-      'security:passport-saml:ABLCRule': req.body.samlABLCRule,
+      'security:passport-saml:ABLCRule': req.body.ABLCRule,
     };
 
     try {
