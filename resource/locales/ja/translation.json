@@ -124,7 +124,7 @@
   "Sign out": "ログアウト",
   "form_validation": {
     "required": "<code>%s</code> に値を入力してください",
-    "invalid_syntax": "<code>%s</code> の構文が不正です"
+    "invalid_syntax": "<code>{{target}}</code> の構文が不正です"
   },
   "installer": {
     "setup": "セットアップ",

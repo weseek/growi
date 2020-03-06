@@ -125,7 +125,7 @@
   "Sign out": "Logout",
   "form_validation": {
     "required": "<code>%s</code> is required",
-    "invalid_syntax": "The syntax of <code>%s</code> is invalid."
+    "invalid_syntax": "The syntax of <code>{{target}}</code> is invalid."
   },
   "installer": {
     "setup": "Setup",

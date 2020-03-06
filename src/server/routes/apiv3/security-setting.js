@@ -642,6 +642,14 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, ApiV3FormValidator, async(req, res) => {
+
+    const rule = req.body.samlABLCRule;
+    // Empty string disables attribute-based login control.
+    // So, when rule is empty string, validation is passed.
+    if (rule !== '' && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
+      return res.apiv3Err(req.t('form_validation.invalid_syntax', { target: req.t('security_setting.form_item_name.ABLCRule') }), 400);
+    }
+
     const requestParams = {
       'security:passport-saml:entryPoint': req.body.samlEntryPoint,
       'security:passport-saml:issuer': req.body.samlIssuer,
