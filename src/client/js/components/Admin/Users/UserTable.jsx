@@ -23,7 +23,7 @@ class UserTable extends React.Component {
   }
 
   onClickColumnSort(sortName) {
-    console.log(sortName); // テスト用
+    // TODO send array to AdminUserContainer.js (GW1227)
   }
 
   /**
