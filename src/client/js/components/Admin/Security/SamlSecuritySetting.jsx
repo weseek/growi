@@ -453,6 +453,59 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </div>
             </div>
 
+            <h3 className="alert-anchor border-bottom">
+              Attribute-based Login Control
+            </h3>
+
+            <p className="help-block">
+              <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_detail') }} />
+            </p>
+
+            <table className="table settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
+              <colgroup>
+                <col className="item-name" />
+                <col className="from-db" />
+                <col className="from-env-vars" />
+              </colgroup>
+              <thead>
+                <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>
+                    { t('security_setting.form_item_name.ABLCRule') }
+                  </th>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      name="settingForm[security:passport-saml:ABLCRule]"
+                      value=""
+                      readOnly={useOnlyEnvVars}
+                    />
+                    <p className="help-block">
+                      <small>
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_detail') }} />
+                        <br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example') }} />
+                      </small>
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      value=""
+                      readOnly
+                    />
+                    <p className="help-block">
+                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ABLC_RULE' }) }} />
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
           </React.Fragment>
 
         )}
