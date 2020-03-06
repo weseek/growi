@@ -37,13 +37,16 @@ class UserManagement extends React.Component {
   }
 
   handleClick(statusType) {
-    if (this.validateToggleStatus(statusType)) {
-      if (this.props.adminUsersContainer.state.notifyComment) this.setNotifyComment('');
-      this.props.adminUsersContainer.handleClick(statusType);
+    const { adminUsersContainer } = this.props;
+    if (!this.validateToggleStatus(statusType)) {
+      adminUsersContainer.setNotifyComment('You should check at least one checkbox.');
+      return;
     }
-    else {
-      this.setNotifyComment('You should check at least one checkbox.');
+
+    if (adminUsersContainer.state.notifyComment.length > 0) {
+      adminUsersContainer.setNotifyComment('');
     }
+    adminUsersContainer.handleClick(statusType);
   }
 
   validateToggleStatus(statusType) {
