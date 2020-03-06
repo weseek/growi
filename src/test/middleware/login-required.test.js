@@ -101,7 +101,7 @@ describe('loginRequired', () => {
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
       expect(result).toBe('redirect');
-      expect(req.session.jumpTo).toBe('original url 1');
+      expect(req.session.redirectTo).toBe('original url 1');
     });
 
     test('pass user who logged in', () => {
@@ -119,7 +119,7 @@ describe('loginRequired', () => {
       expect(res.redirect).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
       expect(result).toBe('next');
-      expect(req.session.jumpTo).toBe(undefined);
+      expect(req.session.redirectTo).toBe(undefined);
     });
 
     /* eslint-disable indent */
@@ -142,7 +142,7 @@ describe('loginRequired', () => {
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(expectedPath);
       expect(result).toBe('redirect');
-      expect(req.session.jumpTo).toBe(undefined);
+      expect(req.session.redirectTo).toBe(undefined);
     });
     /* eslint-disable indent */
 
@@ -163,7 +163,7 @@ describe('loginRequired', () => {
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/login');
       expect(result).toBe('redirect');
-      expect(req.session.jumpTo).toBe('original url 1');
+      expect(req.session.redirectTo).toBe('original url 1');
     });
 
   });

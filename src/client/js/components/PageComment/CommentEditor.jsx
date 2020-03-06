@@ -212,8 +212,6 @@ class CommentEditor extends React.Component {
 
   render() {
     const { appContainer, commentContainer } = this.props;
-    const username = appContainer.me;
-    const user = appContainer.findUser(username);
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
     const emojiStrategy = appContainer.getEmojiStrategy();
 
@@ -236,7 +234,7 @@ class CommentEditor extends React.Component {
         <div className="comment-form">
           { isBaloonStyle && (
             <div className="comment-form-user">
-              <UserPicture user={user} />
+              <UserPicture user={appContainer.currentUser} />
             </div>
           ) }
           <div className="comment-form-main">
