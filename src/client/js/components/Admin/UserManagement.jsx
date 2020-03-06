@@ -84,7 +84,7 @@ class UserManagement extends React.Component {
             </label>
           </div>
 
-          <div className="col-md-6 py-2 my-2">
+          <div className="col-md-7 py-2 my-2">
             <input
               type="checkbox"
               className="mr-1"
@@ -123,7 +123,11 @@ class UserManagement extends React.Component {
               checked={adminUsersContainer.isSelected('Invited')}
               onClick={() => { this.handleClick('Invited') }}
             />
-            <label className="label label-info mr-2">Invited</label>
+            <label className="label label-info mr-5">Invited</label>
+
+            <button type="button" className="btn btn-default btn-outline btn-sm ml-5">
+              Reset
+            </button>
           </div>
         </div>
 
