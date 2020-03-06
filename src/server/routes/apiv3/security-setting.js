@@ -61,6 +61,7 @@ const validator = {
     body('samlAttrMapLastName').if((value, { req }) => req.body.samlAttrMapLastName).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameUsernameTreatedAsIdenticalUser).isBoolean(),
     body('isSameEmailTreatedAsIdenticalUser').if((value, { req }) => req.body.isSameEmailTreatedAsIdenticalUser).isBoolean(),
+    body('samlABLCRule').if((value, { req }) => req.body.samlABLCRule).isString(),
   ],
   oidcAuth: [
     body('oidcProviderName').if((value, { req }) => req.body.oidcProviderName).isString(),
@@ -207,6 +208,9 @@ const validator = {
  *          isSameEmailTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
+ *          samlABLCRule:
+ *            type: string
+ *            description: ABLCRule for saml
  *      OidcAuthSetting:
  *        type: object
  *        properties:
@@ -366,6 +370,7 @@ module.exports = (crowi) => {
         samlEnvVarAttrMapLastName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+        samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
       },
       oidcAuth: {
         oidcProviderName: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
@@ -648,6 +653,7 @@ module.exports = (crowi) => {
       'security:passport-saml:attrMapLastName': req.body.samlAttrMapLastName,
       'security:passport-saml:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
       'security:passport-saml:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
+      'security:passport-saml:ABLCRule': req.body.samlABLCRule,
     };
 
     try {
@@ -665,6 +671,7 @@ module.exports = (crowi) => {
         samlAttrMapLastName: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+        samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
       };
       return res.apiv3({ securitySettingParams });
     }
