@@ -46,18 +46,6 @@ h5 {
   }
 }
 
-.navbar {
-  .nav-item > .nav-link {
-    color: white;
-    span {
-      margin-left: 0.5em;
-    }
-  }
-  .nav-item .dropdown-toggle::after {
-    content: none;
-  }
-}
-
 // card (substitute panel of bootstrap3)
 .card {
   margin-bottom: 20px;
