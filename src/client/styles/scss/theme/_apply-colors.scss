@@ -136,6 +136,9 @@ body {
 
 .grw-navbar {
   background: $bgcolor-navbar;
+  .nav-item > .nav-link {
+    color: white;
+  }
 }
 
 .grw-title-bar {
