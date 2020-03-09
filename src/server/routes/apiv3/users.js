@@ -175,14 +175,7 @@ module.exports = (crowi) => {
     const { sort } = req.body;
     const { sortOrder } = req.body;
     const sortOutput = {};
-    // sortOutput[sort] = (sortOrder === 'asc') ? 1 : -1;
-    /* if (sortOrder === 'asc') {
-      sortOutput[sort] = 1;
-    }
-    else {
-      sortOutput[sort] = -1;
-    } */
-    sortOutput[sort] = (sortOrder === 'desc') ? -1 : 1;
+    sortOutput[sort] = (sortOrder === 'asc') ? 1 : -1;
 
     try {
       const paginateResult = await User.paginate(
