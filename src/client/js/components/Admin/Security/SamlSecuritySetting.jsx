@@ -21,7 +21,7 @@ class SamlSecurityManagement extends React.Component {
       envIssuer: '',
       envCert: '',
       envAttrMapId: '',
-      envAttrMapUserName: '',
+      envAttrMapUsername: '',
       envAttrMapMail: '',
       envAttrMapFirstName: '',
       envAttrMapLastName: '',
@@ -41,7 +41,7 @@ class SamlSecurityManagement extends React.Component {
         envIssuer: samlAuth.samlEnvVarIssuer,
         envCert: samlAuth.samlEnvVarCert,
         envAttrMapId: samlAuth.samlEnvVarAttrMapId,
-        envAttrMapUserName: samlAuth.samlEnvVarAttrMapUserName,
+        envAttrMapUsername: samlAuth.samlEnvVarAttrMapUsername,
         envAttrMapMail: samlAuth.samlEnvVarAttrMapMail,
         envAttrMapFirstName: samlAuth.samlEnvVarAttrMapFirstName,
         envAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName,
@@ -301,7 +301,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       className="form-control"
                       type="text"
                       readOnly={useOnlyEnvVars}
-                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapUserName}
+                      defaultValue={adminSamlSecurityContainer.state.samlAttrMapUsername}
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
                     <p className="help-block">
@@ -312,7 +312,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={this.state.envAttrMapUserName || ''}
+                      value={this.state.envAttrMapUsername || ''}
                       readOnly
                     />
                     <p className="help-block">

@@ -28,7 +28,7 @@ export default class AdminSamlSecurityContainer extends Container {
       samlIssuer: '',
       samlCert: '',
       samlAttrMapId: '',
-      samlAttrMapUserName: '',
+      samlAttrMapUsername: '',
       samlAttrMapMail: '',
       samlAttrMapFirstName: '',
       samlAttrMapLastName: '',
@@ -52,7 +52,7 @@ export default class AdminSamlSecurityContainer extends Container {
         samlIssuer: samlAuth.samlIssuer,
         samlCert: samlAuth.samlCert,
         samlAttrMapId: samlAuth.samlAttrMapId,
-        samlAttrMapUserName: samlAuth.samlAttrMapUserName,
+        samlAttrMapUsername: samlAuth.samlAttrMapUsername,
         samlAttrMapMail: samlAuth.samlAttrMapMail,
         samlAttrMapFirstName: samlAuth.samlAttrMapFirstName,
         samlAttrMapLastName: samlAuth.samlAttrMapLastName,
@@ -105,10 +105,10 @@ export default class AdminSamlSecurityContainer extends Container {
   }
 
   /**
-   * Change samlAttrMapUserName
+   * Change samlAttrMapUsername
    */
   changeSamlAttrMapUserName(inputValue) {
-    this.setState({ samlAttrMapUserName: inputValue });
+    this.setState({ samlAttrMapUsername: inputValue });
   }
 
   /**
@@ -163,7 +163,7 @@ export default class AdminSamlSecurityContainer extends Container {
       issuer: this.state.samlIssuer,
       cert: this.state.samlCert,
       attrMapId: this.state.samlAttrMapId,
-      attrMapUsername: this.state.samlAttrMapUserName,
+      attrMapUsername: this.state.samlAttrMapUsername,
       attrMapMail: this.state.samlAttrMapMail,
       attrMapFirstName: this.state.samlAttrMapFirstName,
       attrMapLastName: this.state.samlAttrMapLastName,
@@ -182,7 +182,7 @@ export default class AdminSamlSecurityContainer extends Container {
       samlIssuer: securitySettingParams.samlIssuer,
       samlCert: securitySettingParams.samlCert,
       samlAttrMapId: securitySettingParams.samlAttrMapId,
-      samlAttrMapUserName: securitySettingParams.samlAttrMapUserName,
+      samlAttrMapUsername: securitySettingParams.samlAttrMapUsername,
       samlAttrMapMail: securitySettingParams.samlAttrMapMail,
       samlAttrMapFirstName: securitySettingParams.samlAttrMapFirstName,
       samlAttrMapLastName: securitySettingParams.samlAttrMapLastName,
