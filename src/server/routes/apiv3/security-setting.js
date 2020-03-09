@@ -660,7 +660,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(req.t('form_validation.error_message'), 400, invalidValues);
     }
 
-    const rule = req.body.samlABLCRule;
+    const rule = req.body.ABLCRule;
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
     if (rule != null && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
