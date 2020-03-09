@@ -24,17 +24,23 @@ describe('PassportService test', () => {
 
     /* eslint-disable indent */
     describe.each`
-      conditionId | departments   | positions     | ruleStr                                                                       | expected
-      ${1}        | ${['A']}      | ${[]}         | ${'Department = A | Department = B & Position = Leader'}                      | ${true}
-      ${2}        | ${['B']}      | ${['Leader']} | ${'Department = A | Department = B & Position = Leader'}                      | ${true}
-      ${3}        | ${['A', 'C']} | ${['Leader']} | ${'Department = A | Department = B & Position = Leader'}                      | ${true}
-      ${4}        | ${['B', 'C']} | ${['Leader']} | ${'Department = A | Department = B & Position = Leader'}                      | ${true}
-      ${5}        | ${[]}         | ${[]}         | ${'Department = A | Department = B & Position = Leader'}                      | ${false}
-      ${6}        | ${['C']}      | ${['Leader']} | ${'Department = A | Department = B & Position = Leader'}                      | ${false}
-      ${7}        | ${['A']}      | ${['Leader']} | ${'Department = A & Position = Leader | Department = B & Position = Leader'}  | ${true}
-      ${8}        | ${['B']}      | ${['Leader']} | ${'Department = A & Position = Leader | Department = B & Position = Leader'}  | ${true}
-      ${9}        | ${['C']}      | ${['Leader']} | ${'Department = A & Position = Leader | Department = B & Position = Leader'}  | ${false}
-      ${9}        | ${['A', 'B']} | ${['']}       | ${'Department = A & Position = Leader | Department = B & Position = Leader'}  | ${false}
+      conditionId | departments   | positions     | ruleStr                                                         | expected
+      ${1}        | ${[]}         | ${['Leader']} | ${'Position'}                                                   | ${true}
+      ${2}        | ${[]}         | ${['Leader']} | ${'Position: Leader'}                                           | ${true}
+      ${3}        | ${['A']}      | ${[]}         | ${'Department: A || Department: B && Position: Leader'}         | ${true}
+      ${4}        | ${['B']}      | ${['Leader']} | ${'Department: A || Department: B && Position: Leader'}         | ${true}
+      ${5}        | ${['A', 'C']} | ${['Leader']} | ${'Department: A || Department: B && Position: Leader'}         | ${true}
+      ${6}        | ${['B', 'C']} | ${['Leader']} | ${'Department: A || Department: B && Position: Leader'}         | ${true}
+      ${7}        | ${[]}         | ${[]}         | ${'Department: A || Department: B && Position: Leader'}         | ${false}
+      ${8}        | ${['C']}      | ${['Leader']} | ${'Department: A || Department: B && Position: Leader'}         | ${false}
+      ${9}        | ${['A']}      | ${['Leader']} | ${'(Department: A || Department: B) && Position: Leader'}       | ${true}
+      ${10}       | ${['B']}      | ${['Leader']} | ${'(Department: A || Department: B) && Position: Leader'}       | ${true}
+      ${11}       | ${['C']}      | ${['Leader']} | ${'(Department: A || Department: B) && Position: Leader'}       | ${false}
+      ${12}       | ${['A', 'B']} | ${[]}         | ${'(Department: A || Department: B) && Position: Leader'}       | ${false}
+      ${13}       | ${['A']}      | ${[]}         | ${'Department: A NOT Position: Leader'}                         | ${true}
+      ${14}       | ${['A']}      | ${['Leader']} | ${'Department: A NOT Position: Leader'}                         | ${false}
+      ${15}       | ${[]}         | ${['Leader']} | ${'Department: A OR (Position NOT Position: User)'}             | ${true}
+      ${16}       | ${[]}         | ${['User']}   | ${'Department: A OR (Position NOT Position: User)'}             | ${false}
     `('to be $expected under rule="$ruleStr"', ({
       conditionId, departments, positions, ruleStr, expected,
     }) => {
