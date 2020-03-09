@@ -79,6 +79,14 @@ module.exports = {
         integrity: '',
       },
     },
+    {
+      name: 'drawio-viewer',
+      url: 'https://jgraph.github.io/drawio/src/main/webapp/js/viewer.min.js',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      },
+    },
   ],
   style: [
     {

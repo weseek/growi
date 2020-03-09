@@ -8328,6 +8328,14 @@ markdown-it-blockdiag@^1.0.2:
     url-join "^4.0.0"
     utf8-bytes "0.0.1"
 
+markdown-it-drawio-viewer@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.1.2.tgz#4ae442545d32bd44bb9f8ca18085315cea1ec692"
+  integrity sha512-YD+wZ4SDipZf1+TeHcUDWhGqN+FaiA+77be1flcfCli1a4cGy3fo8r2QnPRAn+rVEhTpMB6cQsUS5I0KxwHFYQ==
+  dependencies:
+    markdown-it-fence "0.1.3"
+    xmldoc "^1.1.2"
+
 markdown-it-emoji@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/markdown-it-emoji/-/markdown-it-emoji-1.4.0.tgz#9bee0e9a990a963ba96df6980c4fddb05dfb4dcc"
@@ -8335,6 +8343,7 @@ markdown-it-emoji@^1.4.0:
 markdown-it-fence@0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/markdown-it-fence/-/markdown-it-fence-0.1.3.tgz#26e90149b7de5658cdb27096b2e2b5ec4e72d6ce"
+  integrity sha512-mdZbkwJUyZXhyDX4QzD+WnIhxWBq9oIIJU22E6jCT7MHgIp79oEOJfwXIl/HqmfIxnXEdC47sBGn4h6chM4DKw==
 
 markdown-it-footnote@^3.0.1:
   version "3.0.1"
@@ -11944,7 +11953,7 @@ sax@1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.1.tgz#7b8e656190b228e81a66aea748480d828cd2d37a"
 
-sax@>=0.6.0, sax@^1.2.4, sax@~1.2.4:
+sax@>=0.6.0, sax@^1.2.1, sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -14427,6 +14436,13 @@ xmlchars@^2.1.1:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
+
+xmldoc@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/xmldoc/-/xmldoc-1.1.2.tgz#6666e029fe25470d599cd30e23ff0d1ed50466d7"
+  integrity sha512-ruPC/fyPNck2BD1dpz0AZZyrEwMOrWTO5lDdIXS91rs3wtm4j+T8Rp2o+zoOYkkAxJTZRPOSnOGei1egoRmKMQ==
+  dependencies:
+    sax "^1.2.1"
 
 xmldom@0.1.27:
   version "0.1.27"
