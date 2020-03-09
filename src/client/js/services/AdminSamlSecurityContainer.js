@@ -169,7 +169,7 @@ export default class AdminSamlSecurityContainer extends Container {
       attrMapLastName: this.state.samlAttrMapLastName,
       isSameUsernameTreatedAsIdenticalUser: this.state.isSameUsernameTreatedAsIdenticalUser,
       isSameEmailTreatedAsIdenticalUser: this.state.isSameEmailTreatedAsIdenticalUser,
-      ABLCRule: this.state.ABLCRule,
+      ABLCRule: this.state.samlABLCRule,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
