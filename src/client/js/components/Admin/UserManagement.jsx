@@ -99,43 +99,48 @@ class UserManagement extends React.Component {
             <div className="mx-5">
               <input
                 type="checkbox"
+                id="c1"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('All')}
                 onClick={() => { this.handleClick('All') }}
               />
-              <label className="mr-2">All</label>
+              <label htmlFor="c1" className="mr-2">All</label>
 
               <input
                 type="checkbox"
+                id="c2"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Approval Pending')}
                 onClick={() => { this.handleClick('Approval Pending') }}
               />
-              <label className="label label-info mr-2">Approval Pending</label>
+              <label htmlFor="c2" className="label label-info mr-2">Approval Pending</label>
 
               <input
                 type="checkbox"
+                id="c3"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Active')}
                 onClick={() => { this.handleClick('Active') }}
               />
-              <label className="label label-success mr-2">Active</label>
+              <label htmlFor="c3" className="label label-success mr-2">Active</label>
 
               <input
                 type="checkbox"
+                id="c4"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Suspended')}
                 onClick={() => { this.handleClick('Suspended') }}
               />
-              <label className="label label-warning mr-2">Suspended</label>
+              <label htmlFor="c4" className="label label-warning mr-2">Suspended</label>
 
               <input
                 type="checkbox"
+                id="c5"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Invited')}
                 onClick={() => { this.handleClick('Invited') }}
               />
-              <label className="label label-info">Invited</label>
+              <label htmlFor="c5" className="label label-info">Invited</label>
             </div>
 
             <div>

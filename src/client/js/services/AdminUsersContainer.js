@@ -24,7 +24,7 @@ export default class AdminUsersContainer extends Container {
       totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
-      selectedStatusList: new Set(),
+      selectedStatusList: new Set(['All']),
       searchText: '',
     };
 
