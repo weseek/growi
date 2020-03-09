@@ -123,7 +123,8 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
   "form_validation": {
-    "required": "<code>%s</code> に値を入力してください"
+    "required": "<code>%s</code> に値を入力してください",
+    "invalid_syntax": "<code>%s</code> の構文が不正です"
   },
   "installer": {
     "setup": "セットアップ",
@@ -450,7 +451,10 @@
       "mapping_detail": "新規ユーザーの%sに関連付ける属性",
       "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
       "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
-      "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
+      "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください",
+      "attr_based_login_control_detail": "SAMLの <code>&lt;saml:AttributeStatement&gt;</code> 要素に含まれる <code>&lt;saml:Attribute&gt;</code> 要素と、その子要素 <code>&lt;saml:AttributeValue&gt;</code> を利用してログインの可否を制御します。",
+      "attr_based_login_control_rule_detail": "<code>属性名 = 値</code> を <code>|</code>(論理和)、 <code>&</code>(論理積) で連結した形式で記述してください。演算子の優先順位は論理積が論理和より高く、各演算子の結合規則は左から右です。",
+      "attr_based_login_control_rule_example": "例えば <code>Department=A | Department=B & Position=Leader</code> だと <code>Department</code> が <code>A</code> の場合, もしくは<code>Department</code> が <code>B</code> かつ <code>Position</code> が <code>Leader</code> の場合にログインを<strong>許可</strong>します。"
     },
     "Basic": {
       "name": "Basic 認証",
@@ -499,7 +503,8 @@
       "security:passport-saml:attrMapUsername": "ユーザー名",
       "security:passport-saml:attrMapMail": "メールアドレス",
       "security:passport-saml:attrMapFirstName": "姓",
-      "security:passport-saml:attrMapLastName": "名"
+      "security:passport-saml:attrMapLastName": "名",
+      "security:passport-saml:ABLCRule": "ルール"
     }
   },
   "notification_setting": {

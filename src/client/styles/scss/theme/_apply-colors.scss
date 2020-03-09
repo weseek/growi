@@ -20,6 +20,32 @@
 }
 
 @each $theme-color, $color in $theme-colors {
+  .custom-checkbox-#{$theme-color} {
+    .custom-control-label::before {
+      border-color: #d7d7d7;
+      transition: 0.3s ease-in-out;
+    }
+    .custom-control-input:checked + .custom-control-label::before {
+      background-color: $color;
+      border-color: $color;
+    }
+    .custom-control-input:checked + .custom-control-label::after {
+      color: white;
+    }
+    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+      color: white;
+      background-color: $color;
+      border-color: $color;
+    }
+    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+      color: white;
+      background-color: white;
+      border-color: #d7d7d7;
+    }
+  }
+}
+
+@each $theme-color, $color in $theme-colors {
   .alert.alert-#{$theme-color} {
     color: white;
     background: $color;
