@@ -118,6 +118,8 @@ module.exports = (crowi) => {
     }
   });
 
+  const sortingArray = ['status', 'username', 'name', 'email', 'createdAt'];
+
   const statusNo = {
     registered: User.STATUS_REGISTERED,
     active: User.STATUS_ACTIVE,
@@ -135,11 +137,19 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
+    body('descColumns').custom((value) => {
+      const error = [];
+      value.forEach((element) => {
+        if (sortingArray.includes(element) === false) {
+          error.push(value);
+        }
+      });
+      return (error.length === 0);
+    }),
     query('page').isInt({ min: 1 }),
   ];
 
   router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
-
     const page = parseInt(req.query.page) || 1;
     // status
     const { statusList } = req.body;
