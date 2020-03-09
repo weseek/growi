@@ -45,6 +45,7 @@ class SamlSecurityManagement extends React.Component {
         envAttrMapMail: samlAuth.samlEnvVarAttrMapMail,
         envAttrMapFirstName: samlAuth.samlEnvVarAttrMapFirstName,
         envAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName,
+        envABLCRule: samlAuth.samlEnvVarABLCRule,
       });
     }
     catch (err) {
