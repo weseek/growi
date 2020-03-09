@@ -83,18 +83,18 @@ export default class ImportCollectionItem extends React.Component {
     } = this.props;
 
     return (
-      <div className="checkbox checkbox-info my-0">
+      <div className="custom-control custom-checkbox custom-checkbox-info my-0">
         <input
           type="checkbox"
           id={collectionName}
           name={collectionName}
-          className="form-check-input"
+          className="custom-control-input"
           value={collectionName}
           checked={isSelected}
           disabled={isImporting}
           onChange={this.changeHandler}
         />
-        <label className="text-capitalize form-check-label" htmlFor={collectionName}>
+        <label className="text-capitalize custom-control-label" htmlFor={collectionName}>
           {collectionName}
         </label>
       </div>
@@ -205,9 +205,7 @@ export default class ImportCollectionItem extends React.Component {
         <div className="card-header bg-light">
           <div className="d-flex justify-content-between align-items-center">
             {/* left */}
-            <div className="pl-4">
-              {this.renderCheckbox()}
-            </div>
+            {this.renderCheckbox()}
             {/* right */}
             <span className="d-flex align-items-center">
               {this.renderModeSelector()}

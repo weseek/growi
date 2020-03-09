@@ -247,6 +247,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  SAML_ABLC_RULE: {
+    ns:      'crowi',
+    key:     'security:passport-saml:ABLCRule',
+    type:    TYPES.STRING,
+    default: null,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
@@ -288,7 +294,7 @@ class ConfigLoader {
     };
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
-    // So, if a value loaded from the database is emtpy,
+    // So, if a value loaded from the database is empty,
     // it is converted to null because an empty string is used as the same meaning in the config model.
     // By this processing, whether a value is loaded from the database or from the environment variable,
     // only null indicates a config is not set.

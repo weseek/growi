@@ -162,6 +162,10 @@
       background-color: rgba($info, 0.1);
     }
   }
+
+  label.custom-control-label {
+    font-weight: normal;
+  }
 }
 
 .admin-navigation > a + a {
