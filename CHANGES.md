@@ -1,8 +1,11 @@
 # CHANGES
 
-## v3.6.10
+## v3.7.0-RC
 
-*
+* Feature: [Draw.io](https://www.draw.io/) Integration
+* Feature: Login Restriction by SAML Attributes
+* Improvement: Reactify admin pages (Security)
+
 
 ## v3.6.9
 
