@@ -124,8 +124,9 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "form_validation": {
-    "required": "<code>%s</code> is required",
-    "invalid_syntax": "The syntax of <code>%s</code> is invalid."
+    "error_message": "Some values ​​are incorrect",
+    "required": "%s is required",
+    "invalid_syntax": "The syntax of %s is invalid."
   },
   "installer": {
     "setup": "Setup",
@@ -388,16 +389,18 @@
     "admin_and_author": "Admin and Author",
     "anyone": "Anyone",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
     "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link": "Go to Markdown settings",
     "callback_URL": "Callback URL",
     "providerName": "Provider Name",
     "issuerHost": "Issuer Host",
     "scope": "Scope",
-    "desc_of_callback_URL": "Use it in the setting of the %s provider",
+    "desc_of_callback_URL": "Use it in the setting of the {{AuthName}} Identity provider",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
+    "updated_general_security_setting": "Succeeded to update security setting",
+    "setup_not_completed_yet": "Setup not completed yet",
     "guest_mode": {
       "deny": "Deny (Registered Users Only)",
       "readonly": "Accept (Guests can read only)"
@@ -409,17 +412,19 @@
     },
     "configuration": " Configuration",
     "optional": "Optional",
-    "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
-    "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
-    "Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
-    "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
-    "Use env var if empty": "Use env var <code>%s</code> if empty",
-    "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
+    "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
+    "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
+    "Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>email</code> match",
+    "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>email</code>.",
+    "Use env var if empty": "Use env var <code>{{env}}</code> if empty",
+    "Use default if both are empty": "If both ​​are empty, the default value <code>{{target}}</code> is used.",
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "Local": {
-      "name": "ID/Password"
+      "name": "ID/Password",
+      "enable_local": "enable ID/Password"
     },
     "ldap": {
+      "enable_ldap": "enable LDAP",
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
       "bind_manager": "Manager Bind",
@@ -448,52 +453,64 @@
       "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
       "group_search_user_DN_property": "User DN Property",
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
-      "test_config": "Test Saved Configuration"
+      "test_config": "Test Saved Configuration",
+      "updated_ldap": "Succeeded to update LDAP setting"
     },
     "SAML": {
       "name": "SAML",
+      "enable_saml": "enable SAML",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
-      "mapping_detail": "Specification of mappings for %s when creating new users",
+      "mapping_detail": "Specification of mappings for {{target}} when creating new users",
       "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
-      "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
+      "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> .",
       "attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
       "attr_based_login_control_rule_detail": "A rule is written in the form of concatenating <code>attribute name = value</code> with <code>|</code> and <code>&</code>. The or operator (|) has a lower precedence than the and operator (&).　If operator precedence is equal, left to right associativity is used.",
-      "attr_based_login_control_rule_example": "For example, if a rule is <code>Department = A | Department = B & Position = Leader</code>, users with <code>Department</code> as <code>A</code> or users with <code>Department</code> as <code>B</code> and <code>Position</code> as <code>Leader</code> <strong>can</strong> sign in."
+      "attr_based_login_control_rule_example": "For example, if a rule is <code>Department = A | Department = B & Position = Leader</code>, users with <code>Department</code> as <code>A</code> or users with <code>Department</code> as <code>B</code> and <code>Position</code> as <code>Leader</code> <strong>can</strong> sign in.",
+      "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
+      "enable_basic": "enable Basic",
       "name": "Basic Authentication",
       "desc_1": "Login with <code>username</code> in Authorization header.",
-      "desc_2": "User will be automatically generated if not exist."
+      "desc_2": "User will be automatically generated if not exist.",
+      "updated_basic": "Succeeded to update Basic setting"
     },
     "OAuth": {
+      "enable_oidc": "enable OIDC",
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
+        "enable_google": "enable Google OAuth",
         "name": "Google OAuth",
-        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_1": "Access {{link}}",
         "register_2": "Create Project if no projects exist",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above"
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
+        "register_5": "Copy and paste your ClientID and Client Secret above",
+        "updated_google": "Succeeded to update Google OAuth setting"
       },
       "Facebook": {
         "name": "Facebook OAuth"
       },
       "Twitter": {
+        "enable_twitter": "enable Twitter OAuth",
         "name": "Twitter OAuth",
-        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_1": "Access {{link}}",
         "register_2": "Sign in Twitter",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above"
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
+        "register_5": "Copy and paste your ClientID and Client Secret above",
+        "updated_twitter": "Succeeded to update Twitter OAuth setting"
       },
       "GitHub": {
+        "enable_github": "enable GitHub OAuth",
         "name": "GitHub OAuth",
-        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
-        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code>",
-        "register_3": "Copy and paste your ClientID and Client Secret above"
+        "register_1": "Access {{link}}",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
+        "register_3": "Copy and paste your ClientID and Client Secret above",
+        "updated_github": "Succeeded to update GitHub OAuth setting"
       },
       "OIDC": {
         "name": "OpenID Connect",
@@ -503,7 +520,8 @@
         "mapping_detail": "Specification of mappings for %s when creating new users",
         "register_1": "Contant to OIDC IdP Administrator",
         "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
-        "register_3": "Copy and paste your ClientID and Client Secret above"
+        "register_3": "Copy and paste your ClientID and Client Secret above",
+        "updated_oidc": "Succeeded to update OpenID Connect"
       },
       "how_to": {
         "google": "How to configure Google OAuth?",
@@ -513,15 +531,15 @@
       }
     },
     "form_item_name": {
-      "security:passport-saml:entryPoint": "Entry point",
-      "security:passport-saml:issuer": "Issuer",
-      "security:passport-saml:cert": "Certificate",
-      "security:passport-saml:attrMapId": "ID",
-      "security:passport-saml:attrMapUsername": "Username",
-      "security:passport-saml:attrMapMail": "Mail Address",
-      "security:passport-saml:attrMapFirstName": "First Name",
-      "security:passport-saml:attrMapLastName": "Last Name",
-      "security:passport-saml:ABLCRule": "Rule"
+      "entryPoint": "Entry point",
+      "issuer": "Issuer",
+      "cert": "Certificate",
+      "attrMapId": "ID",
+      "attrMapUsername": "Username",
+      "attrMapMail": "Mail Address",
+      "attrMapFirstName": "First Name",
+      "attrMapLastName": "Last Name",
+      "ABLCRule": "Rule"
     }
   },
   "notification_setting": {
