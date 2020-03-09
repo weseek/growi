@@ -3,7 +3,7 @@
 ## v3.7.0-RC
 
 * Feature: [Draw.io](https://www.draw.io/) Integration
-* Feature: Login Restriction by SAML Attributes
+* Feature: SAML Attribute-based Login Control
 * Improvement: Reactify admin pages (Security)
 
 
