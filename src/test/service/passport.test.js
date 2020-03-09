@@ -37,6 +37,10 @@ describe('PassportService test', () => {
       ${10}       | ${['B']}      | ${['Leader']} | ${'(Department: A || Department: B) && Position: Leader'}       | ${true}
       ${11}       | ${['C']}      | ${['Leader']} | ${'(Department: A || Department: B) && Position: Leader'}       | ${false}
       ${12}       | ${['A', 'B']} | ${[]}         | ${'(Department: A || Department: B) && Position: Leader'}       | ${false}
+      ${13}       | ${['A']}      | ${[]}         | ${'Department: A NOT Position: Leader'}                         | ${true}
+      ${14}       | ${['A']}      | ${['Leader']} | ${'Department: A NOT Position: Leader'}                         | ${false}
+      ${15}       | ${[]}         | ${['Leader']} | ${'Department: A OR (Position NOT Position: User)'}             | ${true}
+      ${16}       | ${[]}         | ${['User']}   | ${'Department: A OR (Position NOT Position: User)'}             | ${false}
     `('to be $expected under rule="$ruleStr"', ({
       conditionId, departments, positions, ruleStr, expected,
     }) => {

@@ -730,6 +730,9 @@ class PassportService {
     if (luceneOperator === 'AND') {
       return this.evaluateRule(attributes, luceneRuleLeft) && this.evaluateRule(attributes, luceneRuleRight);
     }
+    if (luceneOperator === 'NOT') {
+      return this.evaluateRule(attributes, luceneRuleLeft) && !this.evaluateRule(attributes, luceneRuleRight);
+    }
 
     throw new Error(`Unsupported operator: ${luceneOperator}`);
   }
