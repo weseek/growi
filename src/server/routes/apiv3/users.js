@@ -118,15 +118,15 @@ module.exports = (crowi) => {
     }
   });
 
-  const sortOrderArray = ['asc', 'desc'];
-  const sortArray = ['status', 'username', 'name', 'email', 'createdAt'];
-
   const statusNo = {
     registered: User.STATUS_REGISTERED,
     active: User.STATUS_ACTIVE,
     suspended: User.STATUS_SUSPENDED,
     invited: User.STATUS_INVITED,
   };
+
+  const sortOrderArray = ['asc', 'desc'];
+  const sortArray = ['status', 'username', 'name', 'email', 'createdAt'];
 
   validator.statusList = [
     // validate status list status array match to statusNo
