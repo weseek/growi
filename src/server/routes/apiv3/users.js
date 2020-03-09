@@ -118,7 +118,8 @@ module.exports = (crowi) => {
     }
   });
 
-  const sortingArray = ['status', 'username', 'name', 'email', 'createdAt'];
+  const sortOrderArray = ['asc', 'desc'];
+  const sortArray = ['status', 'username', 'name', 'email', 'createdAt'];
 
   const statusNo = {
     registered: User.STATUS_REGISTERED,
@@ -128,6 +129,7 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
+    // validate status list status array match to statusNo
     body('statusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
@@ -137,13 +139,20 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
-    body('descColumns').custom((value) => {
+    // validate sortOrder : asc or desc
+    body('sortOrder').custom((value) => {
       const error = [];
-      value.forEach((element) => {
-        if (sortingArray.includes(element) === false) {
-          error.push(value);
-        }
-      });
+      if (sortOrderArray.includes(value) === false) {
+        error.push(value);
+      }
+      return (error.length === 0);
+    }),
+    // validate sort : what column you will sort
+    body('sort').custom((value) => {
+      const error = [];
+      if (sortArray.includes(value) === false) {
+        error.push(value);
+      }
       return (error.length === 0);
     }),
     query('page').isInt({ min: 1 }),
@@ -163,11 +172,17 @@ module.exports = (crowi) => {
       orOutput[element] = { $in: searchWord };
     });
     // Sort
-    const { descColumns } = req.body;
+    const { sort } = req.body;
+    const { sortOrder } = req.body;
     const sortOutput = {};
-    descColumns.forEach((element) => {
-      sortOutput[element] = -1;
-    });
+    // sortOutput[sort] = (sortOrder === 'asc') ? 1 : -1;
+    /* if (sortOrder === 'asc') {
+      sortOutput[sort] = 1;
+    }
+    else {
+      sortOutput[sort] = -1;
+    } */
+    sortOutput[sort] = (sortOrder === 'desc') ? -1 : 1;
 
     try {
       const paginateResult = await User.paginate(
