@@ -20,6 +20,7 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.handlePage = this.handlePage.bind(this);
+    this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
 
   componentWillMount() {
@@ -47,6 +48,9 @@ class UserManagement extends React.Component {
     return true;
   }
 
+  handleChangeSearchText(event) {
+    this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
+  }
 
   render() {
     const { t, adminUsersContainer } = this.props;
@@ -60,6 +64,12 @@ class UserManagement extends React.Component {
           pagingLimit={adminUsersContainer.state.pagingLimit}
         />
       </div>
+    );
+
+    const clearButton = (
+      adminUsersContainer.state.searchText.length > 0
+        ? <i className="icon-close search-clear"></i>
+        : ''
     );
 
     return (
@@ -80,10 +90,12 @@ class UserManagement extends React.Component {
           <div className="d-flex justify-content-start align-items-center my-2">
             <div>
               <i className="icon-magnifier mr-1"></i>
-              <input type="text" name="name" />
+              <span className="search-typeahead">
+                <input type="text" name="name" onChange={this.handleChangeSearchText} />
+                { clearButton }
+              </span>
             </div>
 
-            {/* To do: when a label is clicked, the check button is checked */}
             <div className="mx-5">
               <input
                 type="checkbox"
@@ -124,6 +136,12 @@ class UserManagement extends React.Component {
                 onClick={() => { this.handleClick('Invited') }}
               />
               <label className="label label-info">Invited</label>
+            </div>
+
+            <div>
+              <button type="button" className="btn btn-default btn-outline btn-sm">
+                Reset
+              </button>
             </div>
           </div>
         </div>
