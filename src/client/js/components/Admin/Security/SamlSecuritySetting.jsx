@@ -481,7 +481,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <input
                       className="form-control"
                       type="text"
-                      value={adminSamlSecurityContainer.state.samlABLCRule || ''}
+                      defaultValue={adminSamlSecurityContainer.state.samlABLCRule || ''}
                       onChange={(e) => { adminSamlSecurityContainer.changeSamlABLCRule(e.target.value) }}
                       readOnly={useOnlyEnvVars}
                     />
