@@ -24,7 +24,7 @@ export default class AdminNotificationContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],
-      isNotificationOwnerPageEnabled: true,
+      isNotificationOwnerPageEnabled: false,
       isNotificationGroupPageEnabled: false,
       globalNotifications: [],
     };
@@ -51,7 +51,7 @@ export default class AdminNotificationContainer extends Container {
         isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
         slackToken: notificationParams.slackToken || '',
         userNotifications: notificationParams.userNotifications || [],
-        // isNotificationOwnerPageEnabled: notificationParams.isNotificationOwnerPageEnabled,
+        isNotificationOwnerPageEnabled: notificationParams.isNotificationOwnerPageEnabled,
         isNotificationGroupPageEnabled: notificationParams.isNotificationGroupPageEnabled,
         globalNotifications: notificationParams.globalNotifications || [],
       });
