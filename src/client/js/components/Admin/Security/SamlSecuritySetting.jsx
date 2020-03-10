@@ -488,7 +488,6 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     <p className="help-block">
                       <small>
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_detail') }} />
-                        <br />
                         <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example') }} />
                       </small>
                     </p>

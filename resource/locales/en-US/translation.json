@@ -466,8 +466,8 @@
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> .",
       "attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
-      "attr_based_login_control_rule_detail": "A rule is written in the form of concatenating <code>attribute name = value</code> with <code>|</code> and <code>&</code>. The or operator (|) has a lower precedence than the and operator (&).　If operator precedence is equal, left to right associativity is used.",
-      "attr_based_login_control_rule_example": "For example, if a rule is <code>Department = A | Department = B & Position = Leader</code>, users with <code>Department</code> as <code>A</code> or users with <code>Department</code> as <code>B</code> and <code>Position</code> as <code>Leader</code> <strong>can</strong> sign in.",
+      "attr_based_login_control_rule_detail": "See <a href=\"https://lucene.apache.org/core/2_9_4/queryparsersyntax.html\" target=\"_blank\">Apache Lucene - Query Parser Syntax</a>.<h6>Supported Queries:</h6><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h6>Unsupported Queries:</h6><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul>",
+      "attr_based_login_control_rule_example": "<h6>Example</h6>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
       "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
