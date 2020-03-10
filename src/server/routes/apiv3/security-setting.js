@@ -1,12 +1,8 @@
-
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
 const express = require('express');
-const luceneQueryParser = require('lucene-query-parser');
 
 const router = express.Router();
 
@@ -454,7 +450,9 @@ module.exports = (crowi) => {
 
       await crowi.passportService.setupStrategyById(authId);
 
-      const responseParams = { [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`) };
+      const responseParams = {
+        [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
+      };
 
       return res.apiv3({ responseParams });
     }
