@@ -127,7 +127,7 @@ module.exports = (crowi) => {
 
   validator.statusList = [
     // validate status list status array match to statusNo
-    body('statusList').custom((value) => {
+    body('selectedStatusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
         if (!Object.keys(statusNo)) {
@@ -146,11 +146,11 @@ module.exports = (crowi) => {
   router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
     const page = parseInt(req.query.page) || 1;
     // status
-    const { statusList } = req.body;
-    const statusNoList = statusList.map(element => statusNo[element]);
+    const { selectedStatusList } = req.body;
+    const statusNoList = selectedStatusList.map(element => statusNo[element]);
     // Search from input
-    const inputWord = req.body.inputWord || '';
-    const searchWord = new RegExp(`${inputWord}`);
+    const searchText = req.body.searchText || '';
+    const searchWord = new RegExp(`${searchText}`);
     const orColumns = ['name', 'username', 'email'];
     const orOutput = {};
     orColumns.forEach((element) => {
