@@ -664,8 +664,13 @@ module.exports = (crowi) => {
     const rule = req.body.ABLCRule;
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
-    if (rule != null && (rule == null || luceneQueryParser.parse(rule) == null)) {
-      return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+    if (rule != null) {
+      try {
+        crowi.passportService.parseABLCRule(rule);
+      }
+      catch (err) {
+        return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+      }
     }
 
     const requestParams = {
