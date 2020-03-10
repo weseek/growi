@@ -24,6 +24,8 @@ export default class AdminNotificationContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],
+      isNotificationOwnerPageEnabled: true,
+      isNotificationGroupPageEnabled: false,
       globalNotifications: [],
     };
 
@@ -49,6 +51,8 @@ export default class AdminNotificationContainer extends Container {
         isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
         slackToken: notificationParams.slackToken || '',
         userNotifications: notificationParams.userNotifications || [],
+        // isNotificationOwnerPageEnabled: notificationParams.isNotificationOwnerPageEnabled,
+        isNotificationGroupPageEnabled: notificationParams.isNotificationGroupPageEnabled,
         globalNotifications: notificationParams.globalNotifications || [],
       });
 
@@ -122,6 +126,33 @@ export default class AdminNotificationContainer extends Container {
     const deletedNotificaton = response.data;
     await this.retrieveNotificationData();
     return deletedNotificaton;
+  }
+
+  /**
+   * Switch isNotificationOwnerPageEnabled
+   */
+  switchIsNotificationOwnerPageEnabled() {
+    this.setState({ isNotificationOwnerPageEnabled: !this.state.isNotificationOwnerPageEnabled });
+  }
+
+  /**
+   * Switch isNotificationGroupPageEnabled
+   */
+  switchIsNotificationGroupPageEnabled() {
+    this.setState({ isNotificationGroupPageEnabled: !this.state.isNotificationGroupPageEnabled });
+  }
+
+  /**
+   * Update globalNotificationForPages
+   * @memberOf SlackAppConfiguration
+   */
+  async updateGlobalNotificationForPages() {
+    const response = await this.appContainer.apiv3.put('/notification-setting/notify-for-page-grant/', {
+      isNotificationOwnerPageEnabled: this.state.isNotificationOwnerPageEnabled,
+      isNotificationGroupPageEnabled: this.state.isNotificationGroupPageEnabled,
+    });
+
+    return response;
   }
 
   /**

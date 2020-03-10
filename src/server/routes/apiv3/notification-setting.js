@@ -32,6 +32,10 @@ const validator = {
       return (req.body.notifyToType === 'slack') ? !!value : true;
     }),
   ],
+  notifyForPageGrant: [
+    body('isNotificationOwnerPageEnabled').isBoolean(),
+    body('isNotificationGroupPageEnabled').isBoolean(),
+  ],
 };
 
 /**
@@ -66,6 +70,15 @@ const validator = {
  *          channel:
  *            type: string
  *            description: slack channel name without '#'
+ *      NotifyForPageGrant:
+ *        type: object
+ *        properties:
+ *          isNotificationOwnerPageEnabled:
+ *            type: string
+ *            description: Whether to notify on owner page
+ *          isNotificationGroupPageEnabled:
+ *            type: string
+ *            description: Whether to notify on group page
  *      GlobalNotificationParams:
  *        type: object
  *        properties:
@@ -125,6 +138,8 @@ module.exports = (crowi) => {
       isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
       slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
       userNotifications: await UpdatePost.findAll(),
+      isNotificationOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
+      isNotificationGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
       globalNotifications: await GlobalNotificationSetting.findAll(),
     };
     return res.apiv3({ notificationParams });
@@ -401,6 +416,48 @@ module.exports = (crowi) => {
 
   });
 
+
+  /**
+   * @swagger
+   *
+   *    /notification-setting/notify-for-page-grant:
+   *      put:
+   *        tags: [NotificationSetting]
+   *        description: Update settings for notify for page grant
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/NotifyForPageGrant'
+   *        responses:
+   *          200:
+   *            description: Succeeded to settings for notify for page grant
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/NotifyForPageGrant'
+   */
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, ApiV3FormValidator, async(req, res) => {
+
+    const requestParams = {
+      'notification:owner-page:isEnabled': req.body.isNotificationOwnerPageEnabled,
+      'notification:group-page:isEnabled': req.body.isNotificationGroupPageEnabled,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
+      const responseParams = {
+        isNotificationOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
+        isNotificationGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
+      };
+      return res.apiv3({ responseParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating notify for page grant';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-notify-for-page-grant-failed'));
+    }
+  });
   /**
    * @swagger
    *
