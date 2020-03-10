@@ -96,7 +96,7 @@ class LocalSecuritySetting extends React.Component {
         </div>
 
         {isLocalEnabled && (
-          <div>
+          <React.Fragment>
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
@@ -178,7 +178,7 @@ class LocalSecuritySetting extends React.Component {
                 </button>
               </div>
             </div>
-          </div>
+          </React.Fragment>
         )}
 
 

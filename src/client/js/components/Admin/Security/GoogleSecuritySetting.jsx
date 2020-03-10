@@ -35,10 +35,11 @@ class GoogleSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGoogleSecurityContainer } = this.props;
+    const { t, adminGoogleSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminGoogleSecurityContainer.updateGoogleSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.OAuth.Google.updated_google'));
     }
     catch (err) {
@@ -48,6 +49,7 @@ class GoogleSecurityManagement extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer } = this.props;
+    const { isGoogleEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -57,7 +59,7 @@ class GoogleSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.OAuth.Google.name')} {t('security_setting.configuration')}
+          {t('security_setting.OAuth.Google.name')}
         </h2>
 
         {this.state.retrieveError != null && (
@@ -67,7 +69,9 @@ class GoogleSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.OAuth.Google.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.OAuth.Google.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -80,6 +84,8 @@ class GoogleSecurityManagement extends React.Component {
                 {t('security_setting.OAuth.Google.enable_google')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('google') && isGoogleEnabled)
+              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -106,8 +112,10 @@ class GoogleSecurityManagement extends React.Component {
         </div>
 
 
-        {adminGeneralSecurityContainer.state.isGoogleEnabled && (
+        {isGoogleEnabled && (
           <React.Fragment>
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
               <label htmlFor="googleClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>

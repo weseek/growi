@@ -35,10 +35,11 @@ class BasicSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminBasicSecurityContainer } = this.props;
+    const { t, adminBasicSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminBasicSecurityContainer.updateBasicSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.Basic.updated_basic'));
     }
     catch (err) {
@@ -48,6 +49,7 @@ class BasicSecurityManagement extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminBasicSecurityContainer } = this.props;
+    const { isBasicEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -56,7 +58,7 @@ class BasicSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('security_setting.Basic.name') } { t('security_setting.configuration') }
+          { t('security_setting.Basic.name') }
         </h2>
 
         {this.state.retrieveError != null && (
@@ -66,7 +68,9 @@ class BasicSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{ t('security_setting.Basic.name') }</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.Basic.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -85,10 +89,12 @@ class BasicSecurityManagement extends React.Component {
                 { t('security_setting.Basic.desc_2')}
               </small>
             </p>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('basic') && isBasicEnabled)
+            && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
-        {adminGeneralSecurityContainer.state.isBasicEnabled && (
+        {isBasicEnabled && (
         <React.Fragment>
           <div className="row mb-5">
             <div className="col-xs-offset-3 col-xs-6 text-left">

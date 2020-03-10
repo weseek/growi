@@ -55,10 +55,11 @@ class SamlSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminSamlSecurityContainer } = this.props;
+    const { t, adminSamlSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminSamlSecurityContainer.updateSamlSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.SAML.updated_saml'));
     }
     catch (err) {
@@ -69,6 +70,7 @@ class SamlSecurityManagement extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
+    const { isSamlEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -77,7 +79,7 @@ class SamlSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.SAML.name')} {t('security_setting.configuration')}
+          {t('security_setting.SAML.name')}
         </h2>
 
         {useOnlyEnvVars && (
@@ -88,7 +90,9 @@ class SamlSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.SAML.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.SAML.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -101,6 +105,8 @@ class SamlSecurityManagement extends React.Component {
                 {t('security_setting.SAML.enable_saml')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('ldap') && isSamlEnabled)
+              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -126,7 +132,7 @@ class SamlSecurityManagement extends React.Component {
           </div>
         </div>
 
-        {adminGeneralSecurityContainer.state.isSamlEnabled && (
+        {isSamlEnabled && (
           <React.Fragment>
 
             {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
@@ -507,18 +513,21 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </tbody>
             </table>
 
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminSamlSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+              </div>
+            </div>
+
           </React.Fragment>
-
         )}
-
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminSamlSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
-
 
       </React.Fragment>
     );
