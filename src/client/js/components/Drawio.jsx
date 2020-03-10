@@ -58,6 +58,7 @@ class Drawio extends React.Component {
           onScroll={(event) => {
             event.preventDefault();
           }}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: this.renderContents() }}
         >
         </div>
