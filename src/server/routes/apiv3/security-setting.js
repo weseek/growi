@@ -1,6 +1,3 @@
-
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
@@ -453,7 +450,9 @@ module.exports = (crowi) => {
 
       await crowi.passportService.setupStrategyById(authId);
 
-      const responseParams = { [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`) };
+      const responseParams = {
+        [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
+      };
 
       return res.apiv3({ responseParams });
     }
@@ -663,8 +662,13 @@ module.exports = (crowi) => {
     const rule = req.body.ABLCRule;
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
-    if (rule != null && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
-      return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+    if (rule != null) {
+      try {
+        crowi.passportService.parseABLCRule(rule);
+      }
+      catch (err) {
+        return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+      }
     }
 
     const requestParams = {
