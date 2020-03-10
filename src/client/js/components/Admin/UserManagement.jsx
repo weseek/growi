@@ -140,7 +140,8 @@ class UserManagement extends React.Component {
 
             <div>
               <button type="button" className="btn btn-default btn-outline btn-sm">
-              Reset
+                <span className="icon-refresh mr-1"></span>
+                Reset
               </button>
             </div>
           </div>
