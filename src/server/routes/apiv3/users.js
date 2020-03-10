@@ -163,7 +163,6 @@ module.exports = (crowi) => {
     const { sort } = req.body;
     const { sortOrder } = req.body;
     const sortOutput = {};
-    sortOutput[sort] = (sortOrder === 'asc') ? 1 : -1;
     sortOutput[sort] = (sortOrder === 'desc') ? -1 : 1;
 
     try {
