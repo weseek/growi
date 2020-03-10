@@ -75,11 +75,7 @@ class UserManagement extends React.Component {
       </div>
     );
 
-    const notifyComment = (
-      adminUsersContainer.state.notifyComment
-        ? <span className="text-warning">{ adminUsersContainer.state.notifyComment }</span>
-        : null
-    );
+    const notifyComment = (adminUsersContainer.state.notifyComment && <span className="text-warning">{ adminUsersContainer.state.notifyComment }</span>);
 
     const clearButton = (
       adminUsersContainer.state.searchText.length > 0
