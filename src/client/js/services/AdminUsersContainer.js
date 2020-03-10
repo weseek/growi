@@ -82,6 +82,10 @@ export default class AdminUsersContainer extends Container {
     this.setState({ searchText });
   }
 
+  clearSearchText() {
+    this.setState({ searchText: '' });
+  }
+
   /**
    * syncUsers of selectedPage
    * @memberOf AdminUsersContainer
