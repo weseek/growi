@@ -126,6 +126,7 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
+    // validate status list status array match to statusNo
     body('statusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
@@ -135,29 +136,42 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
+    // validate sortOrder : asc or desc
+    body('sortOrder').isIn(['asc', 'desc']),
+    // validate sort : what column you will sort
+    body('sort').isIn(['status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
   ];
 
   router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
-
-    // status
     const page = parseInt(req.query.page) || 1;
+    // status
     const { statusList } = req.body;
     const statusNoList = statusList.map(element => statusNo[element]);
     // Search from input
-    const inputWord = req.body.inputWord || 1;
+    const inputWord = req.body.inputWord || '';
     const searchWord = new RegExp(`${inputWord}`);
+    const orColumns = ['name', 'username', 'email'];
+    const orOutput = {};
+    orColumns.forEach((element) => {
+      orOutput[element] = { $in: searchWord };
+    });
+    // Sort
+    const { sort, sortOrder } = req.body;
+    const sortOutput = {
+      [sort]: (sortOrder === 'desc') ? -1 : 1,
+    };
 
     try {
       const paginateResult = await User.paginate(
         {
           $and: [
             { status: { $in: statusNoList } },
-            { $or: [{ name: { $in: searchWord } }, { username: { $in: searchWord } }, { email: { $in: searchWord } }] },
+            { $or: [orOutput] },
           ],
         },
         {
-          sort: { status: 1, username: 1, createdAt: 1 },
+          sort: sortOutput,
           page,
           limit: PAGE_ITEMS,
         },
