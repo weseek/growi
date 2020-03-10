@@ -142,7 +142,7 @@ module.exports = (crowi) => {
     // validate sortOrder : asc or desc
     body('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
-    body('sort').isIn(['status', 'username', 'name', 'email', 'createdAt']),
+    body('sort').isIn(['status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
   ];
 
