@@ -37,7 +37,16 @@ class UserManagement extends React.Component {
   }
 
   handleClick(statusType) {
-    if (this.validateToggleStatus(statusType)) this.props.adminUsersContainer.handleClick(statusType);
+    const { adminUsersContainer } = this.props;
+    if (!this.validateToggleStatus(statusType)) {
+      adminUsersContainer.setNotifyComment('You should check at least one checkbox.');
+      return;
+    }
+
+    if (adminUsersContainer.state.notifyComment.length > 0) {
+      adminUsersContainer.setNotifyComment('');
+    }
+    adminUsersContainer.handleClick(statusType);
   }
 
   validateToggleStatus(statusType) {
@@ -65,6 +74,8 @@ class UserManagement extends React.Component {
         />
       </div>
     );
+
+    const notifyComment = (adminUsersContainer.state.notifyComment && <span className="text-warning">{ adminUsersContainer.state.notifyComment }</span>);
 
     const clearButton = (
       adminUsersContainer.state.searchText.length > 0
@@ -149,6 +160,9 @@ class UserManagement extends React.Component {
                 Reset
               </button>
             </div>
+
+            <div className="ml-5">{ notifyComment }</div>
+
           </div>
         </div>
 
