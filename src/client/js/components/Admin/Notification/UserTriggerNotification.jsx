@@ -78,6 +78,7 @@ class UserTriggerNotification extends React.Component {
 
   render() {
     const { t, adminNotificationContainer } = this.props;
+    const userNotifications = adminNotificationContainer.state.userNotifications || [];
 
     return (
       <React.Fragment>
@@ -123,7 +124,7 @@ class UserTriggerNotification extends React.Component {
                 <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
               </td>
             </tr>
-            {adminNotificationContainer.state.userNotifications.map((notification) => {
+            {userNotifications.map((notification) => {
               return <UserNotificationRow notification={notification} onClickDeleteBtn={this.onClickDeleteBtn} key={notification._id} />;
             })
             }
