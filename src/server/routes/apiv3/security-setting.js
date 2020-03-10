@@ -466,6 +466,12 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger
+  router.get('/authentication/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const setupStrategies = await crowi.passportService.getSetupStrategies();
+
+    return res.apiv3({ setupStrategies });
+  });
   /**
    * @swagger
    *

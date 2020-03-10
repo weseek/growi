@@ -35,9 +35,10 @@ class LocalSecuritySetting extends React.Component {
 
 
   async onClickSubmit() {
-    const { t, adminLocalSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
     try {
       await adminLocalSecurityContainer.updateLocalSecuritySetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -91,6 +92,13 @@ class LocalSecuritySetting extends React.Component {
 
         {adminGeneralSecurityContainer.state.isLocalEnabled && (
           <div>
+            {!adminGeneralSecurityContainer.state.setupStrategies.includes('local')
+              && (
+              <p className="alert alert-warning">
+                <small>{this.props.t('security_setting.setup_is_not_yet_complete')}</small>
+              </p>
+            )}
+
             <div className="row mb-5">
               <strong className="col-xs-3 text-right">{t('Register limitation')}</strong>
               <div className="col-xs-9 text-left">
@@ -156,16 +164,22 @@ class LocalSecuritySetting extends React.Component {
                 </div>
               </div>
             </div>
+
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminLocalSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminLocalSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
 
       </React.Fragment>
     );

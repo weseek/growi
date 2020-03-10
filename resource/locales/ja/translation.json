@@ -386,6 +386,7 @@
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
+    "setup_is_not_yet_complete":"セットアップはまだ完了してません",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
