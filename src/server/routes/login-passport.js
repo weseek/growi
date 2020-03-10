@@ -4,9 +4,9 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login-passport');
   const logger = require('@alias/logger')('growi:routes:login-passport');
   const passport = require('passport');
-  const { URL } = require('url');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
+  const ApiResponse = require('../util/apiResponse');
 
   /**
    * success handler
@@ -22,25 +22,10 @@ module.exports = function(crowi, app) {
       }
     });
 
-    const jumpTo = req.session.jumpTo;
-    if (jumpTo) {
-      req.session.jumpTo = null;
-
-      // prevention from open redirect
-      try {
-        const redirectUrl = new URL(jumpTo, `${req.protocol}://${req.get('host')}`);
-        if (redirectUrl.hostname === req.hostname) {
-          return res.redirect(redirectUrl);
-        }
-        logger.warn('Requested redirect URL is invalid, redirect to root page');
-      }
-      catch (err) {
-        logger.warn('Requested redirect URL is invalid, redirect to root page', err);
-        return res.redirect('/');
-      }
-    }
-
-    return res.redirect('/');
+    const { redirectTo } = req.session;
+    // remove session.redirectTo
+    delete req.session.redirectTo;
+    return res.safeRedirect(redirectTo);
   };
 
   /**
@@ -48,8 +33,8 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginFailure = (req, res, next) => {
-    req.flash('errorMessage', 'Sign in failure.');
+  const loginFailure = (req, res, message) => {
+    req.flash('errorMessage', message || 'Sign in failure.');
     return res.redirect('/login');
   };
 
@@ -145,10 +130,10 @@ module.exports = function(crowi, app) {
   const testLdapCredentials = (req, res) => {
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
-      return res.json({
+      return res.json(ApiResponse.success({
         status: 'warning',
         message: 'LdapStrategy has not been set up',
-      });
+      }));
     }
 
     passport.authenticate('ldapauth', (err, user, info) => {
@@ -158,36 +143,36 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('LDAP Server Error: ', err);
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: 'LDAP Server Error occured.',
           err,
-        });
+        }));
       }
       if (info && info.message) {
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'warning',
           message: info.message,
           ldapConfiguration: req.ldapConfiguration,
           ldapAccountInfo: req.ldapAccountInfo,
-        });
+        }));
       }
       if (user) {
         // check groups
         if (!isValidLdapUserByGroupFilter(user)) {
-          return res.json({
+          return res.json(ApiResponse.success({
             status: 'warning',
             message: 'This user does not belong to any groups designated by the group search filter.',
             ldapConfiguration: req.ldapConfiguration,
             ldapAccountInfo: req.ldapAccountInfo,
-          });
+          }));
         }
-        return res.json({
+        return res.json(ApiResponse.success({
           status: 'success',
           message: 'Successfully authenticated.',
           ldapConfiguration: req.ldapConfiguration,
           ldapAccountInfo: req.ldapAccountInfo,
-        });
+        }));
       }
     })(req, res, () => {});
   };
@@ -250,7 +235,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const userInfo = {
@@ -270,7 +255,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -301,7 +286,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const userInfo = {
@@ -312,7 +297,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -343,7 +328,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const userInfo = {
@@ -354,7 +339,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -390,7 +375,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err);
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const userInfo = {
@@ -403,7 +388,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     // login
@@ -461,6 +446,11 @@ module.exports = function(crowi, app) {
 
     const user = await externalAccount.getPopulatedUser();
 
+    // Attribute-based Login Control
+    if (!crowi.passportService.verifySAMLResponseByABLCRule(response)) {
+      return loginFailure(req, res, 'Sign in failure due to insufficient privileges.');
+    }
+
     // login
     req.logIn(user, (err) => {
       if (err != null) {
@@ -503,7 +493,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const user = await externalAccount.getPopulatedUser();

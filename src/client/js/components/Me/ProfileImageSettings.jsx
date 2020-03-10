@@ -23,6 +23,7 @@ class ProfileImageSettings extends React.Component {
 
     this.imageRef = null;
     this.onSelectFile = this.onSelectFile.bind(this);
+    this.onClickDeleteBtn = this.onClickDeleteBtn.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.cancelModal = this.cancelModal.bind(this);
     this.onCropCompleted = this.onCropCompleted.bind(this);
@@ -56,17 +57,30 @@ class ProfileImageSettings extends React.Component {
     }
   }
 
-  async onCropCompleted(croppedImageUrl) {
+  /**
+   * @param {object} croppedImage cropped profile image for upload
+   */
+  async onCropCompleted(croppedImage) {
     const { t, personalContainer } = this.props;
-    personalContainer.setState({ croppedImageUrl });
     try {
-      await personalContainer.uploadAttachment(croppedImageUrl);
-      toastSuccess(t('toaster.update_successed', { target: t('Upload Image') }));
+      await personalContainer.uploadAttachment(croppedImage);
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
     }
     catch (err) {
       toastError(err);
     }
     this.hideModal();
+  }
+
+  async onClickDeleteBtn() {
+    const { t, personalContainer } = this.props;
+    try {
+      await personalContainer.deleteProfileImage();
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   showModal() {
@@ -83,7 +97,7 @@ class ProfileImageSettings extends React.Component {
 
   render() {
     const { t, personalContainer } = this.props;
-    const { uploadedPictureSrc, isGravatarEnabled } = personalContainer.state;
+    const { uploadedPictureSrc, isGravatarEnabled, isUploadedPicture } = personalContainer.state;
 
     return (
       <React.Fragment>
@@ -133,8 +147,7 @@ class ProfileImageSettings extends React.Component {
               </label>
               <div className="col-sm-8">
                 {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg img-circle" id="settingUserPicture" /></p>)}
-                {/* TODO GW-1218 create apiV3 for delete image */}
-                <button type="button" className="btn btn-danger">{ t('Delete Image') }</button>
+                {isUploadedPicture && <button type="button" className="btn btn-danger" onClick={this.onClickDeleteBtn}>{ t('Delete Image') }</button>}
               </div>
             </div>
             <div className="row">
