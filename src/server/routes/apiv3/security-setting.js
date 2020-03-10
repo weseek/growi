@@ -468,6 +468,34 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /_api/v3/security-setting/authentication:
+   *      get:
+   *        tags: [SecuritySetting, apiv3]
+   *        description: Get setup strategies for passport
+   *        responses:
+   *          200:
+   *            description: params of setup strategies
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    setupStrategies:
+   *                      type: array
+   *                      description: setup strategies list
+   *                      items:
+   *                        type: string
+   *                        description: setup strategie
+   *                      example: ["local"]
+   */
+  router.get('/authentication/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const setupStrategies = await crowi.passportService.getSetupStrategies();
+
+    return res.apiv3({ setupStrategies });
+  });
+
+  /**
+   * @swagger
+   *
    *    /_api/v3/security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting, apiv3]

@@ -31,12 +31,14 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGoogleEnabled: false,
       isGitHubEnabled: false,
       isTwitterEnabled: false,
+      setupStrategies: [],
     };
 
     this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
   }
 
   async retrieveSecurityData() {
+    await this.retrieveSetupStratedies();
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { generalSetting, generalAuth } = response.data.securityParams;
     this.onIsWikiModeForced(generalSetting.wikiMode);
@@ -132,7 +134,22 @@ export default class AdminGeneralSecurityContainer extends Container {
         isEnabled,
         authId,
       });
+      await this.retrieveSetupStratedies();
       this.setState({ [stateVariableName]: isEnabled });
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
+   * Retrieve SetupStratedies
+   */
+  async retrieveSetupStratedies() {
+    try {
+      const response = await this.appContainer.apiv3.get('/security-setting/authentication');
+      const { setupStrategies } = response.data;
+      this.setState({ setupStrategies });
     }
     catch (err) {
       toastError(err);
