@@ -66,11 +66,26 @@ module.exports = function(crowi) {
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
       'security:passport-saml:isEnabled' : false,
       'security:passport-saml:isSameEmailTreatedAsIdenticalUser': false,
+
       'security:passport-google:isEnabled' : false,
+      'security:passport-google:clientId': undefined,
+      'security:passport-google:clientSecret': undefined,
+      'security:passport-google:isSameUsernameTreatedAsIdenticalUser': false,
+
       'security:passport-github:isEnabled' : false,
+      'security:passport-github:clientId': undefined,
+      'security:passport-github:clientSecret': undefined,
+      'security:passport-github:isSameUsernameTreatedAsIdenticalUser': false,
+
       'security:passport-twitter:isEnabled' : false,
+      'security:passport-twitter:consumerKey': undefined,
+      'security:passport-twitter:consumerSecret': undefined,
+      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': false,
+
       'security:passport-oidc:isEnabled' : false,
+
       'security:passport-basic:isEnabled' : false,
+      'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
 
       'aws:bucket'          : 'growi',
       'aws:region'          : 'ap-northeast-1',
@@ -83,15 +98,6 @@ module.exports = function(crowi) {
       'mail:smtpPort'     : undefined,
       'mail:smtpUser'     : undefined,
       'mail:smtpPassword' : undefined,
-
-      'security:passport-google:clientId'     : undefined,
-      'security:passport-google:clientSecret' : undefined,
-
-      'security:passport-github:clientId': undefined,
-      'security:passport-github:clientSecret': undefined,
-
-      'security:passport-twitter:clientId': undefined,
-      'security:passport-twitter:clientSecret': undefined,
 
       'plugin:isEnabledPlugins' : true,
 

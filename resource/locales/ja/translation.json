@@ -46,6 +46,7 @@
   "Timeline View": "タイムライン表示",
   "History": "更新履歴",
   "Presentation Mode": "プレゼンテーション",
+  "Not available for guest": "ゲストユーザーは利用できません",
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
@@ -122,7 +123,9 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
   "form_validation": {
-    "required": "<code>%s</code> に値を入力してください"
+    "error_message": "いくつかの値が設定されていません",
+    "required": "%sに値を入力してください",
+    "invalid_syntax": "%sの構文が不正です"
   },
   "installer": {
     "setup": "セットアップ",
@@ -365,7 +368,7 @@
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
-    "Fixed by env var": "環境変数 <code>%s=%s</code> により固定されています。",
+    "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
     "Register limitation": "登録の制限",
     "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -385,13 +388,15 @@
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
-    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。%s から設定してください。",
+    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
-    "desc_of_callback_URL": "%s プロバイダ側の設定で利用してください。",
+    "desc_of_callback_URL": "{{AuthName}} プロバイダ側の設定で利用してください。",
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
+    "updated_general_security_setting": "セキュリティ設定を更新しました。",
+    "setup_not_completed_yet": "まだセットアップは完了していません。",
     "guest_mode": {
       "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
       "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
@@ -403,17 +408,19 @@
     },
     "configuration": "設定",
     "optional": "オプション",
-    "Treat username matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
-    "Treat username matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
-    "Treat email matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
-    "Treat email matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
-    "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
-    "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
+    "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
+    "Treat username matching as identical_warn": "警告: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
+    "Treat email matching as identical": "新規ログイン時、<code>email</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
+    "Treat email matching as identical_warn": "警告: <code>email</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
+    "Use env var if empty": "空の場合、環境変数 <code>{{env}}</code> を利用します",
+    "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>{{target}}</code> を利用します",
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
     "Local": {
-      "name": "ID/Password"
+      "name": "ID/Password",
+      "enable_local": "ID/Password を有効にする"
     },
     "ldap": {
+      "enable_ldap": "LDAP を有効にする",
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
       "bind_manager": "管理者 Bind",
@@ -442,49 +449,71 @@
       "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
       "group_search_user_DN_property": "ユーザーの DN プロパティー",
       "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
-      "test_config": "ログインテスト"
+      "test_config": "ログインテスト",
+      "updated_ldap": "LDAP設定 を更新しました"
     },
     "SAML": {
       "name": "SAML",
+      "enable_saml": "SAML を有効にする",
       "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
-      "mapping_detail": "新規ユーザーの%sに関連付ける属性",
+      "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
       "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
-      "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
-      "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
+      "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{env}}</code> の値を利用します",
+      "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
+      "attr_based_login_control_detail": "SAMLの <code>&lt;saml:AttributeStatement&gt;</code> 要素に含まれる <code>&lt;saml:Attribute&gt;</code> 要素と、その子要素 <code>&lt;saml:AttributeValue&gt;</code> を利用してログインの可否を制御します。",
+      "attr_based_login_control_rule_detail": "<code>属性名 = 値</code> を <code>|</code>(論理和)、 <code>&</code>(論理積) で連結した形式で記述してください。演算子の優先順位は論理積が論理和より高く、各演算子の結合規則は左から右です。",
+      "attr_based_login_control_rule_example": "例えば <code>Department=A | Department=B & Position=Leader</code> だと <code>Department</code> が <code>A</code> の場合, もしくは<code>Department</code> が <code>B</code> かつ <code>Position</code> が <code>Leader</code> の場合にログインを<strong>許可</strong>します。"
     },
     "Basic": {
+      "enable_basic": "Basic を有効にする",
       "name": "Basic 認証",
       "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
-      "desc_2": "ユーザーが存在しなかった場合は自動生成します。"
+      "desc_2": "ユーザーが存在しなかった場合は自動生成します。",
+      "updated_basic": "Basic認証 を更新しました"
     },
     "OAuth": {
+      "enable_oidc": "OIDC を有効にする",
       "register": "%sに登録",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
       "Google": {
+        "enable_google": "Google OAuth を有効にする",
         "name": "Google OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_1": "{{link}}へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
-        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_4": "承認済みのリダイレクトURIを<code>{{url}}</code>としてGrowiを登録",
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_google": "Google OAuth を更新しました"
       },
       "Facebook": {
         "name": "Facebook OAuth"
       },
       "Twitter": {
+        "enable_twitter": "Twitter OAuth を有効にする",
         "name": "Twitter OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_1": "{{link}} へアクセス",
         "register_2": "Twitterにサインイン",
         "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
         "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_twitter": "Twitter OAuth を更新しました"
       },
       "GitHub": {
+        "enable_github": "GitHub OAuth を有効にする",
         "name": "GitHub OAuth",
-        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
-        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録",
-        "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
+        "register_1": "{{link}} へアクセス",
+        "register_2": "\"Authorization callback URL\"を<code>{{url}}</code>としてGrowiを登録",
+        "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力",
+        "updated_github": "GitHub OAuth を更新しました"
+      },
+      "OIDC": {
+        "name": "OpenID Connect",
+        "id_detail": "OIDC claims で一意に識別可能な値を格納している属性",
+        "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
+        "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
+        "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
+        "updated_oidc": "OpenID Connect を更新しました"
       },
       "how_to": {
         "google": "Google OAuth の設定方法",
@@ -493,14 +522,15 @@
       }
     },
     "form_item_name": {
-      "security:passport-saml:entryPoint": "エントリーポイント",
-      "security:passport-saml:issuer": "発行者",
-      "security:passport-saml:cert": "証明書",
-      "security:passport-saml:attrMapId": "ID",
-      "security:passport-saml:attrMapUsername": "ユーザー名",
-      "security:passport-saml:attrMapMail": "メールアドレス",
-      "security:passport-saml:attrMapFirstName": "姓",
-      "security:passport-saml:attrMapLastName": "名"
+      "entryPoint": "エントリーポイント",
+      "issuer": "発行者",
+      "cert": "証明書",
+      "attrMapId": "ID",
+      "attrMapUsername": "ユーザー名",
+      "attrMapMail": "メールアドレス",
+      "attrMapFirstName": "姓",
+      "attrMapLastName": "名",
+      "ABLCRule": "ルール"
     }
   },
   "notification_setting": {

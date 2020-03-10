@@ -1,5 +1,6 @@
 const debug = require('debug')('growi:service:PassportService');
 const urljoin = require('url-join');
+const luceneQueryParser = require('lucene-query-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const LdapStrategy = require('passport-ldapauth');
@@ -73,7 +74,6 @@ class PassportService {
      * the keys of mandatory configs for SAML
      */
     this.mandatoryConfigKeysForSaml = [
-      'security:passport-saml:isEnabled',
       'security:passport-saml:entryPoint',
       'security:passport-saml:issuer',
       'security:passport-saml:cert',
@@ -81,6 +81,88 @@ class PassportService {
       'security:passport-saml:attrMapUsername',
       'security:passport-saml:attrMapMail',
     ];
+
+    this.setupFunction = {
+      local: {
+        setup: 'setupLocalStrategy',
+        reset: 'resetLocalStrategy',
+      },
+      ldap: {
+        setup: 'setupLdapStrategy',
+        reset: 'resetLdapStrategy',
+      },
+      saml: {
+        setup: 'setupSamlStrategy',
+        reset: 'resetSamlStrategy',
+      },
+      oidc: {
+        setup: 'setupOidcStrategy',
+        reset: 'resetOidcStrategy',
+      },
+      basic: {
+        setup: 'setupBasicStrategy',
+        reset: 'resetBasicStrategy',
+      },
+      google: {
+        setup: 'setupGoogleStrategy',
+        reset: 'resetGoogleStrategy',
+      },
+      github: {
+        setup: 'setupGitHubStrategy',
+        reset: 'resetGitHubStrategy',
+      },
+      twitter: {
+        setup: 'setupTwitterStrategy',
+        reset: 'resetTwitterStrategy',
+      },
+    };
+  }
+
+  /**
+   * get SetupStrategies
+   *
+   * @return {Array}
+   * @memberof PassportService
+   */
+  getSetupStrategies() {
+    const setupStrategies = [];
+
+    if (this.isLocalStrategySetup) { setupStrategies.push('local') }
+    if (this.isLdapStrategySetup) { setupStrategies.push('ldap') }
+    if (this.isSamlStrategySetup) { setupStrategies.push('saml') }
+    if (this.isOidcStrategySetup) { setupStrategies.push('oidc') }
+    if (this.isBasicStrategySetup) { setupStrategies.push('basic') }
+    if (this.isGoogleStrategySetup) { setupStrategies.push('google') }
+    if (this.isGitHubStrategySetup) { setupStrategies.push('github') }
+    if (this.isTwitterStrategySetup) { setupStrategies.push('twitter') }
+
+    return setupStrategies;
+  }
+
+  /**
+   * get SetupFunction
+   *
+   * @return {Object}
+   * @param {string} authId
+   */
+  getSetupFunction(authId) {
+    return this.setupFunction[authId];
+  }
+
+  /**
+   * setup strategy by target name
+   */
+  setupStrategyById(authId) {
+    const func = this.getSetupFunction(authId);
+
+    try {
+      this[func.setup]();
+    }
+    catch (err) {
+      debug(err);
+      this[func.reset]();
+    }
+
   }
 
   /**
@@ -100,10 +182,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupLocalStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isLocalStrategySetup) {
-      throw new Error('LocalStrategy has already been set up');
-    }
+
+    this.resetLocalStrategy();
 
     const { configManager } = this.crowi;
 
@@ -157,10 +237,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupLdapStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isLdapStrategySetup) {
-      throw new Error('LdapStrategy has already been set up');
-    }
+
+    this.resetLdapStrategy();
 
     const config = this.crowi.config;
     const { configManager } = this.crowi;
@@ -323,10 +401,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupGoogleStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isGoogleStrategySetup) {
-      throw new Error('GoogleStrategy has already been set up');
-    }
+
+    this.resetGoogleStrategy();
 
     const { configManager } = this.crowi;
     const isGoogleEnabled = configManager.getConfig('crowi', 'security:passport-google:isEnabled');
@@ -373,10 +449,8 @@ class PassportService {
   }
 
   setupGitHubStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isGitHubStrategySetup) {
-      throw new Error('GitHubStrategy has already been set up');
-    }
+
+    this.resetGitHubStrategy();
 
     const { configManager } = this.crowi;
     const isGitHubEnabled = configManager.getConfig('crowi', 'security:passport-github:isEnabled');
@@ -423,10 +497,8 @@ class PassportService {
   }
 
   setupTwitterStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isTwitterStrategySetup) {
-      throw new Error('TwitterStrategy has already been set up');
-    }
+
+    this.resetTwitterStrategy();
 
     const { configManager } = this.crowi;
     const isTwitterEnabled = configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
@@ -473,10 +545,8 @@ class PassportService {
   }
 
   async setupOidcStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isOidcStrategySetup) {
-      throw new Error('OidcStrategy has already been set up');
-    }
+
+    this.resetOidcStrategy();
 
     const { configManager } = this.crowi;
     const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
@@ -536,10 +606,8 @@ class PassportService {
   }
 
   setupSamlStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isSamlStrategySetup) {
-      throw new Error('SamlStrategy has already been set up');
-    }
+
+    this.resetSamlStrategy();
 
     const { configManager } = this.crowi;
     const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
@@ -599,6 +667,114 @@ class PassportService {
   }
 
   /**
+   * Verify that a SAML response meets the attribute-base login control rule
+   */
+  verifySAMLResponseByABLCRule(response) {
+    const rule = this.crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule');
+    if (rule == null) {
+      return true;
+    }
+
+    // parse with lucene-query-parser
+    // see https://github.com/thoward/lucene-query-parser.js/wiki
+    const luceneRule = luceneQueryParser.parse(rule);
+    if (luceneRule == null) {
+      return false;
+    }
+    debug({ 'Parsed Rule': JSON.stringify(luceneRule, null, 2) });
+
+    const attributes = this.extractAttributesFromSAMLResponse(response);
+    debug({ 'Extracted Attributes': JSON.stringify(attributes, null, 2) });
+
+    return this.evaluateRuleForSamlAttributes(attributes, luceneRule);
+  }
+
+  /**
+   * Evaluate whether the specified rule is satisfied under the specified attributes
+   *
+   * @param {object} attributes results by extractAttributesFromSAMLResponse
+   * @param {object} luceneRule Expression Tree Structure generated by lucene-query-parser
+   * @see https://github.com/thoward/lucene-query-parser.js/wiki
+   */
+  evaluateRuleForSamlAttributes(attributes, luceneRule) {
+    const { left, right, operator } = luceneRule;
+
+    // when combined rules
+    if (right != null) {
+      return this.evaluateCombinedRulesForSamlAttributes(attributes, left, right, operator);
+    }
+    if (left != null) {
+      return this.evaluateRuleForSamlAttributes(attributes, left);
+    }
+
+    const { field, term } = luceneRule;
+    if (field === '<implicit>') {
+      return attributes[term] != null;
+    }
+    return attributes[field].includes(term);
+  }
+
+  /**
+   * Evaluate whether the specified two rules are satisfied under the specified attributes
+   *
+   * @param {object} attributes results by extractAttributesFromSAMLResponse
+   * @param {object} luceneRuleLeft Expression Tree Structure generated by lucene-query-parser
+   * @param {object} luceneRuleRight Expression Tree Structure generated by lucene-query-parser
+   * @param {string} luceneOperator operator string expression
+   * @see https://github.com/thoward/lucene-query-parser.js/wiki
+   */
+  evaluateCombinedRulesForSamlAttributes(attributes, luceneRuleLeft, luceneRuleRight, luceneOperator) {
+    if (luceneOperator === 'OR') {
+      return this.evaluateRuleForSamlAttributes(attributes, luceneRuleLeft) || this.evaluateRuleForSamlAttributes(attributes, luceneRuleRight);
+    }
+    if (luceneOperator === 'AND') {
+      return this.evaluateRuleForSamlAttributes(attributes, luceneRuleLeft) && this.evaluateRuleForSamlAttributes(attributes, luceneRuleRight);
+    }
+    if (luceneOperator === 'NOT') {
+      return this.evaluateRuleForSamlAttributes(attributes, luceneRuleLeft) && !this.evaluateRuleForSamlAttributes(attributes, luceneRuleRight);
+    }
+
+    throw new Error(`Unsupported operator: ${luceneOperator}`);
+  }
+
+  /**
+   * Extract attributes from a SAML response
+   *
+   * The format of extracted attributes is the following.
+   *
+   * {
+   *    "attribute_name1": ["value1", "value2", ...],
+   *    "attribute_name2": ["value1", "value2", ...],
+   *    ...
+   * }
+   */
+  extractAttributesFromSAMLResponse(response) {
+    const attributeStatement = response.getAssertion().Assertion.AttributeStatement;
+    if (attributeStatement == null || attributeStatement[0] == null) {
+      return {};
+    }
+
+    const attributes = attributeStatement[0].Attribute;
+    if (attributes == null) {
+      return {};
+    }
+
+    const result = {};
+    for (const attribute of attributes) {
+      const name = attribute.$.Name;
+      const attributeValues = attribute.AttributeValue.map(v => v._);
+      if (result[name] == null) {
+        result[name] = attributeValues;
+      }
+      else {
+        result[name] = result[name].concat(attributeValues);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * reset BasicStrategy
    *
    * @memberof PassportService
@@ -615,10 +791,8 @@ class PassportService {
    * @memberof PassportService
    */
   setupBasicStrategy() {
-    // check whether the strategy has already been set up
-    if (this.isBasicStrategySetup) {
-      throw new Error('BasicStrategy has already been set up');
-    }
+
+    this.resetBasicStrategy();
 
     const configManager = this.crowi.configManager;
     const isBasicEnabled = configManager.getConfig('crowi', 'security:passport-basic:isEnabled');

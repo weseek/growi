@@ -13,6 +13,10 @@ import {
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
 
+import {
+  DrawioInterceptor,
+} from '../util/interceptor/drawio-interceptor';
+
 import i18nFactory from '../util/i18n';
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
@@ -52,6 +56,7 @@ export default class AppContainer extends Container {
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     const userlang = body.dataset.userlang;
@@ -297,6 +302,16 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
+  }
+
+  launchDrawioIFrame(componentKind, beginLineNumber, endLineNumber) {
+    let targetComponent;
+    switch (componentKind) {
+      case 'page':
+        targetComponent = this.getComponentInstance('Page');
+        break;
+    }
+    targetComponent.launchDrawioIFrame(beginLineNumber, endLineNumber);
   }
 
   async apiGet(path, params) {

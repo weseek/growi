@@ -35,6 +35,9 @@ module.exports = (crowi) => {
 
   router.use('/statistics', require('./statistics')(crowi));
 
+  router.use('/security-setting', require('./security-setting')(crowi));
+
+  router.use('/search', require('./search')(crowi));
 
   return router;
 };
