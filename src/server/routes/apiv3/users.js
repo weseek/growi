@@ -157,8 +157,7 @@ module.exports = (crowi) => {
       orOutput[element] = { $in: searchWord };
     });
     // Sort
-    const { sort } = req.body;
-    const { sortOrder } = req.body;
+    const { sort, sortOrder } = req.body;
     const sortOutput = {};
     sortOutput[sort] = (sortOrder === 'desc') ? -1 : 1;
 
