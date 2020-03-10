@@ -117,6 +117,9 @@ module.exports = function(crowi) {
       'customize:isEnabledStaleNotification': false,
       'customize:isAllReplyShown': false,
 
+      'notification:owner-page:isEnabled': false,
+      'notification:group-page:isEnabled': false,
+
       'importer:esa:team_name': undefined,
       'importer:esa:access_token': undefined,
       'importer:qiita:team_name': undefined,

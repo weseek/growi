@@ -2,19 +2,62 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import GlobalNotificationList from './GlobalNotificationList';
 
+const logger = loggerFactory('growi:GlobalNotification');
+
 class GlobalNotification extends React.Component {
+
+  constructor() {
+    super();
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t, adminNotificationContainer } = this.props;
+
+    try {
+      await adminNotificationContainer.updateGlobalNotificationForPages();
+      toastSuccess(t('toaster.update_successed', { target: t('Notification Settings') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminNotificationContainer } = this.props;
     const { globalNotifications } = adminNotificationContainer.state;
     return (
       <React.Fragment>
+
+        {/* TODO GW-1279 i18n */}
+        <h2 className="border-bottom mb-5">通知が有効になるページ</h2>
+
+        {/* TODO GW-1279 add checkbox for display isNotificationForOwnerPageEnabled */}
+
+        {/* TODO GW-1279 add checkbox for display isNotificationForGroupPageEnabled */}
+
+        <div className="row my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={adminNotificationContainer.state.retrieveError}
+            >{t('Update')}
+            </button>
+          </div>
+        </div>
 
         <a href="/admin/global-notification/new">
           <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
