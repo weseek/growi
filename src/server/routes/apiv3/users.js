@@ -125,8 +125,8 @@ module.exports = (crowi) => {
     invited: User.STATUS_INVITED,
   };
 
-  const sortOrderArray = ['asc', 'desc'];
-  const sortArray = ['status', 'username', 'name', 'email', 'createdAt'];
+  /* const sortOrderArray = ['asc', 'desc'];
+  const sortArray = ['status', 'username', 'name', 'email', 'createdAt']; */
 
   validator.statusList = [
     // validate status list status array match to statusNo
@@ -139,7 +139,7 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
-    // validate sortOrder : asc or desc
+    /* // validate sortOrder : asc or desc
     body('sortOrder').custom((value) => {
       const error = [];
       if (sortOrderArray.includes(value) === false) {
@@ -154,7 +154,11 @@ module.exports = (crowi) => {
         error.push(value);
       }
       return (error.length === 0);
-    }),
+    }), */
+    // validate sortOrder : asc or desc
+    body('sortOrder').isIn(['asc', 'desc']),
+    // validate sort : what column you will sort
+    body('sort').isIn(['status', 'username', 'name', 'email', 'createdAt']),
     query('page').isInt({ min: 1 }),
   ];
 
