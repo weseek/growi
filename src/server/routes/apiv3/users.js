@@ -125,9 +125,6 @@ module.exports = (crowi) => {
     invited: User.STATUS_INVITED,
   };
 
-  /* const sortOrderArray = ['asc', 'desc'];
-  const sortArray = ['status', 'username', 'name', 'email', 'createdAt']; */
-
   validator.statusList = [
     // validate status list status array match to statusNo
     body('statusList').custom((value) => {
