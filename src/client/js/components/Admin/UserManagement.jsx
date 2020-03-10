@@ -68,7 +68,15 @@ class UserManagement extends React.Component {
 
     const clearButton = (
       adminUsersContainer.state.searchText.length > 0
-        ? <i className="icon-close search-clear"></i>
+        ? (
+          <i
+            className="icon-close search-clear"
+            onClick={() => {
+              adminUsersContainer.clearSearchText();
+              this.searchUserElement.value = '';
+            }}
+          />
+        )
         : ''
     );
 
@@ -91,7 +99,11 @@ class UserManagement extends React.Component {
             <div>
               <i className="icon-magnifier mr-1"></i>
               <span className="search-typeahead">
-                <input type="text" name="name" onChange={this.handleChangeSearchText} />
+                <input
+                  type="text"
+                  ref={(searchUserElement) => { this.searchUserElement = searchUserElement }}
+                  onChange={this.handleChangeSearchText}
+                />
                 { clearButton }
               </span>
             </div>
