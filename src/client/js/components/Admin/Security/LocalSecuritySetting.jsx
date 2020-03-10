@@ -49,6 +49,7 @@ class LocalSecuritySetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
     const { registrationMode } = adminLocalSecurityContainer.state;
+    const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -62,7 +63,7 @@ class LocalSecuritySetting extends React.Component {
           </div>
         )}
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.Local.name')} {t('security_setting.configuration')}
+          {t('security_setting.Local.name')}
         </h2>
 
         {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
@@ -74,7 +75,9 @@ class LocalSecuritySetting extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.Local.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.Local.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -87,17 +90,15 @@ class LocalSecuritySetting extends React.Component {
                 {t('security_setting.Local.enable_local')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled)
+            && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
-        {adminGeneralSecurityContainer.state.isLocalEnabled && (
+        {isLocalEnabled && (
           <div>
-            {!adminGeneralSecurityContainer.state.setupStrategies.includes('local')
-              && (
-              <p className="alert alert-warning">
-                <small>{this.props.t('security_setting.setup_is_not_yet_complete')}</small>
-              </p>
-            )}
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
               <strong className="col-xs-3 text-right">{t('Register limitation')}</strong>
