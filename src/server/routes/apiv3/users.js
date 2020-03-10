@@ -158,8 +158,9 @@ module.exports = (crowi) => {
     });
     // Sort
     const { sort, sortOrder } = req.body;
-    const sortOutput = {};
-    sortOutput[sort] = (sortOrder === 'desc') ? -1 : 1;
+    const sortOutput = {
+      [sort]: (sortOrder === 'desc') ? -1 : 1,
+    };
 
     try {
       const paginateResult = await User.paginate(
