@@ -115,16 +115,17 @@ class BasicSecurityManagement extends React.Component {
               </p>
             </div>
           </div>
+
+          <div className="row my-3">
+            <div className="col-xs-offset-4 col-xs-5">
+              <button type="button" className="btn btn-primary" disabled={adminBasicSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+                {t('Update')}
+              </button>
+            </div>
+          </div>
+
         </React.Fragment>
         )}
-
-        <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminBasicSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              { t('Update') }
-            </button>
-          </div>
-        </div>
 
       </React.Fragment>
     );

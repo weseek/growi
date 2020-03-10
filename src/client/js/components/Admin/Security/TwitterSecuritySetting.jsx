@@ -169,16 +169,16 @@ class TwitterSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button type="button" className="btn btn-primary" disabled={adminTwitterSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+                  {t('Update')}
+                </button>
+              </div>
+            </div>
+
           </React.Fragment>
         )}
-
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminTwitterSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
 
         <hr />
 

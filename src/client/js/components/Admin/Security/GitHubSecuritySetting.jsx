@@ -169,16 +169,16 @@ class GitHubSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <div className="btn btn-primary" disabled={adminGitHubSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+                  {t('Update')}
+                </div>
+              </div>
+            </div>
+
           </React.Fragment>
         )}
-
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <div className="btn btn-primary" disabled={adminGitHubSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </div>
-          </div>
-        </div>
 
         <hr />
 
