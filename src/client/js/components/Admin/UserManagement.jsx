@@ -20,6 +20,7 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
     this.handlePage = this.handlePage.bind(this);
+    this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
 
   componentWillMount() {
@@ -56,6 +57,10 @@ class UserManagement extends React.Component {
     return true;
   }
 
+  handleChangeSearchText(event) {
+    this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
+  }
+
   render() {
     const { t, adminUsersContainer } = this.props;
 
@@ -72,8 +77,14 @@ class UserManagement extends React.Component {
 
     const notifyComment = (
       adminUsersContainer.state.notifyComment
-        ? <p className="text-warning">{ adminUsersContainer.state.notifyComment }</p>
+        ? <span className="text-warning">{ adminUsersContainer.state.notifyComment }</span>
         : null
+    );
+
+    const clearButton = (
+      adminUsersContainer.state.searchText.length > 0
+        ? <i className="icon-close search-clear"></i>
+        : ''
     );
 
     return (
@@ -89,58 +100,72 @@ class UserManagement extends React.Component {
 
         <h2>{t('User_Management')}</h2>
 
-        <div className="row border-top border-bottom mr-2">
-          <div className="px-0">
+        <div className="border-top border-bottom">
 
-            <label className="col-md-3 mb-0 my-3">
-              <i className="icon-magnifier mr-1"></i>
-              <input type="text" name="name" />
-            </label>
-          </div>
-
-          <div className="col-md-6 py-2 my-2">
+          <div className="d-flex justify-content-start align-items-center my-2">
             <div>
+              <i className="icon-magnifier mr-1"></i>
+              <span className="search-typeahead">
+                <input type="text" name="name" onChange={this.handleChangeSearchText} />
+                { clearButton }
+              </span>
+            </div>
+
+            <div className="mx-5">
               <input
                 type="checkbox"
+                id="c1"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('All')}
                 onClick={() => { this.handleClick('All') }}
               />
-              <label className="mr-2">All</label>
+              <label htmlFor="c1" className="mr-2">All</label>
 
               <input
                 type="checkbox"
+                id="c2"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Approval Pending')}
                 onClick={() => { this.handleClick('Approval Pending') }}
               />
-              <label className="label label-info mr-2">Approval Pending</label>
+              <label htmlFor="c2" className="label label-info mr-2">Approval Pending</label>
 
               <input
                 type="checkbox"
+                id="c3"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Active')}
                 onClick={() => { this.handleClick('Active') }}
               />
-              <label className="label label-success mr-2">Active</label>
+              <label htmlFor="c3" className="label label-success mr-2">Active</label>
 
               <input
                 type="checkbox"
+                id="c4"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Suspended')}
                 onClick={() => { this.handleClick('Suspended') }}
               />
-              <label className="label label-warning mr-2">Suspended</label>
+              <label htmlFor="c4" className="label label-warning mr-2">Suspended</label>
 
               <input
                 type="checkbox"
+                id="c5"
                 className="mr-1"
                 checked={adminUsersContainer.isSelected('Invited')}
                 onClick={() => { this.handleClick('Invited') }}
               />
-              <label className="label label-info mr-2">Invited</label>
+              <label htmlFor="c5" className="label label-info">Invited</label>
             </div>
-            { notifyComment }
+
+            <div>
+              <button type="button" className="btn btn-default btn-outline btn-sm">
+              Reset
+              </button>
+            </div>
+
+            <div className="ml-5">{ notifyComment }</div>
+
           </div>
         </div>
 

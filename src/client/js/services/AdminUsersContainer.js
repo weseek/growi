@@ -24,7 +24,8 @@ export default class AdminUsersContainer extends Container {
       totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
-      selectedStatusList: new Set(),
+      selectedStatusList: new Set(['All']),
+      searchText: '',
       notifyComment: '',
     };
 
@@ -49,12 +50,25 @@ export default class AdminUsersContainer extends Container {
   }
 
   handleClick(statusType) {
+    const all = 'All';
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
     }
     else {
+      if (statusType === all) {
+        this.clearStatusList();
+      }
+      else {
+        this.deleteStatusFromList(all);
+      }
       this.addStatusToList(statusType);
     }
+  }
+
+  clearStatusList() {
+    const { selectedStatusList } = this.state;
+    selectedStatusList.clear();
+    this.setState({ selectedStatusList });
   }
 
   addStatusToList(statusType) {
@@ -67,6 +81,10 @@ export default class AdminUsersContainer extends Container {
     const { selectedStatusList } = this.state;
     selectedStatusList.delete(statusType);
     this.setState({ selectedStatusList });
+  }
+
+  handleChangeSearchText(searchText) {
+    this.setState({ searchText });
   }
 
   /**
