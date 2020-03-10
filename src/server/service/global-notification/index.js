@@ -38,7 +38,7 @@ class GlobalNotificationService {
     }
 
     if (!this.isSendNotification(page.grant)) {
-      logger.debug('this page does not send notifications');
+      logger.info('this page does not send notifications');
       return;
     }
 
