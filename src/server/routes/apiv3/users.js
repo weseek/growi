@@ -139,22 +139,6 @@ module.exports = (crowi) => {
       });
       return (error.length === 0);
     }),
-    /* // validate sortOrder : asc or desc
-    body('sortOrder').custom((value) => {
-      const error = [];
-      if (sortOrderArray.includes(value) === false) {
-        error.push(value);
-      }
-      return (error.length === 0);
-    }),
-    // validate sort : what column you will sort
-    body('sort').custom((value) => {
-      const error = [];
-      if (sortArray.includes(value) === false) {
-        error.push(value);
-      }
-      return (error.length === 0);
-    }), */
     // validate sortOrder : asc or desc
     body('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
@@ -180,6 +164,7 @@ module.exports = (crowi) => {
     const { sortOrder } = req.body;
     const sortOutput = {};
     sortOutput[sort] = (sortOrder === 'asc') ? 1 : -1;
+    sortOutput[sort] = (sortOrder === 'desc') ? -1 : 1;
 
     try {
       const paginateResult = await User.paginate(
