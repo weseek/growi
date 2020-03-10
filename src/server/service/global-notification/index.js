@@ -48,6 +48,14 @@ class GlobalNotificationService {
     ]);
   }
 
+  /**
+   * fire global notification
+   *
+   * @memberof GlobalNotificationService
+   *
+   * @param {number} grant page grant
+   * @return {boolean} isSendNotification
+   */
   isSendNotification(grant) {
     switch (grant) {
       case this.Page.GRANT_PUBLIC:
@@ -57,8 +65,10 @@ class GlobalNotificationService {
       case this.Page.GRANT_SPECIFIED:
         return false;
       case this.Page.GRANT_OWNER:
+        // TODO GW 1271 switch isEnabled
         return (this.crowi.configManager.getConfig('crowi', 'notification:owner-page:isEnabled') || false);
       case this.Page.GRANT_USER_GROUP:
+        // TODO GW 1271 switch isEnabled
         return (this.crowi.configManager.getConfig('crowi', 'notification:group-page:isEnabled') || false);
     }
   }
