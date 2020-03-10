@@ -13,7 +13,11 @@ class GlobalNotificationService {
 
     this.gloabalNotificationMail = new GloabalNotificationMail(crowi);
     this.gloabalNotificationSlack = new GloabalNotificationSlack(crowi);
+
+    this.Page = this.crowi.model('Page');
+
   }
+
 
   /**
    * fire global notification
@@ -21,22 +25,52 @@ class GlobalNotificationService {
    * @memberof GlobalNotificationService
    *
    * @param {string} event event name triggered
-   * @param {string} path path triggered the event
+   * @param {string} page page triggered the event
    * @param {User} triggeredBy user who triggered the event
    * @param {object} vars event specific vars
    */
-  async fire(event, path, triggeredBy, vars = {}) {
+  async fire(event, page, triggeredBy, vars = {}) {
     logger.debug(`global notficatoin event ${event} was triggered`);
 
     // validation
-    if (event == null || path == null || triggeredBy == null) {
+    if (event == null || page.path == null || triggeredBy == null) {
       throw new Error(`invalid vars supplied to GlobalNotificationSlackService.generateOption for event ${event}`);
     }
 
+    if (!this.isSendNotification(page.grant)) {
+      logger.info('this page does not send notifications');
+      return;
+    }
+
     await Promise.all([
-      this.gloabalNotificationMail.fire(event, path, triggeredBy, vars),
-      this.gloabalNotificationSlack.fire(event, path, triggeredBy, vars),
+      this.gloabalNotificationMail.fire(event, page.path, triggeredBy, vars),
+      this.gloabalNotificationSlack.fire(event, page.path, triggeredBy, vars),
     ]);
+  }
+
+  /**
+   * fire global notification
+   *
+   * @memberof GlobalNotificationService
+   *
+   * @param {number} grant page grant
+   * @return {boolean} isSendNotification
+   */
+  isSendNotification(grant) {
+    switch (grant) {
+      case this.Page.GRANT_PUBLIC:
+        return true;
+      case this.Page.GRANT_RESTRICTED:
+        return false;
+      case this.Page.GRANT_SPECIFIED:
+        return false;
+      case this.Page.GRANT_OWNER:
+        // TODO GW 1271 switch isEnabled
+        return (this.crowi.configManager.getConfig('crowi', 'notification:owner-page:isEnabled') || false);
+      case this.Page.GRANT_USER_GROUP:
+        // TODO GW 1271 switch isEnabled
+        return (this.crowi.configManager.getConfig('crowi', 'notification:group-page:isEnabled') || false);
+    }
   }
 
 }
