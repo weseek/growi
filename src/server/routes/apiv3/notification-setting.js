@@ -33,8 +33,8 @@ const validator = {
     }),
   ],
   notifyForPageGrant: [
-    body('isNotificationOwnerPageEnabled').isBoolean(),
-    body('isNotificationGroupPageEnabled').isBoolean(),
+    body('isNotificationForOwnerPageEnabled').isBoolean(),
+    body('isNotificationForGroupPageEnabled').isBoolean(),
   ],
 };
 
@@ -73,10 +73,10 @@ const validator = {
  *      NotifyForPageGrant:
  *        type: object
  *        properties:
- *          isNotificationOwnerPageEnabled:
+ *          isNotificationForOwnerPageEnabled:
  *            type: string
  *            description: Whether to notify on owner page
- *          isNotificationGroupPageEnabled:
+ *          isNotificationForGroupPageEnabled:
  *            type: string
  *            description: Whether to notify on group page
  *      GlobalNotificationParams:
@@ -138,8 +138,8 @@ module.exports = (crowi) => {
       isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
       slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
       userNotifications: await UpdatePost.findAll(),
-      isNotificationOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
-      isNotificationGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
+      isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
+      isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
       globalNotifications: await GlobalNotificationSetting.findAll(),
     };
     return res.apiv3({ notificationParams });
@@ -441,14 +441,14 @@ module.exports = (crowi) => {
   router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, ApiV3FormValidator, async(req, res) => {
 
     const requestParams = {
-      'notification:owner-page:isEnabled': req.body.isNotificationOwnerPageEnabled,
-      'notification:group-page:isEnabled': req.body.isNotificationGroupPageEnabled,
+      'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
+      'notification:group-page:isEnabled': req.body.isNotificationForGroupPageEnabled,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
       const responseParams = {
-        isNotificationOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
-        isNotificationGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
+        isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
+        isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
       };
       return res.apiv3({ responseParams });
     }

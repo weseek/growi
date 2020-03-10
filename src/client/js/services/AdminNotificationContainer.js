@@ -24,8 +24,8 @@ export default class AdminNotificationContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],
-      isNotificationOwnerPageEnabled: false,
-      isNotificationGroupPageEnabled: false,
+      isNotificationForOwnerPageEnabled: false,
+      isNotificationForGroupPageEnabled: false,
       globalNotifications: [],
     };
 
@@ -51,8 +51,8 @@ export default class AdminNotificationContainer extends Container {
         isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
         slackToken: notificationParams.slackToken,
         userNotifications: notificationParams.userNotifications,
-        isNotificationOwnerPageEnabled: notificationParams.isNotificationOwnerPageEnabled,
-        isNotificationGroupPageEnabled: notificationParams.isNotificationGroupPageEnabled,
+        isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
+        isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
         globalNotifications: notificationParams.globalNotifications,
       });
 
@@ -129,17 +129,17 @@ export default class AdminNotificationContainer extends Container {
   }
 
   /**
-   * Switch isNotificationOwnerPageEnabled
+   * Switch isNotificationForOwnerPageEnabled
    */
   switchIsNotificationOwnerPageEnabled() {
-    this.setState({ isNotificationOwnerPageEnabled: !this.state.isNotificationOwnerPageEnabled });
+    this.setState({ isNotificationForOwnerPageEnabled: !this.state.isNotificationForOwnerPageEnabled });
   }
 
   /**
-   * Switch isNotificationGroupPageEnabled
+   * Switch isNotificationForGroupPageEnabled
    */
   switchIsNotificationGroupPageEnabled() {
-    this.setState({ isNotificationGroupPageEnabled: !this.state.isNotificationGroupPageEnabled });
+    this.setState({ isNotificationForGroupPageEnabled: !this.state.isNotificationForGroupPageEnabled });
   }
 
   /**
@@ -148,8 +148,8 @@ export default class AdminNotificationContainer extends Container {
    */
   async updateGlobalNotificationForPages() {
     const response = await this.appContainer.apiv3.put('/notification-setting/notify-for-page-grant/', {
-      isNotificationOwnerPageEnabled: this.state.isNotificationOwnerPageEnabled,
-      isNotificationGroupPageEnabled: this.state.isNotificationGroupPageEnabled,
+      isNotificationForOwnerPageEnabled: this.state.isNotificationForOwnerPageEnabled,
+      isNotificationForGroupPageEnabled: this.state.isNotificationForGroupPageEnabled,
     });
 
     return response;
