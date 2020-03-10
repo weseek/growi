@@ -18,8 +18,6 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      statusList: new Set(),
-      inputWord: '',
       sort: '',
       sortOrder: '',
       isPasswordResetModalShown: false,
