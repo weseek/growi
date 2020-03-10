@@ -40,7 +40,12 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
+        {/* TODO GW-1279 i18n */}
         <h2 className="border-bottom mb-5">通知が有効になるページ</h2>
+
+        {/* TODO GW-1279 add checkbox for display isNotificationOwnerPageEnabled */}
+
+        {/* TODO GW-1279 add checkbox for display isNotificationGroupPageEnabled */}
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
