@@ -93,6 +93,10 @@ export default class AdminUsersContainer extends Container {
     this.setState({ searchText: '' });
   }
 
+  retrieveUsersByChangedDetails(selectedPage) {
+    // TODO Access to /search-user-status/
+  }
+
   /**
    * syncUsers of selectedPage
    * @memberOf AdminUsersContainer
