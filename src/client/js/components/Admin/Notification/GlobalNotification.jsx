@@ -37,7 +37,6 @@ class GlobalNotification extends React.Component {
   render() {
     const { t, adminNotificationContainer } = this.props;
     const { globalNotifications } = adminNotificationContainer.state;
-
     return (
       <React.Fragment>
 
@@ -95,7 +94,6 @@ class GlobalNotification extends React.Component {
             </button>
           </div>
         </div>
-
 
         <a href="/admin/global-notification/new">
           <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
