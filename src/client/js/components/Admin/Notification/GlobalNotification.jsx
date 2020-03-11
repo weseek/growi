@@ -40,16 +40,14 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        {/* TODO GW-1279 i18n */}
         <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
 
         <p className="well">
-
           {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
         </p>
 
-        {/* TODO GW-1279 add checkbox for display isNotificationForOwnerPageEnabled */}
+
         <div className="row mb-4 d-flex align-items-center">
           <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
@@ -67,7 +65,6 @@ class GlobalNotification extends React.Component {
         </div>
 
 
-        {/* TODO GW-1279 add checkbox for display isNotificationForGroupPageEnabled */}
         <div className="row mb-4 d-flex align-items-center">
           <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
