@@ -37,15 +37,53 @@ class GlobalNotification extends React.Component {
   render() {
     const { t, adminNotificationContainer } = this.props;
     const { globalNotifications } = adminNotificationContainer.state;
+
     return (
       <React.Fragment>
 
         {/* TODO GW-1279 i18n */}
-        <h2 className="border-bottom mb-5">通知が有効になるページ</h2>
+        <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
+
+        <p className="well">
+          <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
+        </p>
 
         {/* TODO GW-1279 add checkbox for display isNotificationForOwnerPageEnabled */}
+        <div className="row mb-4 d-flex align-items-center">
+          <strong className="col-xs-3 text-right">
+            {t('Just me')}
+          </strong>
+          <div className="col-xs-8 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isShowRestrictedByOwner"
+                type="checkbox"
+              />
+              <label htmlFor="isShowRestrictedByOwner">
+                {t('notification_setting.only_me_notification')}
+              </label>
+            </div>
+          </div>
+        </div>
+
 
         {/* TODO GW-1279 add checkbox for display isNotificationForGroupPageEnabled */}
+        <div className="row mb-4 d-flex align-items-center">
+          <strong className="col-xs-3 text-right">
+            {t('Only inside the group')}
+          </strong>
+          <div className="col-xs-8 text-left">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isShowRestrictedByGroup"
+                type="checkbox"
+              />
+              <label htmlFor="isShowRestrictedByGroup">
+                {t('notification_setting.group_notification')}
+              </label>
+            </div>
+          </div>
+        </div>
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
@@ -58,6 +96,7 @@ class GlobalNotification extends React.Component {
             </button>
           </div>
         </div>
+
 
         <a href="/admin/global-notification/new">
           <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
