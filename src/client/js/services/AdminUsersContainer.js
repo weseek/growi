@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
-
 import loggerFactory from '@alias/logger';
+import { toastError } from '../util/apiNotification';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
@@ -18,8 +18,8 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      sort: '',
-      sortOrder: '',
+      sort: 'status',
+      sortOrder: 'asc',
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
@@ -77,6 +77,7 @@ export default class AdminUsersContainer extends Container {
     const { selectedStatusList } = this.state;
     selectedStatusList.add(statusType);
     this.setState({ selectedStatusList });
+    this.retrieveUsersByPagingNum();
   }
 
   deleteStatusFromList(statusType) {
@@ -93,10 +94,6 @@ export default class AdminUsersContainer extends Container {
     this.setState({ searchText: '' });
   }
 
-  retrieveUsersByChangedDetails(selectedPage) {
-    // TODO Access to /search-user-status/
-  }
-
   /**
    * syncUsers of selectedPage
    * @memberOf AdminUsersContainer
@@ -104,7 +101,13 @@ export default class AdminUsersContainer extends Container {
    */
   async retrieveUsersByPagingNum(selectedPage) {
 
-    const params = { page: selectedPage };
+    const params = {
+      page: selectedPage,
+      sort: this.state.sort,
+      sortOrder: this.state.sortOrder,
+      selectedStatusList: Array.from(this.state.selectedStatusList),
+      searchText: this.state.searchText,
+    };
     const { data } = await this.appContainer.apiv3.get('/users', params);
 
     if (data.paginateResult == null) {

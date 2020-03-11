@@ -27,6 +27,7 @@ class UserManagement extends React.Component {
     this.handlePage(1);
   }
 
+  // ----- page loading -----
   async handlePage(selectedPage) {
     try {
       await this.props.adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
@@ -36,6 +37,7 @@ class UserManagement extends React.Component {
     }
   }
 
+  // ----- User Status Check box -----
   handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
@@ -57,6 +59,7 @@ class UserManagement extends React.Component {
     return true;
   }
 
+  // ----- Search Input -----
   handleChangeSearchText(event) {
     this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
   }

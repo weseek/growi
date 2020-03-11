@@ -77,47 +77,6 @@ module.exports = (crowi) => {
 
   const { ApiV3FormValidator } = crowi.middlewares;
 
-  /**
-   * @swagger
-   *
-   *  paths:
-   *    /users:
-   *      get:
-   *        tags: [Users]
-   *        operationId: listUsers
-   *        summary: /users
-   *        description: Get users
-   *        responses:
-   *          200:
-   *            description: users are fetched
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    paginateResult:
-   *                      $ref: '#/components/schemas/PaginateResult'
-   */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const page = parseInt(req.query.page) || 1;
-
-    try {
-      const paginateResult = await User.paginate(
-        { status: { $ne: User.STATUS_DELETED } },
-        {
-          sort: { status: 1, username: 1, createdAt: 1 },
-          page,
-          limit: PAGE_ITEMS,
-        },
-      );
-      return res.apiv3({ paginateResult });
-    }
-    catch (err) {
-      const msg = 'Error occurred in fetching user group list';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
-    }
-  });
-
   const statusNo = {
     registered: User.STATUS_REGISTERED,
     active: User.STATUS_ACTIVE,
@@ -127,7 +86,7 @@ module.exports = (crowi) => {
 
   validator.statusList = [
     // validate status list status array match to statusNo
-    body('selectedStatusList').custom((value) => {
+    query('selectedStatusList').custom((value) => {
       const error = [];
       value.forEach((status) => {
         if (!Object.keys(statusNo)) {
@@ -137,19 +96,20 @@ module.exports = (crowi) => {
       return (error.length === 0);
     }),
     // validate sortOrder : asc or desc
-    body('sortOrder').isIn(['asc', 'desc']),
+    query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
-    body('sort').isIn(['status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
+    query('sort').isIn(['id', 'status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
   ];
 
-  router.get('/search-user-status/', validator.statusList, ApiV3FormValidator, async(req, res) => {
+  router.get('/', validator.statusList, ApiV3FormValidator, async(req, res) => {
+
     const page = parseInt(req.query.page) || 1;
     // status
-    const { selectedStatusList } = req.body;
+    const { selectedStatusList } = req.query;
     const statusNoList = selectedStatusList.map(element => statusNo[element]);
     // Search from input
-    const searchText = req.body.searchText || '';
+    const searchText = req.query.searchText || '';
     const searchWord = new RegExp(`${searchText}`);
     const orColumns = ['name', 'username', 'email'];
     const orOutput = {};
@@ -157,7 +117,7 @@ module.exports = (crowi) => {
       orOutput[element] = { $in: searchWord };
     });
     // Sort
-    const { sort, sortOrder } = req.body;
+    const { sort, sortOrder } = req.query;
     const sortOutput = {
       [sort]: (sortOrder === 'desc') ? -1 : 1,
     };
