@@ -48,7 +48,7 @@ class GlobalNotification extends React.Component {
         </p>
 
 
-        <div className="row mb-4 d-flex align-items-center">
+        <div className="row mb-4">
           <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
               <input
@@ -65,7 +65,7 @@ class GlobalNotification extends React.Component {
         </div>
 
 
-        <div className="row mb-4 d-flex align-items-center">
+        <div className="row mb-4">
           <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
               <input
