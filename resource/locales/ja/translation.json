@@ -553,7 +553,7 @@
     "pattern_desc": "Wiki のパス名。 パスには <code>*</code> を使用できます。",
     "channel_desc": "<code>#</code> を除いた Slack チャンネル名",
     "valid_page": "通知の有効 / 無効",
-    "link_notification_help": "<strong>linkを知っている人のみ閲覧できるページ</strong>は常に通知がされません。",
+    "link_notification_help": "<strong>linkを知っている人のみ閲覧できるページ</strong>は常に通知されません。",
     "just_me_notification_help": "<strong>'自分のみ'に閲覧制限をしているページ</strong>に変更を加えた際に通知する",
     "group_notification_help": "<strong>'特定グループにのみ'に閲覧制限をしているページ</strong>に変更を加えた際に通知する",
     "notification_list": "通知設定の一覧",
