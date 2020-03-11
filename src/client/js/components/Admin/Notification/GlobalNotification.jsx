@@ -52,10 +52,10 @@ class GlobalNotification extends React.Component {
           <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
               <input
-                id="isShowRestrictedByOwner"
+                id="isNotificationForOwnerPageEnabled"
                 type="checkbox"
               />
-              <label htmlFor="isShowRestrictedByOwner">
+              <label htmlFor="isNotificationForOwnerPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
 
@@ -69,10 +69,10 @@ class GlobalNotification extends React.Component {
           <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
               <input
-                id="isShowRestrictedByGroup"
+                id="isNotificationForGroupPageEnabled"
                 type="checkbox"
               />
-              <label htmlFor="isShowRestrictedByGroup">
+              <label htmlFor="isNotificationForGroupPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
               </label>
