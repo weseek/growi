@@ -65,8 +65,7 @@ export default class AdminLocalSecurityContainer extends Container {
    * update local security setting
    */
   async updateLocalSecuritySetting() {
-    let { registrationWhiteList } = this.state;
-    registrationWhiteList = Array.isArray(registrationWhiteList) ? registrationWhiteList : registrationWhiteList.split('\n');
+    const { registrationWhiteList } = this.state;
     const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
       registrationWhiteList,

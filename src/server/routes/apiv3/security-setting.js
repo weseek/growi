@@ -31,7 +31,9 @@ const validator = {
     body('registrationMode').isString().isIn([
       'Open', 'Restricted', 'Closed',
     ]),
-    body('registrationWhiteList').if((value, { req }) => req.body.registrationWhiteList).isArray(),
+    body('registrationWhiteList').if((value, { req }) => req.body.registrationWhiteList).isArray().customSanitizer((value, { req }) => {
+      return value.filter(email => email !== '');
+    }),
   ],
   ldapAuth: [
     body('serverUrl').if((value, { req }) => req.body.serverUrl).isString(),
