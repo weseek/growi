@@ -45,22 +45,23 @@ class GlobalNotification extends React.Component {
         <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
 
         <p className="well">
+
+          {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
         </p>
 
         {/* TODO GW-1279 add checkbox for display isNotificationForOwnerPageEnabled */}
         <div className="row mb-4 d-flex align-items-center">
-          <strong className="col-xs-3 text-right">
-            {t('Just me')}
-          </strong>
-          <div className="col-xs-8 text-left">
+          <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
               <input
                 id="isShowRestrictedByOwner"
                 type="checkbox"
               />
               <label htmlFor="isShowRestrictedByOwner">
-                {t('notification_setting.only_me_notification')}
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
+
               </label>
             </div>
           </div>
@@ -69,17 +70,15 @@ class GlobalNotification extends React.Component {
 
         {/* TODO GW-1279 add checkbox for display isNotificationForGroupPageEnabled */}
         <div className="row mb-4 d-flex align-items-center">
-          <strong className="col-xs-3 text-right">
-            {t('Only inside the group')}
-          </strong>
-          <div className="col-xs-8 text-left">
+          <div className="col-md-8 col-md-offset-2">
             <div className="checkbox checkbox-success">
               <input
                 id="isShowRestrictedByGroup"
                 type="checkbox"
               />
               <label htmlFor="isShowRestrictedByGroup">
-                {t('notification_setting.group_notification')}
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
               </label>
             </div>
           </div>
