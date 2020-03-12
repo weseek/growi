@@ -130,7 +130,7 @@
 
   // button style
 
-  // ボタンの設定
+  // login
   .btn-login {
     position: relative;
     overflow: hidden;
@@ -155,7 +155,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-login {
       position: absolute;
       top: -50px;
@@ -167,7 +167,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -178,45 +177,8 @@
     }
   }
 
-  // .btn-login.fcbtn,
-  // .btn-register.fcbtn,
-  // .btn-login-oauth.fcbtn,
-  .btn-collapse-external-auth {
-    color: white;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
-    .btn-label {
-      padding: 9px 15px;
-      margin: -8px 20px -8px -20px;
-    }
-
-    &:focus {
-      border: none;
-    }
-  }
-
-  /*
-  .btn-login-oauth {
-    flex: 1;
-
-    .btn-label-text {
-      flex: 1;
-    }
-  }
-
-  .btn-login-oauth.fcbtn#google {
-    .btn-label {
-      background: rgba(#f13d25, 0.4);
-    }
-
-    &:after {
-      background-color: #555;
-    }
-  }
-  */
-
-  // ボタンの設定#google
+  // external-auth
+  // login#google
   .btn-login-oauth#google {
     position: relative;
     overflow: hidden;
@@ -241,7 +203,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-google {
       position: absolute;
       top: -50px;
@@ -253,7 +215,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -264,7 +225,7 @@
     }
   }
 
-  // ボタンの設定#github
+  // login#github
   .btn-login-oauth#github {
     position: relative;
     overflow: hidden;
@@ -289,7 +250,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-github {
       position: absolute;
       top: -50px;
@@ -301,7 +262,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -312,7 +272,7 @@
     }
   }
 
-  // ボタンの設定#facebook
+  // login#facebook
   .btn-login-oauth#facebook {
     position: relative;
     overflow: hidden;
@@ -337,7 +297,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-facebook {
       position: absolute;
       top: -50px;
@@ -349,7 +309,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -360,7 +319,7 @@
     }
   }
 
-  // ボタンの設定#twitter
+  // login#twitter
   .btn-login-oauth#twitter {
     position: relative;
     overflow: hidden;
@@ -385,7 +344,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-twitter {
       position: absolute;
       top: -50px;
@@ -397,7 +356,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -408,7 +366,7 @@
     }
   }
 
-  // ボタンの設定#oidc
+  // login#oidc
   .btn-login-oauth#oidc {
     position: relative;
     overflow: hidden;
@@ -433,7 +391,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-oidc {
       position: absolute;
       top: -50px;
@@ -445,7 +403,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -456,7 +413,7 @@
     }
   }
 
-  // ボタンの設定#saml
+  // login#saml
   .btn-login-oauth#saml {
     position: relative;
     overflow: hidden;
@@ -481,7 +438,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-saml {
       position: absolute;
       top: -50px;
@@ -493,7 +450,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -504,7 +460,7 @@
     }
   }
 
-  // ボタンの設定#basic
+  // login#basic
   .btn-login-oauth#basic {
     position: relative;
     overflow: hidden;
@@ -529,7 +485,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-oauth-basic {
       position: absolute;
       top: -50px;
@@ -541,7 +497,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
@@ -552,64 +507,22 @@
     }
   }
 
-  /*
-  .btn-login-oauth.fcbtn#github {
+  .btn-collapse-external-auth {
+    color: white;
+    background-color: rgba(lighten(black, 20%), 0.4);
+    border: none;
+
     .btn-label {
-      background-color: rgba(#24292e, 0.4);
+      padding: 9px 15px;
+      margin: -8px 20px -8px -20px;
     }
 
-    &:after {
-      background-color: #555;
+    &:focus {
+      border: none;
     }
   }
 
-  .btn-login-oauth.fcbtn#facebook {
-    .btn-label {
-      background-color: rgba(#29487d, 0.4);
-    }
-
-    &:after {
-      background-color: #555;
-    }
-  }
-
-  .btn-login-oauth.fcbtn#twitter {
-    .btn-label {
-      background-color: rgba(#1da1f2, 0.4);
-    }
-
-    &:after {
-      background-color: #555;
-    }
-  }
-
-  .btn-login-oauth.fcbtn#saml {
-    .btn-label {
-      background-color: rgba(#55a79a, 0.4);
-    }
-
-    &:after {
-      background-color: #555;
-    }
-  }
-
-  .btn-register.fcbtn {
-    .btn-label {
-      background-color: rgba($success, 0.4);
-    }
-
-    .btn-label-text {
-      display: inline-block;
-      min-width: 45px;
-    }
-
-    &:after {
-      background-color: #3f7263;
-    }
-  }
-  */
-
-  // register button
+  // register
   .btn-register {
     position: relative;
     overflow: hidden;
@@ -634,7 +547,7 @@
       text-decoration: none;
     }
 
-    // エフェクト用
+    // effect
     .eff-register {
       position: absolute;
       top: -50px;
@@ -646,7 +559,6 @@
       transition: all 0.5s ease;
     }
 
-    // ホバー時に変更
     &:hover {
       z-index: 1;
       color: white;
