@@ -86,10 +86,12 @@
 
 @mixin expand-modal-fullscreen($hasModalHeader: true, $hasModalFooter: true) {
   // full-screen modal
-  width: 97%;
-  height: 95%;
+  width: auto;
+  height: calc(100vh - 30px);
+  margin: 15px;
+
   .modal-content {
-    height: 95%;
+    height: calc(100vh - 30px);
   }
 
   // expand .modal-body (with calculating height)
