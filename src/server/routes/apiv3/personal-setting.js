@@ -5,6 +5,8 @@ const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
 
+const passport = require('passport');
+
 const router = express.Router();
 
 const { body } = require('express-validator/check');
@@ -295,13 +297,24 @@ module.exports = (crowi) => {
   // TODO swagger
   router.put('/associateLdap', loginRequiredStrictly, csrf, async(req, res) => {
     const { passportService } = crowi;
+    const { user, body } = req;
+    const { username } = body;
 
     if (!passportService.isLdapStrategySetup) {
       logger.error('LdapStrategy has not been set up');
       return res.apiv3Err('update-api-token-failed', 405);
     }
 
-    return res.apiv3();
+    try {
+      await passport.authenticate('ldapauth');
+      const associateUser = await ExternalAccount.associate('ldap', username, user);
+      return res.apiv3({ associateUser });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-api-token-failed');
+    }
+
   });
 
   return router;

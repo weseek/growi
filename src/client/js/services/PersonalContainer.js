@@ -222,9 +222,7 @@ export default class PersonalContainer extends Container {
    */
   async associateLdapAccount(account) {
     try {
-      return this.appContainer.apiv3.put('/personal-setting/associateLdap', {
-        account,
-      });
+      return this.appContainer.apiv3.put('/personal-setting/associateLdap', account);
     }
     catch (err) {
       this.setState({ retrieveError: err });
