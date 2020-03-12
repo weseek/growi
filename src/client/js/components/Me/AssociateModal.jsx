@@ -4,6 +4,12 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import Modal from 'react-bootstrap/es/Modal';
+import { toastSuccess, toastError } from '../../util/apiNotification';
+import { createSubscribedElement } from '../UnstatedUtils';
+
+import AppContainer from '../../services/AppContainer';
+import PersonalContainer from '../../services/PersonalContainer';
+
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
 
 class AssociateModal extends React.Component {
@@ -18,6 +24,7 @@ class AssociateModal extends React.Component {
 
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
+    this.onClickAddBtn = this.onClickAddBtn.bind(this);
   }
 
   /**
@@ -32,6 +39,17 @@ class AssociateModal extends React.Component {
    */
   onChangePassword(password) {
     this.setState({ password });
+  }
+
+  async onClickAddBtn() {
+    const { t, personalContainer } = this.props;
+    try {
+      await personalContainer.associateLdapAccount();
+      toastSuccess(t('security_setting.updated_general_security_setting'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
@@ -58,14 +76,10 @@ class AssociateModal extends React.Component {
           />
         </Modal.Body>
         <Modal.Footer>
-          <div className="tab-content passport-settings mt-5">
-            <div id="passport-ldap" className="tab-pane active" role="tabpanel">
-              <button type="button" className="btn btn-info pull-right" onClick="associateLdap()">
-                <i className="fa fa-plus-circle" aria-hidden="true"></i>
-                {t('add')}
-              </button>
-            </div>
-          </div>
+          <button type="button" className="btn btn-info mt-3" onClick={this.onClickAddBtn}>
+            <i className="fa fa-plus-circle" aria-hidden="true"></i>
+            {t('add')}
+          </button>
         </Modal.Footer>
       </Modal>
     );
@@ -73,12 +87,18 @@ class AssociateModal extends React.Component {
 
 }
 
+const AssociateModalWrapper = (props) => {
+  return createSubscribedElement(AssociateModal, props, [AppContainer, PersonalContainer]);
+};
+
 AssociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
 
-export default withTranslation()(AssociateModal);
+export default withTranslation()(AssociateModalWrapper);
