@@ -40,12 +40,45 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        {/* TODO GW-1279 i18n */}
-        <h2 className="border-bottom mb-5">通知が有効になるページ</h2>
+        <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
 
-        {/* TODO GW-1279 add checkbox for display isNotificationForOwnerPageEnabled */}
+        <p className="well">
+          {/* eslint-disable-next-line react/no-danger */}
+          <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
+        </p>
 
-        {/* TODO GW-1279 add checkbox for display isNotificationForGroupPageEnabled */}
+
+        <div className="row mb-4">
+          <div className="col-md-8 col-md-offset-2">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isNotificationForOwnerPageEnabled"
+                type="checkbox"
+              />
+              <label htmlFor="isNotificationForOwnerPageEnabled">
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
+
+              </label>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="row mb-4">
+          <div className="col-md-8 col-md-offset-2">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isNotificationForGroupPageEnabled"
+                type="checkbox"
+              />
+              <label htmlFor="isNotificationForGroupPageEnabled">
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
+              </label>
+            </div>
+          </div>
+        </div>
 
         <div className="row my-3">
           <div className="col-xs-offset-4 col-xs-5">
@@ -59,11 +92,11 @@ class GlobalNotification extends React.Component {
           </div>
         </div>
 
-        <a href="/admin/global-notification/new">
-          <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
-        </a>
-
-        <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}</h2>
+        <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}
+          <a href="/admin/global-notification/new">
+            <p className="btn btn-default pull-right">{t('notification_setting.add_notification')}</p>
+          </a>
+        </h2>
 
         <table className="table table-bordered">
           <thead>
