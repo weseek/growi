@@ -136,8 +136,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c2"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Approval Pending')}
-                onClick={() => { this.handleClick('Approval Pending') }}
+                checked={adminUsersContainer.isSelected('registered')}
+                onClick={() => { this.handleClick('registered') }}
               />
               <label htmlFor="c2" className="label label-info mr-2">Approval Pending</label>
 
@@ -145,8 +145,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c3"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Active')}
-                onClick={() => { this.handleClick('Active') }}
+                checked={adminUsersContainer.isSelected('active')}
+                onClick={() => { this.handleClick('active') }}
               />
               <label htmlFor="c3" className="label label-success mr-2">Active</label>
 
@@ -154,8 +154,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c4"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Suspended')}
-                onClick={() => { this.handleClick('Suspended') }}
+                checked={adminUsersContainer.isSelected('suspended')}
+                onClick={() => { this.handleClick('suspended') }}
               />
               <label htmlFor="c4" className="label label-warning mr-2">Suspended</label>
 
@@ -163,8 +163,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c5"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Invited')}
-                onClick={() => { this.handleClick('Invited') }}
+                checked={adminUsersContainer.isSelected('invited')}
+                onClick={() => { this.handleClick('invited') }}
               />
               <label htmlFor="c5" className="label label-info">Invited</label>
             </div>
