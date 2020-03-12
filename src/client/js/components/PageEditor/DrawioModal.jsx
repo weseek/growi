@@ -12,12 +12,6 @@ export default class DrawioModal extends React.PureComponent {
     this.state = {
       show: false,
       drawioMxFile: '',
-      // style: {
-      //   zIndex: 9999,
-      //   top: 0,
-      //   left: 0,
-      //   bottom: 0,
-      // },
     };
 
     this.drawioIFrame = React.createRef();
@@ -43,13 +37,6 @@ export default class DrawioModal extends React.PureComponent {
 
   show(drawioMxFile) {
     this.init(drawioMxFile);
-
-    // this.setState({
-    //   style: Object.assign({}, this.state.style, {
-    //     width: window.innerWidth,
-    //     height: window.innerHeight,
-    //   }),
-    // });
 
     // window.addEventListener('resize', this.onResizeWindow);
     window.addEventListener('message', this.receiveFromDrawio);
@@ -126,15 +113,6 @@ export default class DrawioModal extends React.PureComponent {
     // NOTHING DONE. (Receive unknown iframe message.)
   }
 
-  // onResizeWindow(event) {
-  //   this.setState({
-  //     style: Object.assign({}, this.state.style, {
-  //       width: window.innerWidth,
-  //       height: window.innerHeight,
-  //     }),
-  //   });
-  // }
-
   drawioURL() {
     const url = new URL('https://www.draw.io/');
 
@@ -151,19 +129,22 @@ export default class DrawioModal extends React.PureComponent {
   render() {
     return (
       // <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" keyboard={false}>
-        <Modal.Body className="p-0 d-flex flex-column">
-          <div id="iframe-drawio-container">
-            {
-              this.state.show
-              && (
-                <iframe
-                  ref={(c) => { this.drawioIFrame = c }}
-                  src={this.drawioURL()}
-                >
-                </iframe>
-              )
-            }
+      <Modal show={this.state.show} onHide={this.cancel} dialogClassName="drawio-modal" bsSize="large" keyboard={false}>
+        <Modal.Body className="p-0">
+          <div className="w-100 h-100 position-absolute d-flex">
+            <div className="mx-auto my-auto">
+              <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
+            </div>
+          </div>
+          <div className="w-100 h-100 position-absolute d-flex">
+            { this.state.show && (
+              <iframe
+                ref={(c) => { this.drawioIFrame = c }}
+                src={this.drawioURL()}
+                className="border-0"
+              >
+              </iframe>
+            ) }
           </div>
         </Modal.Body>
       </Modal>

@@ -1,7 +1,8 @@
-#iframe-drawio-container > iframe {
-  width: 100vw;
-  // height: calc(100vh - #{$header-plus-footer});
-  // min-height: calc(100vh - #{$header-plus-footer}); // for IE11
-  height: calc(100vh - 0);
-  min-height: calc(100vh - 0); // for IE11
+.drawio-modal {
+  @include expand-modal-fullscreen(false, false);
+
+  // expand iframe with flexbox
+  iframe {
+    flex: 1;
+  }
 }
