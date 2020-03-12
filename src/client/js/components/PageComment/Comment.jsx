@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 
 import { format, formatDistanceStrict } from 'date-fns';
 
-import {
-  Button,
-  Collapse,
-  UncontrolledTooltip,
-} from 'reactstrap';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
@@ -17,6 +13,7 @@ import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
+import CommentControl from './CommentControl';
 
 /**
  *
@@ -26,15 +23,14 @@ import CommentEditor from './CommentEditor';
  * @class Comment
  * @extends {React.Component}
  */
-class Comment extends React.Component {
+class Comment extends React.PureComponent {
 
   constructor(props) {
     super(props);
 
     this.state = {
       html: '',
-      isOlderRepliesShown: false,
-      showReEditorIds: new Set(),
+      isReEdit: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('comment');
@@ -43,23 +39,39 @@ class Comment extends React.Component {
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
+    this.editBtnClickedHandler = this.editBtnClickedHandler.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
-  componentWillMount() {
-    this.renderHtml(this.props.comment.comment);
+
+  initCurrentRenderingContext() {
+    this.currentRenderingContext = {
+      markdown: this.props.comment.comment,
+    };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.comment.comment);
+  componentDidMount() {
+    this.initCurrentRenderingContext();
+    this.renderHtml();
   }
 
-  // not used
-  setMarkdown(markdown) {
-    this.renderHtml(markdown);
+  componentDidUpdate(prevProps) {
+    const { comment: prevComment } = prevProps;
+    const { comment } = this.props;
+
+    // render only when props.markdown is updated
+    if (comment !== prevComment) {
+      this.initCurrentRenderingContext();
+      this.renderHtml();
+      return;
+    }
+
+    const { interceptorManager } = this.props.appContainer;
+
+    interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
 
   checkPermissionToControlComment() {
@@ -67,7 +79,7 @@ class Comment extends React.Component {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.appContainer.me;
+    return this.props.comment.creator.username === this.props.appContainer.currentUsername;
   }
 
   isCurrentRevision() {
@@ -100,18 +112,12 @@ class Comment extends React.Component {
       this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
   }
 
-  editBtnClickedHandler(commentId) {
-    const ids = this.state.showReEditorIds.add(commentId);
-    this.setState({ showReEditorIds: ids });
+  editBtnClickedHandler() {
+    this.setState({ isReEdit: !this.state.isReEdit });
   }
 
-  commentButtonClickedHandler(commentId) {
-    this.setState((prevState) => {
-      prevState.showReEditorIds.delete(commentId);
-      return {
-        showReEditorIds: prevState.showReEditorIds,
-      };
-    });
+  commentButtonClickedHandler() {
+    this.editBtnClickedHandler();
   }
 
   deleteBtnClickedHandler() {
@@ -135,120 +141,23 @@ class Comment extends React.Component {
     );
   }
 
-  toggleOlderReplies() {
-    this.setState((prevState) => {
-      return {
-        showOlderReplies: !prevState.showOlderReplies,
-      };
-    });
-  }
+  async renderHtml() {
 
-  renderHtml(markdown) {
-    const context = {
-      markdown,
-    };
+    const { growiRenderer, appContainer } = this.props;
+    const { interceptorManager } = appContainer;
+    const context = this.currentRenderingContext;
 
-    const growiRenderer = this.props.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    interceptorManager.process('preRenderComment', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderCommentHtml', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML });
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderCommentHtml', context) });
-
-  }
-
-  renderReply(reply) {
-    return (
-      <div key={reply._id} className="page-comment-reply">
-        <CommentWrapper
-          comment={reply}
-          deleteBtnClicked={this.props.deleteBtnClicked}
-          growiRenderer={this.props.growiRenderer}
-        />
-      </div>
-    );
-  }
-
-  renderReplies() {
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
-    let replyList = this.props.replyList;
-    if (!isBaloonStyle) {
-      replyList = replyList.slice().reverse();
-    }
-
-    const areThereHiddenReplies = replyList.length > 2;
-
-    const { isOlderRepliesShown } = this.state;
-    const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
-    const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
-    const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
-    const toggleButton = (
-      <Button
-        color="link"
-        className="page-comments-list-toggle-older"
-        onClick={() => { this.setState({ isOlderRepliesShown: !isOlderRepliesShown }) }}
-      >
-        {toggleButtonIcon} {toggleButtonLabel}
-      </Button>
-    );
-
-    const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
-    const hiddenReplies = replyList.slice(0, replyList.length - 2);
-
-    const hiddenElements = hiddenReplies.map((reply) => {
-      return this.renderReply(reply);
-    });
-
-    const shownElements = shownReplies.map((reply) => {
-      return this.renderReply(reply);
-    });
-
-    return (
-      <React.Fragment>
-        { areThereHiddenReplies && (
-          <div className="page-comments-hidden-replies">
-            <Collapse isOpen={this.state.isOlderRepliesShown}>
-              <div>{hiddenElements}</div>
-            </Collapse>
-            <div className="text-center">{toggleButton}</div>
-          </div>
-        ) }
-
-        {shownElements}
-      </React.Fragment>
-    );
-  }
-
-  renderCommentControl(comment) {
-    return (
-      <div className="page-comment-control">
-        <button type="button" className="btn btn-link p-2" onClick={() => { this.editBtnClickedHandler(comment._id) }}>
-          <i className="ti-pencil"></i>
-        </button>
-        <button type="button" className="btn btn-link p-2 mr-2" onClick={this.deleteBtnClickedHandler}>
-          <i className="ti-close"></i>
-        </button>
-      </div>
-    );
+    await interceptorManager.process('preRenderComment', context);
+    await interceptorManager.process('prePreProcess', context);
+    context.markdown = await growiRenderer.preProcess(context.markdown);
+    await interceptorManager.process('postPreProcess', context);
+    context.parsedHTML = await growiRenderer.process(context.markdown);
+    await interceptorManager.process('prePostProcess', context);
+    context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
+    await interceptorManager.process('postPostProcess', context);
+    await interceptorManager.process('preRenderCommentHtml', context);
+    this.setState({ html: context.parsedHTML });
+    await interceptorManager.process('postRenderCommentHtml', context);
   }
 
   render() {
@@ -259,8 +168,6 @@ class Comment extends React.Component {
     const createdAt = new Date(comment.createdAt);
     const updatedAt = new Date(comment.updatedAt);
     const isEdited = createdAt < updatedAt;
-
-    const showReEditor = this.state.showReEditorIds.has(commentId);
 
     const rootClassName = this.getRootClassName(comment);
     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
@@ -279,7 +186,7 @@ class Comment extends React.Component {
     return (
       <React.Fragment>
 
-        {showReEditor ? (
+        {this.state.isReEdit ? (
           <CommentEditor
             growiRenderer={this.growiRenderer}
             currentCommentId={commentId}
@@ -307,12 +214,12 @@ class Comment extends React.Component {
                 ) }
                 <span className="ml-2"><a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a></span>
               </div>
-              { this.checkPermissionToControlComment() && this.renderCommentControl(comment) }
+              {this.checkPermissionToControlComment()
+                  && <CommentControl onClickDeleteBtn={this.deleteBtnClickedHandler} onClickEditBtn={this.editBtnClickedHandler} />}
             </div>
           </div>
-        )
-      }
-        {this.renderReplies()}
+          )
+        }
 
       </React.Fragment>
     );
@@ -334,10 +241,6 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  replyList: PropTypes.array,
-};
-Comment.defaultProps = {
-  replyList: [],
 };
 
 export default CommentWrapper;

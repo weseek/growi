@@ -1,10 +1,18 @@
-.page-comment-main {
-  // delete button
-  .page-comment-control {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: none; // default hidden
+.main-container {
+  .page-comment-main {
+    pointer-events: auto;
+
+    // delete button
+    .page-comment-control {
+      position: absolute;
+      top: 0;
+      right: 0;
+      visibility: hidden;
+    }
+
+    &:hover > .page-comment-control {
+      visibility: visible;
+    }
   }
 }
 
@@ -23,6 +31,11 @@
   .page-comments-list-toggle-older {
     display: inline-block;
     font-size: 0.9em;
+  }
+  .page-comment {
+    padding-top: 50px;
+    margin-top: -50px;
+    pointer-events: none;
   }
 
   .page-comment {

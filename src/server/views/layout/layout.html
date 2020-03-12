@@ -63,7 +63,6 @@
 <body
   class="{% block html_base_css %}{% endblock %}
       {% if !getConfig('crowi', 'customize:layout') || 'crowi' === getConfig('crowi', 'customize:layout') %}crowi{% elseif !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}kibela{% else %}growi{% endif %}"
-  data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
@@ -127,16 +126,6 @@
           {% endif %}
         </li>
       </ul>
-
-      <ul class="nav navbar-top-links navbar-right pull-right">
-        {% if user and user.admin %}
-        <li class="nav-item-admin">
-          <a href="/admin">
-            <i class="icon-settings"></i><span>{{ t('Admin') }}</span>
-          </a>
-        </li>
-        {% endif %}
-      </form>
     </ul>
 
     <!-- 5 user action -->
@@ -159,10 +148,10 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-          <i class="icon-question"></i><span class="d-none d-md-inline-block">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
+          <i class="icon-question mr-2"></i><span class="d-none d-md-inline-block mr-2">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
         </a>
       </li>
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown personal-dropdown">
         <a class="btn nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
           <img src="{{ user|picture }}" class="picture rounded-circle" width="25" />
           <span class="user-name text-wrap ml-2">{{ user.name }}</span>
@@ -196,6 +185,7 @@
 
   {% block sidebar %}
   <!-- Left navbar-header -->
+  {#
   <div class="navbar-default sidebar hidden-print" role="navigation">
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
       <ul class="nav" id="side-menu">
@@ -209,6 +199,7 @@
       </ul>
     </div>
   </div>
+  #}
   <!-- Left navbar-header end -->
   {% endblock %}
 
@@ -230,9 +221,15 @@
 </body>
 {% endblock %}
 
-<script type="application/json" id="crowi-context-hydrate">
+<script type="application/json" id="growi-context-hydrate">
 {{ local_config|json|safe|preventXss }}
 </script>
+
+{% if user != null %}
+  <script type="application/json" id="growi-current-user">
+  {{ user|json|safe|preventXss }}
+  </script>
+{% endif %}
 
 {% block custom_script %}
 <script>

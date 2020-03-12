@@ -3,27 +3,49 @@
 //
 @import '~bootstrap/scss/bootstrap-reboot';
 
-@each $color,
-  $value in $theme-colors {
+@each $color, $value in $theme-colors {
   @include bg-variant('.bg-#{$color}', $value);
 }
 
-@each $color,
-  $value in $theme-colors {
+@each $color, $value in $theme-colors {
   .btn-#{$color} {
     @include button-variant($value, $value);
   }
 }
 
-@each $color,
-  $value in $theme-colors {
+@each $color, $value in $theme-colors {
   .btn-outline-#{$color} {
     @include button-outline-variant($value);
   }
 }
 
-@each $theme-color,
-  $color in $theme-colors {
+@each $theme-color, $color in $theme-colors {
+  .custom-checkbox-#{$theme-color} {
+    .custom-control-label::before {
+      border-color: #d7d7d7;
+      transition: 0.3s ease-in-out;
+    }
+    .custom-control-input:checked + .custom-control-label::before {
+      background-color: $color;
+      border-color: $color;
+    }
+    .custom-control-input:checked + .custom-control-label::after {
+      color: white;
+    }
+    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+      color: white;
+      background-color: $color;
+      border-color: $color;
+    }
+    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+      color: white;
+      background-color: white;
+      border-color: #d7d7d7;
+    }
+  }
+}
+
+@each $theme-color, $color in $theme-colors {
   .alert.alert-#{$theme-color} {
     color: white;
     background: $color;
@@ -56,7 +78,6 @@
 
 // Dropdown
 .dropdown-item {
-
   &.active,
   &:active {
     @include gradient-bg($dropdown-link-active-bg);
@@ -89,7 +110,6 @@ body {
 }
 
 .logo {
-
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -116,6 +136,9 @@ body {
 
 .grw-navbar {
   background: $bgcolor-navbar;
+  .nav-item > .nav-link {
+    color: white;
+  }
 }
 
 .grw-title-bar {

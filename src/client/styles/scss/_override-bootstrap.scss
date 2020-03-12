@@ -74,6 +74,10 @@ h5 {
   .dropdown-toggle.btn.disabled {
     cursor: not-allowed;
   }
+  button {
+    background: transparent;
+    border: none;
+  }
 }
 
 // agile-admin style

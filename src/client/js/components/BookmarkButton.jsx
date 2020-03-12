@@ -56,7 +56,7 @@ export default class BookmarkButton extends React.Component {
   }
 
   isUserLoggedIn() {
-    return this.props.crowi.me != null;
+    return this.props.crowi.currentUserId != null;
   }
 
   render() {
@@ -78,7 +78,7 @@ export default class BookmarkButton extends React.Component {
         href="#"
         title="Bookmark"
         onClick={this.handleClick}
-        className={`btn-bookmark btn btn-circle btn-outline-secondary ${addedClassName}`}
+        className={`btn btn-circle btn-outline-warning border-0 ${addedClassName}`}
       >
         <i className="icon-star"></i>
       </button>

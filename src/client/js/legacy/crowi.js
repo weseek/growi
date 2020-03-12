@@ -595,6 +595,11 @@ $(() => {
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
 
+  // do nothing if user is guest
+  if (appContainer.currentUser == null) {
+    return;
+  }
+
   // hash on page
   if (window.location.hash) {
     if ((window.location.hash === '#edit' || window.location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
@@ -618,7 +623,9 @@ window.addEventListener('load', (e) => {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
+});
 
+window.addEventListener('load', (e) => {
   const crowi = window.crowi;
   if (crowi && crowi.users && crowi.users.length !== 0) {
     const totalUsers = crowi.users.length;
