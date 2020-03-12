@@ -146,8 +146,6 @@
       color: white;
       text-decoration: none;
       background-color: rgba($danger, 0.4);
-      transition: all .5s ease;
-
     }
 
     .btn-label-text {
@@ -155,7 +153,6 @@
       z-index: 2;
       color: white;
       text-decoration: none;
-      transition: all .5s ease;
     }
 
     // エフェクト用
@@ -167,7 +164,7 @@
       width: 100%;
       height: 100%;
       background-color: rgba(#7e4153, 0.5);
-      transition: all .5s ease;
+      transition: all 0.5s ease;
     }
 
     // ホバー時に変更
@@ -182,8 +179,8 @@
   }
 
   // .btn-login.fcbtn,
-  .btn-register.fcbtn,
-  .btn-login-oauth.fcbtn,
+  // .btn-register.fcbtn,
+  // .btn-login-oauth.fcbtn,
   .btn-collapse-external-auth {
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -199,6 +196,7 @@
     }
   }
 
+  /*
   .btn-login-oauth {
     flex: 1;
 
@@ -206,8 +204,6 @@
       flex: 1;
     }
   }
-
-  /*
 
   .btn-login-oauth.fcbtn#google {
     .btn-label {
@@ -597,7 +593,6 @@
     }
   }
 
-  /*
   .btn-register.fcbtn {
     .btn-label {
       background-color: rgba($success, 0.4);
@@ -614,6 +609,7 @@
   }
   */
 
+  // register button
   .btn-register {
     position: relative;
     overflow: hidden;
@@ -629,8 +625,6 @@
       color: white;
       text-decoration: none;
       background-color: rgba($success, 0.4);
-      transition: all .5s ease;
-
     }
 
     .btn-label-text {
@@ -638,7 +632,6 @@
       z-index: 2;
       color: white;
       text-decoration: none;
-      transition: all .5s ease;
     }
 
     // エフェクト用
@@ -650,7 +643,7 @@
       width: 100%;
       height: 100%;
       background-color: rgba(#3f7263, 0.5);
-      transition: all .5s ease;
+      transition: all 0.5s ease;
     }
 
     // ホバー時に変更
@@ -662,12 +655,6 @@
         top: 0;
       }
     }
-  }
-
-
-  hr {
-    margin: 10px 0;
-    border-color: #ccc;
   }
 
   // footer link text
