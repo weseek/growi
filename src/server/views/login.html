@@ -25,7 +25,7 @@
 <div class="main container-fluid">
 
   <div class="row">
-    <div class="login-header offset-sm-4 col-md-4">
+    <div class="login-header offset-5 col-2">
       <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
       <h1>{{ appService.getAppTitle() }}</h1>
 
@@ -99,13 +99,15 @@
         {% endif %}
       </div>
     </div>
+  </div>
 
+  <div class="row mb-5">
 
     {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %}
     {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %}
     {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
 
-    <div class="login-dialog p-b-10 offset-sm-4 col-md-4 flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
+    <div class="login-dialog offset-5 col-2 flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
 
       <div class="front">
 
@@ -133,7 +135,7 @@
             <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
           </div>
 
-          <div class="input-group justify-content-center mt-5">
+          <div class="input-group justify-content-center d-flex mt-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-login px-0 py-2">
               <div class="eff-login"></div>
@@ -154,13 +156,13 @@
           getConfig('crowi', 'security:passport-saml:isEnabled') ||
           getConfig('crowi', 'security:passport-basic:isEnabled')
         ) %}
-        <hr class="mb-1">
+        <div class="border-bottom"></div>
         <div id="external-auth" class="external-auth {% if isExternalAuthCollapsible %}collapse collapse-external-auth collapse-anchor{% endif %}">
           <div class="spacer"></div>
           <div class="d-flex flex-row justify-content-between flex-wrap">
             {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
             <form role="form" action="/passport/google" class="d-inline-flex flex-column">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-flex" id="google">
+              <button type="submit" class="btn btn-login-oauth d-flex" id="google">
                 <span class="btn-label"><i class="fa fa-google"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -170,7 +172,7 @@
             {% if getConfig('crowi', 'security:passport-github:isEnabled') %}
             <form role="form" action="/passport/github" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="github">
+              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="github">
                 <span class="btn-label"><i class="fa fa-github"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -180,7 +182,7 @@
             {% if getConfig('crowi', 'security:passport-facebook:isEnabled') %}
             <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="facebook">
+              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="facebook">
                 <span class="btn-label"><i class="fa fa-facebook"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -190,7 +192,7 @@
             {% if getConfig('crowi', 'security:passport-twitter:isEnabled') %}
             <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="twitter">
+              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="twitter">
                 <span class="btn-label"><i class="fa fa-twitter"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -200,7 +202,7 @@
             {% if getConfig('crowi', 'security:passport-oidc:isEnabled') %}
             <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="oidc">
+              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="oidc">
                 <span class="btn-label"><i class="fa fa-openid"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -210,7 +212,7 @@
             {% if getConfig('crowi', 'security:passport-saml:isEnabled') %}
             <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="saml">
+              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="saml">
                 <span class="btn-label"><i class="fa fa-key"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -220,7 +222,7 @@
             {% if getConfig('crowi', 'security:passport-basic:isEnabled') %}
             <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="basic">
+              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="basic">
                 <span class="btn-label"><i class="fa fa-lock"></i></span>
                 <span class="btn-label-text">{{ t('Sign in') }}</span>
               </button>
@@ -230,7 +232,7 @@
           </div>{# ./d-flex flex-row flex-wrap #}
           <div class="spacer"></div>
         </div>
-        <hr class="mt-2 mb-0">
+        <div class="border-bottom"></div>
         <div class="text-center">
           <button class="collapse-anchor btn btn-xs btn-collapse-external-auth mb-3"
               data-toggle="{% if isExternalAuthCollapsible %}collapse{% endif %}" data-target="#external-auth" aria-expanded="false" aria-controls="external-auth">
@@ -238,7 +240,7 @@
           </button>
         </div>
         {% else %}
-        <hr>
+        <div class="border-bottom mb-2"></div>
         {% endif %}
 
         {% if isExternalAuthCollapsible %}
@@ -335,7 +337,7 @@
 
         </form>
 
-        <hr>
+        <div class="border-bottom mb-2"></div>
 
         <div class="row">
           <div class="col-12 text-right pt-2">
