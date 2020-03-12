@@ -143,7 +143,6 @@
               <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
             </button>
           </div>
-
         </form>
         {% endif %}
 
@@ -161,74 +160,95 @@
           <div class="spacer"></div>
           <div class="d-flex flex-row justify-content-between flex-wrap">
             {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
-            <form role="form" action="/passport/google" class="d-inline-flex flex-column">
-              <button type="submit" class="btn btn-login-oauth d-flex" id="google">
-                <span class="btn-label"><i class="fa fa-google"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">by Google Account</div>
-            </form>
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/google" class="d-inline-flex flex-column">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="google">
+                  <div class="eff-oauth-google"></div>
+                  <span class="btn-label p-3"><i class="fa fa-google"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">by Google Account</div>
+              </form>
+            </div>
             {% endif %}
             {% if getConfig('crowi', 'security:passport-github:isEnabled') %}
-            <form role="form" action="/passport/github" class="d-inline-flex flex-column">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="github">
-                <span class="btn-label"><i class="fa fa-github"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">by GitHub Account</div>
-            </form>
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/github" class="d-inline-flex flex-column">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="github">
+                  <div class="eff-oauth-github"></div>
+                  <span class="btn-label p-3"><i class="fa fa-github"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">by GitHub Account</div>
+              </form>
+            </div>
             {% endif %}
             {% if getConfig('crowi', 'security:passport-facebook:isEnabled') %}
-            <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="facebook">
-                <span class="btn-label"><i class="fa fa-facebook"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">by Facebook Account</div>
-            </form>
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="facebook">
+                  <div class="eff-oauth-facebook"></div>
+                  <span class="btn-label p-3"><i class="fa fa-facebook"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">by Facebook Account</div>
+              </form>
+            </div>
             {% endif %}
             {% if getConfig('crowi', 'security:passport-twitter:isEnabled') %}
-            <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="twitter">
-                <span class="btn-label"><i class="fa fa-twitter"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">by Twitter Account</div>
-            </form>
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="twitter">
+                  <div class="eff-oauth-twitter"></div>
+                  <span class="btn-label p-3"><i class="fa fa-twitter"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">by Twitter Account</div>
+              </form>
+            </div>
             {% endif %}
             {% if getConfig('crowi', 'security:passport-oidc:isEnabled') %}
-            <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="oidc">
-                <span class="btn-label"><i class="fa fa-openid"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">{{ getConfig('crowi', 'security:passport-oidc:providerName') || "OpenID Connect" }}</div>
-            </form>
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="oidc">
+                  <div class="eff-oauth-oidc"></div>
+                  <span class="btn-label p-3"><i class="fa fa-openid"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">{{ getConfig('crowi', 'security:passport-oidc:providerName') || "OpenID Connect" }}</div>
+              </form>
+            </div>
             {% endif %}
             {% if getConfig('crowi', 'security:passport-saml:isEnabled') %}
-            <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="saml">
-                <span class="btn-label"><i class="fa fa-key"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">with SAML</div>
-            </form>
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="saml">
+                  <div class="eff-oauth-saml"></div>
+                  <span class="btn-label p-3"><i class="fa fa-key"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">with SAML</div>
+              </form>
+            </div>
             {% endif %}
             {% if getConfig('crowi', 'security:passport-basic:isEnabled') %}
-            <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-login-oauth d-inline-flex" id="basic">
-                <span class="btn-label"><i class="fa fa-lock"></i></span>
-                <span class="btn-label-text">{{ t('Sign in') }}</span>
-              </button>
-              <div class="small text-right">with Basic Auth</div>
-            </form>
-            {% endif %}
+            <div class="input-group justify-content-center d-flex mt-5">
+              <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-login-oauth px-0 py-2" id="basic">
+                  <div class="eff-oauth-basic"></div>
+                  <span class="btn-label p-3"><i class="fa fa-lock"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+                <div class="small text-center">with Basic Auth</div>
+              </form>
+            </div>
+          {% endif %}
           </div>{# ./d-flex flex-row flex-wrap #}
           <div class="spacer"></div>
         </div>
