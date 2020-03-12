@@ -20,7 +20,7 @@ import mtu from './MarkdownTableUtil';
 import mdu from './MarkdownDrawioUtil';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
-import DrawioIFrame from './DrawioIFrame';
+import DrawioModal from './DrawioModal';
 
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
@@ -839,7 +839,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           ref={(c) => { this.handsontableModal = c }}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
         />
-        <DrawioIFrame
+        <DrawioModal
           ref={(c) => { this.drawioIFrame = c }}
           onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
         />
