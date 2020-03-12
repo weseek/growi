@@ -24,7 +24,7 @@ class Drawio extends React.Component {
 
   onEdit() {
     if (window.crowi != null) {
-      window.crowi.launchDrawioIFrame('page',
+      window.crowi.launchDrawioModal('page',
         this.props.rangeLineNumberOfMarkdown.beginLineNumber,
         this.props.rangeLineNumberOfMarkdown.endLineNumber);
     }

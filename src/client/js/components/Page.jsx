@@ -11,7 +11,7 @@ import MarkdownTable from '../models/MarkdownTable';
 
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
-import DrawioIFrame from './PageEditor/DrawioIFrame';
+import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 
@@ -50,16 +50,16 @@ class Page extends React.Component {
   }
 
   /**
-   * launch DrawioIFrame with data specified by arguments
+   * launch DrawioModal with data specified by arguments
    * @param beginLineNumber
    * @param endLineNumber
    */
-  launchDrawioIFrame(beginLineNumber, endLineNumber) {
+  launchDrawioModal(beginLineNumber, endLineNumber) {
     const markdown = this.props.pageContainer.state.markdown;
     const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber, endLineNumber);
     const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
     this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
-    this.drawioIFrame.show(drawioData);
+    this.drawioModal.show(drawioData);
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
@@ -130,7 +130,7 @@ class Page extends React.Component {
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
         <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
-        <DrawioIFrame ref={(c) => { this.drawioIFrame = c }} onSave={this.saveHandlerForDrawioIFrame} />
+        <DrawioModal ref={(c) => { this.drawioModal = c }} onSave={this.saveHandlerForDrawioModal} />
       </div>
     );
   }
