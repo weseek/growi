@@ -22,7 +22,7 @@
       .main {
         width: 100vw;
 
-        >.row {
+        > .row {
           margin-right: 20px;
           margin-left: 20px;
         }
@@ -177,7 +177,6 @@
     }
   }
 
-  // external-auth
   // login#google
   .btn-login-oauth#google {
     position: relative;
@@ -507,6 +506,7 @@
     }
   }
 
+  // external-auth
   .btn-collapse-external-auth {
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -605,7 +605,6 @@
 }
 
 .login-page {
-
   // layout
   .main .row {
     @media (min-width: 350px) {
