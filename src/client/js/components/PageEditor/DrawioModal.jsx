@@ -22,7 +22,6 @@ export default class DrawioModal extends React.PureComponent {
     this.init = this.init.bind(this);
     this.cancel = this.cancel.bind(this);
     this.receiveFromDrawio = this.receiveFromDrawio.bind(this);
-    // this.onResizeWindow = this.onResizeWindow.bind(this);
     this.drawioURL = this.drawioURL.bind(this);
   }
 
@@ -38,7 +37,6 @@ export default class DrawioModal extends React.PureComponent {
   show(drawioMxFile) {
     this.init(drawioMxFile);
 
-    // window.addEventListener('resize', this.onResizeWindow);
     window.addEventListener('message', this.receiveFromDrawio);
     this.setState({ show: true });
   }
@@ -95,7 +93,6 @@ export default class DrawioModal extends React.PureComponent {
         this.props.onSave(value);
       }
 
-      // window.removeEventListener('resize', this.onResizeWindow);
       window.removeEventListener('message', this.receiveFromDrawio);
       this.hide();
 
@@ -103,7 +100,6 @@ export default class DrawioModal extends React.PureComponent {
     }
 
     if (typeof event.data === 'string' && event.data.length === 0) {
-      // window.removeEventListener('resize', this.onResizeWindow);
       window.removeEventListener('message', this.receiveFromDrawio);
       this.hide();
 
