@@ -448,9 +448,9 @@ See [emojione](https://www.emojione.com/)
 
 # :heavy_plus_sign: More..
 
-- Use Bootstrap3 Tags?
+- Try to attach Bootstrap3 Tags?
     - :arrow_right: [/Sandbox/Bootstrap3]
-- Wite Diagrams?
+- Try to draw Diagrams?
     - :arrow_right: [/Sandbox/Diagrams]
-- Write Formula?
+- Try to write Math Formulas?
     - :arrow_right: [/Sandbox/Math]
