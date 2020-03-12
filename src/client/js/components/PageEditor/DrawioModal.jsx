@@ -127,11 +127,13 @@ export default class DrawioModal extends React.PureComponent {
       // <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
       <Modal show={this.state.show} onHide={this.cancel} dialogClassName="drawio-modal" bsSize="large" keyboard={false}>
         <Modal.Body className="p-0">
+          {/* Loading spinner */}
           <div className="w-100 h-100 position-absolute d-flex">
             <div className="mx-auto my-auto">
               <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
             </div>
           </div>
+          {/* iframe */}
           <div className="w-100 h-100 position-absolute d-flex">
             { this.state.show && (
               <iframe
