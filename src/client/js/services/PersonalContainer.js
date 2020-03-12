@@ -221,7 +221,7 @@ export default class PersonalContainer extends Container {
    * Associate LDAP account
    */
   async associateLdapAccount() {
-    console.log('hoge');
+    // TODO create apiV3 for associate LDAP account
   }
 
 }
