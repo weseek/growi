@@ -131,14 +131,14 @@ export default class AdminNotificationContainer extends Container {
   /**
    * Switch isNotificationForOwnerPageEnabled
    */
-  switchIsNotificationOwnerPageEnabled() {
+  switchIsNotificationForOwnerPageEnabled() {
     this.setState({ isNotificationForOwnerPageEnabled: !this.state.isNotificationForOwnerPageEnabled });
   }
 
   /**
    * Switch isNotificationForGroupPageEnabled
    */
-  switchIsNotificationGroupPageEnabled() {
+  switchIsNotificationForGroupPageEnabled() {
     this.setState({ isNotificationForGroupPageEnabled: !this.state.isNotificationForGroupPageEnabled });
   }
 
