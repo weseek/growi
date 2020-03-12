@@ -107,7 +107,8 @@ module.exports = (crowi) => {
     const page = parseInt(req.query.page) || 1;
     // status
     const { selectedStatusList } = req.query;
-    const statusNoList = selectedStatusList.map(element => statusNo[element]);
+    const statusNoList = (selectedStatusList.includes('All')) ? [1, 2, 3, 5] : selectedStatusList.map(element => statusNo[element]);
+
     // Search from input
     const searchText = req.query.searchText || '';
     const searchWord = new RegExp(`${searchText}`);
@@ -126,7 +127,7 @@ module.exports = (crowi) => {
       const paginateResult = await User.paginate(
         {
           $and: [
-            { status: { $in: statusNoList } },
+            { status: { $in:  statusNoList } },
             { $or: [orOutput] },
           ],
         },

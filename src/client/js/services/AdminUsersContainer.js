@@ -1,6 +1,5 @@
 import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
-import { toastError } from '../util/apiNotification';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
@@ -77,13 +76,14 @@ export default class AdminUsersContainer extends Container {
     const { selectedStatusList } = this.state;
     selectedStatusList.add(statusType);
     this.setState({ selectedStatusList });
-    this.retrieveUsersByPagingNum();
+    this.retrieveUsersByPagingNum(1);
   }
 
   deleteStatusFromList(statusType) {
     const { selectedStatusList } = this.state;
     selectedStatusList.delete(statusType);
     this.setState({ selectedStatusList });
+    this.retrieveUsersByPagingNum(1);
   }
 
   handleChangeSearchText(searchText) {
