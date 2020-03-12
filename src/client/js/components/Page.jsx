@@ -30,7 +30,7 @@ class Page extends React.Component {
     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
-    this.saveHandlerForDrawioIFrame = this.saveHandlerForDrawioIFrame.bind(this);
+    this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
   }
 
   componentWillMount() {
@@ -92,7 +92,7 @@ class Page extends React.Component {
     }
   }
 
-  async saveHandlerForDrawioIFrame(drawioData) {
+  async saveHandlerForDrawioModal(drawioData) {
     const { pageContainer, editorContainer } = this.props;
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
