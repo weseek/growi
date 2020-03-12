@@ -139,7 +139,7 @@ export default class DrawioModal extends React.PureComponent {
               <iframe
                 ref={(c) => { this.drawioIFrame = c }}
                 src={this.drawioURL()}
-                className="border-0"
+                className="border-0 flex-grow-1"
               >
               </iframe>
             ) }
