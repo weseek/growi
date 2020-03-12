@@ -220,8 +220,17 @@ export default class PersonalContainer extends Container {
   /**
    * Associate LDAP account
    */
-  async associateLdapAccount() {
-    // TODO create apiV3 for associate LDAP account
+  async associateLdapAccount(account) {
+    try {
+      return this.appContainer.apiv3.put('/personal-setting/associateLdap', {
+        account,
+      });
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to associate ldap account');
+    }
   }
 
 }

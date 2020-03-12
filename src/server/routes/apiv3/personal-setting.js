@@ -292,5 +292,17 @@ module.exports = (crowi) => {
 
   });
 
+  // TODO swagger
+  router.put('/associateLdap', loginRequiredStrictly, csrf, async(req, res) => {
+    const { passportService } = crowi;
+
+    if (!passportService.isLdapStrategySetup) {
+      logger.error('LdapStrategy has not been set up');
+      return res.apiv3Err('update-api-token-failed', 405);
+    }
+
+    return res.apiv3();
+  });
+
   return router;
 };

@@ -43,8 +43,10 @@ class AssociateModal extends React.Component {
 
   async onClickAddBtn() {
     const { t, personalContainer } = this.props;
+    const { username, password } = this.state;
+
     try {
-      await personalContainer.associateLdapAccount();
+      await personalContainer.associateLdapAccount({ username, password });
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
