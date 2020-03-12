@@ -217,4 +217,11 @@ export default class PersonalContainer extends Container {
     }
   }
 
+  /**
+   * Associate LDAP account
+   */
+  async associateLdapAccount() {
+    // TODO create apiV3 for associate LDAP account
+  }
+
 }
