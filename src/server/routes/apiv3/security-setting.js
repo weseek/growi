@@ -351,6 +351,7 @@ module.exports = (crowi) => {
       },
       samlAuth: {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
+        useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions'),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
         samlEnvVarEntryPoint: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
         samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
@@ -524,7 +525,7 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
     const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
-    if (wikiMode === 'private') {
+    if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
       delete requestParams['security:restrictGuestMode'];
     }

@@ -17,6 +17,9 @@ else {
     const bunyanFormat = require('bunyan-format');
     stream = bunyanFormat({ outputMode: 'long' });
   }
+  else {
+    stream = process.stdout;
+  }
 }
 
 module.exports = stream;
