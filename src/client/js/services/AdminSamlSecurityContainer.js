@@ -48,6 +48,7 @@ export default class AdminSamlSecurityContainer extends Container {
       const { samlAuth } = response.data.securityParams;
       this.setState({
         missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
+        useOnlyEnvVars: samlAuth.useOnlyEnvVarsForSomeOptions,
         samlEntryPoint: samlAuth.samlEntryPoint,
         samlIssuer: samlAuth.samlIssuer,
         samlCert: samlAuth.samlCert,
