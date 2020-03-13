@@ -46,11 +46,6 @@ class SecuritySetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
     const { currentRestrictGuestMode, currentPageCompleteDeletionAuthority } = adminGeneralSecurityContainer.state;
-    const helpPageListingByOwner = { __html: t('security_setting.page_listing_1') };
-    const helpPageListingByGroup = { __html: t('security_setting.page_listing_2') };
-    // eslint-disable-next-line max-len
-    const helpForceWikiMode = { __html: t('security_setting.Fixed by env var', { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }) };
-
 
     return (
       <React.Fragment>
@@ -63,18 +58,17 @@ class SecuritySetting extends React.Component {
               <p>{t('Error occurred')} : {this.state.retrieveError}</p>
             </div>
           )}
-          <div className="row mb-5">
+          <div className="row">
             <strong className="col-xs-3 text-right"> {t('security_setting.Guest Users Access')} </strong>
             <div className="col-xs-9 text-left">
               <div className="my-0 btn-group">
                 <div className="dropdown">
                   <button
-                    className="btn btn-default dropdown-toggle w-100"
+                    className={`btn btn-default dropdown-toggle w-100 ${adminGeneralSecurityContainer.state.wikiMode === 'public' && 'disabled'}`}
                     type="button"
                     data-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    disabled={adminGeneralSecurityContainer.state.isWikiModeForced}
                   >
                     <span className="pull-left">
                       {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
@@ -107,20 +101,24 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
           </div>
-          {adminGeneralSecurityContainer.state.isWikiModeForced && (
+          {adminGeneralSecurityContainer.state.wikiMode === 'public' && (
             <div className="row mb-5">
-              <div className="col-xs-3 text-right" />
-              <div className="col-xs-9 text-left">
+              <div className="col-xs-offset-3 col-xs-6 text-left">
                 <p className="alert alert-warning mt-2 text-left">
                   <i className="icon-exclamation icon-fw">
                   </i><b>FIXED</b><br />
-                  {<b dangerouslySetInnerHTML={helpForceWikiMode} />}
+                  <b
+                    dangerouslySetInnerHTML={{
+                    __html: t('security_setting.Fixed by env var',
+                    { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
+                    }}
+                  />
                 </p>
               </div>
             </div>
           )}
           <div className="row mb-5">
-            <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={helpPageListingByOwner} />
+            <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
             <div className="col-xs-6 text-left">
               <div className="checkbox checkbox-success">
                 <input
@@ -137,7 +135,7 @@ class SecuritySetting extends React.Component {
           </div>
 
           <div className="row mb-5">
-            <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={helpPageListingByGroup} />
+            <strong className="col-xs-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
             <div className="col-xs-6 text-left">
               <div className="checkbox checkbox-success">
                 <input
