@@ -56,7 +56,8 @@ module.exports = function(crowi, app) {
 
   actions.preLogin = function(req, res, next) {
     // user has already logged in
-    if (req.user != null) {
+    const { user } = req;
+    if (user != null && user.status === User.STATUS_ACTIVE) {
       const { redirectTo } = req.session;
       // remove session.redirectTo
       delete req.session.redirectTo;
