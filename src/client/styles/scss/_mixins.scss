@@ -86,3 +86,30 @@
     }
   }
 }
+
+@mixin expand-modal-fullscreen($hasModalHeader: true, $hasModalFooter: true) {
+  // full-screen modal
+  width: auto;
+  max-width: unset;
+  height: calc(100vh - 30px);
+  margin: 15px;
+
+  .modal-content {
+    height: calc(100vh - 30px);
+  }
+
+  // expand .modal-body (with calculating height)
+  .modal-body {
+    $modal-header: 54px;
+    $modal-footer: 46px;
+
+    $margin: 0px;
+    @if $hasModalHeader {
+      $margin: $margin + $modal-header;
+    }
+    @if $hasModalFooter {
+      $margin: $margin + $modal-footer;
+    }
+    height: calc(100% - #{$margin});
+  }
+}
