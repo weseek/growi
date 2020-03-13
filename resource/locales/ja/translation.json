@@ -416,6 +416,7 @@
     "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
     "Local": {
       "name": "ID/Password",
+      "note for the only env option": "現在LOCAL認証のON/OFFは環境変数の値によって制限されています。<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
       "enable_local": "ID/Password を有効にする"
     },
     "ldap": {
