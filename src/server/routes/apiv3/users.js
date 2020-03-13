@@ -127,7 +127,7 @@ module.exports = (crowi) => {
       const paginateResult = await User.paginate(
         {
           $and: [
-            { status: { $in:  statusNoList } },
+            { status: { $in: statusNoList } },
             { $or: [orOutput] },
           ],
         },
