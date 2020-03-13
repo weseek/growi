@@ -322,6 +322,7 @@ module.exports = (crowi) => {
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
       },
       localSetting: {
+        useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       },
