@@ -88,6 +88,7 @@ export default class AdminUsersContainer extends Container {
 
   handleChangeSearchText(searchText) {
     this.setState({ searchText });
+    this.retrieveUsersByPagingNum(1);
   }
 
   clearSearchText() {
