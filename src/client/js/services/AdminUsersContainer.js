@@ -25,7 +25,7 @@ export default class AdminUsersContainer extends Container {
       totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
-      selectedStatusList: new Set(['All']),
+      selectedStatusList: new Set(['all']),
       searchText: '',
       notifyComment: '',
     };
@@ -51,7 +51,7 @@ export default class AdminUsersContainer extends Container {
   }
 
   handleClick(statusType) {
-    const all = 'All';
+    const all = 'all';
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
     }

@@ -107,7 +107,7 @@ module.exports = (crowi) => {
     const page = parseInt(req.query.page) || 1;
     // status
     const { selectedStatusList } = req.query;
-    const statusNoList = (selectedStatusList.includes('All')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
+    const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
     const searchText = req.query.searchText || '';

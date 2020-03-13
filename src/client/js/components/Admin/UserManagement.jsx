@@ -127,8 +127,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c1"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('All')}
-                onClick={() => { this.handleClick('All') }}
+                checked={adminUsersContainer.isSelected('all')}
+                onClick={() => { this.handleClick('all') }}
               />
               <label htmlFor="c1" className="mr-2">All</label>
 
