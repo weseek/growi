@@ -29,7 +29,7 @@ export default class DeletePageListModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
-        <ModalHeader toggle={this.props.cancel}>
+        <ModalHeader tag="h4" toggle={this.props.cancel}>
           Deleting pages:
         </ModalHeader>
         <ModalBody>

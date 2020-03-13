@@ -12,7 +12,7 @@ class NotificationDeleteModal extends React.PureComponent {
     const { t, notificationForConfiguration } = this.props;
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader toggle={this.props.onClose} className="modal-header" closeButton>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="modal-header">
           <i className="icon icon-fire"></i> Delete Global Notification Setting
         </ModalHeader>
         <ModalBody>
