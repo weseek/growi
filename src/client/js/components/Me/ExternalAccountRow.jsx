@@ -22,7 +22,7 @@ const ExternalAccountRow = (props) => {
           onClick={() => props.openDisassociateModal(account)}
         >
           <i className="ti-unlink"></i>
-          { t('Diassociate') }
+          { t('Disassociate') }
         </button>
       </td>
     </tr>

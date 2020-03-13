@@ -123,6 +123,7 @@
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
+  "Disassociate": "Disassociate",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
@@ -165,6 +166,8 @@
   "Password": "Password",
   "Password Settings": "Password Settings",
     "personal_settings": {
+    "disassociate_external_account": "Disassociate External Account",
+    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
     "set_new_password": "Set new Password",
     "update_password": "Update Password",
       "current_password": "Current password",

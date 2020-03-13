@@ -10,43 +10,20 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 
-import LdapAuthTest from '../Admin/Security/LdapAuthTest';
-
 class DisassociateModal extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      username: '',
-      password: '',
-    };
-
-    this.onChangeUsername = this.onChangeUsername.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
-    this.onClickAddBtn = this.onClickAddBtn.bind(this);
+    this.onClickDisassociateBtn = this.onClickDisassociateBtn.bind(this);
   }
 
-  /**
-   * Change username
-   */
-  onChangeUsername(username) {
-    this.setState({ username });
-  }
-
-  /**
-   * Change password
-   */
-  onChangePassword(password) {
-    this.setState({ password });
-  }
-
-  async onClickAddBtn() {
+  async onClickDisassociateBtn() {
     const { t, personalContainer } = this.props;
-    const { username, password } = this.state;
 
     try {
-      await personalContainer.associateLdapAccount({ username, password });
+      await personalContainer.disassociateLdapAccount();
+      this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -55,20 +32,28 @@ class DisassociateModal extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, accountForDisassociate } = this.props;
+    const { providerType, accountId } = accountForDisassociate;
 
     return (
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header className="bg-info" closeButton>
           <Modal.Title className="text-white">
-            {t('Diassociate External Account')}
+            {t('personal_settings.disassociate_external_account')}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('personal_settings.disassociate_external_account_desc', { providerType, accountId }) }} />
         </Modal.Body>
         <Modal.Footer>
-
+          <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>
+            { t('Cancel') }
+          </button>
+          <button type="button" className="btn btn-sm btn-danger" onClick={this.onClickDisassociateBtn}>
+            <i className="ti-unlink"></i>
+            { t('Disassociate') }
+          </button>
         </Modal.Footer>
       </Modal>
     );
@@ -87,6 +72,8 @@ DisassociateModal.propTypes = {
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  accountForDisassociate: PropTypes.object.isRequired,
+
 };
 
 

@@ -50,8 +50,8 @@ class ExternalAccountLinkedMe extends React.Component {
    * open disassociate modal, and props account
    * @param {object} account
    */
-  async openDisassociateModal(account) {
-    await this.setState({
+  openDisassociateModal(account) {
+    this.setState({
       isDisassociateModalOpen: true,
       accountForDisassociate: account,
     });

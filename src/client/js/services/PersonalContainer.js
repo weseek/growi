@@ -231,4 +231,18 @@ export default class PersonalContainer extends Container {
     }
   }
 
+  /**
+   * Disassociate LDAP account
+   */
+  async disassociateLdapAccount() {
+    try {
+      // return this.appContainer.apiv3.put('/personal-setting/associateLdap', account);
+    }
+    catch (err) {
+      this.setState({ retrieveError: err });
+      logger.error(err);
+      throw new Error('Failed to disassociate ldap account');
+    }
+  }
+
 }
