@@ -102,6 +102,8 @@ module.exports = (crowi) => {
     query('page').isInt({ min: 1 }),
   ];
 
+  // TODO write swagger
+
   router.get('/', validator.statusList, ApiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
