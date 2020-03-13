@@ -19,7 +19,7 @@ module.exports = function(crowi, app) {
   const i18nSprintf = require('i18next-sprintf-postprocessor');
   const i18nMiddleware = require('i18next-express-middleware');
 
-  const safeRedirect = require('../middleware/safe-redirect')();
+  const registerSafeRedirect = require('../middleware/safe-redirect')();
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
@@ -115,7 +115,7 @@ module.exports = function(crowi, app) {
 
   app.use(flash());
 
-  app.use(safeRedirect);
+  app.use(registerSafeRedirect);
 
   const middlewares = require('../util/middlewares')(crowi, app);
 
