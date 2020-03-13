@@ -87,7 +87,7 @@ class PasswordResetModal extends React.Component {
 
     return (
       <Modal isOpen={adminUsersContainer.state.isPasswordResetModalShown} toggle={adminUsersContainer.hidePasswordResetModal}>
-        <ModalHeader toggle={adminUsersContainer.hidePasswordResetModal} className="modal-header">
+        <ModalHeader tag="h4" toggle={adminUsersContainer.hidePasswordResetModal} className="modal-header">
           {t('admin:user_management.reset_password') }
         </ModalHeader>
         <ModalBody>
