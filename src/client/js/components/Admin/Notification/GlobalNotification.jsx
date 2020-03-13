@@ -54,6 +54,8 @@ class GlobalNotification extends React.Component {
               <input
                 id="isNotificationForOwnerPageEnabled"
                 type="checkbox"
+                checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
+                onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
               />
               <label htmlFor="isNotificationForOwnerPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
@@ -71,6 +73,8 @@ class GlobalNotification extends React.Component {
               <input
                 id="isNotificationForGroupPageEnabled"
                 type="checkbox"
+                checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
+                onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
               />
               <label htmlFor="isNotificationForGroupPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
