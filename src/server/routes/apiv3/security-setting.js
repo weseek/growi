@@ -371,7 +371,7 @@ module.exports = (crowi) => {
         samlEnvVarAttrMapLastName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
-        samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
+        samlABLCRule: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:ABLCRule'),
         samlEnvVarABLCRule: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:ABLCRule'),
       },
       oidcAuth: {
