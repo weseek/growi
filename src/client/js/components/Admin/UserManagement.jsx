@@ -27,7 +27,6 @@ class UserManagement extends React.Component {
     this.handlePage(1);
   }
 
-  // ----- page loading -----
   async handlePage(selectedPage) {
     try {
       await this.props.adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
@@ -37,7 +36,11 @@ class UserManagement extends React.Component {
     }
   }
 
-  // ----- User Status Check box -----
+  /**
+   * For checking same check box twice
+   * @param {string} statusType
+   */
+
   handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
@@ -51,15 +54,22 @@ class UserManagement extends React.Component {
     adminUsersContainer.handleClick(statusType);
   }
 
+  /**
+   * Workaround user status check box
+   * @param {string} statusType
+   */
+
   validateToggleStatus(statusType) {
     if (this.props.adminUsersContainer.isSelected(statusType)) {
-      // if else status is selected, then true
       return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
     }
     return true;
   }
 
-  // ----- Search Input -----
+  /**
+   * Workaround increamental search
+   * @param {string} event
+   */
   handleChangeSearchText(event) {
     this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
   }
