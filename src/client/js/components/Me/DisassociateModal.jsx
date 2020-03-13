@@ -20,9 +20,10 @@ class DisassociateModal extends React.Component {
 
   async onClickDisassociateBtn() {
     const { t, personalContainer } = this.props;
+    const { providerType, accountId } = this.props.accountForDisassociate;
 
     try {
-      await personalContainer.disassociateLdapAccount();
+      await personalContainer.disassociateLdapAccount({ providerType, accountId });
       this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }

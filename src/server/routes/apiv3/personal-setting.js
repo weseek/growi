@@ -295,14 +295,14 @@ module.exports = (crowi) => {
   });
 
   // TODO swagger
-  router.put('/associateLdap', loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/associate-ldap', loginRequiredStrictly, csrf, async(req, res) => {
     const { passportService } = crowi;
     const { user, body } = req;
     const { username } = body;
 
     if (!passportService.isLdapStrategySetup) {
       logger.error('LdapStrategy has not been set up');
-      return res.apiv3Err('update-api-token-failed', 405);
+      return res.apiv3Err('associate-ldap-account-failed', 405);
     }
 
     try {
@@ -312,9 +312,23 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('update-api-token-failed');
+      return res.apiv3Err('associate-ldap-account-failed');
     }
 
+  });
+
+  // TODO swagger
+  router.put('/disassociate-ldap', loginRequiredStrictly, csrf, async(req, res) => {
+    const { user, body } = req;
+
+    const count = await ExternalAccount.count({ user });
+
+    // make sure password set or this user has two or more ExternalAccounts
+    if (user.password == null || count <= 1) {
+      return res.apiv3Err('disassociate-ldap-account-failed');
+    }
+
+    return res.apiv3();
   });
 
   return router;
