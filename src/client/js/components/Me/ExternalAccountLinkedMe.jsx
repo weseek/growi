@@ -10,6 +10,7 @@ import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 import ExternalAccountRow from './ExternalAccountRow';
 import AssociateModal from './AssociateModal';
+import DisassociateModal from './DisassociateModal';
 
 class ExternalAccountLinkedMe extends React.Component {
 
@@ -17,11 +18,15 @@ class ExternalAccountLinkedMe extends React.Component {
     super(props);
 
     this.state = {
-      isAssociatModalOpen: false,
+      isAssociateModalOpen: false,
+      isDisassociateModalOpen: false,
+      accountForDisassociate: null,
     };
 
-    this.openAssociatModal = this.openAssociatModal.bind(this);
-    this.closeAssociatModal = this.closeAssociatModal.bind(this);
+    this.openAssociateModal = this.openAssociateModal.bind(this);
+    this.closeAssociateModal = this.closeAssociateModal.bind(this);
+    this.openDisassociateModal = this.openDisassociateModal.bind(this);
+    this.closeDisassociateModal = this.closeDisassociateModal.bind(this);
   }
 
   async componentDidMount() {
@@ -33,12 +38,27 @@ class ExternalAccountLinkedMe extends React.Component {
     }
   }
 
-  openAssociatModal() {
-    this.setState({ isAssociatModalOpen: true });
+  openAssociateModal() {
+    this.setState({ isAssociateModalOpen: true });
   }
 
-  closeAssociatModal() {
-    this.setState({ isAssociatModalOpen: false });
+  closeAssociateModal() {
+    this.setState({ isAssociateModalOpen: false });
+  }
+
+  /**
+   * open disassociate modal, and props account
+   * @param {object} account
+   */
+  async openDisassociateModal(account) {
+    await this.setState({
+      isDisassociateModalOpen: true,
+      accountForDisassociate: account,
+    });
+  }
+
+  closeDisassociateModal() {
+    this.setState({ isDisassociateModalOpen: false });
   }
 
   render() {
@@ -49,7 +69,7 @@ class ExternalAccountLinkedMe extends React.Component {
       <Fragment>
         <div className="container-fluid">
           <h2 className="border-bottom">
-            <button type="button" className="btn btn-default btn-sm pull-right" onClick={this.openAssociatModal}>
+            <button type="button" className="btn btn-default btn-sm pull-right" onClick={this.openAssociateModal}>
               <i className="icon-plus" aria-hidden="true" />
             Add
             </button>
@@ -71,16 +91,31 @@ class ExternalAccountLinkedMe extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {externalAccounts !== 0 && externalAccounts.map(account => <ExternalAccountRow account={account} key={account._id} />)}
+                {externalAccounts !== 0 && externalAccounts.map(account => (
+                  <ExternalAccountRow
+                    account={account}
+                    key={account._id}
+                    openDisassociateModal={this.openDisassociateModal}
+                  />
+                ))}
               </tbody>
             </table>
           </div>
         </div>
 
         <AssociateModal
-          isOpen={this.state.isAssociatModalOpen}
-          onClose={this.closeAssociatModal}
+          isOpen={this.state.isAssociateModalOpen}
+          onClose={this.closeAssociateModal}
         />
+
+        {this.state.accountForDisassociate != null
+        && (
+        <DisassociateModal
+          isOpen={this.state.isDisassociateModalOpen}
+          onClose={this.closeDisassociateModal}
+          accountForDisassociate={this.state.accountForDisassociate}
+        />
+        )}
 
       </Fragment>
     );
