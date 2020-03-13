@@ -470,7 +470,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_detail') }} />
             </p>
 
-            <table className={`table settings-table ${adminSamlSecurityContainer.state.useOnlyEnvVars && 'use-only-env-vars'}`}>
+            <table className="table settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
               <colgroup>
                 <col className="item-name" />
                 <col className="from-db" />
