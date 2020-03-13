@@ -18,6 +18,7 @@ export default class AdminLocalSecurityContainer extends Container {
       retrieveError: null,
       registrationMode: 'Open',
       registrationWhiteList: [],
+      useOnlyEnvVars: false,
     };
 
   }
@@ -27,6 +28,7 @@ export default class AdminLocalSecurityContainer extends Container {
       const response = await this.appContainer.apiv3.get('/security-setting/');
       const { localSetting } = response.data.securityParams;
       this.setState({
+        useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
       });

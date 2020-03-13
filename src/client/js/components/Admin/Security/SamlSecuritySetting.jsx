@@ -100,6 +100,7 @@ class SamlSecurityManagement extends React.Component {
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isSamlEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
+                disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
               <label htmlFor="isSamlEnabled">
                 {t('security_setting.SAML.enable_saml')}
