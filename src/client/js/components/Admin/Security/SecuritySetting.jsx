@@ -64,7 +64,7 @@ class SecuritySetting extends React.Component {
               <div className="my-0 btn-group">
                 <div className="dropdown">
                   <button
-                    className={`btn btn-default dropdown-toggle w-100 ${adminGeneralSecurityContainer.state.wikiMode === 'public' && 'disabled'}`}
+                    className={`btn btn-default dropdown-toggle w-100 ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                     type="button"
                     data-toggle="dropdown"
                     aria-haspopup="true"
@@ -101,7 +101,7 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
           </div>
-          {adminGeneralSecurityContainer.state.wikiMode === 'public' && (
+          {adminGeneralSecurityContainer.isWikiModeForced && (
             <div className="row mb-5">
               <div className="col-xs-offset-3 col-xs-6 text-left">
                 <p className="alert alert-warning mt-2 text-left">
