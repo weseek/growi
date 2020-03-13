@@ -319,7 +319,7 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
+        wikiMode: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:wikiMode'),
       },
       localSetting: {
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
