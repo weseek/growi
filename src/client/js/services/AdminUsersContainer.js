@@ -1,5 +1,4 @@
 import { Container } from 'unstated';
-
 import loggerFactory from '@alias/logger';
 
 // eslint-disable-next-line no-unused-vars
@@ -18,13 +17,15 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
+      sort: 'status',
+      sortOrder: 'asc',
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
       totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
-      selectedStatusList: new Set(['All']),
+      selectedStatusList: new Set(['all']),
       searchText: '',
       notifyComment: '',
     };
@@ -50,7 +51,7 @@ export default class AdminUsersContainer extends Container {
   }
 
   handleClick(statusType) {
-    const all = 'All';
+    const all = 'all';
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
     }
@@ -75,16 +76,19 @@ export default class AdminUsersContainer extends Container {
     const { selectedStatusList } = this.state;
     selectedStatusList.add(statusType);
     this.setState({ selectedStatusList });
+    this.retrieveUsersByPagingNum(1);
   }
 
   deleteStatusFromList(statusType) {
     const { selectedStatusList } = this.state;
     selectedStatusList.delete(statusType);
     this.setState({ selectedStatusList });
+    this.retrieveUsersByPagingNum(1);
   }
 
   handleChangeSearchText(searchText) {
     this.setState({ searchText });
+    this.retrieveUsersByPagingNum(1);
   }
 
   clearSearchText() {
@@ -98,7 +102,13 @@ export default class AdminUsersContainer extends Container {
    */
   async retrieveUsersByPagingNum(selectedPage) {
 
-    const params = { page: selectedPage };
+    const params = {
+      page: selectedPage,
+      sort: this.state.sort,
+      sortOrder: this.state.sortOrder,
+      selectedStatusList: Array.from(this.state.selectedStatusList),
+      searchText: this.state.searchText,
+    };
     const { data } = await this.appContainer.apiv3.get('/users', params);
 
     if (data.paginateResult == null) {

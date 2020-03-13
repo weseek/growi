@@ -36,6 +36,10 @@ class UserManagement extends React.Component {
     }
   }
 
+  /**
+   * For checking same check box twice
+   * @param {string} statusType
+   */
   handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
@@ -49,14 +53,21 @@ class UserManagement extends React.Component {
     adminUsersContainer.handleClick(statusType);
   }
 
+  /**
+   * Workaround user status check box
+   * @param {string} statusType
+   */
   validateToggleStatus(statusType) {
     if (this.props.adminUsersContainer.isSelected(statusType)) {
-      // if else status is selected, then true
       return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
     }
     return true;
   }
 
+  /**
+   * Workaround increamental search
+   * @param {string} event
+   */
   handleChangeSearchText(event) {
     this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
   }
@@ -124,8 +135,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c1"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('All')}
-                onClick={() => { this.handleClick('All') }}
+                checked={adminUsersContainer.isSelected('all')}
+                onClick={() => { this.handleClick('all') }}
               />
               <label htmlFor="c1" className="mr-2">All</label>
 
@@ -133,8 +144,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c2"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Approval Pending')}
-                onClick={() => { this.handleClick('Approval Pending') }}
+                checked={adminUsersContainer.isSelected('registered')}
+                onClick={() => { this.handleClick('registered') }}
               />
               <label htmlFor="c2" className="label label-info mr-2">Approval Pending</label>
 
@@ -142,8 +153,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c3"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Active')}
-                onClick={() => { this.handleClick('Active') }}
+                checked={adminUsersContainer.isSelected('active')}
+                onClick={() => { this.handleClick('active') }}
               />
               <label htmlFor="c3" className="label label-success mr-2">Active</label>
 
@@ -151,8 +162,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c4"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Suspended')}
-                onClick={() => { this.handleClick('Suspended') }}
+                checked={adminUsersContainer.isSelected('suspended')}
+                onClick={() => { this.handleClick('suspended') }}
               />
               <label htmlFor="c4" className="label label-warning mr-2">Suspended</label>
 
@@ -160,8 +171,8 @@ class UserManagement extends React.Component {
                 type="checkbox"
                 id="c5"
                 className="mr-1"
-                checked={adminUsersContainer.isSelected('Invited')}
-                onClick={() => { this.handleClick('Invited') }}
+                checked={adminUsersContainer.isSelected('invited')}
+                onClick={() => { this.handleClick('invited') }}
               />
               <label htmlFor="c5" className="label label-info">Invited</label>
             </div>
