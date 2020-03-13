@@ -40,7 +40,6 @@ class UserManagement extends React.Component {
    * For checking same check box twice
    * @param {string} statusType
    */
-
   handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
@@ -58,7 +57,6 @@ class UserManagement extends React.Component {
    * Workaround user status check box
    * @param {string} statusType
    */
-
   validateToggleStatus(statusType) {
     if (this.props.adminUsersContainer.isSelected(statusType)) {
       return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
