@@ -525,7 +525,7 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
     const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
-    if (wikiMode === 'private') {
+    if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
       delete requestParams['security:restrictGuestMode'];
     }
