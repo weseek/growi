@@ -115,8 +115,6 @@ body {
     transition: fill 0.8s ease-out;
   }
 
-  background-color: darken($bgcolor-navbar, 10%);
-
   .logo-mark {
     svg {
       fill: $fillcolor-logo-mark;
@@ -138,6 +136,10 @@ body {
   background: $bgcolor-navbar;
   .nav-item > .nav-link {
     color: white;
+  }
+
+  .logo {
+    background-color: darken($bgcolor-navbar, 10%);
   }
 }
 
