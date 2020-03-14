@@ -222,7 +222,8 @@ export default class PersonalContainer extends Container {
    */
   async associateLdapAccount(account) {
     try {
-      return this.appContainer.apiv3.put('/personal-setting/associate-ldap', account);
+      await this.appContainer.apiv3.put('/personal-setting/associate-ldap', account);
+      await this.retrieveExternalAccounts();
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -236,7 +237,8 @@ export default class PersonalContainer extends Container {
    */
   async disassociateLdapAccount(account) {
     try {
-      return this.appContainer.apiv3.put('/personal-setting/disassociate-ldap', account);
+      await this.appContainer.apiv3.put('/personal-setting/disassociate-ldap', account);
+      await this.retrieveExternalAccounts();
     }
     catch (err) {
       this.setState({ retrieveError: err });

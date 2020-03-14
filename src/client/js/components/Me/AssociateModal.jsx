@@ -47,6 +47,7 @@ class AssociateModal extends React.Component {
 
     try {
       await personalContainer.associateLdapAccount({ username, password });
+      this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {

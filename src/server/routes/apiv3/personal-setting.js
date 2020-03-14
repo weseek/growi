@@ -320,15 +320,22 @@ module.exports = (crowi) => {
   // TODO swagger
   router.put('/disassociate-ldap', loginRequiredStrictly, csrf, async(req, res) => {
     const { user, body } = req;
+    const { providerType, accountId } = body;
 
-    const count = await ExternalAccount.count({ user });
-
-    // make sure password set or this user has two or more ExternalAccounts
-    if (user.password == null || count <= 1) {
+    try {
+      const count = await ExternalAccount.count({ user });
+      // make sure password set or this user has two or more ExternalAccounts
+      if (user.password == null && count <= 1) {
+        return res.apiv3Err('disassociate-ldap-account-failed');
+      }
+      const account = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+      return res.apiv3({ account });
+    }
+    catch (err) {
+      logger.error(err);
       return res.apiv3Err('disassociate-ldap-account-failed');
     }
 
-    return res.apiv3();
   });
 
   return router;
