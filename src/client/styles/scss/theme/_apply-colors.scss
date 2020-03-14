@@ -1,69 +1,15 @@
 //
 //== Apply to Bootstrap
 //
-@each $color, $value in $theme-colors {
-  @include bg-variant('.bg-#{$color}', $value);
-}
 
-@each $color, $value in $theme-colors {
-  .btn-#{$color} {
-    @include button-variant($value, $value);
-  }
-}
+// override bootstrap variables
+$body-bg: $bgcolor-global;
+$body-color: $color-global;
+$link-color: $color-link;
+$link-hover-color: $color-link-hover;
 
-@each $color, $value in $theme-colors {
-  .btn-outline-#{$color} {
-    @include button-outline-variant($value);
-  }
-}
-
-@each $theme-color, $color in $theme-colors {
-  .custom-checkbox-#{$theme-color} {
-    .custom-control-label::before {
-      border-color: $input-border-color;
-      transition: 0.3s ease-in-out;
-    }
-    .custom-control-input:checked + .custom-control-label::before {
-      background-color: $color;
-      border-color: $color;
-    }
-    .custom-control-input:checked + .custom-control-label::after {
-      color: $bgcolor-global;
-    }
-    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-      color: $bgcolor-global;
-      background-color: $color;
-      border-color: $color;
-    }
-    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-      color: $bgcolor-global;
-      background-color: $bgcolor-global;
-      border-color: $input-focus-border-color;
-    }
-  }
-}
-
-@each $theme-color, $color in $theme-colors {
-  .alert.alert-#{$theme-color} {
-    color: $bgcolor-global;
-    background: $color;
-    border: none;
-
-    a:not(.btn) {
-      color: $bgcolor-global;
-
-      &:hover,
-      &:focus {
-        color: lighten($color, 30%);
-      }
-    }
-  }
-}
-
-// Border light
-.border-light {
-  border-color: $light !important;
-}
+@import 'reboot-bootstrap-colors';
+@import 'reboot-bootstrap-theme-colors';
 
 // Link buttons
 .btn-link {
@@ -102,10 +48,6 @@
 //
 //== Apply to GROWI Elements
 //
-
-body {
-  background: $bgcolor-global;
-}
 
 .logo {
   // set transition for fill
