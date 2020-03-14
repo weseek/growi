@@ -143,6 +143,7 @@ class ImportDataPage extends React.Component {
           role="form"
         >
           <fieldset>
+            {/* FIXME: use something instead of <legend> */}
             <legend>{t('admin:importer_management.import_from', { from: 'esa.io' })}</legend>
             <table className="table table-bordered table-mapping">
               <thead>
@@ -233,6 +234,7 @@ class ImportDataPage extends React.Component {
           role="form"
         >
           <fieldset>
+            {/* FIXME: use something instead of <legend> */}
             <legend>{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</legend>
             <table className="table table-bordered table-mapping">
               <thead>

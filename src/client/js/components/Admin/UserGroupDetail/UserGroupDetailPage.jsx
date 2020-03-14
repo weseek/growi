@@ -23,9 +23,11 @@ class UserGroupDetailPage extends React.Component {
         <div className="m-t-20 form-box">
           <UserGroupEditForm />
         </div>
+        {/* FIXME: use something instead of <legend> */}
         <legend className="m-t-20">{t('admin:user_group_management.user_list')}</legend>
         <UserGroupUserTable />
         <UserGroupUserModal />
+        {/* FIXME: use something instead of <legend> */}
         <legend className="m-t-20">{t('Page')}</legend>
         <div className="page-list">
           <UserGroupPageList />
