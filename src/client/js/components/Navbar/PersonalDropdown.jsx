@@ -27,18 +27,18 @@ const PersonalDropdown = (props) => {
 
   return (
     <>
-      <a className="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
+      <a className="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
         <UserPicture user={user} withoutLink />&nbsp;{user.name}
       </a>
-      <ul className="dropdown-menu dropdown-menu-right">
-        <li><a href={`/user/${user.username}`}><i className="icon-fw icon-home"></i>{ t('Home') }</a></li>
-        <li><a href="/me"><i className="icon-fw icon-wrench"></i>{ t('User Settings') }</a></li>
-        <li role="separator" className="divider"></li>
-        <li><a href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a></li>
-        <li><a href="/trash"><i className="icon-fw icon-trash"></i>{ t('Deleted Pages') }</a></li>
-        <li role="separator" className="divider"></li>
-        <li><a role="button" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</a></li>
-      </ul>
+      <div className="dropdown-menu dropdown-menu-right">
+        <a className="dropdown-item" href={`/user/${user.username}`}><i className="icon-fw icon-home"></i>{ t('Home') }</a>
+        <a className="dropdown-item" href="/me"><i className="icon-fw icon-wrench"></i>{ t('User Settings') }</a>
+        <div className="dropdown-divider"></div>
+        <a className="dropdown-item" href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a>
+        <a className="dropdown-item" href="/trash"><i className="icon-fw icon-trash"></i>{ t('Deleted Pages') }</a>
+        <div className="dropdown-divider"></div>
+        <a className="dropdown-item" type="button" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</a>
+      </div>
     </>
   );
 
