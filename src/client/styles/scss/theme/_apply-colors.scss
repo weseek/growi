@@ -1,8 +1,6 @@
 //
 //== Apply to Bootstrap
 //
-@import '~bootstrap/scss/bootstrap-reboot';
-
 @each $color, $value in $theme-colors {
   @include bg-variant('.bg-#{$color}', $value);
 }
@@ -22,7 +20,7 @@
 @each $theme-color, $color in $theme-colors {
   .custom-checkbox-#{$theme-color} {
     .custom-control-label::before {
-      border-color: #d7d7d7;
+      border-color: $input-border-color;
       transition: 0.3s ease-in-out;
     }
     .custom-control-input:checked + .custom-control-label::before {
@@ -30,29 +28,29 @@
       border-color: $color;
     }
     .custom-control-input:checked + .custom-control-label::after {
-      color: white;
+      color: $bgcolor-global;
     }
     .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-      color: white;
+      color: $bgcolor-global;
       background-color: $color;
       border-color: $color;
     }
     .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-      color: white;
-      background-color: white;
-      border-color: #d7d7d7;
+      color: $bgcolor-global;
+      background-color: $bgcolor-global;
+      border-color: $input-focus-border-color;
     }
   }
 }
 
 @each $theme-color, $color in $theme-colors {
   .alert.alert-#{$theme-color} {
-    color: white;
+    color: $bgcolor-global;
     background: $color;
     border: none;
 
     a:not(.btn) {
-      color: white;
+      color: $bgcolor-global;
 
       &:hover,
       &:focus {
@@ -165,7 +163,8 @@ legend {
  */
 .modal {
   .modal-header {
-    border-bottom-color: $border;
+    // FIXME: accent color
+    // border-bottom-color: $border;
 
     &.bg-primary,
     &.bg-info,
@@ -193,7 +192,8 @@ legend {
   }
 
   .modal-footer {
-    border-top-color: $border;
+    // FIXME: accent color
+    // border-top-color: $border;
   }
 }
 
@@ -236,7 +236,7 @@ legend {
  */
 .crowi-sidebar {
   background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border;
+  border-left: solid 1px $border-color;
 
   .system-version {
     background-color: darken($bgcolor-global, 4%);
@@ -286,7 +286,8 @@ body.on-edit {
 
       .navbar-editor {
         background-color: $bgcolor-global; // same color with active tab
-        border-bottom-color: $border;
+        // FIXME: accent color
+        // border-bottom-color: $border;
       }
     }
 
@@ -295,7 +296,8 @@ body.on-edit {
     }
 
     .page-editor-footer {
-      border-top-color: $border;
+      // FIXME: accent color
+      // border-top-color: $border;
     }
   }
 }
@@ -305,7 +307,8 @@ body.on-edit {
  */
 .growi .main {
   .page-comments-row {
-    border-top-color: $border;
+    // FIXME: accent color
+    // border-top-color: $border;
   }
 
   .page-comment .page-comment-main,
@@ -355,7 +358,8 @@ body.on-edit {
  */
 .page-attachments-row {
   background-color: darken($bgcolor-global, 2%);
-  border-top-color: $border;
+  // FIXME: accent color
+  // border-top-color: $border;
 }
 
 /*

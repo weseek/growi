@@ -26,7 +26,8 @@ input.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
-  border: 1px solid darken($border, 30%);
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
 }
 
 .form-control[disabled],
@@ -38,7 +39,8 @@ textarea.form-control {
 .input-group .input-group-addon {
   color: theme-color('dark');
   background-color: rgba($bgcolor-navbar, 0.4);
-  border: 1px solid darken($border, 30%);
+  // FIXME: accent color
+  // border: 1px solid darken($border, 30%);
   border-right: none;
 }
 
@@ -52,7 +54,8 @@ textarea.form-control {
   }
 
   .divider {
-    background-color: $border;
+    // FIXME:
+    // background-color: $border-color;
   }
 }
 
@@ -89,7 +92,8 @@ textarea.form-control {
 .table > tfoot > tr > td,
 .table > thead > tr > th,
 .table-bordered {
-  border-top: 1px solid $border;
+  // FIXME: use $table-dark-*
+  // border-top: 1px solid $border;
 }
 
 .table-bordered > thead > tr > th,
@@ -98,15 +102,18 @@ textarea.form-control {
 .table-bordered > thead > tr > td,
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > td {
-  border: 1px solid $border;
+  // FIXME: use $table-dark-*
+  // border: 1px solid $border;
 }
 
 .table > thead > tr > th {
-  border-bottom: 1px solid $border;
+  // FIXME: use $table-dark-*
+  // border-bottom: 1px solid $border;
 }
 
 .table-bordered {
-  border: 1px solid $border;
+  // FIXME: use $table-dark-*
+  // border: 1px solid $border;
 }
 
 /*
@@ -140,7 +147,8 @@ header.affix {
 .search-page {
   .input-group-btn {
     .btn-light {
-      border: 1px solid darken($border, 30%); // fit to input.form-control
+      // FIXME:
+      // border: 1px solid darken($border, 30%); // fit to input.form-control
     }
   }
 }
@@ -155,15 +163,18 @@ header.affix {
 }
 
 legend {
-  border-color: lighten($border, 10%);
+  // FIXME:
+  // border-color: lighten($border, 10%);
 }
 
 .wiki {
   h1 {
-    border-color: lighten($border, 10%);
+    // FIXME:
+    // border-color: lighten($border, 10%);
   }
   h2 {
-    border-color: $border;
+    // FIXME:
+    // border-color: $border;
   }
 }
 
