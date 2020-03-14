@@ -76,6 +76,14 @@ module.exports = (crowi) => {
           return (value === req.body.newPassword);
         }),
     ],
+    associateLdap: [
+      body('username').isString().not().isEmpty(),
+      body('password').isString().not().isEmpty(),
+    ],
+    disassociateLdap: [
+      body('providerType').isString().not().isEmpty(),
+      body('accountId').isString().not().isEmpty(),
+    ],
   };
 
   /**
@@ -295,7 +303,7 @@ module.exports = (crowi) => {
   });
 
   // TODO swagger
-  router.put('/associate-ldap', loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, csrf, validator.associateLdap, ApiV3FormValidator, async(req, res) => {
     const { passportService } = crowi;
     const { user, body } = req;
     const { username } = body;
@@ -318,7 +326,7 @@ module.exports = (crowi) => {
   });
 
   // TODO swagger
-  router.put('/disassociate-ldap', loginRequiredStrictly, csrf, async(req, res) => {
+  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, csrf, validator.disassociateLdap, ApiV3FormValidator, async(req, res) => {
     const { user, body } = req;
     const { providerType, accountId } = body;
 
