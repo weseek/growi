@@ -10,6 +10,7 @@ const router = express.Router();
 const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const removeNullPropertyFromObject = require('../../../lib/util/removeNullPropertyFromObject');
 
 const validator = {
   slackConfiguration: [
@@ -440,10 +441,13 @@ module.exports = (crowi) => {
    */
   router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, ApiV3FormValidator, async(req, res) => {
 
-    const requestParams = {
+    let requestParams = {
       'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
       'notification:group-page:isEnabled': req.body.isNotificationForGroupPageEnabled,
     };
+
+    requestParams = removeNullPropertyFromObject(requestParams);
+
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
       const responseParams = {
