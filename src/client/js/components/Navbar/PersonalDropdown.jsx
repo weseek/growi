@@ -37,6 +37,21 @@ const PersonalDropdown = (props) => {
         <a className="dropdown-item" href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a>
         <a className="dropdown-item" href="/trash"><i className="icon-fw icon-trash"></i>{ t('Deleted Pages') }</a>
         <div className="dropdown-divider"></div>
+        <div>
+          Light
+          <div className="custom-control custom-switch checkbox-secondary">
+            <input
+              className="custom-control-input"
+              type="checkbox"
+              checked={appContainer.state.isDarkMode}
+              onChange={(e) => {
+                appContainer.changeColorScheme(e.target.checked);
+              }}
+            />
+          </div>
+          Dark
+        </div>
+        <div className="dropdown-divider"></div>
         <a className="dropdown-item" type="button" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</a>
       </div>
     </>

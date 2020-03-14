@@ -31,6 +31,7 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
+      isDarkMode: false,
     };
 
     const body = document.querySelector('body');
@@ -338,6 +339,10 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
+  }
+
+  changeColorScheme(isDarkMode) {
+    this.setState({ isDarkMode });
   }
 
   async apiGet(path, params) {
