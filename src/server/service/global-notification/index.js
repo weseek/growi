@@ -65,9 +65,9 @@ class GlobalNotificationService {
       case this.Page.GRANT_SPECIFIED:
         return false;
       case this.Page.GRANT_OWNER:
-        return (this.crowi.configManager.getConfig('crowi', 'notification:owner-page:isEnabled') || false);
+        return (this.crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled') || false);
       case this.Page.GRANT_USER_GROUP:
-        return (this.crowi.configManager.getConfig('crowi', 'notification:group-page:isEnabled') || false);
+        return (this.crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled') || false);
     }
   }
 
