@@ -1,20 +1,20 @@
 @import '../variables';
+@import '../override-bootstrap-variables';
 
 // == Define colors
 //
 
 // colors for overriding bootstrap $theme-colors
 $primary: #112744;
-$secondary: #ced4da;
+// $secondary: #;
 // $info: #;
 // $success: #;
 // $warning: #;
 // $danger: #;
-$light: #f0f0f0;
+// $light: #;
 // $dark: #;
 
 // Background colors
-$bgcolor-global: white;
 $bgcolor-navbar: #334455;
 $bgcolor-inline-code: #f9f2f4;
 $bgcolor-card: #f5f5f5;
@@ -32,32 +32,25 @@ $color-inline-code: #c7254e;
 $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 
 // Border colors
-$border: #f0f0f0;
-$navbar-border: #ccc;
-$active-navbar-border: lighten($navbar-border, 10%);
+$border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
 
 // override bootstrap variables
 $link-color: $color-link;
 $link-hover-color: $color-link-hover;
 
-// light mode colors
-@media (prefers-color-scheme: no-preference),
-  (prefers-color-scheme: light) {}
-
-// dark mode colors
-@media (prefers-color-scheme: dark) {}
-
 //== Apply
 //
-@import 'apply-colors';
 
-// apply for no-preference or light mode
-@media (prefers-color-scheme: no-preference),
-  (prefers-color-scheme: light) {
+@import '~bootstrap/scss/bootstrap-reboot';
+
+html:not([dark]) {
+  $bgcolor-global: white;
+  @import 'apply-colors';
   @import 'apply-colors-light';
 }
 
-// apply for dark mode
-@media (prefers-color-scheme: dark) {
+html[dark] {
+  $bgcolor-global: black;
+  @import 'apply-colors';
   @import 'apply-colors-dark';
 }

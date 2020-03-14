@@ -192,12 +192,14 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
+                {/* FIXME: use something instead of <legend> */}
                 <legend>Page Collections</legend>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
+                {/* FIXME: use something instead of <legend> */}
                 <legend>User Collections</legend>
                 {this.renderGroups(GROUPS_USER, 'danger')}
                 {this.renderWarnForUser()}
@@ -205,12 +207,14 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
+                {/* FIXME: use something instead of <legend> */}
                 <legend>Config Collections</legend>
                 {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
+                {/* FIXME: use something instead of <legend> */}
                 <legend>Other Collections</legend>
                 {this.renderOthers()}
               </div>
