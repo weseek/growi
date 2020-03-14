@@ -15,13 +15,11 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.appContainer = appContainer;
 
     this.state = {
-      isWikiModeForced: false,
       wikiMode: '',
       currentRestrictGuestMode: 'Deny',
       currentPageCompleteDeletionAuthority: 'adminOnly',
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      useOnlyEnvVarsForSomeOptions: false,
       appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
       isLdapEnabled: false,
@@ -34,14 +32,12 @@ export default class AdminGeneralSecurityContainer extends Container {
       setupStrategies: [],
     };
 
-    this.onIsWikiModeForced = this.onIsWikiModeForced.bind(this);
   }
 
   async retrieveSecurityData() {
     await this.retrieveSetupStratedies();
     const response = await this.appContainer.apiv3.get('/security-setting/');
     const { generalSetting, generalAuth } = response.data.securityParams;
-    this.onIsWikiModeForced(generalSetting.wikiMode);
     this.setState({
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
@@ -64,6 +60,14 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   static getClassName() {
     return 'AdminGeneralSecurityContainer';
+  }
+
+  /**
+   * get isWikiModeForced
+   * @return {bool} isWikiModeForced
+   */
+  get isWikiModeForced() {
+    return this.state.wikiMode === 'public' || this.state.wikiMode === 'private';
   }
 
   /**
@@ -93,16 +97,6 @@ export default class AdminGeneralSecurityContainer extends Container {
   switchIsShowRestrictedByGroup() {
     this.setState({ isShowRestrictedByGroup:  !this.state.isShowRestrictedByGroup });
   }
-
-  onIsWikiModeForced(wikiModeSetting) {
-    if (wikiModeSetting === 'private') {
-      this.setState({ isWikiModeForced: true });
-    }
-    else {
-      this.setState({ isWikiModeForced: false });
-    }
-  }
-
 
   /**
    * Update restrictGuestMode

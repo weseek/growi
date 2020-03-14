@@ -684,6 +684,7 @@ class PassportService {
   verifySAMLResponseByABLCRule(response) {
     const rule = this.crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule');
     if (rule == null) {
+      debug('There is no ABLCRule.');
       return true;
     }
 

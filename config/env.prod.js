@@ -1,4 +1,4 @@
 module.exports = {
   NODE_ENV: 'production',
-  // FORMAT_NODE_LOG: false,
+  // FORMAT_NODE_LOG: false, // default: true
 };

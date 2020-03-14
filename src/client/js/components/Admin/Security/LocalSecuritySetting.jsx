@@ -66,7 +66,7 @@ class LocalSecuritySetting extends React.Component {
           {t('security_setting.Local.name')}
         </h2>
 
-        {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
+        {adminLocalSecurityContainer.state.useOnlyEnvVars && (
           <p
             className="alert alert-info"
             // eslint-disable-next-line max-len
@@ -85,6 +85,7 @@ class LocalSecuritySetting extends React.Component {
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isLocalEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsLocalEnabled() }}
+                disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
               <label htmlFor="isLocalEnabled">
                 {t('security_setting.Local.enable_local')}
