@@ -1,16 +1,17 @@
 @import '../variables';
+@import '../override-bootstrap-variables';
 
 // == Define colors
 //
 
 // colors for overriding bootstrap $theme-colors
 $primary: #112744;
-$secondary: #ced4da;
+// $secondary: #;
 // $info: #;
 // $success: #;
 // $warning: #;
 // $danger: #;
-$light: #f0f0f0;
+// $light: #;
 // $dark: #;
 
 // Background colors
