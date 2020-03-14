@@ -57,9 +57,8 @@ html[dark] {
   $bgcolor-card: darken($basecolor, 5%);
 
   // Font colors
-  $color-global: lighten($basecolor, 35%);
-  $color-header: lighten($basecolor, 45%);
-  $color-link: lighten($basecolor, 45%);
+  $color-global: lighten($basecolor, 60%);
+  $color-header: desaturate($primary, 20%);
   $color-link-hover: lighten($color-link, 10%);
   $color-link-wiki: saturate($color-global, 20%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
