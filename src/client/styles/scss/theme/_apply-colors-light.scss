@@ -59,12 +59,10 @@ header.affix {
 
 .wiki {
   h1 {
-    // FIXME: accent color
-    // border-color: darken($border, 10%);
+    border-color: darken($border-color-theme, 10%);
   }
   h2 {
-    // FIXME: accent color
-    // border-color: $border;
+    border-color: $border-color-theme;
   }
 }
 

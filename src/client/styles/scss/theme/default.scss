@@ -31,8 +31,7 @@ $color-inline-code: #c7254e;
 $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 
 // Border colors
-$navbar-border: #ccc;
-$active-navbar-border: lighten($navbar-border, 10%);
+$border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
 
 // override bootstrap variables
 $link-color: $color-link;

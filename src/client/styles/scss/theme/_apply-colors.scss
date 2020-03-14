@@ -163,8 +163,7 @@ legend {
  */
 .modal {
   .modal-header {
-    // FIXME: accent color
-    // border-bottom-color: $border;
+    border-bottom-color: $border-color-theme;
 
     &.bg-primary,
     &.bg-info,
@@ -192,8 +191,7 @@ legend {
   }
 
   .modal-footer {
-    // FIXME: accent color
-    // border-top-color: $border;
+    border-top-color: $border-color-theme;
   }
 }
 
@@ -282,12 +280,11 @@ body.on-edit {
     background-color: darken($bgcolor-global, 2%);
 
     .page-editor-editor-container {
-      border-right-color: $navbar-border;
+      border-right-color: $border-color-theme;
 
       .navbar-editor {
         background-color: $bgcolor-global; // same color with active tab
-        // FIXME: accent color
-        // border-bottom-color: $border;
+        border-bottom-color: $border-color-theme;
       }
     }
 
@@ -296,8 +293,7 @@ body.on-edit {
     }
 
     .page-editor-footer {
-      // FIXME: accent color
-      // border-top-color: $border;
+      border-top-color: $border-color-theme;
     }
   }
 }
@@ -307,8 +303,7 @@ body.on-edit {
  */
 .growi .main {
   .page-comments-row {
-    // FIXME: accent color
-    // border-top-color: $border;
+    border-top-color: $border-color-theme;
   }
 
   .page-comment .page-comment-main,
@@ -358,8 +353,7 @@ body.on-edit {
  */
 .page-attachments-row {
   background-color: darken($bgcolor-global, 2%);
-  // FIXME: accent color
-  // border-top-color: $border;
+  border-top-color: $border-color-theme;
 }
 
 /*
