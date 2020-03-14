@@ -25,6 +25,34 @@ const PersonalDropdown = (props) => {
     window.location.href = '/logout';
   };
 
+  const followOsCheckboxModifiedHandler = (bool) => {
+    // reset user preference
+    if (bool) {
+      appContainer.setColorSchemePreference(null);
+    }
+    // set preferDarkModeByMediaQuery as users preference
+    else {
+      appContainer.setColorSchemePreference(appContainer.state.preferDarkModeByMediaQuery);
+    }
+  };
+
+  const userPreferenceSwitchModifiedHandler = (bool) => {
+    appContainer.setColorSchemePreference(bool);
+  };
+
+
+  /*
+   * render
+   */
+  const { preferDarkModeByMediaQuery, preferDarkModeByUser } = appContainer.state;
+  const isUserPreferenceExists = preferDarkModeByUser != null;
+  const isDarkMode = () => {
+    if (isUserPreferenceExists) {
+      return preferDarkModeByUser;
+    }
+    return preferDarkModeByMediaQuery;
+  };
+
   return (
     <>
       {/* Button */}
@@ -45,22 +73,39 @@ const PersonalDropdown = (props) => {
 
         <div className="dropdown-divider"></div>
 
-        <h6 className="dropdown-header">Switching Mode</h6>
-        <form className="px-4 form-inline">
-          Light
-          <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
-            <input
-              id="isDarkMode"
-              className="custom-control-input"
-              type="checkbox"
-              checked={appContainer.state.isDarkMode}
-              onChange={(e) => {
-                appContainer.changeColorScheme(e.target.checked);
-              }}
-            />
-            <label className="custom-control-label" htmlFor="isDarkMode"></label>
+        <h6 className="dropdown-header">Color Scheme</h6>
+        <form className="px-4">
+          <div className="form-row align-items-center">
+            <div className="col-auto">
+              <div className="custom-control custom-checkbox">
+                <input
+                  id="cbFollowOs"
+                  className="custom-control-input"
+                  type="checkbox"
+                  checked={!isUserPreferenceExists}
+                  onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
+                />
+                <label className="custom-control-label" htmlFor="cbFollowOs">Use OS Setting</label>
+              </div>
+            </div>
           </div>
-          Dark
+          <div className="form-row align-items-center">
+            <div className="col-auto d-flex">
+              <span className={isUserPreferenceExists ? '' : 'text-muted'}>Light</span>
+              <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
+                <input
+                  id="swUserPreference"
+                  className="custom-control-input"
+                  type="checkbox"
+                  checked={isDarkMode()}
+                  disabled={!isUserPreferenceExists}
+                  onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
+                />
+                <label className="custom-control-label" htmlFor="swUserPreference"></label>
+              </div>
+              <span className={isUserPreferenceExists ? '' : 'text-muted'}>Dark</span>
+            </div>
+          </div>
         </form>
 
         <div className="dropdown-divider"></div>

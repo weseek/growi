@@ -31,7 +31,8 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
-      isDarkMode: false,
+      preferDarkModeByMediaQuery: false,
+      preferDarkModeByUser: null,
     };
 
     const body = document.querySelector('body');
@@ -103,25 +104,26 @@ export default class AppContainer extends Container {
     this.initPlugins();
   }
 
-  initColorScheme() {
-    function switchScheme(mql) {
-      // switch to dark mode
-      if (mql.matches) {
-        document.documentElement.setAttribute('dark', 'true');
-      }
-      // switch to light mode
-      else {
-        document.documentElement.removeAttribute('dark');
-      }
-    }
+  async initColorScheme() {
+    const switchStateByMediaQuery = (mql) => {
+      const preferDarkMode = mql.matches;
+      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+
+      this.applyColorScheme();
+    };
 
     const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+    // add event listener
+    mqlForDarkMode.addListener(switchStateByMediaQuery);
+
+    // restore settings from localStorage
+    const { localStorage } = window;
+    if (localStorage.preferDarkModeByUser != null) {
+      await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
+    }
 
     // initialize
-    switchScheme(mqlForDarkMode);
-
-    // add event listener
-    mqlForDarkMode.addListener(switchScheme);
+    switchStateByMediaQuery(mqlForDarkMode);
   }
 
   initPlugins() {
@@ -341,8 +343,43 @@ export default class AppContainer extends Container {
     targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
   }
 
-  changeColorScheme(isDarkMode) {
-    this.setState({ isDarkMode });
+  /**
+   * Set color scheme preference by user
+   * @param {boolean} isDarkMode
+   */
+  async setColorSchemePreference(isDarkMode) {
+    await this.setState({ preferDarkModeByUser: isDarkMode });
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    if (isDarkMode == null) {
+      delete localStorage.removeItem('preferDarkModeByUser');
+    }
+    else {
+      localStorage.preferDarkModeByUser = isDarkMode;
+    }
+
+    this.applyColorScheme();
+  }
+
+  /**
+   * Apply color scheme as 'dark' attribute of <html></html>
+   */
+  applyColorScheme() {
+    const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
+    let isDarkMode = preferDarkModeByMediaQuery;
+    if (preferDarkModeByUser != null) {
+      isDarkMode = preferDarkModeByUser;
+    }
+
+    // switch to dark mode
+    if (isDarkMode) {
+      document.documentElement.setAttribute('dark', 'true');
+    }
+    // switch to light mode
+    else {
+      document.documentElement.removeAttribute('dark');
+    }
   }
 
   async apiGet(path, params) {
