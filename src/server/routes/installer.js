@@ -20,23 +20,22 @@ module.exports = function(crowi, app) {
     await searchService.rebuildIndex();
   }
 
+  async function createPage(filePath, pagePath, owner, lang) {
+    const markdown = fs.readFileSync(filePath);
+    return Page.create(pagePath, markdown, owner, {});
+  }
+
   async function createInitialPages(owner, lang) {
     const promises = [];
 
     // create portal page for '/'
-    const welcomeMarkdownPath = path.join(crowi.localeDir, lang, 'welcome.md');
-    const welcomeMarkdown = fs.readFileSync(welcomeMarkdownPath);
-    promises.push(Page.create('/', welcomeMarkdown, owner, {}));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'welcome.md'), '/', owner, lang));
 
-    // create /Sandbox
-    const sandboxMarkdownPath = path.join(crowi.localeDir, lang, 'sandbox.md');
-    const sandboxMarkdown = fs.readFileSync(sandboxMarkdownPath);
-    promises.push(Page.create('/Sandbox', sandboxMarkdown, owner, {}));
-
-    // create /Sandbox/Bootstrap3
-    const bs3MarkdownPath = path.join(crowi.localeDir, 'en-US', 'sandbox-bootstrap3.md');
-    const bs3Markdown = fs.readFileSync(bs3MarkdownPath);
-    promises.push(Page.create('/Sandbox/Bootstrap3', bs3Markdown, owner, {}));
+    // create /Sandbox/*
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap3.md'), '/Sandbox/Bootstrap3', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang));
 
     await Promise.all(promises);
 
@@ -68,6 +67,7 @@ module.exports = function(crowi, app) {
     await appService.initDB(language);
 
     // create first admin user
+    // TODO: with transaction
     let adminUser;
     try {
       adminUser = await User.createUser(name, username, email, password, language);

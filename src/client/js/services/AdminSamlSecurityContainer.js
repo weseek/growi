@@ -21,6 +21,7 @@ export default class AdminSamlSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
+      // TODO GW-1324 ABLCRure DB value takes precedence
       useOnlyEnvVars: false,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
@@ -48,6 +49,7 @@ export default class AdminSamlSecurityContainer extends Container {
       const { samlAuth } = response.data.securityParams;
       this.setState({
         missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
+        useOnlyEnvVars: samlAuth.useOnlyEnvVarsForSomeOptions,
         samlEntryPoint: samlAuth.samlEntryPoint,
         samlIssuer: samlAuth.samlIssuer,
         samlCert: samlAuth.samlCert,

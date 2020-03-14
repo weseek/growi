@@ -1,6 +1,3 @@
-
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 const loggerFactory = require('@alias/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
@@ -34,7 +31,9 @@ const validator = {
     body('registrationMode').isString().isIn([
       'Open', 'Restricted', 'Closed',
     ]),
-    body('registrationWhiteList').if((value, { req }) => req.body.registrationWhiteList).isArray(),
+    body('registrationWhiteList').if((value, { req }) => req.body.registrationWhiteList).isArray().customSanitizer((value, { req }) => {
+      return value.filter(email => email !== '');
+    }),
   ],
   ldapAuth: [
     body('serverUrl').if((value, { req }) => req.body.serverUrl).isString(),
@@ -323,6 +322,7 @@ module.exports = (crowi) => {
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
       },
       localSetting: {
+        useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       },
@@ -352,6 +352,7 @@ module.exports = (crowi) => {
       },
       samlAuth: {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
+        useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions'),
         samlEntryPoint: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
         samlEnvVarEntryPoint: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
         samlIssuer: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
@@ -370,7 +371,7 @@ module.exports = (crowi) => {
         samlEnvVarAttrMapLastName: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
-        samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
+        samlABLCRule: await crowi.configManager.getConfigFromDB('crowi', 'security:passport-saml:ABLCRule'),
         samlEnvVarABLCRule: await crowi.configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:ABLCRule'),
       },
       oidcAuth: {
@@ -453,7 +454,9 @@ module.exports = (crowi) => {
 
       await crowi.passportService.setupStrategyById(authId);
 
-      const responseParams = { [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`) };
+      const responseParams = {
+        [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
+      };
 
       return res.apiv3({ responseParams });
     }
@@ -464,6 +467,34 @@ module.exports = (crowi) => {
     }
 
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/authentication:
+   *      get:
+   *        tags: [SecuritySetting, apiv3]
+   *        description: Get setup strategies for passport
+   *        responses:
+   *          200:
+   *            description: params of setup strategies
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    setupStrategies:
+   *                      type: array
+   *                      description: setup strategies list
+   *                      items:
+   *                        type: string
+   *                        description: setup strategie
+   *                      example: ["local"]
+   */
+  router.get('/authentication/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const setupStrategies = await crowi.passportService.getSetupStrategies();
+
+    return res.apiv3({ setupStrategies });
   });
 
   /**
@@ -495,7 +526,7 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
     const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
-    if (wikiMode === 'private') {
+    if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
       delete requestParams['security:restrictGuestMode'];
     }
@@ -663,8 +694,13 @@ module.exports = (crowi) => {
     const rule = req.body.ABLCRule;
     // Empty string disables attribute-based login control.
     // So, when rule is empty string, validation is passed.
-    if (rule != null && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
-      return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+    if (rule != null) {
+      try {
+        crowi.passportService.parseABLCRule(rule);
+      }
+      catch (err) {
+        return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+      }
     }
 
     const requestParams = {

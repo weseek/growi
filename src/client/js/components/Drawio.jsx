@@ -24,7 +24,7 @@ class Drawio extends React.Component {
 
   onEdit() {
     if (window.crowi != null) {
-      window.crowi.launchDrawioIFrame('page',
+      window.crowi.launchDrawioModal('page',
         this.props.rangeLineNumberOfMarkdown.beginLineNumber,
         this.props.rangeLineNumberOfMarkdown.endLineNumber);
     }
@@ -58,6 +58,7 @@ class Drawio extends React.Component {
           onScroll={(event) => {
             event.preventDefault();
           }}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: this.renderContents() }}
         >
         </div>

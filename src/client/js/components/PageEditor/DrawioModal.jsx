@@ -2,20 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
 
-export default class DrawioIFrame extends React.PureComponent {
+import Modal from 'react-bootstrap/es/Modal';
+
+export default class DrawioModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      shown: false,
+      show: false,
       drawioMxFile: '',
-      style: {
-        zIndex: 9999,
-        top: 0,
-        left: 0,
-        bottom: 0,
-      },
     };
 
     this.drawioIFrame = React.createRef();
@@ -26,7 +22,6 @@ export default class DrawioIFrame extends React.PureComponent {
     this.init = this.init.bind(this);
     this.cancel = this.cancel.bind(this);
     this.receiveFromDrawio = this.receiveFromDrawio.bind(this);
-    this.onResizeWindow = this.onResizeWindow.bind(this);
     this.drawioURL = this.drawioURL.bind(this);
   }
 
@@ -42,21 +37,13 @@ export default class DrawioIFrame extends React.PureComponent {
   show(drawioMxFile) {
     this.init(drawioMxFile);
 
-    this.setState({
-      style: Object.assign({}, this.state.style, {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }),
-    });
-
-    window.addEventListener('resize', this.onResizeWindow);
     window.addEventListener('message', this.receiveFromDrawio);
-    this.setState({ shown: true });
+    this.setState({ show: true });
   }
 
   hide() {
     this.setState({
-      shown: false,
+      show: false,
     });
   }
 
@@ -106,7 +93,6 @@ export default class DrawioIFrame extends React.PureComponent {
         this.props.onSave(value);
       }
 
-      window.removeEventListener('resize', this.onResizeWindow);
       window.removeEventListener('message', this.receiveFromDrawio);
       this.hide();
 
@@ -114,7 +100,6 @@ export default class DrawioIFrame extends React.PureComponent {
     }
 
     if (typeof event.data === 'string' && event.data.length === 0) {
-      window.removeEventListener('resize', this.onResizeWindow);
       window.removeEventListener('message', this.receiveFromDrawio);
       this.hide();
 
@@ -122,15 +107,6 @@ export default class DrawioIFrame extends React.PureComponent {
     }
 
     // NOTHING DONE. (Receive unknown iframe message.)
-  }
-
-  onResizeWindow(event) {
-    this.setState({
-      style: Object.assign({}, this.state.style, {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }),
-    });
   }
 
   drawioURL() {
@@ -148,25 +124,33 @@ export default class DrawioIFrame extends React.PureComponent {
 
   render() {
     return (
-      <div>
-        {
-          this.state.shown
-          && (
-            <iframe
-              ref={(c) => { this.drawioIFrame = c }}
-              src={this.drawioURL()}
-              className="position-fixed"
-              style={this.state.style}
-            >
-            </iframe>
-          )
-        }
-      </div>
+      // <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
+      <Modal show={this.state.show} onHide={this.cancel} dialogClassName="drawio-modal" bsSize="large" keyboard={false}>
+        <Modal.Body className="p-0">
+          {/* Loading spinner */}
+          <div className="w-100 h-100 position-absolute d-flex">
+            <div className="mx-auto my-auto">
+              <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
+            </div>
+          </div>
+          {/* iframe */}
+          <div className="w-100 h-100 position-absolute d-flex">
+            { this.state.show && (
+              <iframe
+                ref={(c) => { this.drawioIFrame = c }}
+                src={this.drawioURL()}
+                className="border-0 flex-grow-1"
+              >
+              </iframe>
+            ) }
+          </div>
+        </Modal.Body>
+      </Modal>
     );
   }
 
 }
 
-DrawioIFrame.propTypes = {
+DrawioModal.propTypes = {
   onSave: PropTypes.func,
 };

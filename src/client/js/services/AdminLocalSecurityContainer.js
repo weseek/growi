@@ -18,6 +18,7 @@ export default class AdminLocalSecurityContainer extends Container {
       retrieveError: null,
       registrationMode: 'Open',
       registrationWhiteList: [],
+      useOnlyEnvVars: false,
     };
 
   }
@@ -27,6 +28,7 @@ export default class AdminLocalSecurityContainer extends Container {
       const response = await this.appContainer.apiv3.get('/security-setting/');
       const { localSetting } = response.data.securityParams;
       this.setState({
+        useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
       });
@@ -65,8 +67,7 @@ export default class AdminLocalSecurityContainer extends Container {
    * update local security setting
    */
   async updateLocalSecuritySetting() {
-    let { registrationWhiteList } = this.state;
-    registrationWhiteList = Array.isArray(registrationWhiteList) ? registrationWhiteList : registrationWhiteList.split('\n');
+    const { registrationWhiteList } = this.state;
     const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
       registrationWhiteList,
