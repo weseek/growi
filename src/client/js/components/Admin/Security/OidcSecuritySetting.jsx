@@ -35,10 +35,11 @@ class OidcSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminOidcSecurityContainer } = this.props;
+    const { t, adminOidcSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminOidcSecurityContainer.updateOidcSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.OAuth.OIDC.updated_oidc'));
     }
     catch (err) {
@@ -48,6 +49,7 @@ class OidcSecurityManagement extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminOidcSecurityContainer } = this.props;
+    const { isOidcEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -58,11 +60,13 @@ class OidcSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.OAuth.OIDC.name')} {t('security_setting.configuration')}
+          {t('security_setting.OAuth.OIDC.name')}
         </h2>
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.OAuth.OIDC.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.OAuth.OIDC.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -75,6 +79,8 @@ class OidcSecurityManagement extends React.Component {
                 {t('security_setting.OAuth.enable_oidc')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('oidc') && isOidcEnabled)
+              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -100,8 +106,10 @@ class OidcSecurityManagement extends React.Component {
           </div>
         </div>
 
-        {adminGeneralSecurityContainer.state.isOidcEnabled && (
+        {isOidcEnabled && (
           <React.Fragment>
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
               <label htmlFor="oidcProviderName" className="col-xs-3 text-right">{t('security_setting.providerName')}</label>
@@ -294,16 +302,21 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminOidcSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+              </div>
+            </div>
           </React.Fragment>
         )}
 
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminOidcSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
 
         <hr />
 

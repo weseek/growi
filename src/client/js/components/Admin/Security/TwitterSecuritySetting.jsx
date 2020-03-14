@@ -35,10 +35,11 @@ class TwitterSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminTwitterSecurityContainer } = this.props;
+    const { t, adminTwitterSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminTwitterSecurityContainer.updateTwitterSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.OAuth.Twitter.updated_twitter'));
     }
     catch (err) {
@@ -48,6 +49,7 @@ class TwitterSecurityManagement extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
+    const { isTwitterEnabled } = adminTwitterSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -57,7 +59,7 @@ class TwitterSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.OAuth.Twitter.name')} {t('security_setting.configuration')}
+          {t('security_setting.OAuth.Twitter.name')}
         </h2>
 
         {this.state.retrieveError != null && (
@@ -67,7 +69,9 @@ class TwitterSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.OAuth.Twitter.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.OAuth.Twitter.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -80,6 +84,8 @@ class TwitterSecurityManagement extends React.Component {
                 {t('security_setting.OAuth.Twitter.enable_twitter')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('twitter') && isTwitterEnabled)
+              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -106,8 +112,10 @@ class TwitterSecurityManagement extends React.Component {
         </div>
 
 
-        {adminGeneralSecurityContainer.state.isTwitterEnabled && (
+        {isTwitterEnabled && (
           <React.Fragment>
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
               <label htmlFor="TwitterConsumerId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
@@ -161,16 +169,21 @@ class TwitterSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminTwitterSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+              </div>
+            </div>
+
           </React.Fragment>
         )}
-
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminTwitterSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
 
         <hr />
 

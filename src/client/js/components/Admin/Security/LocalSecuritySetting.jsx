@@ -35,9 +35,10 @@ class LocalSecuritySetting extends React.Component {
 
 
   async onClickSubmit() {
-    const { t, adminLocalSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
     try {
       await adminLocalSecurityContainer.updateLocalSecuritySetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
     catch (err) {
@@ -48,6 +49,7 @@ class LocalSecuritySetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
     const { registrationMode } = adminLocalSecurityContainer.state;
+    const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -61,10 +63,10 @@ class LocalSecuritySetting extends React.Component {
           </div>
         )}
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.Local.name')} {t('security_setting.configuration')}
+          {t('security_setting.Local.name')}
         </h2>
 
-        {adminGeneralSecurityContainer.state.useOnlyEnvVarsForSomeOptions && (
+        {adminLocalSecurityContainer.state.useOnlyEnvVars && (
           <p
             className="alert alert-info"
             // eslint-disable-next-line max-len
@@ -73,7 +75,9 @@ class LocalSecuritySetting extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.Local.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.Local.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -81,16 +85,22 @@ class LocalSecuritySetting extends React.Component {
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isLocalEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsLocalEnabled() }}
+                disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
               <label htmlFor="isLocalEnabled">
                 {t('security_setting.Local.enable_local')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled)
+            && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
-        {adminGeneralSecurityContainer.state.isLocalEnabled && (
-          <div>
+        {isLocalEnabled && (
+          <React.Fragment>
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
+
             <div className="row mb-5">
               <strong className="col-xs-3 text-right">{t('Register limitation')}</strong>
               <div className="col-xs-9 text-left">
@@ -156,16 +166,22 @@ class LocalSecuritySetting extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
+
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminLocalSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+              </div>
+            </div>
+          </React.Fragment>
         )}
 
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminLocalSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
 
       </React.Fragment>
     );

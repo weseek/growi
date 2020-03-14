@@ -35,10 +35,11 @@ class GitHubSecurityManagement extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminGitHubSecurityContainer } = this.props;
+    const { t, adminGitHubSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminGitHubSecurityContainer.updateGitHubSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
     }
     catch (err) {
@@ -48,6 +49,7 @@ class GitHubSecurityManagement extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer } = this.props;
+    const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
@@ -57,7 +59,7 @@ class GitHubSecurityManagement extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.OAuth.GitHub.name')} {t('security_setting.configuration')}
+          {t('security_setting.OAuth.GitHub.name')}
         </h2>
 
         {this.state.retrieveError != null && (
@@ -67,7 +69,9 @@ class GitHubSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">{t('security_setting.OAuth.GitHub.name')}</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>{t('security_setting.OAuth.GitHub.name')}</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -80,6 +84,8 @@ class GitHubSecurityManagement extends React.Component {
                 {t('security_setting.OAuth.GitHub.enable_github')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled)
+              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -106,8 +112,10 @@ class GitHubSecurityManagement extends React.Component {
         </div>
 
 
-        {adminGeneralSecurityContainer.state.isGitHubEnabled && (
+        {isGitHubEnabled && (
           <React.Fragment>
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
               <label htmlFor="githubClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
@@ -161,16 +169,16 @@ class GitHubSecurityManagement extends React.Component {
               </div>
             </div>
 
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <div className="btn btn-primary" disabled={adminGitHubSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
+                  {t('Update')}
+                </div>
+              </div>
+            </div>
+
           </React.Fragment>
         )}
-
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <div className="btn btn-primary" disabled={adminGitHubSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </div>
-          </div>
-        </div>
 
         <hr />
 

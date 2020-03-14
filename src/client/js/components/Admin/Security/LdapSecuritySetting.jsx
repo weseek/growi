@@ -39,10 +39,11 @@ class LdapSecuritySetting extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminLdapSecurityContainer } = this.props;
+    const { t, adminLdapSecurityContainer, adminGeneralSecurityContainer } = this.props;
 
     try {
       await adminLdapSecurityContainer.updateLdapSetting();
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_setting.ldap.updated_ldap'));
     }
     catch (err) {
@@ -69,11 +70,13 @@ class LdapSecuritySetting extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          LDAP {t('security_setting.configuration')}
+          LDAP
         </h2>
 
         <div className="row mb-5">
-          <strong className="col-xs-3 text-right">Use LDAP</strong>
+          <div className="col-xs-3 my-3 text-right">
+            <strong>Use LDAP</strong>
+          </div>
           <div className="col-xs-6 text-left">
             <div className="checkbox checkbox-success">
               <input
@@ -86,12 +89,17 @@ class LdapSecuritySetting extends React.Component {
                 {t('security_setting.ldap.enable_ldap')}
               </label>
             </div>
+            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('ldap') && isLdapEnabled)
+              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
 
         {isLdapEnabled && (
           <React.Fragment>
+
+            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
+
             <div className="row mb-5">
               <label htmlFor="serverUrl" className="col-xs-3 control-label text-right">Server URL</label>
               <div className="col-xs-6">
@@ -384,20 +392,23 @@ class LdapSecuritySetting extends React.Component {
                 </p>
               </div>
             </div>
+            <div className="row my-3">
+              <div className="col-xs-offset-3 col-xs-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminLdapSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+                <button type="button" className="btn btn-default ml-2" onClick={this.openLdapAuthTestModal}>{t('security_setting.ldap.test_config')}</button>
+              </div>
+            </div>
 
           </React.Fragment>
         )}
 
-        <div className="row my-3">
-          <div className="col-xs-offset-3 col-xs-5">
-            <button type="button" className="btn btn-primary" disabled={adminLdapSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-              {t('Update')}
-            </button>
-            {adminGeneralSecurityContainer.state.isLdapEnabled
-              && <button type="button" className="btn btn-default ml-2" onClick={this.openLdapAuthTestModal}>{t('security_setting.ldap.test_config')}</button>
-            }
-          </div>
-        </div>
 
         <LdapAuthTestModal isOpen={this.state.isLdapAuthTestModalShown} onClose={this.closeLdapAuthTestModal} />
 
