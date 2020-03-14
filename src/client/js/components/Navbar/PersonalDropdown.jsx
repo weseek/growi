@@ -31,7 +31,7 @@ const PersonalDropdown = (props) => {
         <UserPicture user={user} withoutLink />&nbsp;{user.name}
       </a>
       <div className="dropdown-menu dropdown-menu-right">
-        <a className="dropdown-item" href={`/user/${user.username}`}><i className="icon-fw icon-home"></i>{ t('Home') }</a>
+        <a className="dropdown-item" href={`/user/${user.username}`}><i className="icon-fw icon-user"></i>{ t('User\'s Home') }</a>
         <a className="dropdown-item" href="/me"><i className="icon-fw icon-wrench"></i>{ t('User Settings') }</a>
         <div className="dropdown-divider"></div>
         <a className="dropdown-item" href={`/user/${user.username}#user-draft-list`}><i className="icon-fw icon-docs"></i>{ t('List Drafts') }</a>
