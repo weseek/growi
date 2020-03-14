@@ -121,8 +121,6 @@ module.exports = function(crowi, app) {
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
-  app.post('/me/external-accounts/disassociate'           , loginRequiredStrictly , me.externalAccounts.disassociate);
-  app.post('/me/external-accounts/associateLdap'          , loginRequiredStrictly , form.login , me.externalAccounts.associateLdap);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
