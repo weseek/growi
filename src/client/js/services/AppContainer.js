@@ -97,6 +97,32 @@ export default class AppContainer extends Container {
     return 'AppContainer';
   }
 
+  init() {
+    this.initColorScheme();
+    this.initPlugins();
+  }
+
+  initColorScheme() {
+    function switchScheme(mql) {
+      // switch to dark mode
+      if (mql.matches) {
+        document.documentElement.setAttribute('dark', 'true');
+      }
+      // switch to light mode
+      else {
+        document.documentElement.removeAttribute('dark');
+      }
+    }
+
+    const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // initialize
+    switchScheme(mqlForDarkMode);
+
+    // add event listener
+    mqlForDarkMode.addListener(switchScheme);
+  }
+
   initPlugins() {
     if (this.isPluginEnabled) {
       const growiPlugin = window.growiPlugin;
