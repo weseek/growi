@@ -94,11 +94,61 @@ class UserTable extends React.Component {
                   </div>
                 </div>
               </th>
-              <th><code>username</code></th>
-              <th>{t('Name')}</th>
-              <th>{t('Email')}</th>
-              <th width="100px">{t('Created')}</th>
-              <th width="150px">{t('Last_Login')}</th>
+              <th>
+                <div className="d-flex justify-content-around align-items-center">
+                  <code>username</code>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('username')}></a>
+                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('username')}></a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <div className="d-flex justify-content-around align-items-center">
+                  {t('Name')}
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('name')}></a>
+                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('name')}></a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <div className="d-flex justify-content-around align-items-center">
+                  {t('Email')}
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('email')}></a>
+                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('email')}></a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th width="100px">
+                <div className="d-flex justify-content-around align-items-center">
+                  {t('Created')}
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('createdAt')}></a>
+                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('createdAt')}></a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th width="150px">
+                <div className="d-flex justify-content-around align-items-center">
+                  {t('Last_Login')}
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('lastLoginAt')}></a>
+                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('lastLoginAt')}></a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
               <th width="70px"></th>
             </tr>
           </thead>
