@@ -17,8 +17,8 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      sort: 'status',
-      sortOrder: 'asc',
+      sort: 'status', // 何をソートするか
+      sortOrder: 'asc', // 昇順か降順か
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
@@ -46,6 +46,7 @@ export default class AdminUsersContainer extends Container {
     this.setState({ notifyComment });
   }
 
+  // status
   isSelected(statusType) {
     return this.state.selectedStatusList.has(statusType);
   }
@@ -86,6 +87,7 @@ export default class AdminUsersContainer extends Container {
     this.retrieveUsersByPagingNum(1);
   }
 
+  // Input Serch Text
   handleChangeSearchText(searchText) {
     this.setState({ searchText });
     this.retrieveUsersByPagingNum(1);
@@ -93,6 +95,19 @@ export default class AdminUsersContainer extends Container {
 
   clearSearchText() {
     this.setState({ searchText: '' });
+  }
+
+  // sorting
+  onClickSortAsc(sort) {
+    this.setState({ sort });
+    this.setState({ sortOrder: 'asc' });
+    this.retrieveUsersByPagingNum(1);
+  }
+
+  onClickSortDesc(sort) {
+    this.setState({ sort });
+    this.setState({ sortOrder: 'desc' });
+    this.retrieveUsersByPagingNum(1);
   }
 
   /**

@@ -83,7 +83,17 @@ class UserTable extends React.Component {
           <thead>
             <tr>
               <th width="100px">#</th>
-              <th>{t('status')}</th>
+              <th>
+                <div className="d-flex justify-content-around align-items-center">
+                  {t('status')}
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('status')}></a>
+                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('status')}></a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
               <th><code>username</code></th>
               <th>{t('Name')}</th>
               <th>{t('Email')}</th>
