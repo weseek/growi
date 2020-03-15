@@ -80,14 +80,16 @@ class TableOfContents extends React.Component {
     const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
 
     if (viewHeight < tocContentHeight) {
-      $('#revision-toc-content').slimScroll({
-        railVisible: true,
-        position: 'right',
-        height: viewHeight,
-      });
+      // FIXME: GW-1345
+      // $('#revision-toc-content').slimScroll({
+      //   railVisible: true,
+      //   position: 'right',
+      //   height: viewHeight,
+      // });
     }
     else {
-      $('#revision-toc-content').slimScroll({ destroy: true });
+      // FIXME: GW-1345
+      // $('#revision-toc-content').slimScroll({ destroy: true });
     }
   }
 
