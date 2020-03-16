@@ -7,8 +7,7 @@
   }
 
   .revision-toc {
-    &.affix {
-      top: 105px;
-    }
+    position: sticky;
+    top: 105px;
   }
 }

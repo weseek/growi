@@ -125,3 +125,6 @@ $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
     </I18nextProvider>, document.getElementById('revision-history'),
   );
 });
+
+// initialize scrollpos-styler
+ScrollPosStyler.init();
