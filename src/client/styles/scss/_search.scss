@@ -180,11 +180,9 @@
 
 .search-page-input {
   position: sticky;
-  top: 0;
+  top: 15px;
   z-index: 1;
 
-  // for sticky layout
-  padding-top: 15px;
   margin-bottom: 15px;
 
   .input-group-btn .btn {

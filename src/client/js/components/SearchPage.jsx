@@ -92,7 +92,7 @@ class SearchPage extends React.Component {
   render() {
     return (
       <div>
-        <div className="search-page-input">
+        <div className="search-page-input sps sps--abv">
           <SearchPageForm
             t={this.props.t}
             onSearchFormChanged={this.search}
