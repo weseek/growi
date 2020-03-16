@@ -43,6 +43,9 @@ h5 {
 .nav-tabs {
   .nav-item {
     margin-right: 0.15rem;
+    a.active {
+      cursor: default
+    }
   }
 }
 
