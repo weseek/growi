@@ -50,7 +50,7 @@ class SlackAppConfiguration extends React.Component {
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                {`Slack ${adminNotificationContainer.state.selectSlackOption}`} <span className="caret"></span>
+                {`Slack ${adminNotificationContainer.state.selectSlackOption}`}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a className="dropdown-item" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>Slack Incoming Webhooks</a>

@@ -69,29 +69,27 @@ class GitHubSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.OAuth.GitHub.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+          <div className="offset-3 col-6 text-left">
+            <div className="custom-control custom-switch checkbox-success">
               <input
                 id="isGitHubEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGitHubEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
-              <label htmlFor="isGitHubEnabled">
+              <label className="custom-control-label" htmlFor="isGitHubEnabled">
                 {t('security_setting.OAuth.GitHub.enable_github')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled)
-              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badg badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
-          <div className="col-xs-6">
+          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -118,8 +116,8 @@ class GitHubSecurityManagement extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
-              <div className="col-xs-6">
+              <label htmlFor="githubClientId" className="col-3 text-right py-2">{t('security_setting.clientID')}</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -134,8 +132,8 @@ class GitHubSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientSecret" className="col-xs-3 text-right">{t('security_setting.client_secret')}</label>
-              <div className="col-xs-6">
+              <label htmlFor="githubClientSecret" className="col-3 text-right py-2">{t('security_setting.client_secret')}</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -150,15 +148,17 @@ class GitHubSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+              <div className="offset-3 col-6 text-left">
+                <div className="custom-control custom-switch checkbox-success">
                   <input
                     id="bindByUserNameGitHub"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminGitHubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminGitHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByUserNameGitHub"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
@@ -170,7 +170,7 @@ class GitHubSecurityManagement extends React.Component {
             </div>
 
             <div className="row my-3">
-              <div className="col-xs-offset-3 col-xs-5">
+              <div className="offset-3 col-5">
                 <div className="btn btn-primary" disabled={adminGitHubSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
                   {t('Update')}
                 </div>

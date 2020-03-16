@@ -68,18 +68,16 @@ class BasicSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.Basic.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch checkbox-success">
               <input
                 id="isBasicEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isBasicEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsBasicEnabled() }}
               />
-              <label htmlFor="isBasicEnabled">
+              <label className="custom-control-label" htmlFor="isBasicEnabled">
                 { t('security_setting.Basic.enable_basic') }
               </label>
             </div>
@@ -90,22 +88,24 @@ class BasicSecurityManagement extends React.Component {
               </small>
             </p>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('basic') && isBasicEnabled)
-            && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+            && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         {isBasicEnabled && (
         <React.Fragment>
           <div className="row mb-5">
-            <div className="col-xs-offset-3 col-xs-6 text-left">
-              <div className="checkbox checkbox-success">
+            <div className="offset-3 col-6">
+              <div className="custom-control custom-switch checkbox-success">
                 <input
                   id="bindByEmail-basic"
+                  className="custom-control-input"
                   type="checkbox"
                   checked={adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                   onChange={() => { adminBasicSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                 />
                 <label
+                  className="custom-control-label"
                   htmlFor="bindByEmail-basic"
                   dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
                 />
@@ -117,7 +117,7 @@ class BasicSecurityManagement extends React.Component {
           </div>
 
           <div className="row my-3">
-            <div className="col-xs-offset-4 col-xs-5">
+            <div className="offset-4 col-5">
               <button type="button" className="btn btn-primary" disabled={adminBasicSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
                 {t('Update')}
               </button>
