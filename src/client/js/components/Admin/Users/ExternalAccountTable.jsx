@@ -85,7 +85,7 @@ class ExternalAccountTable extends React.Component {
                         </span>
                       )
                       : (
-                        <span className="label label-warning">
+                        <span className="badge badge-warning">
                           {t('admin:user_management.unset')}
                         </span>
                       )

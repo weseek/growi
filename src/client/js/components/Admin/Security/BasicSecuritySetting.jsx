@@ -90,7 +90,7 @@ class BasicSecurityManagement extends React.Component {
               </small>
             </p>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('basic') && isBasicEnabled)
-            && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+            && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
