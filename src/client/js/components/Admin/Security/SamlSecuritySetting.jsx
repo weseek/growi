@@ -90,19 +90,17 @@ class SamlSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.SAML.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch checkbox-success">
               <input
                 id="isSamlEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isSamlEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsSamlEnabled() }}
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
-              <label htmlFor="isSamlEnabled">
+              <label className="custom-control-label" htmlFor="isSamlEnabled">
                 {t('security_setting.SAML.enable_saml')}
               </label>
             </div>
@@ -112,8 +110,8 @@ class SamlSecurityManagement extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
-          <div className="col-xs-6">
+          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -223,7 +221,7 @@ class SamlSecurityManagement extends React.Component {
                       defaultValue={adminSamlSecurityContainer.state.samlCert}
                       onChange={e => adminSamlSecurityContainer.changeSamlCert(e.target.value)}
                     />
-                    <p className="help-block">
+                    <p>
                       <small>
                         {t('security_setting.SAML.cert_detail')}
                       </small>
@@ -231,7 +229,7 @@ class SamlSecurityManagement extends React.Component {
                     <div>
                       <small>
                         e.g.
-                        <pre>{`-----BEGIN CERTIFICATE-----
+                        <pre className="well card">{`-----BEGIN CERTIFICATE-----
 MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
 UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
 ...
@@ -423,15 +421,17 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </h3>
 
             <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+              <div className="offset-3 col-6 text-left">
+                <div className="custom-control custom-switch checkbox-success">
                   <input
                     id="bindByUserName-SAML"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByUserName-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
                   />
@@ -443,15 +443,17 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </div>
 
             <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+              <div className="offset-3 col-6 text-left">
+                <div className="custom-control custom-switch checkbox-success">
                   <input
                     id="bindByEmail-SAML"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
                     onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByEmail-SAML"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
@@ -515,7 +517,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </table>
 
             <div className="row my-3">
-              <div className="col-xs-offset-3 col-xs-5">
+              <div className="offset-3 col-5">
                 <button
                   type="button"
                   className="btn btn-primary"
