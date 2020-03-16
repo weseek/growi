@@ -1,12 +1,16 @@
 # CHANGES
 
+## v4.0.0-RC
+
+* Support: Upgrade libs
+    * bootstrap
+
 ## v3.7.0-RC
 
 * Feature: [Draw.io](https://www.draw.io/) Integration
 * Feature: SAML Attribute-based Login Control
 * Improvement: Reactify admin pages (Security)
-* Support: Upgrade libs
-    * bootstrap
+* Improvement: Behavior of pre-editing screen of HackMD when user needs to resume
 
 ## v3.6.10
 

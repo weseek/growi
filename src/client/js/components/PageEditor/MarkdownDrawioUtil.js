@@ -83,7 +83,10 @@ class MarkdownDrawioUtil {
    * return boolean value whether the cursor position is in a drawio
    */
   isInDrawioBlock(editor) {
-    return (this.getBod(editor) !== this.getEod(editor));
+    const bod = this.getBod(editor);
+    const eod = this.getEod(editor);
+
+    return (JSON.stringify(bod) !== JSON.stringify(eod));
   }
 
   /**

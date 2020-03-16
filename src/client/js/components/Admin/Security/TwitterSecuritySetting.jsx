@@ -49,7 +49,7 @@ class TwitterSecurityManagement extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminTwitterSecurityContainer } = this.props;
-    const { isTwitterEnabled } = adminTwitterSecurityContainer.state;
+    const { isTwitterEnabled } = adminGeneralSecurityContainer.state;
 
     if (this.state.isRetrieving) {
       return null;
