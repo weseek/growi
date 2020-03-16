@@ -2,9 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
