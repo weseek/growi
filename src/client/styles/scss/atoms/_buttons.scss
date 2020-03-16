@@ -25,3 +25,45 @@
   line-height: 1.33;
   border-radius: 35px;
 }
+
+#like-button,
+#bookmark-button {
+  & button {
+    font-size: 1.2em;
+    line-height: 0.8em;
+
+    &:not(:hover):not(.active) {
+      background-color: transparent;
+    }
+  }
+}
+
+.btn-copy {
+  opacity: 0.3;
+
+  // change button opacity
+  &:hover {
+    opacity: unset;
+  }
+}
+
+.btn-edit {
+  opacity: 0.3;
+
+  // change button opacity
+  &:hover {
+    opacity: unset;
+  }
+}
+
+.btn-edit-tags {
+  opacity: 0.5;
+
+  &.no-tags {
+    opacity: 0.7;
+  }
+  // change button opacity
+  &:hover {
+    opacity: unset;
+  }
+}
