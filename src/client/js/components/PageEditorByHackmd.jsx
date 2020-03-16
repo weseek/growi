@@ -61,6 +61,16 @@ class PageEditorByHackmd extends React.Component {
     return envVars.HACKMD_URI;
   }
 
+  get isResume() {
+    const { pageContainer } = this.props;
+    const {
+      pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
+    } = pageContainer.state;
+
+    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
+    return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
+  }
+
   /**
    * Start integration with HackMD
    */
@@ -217,11 +227,9 @@ class PageEditorByHackmd extends React.Component {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer } = this.props;
     const {
-      pageIdOnHackmd, revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd,
+      revisionId, revisionIdHackmdSynced, remoteRevisionId,
     } = pageContainer.state;
 
-    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
-    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
     let content;
 
@@ -238,7 +246,7 @@ class PageEditorByHackmd extends React.Component {
     /*
      * Resume to edit or discard changes
      */
-    else if (isResume) {
+    else if (this.isResume) {
       const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
       content = (
@@ -331,11 +339,9 @@ class PageEditorByHackmd extends React.Component {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer } = this.props;
     const {
-      markdown, pageIdOnHackmd, hasDraftOnHackmd,
+      markdown, pageIdOnHackmd,
     } = pageContainer.state;
 
-    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
-    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
     let content;
 
@@ -345,7 +351,7 @@ class PageEditorByHackmd extends React.Component {
           ref={(c) => { this.hackmdEditor = c }}
           hackmdUri={hackmdUri}
           pageIdOnHackmd={pageIdOnHackmd}
-          initializationMarkdown={isResume ? null : markdown}
+          initializationMarkdown={this.isResume ? null : markdown}
           onChange={this.hackmdEditorChangeHandler}
           onSaveWithShortcut={(document) => {
             this.onSaveWithShortcut(document);

@@ -108,8 +108,8 @@ class Comment extends React.PureComponent {
   }
 
   getRevisionLabelClassName() {
-    return `page-comment-revision label ${
-      this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
+    return `page-comment-revision badge ${
+      this.isCurrentRevision() ? 'badge-primary' : 'badge-default'}`;
   }
 
   editBtnClickedHandler() {
