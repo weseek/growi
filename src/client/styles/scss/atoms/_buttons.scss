@@ -41,6 +41,10 @@
 .btn-copy,
 .btn-edit {
   opacity: 0.3;
+
+  &:hover {
+    background-color: $light;
+  }
 }
 
 .btn-edit-tags {
