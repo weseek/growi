@@ -39,29 +39,4 @@
       }
     }
   }
-
-  /*
-   * affix header
-   */
-  header:not(.affix) {
-    .only-affix {
-      display: none !important;
-    }
-  }
-  header.affix {
-    .not-affix {
-      display: none !important;
-    }
-
-    // show logo link
-    div.title-logo-container {
-      display: unset;
-      margin-right: 6px;
-      margin-left: -12px;
-    }
-    // hide authors in affix
-    .authors {
-      padding-left: 0.5em;
-    }
-  }
 }
