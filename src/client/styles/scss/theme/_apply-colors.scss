@@ -250,7 +250,7 @@ body.on-edit {
     }
 
     .nav.nav-tabs {
-      > li.active > a {
+      > li > a.active {
         background: transparent;
         border-bottom: solid 1px darken($bgcolor-global, 4%);
         border-bottom-color: darken($bgcolor-global, 4%);
