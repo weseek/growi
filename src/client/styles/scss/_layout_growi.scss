@@ -19,11 +19,10 @@
   }
 
   .revision-toc {
-    &.affix {
-      top: calc(46px + 5px);
-      min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
-      margin-top: 5px;
-    }
+    position: sticky;
+    top: calc(46px + 5px);
+    min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
+    margin-top: 5px;
 
     .revision-toc-content {
       padding: 0;
