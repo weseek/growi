@@ -5,6 +5,7 @@
 * Feature: [Draw.io](https://www.draw.io/) Integration
 * Feature: SAML Attribute-based Login Control
 * Improvement: Reactify admin pages (Security)
+* Improvement: Behavior of pre-editing screen of HackMD when user needs to resume
 
 ## v3.6.10
 
