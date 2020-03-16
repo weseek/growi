@@ -229,7 +229,7 @@ export default class PersonalContainer extends Container {
       logger.error(err);
       throw new Error('Failed to associate ldap account');
     }
-    this.retrieveExternalAccounts();
+    return this.retrieveExternalAccounts();
   }
 
   /**
@@ -244,7 +244,7 @@ export default class PersonalContainer extends Container {
       logger.error(err);
       throw new Error('Failed to disassociate ldap account');
     }
-    this.retrieveExternalAccounts();
+    return this.retrieveExternalAccounts();
   }
 
 }
