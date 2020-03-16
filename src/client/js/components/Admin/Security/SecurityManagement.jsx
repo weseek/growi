@@ -134,7 +134,7 @@ class SecurityManagement extends React.Component {
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeTab={activeTab}>
+          <TabContent activeTab={activeTab} className="mt-2">
             <TabPane tabId="passport-local">
               {activeComponents.has('passport-local') && <LocalSecuritySetting />}
             </TabPane>
