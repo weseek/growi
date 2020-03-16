@@ -38,15 +38,7 @@
   }
 }
 
-.btn-copy {
-  opacity: 0.3;
-
-  // change button opacity
-  &:hover {
-    opacity: unset;
-  }
-}
-
+.btn-copy,
 .btn-edit {
   opacity: 0.3;
 
