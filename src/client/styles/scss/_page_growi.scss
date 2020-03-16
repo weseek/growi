@@ -1,23 +1,5 @@
 .growi {
   header {
-    div.title-logo-container {
-      display: none; // hide in default
-
-      a {
-        // centering
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-
-        img {
-          width: 16px;
-          height: 16px;
-        }
-      }
-    }
-
     ul.authors {
       padding-left: 1.5em;
       margin: 0;
