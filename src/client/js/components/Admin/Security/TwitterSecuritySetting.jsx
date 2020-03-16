@@ -69,18 +69,16 @@ class TwitterSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.OAuth.Twitter.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+          <div className="offset-3 col-6">
+            <div className="custom-control custom-switch checkbox-success">
               <input
                 id="isTwitterEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isTwitterEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsTwitterOAuthEnabled() }}
               />
-              <label htmlFor="isTwitterEnabled">
+              <label className="custom-control-label" htmlFor="isTwitterEnabled">
                 {t('security_setting.OAuth.Twitter.enable_twitter')}
               </label>
             </div>
@@ -90,8 +88,8 @@ class TwitterSecurityManagement extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
-          <div className="col-xs-6">
+          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -118,8 +116,8 @@ class TwitterSecurityManagement extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="TwitterConsumerId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
-              <div className="col-xs-6">
+              <label htmlFor="TwitterConsumerId" className="col-3 text-right py-2">{t('security_setting.clientID')}</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -134,8 +132,8 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="TwitterConsumerSecret" className="col-xs-3 text-right">{t('security_setting.client_secret')}</label>
-              <div className="col-xs-6">
+              <label htmlFor="TwitterConsumerSecret" className="col-3 text-right py-2">{t('security_setting.client_secret')}</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -150,15 +148,17 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+              <div className="offset-3 col-6">
+                <div className="custom-control custom-switch checkbox-success">
                   <input
                     id="bindByUserNameTwitter"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminTwitterSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminTwitterSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByUserNameTwitter"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
@@ -170,7 +170,7 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row my-3">
-              <div className="col-xs-offset-3 col-xs-5">
+              <div className="offset-3 col-5">
                 <button
                   type="button"
                   className="btn btn-primary"
