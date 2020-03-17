@@ -299,7 +299,6 @@
   }
 }
 
-.installer,
 .invited,
 .nologin.error {
   .main .row {
@@ -312,6 +311,11 @@
       }
     }
   }
+}
+
+.login-header,
+.login-dialog {
+  max-width: 480px;
 }
 
 .nologin.error {
