@@ -49,8 +49,6 @@
  */
 
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:me');
-  const logger = require('@alias/logger')('growi:routes:me');
   const models = crowi.models;
   const UserGroupRelation = models.UserGroupRelation;
   const ExternalAccount = models.ExternalAccount;
@@ -124,102 +122,6 @@ module.exports = function(crowi, app) {
         // method GET
         return res.render('me/external-accounts', renderVars);
       });
-  };
-
-  actions.externalAccounts.disassociate = function(req, res) {
-    const userData = req.user;
-
-    const redirectWithFlash = (type, msg) => {
-      req.flash(type, msg);
-      return res.redirect('/me/external-accounts');
-    };
-
-    if (req.body == null) {
-      redirectWithFlash('errorMessage', 'Invalid form.');
-    }
-
-    // make sure password set or this user has two or more ExternalAccounts
-    new Promise((resolve, reject) => {
-      if (userData.password != null) {
-        resolve(true);
-      }
-      else {
-        ExternalAccount.count({ user: userData })
-          .then((count) => {
-            resolve(count > 1);
-          });
-      }
-    })
-      .then((isDisassociatable) => {
-        if (!isDisassociatable) {
-          const e = new Error();
-          e.name = 'couldntDisassociateError';
-          throw e;
-        }
-
-        const providerType = req.body.providerType;
-        const accountId = req.body.accountId;
-
-        return ExternalAccount.findOneAndRemove({ providerType, accountId, user: userData });
-      })
-      .then((account) => {
-        if (account == null) {
-          return redirectWithFlash('errorMessage', 'ExternalAccount not found.');
-        }
-
-        return redirectWithFlash('successMessage', 'Successfully disassociated.');
-      })
-      .catch((err) => {
-        if (err) {
-          if (err.name === 'couldntDisassociateError') {
-            return redirectWithFlash('couldntDisassociateError', true);
-          }
-
-          return redirectWithFlash('errorMessage', err.message);
-        }
-      });
-  };
-
-  actions.externalAccounts.associateLdap = function(req, res) {
-    const passport = require('passport');
-    const passportService = crowi.passportService;
-
-    const redirectWithFlash = (type, msg) => {
-      req.flash(type, msg);
-      return res.redirect('/me/external-accounts');
-    };
-
-    if (!passportService.isLdapStrategySetup) {
-      debug('LdapStrategy has not been set up');
-      return redirectWithFlash('warning', 'LdapStrategy has not been set up');
-    }
-
-    passport.authenticate('ldapauth', (err, user, info) => {
-      if (res.headersSent) { // dirty hack -- 2017.09.25
-        return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
-      }
-
-      if (err) { // DB Error
-        logger.error('LDAP Server Error: ', err);
-        return redirectWithFlash('warningMessage', 'LDAP Server Error occured.');
-      }
-      if (info && info.message) {
-        return redirectWithFlash('warningMessage', info.message);
-      }
-      if (user) {
-        // create ExternalAccount
-        const ldapAccountId = passportService.getLdapAccountIdFromReq(req);
-        const user = req.user;
-
-        ExternalAccount.associate('ldap', ldapAccountId, user)
-          .then(() => {
-            return redirectWithFlash('successMessage', 'Successfully added.');
-          })
-          .catch((err) => {
-            return redirectWithFlash('errorMessage', err.message);
-          });
-      }
-    })(req, res, () => {});
   };
 
   actions.updates = function(req, res) {

@@ -5,6 +5,8 @@ const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
 const express = require('express');
 
+const passport = require('passport');
+
 const router = express.Router();
 
 const { body } = require('express-validator/check');
@@ -43,6 +45,22 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *          newPasswordConfirm:
  *            type: string
+ *      AssociateUser:
+ *        description: Ldap account for associate
+ *        type: object
+ *        properties:
+ *          username:
+ *            type: string
+ *          password:
+ *            type: string
+ *      DisassociateUser:
+ *        description: Ldap account for disassociate
+ *        type: object
+ *        properties:
+ *          providerType:
+ *            type: string
+ *          accountId:
+ *            type: string
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
@@ -73,6 +91,14 @@ module.exports = (crowi) => {
         .custom((value, { req }) => {
           return (value === req.body.newPassword);
         }),
+    ],
+    associateLdap: [
+      body('username').isString().not().isEmpty(),
+      body('password').isString().not().isEmpty(),
+    ],
+    disassociateLdap: [
+      body('providerType').isString().not().isEmpty(),
+      body('accountId').isString().not().isEmpty(),
     ],
   };
 
@@ -288,6 +314,100 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error(err);
       return res.apiv3Err('update-api-token-failed');
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/associate-ldap:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: associateLdapAccount
+   *        summary: /personal-setting/associate-ldap
+   *        description: associate Ldap account
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/AssociateUser'
+   *        responses:
+   *          200:
+   *            description: succeded to associate Ldap account
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    associateUser:
+   *                      type: object
+   *                      description: Ldap account associate to me
+   */
+  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, csrf, validator.associateLdap, ApiV3FormValidator, async(req, res) => {
+    const { passportService } = crowi;
+    const { user, body } = req;
+    const { username } = body;
+
+    if (!passportService.isLdapStrategySetup) {
+      logger.error('LdapStrategy has not been set up');
+      return res.apiv3Err('associate-ldap-account-failed', 405);
+    }
+
+    try {
+      await passport.authenticate('ldapauth');
+      const associateUser = await ExternalAccount.associate('ldap', username, user);
+      return res.apiv3({ associateUser });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('associate-ldap-account-failed');
+    }
+
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/disassociate-ldap:
+   *      put:
+   *        tags: [PersonalSetting]
+   *        operationId: disassociateLdapAccount
+   *        summary: /personal-setting/disassociate-ldap
+   *        description: disassociate Ldap account
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/DisassociateUser'
+   *        responses:
+   *          200:
+   *            description: succeded to disassociate Ldap account
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    disassociateUser:
+   *                      type: object
+   *                      description: Ldap account disassociate to me
+   */
+  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, csrf, validator.disassociateLdap, ApiV3FormValidator, async(req, res) => {
+    const { user, body } = req;
+    const { providerType, accountId } = body;
+
+    try {
+      const count = await ExternalAccount.count({ user });
+      // make sure password set or this user has two or more ExternalAccounts
+      if (user.password == null && count <= 1) {
+        return res.apiv3Err('disassociate-ldap-account-failed');
+      }
+      const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+      return res.apiv3({ disassociateUser });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('disassociate-ldap-account-failed');
     }
 
   });

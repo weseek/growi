@@ -122,6 +122,7 @@
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
+  "Disassociate": "連携解除",
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -164,6 +165,8 @@
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
   "personal_settings":{
+    "disassociate_external_account": "External Account の連携解除",
+    "disassociate_external_account_desc": "<strong>{{providerType}}</strong> プロバイダーの <strong>{{accountId}}</strong> アカウントを連携解除します",
     "set_new_password": "パスワードを新規に設定",
     "update_password": "パスワードを更新",
     "current_password": "現在のパスワード",

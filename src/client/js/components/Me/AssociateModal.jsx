@@ -43,9 +43,18 @@ class AssociateModal extends React.Component {
 
   async onClickAddBtn() {
     const { t, personalContainer } = this.props;
+    const { username, password } = this.state;
+
     try {
-      await personalContainer.associateLdapAccount();
+      await personalContainer.associateLdapAccount({ username, password });
+      this.props.onClose();
       toastSuccess(t('security_setting.updated_general_security_setting'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+    try {
+      await personalContainer.retrieveExternalAccounts();
     }
     catch (err) {
       toastError(err);
@@ -67,6 +76,10 @@ class AssociateModal extends React.Component {
             <li className="active">
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i className="fa fa-sitemap"></i> LDAP</a>
             </li>
+            <li className="tbd disabled"><a><i className="fa fa-github"></i> (TBD) GitHub</a></li>
+            <li className="tbd disabled"><a><i className="fa fa-google"></i> (TBD) Google OAuth</a></li>
+            <li className="tbd disabled"><a><i className="fa fa-facebook"></i> (TBD) Facebook</a></li>
+            <li className="tbd disabled"><a><i className="fa fa-twitter"></i> (TBD) Twitter</a></li>
           </ul>
           <LdapAuthTest
             username={this.state.username}
