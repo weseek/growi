@@ -17,7 +17,7 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      sort: 'status',
+      sort: 'id',
       sortOrder: 'asc',
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
@@ -46,6 +46,7 @@ export default class AdminUsersContainer extends Container {
     this.setState({ notifyComment });
   }
 
+  // status
   isSelected(statusType) {
     return this.state.selectedStatusList.has(statusType);
   }
@@ -66,33 +67,45 @@ export default class AdminUsersContainer extends Container {
     }
   }
 
-  clearStatusList() {
+  async clearStatusList() {
     const { selectedStatusList } = this.state;
     selectedStatusList.clear();
-    this.setState({ selectedStatusList });
+    await this.setState({ selectedStatusList });
   }
 
-  addStatusToList(statusType) {
+  async addStatusToList(statusType) {
     const { selectedStatusList } = this.state;
     selectedStatusList.add(statusType);
-    this.setState({ selectedStatusList });
+    await this.setState({ selectedStatusList });
     this.retrieveUsersByPagingNum(1);
   }
 
-  deleteStatusFromList(statusType) {
+  async deleteStatusFromList(statusType) {
     const { selectedStatusList } = this.state;
     selectedStatusList.delete(statusType);
-    this.setState({ selectedStatusList });
+    await this.setState({ selectedStatusList });
     this.retrieveUsersByPagingNum(1);
   }
 
-  handleChangeSearchText(searchText) {
-    this.setState({ searchText });
+  // Input Serch Text
+  async handleChangeSearchText(searchText) {
+    await this.setState({ searchText });
     this.retrieveUsersByPagingNum(1);
   }
 
-  clearSearchText() {
-    this.setState({ searchText: '' });
+  async clearSearchText() {
+    await this.setState({ searchText: '' });
+  }
+
+  // sorting
+  async onClickSortAsc(sort) {
+    await this.setState({ sort });
+    await this.setState({ sortOrder: 'asc' });
+  }
+
+  async onClickSortDesc(sort) {
+    await this.setState({ sort });
+    await this.setState({ sortOrder: 'desc' });
   }
 
   /**

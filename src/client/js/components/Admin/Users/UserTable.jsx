@@ -83,12 +83,168 @@ class UserTable extends React.Component {
           <thead>
             <tr>
               <th width="100px">#</th>
-              <th>{t('status')}</th>
-              <th><code>username</code></th>
-              <th>{t('Name')}</th>
-              <th>{t('Email')}</th>
-              <th width="100px">{t('Created')}</th>
-              <th width="150px">{t('Last_Login')}</th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('status')}
+                  </div>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'status')
+                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortAsc('status')}
+                      >
+                      </a>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'status')
+                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortDesc('status')}
+                      >
+                      </a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    <code>username</code>
+                  </div>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'username')
+                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortAsc('username')}
+                      >
+                      </a>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'username')
+                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortDesc('username')}
+                      >
+                      </a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Name')}
+                  </div>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'name')
+                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortAsc('name')}
+                      >
+                      </a>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'name')
+                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortDesc('name')}
+                      >
+                      </a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Email')}
+                  </div>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'email')
+                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortAsc('email')}
+                      >
+                      </a>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'email')
+                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortDesc('email')}
+                      >
+                      </a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th width="100px">
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Created')}
+                  </div>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'createdAt')
+                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortAsc('createdAt')}
+                      >
+                      </a>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'createdAt')
+                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortDesc('createdAt')}
+                      >
+                      </a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
+              <th width="150px">
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Last_Login')}
+                  </div>
+                  <div className="d-flex flex-column text-center">
+                    <Fragment>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'lastLoginAt')
+                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortAsc('lastLoginAt')}
+                      >
+                      </a>
+                      <a
+                        className={`fa ${(
+                          adminUsersContainer.state.sort === 'lastLoginAt')
+                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
+                        aria-hidden="true"
+                        onClick={() => adminUsersContainer.onClickSortDesc('lastLoginAt')}
+                      >
+                      </a>
+                    </Fragment>
+                  </div>
+                </div>
+              </th>
               <th width="70px"></th>
             </tr>
           </thead>
