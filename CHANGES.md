@@ -1,5 +1,12 @@
 # CHANGES
 
+## v3.7.0-RC
+
+* Feature: [Draw.io](https://www.draw.io/) Integration
+* Feature: SAML Attribute-based Login Control
+* Improvement: Reactify admin pages (Security)
+* Improvement: Behavior of pre-editing screen of HackMD when user needs to resume
+
 ## v3.6.10
 
 * Fix: Redirect logic for users except for actives

@@ -10,24 +10,11 @@
 
 // expanded window layout
 .handsontable-modal.handsontable-modal-expanded {
-  // full-screen modal
-  width: 97%;
-  height: 95%;
-  .modal-content {
-    height: 95%;
-  }
+  @include expand-modal-fullscreen(true, true);
 
-  // expand .modal-body (with calculating height)
-  .modal-body {
-    $modal-header: 54px;
-    $modal-footer: 46px;
-    $margin: $modal-header + $modal-footer;
-    height: calc(100% - #{$margin});
-
-    // expand .hot-table-container (with flexbox)
-    .hot-table-container {
-      flex: 1;
-    }
+  // expand .hot-table-container (with flexbox)
+  .hot-table-container {
+    flex: 1;
   }
 }
 
