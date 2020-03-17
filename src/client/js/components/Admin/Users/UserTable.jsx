@@ -84,8 +84,10 @@ class UserTable extends React.Component {
             <tr>
               <th width="100px">#</th>
               <th>
-                <div className="d-flex justify-content-around align-items-center">
-                  {t('status')}
+                <div className="d-flex align-items-center">
+                  <div className="mr-2">
+                    {t('status')}
+                  </div>
                   <div className="d-flex flex-column text-center">
                     <Fragment>
                       <a
@@ -109,8 +111,10 @@ class UserTable extends React.Component {
                 </div>
               </th>
               <th>
-                <div className="d-flex justify-content-around align-items-center">
-                  <code>username</code>
+                <div className="d-flex align-items-center">
+                  <div className="mr-2">
+                    <code>username</code>
+                  </div>
                   <div className="d-flex flex-column text-center">
                     <Fragment>
                       <a
@@ -134,8 +138,10 @@ class UserTable extends React.Component {
                 </div>
               </th>
               <th>
-                <div className="d-flex justify-content-around align-items-center">
-                  {t('Name')}
+                <div className="d-flex align-items-center">
+                  <div className="mr-2">
+                    {t('Name')}
+                  </div>
                   <div className="d-flex flex-column text-center">
                     <Fragment>
                       <a
@@ -159,8 +165,10 @@ class UserTable extends React.Component {
                 </div>
               </th>
               <th>
-                <div className="d-flex justify-content-around align-items-center">
-                  {t('Email')}
+                <div className="d-flex align-items-center">
+                  <div className="mr-2">
+                    {t('Email')}
+                  </div>
                   <div className="d-flex flex-column text-center">
                     <Fragment>
                       <a
@@ -184,8 +192,10 @@ class UserTable extends React.Component {
                 </div>
               </th>
               <th width="100px">
-                <div className="d-flex justify-content-around align-items-center">
-                  {t('Created')}
+                <div className="d-flex align-items-center">
+                  <div className="mr-2">
+                    {t('Created')}
+                  </div>
                   <div className="d-flex flex-column text-center">
                     <Fragment>
                       <a
@@ -209,8 +219,10 @@ class UserTable extends React.Component {
                 </div>
               </th>
               <th width="150px">
-                <div className="d-flex justify-content-around align-items-center">
-                  {t('Last_Login')}
+                <div className="d-flex align-items-center">
+                  <div className="mr-2">
+                    {t('Last_Login')}
+                  </div>
                   <div className="d-flex flex-column text-center">
                     <Fragment>
                       <a
