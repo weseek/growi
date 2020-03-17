@@ -85,7 +85,7 @@ class UserTable extends React.Component {
               <th width="100px">#</th>
               <th>
                 <div className="d-flex align-items-center">
-                  <div className="mr-2">
+                  <div className="mr-3">
                     {t('status')}
                   </div>
                   <div className="d-flex flex-column text-center">
@@ -112,7 +112,7 @@ class UserTable extends React.Component {
               </th>
               <th>
                 <div className="d-flex align-items-center">
-                  <div className="mr-2">
+                  <div className="mr-3">
                     <code>username</code>
                   </div>
                   <div className="d-flex flex-column text-center">
@@ -139,7 +139,7 @@ class UserTable extends React.Component {
               </th>
               <th>
                 <div className="d-flex align-items-center">
-                  <div className="mr-2">
+                  <div className="mr-3">
                     {t('Name')}
                   </div>
                   <div className="d-flex flex-column text-center">
@@ -166,7 +166,7 @@ class UserTable extends React.Component {
               </th>
               <th>
                 <div className="d-flex align-items-center">
-                  <div className="mr-2">
+                  <div className="mr-3">
                     {t('Email')}
                   </div>
                   <div className="d-flex flex-column text-center">
@@ -193,7 +193,7 @@ class UserTable extends React.Component {
               </th>
               <th width="100px">
                 <div className="d-flex align-items-center">
-                  <div className="mr-2">
+                  <div className="mr-3">
                     {t('Created')}
                   </div>
                   <div className="d-flex flex-column text-center">
@@ -220,7 +220,7 @@ class UserTable extends React.Component {
               </th>
               <th width="150px">
                 <div className="d-flex align-items-center">
-                  <div className="mr-2">
+                  <div className="mr-3">
                     {t('Last_Login')}
                   </div>
                   <div className="d-flex flex-column text-center">
