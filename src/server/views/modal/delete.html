@@ -23,18 +23,18 @@
           <hr>
 
           {% if page.grant != 2 %}
-          <div class="checkbox checkbox-warning">
-            <input name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
-            <label for="cbDeleteRecursively">
+          <div class="custom-control custom-checkbox custom-checkbox-warning">
+            <input class="custom-control-input" name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
+            <label class="custom-control-label" for="cbDeleteRecursively">
               {{ t('modal_delete.delete_recursively') }}
               <p class="help-block mt-0"> {{ t('modal_delete.recursively', page.path) }}</p>
             </label>
           </div>
           {% endif %}
           {% if not page.isDeleted() %}
-          <div class="checkbox checkbox-danger">
-            <input name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
-            <label for="cbDeleteCompletely" class="text-danger">
+          <div class="custom-control custom-checkbox custom-checkbox-danger">
+            <input class="custom-control-input" name="completely" id="cbDeleteCompletely" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} value="1"  type="checkbox">
+            <label class="custom-control-label" for="cbDeleteCompletely" class="text-danger">
               {{ t('modal_delete.delete_completely') }}
               <p class="help-block mt-0"> {{ t('modal_delete.completely') }}</p>
             </label>
