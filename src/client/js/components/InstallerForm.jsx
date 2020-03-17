@@ -46,7 +46,7 @@ class InstallerForm extends React.Component {
     const checkedBtn = this.state.checkedBtn;
 
     return (
-      <div className={`login-dialog py-3 mx-auto${hasErrorClass}`}>
+      <div className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
         <div className="row">
           <div className="col-md-12">
             <p className="alert alert-success">
