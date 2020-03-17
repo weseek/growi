@@ -28,8 +28,11 @@
 ```
 
 ### 見出し3
+
 #### 見出し4
+
 ##### 見出し5
+
 ###### 見出し6
 
 ## Block 段落
@@ -48,7 +51,7 @@
 
 ## Br 改行
 
-改行の前に半角スペース`  `を2つ記述します。
+改行の前に半角スペース``を2つ記述します。
 ***この挙動は、オプションで変更可能です***
 
 ```
@@ -159,6 +162,7 @@ ___
 # :pencil: Typography
 
 ## 強調
+
 ### em
 
 アスタリスク`*`もしくはアンダースコア`_`1個で文字列を囲みます。
@@ -353,30 +357,30 @@ aligned    | aligned     | aligned
 
 ```
 ::: tsv
-Content Cell 	Content Cell
-Content Cell 	Content Cell
+Content Cell  Content Cell
+Content Cell  Content Cell
 :::
 ```
 
 ::: tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
+Content Cell Content Cell
+Content Cell Content Cell
 :::
 
 ## TSV ヘッダ付き (crowi-plus 独自記法)
 
 ```
 ::: tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
+First Header Second Header
+Content Cell Content Cell
+Content Cell Content Cell
 :::
 ```
 
 ::: tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
+First Header Second Header
+Content Cell Content Cell
+Content Cell Content Cell
 :::
 
 ## CSV (crowi-plus 独自記法)
@@ -442,351 +446,12 @@ See [emojione](https://www.emojione.com/)
 :watch: :gear: :gem: :wrench: :envelope:
 
 
-# :pencil: Math
 
-See [MathJax](https://www.mathjax.org/).
-
-## Inline Formula
-
-When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
-  $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
-
-## The Lorenz Equations
-
-$$
-\begin{align}
-\dot{x} & = \sigma(y-x) \\
-\dot{y} & = \rho x - y - xz \\
-\dot{z} & = -\beta z + xy
-\end{align}
-$$
-
-
-## The Cauchy-Schwarz Inequality
-
-$$
-\left( \sum_{k=1}^n a_k b_k \right)^{\!\!2} \leq
- \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)
-$$
-
-## A Cross Product Formula
-
-$$
-\mathbf{V}_1 \times \mathbf{V}_2 =
- \begin{vmatrix}
-  \mathbf{i} & \mathbf{j} & \mathbf{k} \\
-  \frac{\partial X}{\partial u} & \frac{\partial Y}{\partial u} & 0 \\
-  \frac{\partial X}{\partial v} & \frac{\partial Y}{\partial v} & 0 \\
- \end{vmatrix}
-$$
-
-
-## The probability of getting $\left(k\right)$ heads when flipping $\left(n\right)$ coins is:
-
-$$
-P(E) = {n \choose k} p^k (1-p)^{ n-k}
-$$
-
-## An Identity of Ramanujan
-
-$$
-\frac{1}{(\sqrt{\phi \sqrt{5}}-\phi) e^{\frac25 \pi}} =
-     1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}}
-      {1+\frac{e^{-8\pi}} {1+\ldots} } } }
-$$
-
-## A Rogers-Ramanujan Identity
-
-$$
-1 +  \frac{q^2}{(1-q)}+\frac{q^6}{(1-q)(1-q^2)}+\cdots =
-    \prod_{j=0}^{\infty}\frac{1}{(1-q^{5j+2})(1-q^{5j+3})},
-     \quad\quad \text{for $|q|<1$}.
-$$
-
-## Maxwell's Equations
-
-$$
-\begin{align}
-  \nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} & = \frac{4\pi}{c}\vec{\mathbf{j}} \\
-  \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
-  \nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
-  \nabla \cdot \vec{\mathbf{B}} & = 0
-\end{align}
-$$
-
-<!-- Reset MathJax -->
-<div class="clearfix"></div>
-
-
-# :pencil: UML Diagrams
-
-See [PlantUML](http://plantuml.com/).
-
-## シーケンス図
-
-@startuml
-skinparam sequenceArrowThickness 2
-skinparam roundcorner 20
-skinparam maxmessagesize 60
-skinparam sequenceParticipant underline
-
-actor User
-participant "First Class" as A
-participant "Second Class" as B
-participant "Last Class" as C
-
-User -> A: DoWork
-activate A
-
-A -> B: Create Request
-activate B
-
-B -> C: DoWork
-activate C
-C --> B: WorkDone
-destroy C
-
-B --> A: Request Created
-deactivate B
-
-A --> User: Done
-deactivate A
-
-@enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
-
-
-## クラス図
-
-@startuml
-
-class BaseClass
-
-namespace net.dummy #DDDDDD {
-    .BaseClass <|-- Person
-    Meeting o-- Person
-
-    .BaseClass <|- Meeting
-}
-
-namespace net.foo {
-  net.dummy.Person  <|- Person
-  .BaseClass <|-- Person
-
-  net.dummy.Meeting o-- Person
-}
-
-BaseClass <|-- net.unused.Person
-
-@enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
-
-
-## コンポーネント図
-
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
-
-
-## ステート図
-
-
-@startuml
-scale 600 width
-
-[*] -> State1
-State1 --> State2 : Succeeded
-State1 --> [*] : Aborted
-State2 --> State3 : Succeeded
-State2 --> [*] : Aborted
-state State3 {
-  state "Accumulate Enough Data\nLong State Name" as long1
-  long1 : Just a test
-  [*] --> long1
-  long1 --> long1 : New Data
-  long1 --> ProcessData : Enough Data
-}
-State3 --> State3 : Failed
-State3 --> [*] : Succeeded / Save Result
-State3 --> [*] : Aborted
-
-@enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
-
-# :pencil: blockdiag
-
-See [blockdiag](http://blockdiag.com/).
-
-## blockdiag
-
-<!-- Resize blockdiag -->
-<div style="max-width: 600px">
-
-::: blockdiag
-blockdiag {
-   A -> B -> C -> D;
-   A -> E -> F -> G;
-}
-:::
-
-</div>
-
-## seqdiag
-
-<!-- Resize blockdiag -->
-<div style="max-width: 600px">
-
-::: seqdiag
-seqdiag {
-  browser  -> webserver [label = "GET /index.html"];
-  browser <-- webserver;
-  browser  -> webserver [label = "POST /blog/comment"];
-              webserver  -> database [label = "INSERT comment"];
-              webserver <-- database;
-  browser <-- webserver;
-}
-:::
-
-</div>
-
-## actdiag
-
-<!-- Resize blockdiag -->
-<div style="max-width: 600px">
-
-::: actdiag
-actdiag {
-  write -> convert -> image
-
-  lane user {
-     label = "User"
-     write [label = "Writing reST"];
-     image [label = "Get diagram IMAGE"];
-  }
-  lane actdiag {
-     convert [label = "Convert reST to Image"];
-  }
-}
-:::
-
-</div>
-
-## nwdiag
-
-<!-- Resize blockdiag -->
-<div style="max-width: 600px">
-
-::: nwdiag
-nwdiag {
-  network dmz {
-      address = "210.x.x.x/24"
-
-      web01 [address = "210.x.x.1"];
-      web02 [address = "210.x.x.2"];
-  }
-  network internal {
-      address = "172.x.x.x/24";
-
-      web01 [address = "172.x.x.1"];
-      web02 [address = "172.x.x.2"];
-      db01;
-      db02;
-  }
-}
-:::
-
-</div>
-
-## rackdiag
-
-<!-- Resize blockdiag -->
-<div style="max-width: 600px">
-
-::: rackdiag
-rackdiag {
-  // define height of rack
-  8U;
-
-  // define rack items
-  1: UPS [2U];
-  3: DB Server
-  4: Web Server
-  5: Web Server
-  6: Web Server
-  7: Load Balancer
-  8: L3 Switch
-}
-:::
-
-</div>
-
-## packetdiag
-
-<!-- Resize blockdiag -->
-<div style="max-width: 600px">
-
-::: packetdiag
-packetdiag {
-  colwidth = 32
-  node_height = 72
-
-  0-15: Source Port
-  16-31: Destination Port
-  32-63: Sequence Number
-  64-95: Acknowledgment Number
-  96-99: Data Offset
-  100-105: Reserved
-  106: URG [rotate = 270]
-  107: ACK [rotate = 270]
-  108: PSH [rotate = 270]
-  109: RST [rotate = 270]
-  110: SYN [rotate = 270]
-  111: FIN [rotate = 270]
-  112-127: Window
-  128-143: Checksum
-  144-159: Urgent Pointer
-  160-191: (Options and Padding)
-  192-223: data [colheight = 3]
-}
-:::
-
-</div>
+# :heavy_plus_sign: 更に…
+
+- Bootstrap3 のタグを使う
+    - :arrow_right: [/Sandbox/Bootstrap3]
+- 図表を書く
+    - :arrow_right: [/Sandbox/Diagrams]
+- 数式を書く
+    - :arrow_right: [/Sandbox/Math]

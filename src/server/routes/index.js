@@ -47,14 +47,14 @@ module.exports = function(crowi, app) {
   }
 
   app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , middlewares.applicationInstalled    , login.login);
+  app.get('/login'                   , middlewares.applicationInstalled     , login.preLogin, login.login);
   app.get('/login/invited'           , login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
   app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
   app.post('/register'               , form.register                        , csrf, login.register);
-  app.get('/register'                , middlewares.applicationInstalled    , login.register);
+  app.get('/register'                , middlewares.applicationInstalled     , login.preLogin, login.register);
   app.get('/logout'                  , logout.logout);
 
   app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
@@ -62,17 +62,8 @@ module.exports = function(crowi, app) {
 
   // security admin
   app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
-  app.post('/_api/admin/security/general'       , loginRequiredStrictly , adminRequired , form.admin.securityGeneral, admin.api.securitySetting);
-  app.post('/_api/admin/security/passport-local', loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportLocal, admin.api.securityPassportLocalSetting);
-  app.post('/_api/admin/security/passport-ldap' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportLdap, admin.api.securityPassportLdapSetting);
-  app.post('/_api/admin/security/passport-saml' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportSaml, admin.api.securityPassportSamlSetting);
-  app.post('/_api/admin/security/passport-basic', loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportBasic, admin.api.securityPassportBasicSetting);
 
   // OAuth
-  app.post('/_api/admin/security/passport-google' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
-  app.post('/_api/admin/security/passport-github' , loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportGitHub, admin.api.securityPassportGitHubSetting);
-  app.post('/_api/admin/security/passport-twitter', loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
-  app.post('/_api/admin/security/passport-oidc',    loginRequiredStrictly , adminRequired , csrf, form.admin.securityPassportOidc, admin.api.securityPassportOidcSetting);
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);

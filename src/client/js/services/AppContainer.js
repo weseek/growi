@@ -13,6 +13,10 @@ import {
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
 
+import {
+  DrawioInterceptor,
+} from '../util/interceptor/drawio-interceptor';
+
 import i18nFactory from '../util/i18n';
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
@@ -31,13 +35,17 @@ export default class AppContainer extends Container {
 
     const body = document.querySelector('body');
 
-    this.me = body.dataset.currentUsername || null; // will be initialized with null when data is empty string
     this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
     this.isLoggedin = document.querySelector('.main-container.nologin') == null;
 
-    this.config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+    this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
+
+    const currentUserElem = document.getElementById('growi-current-user');
+    if (currentUserElem != null) {
+      this.currentUser = JSON.parse(currentUserElem.textContent);
+    }
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
@@ -48,6 +56,7 @@ export default class AppContainer extends Container {
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     const userlang = body.dataset.userlang;
@@ -105,6 +114,20 @@ export default class AppContainer extends Container {
     window.crowi = this;
     window.crowiRenderer = originRenderer;
     window.crowiPlugin = window.growiPlugin;
+  }
+
+  get currentUserId() {
+    if (this.currentUser == null) {
+      return null;
+    }
+    return this.currentUser._id;
+  }
+
+  get currentUsername() {
+    if (this.currentUser == null) {
+      return null;
+    }
+    return this.currentUser.username;
   }
 
   /**
@@ -271,14 +294,6 @@ export default class AppContainer extends Container {
     return users;
   }
 
-  findUser(username) {
-    if (this.userByName && this.userByName[username]) {
-      return this.userByName[username];
-    }
-
-    return null;
-  }
-
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
@@ -287,6 +302,16 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
+  }
+
+  launchDrawioModal(componentKind, beginLineNumber, endLineNumber) {
+    let targetComponent;
+    switch (componentKind) {
+      case 'page':
+        targetComponent = this.getComponentInstance('Page');
+        break;
+    }
+    targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
   }
 
   async apiGet(path, params) {

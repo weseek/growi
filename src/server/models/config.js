@@ -66,11 +66,26 @@ module.exports = function(crowi) {
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
       'security:passport-saml:isEnabled' : false,
       'security:passport-saml:isSameEmailTreatedAsIdenticalUser': false,
+
       'security:passport-google:isEnabled' : false,
+      'security:passport-google:clientId': undefined,
+      'security:passport-google:clientSecret': undefined,
+      'security:passport-google:isSameUsernameTreatedAsIdenticalUser': false,
+
       'security:passport-github:isEnabled' : false,
+      'security:passport-github:clientId': undefined,
+      'security:passport-github:clientSecret': undefined,
+      'security:passport-github:isSameUsernameTreatedAsIdenticalUser': false,
+
       'security:passport-twitter:isEnabled' : false,
+      'security:passport-twitter:consumerKey': undefined,
+      'security:passport-twitter:consumerSecret': undefined,
+      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': false,
+
       'security:passport-oidc:isEnabled' : false,
+
       'security:passport-basic:isEnabled' : false,
+      'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
 
       'aws:bucket'          : 'growi',
       'aws:region'          : 'ap-northeast-1',
@@ -83,15 +98,6 @@ module.exports = function(crowi) {
       'mail:smtpPort'     : undefined,
       'mail:smtpUser'     : undefined,
       'mail:smtpPassword' : undefined,
-
-      'security:passport-google:clientId'     : undefined,
-      'security:passport-google:clientSecret' : undefined,
-
-      'security:passport-github:clientId': undefined,
-      'security:passport-github:clientSecret': undefined,
-
-      'security:passport-twitter:clientId': undefined,
-      'security:passport-twitter:clientSecret': undefined,
 
       'plugin:isEnabledPlugins' : true,
 
@@ -109,6 +115,7 @@ module.exports = function(crowi) {
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
       'customize:isEnabledStaleNotification': false,
+      'customize:isAllReplyShown': false,
 
       'importer:esa:team_name': undefined,
       'importer:esa:access_token': undefined,
@@ -188,6 +195,7 @@ module.exports = function(crowi) {
       pageBreakCustomSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
       isEnabledTimeline: crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
+      isAllReplyShown: crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       xssOption: crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
       tagWhiteList: crowi.xssService.getTagWhiteList(),
       attrWhiteList: crowi.xssService.getAttrWhiteList(),

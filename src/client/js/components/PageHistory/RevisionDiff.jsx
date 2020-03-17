@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { createPatch } from 'diff';
-import { Diff2Html } from 'diff2html';
+import { html } from 'diff2html';
 
 export default class RevisionDiff extends React.Component {
 
@@ -29,8 +29,12 @@ export default class RevisionDiff extends React.Component {
         previousText,
         currentRevision.body,
       );
+      const option = {
+        drawFileList: false,
+        outputFormat: 'side-by-side',
+      };
 
-      diffViewHTML = Diff2Html.getPrettyHtml(patch);
+      diffViewHTML = html(patch, option);
     }
 
     const diffView = { __html: diffViewHTML };

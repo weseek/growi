@@ -7,7 +7,10 @@
 
   {% if !isTrashPage() and !page.isDeleted() %}
   <li class="nav-main-left-tab">
-    <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+    <a
+      {% if user %} href="#edit" data-toggle="tab" class="edit-button" {% endif %}
+      {% if not user %} class="edit-button edit-button-disabled" data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}" {% endif %}
+    >
       <i class="icon-note"></i> {{ t('Create') }}
     </a>
   </li>

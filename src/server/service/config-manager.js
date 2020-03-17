@@ -15,6 +15,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:attrMapFirstName',
   'security:passport-saml:attrMapLastName',
   'security:passport-saml:cert',
+  'security:passport-saml:ABLCRule',
 ];
 
 class ConfigManager {
@@ -66,7 +67,7 @@ class ConfigManager {
   }
 
   /**
-   * get a config specified by namespace and regular expresssion
+   * get a config specified by namespace and regular expression
    */
   getConfigByRegExp(namespace, regexp) {
     const result = {};

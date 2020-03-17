@@ -11,7 +11,9 @@ import MarkdownTable from '../models/MarkdownTable';
 
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
+import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
+import mdu from './PageEditor/MarkdownDrawioUtil';
 
 const logger = loggerFactory('growi:Page');
 
@@ -22,11 +24,13 @@ class Page extends React.Component {
 
     this.state = {
       currentTargetTableArea: null,
+      currentTargetDrawioArea: null,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
+    this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
   }
 
   componentWillMount() {
@@ -43,6 +47,19 @@ class Page extends React.Component {
     const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
     this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
     this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
+  }
+
+  /**
+   * launch DrawioModal with data specified by arguments
+   * @param beginLineNumber
+   * @param endLineNumber
+   */
+  launchDrawioModal(beginLineNumber, endLineNumber) {
+    const markdown = this.props.pageContainer.state.markdown;
+    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber, endLineNumber);
+    const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
+    this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
+    this.drawioModal.show(drawioData);
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
@@ -75,6 +92,36 @@ class Page extends React.Component {
     }
   }
 
+  async saveHandlerForDrawioModal(drawioData) {
+    const { pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+
+    const newMarkdown = mdu.replaceDrawioInMarkdown(
+      drawioData,
+      this.props.pageContainer.state.markdown,
+      this.state.currentTargetDrawioArea.beginLineNumber,
+      this.state.currentTargetDrawioArea.endLineNumber,
+    );
+
+    try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
+
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(newMarkdown, optionsToSave);
+      logger.debug('success to save');
+
+      pageContainer.showSuccessToastr();
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
+    finally {
+      this.setState({ currentTargetDrawioArea: null });
+    }
+  }
+
   render() {
     const isMobile = this.props.appContainer.isMobile;
     const { markdown } = this.props.pageContainer.state;
@@ -83,6 +130,7 @@ class Page extends React.Component {
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
         <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
+        <DrawioModal ref={(c) => { this.drawioModal = c }} onSave={this.saveHandlerForDrawioModal} />
       </div>
     );
   }

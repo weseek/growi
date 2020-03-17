@@ -1,8 +1,41 @@
 # CHANGES
 
-## v3.6.8-RC
+## v3.7.1-RC
 
+* 
+
+## v3.7.0
+
+* Feature: [Draw.io](https://www.draw.io/) Integration
+* Feature: SAML Attribute-based Login Control
+* Improvement: Reactify admin pages (Security)
+* Improvement: Behavior of pre-editing screen of HackMD when user needs to resume
+
+## v3.6.10
+
+* Fix: Redirect logic for users except for actives
+    * Introduced by 3.6.9
+
+## v3.6.9
+
+* Improvement: Redirection when login/logout
+* Improvement: Add home icon before '/'
+* Fix: Client crashed when the first login
+    * Introduced by 3.6.8
+
+## v3.6.8
+
+* Improvement: Show page history side-by-side
 * Improvement: Optimize markdown rendering
+* Improvement: Reactify admin pages (Navigation)
+* Fix: Reply comments collapsed are broken
+    * Introduced by 3.6.7
+* Support: Update libs
+    * cross-env
+    * mkdirp
+    * diff2html
+    * jest
+    * stylelint
 
 ## v3.6.7
 

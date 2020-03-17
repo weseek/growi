@@ -45,6 +45,14 @@ module.exports = {
       },
     },
     {
+      name: 'drawio-viewer',
+      url: 'https://jgraph.github.io/drawio/src/main/webapp/js/viewer.min.js',
+      args: {
+        async: true,
+        integrity: '',
+      },
+    },
+    {
       name: 'codemirror-dialog',
       url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/addon/dialog/dialog.min.js',
       args: {
