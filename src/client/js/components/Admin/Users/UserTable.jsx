@@ -105,8 +105,6 @@ class UserTable extends React.Component {
                       >
                       </a>
                     </Fragment>
-                    {/* <a className={`fa ${this.sortByAscend('status') ? 'fa-chevron-down' : 'fa-angle-down' }`}></a> */}
-                    {/* <a className={`fa ${true ? 'fa-chevron-down' : 'fa-angle-down' }`} onClick={function()}></a> */}
                   </div>
                 </div>
               </th>
@@ -131,8 +129,6 @@ class UserTable extends React.Component {
                         onClick={() => adminUsersContainer.onClickSortDesc('username')}
                       >
                       </a>
-                      {/* <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('username')}></a>
-                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('username')}></a> */}
                     </Fragment>
                   </div>
                 </div>
@@ -158,8 +154,6 @@ class UserTable extends React.Component {
                         onClick={() => adminUsersContainer.onClickSortDesc('name')}
                       >
                       </a>
-                      {/* <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('name')}></a>
-                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('name')}></a> */}
                     </Fragment>
                   </div>
                 </div>
@@ -185,8 +179,6 @@ class UserTable extends React.Component {
                         onClick={() => adminUsersContainer.onClickSortDesc('email')}
                       >
                       </a>
-                      {/* <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('email')}></a>
-                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('email')}></a> */}
                     </Fragment>
                   </div>
                 </div>
@@ -212,8 +204,6 @@ class UserTable extends React.Component {
                         onClick={() => adminUsersContainer.onClickSortDesc('createdAt')}
                       >
                       </a>
-                      {/* <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('createdAt')}></a>
-                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('createdAt')}></a> */}
                     </Fragment>
                   </div>
                 </div>
@@ -239,8 +229,6 @@ class UserTable extends React.Component {
                         onClick={() => adminUsersContainer.onClickSortDesc('lastLoginAt')}
                       >
                       </a>
-                      {/* <a className="fa fa-angle-up" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortAsc('lastLoginAt')}></a>
-                      <a className="fa fa-angle-down" aria-hidden="true" onClick={() => adminUsersContainer.onClickSortDesc('lastLoginAt')}></a> */}
                     </Fragment>
                   </div>
                 </div>

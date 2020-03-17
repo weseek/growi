@@ -17,8 +17,8 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      sort: 'id', // 何をソートするか
-      sortOrder: 'asc', // 昇順か降順か
+      sort: 'id',
+      sortOrder: 'asc',
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
