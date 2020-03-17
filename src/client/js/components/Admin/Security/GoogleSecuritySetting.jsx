@@ -70,7 +70,7 @@ class GoogleSecurityManagement extends React.Component {
 
         <div className="row mb-5">
           <div className="offset-3 col-6">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isGoogleEnabled"
                 className="custom-control-input"
@@ -149,7 +149,7 @@ class GoogleSecurityManagement extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6">
-                <div className="custom-control custom-switch checkbox-success">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     id="bindByUserNameGoogle"
                     className="custom-control-input"

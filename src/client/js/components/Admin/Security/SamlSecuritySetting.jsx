@@ -91,7 +91,7 @@ class SamlSecurityManagement extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isSamlEnabled"
                 className="custom-control-input"
@@ -422,7 +422,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-switch checkbox-success">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     id="bindByUserName-SAML"
                     className="custom-control-input"
@@ -444,7 +444,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-switch checkbox-success">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     id="bindByEmail-SAML"
                     className="custom-control-input"

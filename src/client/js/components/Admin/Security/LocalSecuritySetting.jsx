@@ -76,7 +76,7 @@ class LocalSecuritySetting extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 type="checkbox"
                 className="custom-control-input"

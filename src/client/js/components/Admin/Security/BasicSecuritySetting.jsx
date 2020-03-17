@@ -69,7 +69,7 @@ class BasicSecurityManagement extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isBasicEnabled"
                 className="custom-control-input"
@@ -96,7 +96,7 @@ class BasicSecurityManagement extends React.Component {
         <React.Fragment>
           <div className="row mb-5">
             <div className="offset-3 col-6">
-              <div className="custom-control custom-switch checkbox-success">
+              <div className="custom-control custom-switch custom-checkbox-success">
                 <input
                   id="bindByEmail-basic"
                   className="custom-control-input"

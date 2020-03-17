@@ -104,7 +104,7 @@ class SecuritySetting extends React.Component {
         <div className="row mb-5">
           <strong className="col-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
           <div className="col-6">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 type="checkbox"
                 className="custom-control-input"
@@ -122,7 +122,7 @@ class SecuritySetting extends React.Component {
         <div className="row mb-5">
           <strong className="col-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
           <div className="col-6">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 type="checkbox"
                 className="custom-control-input"
