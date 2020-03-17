@@ -200,6 +200,7 @@ class ManageGlobalNotification extends React.Component {
             <div className="form-group">
               <h3>{t('notification_setting.trigger_events')}</h3>
               <TriggerEventCheckBox
+                checkbox="success"
                 event="pageCreate"
                 checked={this.state.triggerEvents.has('pageCreate')}
                 onChange={() => this.onChangeTriggerEvents('pageCreate')}
@@ -209,6 +210,7 @@ class ManageGlobalNotification extends React.Component {
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="warning"
                 event="pageEdit"
                 checked={this.state.triggerEvents.has('pageEdit')}
                 onChange={() => this.onChangeTriggerEvents('pageEdit')}
@@ -218,6 +220,7 @@ class ManageGlobalNotification extends React.Component {
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="warning"
                 event="pageMove"
                 checked={this.state.triggerEvents.has('pageMove')}
                 onChange={() => this.onChangeTriggerEvents('pageMove')}
@@ -227,6 +230,7 @@ class ManageGlobalNotification extends React.Component {
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="danger"
                 event="pageDelete"
                 checked={this.state.triggerEvents.has('pageDelete')}
                 onChange={() => this.onChangeTriggerEvents('pageDelete')}
@@ -236,6 +240,7 @@ class ManageGlobalNotification extends React.Component {
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="info"
                 event="pageLike"
                 checked={this.state.triggerEvents.has('pageLike')}
                 onChange={() => this.onChangeTriggerEvents('pageLike')}
@@ -245,6 +250,7 @@ class ManageGlobalNotification extends React.Component {
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="secondary"
                 event="comment"
                 checked={this.state.triggerEvents.has('comment')}
                 onChange={() => this.onChangeTriggerEvents('comment')}

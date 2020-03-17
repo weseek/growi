@@ -95,7 +95,7 @@ export default class PageRevisionList extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="custom-control custom-switch float-right">
+        <div className="custom-control custom-checkbox custom-checkbox-info float-right">
           <input
             type="checkbox"
             id="cbCompactize"
