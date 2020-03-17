@@ -27,7 +27,7 @@ const websocketContainer = new WebsocketContainer(appContainer);
 
 logger.info('unstated containers have been initialized');
 
-appContainer.initPlugins();
+appContainer.init();
 appContainer.injectToWindow();
 
 /**

@@ -101,12 +101,11 @@ body.kibela {
   }
 
   .revision-toc {
-    &.affix {
-      top: calc(60px + 5px);
-      right: 10rem;
-      min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
-      margin-top: 40px;
-    }
+    position: sticky;
+    top: calc(60px + 5px);
+    right: 10rem;
+    min-width: 100%;
+    margin-top: 40px;
 
     .revision-toc-content {
       padding: 0;
@@ -158,12 +157,6 @@ body.kibela {
         border-color: solid 1px #5584e1;
       }
     }
-  }
-
-  /* user page */
-  .header-wrap {
-    padding: 0px;
-    margin-left: 2em;
   }
 
   /* edit */

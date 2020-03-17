@@ -2,7 +2,8 @@ module.exports = {
   js: [
     {
       name: 'basis',
-      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.4.0,npm/popper.js@1.15.0,npm/bootstrap@4.3.1/dist/js/bootstrap.min.js',
+      // eslint-disable-next-line max-len
+      url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.4.0,npm/popper.js@1.15.0,npm/bootstrap@4.4.1/dist/js/bootstrap.min.js,npm/scrollpos-styler@0.7.1,npm/jquery-slimscroll@1.3.8/jquery.slimscroll.min.js',
       groups: ['basis'],
       args: {
         integrity: '',
@@ -45,6 +46,14 @@ module.exports = {
       },
     },
     {
+      name: 'drawio-viewer',
+      url: 'https://jgraph.github.io/drawio/src/main/webapp/js/viewer.min.js',
+      args: {
+        async: true,
+        integrity: '',
+      },
+    },
+    {
       name: 'codemirror-dialog',
       url: 'https://cdn.jsdelivr.net/npm/codemirror@5.48.4/addon/dialog/dialog.min.js',
       args: {
@@ -75,14 +84,6 @@ module.exports = {
     {
       name: 'redoc-standalone',
       url: 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js',
-      args: {
-        integrity: '',
-      },
-    },
-    {
-      name: 'drawio-viewer',
-      url: 'https://jgraph.github.io/drawio/src/main/webapp/js/viewer.min.js',
-      groups: ['basis'],
       args: {
         integrity: '',
       },

@@ -69,29 +69,27 @@ class GoogleSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-xs-3 my-3 text-right">
-            <strong>{t('security_setting.OAuth.Google.name')}</strong>
-          </div>
-          <div className="col-xs-6 text-left">
-            <div className="checkbox checkbox-success">
+          <div className="offset-3 col-6">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isGoogleEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGoogleEnabled || false}
                 onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
               />
-              <label htmlFor="isGoogleEnabled">
+              <label className="custom-control-label" htmlFor="isGoogleEnabled">
                 {t('security_setting.OAuth.Google.enable_google')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('google') && isGoogleEnabled)
-              && <div className="label label-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-xs-3 text-right">{t('security_setting.callback_URL')}</label>
-          <div className="col-xs-6">
+          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="text"
@@ -118,8 +116,8 @@ class GoogleSecurityManagement extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientId" className="col-xs-3 text-right">{t('security_setting.clientID')}</label>
-              <div className="col-xs-6">
+              <label htmlFor="googleClientId" className="col-3 text-right py-2">{t('security_setting.clientID')}</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -134,8 +132,8 @@ class GoogleSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="googleClientSecret" className="col-xs-3 text-right">{t('security_setting.client_secret')}</label>
-              <div className="col-xs-6">
+              <label htmlFor="googleClientSecret" className="col-3 text-right py-2">{t('security_setting.client_secret')}</label>
+              <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
@@ -150,15 +148,17 @@ class GoogleSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
-                <div className="checkbox checkbox-success">
+              <div className="offset-3 col-6">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     id="bindByUserNameGoogle"
+                    className="custom-control-input"
                     type="checkbox"
                     checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
                     onChange={() => { adminGoogleSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
                   />
                   <label
+                    className="custom-control-label"
                     htmlFor="bindByUserNameGoogle"
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
@@ -170,7 +170,7 @@ class GoogleSecurityManagement extends React.Component {
             </div>
 
             <div className="row my-3">
-              <div className="col-xs-offset-3 col-xs-5">
+              <div className="offset-3 col-5">
                 <button
                   type="button"
                   className="btn btn-primary"
