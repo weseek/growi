@@ -15,7 +15,7 @@ const validator = {
     body('restrictGuestMode').isString().isIn([
       'Deny', 'Readonly',
     ]),
-    body('pageCompleteDeletionAuthority').isString().isIn([
+    body('pageCompleteDeletionAuthority').if((value, { req }) => req.body.pageCompleteDeletionAuthority).isString().isIn([
       'anyOne', 'adminOnly', 'adminAndAuthor',
     ]),
     body('hideRestrictedByOwner').if((value, { req }) => req.body.hideRestrictedByOwner).isBoolean(),
