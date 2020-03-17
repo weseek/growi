@@ -53,6 +53,12 @@ class AssociateModal extends React.Component {
     catch (err) {
       toastError(err);
     }
+    try {
+      await personalContainer.retrieveExternalAccounts();
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   render() {
