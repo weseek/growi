@@ -17,7 +17,7 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
-      sort: 'status', // 何をソートするか
+      sort: 'id', // 何をソートするか
       sortOrder: 'asc', // 昇順か降順か
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
@@ -67,46 +67,46 @@ export default class AdminUsersContainer extends Container {
     }
   }
 
-  clearStatusList() {
+  async clearStatusList() {
     const { selectedStatusList } = this.state;
     selectedStatusList.clear();
-    this.setState({ selectedStatusList });
+    await this.setState({ selectedStatusList });
   }
 
-  addStatusToList(statusType) {
+  async addStatusToList(statusType) {
     const { selectedStatusList } = this.state;
     selectedStatusList.add(statusType);
-    this.setState({ selectedStatusList });
+    await this.setState({ selectedStatusList });
     this.retrieveUsersByPagingNum(1);
   }
 
-  deleteStatusFromList(statusType) {
+  async deleteStatusFromList(statusType) {
     const { selectedStatusList } = this.state;
     selectedStatusList.delete(statusType);
-    this.setState({ selectedStatusList });
+    await this.setState({ selectedStatusList });
     this.retrieveUsersByPagingNum(1);
   }
 
   // Input Serch Text
-  handleChangeSearchText(searchText) {
-    this.setState({ searchText });
+  async handleChangeSearchText(searchText) {
+    await this.setState({ searchText });
     this.retrieveUsersByPagingNum(1);
   }
 
-  clearSearchText() {
-    this.setState({ searchText: '' });
+  async clearSearchText() {
+    await this.setState({ searchText: '' });
   }
 
   // sorting
-  onClickSortAsc(sort) {
-    this.setState({ sort });
-    this.setState({ sortOrder: 'asc' });
+  async onClickSortAsc(sort) {
+    await this.setState({ sort });
+    await this.setState({ sortOrder: 'asc' });
     this.retrieveUsersByPagingNum(1);
   }
 
-  onClickSortDesc(sort) {
-    this.setState({ sort });
-    this.setState({ sortOrder: 'desc' });
+  async onClickSortDesc(sort) {
+    await this.setState({ sort });
+    await this.setState({ sortOrder: 'desc' });
     this.retrieveUsersByPagingNum(1);
   }
 
