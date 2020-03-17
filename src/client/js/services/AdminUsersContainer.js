@@ -46,7 +46,9 @@ export default class AdminUsersContainer extends Container {
     this.setState({ notifyComment });
   }
 
-  // status
+  /**
+   * Workaround for status list
+   */
   isSelected(statusType) {
     return this.state.selectedStatusList.has(statusType);
   }
@@ -87,7 +89,9 @@ export default class AdminUsersContainer extends Container {
     this.retrieveUsersByPagingNum(1);
   }
 
-  // Input Serch Text
+  /**
+   * Workaround for Increment Search Text Input
+   */
   async handleChangeSearchText(searchText) {
     await this.setState({ searchText });
     this.retrieveUsersByPagingNum(1);
@@ -98,7 +102,9 @@ export default class AdminUsersContainer extends Container {
     this.retrieveUsersByPagingNum(1);
   }
 
-  // sorting
+  /**
+   * Workaround for Sorting
+   */
   async onClickSortAsc(sort) {
     await this.setState({ sort });
     await this.setState({ sortOrder: 'asc' });
