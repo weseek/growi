@@ -75,7 +75,7 @@ class LdapSecuritySetting extends React.Component {
 
         <div className="row mb-5">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch checkbox-success">
+            <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isLdapEnabled"
                 className="custom-control-input"
@@ -275,7 +275,7 @@ class LdapSecuritySetting extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6">
-                <div className="custom-control custom-switch checkbox-success">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     type="checkbox"
                     className="custom-control-input"

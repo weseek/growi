@@ -345,8 +345,7 @@ class ImportForm extends React.Component {
     return (
       <div className="mt-4 row">
         <div className="col-12">
-          {/* FIXME: use something instead of <legend> */}
-          <legend>{groupName} Collections</legend>
+          <h3 className="admin-setting-header">{groupName} Collections</h3>
           { wellContent != null && (
             <div className="card well small" role="alert">
               <ul>
