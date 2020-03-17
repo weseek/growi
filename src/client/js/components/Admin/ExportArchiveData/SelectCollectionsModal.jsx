@@ -142,23 +142,24 @@ class SelectCollectionsModal extends React.Component {
   }
 
   renderCheckboxes(collectionNames, color) {
-    const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+    const checkboxColor = color ? `custom-checkbox-${color}` : 'custom-checkbox-info';
 
     return (
-      <div className={`checkbox ${checkboxColor}`}>
+      <div className={`custom-control custom-checkbox ${checkboxColor}`}>
         <div className="row">
           {collectionNames.map((collectionName) => {
             return (
               <div className="col-sm-6 my-1" key={collectionName}>
                 <input
                   type="checkbox"
+                  className="custom-control-input"
                   id={collectionName}
                   name={collectionName}
                   value={collectionName}
                   checked={this.state.selectedCollections.has(collectionName)}
                   onChange={this.toggleCheckbox}
                 />
-                <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+                <label className="text-capitalize custom-control-label ml-3" htmlFor={collectionName}>
                   {collectionName}
                 </label>
               </div>
