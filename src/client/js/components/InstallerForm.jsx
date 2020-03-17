@@ -48,13 +48,16 @@ class InstallerForm extends React.Component {
     return (
       <div className={`login-dialog py-3 mx-auto${hasErrorClass}`}>
         <div className="row">
-          <p className="alert alert-success">
-            <strong>{ this.props.t('installer.create_initial_account') }</strong><br />
-            <small>{ this.props.t('installer.initial_account_will_be_administrator_automatically') }</small>
-          </p>
-
-          <form role="form" action="/installer" method="post" id="register-form">
-            <div className="form-group text-center col-md-12">
+          <div className="col-md-12">
+            <p className="alert alert-success">
+              <strong>{ this.props.t('installer.create_initial_account') }</strong><br />
+              <small>{ this.props.t('installer.initial_account_will_be_administrator_automatically') }</small>
+            </p>
+          </div>
+        </div>
+        <div className="row">
+          <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
+            <div className="form-group text-center">
               <div className="form-check">
                 <input
                   type="radio"
@@ -87,7 +90,7 @@ class InstallerForm extends React.Component {
               </div>
             </div>
 
-            <div className={`input-group col-md-12${hasErrorClass}`}>
+            <div className={`input-group${hasErrorClass}`}>
               <span className="input-group-addon"><i className="icon-user" /></span>
               <input
                 type="text"
@@ -99,7 +102,7 @@ class InstallerForm extends React.Component {
                 required
               />
             </div>
-            <p className="form-text col-md-12">{ unavailableUserId }</p>
+            <p className="form-text">{ unavailableUserId }</p>
 
             <div className="input-group">
               <span className="input-group-addon"><i className="icon-tag" /></span>
