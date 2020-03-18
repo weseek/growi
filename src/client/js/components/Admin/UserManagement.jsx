@@ -179,7 +179,15 @@ class UserManagement extends React.Component {
 
             <div>
               <button type="button" className="btn btn-default btn-outline btn-sm">
-                <span className="icon-refresh mr-1"></span>
+                <span
+                  className="icon-refresh mr-1"
+                  onClick={() => {
+                    adminUsersContainer.resetEverySort();
+                    this.searchUserElement.value = '';
+                  }}
+
+                >
+                </span>
                 Reset
               </button>
             </div>
