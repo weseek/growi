@@ -116,7 +116,7 @@ export default class AdminUsersContainer extends Container {
   }
 
 
-  async resetEverySort() {
+  async onClickReset() {
     await this.setState({
       sort: 'id', sortOrder: 'asc', searchText: '', selectedStatusList: new Set(['all']),
     });

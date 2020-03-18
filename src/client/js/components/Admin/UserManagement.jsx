@@ -182,8 +182,13 @@ class UserManagement extends React.Component {
                 <span
                   className="icon-refresh mr-1"
                   onClick={() => {
-                    adminUsersContainer.resetEverySort();
-                    this.searchUserElement.value = '';
+                    try {
+                      adminUsersContainer.onClickReset();
+                      this.searchUserElement.value = '';
+                    }
+                    catch (err) {
+                      toastError(err);
+                    }
                   }}
                 >
                 </span>
