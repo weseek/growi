@@ -185,7 +185,6 @@ class UserManagement extends React.Component {
                     adminUsersContainer.resetEverySort();
                     this.searchUserElement.value = '';
                   }}
-
                 >
                 </span>
                 Reset
