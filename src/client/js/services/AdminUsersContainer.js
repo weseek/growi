@@ -46,7 +46,9 @@ export default class AdminUsersContainer extends Container {
     this.setState({ notifyComment });
   }
 
-  // status
+  /**
+   * Workaround for status list
+   */
   isSelected(statusType) {
     return this.state.selectedStatusList.has(statusType);
   }
@@ -87,7 +89,9 @@ export default class AdminUsersContainer extends Container {
     this.retrieveUsersByPagingNum(1);
   }
 
-  // Input Serch Text
+  /**
+   * Workaround for Increment Search Text Input
+   */
   async handleChangeSearchText(searchText) {
     await this.setState({ searchText });
     this.retrieveUsersByPagingNum(1);
@@ -95,17 +99,20 @@ export default class AdminUsersContainer extends Container {
 
   async clearSearchText() {
     await this.setState({ searchText: '' });
+    this.retrieveUsersByPagingNum(1);
   }
 
-  // sorting
-  async onClickSortAsc(sort) {
-    await this.setState({ sort });
-    await this.setState({ sortOrder: 'asc' });
+  /**
+   * Workaround for Sorting
+   */
+  async onClickSortAsc(sortColumns) {
+    await this.setState({ sort: sortColumns, sortOrder: 'asc' });
+    this.retrieveUsersByPagingNum(1);
   }
 
-  async onClickSortDesc(sort) {
-    await this.setState({ sort });
-    await this.setState({ sortOrder: 'desc' });
+  async onClickSortDesc(sortColumns) {
+    await this.setState({ sort: sortColumns, sortOrder: 'desc' });
+    this.retrieveUsersByPagingNum(1);
   }
 
   /**
