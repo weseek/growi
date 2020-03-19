@@ -2,13 +2,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import loggerFactory from '@alias/logger';
+
 import { createSubscribedElement } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import GlobalNotificationList from './GlobalNotificationList';
 
+const logger = loggerFactory('growi:GlobalNotification');
+
 class GlobalNotification extends React.Component {
+
+  constructor() {
+    super();
+
+    this.onClickSubmit = this.onClickSubmit.bind(this);
+  }
+
+  async onClickSubmit() {
+    const { t, adminNotificationContainer } = this.props;
+
+    try {
+      await adminNotificationContainer.updateGlobalNotificationForPages();
+      toastSuccess(t('toaster.update_successed', { target: t('Notification Settings') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }
 
   render() {
     const { t, adminNotificationContainer } = this.props;
@@ -16,11 +40,67 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <a href="/admin/global-notification/new">
-          <p className="btn btn-default">{t('notification_setting.add_notification')}</p>
-        </a>
+        <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
 
-        <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}</h2>
+        <p className="well">
+          {/* eslint-disable-next-line react/no-danger */}
+          <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
+        </p>
+
+
+        <div className="row mb-4">
+          <div className="col-md-8 col-md-offset-2">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isNotificationForOwnerPageEnabled"
+                type="checkbox"
+                checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
+                onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
+              />
+              <label htmlFor="isNotificationForOwnerPageEnabled">
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
+
+              </label>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="row mb-4">
+          <div className="col-md-8 col-md-offset-2">
+            <div className="checkbox checkbox-success">
+              <input
+                id="isNotificationForGroupPageEnabled"
+                type="checkbox"
+                checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
+                onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
+              />
+              <label htmlFor="isNotificationForGroupPageEnabled">
+                {/* eslint-disable-next-line react/no-danger */}
+                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="row my-3">
+          <div className="col-xs-offset-4 col-xs-5">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={adminNotificationContainer.state.retrieveError}
+            >{t('Update')}
+            </button>
+          </div>
+        </div>
+
+        <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}
+          <a href="/admin/global-notification/new">
+            <p className="btn btn-default pull-right">{t('notification_setting.add_notification')}</p>
+          </a>
+        </h2>
 
         <table className="table table-bordered">
           <thead>
