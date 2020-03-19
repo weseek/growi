@@ -22,7 +22,7 @@
       .main {
         width: 100vw;
 
-        > .row {
+        >.row {
           margin-right: 20px;
           margin-left: 20px;
         }
@@ -605,6 +605,7 @@
 }
 
 .login-page {
+
   // layout
   .main .row {
     @media (min-width: 350px) {
@@ -664,7 +665,7 @@
 
       // fix https://github.com/weseek/growi/issues/330
       // 'backface-visibility: hidden' and 'z-index: -1' breaks layout in iOS
-      .fcbtn:after {
+      ::after {
         z-index: 0;
         opacity: 0.3;
       }
