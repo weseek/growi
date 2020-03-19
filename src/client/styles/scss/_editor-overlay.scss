@@ -48,6 +48,8 @@
     }
 
     .gfm-cheatsheet-modal-link {
+      background-color: transparent;
+      border: none;
       color: $text-muted;
       pointer-events: all;
       cursor: pointer;
