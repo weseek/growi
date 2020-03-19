@@ -117,18 +117,16 @@ class StatusTable extends React.PureComponent {
       <table className="table table-bordered">
         <tbody>
           <tr>
-            <th>{ t('full_text_search_management.connection_status') }</th>
-            <td>{connectionStatusLabel}</td>
+            <th className="w-25">{t('full_text_search_management.connection_status')}</th>
+            <td className="w-75">{connectionStatusLabel}</td>
           </tr>
           <tr>
-            <th>{ t('full_text_search_management.indices_status') }</th>
-            <td>{indicesStatusLabel}</td>
+            <th className="w-25">{t('full_text_search_management.indices_status')}</th>
+            <td className="w-75">{indicesStatusLabel}</td>
           </tr>
           <tr>
-            <th>{ t('full_text_search_management.indices_summary') }</th>
-            <td className="p-4">
-              { this.renderIndexInfoPanels() }
-            </td>
+            <th className="w-25">{t('full_text_search_management.indices_summary')}</th>
+            <td className="p-4 w-75">{this.renderIndexInfoPanels()}</td>
           </tr>
         </tbody>
       </table>
