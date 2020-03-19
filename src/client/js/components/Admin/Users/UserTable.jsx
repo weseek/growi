@@ -60,6 +60,34 @@ class UserTable extends React.Component {
       </span>
     );
   }
+  /**
+   *  sort and icon
+   */
+
+  renderSortIcon(columnName) {
+    return (
+      <div className="d-flex flex-column text-center">
+        { this.generate(columnName, 'asc') }
+        { this.generate(columnName, 'desc') }
+      </div>
+    );
+  }
+
+  generate(columnName, sorting) { // sortingはascかdesc
+    const { adminUsersContainer } = this.props;
+    const upOrDown = (sorting === 'asc' ? 'up' : 'down');
+    return (
+      <a
+        className={`fa ${(
+        adminUsersContainer.state.sort === columnName)
+        && (adminUsersContainer.state.sortOrder === sorting) ? `fa-chevron-${upOrDown}` : `fa-angle-${upOrDown}`}`}
+        aria-hidden="true"
+        onClick={() => adminUsersContainer.onClickSort(columnName, sorting === 'asc')}
+      >
+      </a>
+    );
+
+  }
 
   /**
    * return admin label element by `isAdmin`
@@ -88,26 +116,7 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('status')}
                   </div>
-                  <div className="d-flex flex-column text-center">
-                    <Fragment>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'status')
-                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('status', true)}
-                      >
-                      </a>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'status')
-                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('status', false)}
-                      >
-                      </a>
-                    </Fragment>
-                  </div>
+                  { this.renderSortIcon('status') }
                 </div>
               </th>
               <th>
@@ -115,26 +124,7 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     <code>username</code>
                   </div>
-                  <div className="d-flex flex-column text-center">
-                    <Fragment>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'username')
-                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('username', true)}
-                      >
-                      </a>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'username')
-                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('username', false)}
-                      >
-                      </a>
-                    </Fragment>
-                  </div>
+                  { this.renderSortIcon('username') }
                 </div>
               </th>
               <th>
@@ -142,26 +132,7 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Name')}
                   </div>
-                  <div className="d-flex flex-column text-center">
-                    <Fragment>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'name')
-                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('name', true)}
-                      >
-                      </a>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'name')
-                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('name', false)}
-                      >
-                      </a>
-                    </Fragment>
-                  </div>
+                  { this.renderSortIcon('name')}
                 </div>
               </th>
               <th>
@@ -169,26 +140,7 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Email')}
                   </div>
-                  <div className="d-flex flex-column text-center">
-                    <Fragment>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'email')
-                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('email', true)}
-                      >
-                      </a>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'email')
-                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('email', false)}
-                      >
-                      </a>
-                    </Fragment>
-                  </div>
+                  { this.renderSortIcon('email')}
                 </div>
               </th>
               <th width="100px">
@@ -196,26 +148,7 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Created')}
                   </div>
-                  <div className="d-flex flex-column text-center">
-                    <Fragment>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'createdAt')
-                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('createdAt', true)}
-                      >
-                      </a>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'createdAt')
-                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('createdAt', false)}
-                      >
-                      </a>
-                    </Fragment>
-                  </div>
+                  { this.renderSortIcon('createdAt')}
                 </div>
               </th>
               <th width="150px">
@@ -223,26 +156,7 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Last_Login')}
                   </div>
-                  <div className="d-flex flex-column text-center">
-                    <Fragment>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'lastLoginAt')
-                          && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('lastLoginAt', true)}
-                      >
-                      </a>
-                      <a
-                        className={`fa ${(
-                          adminUsersContainer.state.sort === 'lastLoginAt')
-                          && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
-                        aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSort('lastLoginAt', false)}
-                      >
-                      </a>
-                    </Fragment>
-                  </div>
+                  { this.renderSortIcon('lastLoginAt')}
                 </div>
               </th>
               <th width="70px"></th>
