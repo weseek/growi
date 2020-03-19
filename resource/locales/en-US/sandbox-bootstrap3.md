@@ -16,44 +16,44 @@
 
 # Panels
 
-<div class="panel panel-default">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
+<div class="card">
+  <div class="card-header">Panel heading without title</div>
+  <div class="card-body">
     Panel content
   </div>
 </div>
 
-<div class="panel panel-primary">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
+<div class="card bg-primary">
+  <div class="card-header">Panel heading without title</div>
+  <div class="card-body">
     Panel content
   </div>
 </div>
 
-<div class="panel panel-success">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
+<div class="card bg-success">
+  <div class="card-header">Panel heading without title</div>
+  <div class="card-body">
     Panel content
   </div>
 </div>
 
-<div class="panel panel-info">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
+<div class="card bg-info">
+  <div class="card-header">Panel heading without title</div>
+  <div class="card-body">
     Panel content
   </div>
 </div>
 
-<div class="panel panel-warning">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
+<div class="card bg-warning">
+  <div class="card-header">Panel heading without title</div>
+  <div class="card-body">
     Panel content
   </div>
 </div>
 
-<div class="panel panel-danger">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
+<div class="card bg-danger">
+  <div class="card-header">Panel heading without title</div>
+  <div class="card-body">
     Panel content
   </div>
 </div>
@@ -86,8 +86,8 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Alignment classes
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card bg-default">
+  <div class="card-body">
     <p class="text-left">Left aligned text.</p>
     <p class="text-center">Center aligned text.</p>
     <p class="text-right">Right aligned text.</p>
@@ -98,8 +98,8 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Transformation classes
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
     <p class="text-lowercase">Lowercased text.</p>
     <p class="text-uppercase">Uppercased text.</p>
     <p class="text-capitalize">Capitalized text.</p>
@@ -111,8 +111,8 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Contextual colors
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
     <p class="text-muted">Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.</p>
     <p class="text-primary">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
     <p class="text-success">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
@@ -124,8 +124,8 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Contextual backgrounds
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
     <p class="bg-primary">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
     <p class="bg-success">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
     <p class="bg-info">Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
