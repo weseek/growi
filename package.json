@@ -152,6 +152,10 @@
       "handsontable: v7.0.0 or above is no loger MIT lisence."
     ],
     "@alienfast/i18next-loader": "^1.0.16",
+    "@atlaskit/inline-dialog": "^12.1.11",
+    "@atlaskit/logo": "^12.3.3",
+    "@atlaskit/navigation-next": "^8.0.2",
+    "@atlaskit/toggle": "^8.1.6",
     "@babel/core": "^7.4.5",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
@@ -233,6 +237,7 @@
     "socket.io-client": "^2.0.3",
     "sticky-events": "^3.1.3",
     "style-loader": "^1.0.0",
+    "styled-components": "^5.0.1",
     "stylelint": "^13.2.0",
     "stylelint-config-recess-order": "^2.0.1",
     "swagger-jsdoc": "^3.4.0",
