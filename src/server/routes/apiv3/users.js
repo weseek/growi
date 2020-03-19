@@ -111,7 +111,33 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: listUsers
    *        summary: /users
-   *        description: Get users
+   *        description: Select selected columns from users order by asc or desc
+   *        parameters:
+   *          - name: page
+   *            in: query
+   *            description: page number
+   *            schema:
+   *              type: object
+   *          - name:  selectedStatusList
+   *            in: query
+   *            description: status list
+   *            schema:
+   *              type: object
+   *          - name: searchText
+   *            in: query
+   *            description: For incremental search value from input box
+   *            schema:
+   *              type: object
+   *          - name: sortOrder
+   *            in: query
+   *            description: asc or desc
+   *            schema:
+   *              type: object
+   *          - name: sort
+   *            in: query
+   *            description: sorting column
+   *            schema:
+   *              type: object
    *        responses:
    *          200:
    *            description: users are fetched
