@@ -61,7 +61,7 @@ class UserTable extends React.Component {
     );
   }
   /**
-   *  sort and icon
+   *  sorting and icons
    */
 
   renderSortIcon(columnName) {
@@ -73,7 +73,7 @@ class UserTable extends React.Component {
     );
   }
 
-  generate(columnName, sorting) { // sortingはascかdesc
+  generate(columnName, sorting) {
     const { adminUsersContainer } = this.props;
     const upOrDown = (sorting === 'asc' ? 'up' : 'down');
     return (
