@@ -105,13 +105,13 @@ export default class AdminUsersContainer extends Container {
   /**
    * Workaround for Sorting
    */
-  async onClickSortAsc(sortColumns) {
-    await this.setState({ sort: sortColumns, sortOrder: 'asc' });
-    this.retrieveUsersByPagingNum(1);
-  }
-
-  async onClickSortDesc(sortColumns) {
-    await this.setState({ sort: sortColumns, sortOrder: 'desc' });
+  async onClickSort(sortColumns, isAsc) {
+    if (isAsc) {
+      await this.setState({ sort: sortColumns, sortOrder: 'asc' });
+    }
+    else {
+      await this.setState({ sort: sortColumns, sortOrder: 'desc' });
+    }
     this.retrieveUsersByPagingNum(1);
   }
 
