@@ -79,17 +79,6 @@
     tslib "^1.9.3"
     uuid "^3.1.0"
 
-"@atlaskit/inline-dialog@^12.1.11":
-  version "12.1.11"
-  resolved "https://registry.yarnpkg.com/@atlaskit/inline-dialog/-/inline-dialog-12.1.11.tgz#a14040b598148c3c4ed6503c9f28902e4c0ef713"
-  integrity sha512-O7kZb+so6X01RNPqgbiunRvJ5WH/UHGa5wStNY+tp1g/gpDMVJtDhcpZR8dcqFmG60KaL8w60sR7TqRzwCD03w==
-  dependencies:
-    "@atlaskit/analytics-next" "^6.3.5"
-    "@atlaskit/popper" "^3.1.11"
-    "@atlaskit/theme" "^9.5.1"
-    react-node-resolver "^1.0.1"
-    tslib "^1.9.3"
-
 "@atlaskit/item@^11.0.2":
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/item/-/item-11.0.2.tgz#6f870fd8e45cb8670efb3e9aeb62cf7d8dd12d62"
@@ -191,16 +180,6 @@
   dependencies:
     exenv "^1.2.2"
     prop-types "^15.5.10"
-    tslib "^1.9.3"
-
-"@atlaskit/toggle@^8.1.6":
-  version "8.1.6"
-  resolved "https://registry.yarnpkg.com/@atlaskit/toggle/-/toggle-8.1.6.tgz#b1a661f6cbf842fc689a7008136ce26f86e9e856"
-  integrity sha512-eF9RBDHoibpJZet8o0Zc1I2EW/ujj5zsvSvAUPlVBGIKQk8Cqgtxwra57Phxsc4HlapAGpB7hns4pqDOIxG2mQ==
-  dependencies:
-    "@atlaskit/analytics-next" "^6.3.5"
-    "@atlaskit/theme" "^9.5.1"
-    react-uid "^2.2.0"
     tslib "^1.9.3"
 
 "@atlaskit/tooltip@^15.2.5":
