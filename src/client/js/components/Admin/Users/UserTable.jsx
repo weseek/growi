@@ -101,7 +101,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'status')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('status', false)}
+                        onClick={() => adminUsersContainer.onClickSort('status', false)}
                       >
                       </a>
                     </Fragment>
