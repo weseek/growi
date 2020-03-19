@@ -18,6 +18,7 @@ import {
   NavigationProvider,
   Separator,
   Wordmark,
+  ThemeProvider, modeGenerator,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from './UnstatedUtils';
@@ -33,16 +34,18 @@ class Sidebar extends React.Component {
   state = {
   };
 
-  renderProductNavigation = () => (
+  renderSidebarContents = () => (
     <>
       <HeaderSection>
         { () => (
-          <Wordmark wordmark={JiraWordmark} />
+          <div className="grw-product-nav-header">
+            <Wordmark wordmark={JiraWordmark} />
+          </div>
         ) }
       </HeaderSection>
       <MenuSection>
-        {({ className }) => (
-          <div className={className}>
+        { () => (
+          <div className="grw-product-nav-menu">
             <Item
               before={BacklogIcon}
               text="Backlog"
@@ -61,25 +64,35 @@ class Sidebar extends React.Component {
             <Item before={ShortcutIcon} text="Project space" />
             <Item before={ShortcutIcon} text="Project repo" />
           </div>
-        )}
+        ) }
       </MenuSection>
     </>
   );
 
   render() {
     return (
-      <NavigationProvider>
-        <LayoutManager
-          globalNavigation={SidebarNav}
-          productNavigation={this.renderProductNavigation}
-          containerNavigation={null}
-          experimental_flyoutOnHover
-          experimental_alternateFlyoutBehaviour
-          experimental_fullWidthFlyout
-          showContextualNavigation
-        >
-        </LayoutManager>
-      </NavigationProvider>
+      <ThemeProvider
+        theme={theme => ({
+          ...theme,
+          context: 'product',
+          mode: modeGenerator({
+            product: { text: '#ffffff', background: '#202b35' },
+          }),
+        })}
+      >
+        <NavigationProvider>
+          <LayoutManager
+            globalNavigation={SidebarNav}
+            productNavigation={() => null}
+            containerNavigation={this.renderSidebarContents}
+            experimental_flyoutOnHover
+            experimental_alternateFlyoutBehaviour
+            experimental_fullWidthFlyout
+            showContextualNavigation
+          >
+          </LayoutManager>
+        </NavigationProvider>
+      </ThemeProvider>
     );
   }
 
