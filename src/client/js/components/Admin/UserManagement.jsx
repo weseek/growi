@@ -65,6 +65,20 @@ class UserManagement extends React.Component {
   }
 
   /**
+   * Reset button
+   */
+  resetButtonClickHandler() {
+    const { adminUsersContainer } = this.props;
+    try {
+      adminUsersContainer.resetAllChanges();
+      this.searchUserElement.value = '';
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
    * Workaround increamental search
    * @param {string} event
    */
@@ -179,7 +193,11 @@ class UserManagement extends React.Component {
 
             <div>
               <button type="button" className="btn btn-default btn-outline btn-sm">
-                <span className="icon-refresh mr-1"></span>
+                <span
+                  className="icon-refresh mr-1"
+                  onClick={() => { this.resetButtonClickHandler() }}
+                >
+                </span>
                 Reset
               </button>
             </div>
