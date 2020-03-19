@@ -288,21 +288,28 @@ class CommentEditor extends React.Component {
             </div>
             <div className="comment-submit">
               <div className="d-flex">
-                <label style={{ flex: 1 }}>
+                <label className="mr-2">
                   { isBaloonStyle && activeTab === 1 && (
-                    <span>
+                    <span className="custom-control custom-checkbox">
                       <input
                         type="checkbox"
+                        className="custom-control-input"
                         id="comment-form-is-markdown"
                         name="isMarkdown"
                         checked={this.state.isMarkdown}
                         value="1"
                         onChange={this.updateStateCheckbox}
                       />
-                      <span className="ml-2">Markdown</span>
+                      <label
+                        className="ml-2 custom-control-label"
+                        htmlFor="comment-form-is-markdown"
+                      >
+                        Markdown
+                      </label>
                     </span>
                   ) }
                 </label>
+                <span style={{ flex: 1 }} />
                 <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
                 { this.state.hasSlackConfig
                   && (
