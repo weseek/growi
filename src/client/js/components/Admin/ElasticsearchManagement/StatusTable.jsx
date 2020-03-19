@@ -11,7 +11,7 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`badge-${indexName}-${aliasName}`} className="badge badge-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="badge badge-pill badge-primary mr-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );
@@ -82,7 +82,7 @@ class StatusTable extends React.PureComponent {
       <div className="row">
         { Object.keys(indexNameToDataMap).map((indexName) => {
           return (
-            <div key={`col-${indexName}`} className="col-xs-6">
+            <div key={`col-${indexName}`} className="col-6">
               { this.renderIndexInfoPanel(indexName, indexNameToDataMap[indexName], indexNameToAliasMap[indexName]) }
             </div>
           );
@@ -96,21 +96,21 @@ class StatusTable extends React.PureComponent {
     const { isConfigured, isConnected, isNormalized } = this.props;
 
 
-    let connectionStatusLabel = <span className="badge badge-default">――</span>;
+    let connectionStatusLabel = <span className="badge badge-pill badge-secondary">――</span>;
     if (isConfigured != null && !isConfigured) {
-      connectionStatusLabel = <span className="badge badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+      connectionStatusLabel = <span className="badge badge-pill badge-secondary">{t('full_text_search_management.connection_status_label_unconfigured')}</span>;
     }
     else if (isConnected != null) {
       connectionStatusLabel = isConnected
-        ? <span className="badge badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="badge badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+        ? <span className="badge badge-pill badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge badge-pill badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
     }
 
-    let indicesStatusLabel = <span className="label badge-default">――</span>;
+    let indicesStatusLabel = <span className="badge badge-pill badge-secondary">――</span>;
     if (isNormalized != null) {
       indicesStatusLabel = isNormalized
-        ? <span className="badge badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-        : <span className="badge badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+        ? <span className="badge badge-pill badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+        : <span className="badge badge-pill badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
     }
 
     return (
@@ -125,7 +125,7 @@ class StatusTable extends React.PureComponent {
             <td>{indicesStatusLabel}</td>
           </tr>
           <tr>
-            <th className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
+            <th>{ t('full_text_search_management.indices_summary') }</th>
             <td className="p-4">
               { this.renderIndexInfoPanels() }
             </td>
