@@ -279,13 +279,11 @@ class CommentEditor extends React.Component {
                     onCtrlEnter={this.postHandler}
                   />
                 </TabPane>
-                { this.state.isMarkdown && (
-                  <TabPane tabId={2}>
-                    <div className="comment-form-preview">
-                      {commentPreview}
-                    </div>
-                  </TabPane>
-                ) }
+                <TabPane tabId={2}>
+                  <div className="comment-form-preview">
+                    {commentPreview}
+                  </div>
+                </TabPane>
               </TabContent>
             </div>
             <div className="comment-submit">
