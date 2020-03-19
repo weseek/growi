@@ -102,7 +102,26 @@ module.exports = (crowi) => {
     query('page').isInt({ min: 1 }),
   ];
 
-  // TODO write swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users:
+   *      get:
+   *        tags: [Users]
+   *        operationId: listUsers
+   *        summary: /users
+   *        description: Get users
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    paginateResult:
+   *                      $ref: '#/components/schemas/PaginateResult'
+   */
 
   router.get('/', validator.statusList, ApiV3FormValidator, async(req, res) => {
 
