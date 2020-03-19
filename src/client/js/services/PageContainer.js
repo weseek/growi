@@ -365,4 +365,13 @@ export default class PageContainer extends Container {
 
   }
 
+  get isTrashPage() {
+    const path = this.state.path || '';
+    if (path.match(/^\/trash(\/.*)?$/)) {
+      return true;
+    }
+
+    return false;
+  }
+
 }
