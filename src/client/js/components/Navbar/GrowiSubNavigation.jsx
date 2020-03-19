@@ -19,6 +19,7 @@ const GrowiSubNavigation = (props) => {
   return (
     <div className="d-flex align-items-center">
 
+      {/* Page Path */}
       <div className="title-container mr-auto">
         <h1>
           <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />
@@ -26,6 +27,8 @@ const GrowiSubNavigation = (props) => {
         {/* TODO hide this component at forbidden page */}
         {!isTrashPage && <TagLabels />}
       </div>
+
+      {/* Header Button */}
       <div className="ml-1">
         <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />
       </div>
