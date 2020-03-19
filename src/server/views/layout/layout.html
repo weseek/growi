@@ -73,17 +73,16 @@
 
 <div id="wrapper" class="d-flex">
 
-  <!-- Sidebar -->
+  {# Sidebar #}
   <nav>
     <div id="grw-sidebar"></div>
   </nav>
 
   <div class="flex-grow-1">
 
-    <!-- Navbar -->
     {% block layout_head_nav %}
     <nav class="navbar grw-navbar navbar-expand-sm navbar-dark mb-0 p-0">
-      <!-- 1 GROWI logo -->
+      {# Brand Logo #}
       <div class="navbar-brand">
         <a class="logo d-block" href="/">
           <div class="logo-mark d-inline-block">{% include '../widget/logo.html' %}</div>
@@ -99,44 +98,16 @@
         </a>
       </div>
 
+      {# Navbar Left #}
       <ul class="navbar-nav mr-auto">
-        {#
-        <!-- 2 side nav open -->
-        <a class="open-close d-none d-md-block mx-3 waves-effect waves-light">
-          <i class="ti-menu"></i>
-        </a>
-        #}
-        {#  disabled temporary -- 2019.05.13 Yuki Takei
-        <li class="nav-item">
-          <a class="nav-link" href="/tags">
-            <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
-          </a>
-        </div>
-
-        <ul class="nav navbar-top-links navbar-left hidden-xs">
-          <li>
-            <a class="open-close hidden-xs waves-effect waves-light">
-              <i class="ti-menu"></i>
-            </a>
-          </li>
-          {#  disabled temporary -- 2019.05.13 Yuki Takei
-          <li>
-            <li class="nav-item-admin">
-              <a href="/tags">
-                <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
-              </a>
-            </li>
-          </li>
-          #}
-          <li>
-            {% if isSearchServiceConfigured() %}
-            <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
-            {% endif %}
-          </li>
-        </ul>
+        <li>
+          {% if isSearchServiceConfigured() %}
+          <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
+          {% endif %}
+        </li>
       </ul>
 
-      <!-- 5 user action -->
+      {# Navbar Right #}
       <ul class="navbar-nav">
         {% if user and user.admin %}
         <li class="nav-item">
@@ -172,15 +143,13 @@
     {% include '../modal/create_page.html' %}
     {% endblock  %} {# layout_head_nav #}
 
-    <!-- 6 header widget area -->
     {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
     {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
-    <!-- 8 Page Content -->
     <div id="page-wrapper">
       {% block layout_main %}
       {% endblock %} {# layout_main #}
-    </div><!-- /#page-wrapper -->
+    </div>
 
   </div>
 

@@ -7,7 +7,9 @@ import AddIcon from '@atlaskit/icon/glyph/add';
 import SearchIcon from '@atlaskit/icon/glyph/search';
 import { JiraIcon } from '@atlaskit/logo';
 
-import { GlobalNav } from '@atlaskit/navigation-next';
+import {
+  GlobalNav,
+} from '@atlaskit/navigation-next';
 import Drawer from '@atlaskit/drawer';
 
 import { createSubscribedElement } from '../UnstatedUtils';

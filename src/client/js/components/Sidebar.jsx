@@ -33,8 +33,8 @@ class Sidebar extends React.Component {
   state = {
   };
 
-  renderContainerNavigation = () => (
-    <div>
+  renderProductNavigation = () => (
+    <>
       <HeaderSection>
         { () => (
           <Wordmark wordmark={JiraWordmark} />
@@ -63,7 +63,7 @@ class Sidebar extends React.Component {
           </div>
         )}
       </MenuSection>
-    </div>
+    </>
   );
 
   render() {
@@ -71,8 +71,8 @@ class Sidebar extends React.Component {
       <NavigationProvider>
         <LayoutManager
           globalNavigation={SidebarNav}
-          productNavigation={() => null}
-          containerNavigation={this.renderContainerNavigation}
+          productNavigation={this.renderProductNavigation}
+          containerNavigation={null}
           experimental_flyoutOnHover
           experimental_alternateFlyoutBehaviour
           experimental_fullWidthFlyout
