@@ -70,7 +70,7 @@ class UserManagement extends React.Component {
   resetButtonClickHandler() {
     const { adminUsersContainer } = this.props;
     try {
-      adminUsersContainer.resetAll();
+      adminUsersContainer.resetAllChanges();
       this.searchUserElement.value = '';
     }
     catch (err) {
