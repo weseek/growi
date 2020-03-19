@@ -8,6 +8,8 @@ import AppContainer from '../../services/AppContainer';
 import RevisionPath from '../Page/RevisionPath';
 import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
+import LikeButton from '../LikeButton';
+import BookmarkButton from '../BookmarkButton';
 
 const GrowiSubNavigation = (props) => {
   const { appContainer, pageContainer } = props;
@@ -23,6 +25,12 @@ const GrowiSubNavigation = (props) => {
         </h1>
         {/* TODO hide this component at forbidden page */}
         {!isTrashPage && <TagLabels />}
+      </div>
+      <div className="ml-1">
+        <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />
+      </div>
+      <div>
+        <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />
       </div>
     </div>
   );
