@@ -95,7 +95,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'status')
                           && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortAsc('status')}
+                        onClick={() => adminUsersContainer.onClickSort('status', true)}
                       >
                       </a>
                       <a
@@ -103,7 +103,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'status')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('status')}
+                        onClick={() => adminUsersContainer.onClickSort('status', false)}
                       >
                       </a>
                     </Fragment>
@@ -122,7 +122,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'username')
                           && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortAsc('username')}
+                        onClick={() => adminUsersContainer.onClickSort('username', true)}
                       >
                       </a>
                       <a
@@ -130,7 +130,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'username')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('username')}
+                        onClick={() => adminUsersContainer.onClickSort('username', false)}
                       >
                       </a>
                     </Fragment>
@@ -149,7 +149,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'name')
                           && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortAsc('name')}
+                        onClick={() => adminUsersContainer.onClickSort('name', true)}
                       >
                       </a>
                       <a
@@ -157,7 +157,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'name')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('name')}
+                        onClick={() => adminUsersContainer.onClickSort('name', false)}
                       >
                       </a>
                     </Fragment>
@@ -176,7 +176,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'email')
                           && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortAsc('email')}
+                        onClick={() => adminUsersContainer.onClickSort('email', true)}
                       >
                       </a>
                       <a
@@ -184,7 +184,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'email')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('email')}
+                        onClick={() => adminUsersContainer.onClickSort('email', false)}
                       >
                       </a>
                     </Fragment>
@@ -203,7 +203,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'createdAt')
                           && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortAsc('createdAt')}
+                        onClick={() => adminUsersContainer.onClickSort('createdAt', true)}
                       >
                       </a>
                       <a
@@ -211,7 +211,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'createdAt')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('createdAt')}
+                        onClick={() => adminUsersContainer.onClickSort('createdAt', false)}
                       >
                       </a>
                     </Fragment>
@@ -230,7 +230,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'lastLoginAt')
                           && (adminUsersContainer.state.sortOrder === 'asc') ? 'fa-chevron-up' : 'fa-angle-up'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortAsc('lastLoginAt')}
+                        onClick={() => adminUsersContainer.onClickSort('lastLoginAt', true)}
                       >
                       </a>
                       <a
@@ -238,7 +238,7 @@ class UserTable extends React.Component {
                           adminUsersContainer.state.sort === 'lastLoginAt')
                           && (adminUsersContainer.state.sortOrder === 'desc') ? 'fa-chevron-down' : 'fa-angle-down'}`}
                         aria-hidden="true"
-                        onClick={() => adminUsersContainer.onClickSortDesc('lastLoginAt')}
+                        onClick={() => adminUsersContainer.onClickSort('lastLoginAt', false)}
                       >
                       </a>
                     </Fragment>
