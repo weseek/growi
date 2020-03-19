@@ -114,7 +114,7 @@ class CustomizeHighlightSetting extends React.Component {
 
             <div className="form-group row">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-switch checkbox-success">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     type="checkbox"
                     className="custom-control-input"

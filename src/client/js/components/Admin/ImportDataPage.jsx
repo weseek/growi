@@ -143,7 +143,7 @@ class ImportDataPage extends React.Component {
           role="form"
         >
           <fieldset>
-            <legend>{t('admin:importer_management.import_from', { from: 'esa.io' })}</legend>
+            <h2 className="admin-setting-header">{t('admin:importer_management.import_from', { from: 'esa.io' })}</h2>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -233,7 +233,7 @@ class ImportDataPage extends React.Component {
           role="form"
         >
           <fieldset>
-            <legend>{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</legend>
+            <h2 className="admin-setting-header">{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</h2>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>

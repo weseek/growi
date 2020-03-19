@@ -17,8 +17,10 @@ import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
+import mdu from './MarkdownDrawioUtil';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
+import DrawioModal from './DrawioModal';
 
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
@@ -94,6 +96,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
+    this.showDrawioHandler = this.showDrawioHandler.bind(this);
   }
 
   init() {
@@ -647,6 +650,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
+  showDrawioHandler() {
+    this.drawioIFrame.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+  }
+
   getNavbarItems() {
     return [
       /* eslint-disable max-len */
@@ -746,6 +753,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Table" />
       </Button>,
+      <Button
+        key="nav-item-drawio"
+        bsSize="small"
+        title="draw.io"
+        onClick={this.showDrawioHandler}
+      >
+        <EditorIcon icon="Drawio" />
+      </Button>,
       /* eslint-able max-len */
     ];
   }
@@ -823,6 +838,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <HandsontableModal
           ref={(c) => { this.handsontableModal = c }}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
+        />
+        <DrawioModal
+          ref={(c) => { this.drawioIFrame = c }}
+          onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
         />
 
       </React.Fragment>

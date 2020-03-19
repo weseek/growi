@@ -130,19 +130,19 @@ Crowi.prototype.initForTest = async function() {
   ]);
 
   await Promise.all([
-  //   this.scanRuntimeVersions(),
-  //   this.setupPassport(),
-  //   this.setupSearcher(),
-  //   this.setupMailer(),
-  //   this.setupSlack(),
-  //   this.setupCsrf(),
-  //   this.setUpFileUpload(),
+    // this.scanRuntimeVersions(),
+    this.setupPassport(),
+    // this.setupSearcher(),
+    // this.setupMailer(),
+    // this.setupSlack(),
+    // this.setupCsrf(),
+    // this.setUpFileUpload(),
     this.setUpAcl(),
-  //   this.setUpCustomize(),
-  //   this.setUpRestQiitaAPI(),
-  //   this.setupUserGroup(),
-  //   this.setupExport(),
-  //   this.setupImport(),
+    // this.setUpCustomize(),
+    // this.setUpRestQiitaAPI(),
+    // this.setupUserGroup(),
+    // this.setupExport(),
+    // this.setupImport(),
   ]);
 
   // globalNotification depends on slack and mailer

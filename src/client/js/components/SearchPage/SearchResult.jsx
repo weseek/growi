@@ -264,11 +264,6 @@ class SearchResult extends React.Component {
       );
     });
 
-    // TODO あとでなんとかする
-    setTimeout(() => {
-      $('#search-result-list > nav').affix({ offset: { top: 50 } });
-    }, 1200);
-
     /*
     UI あとで考える
     <span className="search-result-meta">Found: {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</span>

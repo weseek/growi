@@ -13,6 +13,10 @@ import {
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
 
+import {
+  DrawioInterceptor,
+} from '../util/interceptor/drawio-interceptor';
+
 import i18nFactory from '../util/i18n';
 import apiv3ErrorHandler from '../util/apiv3ErrorHandler';
 
@@ -27,6 +31,8 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
+      preferDarkModeByMediaQuery: false,
+      preferDarkModeByUser: null,
     };
 
     const body = document.querySelector('body');
@@ -52,6 +58,7 @@ export default class AppContainer extends Container {
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new DrawioInterceptor(this), 20);
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     const userlang = body.dataset.userlang;
@@ -90,6 +97,33 @@ export default class AppContainer extends Container {
    */
   static getClassName() {
     return 'AppContainer';
+  }
+
+  init() {
+    this.initColorScheme();
+    this.initPlugins();
+  }
+
+  async initColorScheme() {
+    const switchStateByMediaQuery = (mql) => {
+      const preferDarkMode = mql.matches;
+      this.setState({ preferDarkModeByMediaQuery: preferDarkMode });
+
+      this.applyColorScheme();
+    };
+
+    const mqlForDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+    // add event listener
+    mqlForDarkMode.addListener(switchStateByMediaQuery);
+
+    // restore settings from localStorage
+    const { localStorage } = window;
+    if (localStorage.preferDarkModeByUser != null) {
+      await this.setState({ preferDarkModeByUser: localStorage.preferDarkModeByUser === 'true' });
+    }
+
+    // initialize
+    switchStateByMediaQuery(mqlForDarkMode);
   }
 
   initPlugins() {
@@ -297,6 +331,55 @@ export default class AppContainer extends Container {
         break;
     }
     targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
+  }
+
+  launchDrawioModal(componentKind, beginLineNumber, endLineNumber) {
+    let targetComponent;
+    switch (componentKind) {
+      case 'page':
+        targetComponent = this.getComponentInstance('Page');
+        break;
+    }
+    targetComponent.launchDrawioModal(beginLineNumber, endLineNumber);
+  }
+
+  /**
+   * Set color scheme preference by user
+   * @param {boolean} isDarkMode
+   */
+  async setColorSchemePreference(isDarkMode) {
+    await this.setState({ preferDarkModeByUser: isDarkMode });
+
+    // store settings to localStorage
+    const { localStorage } = window;
+    if (isDarkMode == null) {
+      delete localStorage.removeItem('preferDarkModeByUser');
+    }
+    else {
+      localStorage.preferDarkModeByUser = isDarkMode;
+    }
+
+    this.applyColorScheme();
+  }
+
+  /**
+   * Apply color scheme as 'dark' attribute of <html></html>
+   */
+  applyColorScheme() {
+    const { preferDarkModeByMediaQuery, preferDarkModeByUser } = this.state;
+    let isDarkMode = preferDarkModeByMediaQuery;
+    if (preferDarkModeByUser != null) {
+      isDarkMode = preferDarkModeByUser;
+    }
+
+    // switch to dark mode
+    if (isDarkMode) {
+      document.documentElement.setAttribute('dark', 'true');
+    }
+    // switch to light mode
+    else {
+      document.documentElement.removeAttribute('dark');
+    }
   }
 
   async apiGet(path, params) {

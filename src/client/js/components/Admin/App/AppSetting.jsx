@@ -69,7 +69,7 @@ class AppSetting extends React.Component {
         <div className="row form-group mb-5">
           <label className="col-3 col-form-label">{t('admin:app_setting.default_language')}</label>
           <div className="col-6">
-            <div className="custom-control custom-radio d-inline">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangEn"
@@ -81,7 +81,7 @@ class AppSetting extends React.Component {
               />
               <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
             </div>
-            <div className="custom-control custom-radio d-inline">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangJa"

@@ -2,8 +2,6 @@
 @import '~diff2html/bundles/css/diff2html.min.css';
 
 .main-container {
-  // padding controll of .header-wrap and .content-main are moved to _layout and _form
-
   .url-line {
     font-size: 1rem;
     color: #999;
@@ -137,6 +135,28 @@
 
   &:hover .handsontable-modal-trigger {
     opacity: 1;
+  }
+}
+
+/**
+ * for drawio with drawio iframe button
+ */
+.editable-with-drawio {
+  .drawio-iframe-trigger {
+    top: 11px;
+    right: 10px;
+    z-index: 14;
+    font-size: 12px;
+    line-height: 1;
+    color: $linktext;
+    background-color: transparent;
+    border: 1px solid $linktext;
+    opacity: 1;
+
+    &:hover {
+      color: $white;
+      background-color: $linktext;
+    }
   }
 }
 

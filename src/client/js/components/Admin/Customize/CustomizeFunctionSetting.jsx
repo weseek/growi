@@ -116,7 +116,6 @@ class CustomizeBehaviorSetting extends React.Component {
                   <DropdownToggle className="text-right col-6" caret>
                     <span className="float-left">{adminCustomizeContainer.state.currentRecentCreatedLimit}</span>
                   </DropdownToggle>
-                  {/* TODO adjust dropdown after BS4 */}
                   <DropdownMenu className="dropdown-menu" role="menu">
                     <DropdownItem key={10} role="presentation" onClick={() => { adminCustomizeContainer.switchRecentCreatedLimit(10) }}>
                       <a role="menuitem">10</a>

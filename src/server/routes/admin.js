@@ -405,242 +405,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-  actions.api.securitySetting = async function(req, res) {
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    const form = req.form.settingForm;
-    if (aclService.isWikiModeForced()) {
-      logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
-      delete form['security:restrictGuestMode'];
-    }
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      return res.json({ status: true });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false });
-    }
-  };
-
-  actions.api.securityPassportLocalSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      // reset strategy
-      crowi.passportService.resetLocalStrategy();
-      // setup strategy
-      if (configManager.getConfig('crowi', 'security:passport-local:isEnabled')) {
-        crowi.passportService.setupLocalStrategy(true);
-      }
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false, message: err.message });
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportLdapSetting = async function(req, res) {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-
-    try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', form);
-      // reset strategy
-      crowi.passportService.resetLdapStrategy();
-      // setup strategy
-      if (configManager.getConfig('crowi', 'security:passport-ldap:isEnabled')) {
-        crowi.passportService.setupLdapStrategy(true);
-      }
-    }
-    catch (err) {
-      logger.error(err);
-      return res.json({ status: false, message: err.message });
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportSamlSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    validateSamlSettingForm(req.form, req.t);
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetSamlStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-saml:isEnabled')) {
-      try {
-        await crowi.passportService.setupSamlStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetSamlStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportBasicSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetBasicStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-basic:isEnabled')) {
-      try {
-        await crowi.passportService.setupBasicStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetBasicStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportGoogleSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetGoogleStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-google:isEnabled')) {
-      try {
-        await crowi.passportService.setupGoogleStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetGoogleStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportGitHubSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetGitHubStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-github:isEnabled')) {
-      try {
-        await crowi.passportService.setupGitHubStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetGitHubStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportTwitterSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetTwitterStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-twitter:isEnabled')) {
-      try {
-        await crowi.passportService.setupTwitterStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetTwitterStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
-
-  actions.api.securityPassportOidcSetting = async(req, res) => {
-    const form = req.form.settingForm;
-
-    if (!req.form.isValid) {
-      return res.json({ status: false, message: req.form.errors.join('\n') });
-    }
-
-    debug('form content', form);
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
-
-    // reset strategy
-    await crowi.passportService.resetOidcStrategy();
-    // setup strategy
-    if (configManager.getConfig('crowi', 'security:passport-oidc:isEnabled')) {
-      try {
-        await crowi.passportService.setupOidcStrategy(true);
-      }
-      catch (err) {
-        // reset
-        await crowi.passportService.resetOidcStrategy();
-        return res.json({ status: false, message: err.message });
-      }
-    }
-
-    return res.json({ status: true });
-  };
 
   // app.get('/_api/admin/users.search' , admin.api.userSearch);
   actions.api.usersSearch = function(req, res) {
@@ -778,29 +542,22 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * validate setting form values for SAML
-   *
-   * - For the value of each mandatory items,
-   *     check whether it from the environment variables is empty and form value to update it is empty
-   * - validate the syntax of a attribute-based login control rule
-   */
-  function validateSamlSettingForm(form, t) {
-    for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
-      const formValue = form.settingForm[key];
-      if (configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
-        const formItemName = t(`security_setting.form_item_name.${key}`);
-        form.errors.push(t('form_validation.required', formItemName));
-      }
+
+  actions.api.searchBuildIndex = async function(req, res) {
+    const search = crowi.getSearcher();
+    if (!search) {
+      return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
     }
 
-    const rule = form.settingForm['security:passport-saml:ABLCRule'];
-    // Empty string disables attribute-based login control.
-    // So, when rule is empty string, validation is passed.
-    if (rule !== '' && (rule == null || crowi.passportService.parseABLCRule(rule) == null)) {
-      form.errors.push(t('form_validation.invalid_syntax', t('security_setting.form_item_name.security:passport-saml:ABLCRule')));
+    try {
+      search.buildIndex();
     }
-  }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+
+    return res.json(ApiResponse.success());
+  };
 
   return actions;
 };

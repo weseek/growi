@@ -96,13 +96,13 @@ module.exports = (crowi) => {
   const validator = {
     themeAssetPath: [
       query('themeName').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween', 'spring',
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'blue-night', 'halloween', 'spring',
       ]),
     ],
     layoutTheme: [
       body('layoutType').isString().isIn(['growi', 'kibela', 'crowi']),
       body('themeType').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'default-dark', 'future', 'blue-night', 'halloween', 'spring',
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'blue-night', 'halloween', 'spring',
       ]),
     ],
     behavior: [

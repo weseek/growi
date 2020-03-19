@@ -26,7 +26,7 @@ class MarkdownSetting extends React.Component {
     }
     catch (err) {
       toastError(err);
-      adminMarkDownContainer.setState({ retrieveError: err });
+      adminMarkDownContainer.setState({ retrieveError: err.message });
       logger.error(err);
     }
 

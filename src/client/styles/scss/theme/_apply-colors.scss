@@ -1,71 +1,15 @@
 //
 //== Apply to Bootstrap
 //
-@import '~bootstrap/scss/bootstrap-reboot';
 
-@each $color, $value in $theme-colors {
-  @include bg-variant('.bg-#{$color}', $value);
-}
+// override bootstrap variables
+$body-bg: $bgcolor-global;
+$body-color: $color-global;
+$link-color: $color-link;
+$link-hover-color: $color-link-hover;
 
-@each $color, $value in $theme-colors {
-  .btn-#{$color} {
-    @include button-variant($value, $value);
-  }
-}
-
-@each $color, $value in $theme-colors {
-  .btn-outline-#{$color} {
-    @include button-outline-variant($value);
-  }
-}
-
-@each $theme-color, $color in $theme-colors {
-  .custom-checkbox-#{$theme-color} {
-    .custom-control-label::before {
-      border-color: #d7d7d7;
-      transition: 0.3s ease-in-out;
-    }
-    .custom-control-input:checked + .custom-control-label::before {
-      background-color: $color;
-      border-color: $color;
-    }
-    .custom-control-input:checked + .custom-control-label::after {
-      color: white;
-    }
-    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-      color: white;
-      background-color: $color;
-      border-color: $color;
-    }
-    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-      color: white;
-      background-color: white;
-      border-color: #d7d7d7;
-    }
-  }
-}
-
-@each $theme-color, $color in $theme-colors {
-  .alert.alert-#{$theme-color} {
-    color: white;
-    background: $color;
-    border: none;
-
-    a:not(.btn) {
-      color: white;
-
-      &:hover,
-      &:focus {
-        color: lighten($color, 30%);
-      }
-    }
-  }
-}
-
-// Border light
-.border-light {
-  border-color: $light !important;
-}
+@import 'reboot-bootstrap-colors';
+@import 'reboot-bootstrap-theme-colors';
 
 // Link buttons
 .btn-link {
@@ -105,17 +49,11 @@
 //== Apply to GROWI Elements
 //
 
-body {
-  background: $bgcolor-global;
-}
-
 .logo {
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
   }
-
-  background-color: darken($bgcolor-navbar, 10%);
 
   .logo-mark {
     svg {
@@ -139,6 +77,10 @@ body {
   .nav-item > .nav-link {
     color: white;
   }
+
+  .logo {
+    background-color: darken($bgcolor-navbar, 10%);
+  }
 }
 
 .grw-title-bar {
@@ -154,18 +96,11 @@ body {
 }
 
 /*
- * Legend
- */
-legend {
-  color: $color-header;
-}
-
-/*
  * Modal
  */
 .modal {
   .modal-header {
-    border-bottom-color: $border;
+    border-bottom-color: $border-color-theme;
 
     &.bg-primary,
     &.bg-info,
@@ -193,7 +128,7 @@ legend {
   }
 
   .modal-footer {
-    border-top-color: $border;
+    border-top-color: $border-color-theme;
   }
 }
 
@@ -236,7 +171,7 @@ legend {
  */
 .crowi-sidebar {
   background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border;
+  border-left: solid 1px $border-color;
 
   .system-version {
     background-color: darken($bgcolor-global, 4%);
@@ -282,11 +217,11 @@ body.on-edit {
     background-color: darken($bgcolor-global, 2%);
 
     .page-editor-editor-container {
-      border-right-color: $navbar-border;
+      border-right-color: $border-color-theme;
 
       .navbar-editor {
         background-color: $bgcolor-global; // same color with active tab
-        border-bottom-color: $border;
+        border-bottom-color: $border-color-theme;
       }
     }
 
@@ -295,7 +230,7 @@ body.on-edit {
     }
 
     .page-editor-footer {
-      border-top-color: $border;
+      border-top-color: $border-color-theme;
     }
   }
 }
@@ -305,7 +240,7 @@ body.on-edit {
  */
 .growi .main {
   .page-comments-row {
-    border-top-color: $border;
+    border-top-color: $border-color-theme;
   }
 
   .page-comment .page-comment-main,
@@ -355,7 +290,7 @@ body.on-edit {
  */
 .page-attachments-row {
   background-color: darken($bgcolor-global, 2%);
-  border-top-color: $border;
+  border-top-color: $border-color-theme;
 }
 
 /*

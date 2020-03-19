@@ -18,6 +18,7 @@
 @import 'atoms/buttons';
 @import 'atoms/nav';
 @import 'atoms/spinners';
+@import 'atoms/custom_control';
 
 // crowi component
 @import 'admin';
@@ -26,6 +27,8 @@
 @import 'comment_crowi';
 @import 'comment_growi';
 @import 'comment_kibela';
+@import 'drawio';
+@import 'navbar_kibela';
 @import 'create-page';
 @import 'create-template';
 @import 'draft';
@@ -45,6 +48,7 @@
 @import 'on-edit';
 @import 'page_list';
 @import 'page';
+@import 'page_header';
 @import 'page_growi';
 @import 'search';
 @import 'shortcuts';

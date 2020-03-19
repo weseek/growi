@@ -6,19 +6,17 @@
   {% block content_header_before %}
   {% endblock %}
 
-  <div class="header-wrap">
-    <header id="page-header">
-      <div class="d-flex align-items-center">
-        <div class="title-container">
-          <h1 class="title" id="revision-path"></h1>
-          {% if page and not forbidden and not isTrashPage() %}
-            <div id="tag-label"></div>
-          {% endif %}
-        </div>
-        {% include '../widget/header-buttons.html' %}
+  <header id="page-header">
+    <div class="d-flex align-items-center">
+      <div class="title-container">
+        <h1 class="title" id="revision-path"></h1>
+        {% if page and not forbidden and not isTrashPage() %}
+          <div id="tag-label"></div>
+        {% endif %}
       </div>
-    </header>
-  </div>
+      {% include '../widget/header-buttons.html' %}
+    </div>
+  </header>
 
   {% block content_header_after %}
   {% endblock %}

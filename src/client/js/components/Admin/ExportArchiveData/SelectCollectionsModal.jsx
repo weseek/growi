@@ -142,23 +142,24 @@ class SelectCollectionsModal extends React.Component {
   }
 
   renderCheckboxes(collectionNames, color) {
-    const checkboxColor = color ? `checkbox-${color}` : 'checkbox-info';
+    const checkboxColor = color ? `custom-checkbox-${color}` : 'custom-checkbox-info';
 
     return (
-      <div className={`checkbox ${checkboxColor}`}>
+      <div className={`custom-control custom-checkbox ${checkboxColor}`}>
         <div className="row">
           {collectionNames.map((collectionName) => {
             return (
               <div className="col-sm-6 my-1" key={collectionName}>
                 <input
                   type="checkbox"
+                  className="custom-control-input"
                   id={collectionName}
                   name={collectionName}
                   value={collectionName}
                   checked={this.state.selectedCollections.has(collectionName)}
                   onChange={this.toggleCheckbox}
                 />
-                <label className="text-capitalize form-check-label ml-3" htmlFor={collectionName}>
+                <label className="text-capitalize custom-control-label ml-3" htmlFor={collectionName}>
                   {collectionName}
                 </label>
               </div>
@@ -174,7 +175,7 @@ class SelectCollectionsModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose}>
           {t('admin:export_management.export_collections')}
         </ModalHeader>
 
@@ -192,26 +193,26 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <legend>Page Collections</legend>
+                <h3 className="admin-setting-header">Page Collections</h3>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <legend>User Collections</legend>
+                <h3 className="admin-setting-header">User Collections</h3>
                 {this.renderGroups(GROUPS_USER, 'danger')}
                 {this.renderWarnForUser()}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <legend>Config Collections</legend>
+                <h3 className="admin-setting-header">Config Collections</h3>
                 {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <legend>Other Collections</legend>
+                <h3 className="admin-setting-header">Other Collections</h3>
                 {this.renderOthers()}
               </div>
             </div>
