@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-# example
+# Table of contents
 
 ```
 @[toc]
@@ -14,9 +14,9 @@
 
 # :pencil: Block Elements
 
-## Headers 見出し
+## Headers Heading
 
-先頭に`#`をレベルの数だけ記述します。
+Write `#` per level at the beginnning
 
 ```
 # Header 1
@@ -35,28 +35,28 @@
 
 ###### Header 6
 
-## Block 段落
+## Block paragraph
 
-空白行を挟むことで段落となります。aaaa
+It will be paragraph in between blank line
 
 ```
-段落1
-(空行)
-段落2
+paragraph1
+(Blank line)
+paragraph2
 ```
 
-段落1
+paragraph1
 
-段落2
+paragraph2
 
-## Br 改行
+## Br break(new line)
 
-改行の前に半角スペース``を2つ記述します。
-***この挙動は、オプションで変更可能です***
+Write two  half spaces`` before break 
+***This behavior is Editable by option***
 
 ```
 hoge
-fuga(スペース2つ)
+fuga(two space)
 piyo
 ```
 
@@ -64,31 +64,32 @@ hoge
 fuga
 piyo
 
-## Blockquotes 引用
+## Blockquotes quotes
 
+Write`>`at the beginning. Write multiple `>` quotes for nest.
 先頭に`>`を記述します。ネストは`>`を多重に記述します。
 
 ```
-> 引用
-> 引用
->> 多重引用
+> qupte
+> qupte
+>> multiple quote
 ```
 
-> 引用
-> 引用
->> 多重引用
+> qupte
+> qupte
+>> multiple qupte
 
-## Code コード
+## Code
 
-`` `バッククオート` `` 3つ、あるいはチルダ`~`３つで囲みます。
+`` `back quote` `` three back qupte or wrap three of tildes
 
 ```
 print 'hoge'
 ```
 
-### シンタックスハイライトとファイル名
+### syntax highlight and file name
 
-- [highlight.js Demo](https://highlightjs.org/static/demo/) の common カテゴリ内の言語に対応しています
+- corresponding [highlight.js Demo](https://highlightjs.org/static/demo/) of common category
 
 
 ~~~
@@ -115,19 +116,19 @@ function MersenneTwister(seed) {
 }
 ```
 
-### インラインコード
+### Inline code
 
-`` `バッククオート` `` で単語を囲むとインラインコードになります。
+It will be Inline code wrapped word by `` `Back quote` ``
 
 ```
-これは `インラインコード`です。
+This is `Inline Code`.
 ```
 
-これは `インラインコード`です。
+This is  `Inline Code`.
 
-## pre 整形済みテキスト
+## pre arranged text
 
-半角スペース4個もしくはタブで、コードブロックをpre表示できます
+It can show code block by four half space or tab
 
 ```
     class Hoge
@@ -143,9 +144,9 @@ function MersenneTwister(seed) {
         end
     end
 
-## Hr 水平線
+## Hr Horizon
 
-アンダースコア`_` 、アスタリスク`*`を3つ以上連続して記述します。
+Write three Underscores `_`, or asterisks`*`.
 
 ```
 ***
@@ -161,31 +162,31 @@ ___
 
 # :pencil: Typography
 
-## 強調
+## Strong
 
 ### em
 
-アスタリスク`*`もしくはアンダースコア`_`1個で文字列を囲みます。
+wrap by asterisks`*` or unserscore`_`.
 
 ```
-これは *イタリック* です
-これは _イタリック_ です
+This is *Italic* .
+This is _Italic_ .
 ```
 
-これは *イタリック* です
-これは _イタリック_ です
+This is *Italic* .
+This is _Italic_ .
 
 ### strong
 
-アスタリスク`*`もしくはアンダースコア`_`2個で文字列を囲みます。
+Wrap by two asterisks`*`or unserscores`_`
 
 ```
-これは **ボールド** です
-これは __ボールド__ です
+This is **bold**.
+This is __bold__.
 ```
 
-これは **ボールド** です
-これは __ボールド__ です
+This is **bold**.
+This is __bold__.
 
 ### em + strong
 
