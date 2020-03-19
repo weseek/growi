@@ -9,7 +9,7 @@
 
       <div class="modal-body">
 
-        <form class="row form-horizontal" id="create-page-today" role="form">
+        <form class="row form-group" id="create-page-today" role="form">
           <fieldset class="col-12 mb-4">
             <h3 class="grw-modal-head pb-2">{{ t("Create today's") }}</h3>
             <div class="d-flex create-page-input-container">
@@ -26,7 +26,7 @@
           </fieldset>
         </form>
 
-        <form class="row form-horizontal" id="create-page-under-tree" role="form">
+        <form class="row form-group" id="create-page-under-tree" role="form">
           <fieldset class="col-12 mb-4">
             <h3 class="grw-modal-head pb-2">{{ t('Create under') }}</h3>
             <div class="d-flex create-page-input-container">
@@ -45,7 +45,7 @@
         </form>
 
         {% set templateParentPath = parentPath(path | preventXss | escape) %}
-        <div id="template-form" class="row form-horizontal">
+        <div id="template-form" class="row form-group">
           <fieldset class="col-12">
             <h3 class="grw-modal-head pb-2">{{ t('template.modal_label.Create template under', templateParentPath) }}</h3>
             <div class="d-flex create-page-input-container">
