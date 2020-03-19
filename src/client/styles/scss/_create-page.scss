@@ -2,8 +2,7 @@
   // more than tablet size
   @include media-breakpoint-up(sm) {
     .modal-dialog {
-      width: 45%;
-      max-width: initial;
+      width: 750px;
     }
   }
 
