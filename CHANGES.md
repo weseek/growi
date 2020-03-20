@@ -2,7 +2,7 @@
 
 ## v3.7.1-RC
 
-* 
+* Improvement: Add an option that make it possible to choose what to send notifications
 
 ## v3.7.0
 
