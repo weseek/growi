@@ -62,7 +62,7 @@ class Sidebar extends React.Component {
             <Separator />
             <GroupHeading>Shortcuts</GroupHeading>
             <Item before={ShortcutIcon} text="Project space" />
-            <Item before={ShortcutIcon} text="Project repo" />
+            <Item before={ShortcutIcon} text="Looooooooooooooooooooooooooooooong Menu" />
           </div>
         ) }
       </MenuSection>
@@ -76,7 +76,7 @@ class Sidebar extends React.Component {
           ...theme,
           context: 'product',
           mode: modeGenerator({
-            product: { text: '#ffffff', background: '#202b35' },
+            product: { text: '#ffffff', background: '#334455' },
           }),
         })}
       >
@@ -87,7 +87,8 @@ class Sidebar extends React.Component {
             containerNavigation={this.renderSidebarContents}
             experimental_flyoutOnHover
             experimental_alternateFlyoutBehaviour
-            experimental_fullWidthFlyout
+            // experimental_fullWidthFlyout
+            shouldHideGlobalNavShadow
             showContextualNavigation
           >
           </LayoutManager>

@@ -75,31 +75,15 @@
 
   {# Sidebar #}
   <nav>
-    <div id="grw-sidebar"></div>
+    <div id="grw-sidebar" class="grw-sidebar"></div>
   </nav>
 
   <div class="flex-grow-1">
 
     {% block layout_head_nav %}
     <nav class="navbar grw-navbar navbar-expand-sm navbar-dark mb-0 p-0">
-      {# Brand Logo #}
-      <div class="navbar-brand">
-        <a class="logo d-block" href="/">
-          <div class="logo-mark d-inline-block">{% include '../widget/logo.html' %}</div>
-          {#
-          <span class="logo-text mx-2">
-            {% set appTitle = appService.getAppTitle() %}
-            {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
-            <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
-              {% block title %}{{ appTitle }}{% endblock %}
-            </text>
-          </span>
-          #}
-        </a>
-      </div>
-
       {# Navbar Left #}
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav mr-auto pl-4">
         <li>
           {% if isSearchServiceConfigured() %}
           <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>

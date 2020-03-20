@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import AddIcon from '@atlaskit/icon/glyph/add';
-import SearchIcon from '@atlaskit/icon/glyph/search';
-import { JiraIcon } from '@atlaskit/logo';
+import EditIcon from '@atlaskit/icon/glyph/edit';
+import TrayIcon from '@atlaskit/icon/glyph/tray';
 
 import {
   GlobalNav,
@@ -14,6 +13,8 @@ import Drawer from '@atlaskit/drawer';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+
+import GrowiLogo from '../GrowiLogo';
 
 class SidebarNav extends React.Component {
 
@@ -31,28 +32,23 @@ class SidebarNav extends React.Component {
   render() {
     const { isDrawerOpen } = this.state;
     return (
-      <div>
+      <>
+        <div className="grw-logo">
+          <GrowiLogo />
+        </div>
         <GlobalNav
           primaryItems={[
+            { id: 'create', icon: EditIcon, label: 'Create' },
             {
-              id: 'jira',
-              icon: () => <JiraIcon size="medium" label="Jira" />,
-              label: 'Jira',
+              id: 'drawer', icon: TrayIcon, label: 'Drawer', onClick: this.openDrawer,
             },
-            {
-              id: 'search',
-              icon: SearchIcon,
-              label: 'Search',
-              onClick: this.openDrawer,
-            },
-            { id: 'create', icon: AddIcon, label: 'Add' },
           ]}
           secondaryItems={[]}
         />
         <Drawer onClose={this.closeDrawer} isOpen={isDrawerOpen} width="wide">
           <code>Drawer contents</code>
         </Drawer>
-      </div>
+      </>
     );
   }
 
