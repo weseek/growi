@@ -309,7 +309,7 @@ class CommentEditor extends React.Component {
                     </span>
                   ) }
                 </label>
-                <span style={{ flex: 1 }} />
+                <span className="flex-grow-1" />
                 <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
                 { this.state.hasSlackConfig
                   && (
