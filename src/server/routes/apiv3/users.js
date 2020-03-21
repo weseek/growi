@@ -117,27 +117,27 @@ module.exports = (crowi) => {
    *            in: query
    *            description: page number
    *            schema:
-   *              type: object
+   *              type: number
    *          - name:  selectedStatusList
    *            in: query
    *            description: status list
    *            schema:
-   *              type: object
+   *              type: string
    *          - name: searchText
    *            in: query
    *            description: For incremental search value from input box
    *            schema:
-   *              type: object
+   *              type: string
    *          - name: sortOrder
    *            in: query
    *            description: asc or desc
    *            schema:
-   *              type: object
+   *              type: string
    *          - name: sort
    *            in: query
    *            description: sorting column
    *            schema:
-   *              type: object
+   *              type: string
    *        responses:
    *          200:
    *            description: users are fetched
