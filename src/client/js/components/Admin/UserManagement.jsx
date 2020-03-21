@@ -192,10 +192,13 @@ class UserManagement extends React.Component {
             </div>
 
             <div>
-              <button type="button" className="btn btn-default btn-outline btn-sm">
+              <button
+                type="button"
+                className="btn btn-default btn-outline btn-sm"
+                onClick={() => { this.resetButtonClickHandler() }}
+              >
                 <span
                   className="icon-refresh mr-1"
-                  onClick={() => { this.resetButtonClickHandler() }}
                 >
                 </span>
                 Reset
