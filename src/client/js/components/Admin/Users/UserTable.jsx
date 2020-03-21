@@ -61,7 +61,7 @@ class UserTable extends React.Component {
     );
   }
   /**
-   *  sorting and icons
+   *  sorting
    */
 
   renderSortIcon(columnName) {
