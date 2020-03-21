@@ -67,13 +67,13 @@ class UserTable extends React.Component {
   renderSortIcon(columnName) {
     return (
       <div className="d-flex flex-column text-center">
-        { this.generate(columnName, 'asc') }
-        { this.generate(columnName, 'desc') }
+        { this.generateSorting(columnName, 'asc') }
+        { this.generateSorting(columnName, 'desc') }
       </div>
     );
   }
 
-  generate(columnName, sorting) {
+  generateSorting(columnName, sorting) {
     const { adminUsersContainer } = this.props;
     const upOrDown = (sorting === 'asc' ? 'up' : 'down');
     return (
