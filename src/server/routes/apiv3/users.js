@@ -102,7 +102,52 @@ module.exports = (crowi) => {
     query('page').isInt({ min: 1 }),
   ];
 
-  // TODO write swagger
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users:
+   *      get:
+   *        tags: [Users]
+   *        operationId: listUsers
+   *        summary: /users
+   *        description: Select selected columns from users order by asc or desc
+   *        parameters:
+   *          - name: page
+   *            in: query
+   *            description: page number
+   *            schema:
+   *              type: number
+   *          - name:  selectedStatusList
+   *            in: query
+   *            description: status list
+   *            schema:
+   *              type: string
+   *          - name: searchText
+   *            in: query
+   *            description: For incremental search value from input box
+   *            schema:
+   *              type: string
+   *          - name: sortOrder
+   *            in: query
+   *            description: asc or desc
+   *            schema:
+   *              type: string
+   *          - name: sort
+   *            in: query
+   *            description: sorting column
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: users are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    paginateResult:
+   *                      $ref: '#/components/schemas/PaginateResult'
+   */
 
   router.get('/', validator.statusList, ApiV3FormValidator, async(req, res) => {
 
