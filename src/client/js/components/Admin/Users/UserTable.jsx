@@ -60,10 +60,10 @@ class UserTable extends React.Component {
       </span>
     );
   }
+
   /**
    *  sorting
    */
-
   renderSortIcon(columnName) {
     return (
       <div className="d-flex flex-column text-center">
