@@ -159,11 +159,6 @@ module.exports = (crowi) => {
     // Search from input
     const searchText = req.query.searchText || '';
     const searchWord = new RegExp(`${searchText}`);
-    const orColumns = ['name', 'username', 'email'];
-    const orOutput = {};
-    orColumns.forEach((element) => {
-      orOutput[element] = { $in: searchWord };
-    });
     // Sort
     const { sort, sortOrder } = req.query;
     const sortOutput = {
@@ -175,7 +170,13 @@ module.exports = (crowi) => {
         {
           $and: [
             { status: { $in: statusNoList } },
-            { $or: [orOutput] },
+            {
+              $or: [
+                { name: { $in: searchWord } },
+                { username: { $in: searchWord } },
+                { email: { $in: searchWord } },
+              ],
+            },
           ],
         },
         {
