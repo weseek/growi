@@ -120,7 +120,6 @@ module.exports = (crowi) => {
       [sort]: (sortOrder === 'desc') ? -1 : 1,
     };
 
-    // { $or: [orOutput] },
     try {
       const paginateResult = await User.paginate(
         {
