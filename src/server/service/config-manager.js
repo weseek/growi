@@ -146,12 +146,11 @@ class ConfigManager {
   }
 
   /**
-   * get a config specified by namespace & key from configs loaded from the environment variables
+   * get all config from the environment variables
    *
-   * **Do not use this unless absolutely necessary. Use getConfig instead.**
+   * **use this only admin home page.**
    */
   getAllConfigFromEnvVars() {
-    console.log(this.configObject.fromEnvVars);
     return this.configObject.fromEnvVars;
   }
 
