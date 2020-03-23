@@ -50,6 +50,8 @@ $link-hover-color: $color-link-hover;
 //
 
 .grw-logo {
+  background-color: darken($bgcolor-navbar, 10%);
+
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -74,13 +76,9 @@ $link-hover-color: $color-link-hover;
 
 .grw-navbar {
   // TODO: coloring
-  // background: $bgcolor-navbar;
-  // .nav-item > .nav-link {
-  //   color: white;
-  // }
-  background: darken($bgcolor-global, 8%);
+  background: $bgcolor-navbar;
   .nav-item > .nav-link {
-    color: #333;
+    color: white;
   }
 }
 
@@ -89,9 +87,6 @@ $link-hover-color: $color-link-hover;
 }
 
 .grw-sidebar {
-  .grw-logo {
-    background-color: darken($bgcolor-navbar, 10%);
-  }
 }
 
 /*

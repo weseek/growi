@@ -14,8 +14,6 @@ import Drawer from '@atlaskit/drawer';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import GrowiLogo from '../GrowiLogo';
-
 class SidebarNav extends React.Component {
 
   propTypes = {
@@ -33,9 +31,6 @@ class SidebarNav extends React.Component {
     const { isDrawerOpen } = this.state;
     return (
       <>
-        <div className="grw-logo">
-          <GrowiLogo />
-        </div>
         <GlobalNav
           primaryItems={[
             { id: 'create', icon: EditIcon, label: 'Create' },

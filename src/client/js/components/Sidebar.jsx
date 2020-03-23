@@ -76,7 +76,7 @@ class Sidebar extends React.Component {
           ...theme,
           context: 'product',
           mode: modeGenerator({
-            product: { text: '#ffffff', background: '#334455' },
+            product: { text: '#999', background: '#fff' },
           }),
         })}
       >
@@ -88,8 +88,9 @@ class Sidebar extends React.Component {
             experimental_flyoutOnHover
             experimental_alternateFlyoutBehaviour
             // experimental_fullWidthFlyout
-            shouldHideGlobalNavShadow
+            // shouldHideGlobalNavShadow
             showContextualNavigation
+            topOffset={50}
           >
           </LayoutManager>
         </NavigationProvider>
