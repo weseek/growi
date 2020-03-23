@@ -10,6 +10,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminHomeContainer from '../../../services/AdminHomeContainer';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
+import EnvVarsTable from './EnvVarsTable';
 
 const logger = loggerFactory('growi:admin');
 
@@ -29,7 +30,7 @@ class AdminHome extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminHomeContainer } = this.props;
 
     return (
       <Fragment>
@@ -50,6 +51,13 @@ class AdminHome extends React.Component {
           <div className="col-md-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
             <InstalledPluginTable />
+          </div>
+        </div>
+
+        <div className="row mb-5">
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">環境変数一覧</h2>
+            {adminHomeContainer.state.envVars.crowi && <EnvVarsTable />}
           </div>
         </div>
       </Fragment>

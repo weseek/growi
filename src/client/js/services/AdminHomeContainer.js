@@ -25,6 +25,7 @@ export default class AdminHomeContainer extends Container {
       npmVersion: '',
       yarnVersion: '',
       installedPlugins: [],
+      envVars: {},
     };
 
   }
@@ -50,6 +51,7 @@ export default class AdminHomeContainer extends Container {
         npmVersion: adminHomeParams.npmVersion,
         yarnVersion: adminHomeParams.yarnVersion,
         installedPlugins: adminHomeParams.installedPlugins,
+        envVars: adminHomeParams.envVars,
       });
     }
     catch (err) {

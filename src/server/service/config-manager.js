@@ -146,6 +146,16 @@ class ConfigManager {
   }
 
   /**
+   * get a config specified by namespace & key from configs loaded from the environment variables
+   *
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
+   */
+  getAllConfigFromEnvVars() {
+    console.log(this.configObject.fromEnvVars);
+    return this.configObject.fromEnvVars;
+  }
+
+  /**
    * update configs in the same namespace
    *
    * Specified values are encoded by convertInsertValue.
