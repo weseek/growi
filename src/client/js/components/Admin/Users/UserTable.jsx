@@ -103,8 +103,13 @@ class UserTable extends React.Component {
     }
   }
 
-  onSortIconsClicked(order) {
-    console.log(order);
+  sortIconsClickedHandler(sort, sortOrder) {
+    console.log('sortIconsClickedHandler', sort, sortOrder);
+
+    const isAsc = sortOrder === 'asc';
+
+    const { adminUsersContainer } = this.props;
+    adminUsersContainer.onClickSort(sort, isAsc);
   }
 
   render() {
@@ -125,7 +130,10 @@ class UserTable extends React.Component {
                     sortColumns="status"
                     isSelected={adminUsersContainer.state.sort === 'status'}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onClick={this.onSortIconsClicked}
+                    onClick={(sortOrder) => {
+                      console.log('arrow function', sortOrder);
+                      this.sortIconsClickedHandler('status', sortOrder);
+                    }}
                   />
                 </div>
               </th>
