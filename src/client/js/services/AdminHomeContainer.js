@@ -25,7 +25,6 @@ export default class AdminHomeContainer extends Container {
       npmVersion: '',
       yarnVersion: '',
       installedPlugins: [],
-      envVars: {},
     };
 
   }
