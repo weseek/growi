@@ -9,6 +9,7 @@ import UserMenu from './UserMenu';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import SortIcons from './SortIcons';
 
 class UserTable extends React.Component {
 
@@ -102,6 +103,10 @@ class UserTable extends React.Component {
     }
   }
 
+  onSortIconsClicked(order) {
+    console.log(order);
+  }
+
   render() {
     const { t, adminUsersContainer } = this.props;
 
@@ -116,7 +121,12 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('status')}
                   </div>
-                  { this.renderSortIcon('status') }
+                  <SortIcons
+                    sortColumns="status"
+                    isSelected={adminUsersContainer.state.sort === 'status'}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onClick={this.onSortIconsClicked}
+                  />
                 </div>
               </th>
               <th>
@@ -124,7 +134,10 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     <code>username</code>
                   </div>
-                  { this.renderSortIcon('username') }
+                  {/* <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'username'}
+                  /> */}
+                  {/* { this.renderSortIcon('username') } */}
                 </div>
               </th>
               <th>
@@ -132,7 +145,10 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Name')}
                   </div>
-                  { this.renderSortIcon('name')}
+                  {/* <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'name'}
+                  /> */}
+                  {/* { this.renderSortIcon('name')} */}
                 </div>
               </th>
               <th>
@@ -140,7 +156,10 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Email')}
                   </div>
-                  { this.renderSortIcon('email')}
+                  {/* <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'email'}
+                  /> */}
+                  {/* { this.renderSortIcon('email')} */}
                 </div>
               </th>
               <th width="100px">
@@ -148,7 +167,10 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Created')}
                   </div>
-                  { this.renderSortIcon('createdAt')}
+                  {/* <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'createdAt'}
+                  /> */}
+                  {/* { this.renderSortIcon('createdAt')} */}
                 </div>
               </th>
               <th width="150px">
@@ -156,7 +178,10 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Last_Login')}
                   </div>
-                  { this.renderSortIcon('lastLoginAt')}
+                  {/* <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
+                  /> */}
+                  {/* { this.renderSortIcon('lastLoginAt')} */}
                 </div>
               </th>
               <th width="70px"></th>
@@ -193,15 +218,16 @@ class UserTable extends React.Component {
 
 }
 
-const UserTableWrapper = (props) => {
-  return createSubscribedElement(UserTable, props, [AppContainer, AdminUsersContainer]);
-};
 
 UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
+};
+
+const UserTableWrapper = (props) => {
+  return createSubscribedElement(UserTable, props, [AppContainer, AdminUsersContainer]);
 };
 
 export default withTranslation()(UserTableWrapper);
