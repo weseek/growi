@@ -43,6 +43,9 @@ h5 {
 .nav-tabs {
   .nav-item {
     margin-right: 0.15rem;
+    a.active {
+      cursor: default
+    }
   }
 }
 
@@ -73,10 +76,6 @@ h5 {
 .dropdown {
   .dropdown-toggle.btn.disabled {
     cursor: not-allowed;
-  }
-  button {
-    background: transparent;
-    border: none;
   }
 }
 

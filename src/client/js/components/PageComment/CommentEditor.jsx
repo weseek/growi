@@ -224,7 +224,7 @@ class CommentEditor extends React.Component {
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
-      <Button outline color="danger" size="xs" className="fcbtn btn-rounded" onClick={this.toggleEditor}>
+      <Button outline color="danger" size="xs" className="fcbtn rounded-pill" onClick={this.toggleEditor}>
         Cancel
       </Button>
     );
@@ -232,7 +232,7 @@ class CommentEditor extends React.Component {
       <Button
         outline
         color="primary"
-        className="fcbtn btn-rounded btn-1b"
+        className="fcbtn rounded-pill btn-1b"
         onClick={this.postHandler}
       >
         Comment
@@ -255,11 +255,13 @@ class CommentEditor extends React.Component {
                     Write
                   </NavLink>
                 </NavItem>
-                <NavItem>
-                  <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
-                    Preview
-                  </NavLink>
-                </NavItem>
+                { this.state.isMarkdown && (
+                  <NavItem>
+                    <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
+                      Preview
+                    </NavLink>
+                  </NavItem>
+                ) }
               </Nav>
               <TabContent activeTab={activeTab}>
                 <TabPane tabId={1}>
@@ -277,32 +279,37 @@ class CommentEditor extends React.Component {
                     onCtrlEnter={this.postHandler}
                   />
                 </TabPane>
-                { this.state.isMarkdown && (
-                  <TabPane tabId={2}>
-                    <div className="comment-form-preview">
-                      {commentPreview}
-                    </div>
-                  </TabPane>
-                ) }
+                <TabPane tabId={2}>
+                  <div className="comment-form-preview">
+                    {commentPreview}
+                  </div>
+                </TabPane>
               </TabContent>
             </div>
             <div className="comment-submit">
               <div className="d-flex">
-                <label style={{ flex: 1 }}>
+                <label className="mr-2">
                   { isBaloonStyle && activeTab === 1 && (
-                    <span>
+                    <span className="custom-control custom-checkbox">
                       <input
                         type="checkbox"
+                        className="custom-control-input"
                         id="comment-form-is-markdown"
                         name="isMarkdown"
                         checked={this.state.isMarkdown}
                         value="1"
                         onChange={this.updateStateCheckbox}
                       />
-                      <span className="ml-2">Markdown</span>
+                      <label
+                        className="ml-2 custom-control-label"
+                        htmlFor="comment-form-is-markdown"
+                      >
+                        Markdown
+                      </label>
                     </span>
                   ) }
                 </label>
+                <span className="flex-grow-1" />
                 <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
                 { this.state.hasSlackConfig
                   && (
