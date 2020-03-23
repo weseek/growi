@@ -7,7 +7,8 @@
     "list_of_installed_plugins": "インストールされているプラグイン一覧",
     "package_name": "パッケージ名",
     "specified_version": "指定バージョン",
-    "installed_version": "インストールされているバージョン"
+    "installed_version": "インストールされているバージョン",
+    "list_of_env_vars":"設定している環境変数一覧",
   },
   "app_setting": {
     "site_name": "サイト名",

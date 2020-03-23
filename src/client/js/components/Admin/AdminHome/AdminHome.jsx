@@ -56,7 +56,7 @@ class AdminHome extends React.Component {
 
         <div className="row mb-5">
           <div className="col-md-12">
-            <h2 className="admin-setting-header">環境変数一覧</h2>
+            <h2 className="admin-setting-header">{t('admin:admin_top.list_of_env_vars')}</h2>
             {adminHomeContainer.state.envVars.crowi && <EnvVarsTable envVars={adminHomeContainer.state.envVars} />}
           </div>
         </div>
