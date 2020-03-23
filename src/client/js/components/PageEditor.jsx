@@ -56,7 +56,7 @@ class PageEditor extends React.Component {
     this.setMarkdownStateWithDebounce = debounce(50, throttle(100, (value) => {
       this.setState({ markdown: value });
     }));
-    this.saveDraftWithDebounce = debounce(3000, this.saveDraft);
+    this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
 
   componentWillMount() {
