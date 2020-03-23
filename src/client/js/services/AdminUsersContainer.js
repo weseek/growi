@@ -2,7 +2,6 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 import { debounce } from 'throttle-debounce';
 
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
 
