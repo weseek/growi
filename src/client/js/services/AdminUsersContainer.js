@@ -1,5 +1,6 @@
 import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
+import { debounce } from 'throttle-debounce';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
@@ -33,6 +34,8 @@ export default class AdminUsersContainer extends Container {
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
+
+    this.handleChangeSearchTextDebouce = debounce(3000, () => this.retrieveUsersByPagingNum(1));
   }
 
   /**
@@ -94,7 +97,7 @@ export default class AdminUsersContainer extends Container {
    */
   async handleChangeSearchText(searchText) {
     await this.setState({ searchText });
-    this.retrieveUsersByPagingNum(1);
+    this.handleChangeSearchTextDebouce();
   }
 
   async clearSearchText() {
