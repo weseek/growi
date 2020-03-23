@@ -5,8 +5,8 @@
       <form role="form" id="duplicatePageForm" onsubmit="return false;">
 
         <div class="modal-header bg-primary">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title">{{ t('modal_duplicate.label.Duplicate page') }}</div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         </div>
         <div class="modal-body">
             <div class="form-group">
@@ -16,7 +16,9 @@
             <div class="form-group">
               <label for="duplicatePageName">{{ t('modal_duplicate.label.New page name') }}</label><br>
               <div class="input-group">
-                <span class="input-group-addon">{{ baseUrl }}</span>
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ baseUrl }}</span>
+              </div>
                 {% if isSearchServiceConfigured() %}
                 <div id="duplicate-page-name-input" class="page-name-input"></div>
                 {% else %}
