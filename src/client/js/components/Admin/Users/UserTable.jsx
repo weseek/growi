@@ -129,7 +129,6 @@ class UserTable extends React.Component {
                   <SortIcons
                     isSelected={adminUsersContainer.state.sort === 'status'}
                     isAsc={isCurrentSortOrderAsc}
-                    // eslint-disable-next-line react/jsx-no-bind
                     onClick={(sortOrder) => {
                       this.sortIconsClickedHandler('status', sortOrder);
                     }}
