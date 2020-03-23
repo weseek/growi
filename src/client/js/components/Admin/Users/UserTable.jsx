@@ -63,34 +63,6 @@ class UserTable extends React.Component {
   }
 
   /**
-   *  sorting
-   */
-  renderSortIcon(columnName) {
-    return (
-      <div className="d-flex flex-column text-center">
-        { this.generateSorting(columnName, 'asc') }
-        { this.generateSorting(columnName, 'desc') }
-      </div>
-    );
-  }
-
-  generateSorting(columnName, sorting) {
-    const { adminUsersContainer } = this.props;
-    const upOrDown = (sorting === 'asc' ? 'up' : 'down');
-    return (
-      <a
-        className={`fa ${(
-        adminUsersContainer.state.sort === columnName)
-        && (adminUsersContainer.state.sortOrder === sorting) ? `fa-chevron-${upOrDown}` : `fa-angle-${upOrDown}`}`}
-        aria-hidden="true"
-        onClick={() => adminUsersContainer.onClickSort(columnName, sorting === 'asc')}
-      >
-      </a>
-    );
-
-  }
-
-  /**
    * return admin label element by `isAdmin`
    * @param {string} isAdmin
    * @return admin label element
