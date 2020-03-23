@@ -549,7 +549,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   renderCheatsheetModalButton() {
     return (
-      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link small p-0" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
         <i className="icon-question" /> Markdown
       </button>
     );
@@ -655,10 +655,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   getNavbarItems() {
+    const buttonColor = '';
     return [
       /* eslint-disable max-len */
       <Button
         key="nav-item-bold"
+        color={buttonColor}
         size="sm"
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
@@ -667,6 +669,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-italic"
+        color={buttonColor}
         size="sm"
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
@@ -675,6 +678,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-strikethrough"
+        color={buttonColor}
         size="sm"
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
@@ -683,6 +687,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-header"
+        color={buttonColor}
         size="sm"
         title="Heading"
         onClick={this.makeHeaderHandler}
@@ -691,6 +696,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-code"
+        color={buttonColor}
         size="sm"
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
@@ -699,6 +705,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-quote"
+        color={buttonColor}
         size="sm"
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
@@ -707,6 +714,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ul"
+        color={buttonColor}
         size="sm"
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
@@ -715,6 +723,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ol"
+        color={buttonColor}
         size="sm"
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
@@ -723,6 +732,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-checkbox"
+        color={buttonColor}
         size="sm"
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
@@ -731,6 +741,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-link"
+        color={buttonColor}
         size="sm"
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
@@ -739,6 +750,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-image"
+        color={buttonColor}
         size="sm"
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
@@ -747,6 +759,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-table"
+        color={buttonColor}
         size="sm"
         title="Table"
         onClick={this.showHandsonTableHandler}
@@ -755,6 +768,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-drawio"
+        color={buttonColor}
         bsSize="small"
         title="draw.io"
         onClick={this.showDrawioHandler}

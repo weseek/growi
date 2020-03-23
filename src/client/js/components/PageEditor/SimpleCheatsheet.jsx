@@ -11,7 +11,7 @@ class SimpleCheatsheet extends React.Component {
       <div className="card bg-default gfm-cheatsheet mb-0">
         <div className="card-body small p-b-0">
           <div className="row">
-            <div className="col-xs-6">
+            <div className="col-sm-6">
               <p>
                 # {t('sandbox.header_x', { index: '1' })}<br />
                 ## {t('sandbox.header_x', { index: '2' })}
