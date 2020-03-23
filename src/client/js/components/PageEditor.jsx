@@ -56,7 +56,7 @@ class PageEditor extends React.Component {
     this.setMarkdownStateWithDebounce = debounce(50, throttle(100, (value) => {
       this.setState({ markdown: value });
     }));
-    this.saveDraftWithDebounce = debounce(800, this.saveDraft);
+    this.saveDraftWithDebounce = debounce(3000, this.saveDraft);
   }
 
   componentWillMount() {
@@ -89,8 +89,13 @@ class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
+    const { pageContainer, editorContainer } = this.props;
     this.setMarkdownStateWithDebounce(value);
-    this.saveDraftWithDebounce();
+    // only when the first time to edit
+    if (!pageContainer.state.revisionId) {
+      this.saveDraftWithDebounce();
+    }
+    editorContainer.enableUnsavedWarning();
   }
 
   /**
@@ -270,11 +275,7 @@ class PageEditor extends React.Component {
 
   saveDraft() {
     const { pageContainer, editorContainer } = this.props;
-    // only when the first time to edit
-    if (!pageContainer.state.revisionId) {
-      editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
-    }
-    editorContainer.enableUnsavedWarning();
+    editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
   }
 
   clearDraft() {

@@ -155,6 +155,7 @@ export default class EditorContainer extends Container {
   }
 
   disableUnsavedWarning() {
+    console.log('AAA');
     window.removeEventListener('beforeunload', this.showUnsavedWarning);
     this.isSetBeforeunloadEventHandler = false;
   }
