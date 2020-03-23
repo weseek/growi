@@ -140,10 +140,13 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     <code>username</code>
                   </div>
-                  {/* <SortIcons
+                  <SortIcons
                     isSelected={adminUsersContainer.state.sort === 'username'}
-                  /> */}
-                  {/* { this.renderSortIcon('username') } */}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('username', sortOrder);
+                    }}
+                  />
                 </div>
               </th>
               <th>
@@ -151,10 +154,13 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Name')}
                   </div>
-                  {/* <SortIcons
+                  <SortIcons
                     isSelected={adminUsersContainer.state.sort === 'name'}
-                  /> */}
-                  {/* { this.renderSortIcon('name')} */}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('name', sortOrder);
+                    }}
+                  />
                 </div>
               </th>
               <th>
@@ -162,10 +168,13 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Email')}
                   </div>
-                  {/* <SortIcons
+                  <SortIcons
                     isSelected={adminUsersContainer.state.sort === 'email'}
-                  /> */}
-                  {/* { this.renderSortIcon('email')} */}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('email', sortOrder);
+                    }}
+                  />
                 </div>
               </th>
               <th width="100px">
@@ -173,10 +182,13 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Created')}
                   </div>
-                  {/* <SortIcons
+                  <SortIcons
                     isSelected={adminUsersContainer.state.sort === 'createdAt'}
-                  /> */}
-                  {/* { this.renderSortIcon('createdAt')} */}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('createdAt', sortOrder);
+                    }}
+                  />
                 </div>
               </th>
               <th width="150px">
@@ -184,10 +196,13 @@ class UserTable extends React.Component {
                   <div className="mr-3">
                     {t('Last_Login')}
                   </div>
-                  {/* <SortIcons
+                  <SortIcons
                     isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
-                  /> */}
-                  {/* { this.renderSortIcon('lastLoginAt')} */}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('lastLoginAt', sortOrder);
+                    }}
+                  />
                 </div>
               </th>
               <th width="70px"></th>

@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-// import AdminUsersContainer from '../../../services/AdminUsersContainer';
-// import UserTable from './UserTable';
-
 const SortIcons = (props) => {
 
   const { isSelected, isAsc } = props;
