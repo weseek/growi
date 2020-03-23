@@ -44,7 +44,7 @@ h5 {
   .nav-item {
     margin-right: 0.15rem;
     a.active {
-      cursor: default
+      cursor: default;
     }
   }
 }
@@ -133,10 +133,6 @@ h5 {
 //Modals
 .modal-content {
   box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
-}
-
-.modal-dialog {
-  max-width: 600px;
 }
 
 .modal-header {
