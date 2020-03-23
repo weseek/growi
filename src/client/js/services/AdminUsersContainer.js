@@ -105,7 +105,7 @@ export default class AdminUsersContainer extends Container {
   /**
    * Workaround for Sorting
    */
-  async onClickSort(sortColumns, isAsc) {
+  async sort(sortColumns, isAsc) {
     if (isAsc) {
       await this.setState({ sort: sortColumns, sortOrder: 'asc' });
     }

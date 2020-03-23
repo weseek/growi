@@ -107,7 +107,7 @@ class UserTable extends React.Component {
     const isAsc = sortOrder === 'asc';
 
     const { adminUsersContainer } = this.props;
-    adminUsersContainer.onClickSort(sort, isAsc);
+    adminUsersContainer.sort(sort, isAsc);
   }
 
   render() {
