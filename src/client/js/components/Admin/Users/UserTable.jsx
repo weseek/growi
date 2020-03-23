@@ -115,6 +115,8 @@ class UserTable extends React.Component {
   render() {
     const { t, adminUsersContainer } = this.props;
 
+    const isCurrentSortOrderAsc = adminUsersContainer.state.sortOrder === 'asc';
+
     return (
       <Fragment>
         <table className="table table-default table-bordered table-user-list">
@@ -127,8 +129,8 @@ class UserTable extends React.Component {
                     {t('status')}
                   </div>
                   <SortIcons
-                    sortColumns="status"
                     isSelected={adminUsersContainer.state.sort === 'status'}
+                    isAsc={isCurrentSortOrderAsc}
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={(sortOrder) => {
                       console.log('arrow function', sortOrder);

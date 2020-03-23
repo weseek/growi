@@ -7,15 +7,17 @@ import { withTranslation } from 'react-i18next';
 
 const SortIcons = (props) => {
 
+  const { isSelected, isAsc } = props;
+
   return (
     <div className="d-flex flex-column text-center">
       <a
-        className={`fa ${props.isSelected ? 'fa-chevron-up' : 'fa-angle-up'}`}
+        className={`fa ${isSelected && isAsc ? 'fa-chevron-up' : 'fa-angle-up'}`}
         aria-hidden="true"
         onClick={() => props.onClick('asc')}
       />
       <a
-        className={`fa ${props.isSelected ? 'fa-chevron-down' : 'fa-angle-down'}`}
+        className={`fa ${isSelected && !isAsc ? 'fa-chevron-down' : 'fa-angle-down'}`}
         aria-hidden="true"
         onClick={() => props.onClick('desc')}
       />
@@ -26,6 +28,7 @@ const SortIcons = (props) => {
 SortIcons.propTypes = {
   onClick: PropTypes.func.isRequired,
   isSelected: PropTypes.bool.isRequired,
+  isAsc: PropTypes.bool.isRequired,
 };
 
 
