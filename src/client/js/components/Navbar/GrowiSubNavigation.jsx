@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage, userPageRoot } from '../../../../lib/util/path-utils';
+import { isTrashPage } from '../../../../lib/util/path-utils';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import RevisionPath from '../Page/RevisionPath';
@@ -11,7 +11,8 @@ import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import UserPicture from '../User/UserPicture';
+import PageCreator from './PageCreator';
+import RevisionAuthor from './RevisionAuthor';
 
 const GrowiSubNavigation = (props) => {
   const { appContainer, pageContainer } = props;
@@ -39,36 +40,13 @@ const GrowiSubNavigation = (props) => {
       <div>
         <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />
       </div>
+
+      {/* Page Authors */}
       <ul className="authors hidden-sm hidden-xs text-nowrap">
-        {creator != null
-        && (
-        <li>
-          <div className="d-flex align-items-center">
-            <div className="mr-2" href={userPageRoot(creator)} data-toggle="tooltip" data-placement="bottom" title={creator.name}>
-              <UserPicture user={creator} size="sm" />
-            </div>
-            <div>
-              <div>Created by <a href={userPageRoot(creator)}>{creator.name}</a></div>
-              <div className="text-muted">{createdAt}</div>
-            </div>
-          </div>
-        </li>
-        )}
-        {revisionAuthor != null
-        && (
-        <li className="mt-1">
-          <div className="d-flex align-items-center">
-            <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
-              <UserPicture user={revisionAuthor} size="sm" />
-            </div>
-            <div>
-              <div>Updated by  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name }</a></div>
-              <div className="text-muted">{updatedAt}</div>
-            </div>
-          </div>
-        </li>
-        )}
+        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} /></li>}
+        {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
       </ul>
+
     </div>
   );
 
