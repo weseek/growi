@@ -144,51 +144,66 @@ class UserManagement extends React.Component {
               </span>
             </div>
 
-            <div className="mx-5">
-              <input
-                type="checkbox"
-                id="c1"
-                className="mr-1"
-                checked={adminUsersContainer.isSelected('all')}
-                onClick={() => { this.handleClick('all') }}
-              />
-              <label htmlFor="c1" className="mr-2">All</label>
+            <div className="mx-5 form-inline">
+              <div className="checkbox checkbox-primary pl-0">
+                <input
+                  type="checkbox"
+                  id="c1"
+                  checked={adminUsersContainer.isSelected('all')}
+                  onClick={() => { this.handleClick('all') }}
+                />
+                <label htmlFor="c1">
+                  <span className="label label-primary d-inline-block vt mt-1">All</span>
+                </label>
+              </div>
 
-              <input
-                type="checkbox"
-                id="c2"
-                className="mr-1"
-                checked={adminUsersContainer.isSelected('registered')}
-                onClick={() => { this.handleClick('registered') }}
-              />
-              <label htmlFor="c2" className="label label-info mr-2">Approval Pending</label>
+              <div className="checkbox checkbox-info">
+                <input
+                  type="checkbox"
+                  id="c2"
+                  checked={adminUsersContainer.isSelected('registered')}
+                  onClick={() => { this.handleClick('registered') }}
+                />
+                <label htmlFor="c2">
+                  <span className="label label-info d-inline-block vt mt-1">Approval Pending</span>
+                </label>
+              </div>
 
-              <input
-                type="checkbox"
-                id="c3"
-                className="mr-1"
-                checked={adminUsersContainer.isSelected('active')}
-                onClick={() => { this.handleClick('active') }}
-              />
-              <label htmlFor="c3" className="label label-success mr-2">Active</label>
+              <div className="checkbox checkbox-success">
+                <input
+                  type="checkbox"
+                  id="c3"
+                  checked={adminUsersContainer.isSelected('active')}
+                  onClick={() => { this.handleClick('active') }}
+                />
+                <label htmlFor="c3">
+                  <span className="label label-success d-inline-block vt mt-1">Active</span>
+                </label>
+              </div>
 
-              <input
-                type="checkbox"
-                id="c4"
-                className="mr-1"
-                checked={adminUsersContainer.isSelected('suspended')}
-                onClick={() => { this.handleClick('suspended') }}
-              />
-              <label htmlFor="c4" className="label label-warning mr-2">Suspended</label>
+              <div className="checkbox checkbox-warning">
+                <input
+                  type="checkbox"
+                  id="c4"
+                  checked={adminUsersContainer.isSelected('suspended')}
+                  onClick={() => { this.handleClick('suspended') }}
+                />
+                <label htmlFor="c4">
+                  <span className="label label-warning d-inline-block vt mt-1">Suspended</span>
+                </label>
+              </div>
 
-              <input
-                type="checkbox"
-                id="c5"
-                className="mr-1"
-                checked={adminUsersContainer.isSelected('invited')}
-                onClick={() => { this.handleClick('invited') }}
-              />
-              <label htmlFor="c5" className="label label-info">Invited</label>
+              <div className="checkbox checkbox-info">
+                <input
+                  type="checkbox"
+                  id="c5"
+                  checked={adminUsersContainer.isSelected('invited')}
+                  onClick={() => { this.handleClick('invited') }}
+                />
+                <label htmlFor="c5">
+                  <span className="label label-info d-inline-block vt mt-1">Invited</span>
+                </label>
+              </div>
             </div>
 
             <div>
