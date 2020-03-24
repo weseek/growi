@@ -116,7 +116,11 @@ export default class AdminUsersContainer extends Container {
 
   async resetAllChanges() {
     await this.setState({
-      sort: 'id', sortOrder: 'asc', searchText: '', selectedStatusList: new Set(['all']),
+      sort: 'id',
+      sortOrder: 'asc',
+      searchText: '',
+      notifyComment: '',
+      selectedStatusList: new Set(['all']),
     });
     this.retrieveUsersByPagingNum(1);
   }
