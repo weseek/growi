@@ -40,6 +40,8 @@ export default class PageContainer extends Container {
       isLiked: false,
       seenUserIds: [],
       likerUserIds: [],
+      createdAt: mainContent.getAttribute('data-page-created-at'),
+      creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
 
       tags: [],
       templateTagData: mainContent.getAttribute('data-template-tags') || null,
@@ -363,15 +365,6 @@ export default class PageContainer extends Container {
       }
     });
 
-  }
-
-  get isTrashPage() {
-    const path = this.state.path || '';
-    if (path.match(/^\/trash(\/.*)?$/)) {
-      return true;
-    }
-
-    return false;
   }
 
 }
