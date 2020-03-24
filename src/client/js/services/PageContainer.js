@@ -35,6 +35,7 @@ export default class PageContainer extends Container {
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
+      revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path: mainContent.getAttribute('data-path'),
       tocHtml: '',
       isLiked: false,
@@ -42,6 +43,7 @@ export default class PageContainer extends Container {
       likerUserIds: [],
       createdAt: mainContent.getAttribute('data-page-created-at'),
       creator: JSON.parse(mainContent.getAttribute('data-page-creator')),
+      updatedAt: mainContent.getAttribute('data-page-updated-at'),
 
       tags: [],
       templateTagData: mainContent.getAttribute('data-template-tags') || null,

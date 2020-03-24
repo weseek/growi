@@ -59,7 +59,7 @@ export default class CopyDropdown extends React.Component {
 
           <DropdownToggle
             caret
-            className="d-block text-muted bg-transparent btn-copy"
+            className="d-block text-muted bg-transparent btn-copy border-0"
             style={this.props.buttonStyle}
           >
             <i className="ti-clipboard"></i>

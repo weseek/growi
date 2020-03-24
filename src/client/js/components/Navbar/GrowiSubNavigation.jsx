@@ -16,8 +16,9 @@ import UserPicture from '../User/UserPicture';
 const GrowiSubNavigation = (props) => {
   const { appContainer, pageContainer } = props;
   const path = pageContainer.path || '';
-  const { createdAt, creator } = pageContainer.state;
-  console.log(creator);
+  const {
+    createdAt, creator, updatedAt, revisionAuthor,
+  } = pageContainer.state;
 
   return (
     <div className="d-flex align-items-center">
@@ -43,12 +44,26 @@ const GrowiSubNavigation = (props) => {
         && (
         <li>
           <div className="d-flex align-items-center">
-            <a className="mr-2" href={userPageRoot(creator)} data-toggle="tooltip" data-placement="bottom" title={creator.name}>
+            <div className="mr-2" href={userPageRoot(creator)} data-toggle="tooltip" data-placement="bottom" title={creator.name}>
               <UserPicture user={creator} size="sm" />
-            </a>
+            </div>
             <div>
-              <div>Created by <a href={creator.name}>{creator.name}</a></div>
+              <div>Created by <a href={userPageRoot(creator)}>{creator.name}</a></div>
               <div className="text-muted">{createdAt}</div>
+            </div>
+          </div>
+        </li>
+        )}
+        {revisionAuthor != null
+        && (
+        <li className="mt-1">
+          <div className="d-flex align-items-center">
+            <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
+              <UserPicture user={revisionAuthor} size="sm" />
+            </div>
+            <div>
+              <div>Updated by  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name }</a></div>
+              <div className="text-muted">{updatedAt}</div>
             </div>
           </div>
         </li>
