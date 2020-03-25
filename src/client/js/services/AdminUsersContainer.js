@@ -28,7 +28,6 @@ export default class AdminUsersContainer extends Container {
       pagingLimit: Infinity,
       selectedStatusList: new Set(['all']),
       searchText: '',
-      isNotifyCommentShow: false,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -115,7 +114,6 @@ export default class AdminUsersContainer extends Container {
       sort: 'id',
       sortOrder: 'asc',
       searchText: '',
-      isNotifyCommentShow: false,
       selectedStatusList: new Set(['all']),
     });
     this.retrieveUsersByPagingNum(1);
