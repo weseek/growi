@@ -78,10 +78,10 @@ class UserGroupTable extends React.Component {
                     ? (
                       <td>
                         <div className="btn-group admin-group-menu">
-                          <button type="button" id="admin-group-menu-button" className="btn btn-light btn-sm dropdown-toggle" data-toggle="dropdown">
+                          <button type="button" id={`admin-group-menu-button-${group._id}`} className="btn btn-light btn-sm dropdown-toggle" data-toggle="dropdown">
                             <i className="icon-settings"></i>
                           </button>
-                          <div className="dropdown-menu" role="menu" aria-labelledby="admin-group-menu-button">
+                          <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`>
                             <a className="dropdown-item" href={`/admin/user-group-detail/${group._id}`}>
                               <i className="icon-fw icon-note"></i> {t('Edit')}
                             </a>
