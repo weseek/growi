@@ -8,7 +8,8 @@
     "package_name": "パッケージ名",
     "specified_version": "指定バージョン",
     "installed_version": "インストールされているバージョン",
-    "list_of_env_vars":"サーバー側で設定されている環境変数一覧"
+    "list_of_env_vars":"サーバー側で設定されている環境変数一覧",
+    "about_security":"セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください"
   },
   "app_setting": {
     "site_name": "サイト名",
