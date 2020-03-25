@@ -115,7 +115,7 @@ export default class AdminUsersContainer extends Container {
       sort: 'id',
       sortOrder: 'asc',
       searchText: '',
-      notifyComment: '',
+      isNotifyCommentShow: false,
       selectedStatusList: new Set(['all']),
     });
     this.retrieveUsersByPagingNum(1);
