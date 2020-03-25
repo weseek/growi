@@ -137,6 +137,7 @@ export default class CommentContainer extends Container {
 
     const endpoint = '/attachments.add';
     const formData = new FormData();
+    formData.append('_csrf', this.appContainer.csrfToken);
     formData.append('file', file);
     formData.append('path', pagePath);
     formData.append('page_id', pageId);

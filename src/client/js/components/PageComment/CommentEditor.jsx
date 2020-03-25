@@ -44,6 +44,7 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
+      layoutType: config.layoutType,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -247,7 +248,7 @@ class CommentEditor extends React.Component {
                     isGfmMode={this.state.isMarkdown}
                     lineNumbers={false}
                     isMobile={appContainer.isMobile}
-                    isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
+                    isUploadable={this.state.isUploadable && layoutType === 'growi'} // enable only when GROWI layout
                     isUploadableFile={this.state.isUploadableFile}
                     emojiStrategy={emojiStrategy}
                     onChange={this.updateState}
