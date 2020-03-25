@@ -45,10 +45,6 @@ export default class AdminUsersContainer extends Container {
     return 'AdminUsersContainer';
   }
 
-  setNotifyComment(notifyComment) {
-    this.setState({ notifyComment });
-  }
-
   /**
    * Workaround for status list
    */
