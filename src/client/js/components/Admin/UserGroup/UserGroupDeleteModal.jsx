@@ -178,10 +178,14 @@ class UserGroupDeleteModal extends React.Component {
         <ModalFooter>
           <form className="d-flex justify-content-between w-100" onSubmit={this.handleSubmit}>
             <div className="d-flex">
-              {this.renderPageActionSelector()}
-              {this.renderGroupSelector()}
+              <div className="form-group">
+                {this.renderPageActionSelector()}
+              </div>
+              <div className="form-group">
+                {this.renderGroupSelector()}
+              </div>
             </div>
-            <button type="submit" value="" className="btn btn-sm btn-danger" disabled={!this.validateForm()}>
+            <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap" disabled={!this.validateForm()}>
               <i className="icon icon-fire"></i> {t('Delete')}
             </button>
           </form>
