@@ -51,8 +51,8 @@ class UserManagement extends React.Component {
       return this.setState({ isNotifyCommentShow: true });
     }
 
-    if (adminUsersContainer.state.isNotifyCommentShow === true) {
-      await adminUsersContainer.setState({ isNotifyCommentShow: false });
+    if (this.state.isNotifyCommentShow) {
+      await this.setState({ isNotifyCommentShow: false });
     }
     adminUsersContainer.handleClick(statusType);
   }
