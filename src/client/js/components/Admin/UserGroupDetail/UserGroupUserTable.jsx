@@ -91,7 +91,7 @@ class UserGroupUserTable extends React.Component {
           <tr>
             <td></td>
             <td className="text-center">
-              <button className="btn btn-default" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
+              <button className="btn btn-light" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
                 <i className="ti-plus"></i>
               </button>
             </td>
