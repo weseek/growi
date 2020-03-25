@@ -76,6 +76,7 @@ class UserManagement extends React.Component {
     try {
       adminUsersContainer.resetAllChanges();
       this.searchUserElement.value = '';
+      this.state.isNotifyCommentShow = false;
     }
     catch (err) {
       toastError(err);
