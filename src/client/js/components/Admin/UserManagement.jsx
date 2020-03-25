@@ -40,15 +40,15 @@ class UserManagement extends React.Component {
    * For checking same check box twice
    * @param {string} statusType
    */
-  handleClick(statusType) {
+  async handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
-      adminUsersContainer.setNotifyComment('You should check at least one checkbox.');
+      await adminUsersContainer.setState({ isNotifyCommentShow: true });
       return;
     }
 
-    if (adminUsersContainer.state.notifyComment.length > 0) {
-      adminUsersContainer.setNotifyComment('');
+    if (adminUsersContainer.state.isNotifyCommentShow === true) {
+      await adminUsersContainer.setState({ isNotifyCommentShow: false });
     }
     adminUsersContainer.handleClick(statusType);
   }
