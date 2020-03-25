@@ -349,6 +349,28 @@ class ConfigLoader {
     return config;
   }
 
+  /**
+   * get config from the environment variables for display admin page
+   *
+   * **use this only admin home page.**
+   */
+  getEnvVarsForDisplay() {
+    const config = {};
+    for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
+      const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
+      if (config[configInfo.ns] === undefined) {
+        config[configInfo.ns] = {};
+      }
+
+      if (!envUtils.isSecurityEnv(configInfo.key) && process.env[ENV_VAR_NAME] !== undefined) {
+        config[configInfo.ns][ENV_VAR_NAME] = configInfo.type.parse(process.env[ENV_VAR_NAME]);
+      }
+    }
+
+    debug('ConfigLoader#getEnvVarsForDisplay', config);
+    return config;
+  }
+
 }
 
 module.exports = ConfigLoader;

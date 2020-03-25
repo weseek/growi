@@ -146,15 +146,6 @@ class ConfigManager {
   }
 
   /**
-   * get all config from the environment variables
-   *
-   * **use this only admin home page.**
-   */
-  getAllConfigFromEnvVars() {
-    return this.configObject.fromEnvVars;
-  }
-
-  /**
    * update configs in the same namespace
    *
    * Specified values are encoded by convertInsertValue.
