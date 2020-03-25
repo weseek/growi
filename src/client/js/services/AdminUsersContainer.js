@@ -28,7 +28,6 @@ export default class AdminUsersContainer extends Container {
       pagingLimit: Infinity,
       selectedStatusList: new Set(['all']),
       searchText: '',
-      notifyComment: '',
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
@@ -43,10 +42,6 @@ export default class AdminUsersContainer extends Container {
    */
   static getClassName() {
     return 'AdminUsersContainer';
-  }
-
-  setNotifyComment(notifyComment) {
-    this.setState({ notifyComment });
   }
 
   /**
@@ -116,7 +111,10 @@ export default class AdminUsersContainer extends Container {
 
   async resetAllChanges() {
     await this.setState({
-      sort: 'id', sortOrder: 'asc', searchText: '', selectedStatusList: new Set(['all']),
+      sort: 'id',
+      sortOrder: 'asc',
+      searchText: '',
+      selectedStatusList: new Set(['all']),
     });
     this.retrieveUsersByPagingNum(1);
   }

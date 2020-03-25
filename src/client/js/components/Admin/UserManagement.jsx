@@ -19,6 +19,11 @@ class UserManagement extends React.Component {
 
   constructor(props) {
     super();
+
+    this.state = {
+      isNotifyCommentShow: false,
+    };
+
     this.handlePage = this.handlePage.bind(this);
     this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
@@ -40,15 +45,14 @@ class UserManagement extends React.Component {
    * For checking same check box twice
    * @param {string} statusType
    */
-  handleClick(statusType) {
+  async handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
-      adminUsersContainer.setNotifyComment('You should check at least one checkbox.');
-      return;
+      return this.setState({ isNotifyCommentShow: true });
     }
 
-    if (adminUsersContainer.state.notifyComment.length > 0) {
-      adminUsersContainer.setNotifyComment('');
+    if (this.state.isNotifyCommentShow) {
+      await this.setState({ isNotifyCommentShow: false });
     }
     adminUsersContainer.handleClick(statusType);
   }
@@ -72,6 +76,7 @@ class UserManagement extends React.Component {
     try {
       adminUsersContainer.resetAllChanges();
       this.searchUserElement.value = '';
+      this.state.isNotifyCommentShow = false;
     }
     catch (err) {
       toastError(err);
@@ -99,8 +104,6 @@ class UserManagement extends React.Component {
         />
       </div>
     );
-
-    const notifyComment = (adminUsersContainer.state.notifyComment && <span className="text-warning">{ adminUsersContainer.state.notifyComment }</span>);
 
     const clearButton = (
       adminUsersContainer.state.searchText.length > 0
@@ -220,7 +223,9 @@ class UserManagement extends React.Component {
               </button>
             </div>
 
-            <div className="ml-5">{ notifyComment }</div>
+            <div className="ml-5">
+              {this.state.isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>}
+            </div>
 
           </div>
         </div>
