@@ -5,7 +5,7 @@
     margin-left: 4.5em;
 
     @include media-breakpoint-down(xs) {
-      margin-left: 3.5em;
+      margin-left: 0em;
     }
 
     // speech balloon
@@ -20,7 +20,7 @@
       border-left-width: 0;
 
       @include media-breakpoint-down(xs) {
-        top: 1em;
+        display: none;
       }
     }
   }
@@ -81,6 +81,7 @@
   .page-comment-reply {
     margin-top: 1em;
   }
+
   // remove margin after hidden replies
   .page-comments-hidden-replies + .page-comment-reply {
     margin-top: 0;

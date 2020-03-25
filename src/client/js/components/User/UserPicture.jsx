@@ -32,12 +32,17 @@ export default class UserPicture extends React.Component {
   }
 
   getClassName() {
-    const className = ['rounded-circle', 'picture'];
+    const className = ['rounded-circle', 'picture', 'd-inline-block'];
     // size
     if (this.props.size) {
       className.push(`picture-${this.props.size}`);
     }
 
+    return className.join(' ');
+  }
+
+  getBlockClassName() {
+    const className = ['d-inline-block', 'd-sm-block'];
     return className.join(' ');
   }
 
@@ -69,7 +74,7 @@ export default class UserPicture extends React.Component {
     return (
       (this.props.withoutLink)
         ? <span>{imgElem}</span>
-        : <a href={`/user/${user.username}`}>{imgElem}</a>
+        : <a href={`/user/${user.username}`} className={this.getBlockClassName()}>{imgElem}</a>
     );
   }
 
