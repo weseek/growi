@@ -28,7 +28,7 @@ export default class AdminUsersContainer extends Container {
       pagingLimit: Infinity,
       selectedStatusList: new Set(['all']),
       searchText: '',
-      notifyComment: '',
+      isNotifyCommentShow: false,
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
