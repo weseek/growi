@@ -85,7 +85,7 @@
       <div>
         This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
         {% if page.isDeleted() %}
-        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm rounded-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
         {% endif %}
       </div>
       {% if page.isDeleted() and user %}
