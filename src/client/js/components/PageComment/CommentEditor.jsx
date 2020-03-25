@@ -44,7 +44,6 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
-      layoutType: config.layoutType,
     };
 
     this.updateState = this.updateState.bind(this);
