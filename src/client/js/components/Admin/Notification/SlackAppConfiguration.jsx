@@ -69,7 +69,7 @@ class SlackAppConfiguration extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  defaultValue={adminNotificationContainer.state.webhookUrl}
+                  defaultValue={adminNotificationContainer.state.webhookUrl || ''}
                   onChange={e => adminNotificationContainer.changeWebhookUrl(e.target.value)}
                 />
               </div>
@@ -82,7 +82,7 @@ class SlackAppConfiguration extends React.Component {
                     type="checkbox"
                     className="custom-control-input"
                     id="cbPrioritizeIWH"
-                    checked={adminNotificationContainer.state.isIncomingWebhookPrioritized}
+                    checked={adminNotificationContainer.state.isIncomingWebhookPrioritized || false}
                     onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
                   />
                   <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
@@ -121,7 +121,7 @@ class SlackAppConfiguration extends React.Component {
                   <input
                     className="form-control"
                     type="text"
-                    defaultValue={adminNotificationContainer.state.slackToken}
+                    defaultValue={adminNotificationContainer.state.slackToken || ''}
                     onChange={e => adminNotificationContainer.changeSlackToken(e.target.value)}
                   />
                 </div>
