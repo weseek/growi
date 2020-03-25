@@ -100,9 +100,6 @@ class UserManagement extends React.Component {
       </div>
     );
 
-    const notifyComment = adminUsersContainer.state.isNotifyCommentShow === true
-      ? <span className="text-warning">You should check at least one checkbox.</span> : null;
-
     const clearButton = (
       adminUsersContainer.state.searchText.length > 0
         ? (
@@ -221,7 +218,7 @@ class UserManagement extends React.Component {
               </button>
             </div>
 
-            <div className="ml-5">{ notifyComment }</div>
+            <div className="ml-5">{ adminUsersContainer.state.isNotifyCommentShow === true ? <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span> : null}</div>
 
           </div>
         </div>
