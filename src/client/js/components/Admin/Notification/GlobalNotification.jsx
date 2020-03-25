@@ -42,7 +42,7 @@ class GlobalNotification extends React.Component {
 
         <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
 
-        <p className="well">
+        <p className="card well">
           {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
         </p>
