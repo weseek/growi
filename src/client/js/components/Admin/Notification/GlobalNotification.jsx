@@ -42,25 +42,25 @@ class GlobalNotification extends React.Component {
 
         <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
 
-        <p className="well">
+        <p className="card well">
           {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
         </p>
 
 
         <div className="row mb-4">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="checkbox checkbox-success">
+          <div className="col-md-8 offset-md-2">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isNotificationForOwnerPageEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
                 onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
               />
-              <label htmlFor="isNotificationForOwnerPageEnabled">
+              <label className="custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
-
               </label>
             </div>
           </div>
@@ -68,15 +68,16 @@ class GlobalNotification extends React.Component {
 
 
         <div className="row mb-4">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="checkbox checkbox-success">
+          <div className="col-md-8 offset-md-2">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isNotificationForGroupPageEnabled"
+                className="custom-control-input"
                 type="checkbox"
                 checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
                 onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
               />
-              <label htmlFor="isNotificationForGroupPageEnabled">
+              <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
               </label>
@@ -85,7 +86,7 @@ class GlobalNotification extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="col-sm-5 offset-sm-4">
             <button
               type="button"
               className="btn btn-primary"
