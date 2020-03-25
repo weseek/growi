@@ -1,4 +1,4 @@
-<div class="row row-alerts">
+<div class="container-fluid">
   <div class="w-100">
     {% if page && page.grant && page.grant > 1 %}
 
@@ -90,15 +90,14 @@
       </div>
       {% if page.isDeleted() and user %}
       <div class="d-flex ml-auto">
-        <button href="#" class="btn btn-light rounded-pill btn-sm m-2" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
-        <button href="#" class="btn btn-danger rounded-pill btn-sm m-2" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
+        <button href="#" class="btn btn-light rounded-pill btn-sm mr-2" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
+        <button href="#" class="btn btn-danger rounded-pill btn-sm mr-2" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
       {# /.float-right #}
       </div>
       {% endif %}
     </div>
     {% endif %}
   </div>
-</div>
 
-<!-- alert-warning d-flex alert-trash align-items-center justify-content-between -->
-<!-- rounded-pill btn-sm-->
+  <!-- alert-warning d-flex alert-trash align-items-center justify-content-between -->
+  <!-- rounded-pill btn-sm-->
