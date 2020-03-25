@@ -163,7 +163,7 @@ class UserGroupDeleteModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal isOpen={this.props.isShow} toggle={this.props.onHide}>
+      <Modal className="admin-user-group-modal" isOpen={this.props.isShow} toggle={this.props.onHide}>
         <ModalHeader tag="h4" toggle={this.props.onHide} className="modal-header bg-danger">
           <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
         </ModalHeader>
@@ -176,7 +176,7 @@ class UserGroupDeleteModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter>
-          <form className="d-flex justify-content-between" onSubmit={this.handleSubmit}>
+          <form className="d-flex justify-content-between w-100" onSubmit={this.handleSubmit}>
             <div className="d-flex">
               {this.renderPageActionSelector()}
               {this.renderGroupSelector()}
