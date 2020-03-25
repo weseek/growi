@@ -19,6 +19,11 @@ class UserManagement extends React.Component {
 
   constructor(props) {
     super();
+
+    this.state = {
+      isNotifyCommentShow: false,
+    };
+
     this.handlePage = this.handlePage.bind(this);
     this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
