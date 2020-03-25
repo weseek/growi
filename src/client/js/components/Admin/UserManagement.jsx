@@ -48,8 +48,7 @@ class UserManagement extends React.Component {
   async handleClick(statusType) {
     const { adminUsersContainer } = this.props;
     if (!this.validateToggleStatus(statusType)) {
-      await adminUsersContainer.setState({ isNotifyCommentShow: true });
-      return;
+      return this.setState({ isNotifyCommentShow: true });
     }
 
     if (adminUsersContainer.state.isNotifyCommentShow === true) {
