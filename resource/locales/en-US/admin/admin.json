@@ -8,7 +8,7 @@
     "package_name": "Package name",
     "specified_version": "Specified version",
     "installed_version": "Installed version",
-    "list_of_env_vars":"List of set environment variables"
+    "list_of_env_vars":"List of environment variables"
   },
   "app_setting": {
     "site_name": "Site name",
