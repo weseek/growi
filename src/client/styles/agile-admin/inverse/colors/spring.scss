@@ -19,7 +19,7 @@ $accentdark: rgba(224, 141, 188, 0.5);
 $background-color: rgba(171, 224, 174, 0.4);
 $third-main-color: antiquewhite;
 $textcolor: dimgray;
-$primary: $subthemecolor;
+$primary: #e87b98;
 $logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
 $wikilinktext: $subthemecolor;
 $wikilinktext-hover: gba(171, 224, 174, 0.9);
@@ -124,7 +124,7 @@ body:not(.on-edit) .nav.nav-tabs {
 }
 
 .label-default {
-  background-color: $subthemecolor;
+  background-color: $primary;
 }
 
 div .btn-inverse {
