@@ -49,8 +49,8 @@ class GlobalNotification extends React.Component {
 
 
         <div className="row mb-4">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="checkbox checkbox-success">
+          <div className="col-md-8 offset-md-2">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isNotificationForOwnerPageEnabled"
                 type="checkbox"
@@ -68,8 +68,8 @@ class GlobalNotification extends React.Component {
 
 
         <div className="row mb-4">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="checkbox checkbox-success">
+          <div className="col-md-8 offset-md-2">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isNotificationForGroupPageEnabled"
                 type="checkbox"
