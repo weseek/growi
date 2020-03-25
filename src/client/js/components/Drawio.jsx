@@ -33,7 +33,16 @@ class Drawio extends React.Component {
   componentDidMount() {
     const DrawioViewer = window.GraphViewer;
     if (DrawioViewer != null) {
-      DrawioViewer.processElements();
+      const mxgraphs = this.drawioContainer.getElementsByClassName('mxgraph');
+      if (mxgraphs.length > 0) {
+        // GROWI では、mxgraph element は最初のものをレンダリングする前提とする
+        const div = mxgraphs[0];
+
+        if (div != null) {
+          div.innerHTML = '';
+          DrawioViewer.createViewerForElement(div);
+        }
+      }
     }
   }
 
@@ -55,9 +64,6 @@ class Drawio extends React.Component {
           className="drawio"
           style={this.style}
           ref={(c) => { this.drawioContainer = c }}
-          onScroll={(event) => {
-            event.preventDefault();
-          }}
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: this.renderContents() }}
         >
