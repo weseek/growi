@@ -1,6 +1,7 @@
 const debug = require('debug')('growi:service:ConfigLoader');
-
 const { envUtils } = require('growi-commons');
+const isSecurityEnv = require('../../lib/util/isSecurityEnv');
+
 
 const TYPES = {
   NUMBER:  { parse: (v) => { return parseInt(v, 10) } },
@@ -362,7 +363,7 @@ class ConfigLoader {
         config[configInfo.ns] = {};
       }
 
-      if (!envUtils.isSecurityEnv(configInfo.key) && process.env[ENV_VAR_NAME] !== undefined) {
+      if (!isSecurityEnv(configInfo.key) && process.env[ENV_VAR_NAME] !== undefined) {
         config[configInfo.ns][ENV_VAR_NAME] = configInfo.type.parse(process.env[ENV_VAR_NAME]);
       }
     }
