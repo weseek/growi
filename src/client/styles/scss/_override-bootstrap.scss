@@ -162,9 +162,10 @@ fieldset[disabled] .btn {
 }
 
 // input form (disabled box-shadow added in bootstrap4)
-html div.form-group .form-control {
+form.form-group input.form-control {
   &:focus,
   &.focus {
+    border-color: inherit;
     box-shadow: none;
   }
 }
