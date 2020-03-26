@@ -57,6 +57,7 @@ class AdminHome extends React.Component {
         <div className="row mb-5">
           <div className="col-md-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.list_of_env_vars')}</h2>
+            <p>{t('admin:admin_top.env_var_priority')}</p>
             {/* eslint-disable-next-line react/no-danger */}
             <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
             {adminHomeContainer.state.envVars && <EnvVarsTable envVars={adminHomeContainer.state.envVars} />}
