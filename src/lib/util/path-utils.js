@@ -13,6 +13,19 @@ const isTrashPage = (path) => {
 };
 
 /**
+ * Whether path belongs to the user page
+ * @param {string} path
+ * @returns {boolean}
+ */
+const isUserPage = (path) => {
+  if (path.match(/^\/user(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * return user path
  * @param {Object} user
  * @return {string}
@@ -26,5 +39,6 @@ const userPageRoot = (user) => {
 
 module.exports = {
   isTrashPage,
+  isUserPage,
   userPageRoot,
 };
