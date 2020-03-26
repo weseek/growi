@@ -22,7 +22,6 @@ export default class DrawioModal extends React.PureComponent {
     this.init = this.init.bind(this);
     this.cancel = this.cancel.bind(this);
     this.receiveFromDrawio = this.receiveFromDrawio.bind(this);
-    this.drawioURL = this.drawioURL.bind(this);
   }
 
   init(drawioMxFile) {
@@ -109,8 +108,7 @@ export default class DrawioModal extends React.PureComponent {
     // NOTHING DONE. (Receive unknown iframe message.)
   }
 
-  drawioURL() {
-    const url = new URL('https://www.draw.io/');
+  get drawioURL() {
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', 1);
@@ -137,8 +135,8 @@ export default class DrawioModal extends React.PureComponent {
           <div className="w-100 h-100 position-absolute d-flex">
             { this.state.show && (
               <iframe
-                ref={(c) => { this.drawioIFrame = c }}
-                src={this.drawioURL()}
+                ref={this.drawioIFrame}
+                src={this.drawioURL}
                 className="border-0 flex-grow-1"
               >
               </iframe>
