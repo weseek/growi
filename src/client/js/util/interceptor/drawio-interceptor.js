@@ -17,11 +17,21 @@ export class DrawioInterceptor extends BasicInterceptor {
     this.previousPreviewContext = null;
     this.appContainer = appContainer;
 
-    const DrawioViewer = window.GraphViewer;
-    if (DrawioViewer != null) {
-      // viewer.min.js の Resize による Scroll イベントを抑止するために無効化する
-      DrawioViewer.useResizeSensor = false;
-    }
+    // draw.io の viewer.min.js から呼ばれるコールバックを定義する
+    // refs: https://github.com/jgraph/drawio/blob/v12.9.1/etc/build/build.xml#L219-L232
+    window.onDrawioViewerLoad = function() {
+      const DrawioViewer = window.GraphViewer;
+
+      if (DrawioViewer != null) {
+        // viewer.min.js の Resize による Scroll イベントを抑止するために
+        // useResizeSensor と checkVisibleState を無効化する
+        DrawioViewer.useResizeSensor = false;
+        DrawioViewer.prototype.checkVisibleState = false;
+
+        // 初回レンダリング時に mxfile をレンダリングする
+        DrawioViewer.processElements();
+      }
+    };
   }
 
   /**

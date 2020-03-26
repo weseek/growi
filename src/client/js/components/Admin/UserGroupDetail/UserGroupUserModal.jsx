@@ -28,7 +28,7 @@ class UserGroupUserModal extends React.Component {
           </div>
           <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>
           <div className="row mt-4">
-            <div className="col-xs-6">
+            <div className="col-6">
               <div className="mb-5">
                 <CheckBoxForSerchUserOption
                   option="Mail"
@@ -44,7 +44,7 @@ class UserGroupUserModal extends React.Component {
                 />
               </div>
             </div>
-            <div className="col-xs-6">
+            <div className="col-6">
               <div className="mb-5">
                 <RadioButtonForSerchUserOption
                   searchType="forward"
