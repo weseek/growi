@@ -48,6 +48,12 @@
     }
   }
 
+  .page-comment-writer {
+    @include media-breakpoint-down(xs) {
+      height: 50px;
+    }
+  }
+
   .page-comment {
     position: relative;
 
