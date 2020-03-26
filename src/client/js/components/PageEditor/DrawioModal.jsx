@@ -18,8 +18,6 @@ class DrawioModal extends React.PureComponent {
       drawioMxFile: '',
     };
 
-    this.drawioIFrame = React.createRef();
-
     this.headerColor = '#334455';
     this.fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 
@@ -145,7 +143,6 @@ class DrawioModal extends React.PureComponent {
           <div className="w-100 h-100 position-absolute d-flex">
             { this.state.show && (
               <iframe
-                ref={this.drawioIFrame}
                 src={this.drawioURL}
                 className="border-0 flex-grow-1"
               >

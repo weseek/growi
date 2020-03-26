@@ -29,6 +29,9 @@ class Page extends React.Component {
 
     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
+    this.handsontableModal = React.createRef();
+    this.drawioModal = React.createRef();
+
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
     this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
   }
@@ -46,7 +49,7 @@ class Page extends React.Component {
     const markdown = this.props.pageContainer.state.markdown;
     const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
     this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
-    this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
+    this.handsontableModal.current.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   /**
@@ -59,7 +62,7 @@ class Page extends React.Component {
     const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber, endLineNumber);
     const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
     this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
-    this.drawioModal.show(drawioData);
+    this.drawioModal.current.show(drawioData);
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
@@ -129,8 +132,8 @@ class Page extends React.Component {
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
-        <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
-        <DrawioModal ref={(c) => { this.drawioModal = c }} onSave={this.saveHandlerForDrawioModal} />
+        <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
+        <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
       </div>
     );
   }

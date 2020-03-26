@@ -71,6 +71,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.handsontableModal = React.createRef();
+    this.drawioModal = React.createRef();
+
     this.init();
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
@@ -647,11 +650,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showHandsonTableHandler() {
-    this.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   showDrawioHandler() {
-    this.drawioIFrame.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
   getNavbarItems() {
@@ -836,11 +839,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
 
         <HandsontableModal
-          ref={(c) => { this.handsontableModal = c }}
+          ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
         />
         <DrawioModal
-          ref={(c) => { this.drawioIFrame = c }}
+          ref={this.drawioModal}
           onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
         />
 
