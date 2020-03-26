@@ -53,13 +53,11 @@
     {% endif %}
 
     {% if req.query.duplicated and not page.isDeleted() %}
-    <!-- 変更点 -->
     <div class="alert alert-success alert-moved">
       <span>
         <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
       </span>
     </div>
-    <!-- 変更点終わり -->
     {% endif %}
 
     {% if req.query.unlinked %}
