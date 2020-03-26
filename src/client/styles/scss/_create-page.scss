@@ -1,17 +1,4 @@
 .modal.create-page {
-  // more than tablet size
-  @include media-breakpoint-down(sm) {
-    .modal-dialog {
-      max-width: 100%;
-      margin: 10px;
-    }
-  }
-
-  .modal-dialog {
-    max-width: 750px;
-    box-sizing: border-box;
-  }
-
   .modal-body {
     //TODO remove legend
     legend {
@@ -33,7 +20,7 @@
         }
 
         // change layout by screen size
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-down(md) {
           flex-direction: column;
           .create-page-button-container {
             margin-top: 10px;
