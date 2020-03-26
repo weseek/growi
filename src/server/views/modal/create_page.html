@@ -1,5 +1,5 @@
 <div class="modal create-page" id="create-page">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
       <div class="modal-header bg-primary">
@@ -9,39 +9,43 @@
 
       <div class="modal-body">
 
-        <form class="row form-group" id="create-page-today" role="form">
-          <fieldset class="col-12 mb-4">
-            <h3 class="grw-modal-head pb-2">{{ t("Create today's") }}</h3>
-            <div class="d-flex create-page-input-container">
-              <div class="create-page-input-row d-flex align-items-center">
-                <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
-                <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control text-center" value="{{ t('Memo') }}" id="" name="">
-                <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
-                <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
+        <form  id="create-page-today" role="form">
+          <div class="row form-group">
+            <fieldset class="col-12 mb-4">
+              <h3 class="grw-modal-head pb-2">{{ t("Create today's") }}</h3>
+              <div class="d-flex create-page-input-container">
+                <div class="create-page-input-row d-flex align-items-center">
+                  <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
+                  <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control text-center" value="{{ t('Memo') }}" id="" name="">
+                  <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
+                  <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
+                </div>
+                <div class="create-page-button-container">
+                  <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                </div>
               </div>
-              <div class="create-page-button-container">
-                <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
-              </div>
-            </div>
-          </fieldset>
+            </fieldset>
+          </div>
         </form>
 
-        <form class="row form-group" id="create-page-under-tree" role="form">
-          <fieldset class="col-12 mb-4">
-            <h3 class="grw-modal-head pb-2">{{ t('Create under') }}</h3>
-            <div class="d-flex create-page-input-container">
-              <div class="create-page-input-row d-flex align-items-center">
-                {% if isSearchServiceConfigured() %}
-                <div id="create-page-name-input" class="page-name-input"></div>
-                {% else %}
-                <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
-                {% endif %}
+        <form id="create-page-under-tree" role="form">
+          <div class="row form-group">
+            <fieldset class="col-12 mb-4">
+              <h3 class="grw-modal-head pb-2">{{ t('Create under') }}</h3>
+              <div class="d-flex create-page-input-container">
+                <div class="create-page-input-row d-flex align-items-center">
+                  {% if isSearchServiceConfigured() %}
+                  <div id="create-page-name-input" class="page-name-input"></div>
+                  {% else %}
+                  <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
+                  {% endif %}
+                </div>
+                <div class="create-page-button-container">
+                  <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                </div>
               </div>
-              <div class="create-page-button-container">
-                <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
-              </div>
-            </div>
-          </fieldset>
+            </fieldset>
+          </div>
         </form>
 
         {% set templateParentPath = parentPath(path | preventXss | escape) %}

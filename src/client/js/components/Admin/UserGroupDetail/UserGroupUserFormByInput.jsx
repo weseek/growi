@@ -116,8 +116,8 @@ class UserGroupUserFormByInput extends React.Component {
     const inputProps = { autoComplete: 'off' };
 
     return (
-      <div className="row">
-        <div className="col-xs-8 pr-0">
+      <div className="form-group row">
+        <div className="col-8 pr-0">
           <AsyncTypeahead
             {...this.props}
             id="name-typeahead-asynctypeahead"
@@ -137,7 +137,7 @@ class UserGroupUserFormByInput extends React.Component {
             clearButton
           />
         </div>
-        <div className="col-xs-2 pl-0">
+        <div className="col-2 pl-0">
           <button
             type="button"
             className="btn btn-sm btn-success"
