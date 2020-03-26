@@ -89,7 +89,10 @@ export default class DrawioModal extends React.PureComponent {
         const parser = new DOMParser();
         const dom = parser.parseFromString(event.data, 'text/xml');
         const value = dom.getElementsByTagName('diagram')[0].innerHTML;
+
+        if (this.props.onSave != null) {
         this.props.onSave(value);
+      }
       }
 
       window.removeEventListener('message', this.receiveFromDrawio);
