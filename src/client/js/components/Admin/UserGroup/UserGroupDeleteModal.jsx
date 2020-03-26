@@ -163,7 +163,7 @@ class UserGroupDeleteModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal className="admin-user-group-modal" isOpen={this.props.isShow} toggle={this.props.onHide}>
+      <Modal className="admin-user-group-delete-modal" isOpen={this.props.isShow} toggle={this.props.onHide}>
         <ModalHeader tag="h4" toggle={this.props.onHide} className="modal-header bg-danger">
           <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
         </ModalHeader>
