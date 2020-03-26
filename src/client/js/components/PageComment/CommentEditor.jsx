@@ -271,7 +271,7 @@ class CommentEditor extends React.Component {
                     isGfmMode={this.state.isMarkdown}
                     lineNumbers={false}
                     isMobile={appContainer.isMobile}
-                    isUploadable={this.state.isUploadable && layoutType === 'growi'} // enable only when GROWI layout
+                    isUploadable={this.state.isUploadable && layoutType !== 'crowi'} // disabled upload with crowi layout
                     isUploadableFile={this.state.isUploadableFile}
                     emojiStrategy={emojiStrategy}
                     onChange={this.updateState}
