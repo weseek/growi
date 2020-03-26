@@ -4,7 +4,11 @@ import i18next from 'i18next';
 
 import Modal from 'react-bootstrap/es/Modal';
 
-export default class DrawioModal extends React.PureComponent {
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import EditorContainer from '../../services/EditorContainer';
+
+class DrawioModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -91,8 +95,8 @@ export default class DrawioModal extends React.PureComponent {
         const value = dom.getElementsByTagName('diagram')[0].innerHTML;
 
         if (this.props.onSave != null) {
-        this.props.onSave(value);
-      }
+          this.props.onSave(value);
+        }
       }
 
       window.removeEventListener('message', this.receiveFromDrawio);
@@ -112,6 +116,10 @@ export default class DrawioModal extends React.PureComponent {
   }
 
   get drawioURL() {
+    const { config } = this.props.appContainer;
+
+    const drawioUri = config.env.DRAWIO_URI || 'https://www.draw.io/';
+    const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', 1);
@@ -125,7 +133,6 @@ export default class DrawioModal extends React.PureComponent {
 
   render() {
     return (
-      // <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
       <Modal show={this.state.show} onHide={this.cancel} dialogClassName="drawio-modal" bsSize="large" keyboard={false}>
         <Modal.Body className="p-0">
           {/* Loading spinner */}
@@ -152,6 +159,18 @@ export default class DrawioModal extends React.PureComponent {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const DrawioModalWrapper = React.forwardRef((props, ref) => {
+  return createSubscribedElement(DrawioModal, Object.assign({ ref }, props), [AppContainer, EditorContainer]);
+});
+
 DrawioModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
   onSave: PropTypes.func,
 };
+
+export default DrawioModalWrapper;
