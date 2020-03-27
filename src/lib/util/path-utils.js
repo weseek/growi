@@ -5,6 +5,7 @@
  * @returns {boolean}
  */
 const isTrashPage = (path) => {
+  // https://regex101.com/r/BSDdRr/1
   if (path.match(/^\/trash(\/.*)?$/)) {
     return true;
   }
@@ -18,6 +19,7 @@ const isTrashPage = (path) => {
  * @returns {boolean}
  */
 const isUserPage = (path) => {
+  // https://regex101.com/r/SxPejV/1
   if (path.match(/^\/user(\/.*)?$/)) {
     return true;
   }
