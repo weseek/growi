@@ -17,7 +17,7 @@
 {% block content_main %}
   <div class="row">
 
-    <div class="col-lg-10 col-md-9">
+    <div class="col grw-page-content-container">
 
       {#
         # ensure to insert 'user_page_content' widget to here
@@ -43,7 +43,7 @@
     </div> {# /.col- #}
 
     {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
+    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
       <div class="liker-and-seenusers d-flex align-items-end justify-content-end">
         {% if page.seenUsers.length > 10 %}<span class="text-muted">..</span>{% endif %}
         <span id="seen-user-list" class="mr-3" data-user-ids="{{ page.seenUsers|slice(-10)|default([])|join(',') }}"></span>
