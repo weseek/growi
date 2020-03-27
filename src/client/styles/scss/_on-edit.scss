@@ -145,19 +145,6 @@ body.on-edit {
     }
   }
 
-  #page-status-alert .myadmin-alert {
-    position: absolute;
-    right: 3px;
-    bottom: 42px;
-    left: 3px;
-    box-shadow: 2px 2px 5px #666;
-    opacity: 0.8;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
   &.builtin-editor {
     /*****************
     * Editor styles
