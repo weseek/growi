@@ -17,7 +17,7 @@
 {% block content_main %}
   <div class="row pt-15">
 
-    <div class="col-xs-12 bg-white round-corner">
+    <div class="col bg-white round-corner">
 
       {#
         # ensure to insert 'user_page_content' widget to here
@@ -40,14 +40,14 @@
         $('#revision-toc').remove();
       </script>
 
-    </div> {# /.col- #}
+    </div>
 
     {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
+    <div class="col-xl-3 col-lg-4 d-none d-lg-block revision-toc-container">
       <div id="revision-toc" class="revision-toc sps sps--abv" data-sps-offset="75">
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
-    </div> {# /.col- #}
+    </div>
 
   </div>
 
