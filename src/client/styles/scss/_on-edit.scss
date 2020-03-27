@@ -19,14 +19,8 @@ body.on-edit {
 
   // for growi layout
   .main {
-    > .row {
-      margin: 0;
-
-      > .col-lg-10,
-      > .col-md-9 {
-        width: 100%;
-        padding: 0;
-      }
+    .col.grw-page-content-container {
+      padding: 0;
     }
   }
 
@@ -51,7 +45,7 @@ body.on-edit {
 
   // hide unnecessary elements for growi layout
   .revision-toc-container {
-    display: none;
+    display: none !important;
   }
 
   // hide unnecessary elements for crowi layout
@@ -192,6 +186,7 @@ body.on-edit {
     .page-editor-preview-body {
       padding-top: 18px;
       padding-right: 15px;
+      padding-left: 15px;
       overflow-y: scroll;
     }
 
