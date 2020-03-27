@@ -10,6 +10,7 @@ import StickyEvents from 'sticky-events';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
+import { isUserPage } from '../../../lib/util/path-utils';
 import { createSubscribedElement } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:TableOfContents');
@@ -17,6 +18,7 @@ const logger = loggerFactory('growi:TableOfContents');
 // get these value with
 //   document.querySelector('.revision-toc').getBoundingClientRect().top
 const DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT = 190;
+const DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT_USER_PAGE = 230;
 const DEFAULT_REVISION_TOC_TOP_FOR_KIBELA_LAYOUT = 105;
 
 /**
@@ -35,8 +37,14 @@ class TableOfContents extends React.Component {
     this.resetScrollbarDebounced = debounce(100, this.resetScrollbar);
 
     const { layoutType } = this.props.appContainer.config;
+    const { path } = this.props.pageContainer.state;
 
     this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT;
+
+    if (isUserPage(path)) {
+      this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_GROWI_LAYOUT_USER_PAGE;
+    }
+
     if (layoutType === 'kibela') {
       this.defaultRevisionTocTop = DEFAULT_REVISION_TOC_TOP_FOR_KIBELA_LAYOUT;
     }

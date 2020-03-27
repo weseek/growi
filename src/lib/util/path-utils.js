@@ -5,7 +5,22 @@
  * @returns {boolean}
  */
 const isTrashPage = (path) => {
+  // https://regex101.com/r/BSDdRr/1
   if (path.match(/^\/trash(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Whether path belongs to the user page
+ * @param {string} path
+ * @returns {boolean}
+ */
+const isUserPage = (path) => {
+  // https://regex101.com/r/SxPejV/1
+  if (path.match(/^\/user(\/.*)?$/)) {
     return true;
   }
 
@@ -26,5 +41,6 @@ const userPageRoot = (user) => {
 
 module.exports = {
   isTrashPage,
+  isUserPage,
   userPageRoot,
 };
