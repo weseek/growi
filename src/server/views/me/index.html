@@ -53,68 +53,98 @@
   {% endif %}
 
 
-  <div class="form-box m-t-20">
-    <form action="/me" method="post" class="form-horizontal" role="form">
+  <div class="form-box mt-3">
+    <form action="/me" method="post" role="form">
       <fieldset>
-        <legend>{{ t('Basic Info') }}</legend>
-      <div class="form-group">
-        <label for="userForm[name]" class="col-sm-2 control-label">{{ t('Name') }}</label>
-        <div class="col-sm-4">
-          <input class="form-control" type="text" name="userForm[name]" value="{{ user.name }}" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="userForm[email]" class="col-sm-2 control-label">{{ t('Email') }}</label>
-        <div class="col-sm-4">
-          <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}">
-        </div>
-        <div class="col-sm-offset-2 col-sm-10">
-          {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
-          <p class="help-block">
-            {{ t('page_register.form_help.email') }}
-          <ul>
-            {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
-            <li><code>{{ em }}</code></li>
-            {% endfor %}
-          </ul>
-          </p>
-          {% endif %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="userForm[isEmailPublished]" class="col-sm-2 control-label">{{ t('Disclose E-mail') }}</label>
-        <div class="col-sm-4">
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioEmailShow" name="userForm[isEmailPublished]" value="{{ true }}" {% if user.isEmailPublished == true %}checked="checked"{% endif %}>
-            <label for="radioEmailShow">{{ t('Show') }}</label>
-          </div>
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioEmailHide" name="userForm[isEmailPublished]" value="{{ false }}" {% if user.isEmailPublished == false %}checked="checked"{% endif %}>
-            <label for="radioEmailHide">{{ t('Hide') }}</label>
+        <legend class="border-bottom mb-4">{{ t('Basic Info') }}</legend>
+        <div class="form-group row">
+          <label for="userForm[name]" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="userForm[name]" value="{{ user.name }}" required>
           </div>
         </div>
-      </div>
-      <div class="form-group {% if not user.lang %}has-error{% endif %}">
-        <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
-        <div class="col-sm-4">
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioLangEn" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
-            <label for="radioLangEn">{{ t('English') }}</label>
+        <div class="form-group">
+          <div class="row">
+            <label for="userForm[email]" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-4">
+              <input type="email" class="form-control" name="userForm[email]" value="{{ user.email }}" aria-describedby="userForm[email]" required>
+            </div>
           </div>
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioLangJa" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>
-            <label for="radioLangJa">{{ t('Japanese') }}</label>
+          <div class="offset-sm-2 col-sm-10">
+            {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
+            <p id="userForm[email]" class="form-text text-muted">
+              {{ t('page_register.form_help.email') }}
+            <ul>
+              {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
+              <li><code>{{ em }}</code></li>
+              {% endfor %}
+            </ul>
+            </p>
+            {% endif %}
           </div>
         </div>
-      </div>
+        <div class="form-group row">
+          <label for="userForm[isEmailPublished]" class="col-sm-2 col-form-label">{{ t('Disclose E-mail') }}</label>
+          <div class="col-sm-4">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioEmailShow"
+                name="userForm[isEmailPublished]"
+                value="{{ true }}"
+                {% if user.isEmailPublished == true %}checked="checked"{% endif %}
+                class="custom-control-input"
+              > 
+              <label class="custom-control-label" for="radioEmailShow">{{ t('Show') }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioEmailHide"
+                name="userForm[isEmailPublished]"
+                value="{{ false }}"
+                {% if user.isEmailPublished == false %}checked="checked"{% endif %}
+                class="custom-control-input"
+              >
+              <label class="custom-control-label" for="radioEmailHide">{{ t('Hide') }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row {% if not user.lang %}has-error{% endif %}">
+          <label for="userForm[lang]" class="col-sm-2 col-form-label">Language</label>
+          <div class="col-sm-4">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioLangEn"
+                name="userForm[lang]"
+                value="{{ consts.language.LANG_EN_US }}"
+                class="custom-control-input"
+                {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}
+              >
+              <label class="custom-control-label" for="radioLangEn">{{ t('English') }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="userForm[lang]"
+                value="{{ consts.language.LANG_JA }}"
+                class="custom-control-input"
+                {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}
+              >
+              <label class="custom-control-label" for="radioLangJa">{{ t('Japanese') }}</label>
+            </div>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+        <div class="form-group row">
+          <div class="offset-sm-2 col-sm-10">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+          </div>
         </div>
-      </div>
-    </fieldset>
+      </fieldset>
     </form>
   </div>
 
