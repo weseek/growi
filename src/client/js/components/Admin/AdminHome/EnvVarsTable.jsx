@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const EnvVarsTable = (props) => {
   const envVarRows = [];
 
-  for (const [key, value] of Object.entries(props.envVars.crowi)) {
+  for (const [key, value] of Object.entries(props.envVars)) {
     if (value != null) {
       envVarRows.push(
         <tr key={key}>
