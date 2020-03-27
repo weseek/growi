@@ -248,7 +248,7 @@ class PageEditorByHackmd extends React.Component {
     /*
      * Resume to edit or discard changes
      */
-    else if (!this.isResume) {
+    else if (this.isResume) {
       const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
       content = (
