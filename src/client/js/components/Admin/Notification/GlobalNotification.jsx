@@ -99,7 +99,7 @@ class GlobalNotification extends React.Component {
 
         <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}
           <a href="/admin/global-notification/new">
-            <p className="btn btn-default pull-right">{t('notification_setting.add_notification')}</p>
+            <p className="btn btn-light pull-right">{t('notification_setting.add_notification')}</p>
           </a>
         </h2>
 
