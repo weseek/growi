@@ -366,6 +366,20 @@
     "insert_image": "inserts an image",
     "open_sandbox": "Open Sandbox"
   },
+  "hackmd": {
+    "not_set_up": "HackMD is not set up.",
+    "start_to_edit": "Start to edit with HackMD",
+    "clone_page_content": "Click to clone page content and start to edit.",
+    "unsaved_draft": "HackMD has unsaved draft.",
+    "draft_outdated": "DRAFT MAY BE OUTDATED",
+    "based_on_revision": "The current draft on HackMD is based on",
+    "view_outdated_draft": "View the outdated draft on HackMD",
+    "resume_to_edit": "Resume to edit with HackMD",
+    "discard_changes": "Discard changes of HackMD",
+    "integration_failed": "HackMD Integration failed",
+    "fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
+    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>."
+  },
   "security_setting": {
     "Security settings": "Security settings",
     "Guest Users Access": "Guest Users Access",
