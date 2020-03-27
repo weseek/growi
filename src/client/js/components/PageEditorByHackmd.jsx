@@ -214,13 +214,13 @@ class PageEditorByHackmd extends React.Component {
   }
 
   penpalErrorOccuredHandler(error) {
-    const { pageContainer } = this.props;
+    const { pageContainer, t } = this.props;
 
     pageContainer.showErrorToastr(error);
 
     this.setState({
       hasError: true,
-      errorMessage: 'GROWI client failed to connect to GROWI agent for HackMD.',
+      errorMessage: t('hackmd.fail_to_connect'),
       errorReason: error.toString(),
     });
   }
