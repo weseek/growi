@@ -115,26 +115,18 @@
 
 .search-result {
   .search-result-list {
-    nav {
-      padding-right: 0;
+    position: sticky;
+    top: 64px;
+    height: 100vh;
+    overflow-y: scroll;
 
-      &.affix {
-        top: 64px;
-        width: 33%;
-        height: 100%;
-        padding-right: 5px;
-        padding-bottom: 50px;
-        overflow-y: scroll;
-      }
+    .nav {
+      > li {
+        padding: 2px 8px;
 
-      .nav {
-        > li {
-          padding: 2px 8px;
-
-          &.active {
-            padding-right: 5px;
-            border-right: solid 3px transparent;
-          }
+        &.active {
+          padding-right: 5px;
+          border-right: solid 3px transparent;
         }
       }
     }

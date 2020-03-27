@@ -202,12 +202,12 @@ class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
+          <button type="button" className="btn btn-rounded btn-light btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
             <i className="icon-ban" /> Cancel
           </button>
           <button
             type="button"
-            className="btn btn-rounded btn-danger btn-xs"
+            className="btn btn-rounded btn-danger btn-sm"
             onClick={() => { return this.showDeleteConfirmModal() }}
             disabled={this.state.selectedPages.size === 0}
           >
@@ -216,22 +216,22 @@ class SearchResult extends React.Component {
         </div>
       );
       allSelectCheck = (
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              onChange={() => { return this.handleAllSelect() }}
-              checked={this.isAllSelected()}
-            />
-            &nbsp;Check All
-          </label>
+        <div className="custom-control custom-checkbox custom-checkbox-danger">
+          <input
+            id="all-select-check"
+            className="custom-control-input"
+            type="checkbox"
+            onChange={() => { return this.handleAllSelect() }}
+            checked={this.isAllSelected()}
+          />
+          <label className="custom-control-label" htmlFor="all-select-check">&nbsp;Check All</label>
         </div>
       );
     }
     else {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
+          <button type="button" className="btn btn-light btn-rounded btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
             <i className="ti-check-box" /> DeletionMode
           </button>
         </div>
@@ -271,8 +271,8 @@ class SearchResult extends React.Component {
     return (
       <div className="content-main">
         <div className="search-result row" id="search-result">
-          <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
-            <nav data-spy="affix" data-offset-top="50">
+          <div className="col-lg-4 d-none d-lg-block page-list search-result-list" id="search-result-list">
+            <nav>
               <div className="float-right">
                 {deletionModeButtons}
                 {allSelectCheck}
@@ -288,7 +288,7 @@ class SearchResult extends React.Component {
               </div>
             </nav>
           </div>
-          <div className="col-md-8 search-result-content" id="search-result-content">
+          <div className="col-lg-8 search-result-content" id="search-result-content">
             <SearchResultList
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
