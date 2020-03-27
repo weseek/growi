@@ -71,128 +71,71 @@
   data-userlang="{% if user %}{{ user.lang }}{% endif %}"
  >
 
-<div id="wrapper">
-  <!-- Navigation -->
-  {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark mb-0 p-0">
-    <!-- 1 GROWI logo -->
-    <div class="navbar-brand">
-      <a class="logo d-block" href="/">
-        <div class="logo-mark d-inline-block">{% include '../widget/logo.html' %}</div>
-        {#
-        <span class="logo-text mx-2">
-          {% set appTitle = appService.getAppTitle() %}
-          {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
-          <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
-            {% block title %}{{ appTitle }}{% endblock %}
-          </text>
-        </span>
-        #}
-      </a>
-    </div>
+<div id="wrapper" class="d-flex">
 
-    <ul class="navbar-nav mr-auto">
-      {#
-      <!-- 2 side nav open -->
-      <a class="open-close d-none d-md-block mx-3 waves-effect waves-light">
-        <i class="ti-menu"></i>
-      </a>
-      #}
-      {#  disabled temporary -- 2019.05.13 Yuki Takei
-      <li class="nav-item">
-        <a class="nav-link" href="/tags">
-          <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
-        </a>
-      </div>
+  {# Sidebar #}
+  <nav>
+    <div id="grw-sidebar" class="grw-sidebar"></div>
+  </nav>
 
-      <ul class="nav navbar-top-links navbar-left hidden-xs">
-        <li>
-          <a class="open-close hidden-xs waves-effect waves-light">
-            <i class="ti-menu"></i>
-          </a>
-        </li>
-        {#  disabled temporary -- 2019.05.13 Yuki Takei
-        <li>
-          <li class="nav-item-admin">
-            <a href="/tags">
-              <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
-            </a>
-          </li>
-        </li>
-        #}
+  <div class="flex-grow-1">
+
+    {% block layout_head_nav %}
+    <nav class="navbar grw-navbar navbar-expand-sm navbar-dark mb-0 p-0">
+      {# Navbar Left #}
+      <ul class="navbar-nav mr-auto pl-4">
         <li>
           {% if isSearchServiceConfigured() %}
           <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
           {% endif %}
         </li>
       </ul>
-    </ul>
 
-    <!-- 5 user action -->
-    <ul class="navbar-nav">
-      {% if user and user.admin %}
-      <li class="nav-item">
-        <a class="nav-link" href="/admin">
-          <i class="icon-settings mr-2"></i>
-          <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
-        </a>
-      </li>
-      {% endif %}
-
-      {% if user %}
-      <li class="nav-item">
-        <a class="nav-link" href="#" data-target="#create-page" data-toggle="modal">
-          <i class="icon-pencil mr-2"></i>
-          <span class="d-none d-md-inline-block">{{ t('New') }}</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-          <i class="icon-question mr-2"></i><span class="d-none d-md-inline-block mr-2">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
-        </a>
-      </li>
-      <li id="personal-dropdown" class="nav-item dropdown"></li>
-      {% else %}
-      <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-      {% endif %}
-      {% if getConfig('crowi', 'app:confidential') %}
-      <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
-      {% endif %}
-    </ul>
-
-  </nav>
-  {% include '../modal/create_page.html' %}
-  {% endblock  %} {# layout_head_nav #}
-
-  <!-- 6 header widget area -->
-  {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
-  {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
-
-  {% block sidebar %}
-  <!-- Left navbar-header -->
-  {#
-  <div class="navbar-default sidebar hidden-print" role="navigation">
-    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
-      <ul class="nav" id="side-menu">
-        <li class="sidebar-search hidden-sm hidden-md hidden-lg">
-          {% if isSearchServiceConfigured() %}
-          <div class="search-sidebar" role="search" id="search-sidebar"></div>
-          {% endif %}
+      {# Navbar Right #}
+      <ul class="navbar-nav">
+        {% if user and user.admin %}
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">
+            <i class="icon-settings mr-2"></i>
+            <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
+          </a>
         </li>
+        {% endif %}
 
-        <li class="tbd"><a href="#">(TBD) Create /Sidebar</a></li>
+        {% if user %}
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-target="#create-page" data-toggle="modal">
+            <i class="icon-pencil mr-2"></i>
+            <span class="d-none d-md-inline-block">{{ t('New') }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://docs.growi.org/" target="_blank">
+            <i class="icon-question mr-2"></i><span class="d-none d-md-inline-block mr-2">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
+          </a>
+        </li>
+        <li id="personal-dropdown" class="nav-item dropdown"></li>
+        {% else %}
+        <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+        {% endif %}
+        {% if getConfig('crowi', 'app:confidential') %}
+        <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
+        {% endif %}
       </ul>
-    </div>
-  </div>
-  #}
-  <!-- Left navbar-header end -->
-  {% endblock %}
 
-  <!-- 8 Page Content -->
-  <div id="page-wrapper">
-    {% block layout_main %}
-    {% endblock %} {# layout_main #}
-  </div><!-- /#page-wrapper -->
+    </nav>
+    {% include '../modal/create_page.html' %}
+    {% endblock  %} {# layout_head_nav #}
+
+    {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
+    {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
+
+    <div id="page-wrapper">
+      {% block layout_main %}
+      {% endblock %} {# layout_main #}
+    </div>
+
+  </div>
 
 </div><!-- /#wrapper -->
 
