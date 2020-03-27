@@ -40,14 +40,14 @@ class PageStatusAlert extends React.Component {
 
   renderSomeoneEditingAlert() {
     return (
-      <div className="alert-hackmd-someone-editing myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
+      <div className="alert alert-success fixed-bottom p-3 mb-0">
         <i className="icon-fw icon-people"></i>
         Someone editing this page on HackMD
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="#hackmd">
-          Open HackMD Editor
+        <a href="#hackmd" className="font-weight-bold text-decoration-none">
+          <u>Open HackMD Editor</u>
         </a>
       </div>
     );
@@ -55,14 +55,14 @@ class PageStatusAlert extends React.Component {
 
   renderDraftExistsAlert(isRealtime) {
     return (
-      <div className="alert-hackmd-draft-exists myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
+      <div className="alert alert-success fixed-bottom p-3 mb-0">
         <i className="icon-fw icon-pencil"></i>
         This page has a draft on HackMD
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="#hackmd">
-          Open HackMD Editor
+        <a href="#hackmd" className="font-weight-bold text-decoration-none">
+          <u>Open HackMD Editor</u>
         </a>
       </div>
     );
@@ -74,14 +74,14 @@ class PageStatusAlert extends React.Component {
     const label2 = t('Load latest');
 
     return (
-      <div className="alert-revision-outdated myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
+      <div className="alert alert-warning fixed-bottom p-3 mb-0">
         <i className="icon-fw icon-bulb"></i>
         {this.props.pageContainer.state.lastUpdateUsername} {label1}
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="#" onClick={this.refreshPage}>
-          {label2}
+        <a href="#" onClick={this.refreshPage} className="font-weight-bold text-decoration-none">
+          <u>{label2}</u>
         </a>
       </div>
     );
