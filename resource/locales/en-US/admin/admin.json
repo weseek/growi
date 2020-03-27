@@ -7,7 +7,10 @@
     "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
     "specified_version": "Specified version",
-    "installed_version": "Installed version"
+    "installed_version": "Installed version",
+    "list_of_env_vars":"List of environment variables",
+    "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
+    "about_security": "Check <a href='/admin/security'>Securtiy Management</a> for security environment variables."
   },
   "app_setting": {
     "site_name": "Site name",
