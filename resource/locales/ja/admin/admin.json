@@ -221,6 +221,7 @@
   },
   "user_management": {
     "invite_users": "新規ユーザーの招待",
+    "click_twice_same_checkbox": "少なくとも一つはチェックしてください。",
     "invite_modal": {
       "emails": "メールアドレス (複数行入力で複数人招待可能)",
       "invite_thru_email": "招待をメールで送信",
