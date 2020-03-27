@@ -70,7 +70,7 @@ module.exports = (crowi) => {
       npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
       yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
       installedPlugins: pluginUtils.listPlugins(crowi.rootDir),
-      envVars: await crowi.configManager.configLoader.getEnvVarsForDisplay(),
+      envVars: await crowi.configManager.configLoader.getEnvVarsForDisplay(false),
     };
 
     return res.apiv3({ adminHomeParams });

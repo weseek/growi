@@ -78,14 +78,13 @@ class ExportService {
   async createMetaJson() {
     const metaJson = path.join(this.baseDir, this.growiBridgeService.getMetaFileName());
     const writeStream = fs.createWriteStream(metaJson, { encoding: this.growiBridgeService.getEncoding() });
-    const envVars = this.configLoader.getEnvVarsForDisplay();
 
     const metaData = {
       version: this.crowi.version,
       url: this.appService.getSiteUrl(),
       passwordSeed: this.crowi.env.PASSWORD_SEED,
       exportedAt: new Date(),
-      envVars,
+      envVars: this.configLoader.getEnvVarsForDisplay(),
     };
 
     writeStream.write(JSON.stringify(metaData));
