@@ -833,10 +833,10 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage.path, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
     }
     catch (err) {
-      logger.error(err);
+      logger.error('Create notification failed', err);
     }
 
     // user notification
@@ -961,10 +961,10 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page.path, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page, req.user);
     }
     catch (err) {
-      logger.error(err);
+      logger.error('Edit notification failed', err);
     }
 
     // user notification
@@ -1299,10 +1299,10 @@ module.exports = function(crowi, app) {
 
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page.path, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
     }
     catch (err) {
-      logger.error('Like failed', err);
+      logger.error('Like notification failed', err);
     }
   };
 
@@ -1499,8 +1499,13 @@ module.exports = function(crowi, app) {
 
     res.json(ApiResponse.success(result));
 
-    // global notification
-    await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page.path, req.user);
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
+    }
+    catch (err) {
+      logger.error('Delete notification failed', err);
+    }
   };
 
   /**
@@ -1652,10 +1657,15 @@ module.exports = function(crowi, app) {
 
     res.json(ApiResponse.success(result));
 
-    // global notification
-    globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page.path, req.user, {
-      oldPath: req.body.path,
-    });
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
+        oldPath: req.body.path,
+      });
+    }
+    catch (err) {
+      logger.error('Move notification failed', err);
+    }
 
     return page;
   };

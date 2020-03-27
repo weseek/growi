@@ -256,9 +256,15 @@ module.exports = function(crowi, app) {
     const path = page.path;
 
     // global notification
-    globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, path, req.user, {
-      comment: createdComment,
-    });
+    try {
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, page, req.user, {
+        comment: createdComment,
+      });
+    }
+    catch (err) {
+      logger.error('Comment notification　failed', err);
+    }
+
 
     // slack notification
     if (slackNotificationForm.isSlackEnabled) {
