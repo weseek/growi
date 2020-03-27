@@ -248,13 +248,17 @@ class SearchResult extends React.Component {
         >
           { this.state.deletionMode
             && (
-              <input
-                type="checkbox"
-                className="search-result-list-delete-checkbox"
-                value={pageId}
-                checked={this.state.selectedPages.has(page)}
-                onChange={() => { return this.toggleCheckbox(page) }}
-              />
+              <div className="custom-control custom-checkbox custom-checkbox-danger">
+                <input
+                  type="checkbox"
+                  id="page-delete-check"
+                  className="custom-control-input search-result-list-delete-checkbox"
+                  value={pageId}
+                  checked={this.state.selectedPages.has(page)}
+                  onChange={() => { return this.toggleCheckbox(page) }}
+                />
+                <label className="custom-control-label" htmlFor="page-delete-check"></label>
+              </div>
             )
             }
           <div className="page-list-option">
