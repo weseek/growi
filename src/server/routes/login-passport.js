@@ -63,6 +63,116 @@ module.exports = function(crowi, app) {
     }
     return bool;
   }
+
+  /**
+   * middleware that login with LdapStrategy
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   */
+  const loginWithMikan = async(req, res, next) => {
+    if (!passportService.isMikanStrategySetup) {
+      debug('MikanStrategy has not been set up');
+      return next();
+    }
+    passport.authenticate('cookie', async(err, mikanAccountInfo, info) => {
+      debug('--- authenticate with MikanStrategy ---');
+      debug('mikanAccountInfo', mikanAccountInfo);
+      debug('info', info);
+      if (err) {
+        debug('Mikan authentication Error: ', err);
+        req.flash('warningMessage', ' Error occured while authentication with Mikan.');
+        return next(); // pass and the flash message is displayed when all of authentications are failed.
+      }
+      // authentication failure
+      if (!mikanAccountInfo) { return next() }
+      /*
+       * authentication success
+       */
+      // it is guaranteed that username that is input from form can be acquired
+      // because this processes after authentication
+      const mikanUid = mikanAccountInfo.uid;
+      const mikanUsername = mikanAccountInfo.username;
+      // find or register(create) user
+      let externalAccount;
+      let user;
+      try {
+        externalAccount = await ExternalAccount.findOrRegister('mikan', mikanUid, mikanUsername);
+        user = await externalAccount.getPopulatedUser();
+      }
+      catch (err) {
+        if (err.name != null && err.name === 'DuplicatedUsernameException') {
+          req.flash('isDuplicatedUsernameExceptionOccured', true);
+          return next();
+        }
+        return next(err);
+      }
+
+      // update user status
+      user.email = mikanAccountInfo.email;
+      user.name = `${mikanAccountInfo.first_name} ${mikanAccountInfo.last_name}`;
+      user.admin = mikanAccountInfo.is_staff;
+      if (mikanAccountInfo.image) {
+        user.image = mikanAccountInfo.profile_image;
+      }
+
+      // login
+      req.logIn(user, (err) => {
+        if (err) {
+          return next();
+        }
+        return loginSuccessHandler(req, res, user);
+      });
+    })(req, res, next);
+  };
+
+  /**
+   * middleware that test credentials with LdapStrategy
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  const testMikanCredentials = (req, res) => {
+    if (!passportService.isMikanStrategySetup) {
+      debug('MikanStrategy has not been set up');
+      return res.json({
+        status: 'warning',
+        message: 'MikanStrategy has not been set up',
+      });
+    }
+    passport.authenticate('cookie', (err, user, info) => {
+      debug('mikanAccountInfo', user);
+      if (err) {
+        debug('Mikan Server Error: ', err);
+        return res.json({
+          status: 'warning',
+          message: 'Mikan Server Error occured.',
+        });
+      }
+      if (info && info.message) {
+        return res.json({
+          status: 'warning',
+          message: info.message,
+        });
+      }
+      if (user && user.username === req.body.loginForm.username) {
+        return res.json({
+          status: 'success',
+          message: 'Successfully authenticated.',
+        });
+      }
+      if (user) {
+        return res.json({ status: 'danger', message: 'Authentication failed.' });
+      }
+      debug('No user information');
+      return res.json({
+        status: 'warning',
+        message: 'No user information.',
+      });
+    })(req, res, () => { });
+  };
+
+
   /**
    * middleware that login with LdapStrategy
    * @param {*} req
@@ -579,6 +689,8 @@ module.exports = function(crowi, app) {
 
   return {
     loginFailure,
+    loginWithMikan,
+    testMikanCredentials,
     loginWithLdap,
     testLdapCredentials,
     loginWithLocal,

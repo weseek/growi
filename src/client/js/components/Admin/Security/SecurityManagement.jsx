@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { createSubscribedElement } from '../../UnstatedUtils';
 
 import AppContainer from '../../../services/AppContainer';
+import MikanSecuritySetting from './MikanSecuritySetting';
 import LdapSecuritySetting from './LdapSecuritySetting';
 import LocalSecuritySetting from './LocalSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
@@ -50,6 +51,9 @@ class SecurityManagement extends React.Component {
                 <a href="#passport-local" data-toggle="tab" role="tab"><i className="fa fa-users"></i> ID/Pass</a>
               </li>
               <li>
+                <a href="#passport-mikan" data-toggle="tab" role="tab"><i className="fa fa-paper-plane"></i> Mikan</a>
+              </li>
+              <li>
                 <a href="#passport-ldap" data-toggle="tab" role="tab"><i className="fa fa-sitemap"></i> LDAP</a>
               </li>
               <li>
@@ -77,6 +81,9 @@ class SecurityManagement extends React.Component {
             <div className="tab-content p-t-10">
               <div id="passport-local" className="tab-pane active" role="tabpanel">
                 <LocalSecuritySetting />
+              </div>
+              <div id="passport-mikan" className="tab-pane active" role="tabpanel">
+                <MikanSecuritySetting />
               </div>
               <div id="passport-ldap" className="tab-pane" role="tabpanel">
                 <LdapSecuritySetting />

@@ -439,6 +439,14 @@
       "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
       "enable_local": "enable ID/Password"
     },
+    "mikan": {
+      "enable_mikan": "enable Mikan",
+      "api_url_detail": "The URL of the Mikan API.",
+      "login_url_detail": "The URL of the Mikan login page.",
+      "cookie_name_detail": "Key for a token in cookie.",
+      "test_config": "Test Saved Configuration",
+      "updated_mikan": "Succeeded to update Mikan setting"
+    },
     "ldap": {
       "enable_ldap": "enable LDAP",
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
@@ -564,7 +572,7 @@
     "prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
     "slack_app_configuration": "Slack App Configuration",
     "slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
-    "use_instead":"Please use Slack Incoming Webhooks Configuration instead.",
+    "use_instead": "Please use Slack Incoming Webhooks Configuration instead.",
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",

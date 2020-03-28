@@ -51,6 +51,10 @@ module.exports = function(crowi) {
       'security:pageCompleteDeletionAuthority' : undefined,
 
       'security:passport-local:isEnabled' : true,
+      'security:passport-mikan:isEnabled': false,
+      'security:passport-mikan:cookieName': 'mikan_token',
+      'security:passport-mikan:apiUrl': undefined,
+      'security:passport-mikan:loginUrl': undefined,
       'security:passport-ldap:isEnabled' : false,
       'security:passport-ldap:serverUrl' : undefined,
       'security:passport-ldap:isUserBind' : undefined,

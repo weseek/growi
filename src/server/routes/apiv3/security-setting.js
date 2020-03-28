@@ -328,6 +328,7 @@ module.exports = (crowi) => {
       },
       generalAuth: {
         isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
+        isMikanEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:isEnabled'),
         isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
@@ -335,6 +336,11 @@ module.exports = (crowi) => {
         isGoogleEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGitHubEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+      },
+      mikanAuth: {
+        mikanCookieName: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:cookieName'),
+        mikanApiUrl: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:apiUrl'),
+        mikanLoginUrl: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:loginUrl'),
       },
       ldapAuth: {
         serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),

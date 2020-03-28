@@ -364,7 +364,7 @@
     "insert_image": "で画像を挿入できます",
     "open_sandbox": "Sandbox を開く"
   },
-  "hackmd":{
+  "hackmd": {
     "not_set_up": "HackMD はセットアップされていません",
     "start_to_edit": "HackMD を開始する",
     "clone_page_content": "ページを複製して編集を開始します",
@@ -400,7 +400,7 @@
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
-    "setup_is_not_yet_complete":"セットアップはまだ完了してません",
+    "setup_is_not_yet_complete": "セットアップはまだ完了してません",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
@@ -432,6 +432,14 @@
       "name": "ID/Password",
       "note for the only env option": "現在LOCAL認証のON/OFFは環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
       "enable_local": "ID/Password を有効にする"
+    },
+    "mikan": {
+      "enable_mikan": "Mikan を有効にする",
+      "api_url_detail": "Mikan APIのURL",
+      "login_url_detail": "Mikan ログイン画面のURL",
+      "cookie_name_detail": "Cookie内のTokenに対するキー",
+      "test_config": "ログインテスト",
+      "updated_mikan": "Mikan設定 を更新しました"
     },
     "ldap": {
       "enable_ldap": "LDAP を有効にする",

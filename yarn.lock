@@ -10007,6 +10007,13 @@ pascalcase@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
 
+passport-cookie@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/passport-cookie/-/passport-cookie-1.0.6.tgz#d0642696dccf415a57467c40c5c5f0f7f632eacd"
+  integrity sha512-WgTC2OYk1fGT4nj9U9qD1/nZ155Fmpjrogkfdpv2iEhGP5QZXy7Di/dJhdEo/6xGgUGbAg3y3TtUJrnyJ8w3Ew==
+  dependencies:
+    passport-strategy "^1.0.0"
+
 passport-github@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/passport-github/-/passport-github-1.1.0.tgz#8ce1e3fcd61ad7578eb1df595839e4aea12355d4"

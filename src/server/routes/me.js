@@ -264,6 +264,46 @@ module.exports = function(crowi, app) {
       });
   };
 
+  actions.externalAccounts.associateMikan = function(req, res) {
+    const passport = require('passport');
+    const passportService = crowi.passportService;
+
+    const redirectWithFlash = (type, msg) => {
+      req.flash(type, msg);
+      return res.redirect('/me/external-accounts');
+    };
+
+    if (!passportService.isMikanStrategySetup) {
+      debug('MikanStrategy has not been set up');
+      return redirectWithFlash('warning', 'MikanStrategy has not been set up');
+    }
+
+    passport.authenticate('cookie', (err, user, info) => {
+      if (err) {
+        debug('Mikan Server Error: ', err);
+        return redirectWithFlash('warningMessage', 'Mikan Server Error occured.');
+      }
+      if (info && info.message) {
+        return redirectWithFlash('warningMessage', info.message);
+      }
+      if (user && user.username === req.body.loginForm.username) {
+        // create ExternalAccount
+        const mikanUid = user.uid;
+        const crowiUser = req.user;
+        ExternalAccount.create({ providerType: 'mikan', accountId: mikanUid, user: crowiUser._id })
+          .then(() => {
+            return redirectWithFlash('successMessage', 'Successfully added.');
+          })
+          .catch((err) => {
+            return redirectWithFlash('errorMessage', err.message);
+          });
+      }
+      else {
+        return redirectWithFlash('errorMessage', 'Authentication failed.');
+      }
+    })(req, res, () => { });
+  };
+
   actions.externalAccounts.associateLdap = function(req, res) {
     const passport = require('passport');
     const passportService = crowi.passportService;
