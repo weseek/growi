@@ -82,7 +82,7 @@ class SecurityManagement extends React.Component {
               <div id="passport-local" className="tab-pane active" role="tabpanel">
                 <LocalSecuritySetting />
               </div>
-              <div id="passport-mikan" className="tab-pane active" role="tabpanel">
+              <div id="passport-mikan" className="tab-pane" role="tabpanel">
                 <MikanSecuritySetting />
               </div>
               <div id="passport-ldap" className="tab-pane" role="tabpanel">

@@ -158,6 +158,13 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch Mikan enabled
+   */
+  async switchIsMikanEnabled() {
+    this.switchAuthentication('isMikanEnabled', 'mikan');
+  }
+
+  /**
    * Switch LDAP enabled
    */
   async switchIsLdapEnabled() {
