@@ -29,6 +29,7 @@ import AdminAppContainer from './services/AdminAppContainer';
 import AdminMarkDownContainer from './services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
 import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
+import AdminMikanSecurityContainer from './services/AdminMikanSecurityContainer';
 import AdminLdapSecurityContainer from './services/AdminLdapSecurityContainer';
 import AdminLocalSecurityContainer from './services/AdminLocalSecurityContainer';
 import AdminSamlSecurityContainer from './services/AdminSamlSecurityContainer';
@@ -112,6 +113,7 @@ const adminSecuritySettingElem = document.getElementById('admin-security-setting
 if (adminSecuritySettingElem != null) {
   const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer(appContainer);
   const adminLocalSecurityContainer = new AdminLocalSecurityContainer(appContainer);
+  const adminMikanSecurityContainer = new AdminMikanSecurityContainer(appContainer);
   const adminLdapSecurityContainer = new AdminLdapSecurityContainer(appContainer);
   const adminSamlSecurityContainer = new AdminSamlSecurityContainer(appContainer);
   const adminOidcSecurityContainer = new AdminOidcSecurityContainer(appContainer);
@@ -120,7 +122,7 @@ if (adminSecuritySettingElem != null) {
   const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer(appContainer);
   const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer(appContainer);
   const adminSecurityContainers = [
-    adminGeneralSecurityContainer, adminLocalSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer,
+    adminGeneralSecurityContainer, adminLocalSecurityContainer, adminMikanSecurityContainer, adminLdapSecurityContainer, adminSamlSecurityContainer,
     adminOidcSecurityContainer, adminBasicSecurityContainer, adminGoogleSecurityContainer, adminGitHubSecurityContainer, adminTwitterSecurityContainer,
   ];
   ReactDOM.render(

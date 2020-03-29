@@ -24,7 +24,7 @@ const validator = {
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
     body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
+      'local', 'mikan', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
     ]),
   ],
   localSetting: [
@@ -34,6 +34,11 @@ const validator = {
     body('registrationWhiteList').if(value => value != null).isArray().customSanitizer((value, { req }) => {
       return value.filter(email => email !== '');
     }),
+  ],
+  mikanAuth: [
+    body('mikanApiUrl').if(value => value != null).isString(),
+    body('mikanLoginUrl').if(value => value != null).isString(),
+    body('mikanCookieName').if(value => value != null).isString(),
   ],
   ldapAuth: [
     body('serverUrl').if(value => value != null).isString(),
