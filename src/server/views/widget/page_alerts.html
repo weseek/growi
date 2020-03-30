@@ -81,6 +81,7 @@
     {% endif %}
 
     {% if isTrashPage() %}
+    <div class="alert alert-warning py-3 px-4 d-flex align-items-center justify-content-between">
       <div>
         This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
         {% if page.isDeleted() %}
