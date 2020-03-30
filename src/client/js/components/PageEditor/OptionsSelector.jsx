@@ -155,6 +155,7 @@ class OptionsSelector extends React.Component {
       <div className="my-0 form-group">
 
         <Dropdown
+          color="white"
           direction="up"
           size="sm"
           className="grw-editor-configuration-dropdown"
@@ -189,7 +190,7 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <DropdownItem toggle={false} onClick={this.onClickStyleActiveLine}>
+      <DropdownItem color="white" toggle={false} onClick={this.onClickStyleActiveLine}>
         <span className="icon-container"></span>
         <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
         <span className="icon-container"><i className={iconClassName}></i></span>
@@ -214,7 +215,7 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      <DropdownItem toggle={false} onClick={this.onClickRenderMathJaxInRealtime}>
+      <DropdownItem color="white" toggle={false} onClick={this.onClickRenderMathJaxInRealtime}>
         <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
         <span className="menuitem-label">MathJax Rendering</span>
         <i className={iconClassName}></i>
