@@ -29,6 +29,7 @@
     {% endif %}
 
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
+    <div class="alert alert-info py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
@@ -52,6 +53,7 @@
     {% endif %}
 
     {% if req.query.duplicated and not page.isDeleted() %}
+    <div class="alert alert-success py-3 px-4">
       <span>
         <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
       </span>
