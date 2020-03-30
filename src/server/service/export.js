@@ -38,7 +38,6 @@ class ExportService {
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
 
-    this.configLoader = ConfigLoader;
     this.adminEvent = crowi.event('admin');
 
     this.currentProgressingStatus = null;
@@ -85,7 +84,7 @@ class ExportService {
       url: this.appService.getSiteUrl(),
       passwordSeed,
       exportedAt: new Date(),
-      envVars: this.configLoader.getEnvVarsForDisplay(),
+      envVars: ConfigLoader.getEnvVarsForDisplay(),
     };
 
     writeStream.write(JSON.stringify(metaData));
