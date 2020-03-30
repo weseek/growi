@@ -21,7 +21,7 @@ export default class Page extends React.Component {
     const hasChildren = this.props.children != null;
 
     return (
-      <li className="page-list-li d-flex align-items-center">
+      <li className="page-list-li d-flex align-items-center w-100">
         <UserPicture user={page.lastUpdateUser} />
         <a className="page-list-link" href={link}>
           <PagePath page={page} excludePathString={this.props.excludePathString} />
