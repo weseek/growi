@@ -260,7 +260,7 @@ class SearchResult extends React.Component {
                 <label className="custom-control-label" htmlFor="page-delete-check"></label>
               </div>
             )
-            }
+          }
           <div className="page-list-option">
             <a href={page.path}><i className="icon-login" /></a>
           </div>
@@ -277,26 +277,23 @@ class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-lg-4 d-none d-lg-block page-list search-result-list" id="search-result-list">
             <nav>
-              <div className="float-right">
-                {deletionModeButtons}
-                {allSelectCheck}
+              <div className="d-flex align-items-start justify-content-between mt-1">
+                <div className="search-result-meta">
+                  <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
+                </div>
+                <div className="text-nowrap">
+                  {deletionModeButtons}
+                  {allSelectCheck}
+                </div>
               </div>
-              <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
-              </div>
-              <div className="clearfix"></div>
+
               <div className="page-list">
-                <ul className="page-list-ul page-list-ul-flat nav">
-                  {listView}
-                </ul>
+                <ul className="page-list-ul page-list-ul-flat nav">{listView}</ul>
               </div>
             </nav>
           </div>
           <div className="col-lg-8 search-result-content" id="search-result-content">
-            <SearchResultList
-              pages={this.props.pages}
-              searchingKeyword={this.props.searchingKeyword}
-            />
+            <SearchResultList pages={this.props.pages} searchingKeyword={this.props.searchingKeyword} />
           </div>
         </div>
         <DeletePageListModal
@@ -307,8 +304,7 @@ class SearchResult extends React.Component {
           confirmedToDelete={this.deleteSelectedPages}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
-
-      </div>// content-main
+      </div> // content-main
     );
   }
 
