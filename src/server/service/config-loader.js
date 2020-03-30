@@ -355,14 +355,14 @@ class ConfigLoader {
    *
    * **use this only admin home page.**
    */
-  getEnvVarsForDisplay(isIncludedSeurity = true) {
+  static getEnvVarsForDisplay(avoidSecurity = false) {
     const config = {};
     for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
       const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
       if (process.env[ENV_VAR_NAME] === undefined) {
         continue;
       }
-      if (isSecurityEnv(configInfo.key) && !isIncludedSeurity) {
+      if (isSecurityEnv(configInfo.key) && avoidSecurity) {
         continue;
       }
       config[ENV_VAR_NAME] = configInfo.type.parse(process.env[ENV_VAR_NAME]);

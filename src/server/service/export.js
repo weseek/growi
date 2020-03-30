@@ -38,7 +38,7 @@ class ExportService {
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
 
-    this.configLoader = new ConfigLoader();
+    this.configLoader = ConfigLoader;
     this.adminEvent = crowi.event('admin');
 
     this.currentProgressingStatus = null;
