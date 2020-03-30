@@ -2,6 +2,7 @@
   <div class="col-sm-12">
     {% if page && page.grant && page.grant > 1 %}
 
+      <p class="alert py-3 px-4">
       {% if page.grant == 2 %}
         <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 4 %}
