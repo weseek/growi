@@ -376,7 +376,10 @@
     "discard_changes": "HackMD の変更を破棄する",
     "integration_failed": "HackMD の統合に失敗しました",
     "fail_to_connect": "GROWI クライアントが HackMD の GROWI agent に接続できませんでした。",
-    "check_configuration": "<a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください"
+    "check_configuration": "<a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
+    "not_initialized": "HackMD コンポーネントは初期化されていません",
+    "someone_editing": "このページは、HackMD で編集されています。",
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
