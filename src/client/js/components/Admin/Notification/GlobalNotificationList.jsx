@@ -131,7 +131,7 @@ class GlobalNotificationList extends React.Component {
               <td className="td-abs-center">
                 <div className="dropdown">
                   <button
-                    className="btn btn-secondary dropdown-toggle"
+                    className="btn btn-light dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
                     data-toggle="dropdown"

@@ -13,7 +13,7 @@
 {% block content_main %}
   <div class="row">
 
-    <div class="col-lg-10 col-md-9">
+    <div class="col grw-page-content-container">
 
       {% include '../widget/page_content.html' %}
 
@@ -22,10 +22,10 @@
         $('#revision-toc').remove();
       </script>
 
-    </div> {# /.col- #}
+    </div>
 
     {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
+    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
       {% include './widget/liker-and-seenusers.html' %}
       <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
         <div id="revision-toc-content" class="revision-toc-content"></div>

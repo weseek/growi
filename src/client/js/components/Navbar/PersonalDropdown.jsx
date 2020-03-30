@@ -76,7 +76,7 @@ const PersonalDropdown = (props) => {
         <h6 className="dropdown-header">Color Scheme</h6>
         <form className="px-4">
           <div className="form-row align-items-center">
-            <div className="col-auto">
+            <div className="form-group col-auto">
               <div className="custom-control custom-checkbox">
                 <input
                   id="cbFollowOs"
@@ -85,12 +85,12 @@ const PersonalDropdown = (props) => {
                   checked={!isUserPreferenceExists}
                   onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                 />
-                <label className="custom-control-label" htmlFor="cbFollowOs">Use OS Setting</label>
+                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">Use OS Setting</label>
               </div>
             </div>
           </div>
           <div className="form-row align-items-center">
-            <div className="col-auto d-flex">
+            <div className="form-group col-auto mb-0 d-flex">
               <span className={isUserPreferenceExists ? '' : 'text-muted'}>Light</span>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input

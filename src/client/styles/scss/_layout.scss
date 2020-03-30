@@ -10,13 +10,11 @@
   padding-top: 10px !important;
 }
 
-.logo {
-  .logo-mark {
-    svg {
-      width: $grw-logo-width;
-      height: $grw-navbar-height;
-      padding: ($grw-logo-width - $grw-logomark-width) / 2;
-    }
+.grw-logo {
+  svg {
+    width: $grw-logo-width;
+    height: $grw-navbar-height;
+    padding: ($grw-logo-width - $grw-logomark-width) / 2;
   }
   /*
   .logo-text {
@@ -30,6 +28,12 @@
 
 .confidential {
   font-weight: bold;
+}
+
+.grw-sidebar {
+  .ak-navigation-resize-button {
+    top: 110px;
+  }
 }
 
 /*

@@ -28,8 +28,6 @@
     width: 100%;
     height: calc(100vh - #{$grw-navbar-height});
     padding-top: 2px;
-    padding-right: 0;
-    padding-left: 0;
     margin-top: 0px !important;
 
     &,
@@ -65,10 +63,6 @@
           .CodeMirror-scroll,
           .textarea-editor {
             height: calc(100vh - #{$editor-margin});
-          }
-
-          @include media-breakpoint-up(md) {
-            padding-right: 0;
           }
         }
       }
