@@ -231,7 +231,7 @@ class SearchResult extends React.Component {
     else {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-light btn-rounded btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
+          <button type="button" className="btn btn-light rounded-pill btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
             <i className="ti-check-box" /> DeletionMode
           </button>
         </div>
