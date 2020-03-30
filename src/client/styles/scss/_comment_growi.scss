@@ -99,14 +99,6 @@
   .page-comments-hidden-replies + .page-comment-reply {
     margin-top: 0;
   }
-  .page-comment-reply,
-  .page-comment-reply-form {
-    margin-right: 15px;
-    margin-left: 6em;
-    @include media-breakpoint-down(xs) {
-      margin-left: 2em;
-    }
-  }
   // reply button
   .btn.btn-comment-reply {
     width: 120px;
