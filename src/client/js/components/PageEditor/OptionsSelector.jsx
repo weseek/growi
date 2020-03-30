@@ -112,7 +112,7 @@ class OptionsSelector extends React.Component {
       <div className="my-0 form-group">
         <label>Theme:</label>
         <div className="btn-group btn-group-sm dropup">
-          <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button className="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {selectedTheme}
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -139,7 +139,7 @@ class OptionsSelector extends React.Component {
       <div className="my-0 form-group">
         <label>Keymap:</label>
         <div className="btn-group btn-group-sm dropup">
-          <button className="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button className="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {selectedKeymapMode}
           </button>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -162,7 +162,7 @@ class OptionsSelector extends React.Component {
           toggle={this.onToggleConfigurationDropdown}
         >
 
-          <DropdownToggle caret>
+          <DropdownToggle color="white" caret>
             <i className="icon-settings"></i>
           </DropdownToggle>
 
