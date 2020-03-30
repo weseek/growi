@@ -41,6 +41,7 @@
     Right Tabs
   #}
 
+  <!-- presentation -->
   {% if not page.isPortal() %}
     <li class="nav-item ml-md-auto">
       <a href="?presentation=1" class="nav-link toggle-presentation">
@@ -49,6 +50,7 @@
     </li>
   {% endif %}
 
+  <!-- revision-history -->
   {% if page.isPortal() %}
     <li class="nav-item ml-md-auto">
       <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
@@ -63,6 +65,7 @@
       </li>
   {% endif %}
 
+  <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
     <li class="nav-item">
