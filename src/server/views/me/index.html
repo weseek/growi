@@ -141,7 +141,7 @@
         <div class="form-group row">
           <div class="offset-sm-2 col-sm-10">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary rounded">{{ t('Update') }}</button>
+            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
           </div>
         </div>
       </fieldset>
@@ -211,20 +211,19 @@
                   style="{% if not user.imageAttachment %}display: none{% endif %}"
                 >
                   <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  <button type="submit" class="btn btn-danger rounded">{{ t('Delete Image') }}</button>
+                  <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
                 </form>
               </div>
             </div>
           </div>
           <div class="row">
-              <label for="" class="col-sm-4">{{ t('Upload new image') }}</label>
+            <label for="" class="col-sm-4">{{ t('Upload new image') }}</label>
               <div class="col-sm-8">
                 {% if fileUploadService.getIsUploadable() %}
                 <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-group" role="form">
                   <input type="hidden" name="_csrf" value="{{ csrf() }}">
                   <input type="file" name="profileImage" accept="image/*">
-                  <div id="pictureUploadFormProgress" class="d-flex align-items-center">
-                  </div>
+                  <div id="pictureUploadFormProgress" class="d-flex align-items-center"></div>
                 </form>
                 {% else %}
                 * {{ t('page_me.form_help.profile_image1') }}<br>
@@ -237,7 +236,7 @@
 
       <div class="form-group">
         <div class="offset-sm-4 col-sm-6">
-          <button type="submit" form="formImageType" class="btn btn-primary rounded">{{ t('Update') }}</button>
+          <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
         </div>
       </div>
     </fieldset>
@@ -268,7 +267,7 @@
           $('form#remove-attachment').show();
           $('form#remove-attachment input[name=attachment_id]').val(attachment.id);
           $('#pictureUploadFormMessage')
-            .addClass('alert alert-success rounded')
+            .addClass('alert alert-success')
             .html('変更しました');
         }
         else {
@@ -277,7 +276,7 @@
       })
       .catch(function(err) {
         $('#pictureUploadFormMessage')
-          .addClass('alert alert-danger rounded')
+          .addClass('alert alert-danger')
           .html('変更中にエラーが発生しました。');
       })
       // finally
@@ -303,7 +302,7 @@
       })
       .catch(function(err) {
         $('#pictureUploadFormMessage')
-          .addClass('alert alert-danger rounded')
+          .addClass('alert alert-danger')
           .html('変更中にエラーが発生しました。');
       })
     });
@@ -331,7 +330,7 @@
           また、これまでのページにリダイレクトは設定されず、この操作の取り消しもできません。<br>
           実行には十分に注意をしてください。
           </p>
-          <button type="submit" class="btn btn-warning rounded">ユーザーIDの変更を実行する</button>
+          <button type="submit" class="btn btn-warning">ユーザーIDの変更を実行する</button>
         </div>
       </div>
     </fieldset>
