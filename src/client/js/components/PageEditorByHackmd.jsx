@@ -44,8 +44,9 @@ class PageEditorByHackmd extends React.Component {
    * @return {Promise<string>}
    */
   getMarkdown() {
+    const { t } = this.props;
     if (!this.state.isInitialized) {
-      return Promise.reject(new Error('HackmdEditor component has not initialized'));
+      return Promise.reject(new Error(t('hackmd.not_initialized')));
     }
 
     return this.hackmdEditor.getValue();
