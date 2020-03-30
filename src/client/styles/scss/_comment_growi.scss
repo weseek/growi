@@ -48,6 +48,12 @@
     }
   }
 
+  .page-comment-writer {
+    @include media-breakpoint-down(xs) {
+      height: 3.5em;
+    }
+  }
+
   .page-comment {
     position: relative;
 
@@ -66,6 +72,14 @@
     // コメントセクション
     .page-comment-main {
       @extend %comment-section;
+      @include media-breakpoint-up(sm){
+        margin-left: 4.5em !important;
+      }
+      @include media-breakpoint-down(xs) {
+        &:before {
+          content: none;
+        }
+      }
     }
 
     // コメント本文
@@ -84,11 +98,6 @@
   // remove margin after hidden replies
   .page-comments-hidden-replies + .page-comment-reply {
     margin-top: 0;
-  }
-  .page-comment-reply,
-  .page-comment-reply-form {
-    margin-right: 15px;
-    margin-left: 6em;
   }
   // reply button
   .btn.btn-comment-reply {
