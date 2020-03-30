@@ -51,11 +51,19 @@
     </a>
   </li>
 
+  {% if not page.isPortal() %}
+    <li class="nav-item">
+      <a href="?presentation=1" class="nav-link toggle-presentation">
+        <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
+      </a>
+    </li>
+  {% endif %}
+
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
     <li class="nav-item">
       <a
-        {% if user %} role="button" class="nav-link  dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link" data-toggle="dropdown" {% endif %}
         {% if not user %}
           class="dropdown-toggle dropdown-toggle-disabled"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
@@ -75,9 +83,9 @@
       </div>
     </li>
     {% else %}
-    <li class="nav-item dropdown">
+    <li class="nav-item dropdown d-flex align-items-center">
       <a
-        {% if user %} role="button" class="dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" data-toggle="dropdown" {% endif %}
         {% if not user %}
           class="dropdown-toggle dropdown-toggle-disabled"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
@@ -98,15 +106,6 @@
     </li>
     {% endif %}
   {% endif %}
-
-  {% if not page.isPortal() %}
-    <li class="nav-item">
-      <a href="?presentation=1" class="nav-link toggle-presentation">
-        <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
-      </a>
-    </li>
-  {% endif %}
-
 </ul>
 
 {% else %} {# for creating portal #}
