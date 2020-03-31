@@ -141,34 +141,12 @@
 
               <div class="input-group justify-content-center d-flex mt-5">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-login px-0 py-2">
-                  <div class="eff-login"></div>
-                  <span class="btn-label p-3"><i class="icon-login"></i></span>
-                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                </button>
-              </div>
-
-              <div class="input-group justify-content-center d-flex mt-5">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button class="btn fcbtn px-0 py-2">
+                <button type="submit" class="btn fcbtn login px-0 py-2">
                   <div class="eff"></div>
                   <span class="btn-label p-3"><i class="icon-login"></i></span>
                   <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                 </button>
               </div>
-
-              <div class="input-group justify-content-center d-flex mt-5">
-                <form role="form" action="/passport/github" class="d-inline-flex flex-column">
-                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  <button type="submit" class="btn fcbtn px-0 py-2" id="github">
-                    <div class="eff-oauth-github"></div>
-                    <span class="btn-label p-3"><i class="fa fa-github"></i></span>
-                    <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
-                  </button>
-                  <div class="small text-center">by GitHub Account</div>
-                </form>
-              </div>
-
 
             </form>
             {% endif %}
@@ -189,8 +167,8 @@
                 {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/google" class="d-inline-flex flex-column">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="google">
-                      <div class="eff-oauth-google"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="google">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-google"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -202,8 +180,8 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/github" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="github">
-                      <div class="eff-oauth-github"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="github">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-github"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -215,8 +193,8 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="facebook">
-                      <div class="eff-oauth-facebook"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="facebook">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-facebook"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -228,8 +206,8 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="twitter">
-                      <div class="eff-oauth-twitter"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="twitter">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-twitter"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -241,8 +219,8 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="oidc">
-                      <div class="eff-oauth-oidc"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="oidc">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-openid"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -254,8 +232,8 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="saml">
-                      <div class="eff-oauth-saml"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="saml">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-key"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -267,8 +245,8 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn btn-login-oauth px-0 py-2" id="basic">
-                      <div class="eff-oauth-basic"></div>
+                    <button type="submit" class="btn fcbtn px-0 py-2" id="basic">
+                      <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-lock"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                     </button>
@@ -374,8 +352,8 @@
 
               <div class="input-group justify-content-center mt-5">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-register px-0 py-2">
-                  <div class="eff-register"></div>
+                <button type="submit" class="btn fcbtn px-0 py-2" id="register">
+                  <div class="eff"></div>
                   <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
                   <span class="btn-label-text p-3">{{ t('Sign up') }}</span>
                 </button>
