@@ -1,8 +1,15 @@
 # CHANGES
 
-## v3.7.2-RC
+## v3.7.3-RC
 
-* 
+*
+
+## v3.7.2
+
+* Feature: User Management Filtering/Sort
+* Feature: Show env vars on Admin pages
+* Fix: Attachment row z-index
+* I18n: HackMD integration alert
 
 ## v3.7.1
 
