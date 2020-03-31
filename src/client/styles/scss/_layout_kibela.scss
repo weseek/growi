@@ -121,6 +121,10 @@ body.kibela {
 
   /* admin navigation */
   .admin-navigation {
+    .list-group-item + .list-group-item.active {
+      margin-top: 2px;
+    }
+    
     .list-group-item.active {
       background: #1256a3;
       color: #fff;
