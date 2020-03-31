@@ -1,27 +1,24 @@
 /* navbar */
 
 .kibela {
-  .navbar-header {
-    display: inline-block;
-    min-width: 320px;
+  .grw-navbar {
     height: 60px;
-    padding: 5px 8px 5px 8px;
-    overflow: visible;
-    color: #3c4a60;
     background: white;
     border-bottom: solid 1px #e6e9ec;
-    .navbar-right {
-      a {
-        margin-right: 1.5em;
+    .navbar-nav {
+      .confidential {
+        color: white;
+        background: #0d3e75;
       }
-    }
-    .logo {
-      background: white;
-    }
-    .navbar-top-links > li > a {
-      height: 40px !important;
-      color: #3c4a60;
-      border-radius: 0.35em;
+      & > li > a {
+        height: 40px !important;
+        margin-right: 1.5em;
+        color: #3c4a60;
+        border-radius: 0.35em;
+        &:hover {
+          color: #3c4a60;
+        }
+      }
     }
     .create-page {
       width: 8em;
@@ -34,18 +31,6 @@
       span,
       i {
         color: white;
-      }
-    }
-    .dropdown {
-      a {
-        .user-name {
-          margin-right: 0.5em;
-          margin-left: 0.5em;
-        }
-      }
-      .img-circle {
-        width: 36px;
-        height: 36px;
       }
     }
     @media screen and (max-width: 790px) {
