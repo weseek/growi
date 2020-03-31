@@ -121,17 +121,17 @@
     overflow-y: scroll;
 
     .nav.nav-pills {
-      > li {
+      > li > a {
         padding: 2px 8px;
+        border-radius: 0;
 
-        > a {
-          &:hover {
-            color: inherit;
-            text-decoration: none;
-          }
-          &.active {
-            border-right: solid 3px transparent;
-          }
+        &:hover {
+          color: inherit;
+          text-decoration: none;
+        }
+        &.active {
+          padding: 2px 5px;
+          border-right: solid 3px transparent;
         }
       }
     }
