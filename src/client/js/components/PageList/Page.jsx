@@ -14,25 +14,20 @@ export default class Page extends React.Component {
       link = page.path;
     }
 
-    const styleFlex = {
-      flex: 1,
-    };
-
     const hasChildren = this.props.children != null;
 
     return (
-      <li className="nav-item page-list-li d-flex align-items-center w-100">
-        <UserPicture user={page.lastUpdateUser} />
-        <a className="page-list-link nav-link" href={link}>
+      <li className="nav-item page-list-li w-100">
+        <a className="nav-link page-list-link d-flex align-items-center p-0" href={link}>
+          <UserPicture user={page.lastUpdateUser} />
           <PagePath page={page} excludePathString={this.props.excludePathString} />
+          <PageListMeta page={page} />
+          { hasChildren && (
+            <React.Fragment>
+              {this.props.children}
+            </React.Fragment>
+          )}
         </a>
-        <PageListMeta page={page} />
-        { hasChildren && (
-          <React.Fragment>
-            <a style={styleFlex} href={link}>&nbsp;</a>
-            {this.props.children}
-          </React.Fragment>
-        ) }
       </li>
     );
   }
