@@ -124,10 +124,16 @@ body.kibela {
     .list-group-item + .list-group-item.active {
       margin-top: 2px;
     }
-    
+
     .list-group-item.active {
       background: #1256a3;
       color: #fff;
+    }
+
+    .list-group-item {
+      &:hover {
+        background: #eee;
+      }
     }
   }
 
