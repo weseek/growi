@@ -10,6 +10,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminHomeContainer from '../../../services/AdminHomeContainer';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
+import EnvVarsTable from './EnvVarsTable';
 
 const logger = loggerFactory('growi:admin');
 
@@ -29,7 +30,7 @@ class AdminHome extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, adminHomeContainer } = this.props;
 
     return (
       <Fragment>
@@ -50,6 +51,16 @@ class AdminHome extends React.Component {
           <div className="col-md-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
             <InstalledPluginTable />
+          </div>
+        </div>
+
+        <div className="row mb-5">
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin:admin_top.list_of_env_vars')}</h2>
+            <p>{t('admin:admin_top.env_var_priority')}</p>
+            {/* eslint-disable-next-line react/no-danger */}
+            <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
+            {adminHomeContainer.state.envVars && <EnvVarsTable envVars={adminHomeContainer.state.envVars} />}
           </div>
         </div>
       </Fragment>
