@@ -61,7 +61,7 @@ header {
   }
 
   h1 {
-    @include variable-font-size(28px);
+    @include variable-font-size(26px);
     line-height: 1.1em;
   }
 }
