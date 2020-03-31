@@ -8,21 +8,19 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 export default class UserPicture extends React.Component {
 
   getUserPicture(user) {
-    let pictPath;
-
     // gravatar
     if (user.isGravatarEnabled === true) {
-      pictPath = this.generateGravatarSrc(user);
+      return this.generateGravatarSrc(user);
     }
     // uploaded image
     if (user.image != null) {
-      pictPath = user.image;
+      return user.image;
     }
     if (user.imageAttachment != null) {
       return user.imageAttachment.filePathProxied;
     }
 
-    return pictPath || DEFAULT_IMAGE;
+    return DEFAULT_IMAGE;
   }
 
   generateGravatarSrc(user) {
