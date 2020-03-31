@@ -18,7 +18,7 @@ class SearchResultList extends React.Component {
       const showTags = (page.tags != null) && (page.tags.length > 0);
 
       return (
-        <div id={page._id} key={page._id} className="search-result-page mb-5">
+        <div id={`id_${page._id}`} key={page._id} className="search-result-page mb-5">
           <h2>
             <a href={page.path}>{page.path}</a>
             { showTags && (

@@ -283,7 +283,7 @@ body.on-edit {
           background-color: darken($bgcolor-global, 4%);
         }
 
-        li.active {
+        a.active {
           background-color: darken($bgcolor-global, 8%);
           border-color: theme-color('primary');
         }

@@ -239,7 +239,7 @@ class SearchResult extends React.Component {
     }
 
     const listView = this.props.pages.map((page) => {
-      const pageId = `#${page._id}`;
+      const pageId = `#id_${page._id}`;
       return (
         <Page
           page={page}
@@ -288,7 +288,7 @@ class SearchResult extends React.Component {
               </div>
 
               <div className="page-list">
-                <ul className="page-list-ul page-list-ul-flat nav">{listView}</ul>
+                <ul className="page-list-ul page-list-ul-flat nav nav-pills">{listView}</ul>
               </div>
             </nav>
           </div>
