@@ -22,7 +22,7 @@
       .main {
         width: 100vw;
 
-        >.row {
+        > .row {
           margin-right: 20px;
           margin-left: 20px;
         }
@@ -144,7 +144,6 @@
       z-index: 1;
       color: white;
       text-decoration: none;
-      background-color: rgba($danger, 0.4);
     }
 
     .btn-label-text {
@@ -162,394 +161,100 @@
       z-index: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(#7e4153, 0.5);
       transition: all 0.5s ease;
     }
 
     &:hover {
-      color: white;
-
       .eff {
         top: 0;
       }
     }
   }
 
-  .fcbtn#github {}
-
-
   // login
-  .btn-login {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  .fcbtn.login {
     .btn-label {
-      position: relative;
-      z-index: 1;
-      color: white;
-      text-decoration: none;
       background-color: rgba($danger, 0.4);
     }
-
-    .btn-label-text {
-      position: relative;
-      z-index: 1;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-login {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: rgba(#7e4153, 0.5);
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      color: white;
-
-      .eff-login {
-        top: 0;
-      }
     }
   }
 
-  // login#google
-  .btn-login-oauth#google {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // google
+  .fcbtn#google {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
       background-color: rgba(#24292e, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-google {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-google {
-        top: 0;
-      }
     }
   }
 
-  // login#github
-  .btn-login-oauth#github {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // github
+  .fcbtn#github {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-      background-color: rgba(#24292e, 0.4);
+      background-color: rgba(lighten(black, 20%), 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-github {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-github {
-        top: 0;
-      }
     }
   }
 
-  // login#facebook
-  .btn-login-oauth#facebook {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // facebook
+  .fcbtn#facebook {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
       background-color: rgba(#29487d, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-facebook {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-facebook {
-        top: 0;
-      }
     }
   }
 
-  // login#twitter
-  .btn-login-oauth#twitter {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // twitter
+  .fcbtn#twitter {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
       background-color: rgba(#1da1f2, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-twitter {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-twitter {
-        top: 0;
-      }
     }
   }
 
-  // login#oidc
-  .btn-login-oauth#oidc {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // oidc
+  .fcbtn#oidc {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
       background-color: rgba(#24292e, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-oidc {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-oidc {
-        top: 0;
-      }
     }
   }
 
-  // login#saml
-  .btn-login-oauth#saml {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // saml
+  .fcbtn#saml {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
       background-color: rgba(#55a79a, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-saml {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-saml {
-        top: 0;
-      }
     }
   }
 
-  // login#basic
-  .btn-login-oauth#basic {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  // basic
+  .fcbtn#basic {
     .btn-label {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
       background-color: rgba(#24292e, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 2;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-oauth-basic {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: #555;
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      z-index: 1;
-      color: white;
-
-      .eff-oauth-basic {
-        top: 0;
-      }
     }
   }
 
@@ -570,48 +275,13 @@
   }
 
   // register
-  .btn-register {
-    position: relative;
-    overflow: hidden;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
+  .fcbtn#register {
     .btn-label {
-      position: relative;
-      z-index: 1;
-      color: white;
-      text-decoration: none;
       background-color: rgba($success, 0.4);
     }
 
-    .btn-label-text {
-      position: relative;
-      z-index: 1;
-      color: white;
-      text-decoration: none;
-    }
-
-    // effect
-    .eff-register {
-      position: absolute;
-      top: -50px;
-      left: 0px;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
+    .eff {
       background-color: rgba(#3f7263, 0.5);
-      transition: all 0.5s ease;
-    }
-
-    &:hover {
-      color: white;
-
-      .eff-register {
-        top: 0;
-      }
     }
   }
 
@@ -651,7 +321,6 @@
 }
 
 .login-page {
-
   // layout
   .main .row {
     @media (min-width: 350px) {
