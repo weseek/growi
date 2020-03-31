@@ -119,6 +119,24 @@ body.kibela {
     }
   }
 
+  /* admin navigation */
+  .admin-navigation {
+    .list-group-item + .list-group-item.active {
+      margin-top: 2px;
+    }
+
+    .list-group-item.active {
+      color: #fff;
+      background: #1256a3;
+    }
+
+    .list-group-item {
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+
   /* search page */
   .search-result-list,
   .page-list-li {
@@ -127,25 +145,28 @@ body.kibela {
 
   /* Tabs */
   .nav.nav-tabs {
-    border-bottom-color: #f4f5f6;
+    > .nav-item {
+      color: #5882fa;
+      cursor: pointer;
+      background: transparent;
 
-    > li > a {
-      &,
       &:hover,
       &:focus {
-        background: transparent;
-        border-top: none;
-        border-right: none;
-        border-left: none;
+        > .nav-link {
+          color: #7a94d9;
+        }
       }
-    }
 
-    > li.active > a {
-      background: transparent !important;
-      border-top: none;
-      border-right: none;
-      border-bottom: solid 2.7px #5584e1;
-      border-left: none;
+      > .nav-link {
+        color: #5882fa;
+        border: none;
+        border-radius: 3px;
+      }
+
+      > .nav-link.active {
+        background: transparent !important;
+        border-bottom: solid 2.7px #5584e1;
+      }
     }
 
     .wiki {
