@@ -17,7 +17,7 @@
       <li>
         <div class="d-flex align-items-center b">
           <a class="mr-2" href="{{ userPageRoot(page.creator) }}">
-            <img src="{{ page.creator|default(author)|picture }}" class="picture img-circle">
+            <img src="{{ page.creator|default(author)|picture }}" class="picture rounded-circle">
           </a>
           <div>
             <div>Created by
@@ -30,7 +30,7 @@
       <li class="mt-2">
         <div class="d-flex align-items-center">
           <a class="mr-2" href="{{ userPageRoot(author) }}">
-            <img src="{{ author|picture }}" class="picture img-circle">
+            <img src="{{ author|picture }}" class="picture rounded-circle">
           </a>
           <div>
             <div>Updated by
