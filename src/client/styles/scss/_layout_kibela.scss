@@ -119,6 +119,14 @@ body.kibela {
     }
   }
 
+  /* admin navigation */
+  .admin-navigation {
+    .list-group-item.active {
+      background: #1256a3;
+      color: #fff;
+    }
+  }
+
   /* search page */
   .search-result-list,
   .page-list-li {
