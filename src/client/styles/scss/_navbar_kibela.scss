@@ -34,35 +34,11 @@
       }
     }
     @media screen and (max-width: 790px) {
-      .search-top,
-      .navbar-toggle {
+      .search-top {
         display: none !important;
       }
       @media screen and (max-width: 540px) {
-        .user-name {
-          display: none;
-        }
-        .navbar-right {
-          width: 80%;
-          li {
-            width: 25%;
-            text-align: center;
-            a {
-              margin-right: 0px;
-            }
-            .create-page {
-              width: 100%;
-            }
-            .dropdown {
-              text-align: center;
-              .dropdown-toggle {
-                width: 100%;
-                padding-left: 0em;
-                margin-right: 0px;
-              }
-            }
-          }
-        }
+        // TODO responsive after implementation of Sidebar
       }
     }
   }
