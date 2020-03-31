@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
+import { withTranslation } from 'react-i18next';
+
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
@@ -42,8 +44,9 @@ class PageEditorByHackmd extends React.Component {
    * @return {Promise<string>}
    */
   getMarkdown() {
+    const { t } = this.props;
     if (!this.state.isInitialized) {
-      return Promise.reject(new Error('HackmdEditor component has not initialized'));
+      return Promise.reject(new Error(t('hackmd.not_initialized')));
     }
 
     return this.hackmdEditor.getValue();
@@ -59,6 +62,16 @@ class PageEditorByHackmd extends React.Component {
   getHackmdUri() {
     const envVars = this.props.appContainer.getConfig().env;
     return envVars.HACKMD_URI;
+  }
+
+  get isResume() {
+    const { pageContainer } = this.props;
+    const {
+      pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
+    } = pageContainer.state;
+
+    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
+    return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
   }
 
   /**
@@ -202,26 +215,24 @@ class PageEditorByHackmd extends React.Component {
   }
 
   penpalErrorOccuredHandler(error) {
-    const { pageContainer } = this.props;
+    const { pageContainer, t } = this.props;
 
     pageContainer.showErrorToastr(error);
 
     this.setState({
       hasError: true,
-      errorMessage: 'GROWI client failed to connect to GROWI agent for HackMD.',
+      errorMessage: t('hackmd.fail_to_connect'),
       errorReason: error.toString(),
     });
   }
 
   renderPreInitContent() {
     const hackmdUri = this.getHackmdUri();
-    const { pageContainer } = this.props;
+    const { pageContainer, t } = this.props;
     const {
-      pageIdOnHackmd, revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd,
+      revisionId, revisionIdHackmdSynced, remoteRevisionId,
     } = pageContainer.state;
 
-    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
-    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
     let content;
 
@@ -231,27 +242,27 @@ class PageEditorByHackmd extends React.Component {
     if (hackmdUri == null) {
       content = (
         <div>
-          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is not set up.</p>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
         </div>
       );
     }
     /*
      * Resume to edit or discard changes
      */
-    else if (isResume) {
+    else if (this.isResume) {
       const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <p className="text-center"><strong>HackMD has unsaved draft.</strong></p>
+          <p className="text-center"><strong>{t('hackmd.unsaved_draft')}</strong></p>
 
           { isHackmdDocumentOutdated && (
             <div className="panel panel-warning">
-              <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
+              <div className="panel-heading"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
               <div className="panel-body text-center">
-                The current draft on HackMD is based on&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.
+                {t('hackmd.based_on_revision')}&nbsp;
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>
 
                 <div className="text-center mt-3">
                   <button
@@ -260,7 +271,7 @@ class PageEditorByHackmd extends React.Component {
                     disabled={this.state.isInitializing}
                     onClick={() => { return this.resumeToEdit() }}
                   >
-                    View the outdated draft on HackMD
+                    {t('hackmd.view_outdated_draft')}
                   </button>
                 </div>
               </div>
@@ -276,7 +287,7 @@ class PageEditorByHackmd extends React.Component {
                 onClick={() => { return this.resumeToEdit() }}
               >
                 <span className="btn-label"><i className="icon-control-end"></i></span>
-                <span className="btn-text">Resume to edit with HackMD</span>
+                <span className="btn-text">{t('hackmd.resume_to_edit')}</span>
               </button>
             </div>
           ) }
@@ -288,7 +299,7 @@ class PageEditorByHackmd extends React.Component {
               onClick={() => { return this.discardChanges() }}
             >
               <span className="btn-label"><i className="icon-control-start"></i></span>
-              <span className="btn-text">Discard changes of HackMD</span>
+              <span className="btn-text">{t('hackmd.discard_changes')}</span>
             </button>
           </div>
 
@@ -312,10 +323,10 @@ class PageEditorByHackmd extends React.Component {
               onClick={() => { return this.startToEdit() }}
             >
               <span className="btn-label"><i className="icon-paper-plane"></i></span>
-              Start to edit with HackMD
+              {t('hackmd.start_to_edit')}
             </button>
           </div>
-          <p className="text-center">Click to clone page content and start to edit.</p>
+          <p className="text-center">{t('hackmd.clone_page_content')}</p>
         </div>
       );
     }
@@ -329,13 +340,11 @@ class PageEditorByHackmd extends React.Component {
 
   render() {
     const hackmdUri = this.getHackmdUri();
-    const { pageContainer } = this.props;
+    const { pageContainer, t } = this.props;
     const {
-      markdown, pageIdOnHackmd, hasDraftOnHackmd,
+      markdown, pageIdOnHackmd,
     } = pageContainer.state;
 
-    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
-    const isResume = isPageExistsOnHackmd && hasDraftOnHackmd;
 
     let content;
 
@@ -345,7 +354,7 @@ class PageEditorByHackmd extends React.Component {
           ref={(c) => { this.hackmdEditor = c }}
           hackmdUri={hackmdUri}
           pageIdOnHackmd={pageIdOnHackmd}
-          initializationMarkdown={isResume ? null : markdown}
+          initializationMarkdown={this.isResume ? null : markdown}
           onChange={this.hackmdEditorChangeHandler}
           onSaveWithShortcut={(document) => {
             this.onSaveWithShortcut(document);
@@ -368,14 +377,13 @@ class PageEditorByHackmd extends React.Component {
         { this.state.hasError && (
           <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
             <div className="white-box text-center">
-              <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> HackMD Integration failed</h2>
+              <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> {t('hackmd.integration_failed')}</h2>
               <h4>{this.state.errorMessage}</h4>
               <p className="well well-sm text-danger">
                 {this.state.errorReason}
               </p>
-              <p>
-                Check your configuration following <a href="https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html">the manual</a>.
-              </p>
+              {/* eslint-disable-next-line react/no-danger */}
+              <p dangerouslySetInnerHTML={{ __html: t('hackmd.check_configuration') }} />
             </div>
           </div>
         ) }
@@ -394,9 +402,11 @@ const PageEditorByHackmdWrapper = (props) => {
 };
 
 PageEditorByHackmd.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default PageEditorByHackmdWrapper;
+export default withTranslation()(PageEditorByHackmdWrapper);

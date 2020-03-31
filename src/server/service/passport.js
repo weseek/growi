@@ -719,6 +719,11 @@ class PassportService {
     if (field === '<implicit>') {
       return attributes[term] != null;
     }
+
+    if (attributes[field] == null) {
+      return false;
+    }
+
     return attributes[field].includes(term);
   }
 

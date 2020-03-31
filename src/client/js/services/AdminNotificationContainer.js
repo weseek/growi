@@ -24,6 +24,8 @@ export default class AdminNotificationContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
       userNotifications: [],
+      isNotificationForOwnerPageEnabled: false,
+      isNotificationForGroupPageEnabled: false,
       globalNotifications: [],
     };
 
@@ -45,11 +47,13 @@ export default class AdminNotificationContainer extends Container {
       const { notificationParams } = response.data;
 
       this.setState({
-        webhookUrl: notificationParams.webhookUrl || '',
-        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
-        slackToken: notificationParams.slackToken || '',
-        userNotifications: notificationParams.userNotifications || [],
-        globalNotifications: notificationParams.globalNotifications || [],
+        webhookUrl: notificationParams.webhookUrl,
+        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
+        slackToken: notificationParams.slackToken,
+        userNotifications: notificationParams.userNotifications,
+        isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
+        isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
+        globalNotifications: notificationParams.globalNotifications,
       });
 
     }
@@ -122,6 +126,33 @@ export default class AdminNotificationContainer extends Container {
     const deletedNotificaton = response.data;
     await this.retrieveNotificationData();
     return deletedNotificaton;
+  }
+
+  /**
+   * Switch isNotificationForOwnerPageEnabled
+   */
+  switchIsNotificationForOwnerPageEnabled() {
+    this.setState({ isNotificationForOwnerPageEnabled: !this.state.isNotificationForOwnerPageEnabled });
+  }
+
+  /**
+   * Switch isNotificationForGroupPageEnabled
+   */
+  switchIsNotificationForGroupPageEnabled() {
+    this.setState({ isNotificationForGroupPageEnabled: !this.state.isNotificationForGroupPageEnabled });
+  }
+
+  /**
+   * Update globalNotificationForPages
+   * @memberOf SlackAppConfiguration
+   */
+  async updateGlobalNotificationForPages() {
+    const response = await this.appContainer.apiv3.put('/notification-setting/notify-for-page-grant/', {
+      isNotificationForOwnerPageEnabled: this.state.isNotificationForOwnerPageEnabled,
+      isNotificationForGroupPageEnabled: this.state.isNotificationForGroupPageEnabled,
+    });
+
+    return response;
   }
 
   /**
