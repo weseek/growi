@@ -36,7 +36,9 @@ const AdminNavigation = (props) => {
       </a>
       <a
         href="/admin/notification"
-        className={`list-group-item list-group-item-action  border-0 round-corner ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}
+        className={
+          `list-group-item list-group-item-action border-0 round-corner ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`
+        }
       >
         <i className="icon-fw icon-bell"></i> {t('Notification Settings')}
       </a>
