@@ -119,6 +119,24 @@ body.kibela {
     }
   }
 
+  /* admin navigation */
+  .admin-navigation {
+    .list-group-item + .list-group-item.active {
+      margin-top: 2px;
+    }
+
+    .list-group-item.active {
+      color: #fff;
+      background: #1256a3;
+    }
+
+    .list-group-item {
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+
   /* search page */
   .search-result-list,
   .page-list-li {
