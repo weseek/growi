@@ -147,6 +147,29 @@
                   <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
                 </button>
               </div>
+
+              <div class="input-group justify-content-center d-flex mt-5">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button class="btn fcbtn px-0 py-2">
+                  <div class="eff"></div>
+                  <span class="btn-label p-3"><i class="icon-login"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                </button>
+              </div>
+
+              <div class="input-group justify-content-center d-flex mt-5">
+                <form role="form" action="/passport/github" class="d-inline-flex flex-column">
+                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  <button type="submit" class="btn fcbtn px-0 py-2" id="github">
+                    <div class="eff-oauth-github"></div>
+                    <span class="btn-label p-3"><i class="fa fa-github"></i></span>
+                    <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
+                  </button>
+                  <div class="small text-center">by GitHub Account</div>
+                </form>
+              </div>
+
+
             </form>
             {% endif %}
 
