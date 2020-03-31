@@ -364,6 +364,23 @@
     "insert_image": "で画像を挿入できます",
     "open_sandbox": "Sandbox を開く"
   },
+  "hackmd":{
+    "not_set_up": "HackMD はセットアップされていません",
+    "start_to_edit": "HackMD を開始する",
+    "clone_page_content": "ページを複製して編集を開始します",
+    "unsaved_draft": "HackMD のドラフトが保存されていません",
+    "draft_outdated": "ドラフトは古くなっている可能性があります",
+    "based_on_revision": "現在のドラフトは次の revision に基づいています",
+    "view_outdated_draft": "HackMD で古いドラフトを表示する",
+    "resume_to_edit": "HackMD で編集を再開する",
+    "discard_changes": "HackMD の変更を破棄する",
+    "integration_failed": "HackMD の統合に失敗しました",
+    "fail_to_connect": "GROWI クライアントが HackMD の GROWI agent に接続できませんでした。",
+    "check_configuration": "<a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
+    "not_initialized": "HackMD コンポーネントは初期化されていません",
+    "someone_editing": "このページは、HackMD で編集されています。",
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
+  },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",

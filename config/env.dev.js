@@ -6,6 +6,7 @@ module.exports = {
   // NO_CDN: true,
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   HACKMD_URI: 'http://localhost:3010',
+  // DRAWIO_URI: 'http://localhost:8080/?offline=1&https=0',
   PLUGIN_NAMES_TOBE_LOADED: [
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
