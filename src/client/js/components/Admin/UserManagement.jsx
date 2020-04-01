@@ -148,26 +148,28 @@ class UserManagement extends React.Component {
             </div>
 
             <div className="mx-5 form-inline">
-              <div className="checkbox checkbox-primary pl-0">
+              <div className="custom-control custom-checkbox custom-checkbox-primary pl-0">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c1"
                   checked={adminUsersContainer.isSelected('all')}
                   onClick={() => { this.handleClick('all') }}
                 />
-                <label htmlFor="c1">
+                <label className="custom-control-label" htmlFor="c1">
                   <span className="badge badge-primary d-inline-block vt mt-1">All</span>
                 </label>
               </div>
 
-              <div className="checkbox checkbox-info">
+              <div className="custom-control custom-checkbox custom-checkbox-info">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c2"
                   checked={adminUsersContainer.isSelected('registered')}
                   onClick={() => { this.handleClick('registered') }}
                 />
-                <label htmlFor="c2">
+                <label className="custom-control-label" htmlFor="c2">
                   <span className="badge badge-info d-inline-block vt mt-1">Approval Pending</span>
                 </label>
               </div>
@@ -185,26 +187,28 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="checkbox checkbox-warning">
+              <div className="custom-control custom-checkbox custom-checkbox-warning">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c4"
                   checked={adminUsersContainer.isSelected('suspended')}
                   onClick={() => { this.handleClick('suspended') }}
                 />
-                <label htmlFor="c4">
+                <label className="custom-control-label" htmlFor="c4">
                   <span className="badge badge-warning d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
-              <div className="checkbox checkbox-info">
+              <div className="custom-control custom-checkbox custom-checkbox-info">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c5"
                   checked={adminUsersContainer.isSelected('invited')}
                   onClick={() => { this.handleClick('invited') }}
                 />
-                <label htmlFor="c5">
+                <label className="custom-control-label" htmlFor="c5">
                   <span className="badge badge-info d-inline-block vt mt-1">Invited</span>
                 </label>
               </div>
