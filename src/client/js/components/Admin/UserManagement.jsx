@@ -217,7 +217,7 @@ class UserManagement extends React.Component {
             <div>
               <button
                 type="button"
-                className="badge badge-secondary btn-outline btn-sm"
+                className="btn btn-outline-secondary btn-sm"
                 onClick={() => { this.resetButtonClickHandler() }}
               >
                 <span
