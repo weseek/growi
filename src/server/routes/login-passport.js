@@ -249,8 +249,19 @@ module.exports = function(crowi, app) {
       return loginFailureHandler(req, res);
     }
 
-    const name = (globalLang === 'en-US')
-      ? `${response.name.givenName} ${response.name.familyName}` : `${response.name.familyName} ${response.name.givenName}`;
+    let name;
+
+    switch (globalLang) {
+      case 'en-US':
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+      case 'ja':
+        name = `${response.name.familyName} ${response.name.givenName}`;
+        break;
+      default:
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+    }
 
     const userInfo = {
       id: response.id,
