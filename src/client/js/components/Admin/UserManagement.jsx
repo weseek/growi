@@ -172,14 +172,15 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="checkbox checkbox-success">
+              <div className="custom-control custom-checkbox custom-checkbox-success">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c3"
                   checked={adminUsersContainer.isSelected('active')}
                   onClick={() => { this.handleClick('active') }}
                 />
-                <label htmlFor="c3">
+                <label className="custom-control-label" htmlFor="c3">
                   <span className="badge badge-success d-inline-block vt mt-1">Active</span>
                 </label>
               </div>
