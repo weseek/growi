@@ -156,7 +156,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('all') }}
                 />
                 <label htmlFor="c1">
-                  <span className="label label-primary d-inline-block vt mt-1">All</span>
+                  <span className="badge badge-primary d-inline-block vt mt-1">All</span>
                 </label>
               </div>
 
@@ -168,7 +168,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('registered') }}
                 />
                 <label htmlFor="c2">
-                  <span className="label label-info d-inline-block vt mt-1">Approval Pending</span>
+                  <span className="badge badge-info d-inline-block vt mt-1">Approval Pending</span>
                 </label>
               </div>
 
@@ -180,7 +180,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('active') }}
                 />
                 <label htmlFor="c3">
-                  <span className="label label-success d-inline-block vt mt-1">Active</span>
+                  <span className="badge badge-success d-inline-block vt mt-1">Active</span>
                 </label>
               </div>
 
@@ -192,7 +192,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('suspended') }}
                 />
                 <label htmlFor="c4">
-                  <span className="label label-warning d-inline-block vt mt-1">Suspended</span>
+                  <span className="badge badge-warning d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
@@ -204,7 +204,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('invited') }}
                 />
                 <label htmlFor="c5">
-                  <span className="label label-info d-inline-block vt mt-1">Invited</span>
+                  <span className="badge badge-info d-inline-block vt mt-1">Invited</span>
                 </label>
               </div>
             </div>
@@ -212,7 +212,7 @@ class UserManagement extends React.Component {
             <div>
               <button
                 type="button"
-                className="btn btn-default btn-outline btn-sm"
+                className="badge badge-secondary btn-outline btn-sm"
                 onClick={() => { this.resetButtonClickHandler() }}
               >
                 <span
