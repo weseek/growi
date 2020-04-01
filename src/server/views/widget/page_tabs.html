@@ -45,20 +45,27 @@
     Right Tabs
   #}
 
-  <li class="nav-item ml-md-auto">
-    <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
-      <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
-    </a>
-  </li>
-
+  <!-- presentation -->
   {% if not page.isPortal() %}
-    <li class="nav-item">
+    <li class="nav-item ml-md-auto">
       <a href="?presentation=1" class="nav-link toggle-presentation">
         <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
       </a>
     </li>
   {% endif %}
 
+  <!-- revision-history -->
+  {% if page.isPortal() %}
+    <li class="nav-item ml-md-auto">
+    {% else %}
+    <li class="nav-item">
+  {% endif %}
+        <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
+          <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
+        </a>
+      </li>
+
+  <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
     <li class="nav-item">
