@@ -11,37 +11,30 @@ import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
-import PageCreator from './PageCreator';
-import RevisionAuthor from './RevisionAuthor';
+// import PageCreator from './PageCreator';
+import ReducedPageCreator from './ReducedPageCreator';
+import ReducedRevisionAuthor from './ReducedRevisionAuthor';
+// import RevisionAuthor from './RevisionAuthor';
 
-const GrowiSubNavigation = (props) => {
-  const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page');
+const GrowiCompactSubNavigation = (props) => {
+  // const isPageForbidden = document.querySelector('#grw-compactsubnav').getAttribute('data-is-forbidden-page');
   const { appContainer, pageContainer } = props;
   const {
     path, createdAt, creator, updatedAt, revisionAuthor,
   } = pageContainer.state;
-
-  // Display only the RevisionPath if the page is trash or forbidden
-  if (isTrashPage(path) || isPageForbidden) {
-    return (
-      <div className="d-flex align-items-center">
-        <div className="title-container mr-auto">
-          <h1>
-            <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />
-          </h1>
-        </div>
-      </div>
-    );
-  }
-
+  // const isVisible = (window.pageYOffset > 122);
+  // // const positionY = document.getElementById('#grw-navbar');
+  // const invisiblePosition = 122;
+  // window.addEventListener('scroll', () => {
+  //   if (isVisible) {
   return (
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center fixed-top grw-compactsubnavbar-color">
 
       {/* Page Path */}
       <div className="title-container mr-auto">
-        <h1>
+        <h2>
           <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />
-        </h1>
+        </h2>
         <TagLabels />
       </div>
 
@@ -55,27 +48,30 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Authors */}
       <ul className="authors text-nowrap d-none d-lg-block">
-        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} /></li>}
-        {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
+        {creator != null && <li><ReducedPageCreator creator={creator} createdAt={createdAt} /></li>}
+        {revisionAuthor != null && <li className="mt-1"><ReducedRevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
       </ul>
 
     </div>
   );
+  //   }
+  // }, true);
+  // return null;
 
 };
 
 /**
  * Wrapper component for using unstated
  */
-const GrowiSubNavigationWrapper = (props) => {
-  return createSubscribedElement(GrowiSubNavigation, props, [AppContainer, PageContainer]);
+const GrowiCompactSubNavigationWrapper = (props) => {
+  return createSubscribedElement(GrowiCompactSubNavigation, props, [AppContainer, PageContainer]);
 };
 
 
-GrowiSubNavigation.propTypes = {
+GrowiCompactSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(GrowiSubNavigationWrapper);
+export default withTranslation()(GrowiCompactSubNavigationWrapper);

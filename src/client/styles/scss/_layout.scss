@@ -36,6 +36,12 @@
   }
 }
 
+.grw-subnavbar {
+  position: fixed;
+  top: 0;
+  z-index: 1;
+}
+
 /*
   * header
   */
@@ -61,7 +67,7 @@ header {
   }
 
   h1 {
-    @include variable-font-size(26px);
+    @include variable-font-size(28px);
     line-height: 1.1em;
   }
 }
