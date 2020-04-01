@@ -71,7 +71,7 @@ export default class CopyDropdown extends React.Component {
 
             {/* Page path */}
             <CopyToClipboard text={this.props.pagePath} onCopy={this.showToolTip}>
-              <DropdownItem>
+              <DropdownItem tag="a">
                 <div className="d-inline-flex flex-column">
                   <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Page path') }</strong></h6>
                   <span className="small">{safePagePath}</span>
@@ -81,7 +81,7 @@ export default class CopyDropdown extends React.Component {
             {/* Parmanent Link */}
             { this.props.pageId && (
               <CopyToClipboard text={url} onCopy={this.showToolTip}>
-                <DropdownItem>
+                <DropdownItem tag="a">
                   <div className="d-inline-flex flex-column">
                     <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Parmanent link') }</strong></h6>
                     <span className="small">{url}</span>
@@ -92,10 +92,10 @@ export default class CopyDropdown extends React.Component {
             {/* Page path + Parmanent Link */}
             { this.props.pageId && (
               <CopyToClipboard text={`${this.props.pagePath}\n${url}`} onCopy={this.showToolTip}>
-                <DropdownItem>
+                <DropdownItem tag="a">
                   <div className="d-inline-flex flex-column">
                     <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Page path and parmanent link') }</strong></h6>
-                    <span className="small mb-1">{safePagePath}</span><br></br>
+                    <span className="small mb-3">{safePagePath}</span>
                     <span className="small">{url}</span>
                   </div>
                 </DropdownItem>
@@ -104,7 +104,7 @@ export default class CopyDropdown extends React.Component {
             {/* Markdown Link */}
             { this.props.pageId && (
               <CopyToClipboard text={`[${this.props.pagePath}](${url})`} onCopy={this.showToolTip}>
-                <DropdownItem>
+                <DropdownItem tag="a">
                   <div className="d-inline-flex flex-column">
                     <h6 className="mt-1 mb-2"><strong>{ t('copy_to_clipboard.Markdown link') }</strong></h6>
                     <span className="small">{`[${safePagePath}](${url})`}</span>
