@@ -22,6 +22,7 @@ $link-hover-color: $color-link-hover;
 
 // Dropdown
 .dropdown-item {
+  color: $color-global;
   &.active,
   &:active {
     @include gradient-bg($dropdown-link-active-bg);
