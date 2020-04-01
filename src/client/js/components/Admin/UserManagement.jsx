@@ -148,7 +148,7 @@ class UserManagement extends React.Component {
             </div>
 
             <div className="mx-5 form-inline">
-              <div className="custom-control custom-checkbox custom-checkbox-primary pl-0">
+              <div className="custom-control custom-checkbox custom-checkbox-primary mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
@@ -161,7 +161,7 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-info">
+              <div className="custom-control custom-checkbox custom-checkbox-info mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
@@ -174,7 +174,7 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-success">
+              <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
@@ -187,7 +187,7 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-warning">
+              <div className="custom-control custom-checkbox custom-checkbox-warning mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
