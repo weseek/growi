@@ -5,9 +5,19 @@
 * Support: Upgrade libs
     * bootstrap
 
-## v3.7.1-RC
+## v3.7.2-RC
+
+* 
+
+## v3.7.1
 
 * Improvement: Add an option that make it possible to choose what to send notifications
+* Improvement: Add the env var `DRAWIO_URI`
+* Improvement: Accessibility for 'spring' theme
+* Improvement: Editor scroll sync behaves strangely when using draw.io blocks
+* Fix: Coudn't upload file on Comment Editor
+    * Introduced by 3.5.8
+* I18n: HackMD integration
 
 ## v3.7.0
 

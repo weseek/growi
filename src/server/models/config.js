@@ -214,6 +214,7 @@ module.exports = function(crowi) {
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
+        DRAWIO_URI: env.DRAWIO_URI || null,
         HACKMD_URI: env.HACKMD_URI || null,
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,

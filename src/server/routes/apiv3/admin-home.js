@@ -1,5 +1,6 @@
 const express = require('express');
 const PluginUtils = require('../../plugins/plugin-utils');
+const ConfigLoader = require('../../service/config-loader');
 
 const pluginUtils = new PluginUtils();
 
@@ -70,6 +71,7 @@ module.exports = (crowi) => {
       npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
       yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
       installedPlugins: pluginUtils.listPlugins(crowi.rootDir),
+      envVars: await ConfigLoader.getEnvVarsForDisplay(true),
     };
 
     return res.apiv3({ adminHomeParams });

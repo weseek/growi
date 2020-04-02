@@ -320,7 +320,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit Template Page",
-      "Create template under": "Create template page under:<br /><code><small>%s</small></code>"
+      "Create template under": "Create template page under:<br /><code>%s</code>"
     },
     "option_label": {
       "create/edit": "Create/Edit Template page..",
@@ -365,6 +365,23 @@
     "alt_text": "Alt Text",
     "insert_image": "inserts an image",
     "open_sandbox": "Open Sandbox"
+  },
+  "hackmd": {
+    "not_set_up": "HackMD is not set up.",
+    "start_to_edit": "Start to edit with HackMD",
+    "clone_page_content": "Click to clone page content and start to edit.",
+    "unsaved_draft": "HackMD has unsaved draft.",
+    "draft_outdated": "DRAFT MAY BE OUTDATED",
+    "based_on_revision": "The current draft on HackMD is based on",
+    "view_outdated_draft": "View the outdated draft on HackMD",
+    "resume_to_edit": "Resume to edit with HackMD",
+    "discard_changes": "Discard changes of HackMD",
+    "integration_failed": "HackMD Integration failed",
+    "fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
+    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
+    "not_initialized": "HackmdEditor component has not initialized",
+    "someone_editing": "Someone editing this page on HackMD",
+    "this_page_has_draft": "This page has a draft on HackMD"
   },
   "security_setting": {
     "Security settings": "Security settings",
