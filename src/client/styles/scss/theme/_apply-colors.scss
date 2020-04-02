@@ -276,17 +276,18 @@ body.on-edit {
   .search-result-list {
     .page-list {
       .page-list-ul {
-        > li > a {
-          background-color: transparent;
+        > li.nav-item > a.nav-link {
+          color: inherit;
         }
 
-        li:hover {
-          background-color: darken($bgcolor-global, 4%);
-        }
-
-        a.active {
-          background-color: darken($bgcolor-global, 8%);
-          border-color: theme-color('primary');
+        a {
+          &.hover {
+            background-color: darken($bgcolor-global, 4%);
+          }
+          &.active {
+            background-color: darken($bgcolor-global, 8%);
+            border-color: theme-color('primary');
+          }
         }
       }
     }
