@@ -88,14 +88,17 @@ class UserGroupRelation {
     const User = UserGroupRelation.crowi.model('User');
     debug('findAllRelationForUserGroup is called', userGroup);
     return this
-      .find({ relatedGroup: userGroup })
-      .populate({
-        path: 'relatedUser',
-        populate: {
-          path: 'imageAttachment',
-          select: User.IMAGE_POPULATION,
-        },
-      })
+      .find({ relatedGroup: userGroup }, null,
+        {
+          populate: {
+            path: 'relatedUser',
+            select: User.USER_PUBLIC_FIELDS,
+            populate: {
+              path: 'imageAttachment',
+              select: User.IMAGE_POPULATION,
+            },
+          },
+        })
       .exec();
   }
 
