@@ -239,6 +239,7 @@ class SearchResult extends React.Component {
     }
 
     const listView = this.props.pages.map((page) => {
+      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
       const pageId = `#id_${page._id}`;
       return (
         <Page
