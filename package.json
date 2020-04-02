@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.7.2-RC",
+  "version": "3.7.3-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -75,6 +75,7 @@
     "archiver": "^3.1.1",
     "array.prototype.flatmap": "^1.2.2",
     "async": "^3.0.1",
+    "async-canvas-to-blob": "^1.0.3",
     "aws-sdk": "^2.88.0",
     "axios": "^0.19.0",
     "body-parser": "^1.18.2",
@@ -134,6 +135,7 @@
     "passport-local": "^1.0.0",
     "passport-saml": "^1.0.0",
     "passport-twitter": "^1.0.4",
+    "react-image-crop": "^8.3.0",
     "rimraf": "^3.0.0",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
