@@ -17,7 +17,6 @@ import ReducedRevisionAuthor from './ReducedRevisionAuthor';
 // import RevisionAuthor from './RevisionAuthor';
 
 const GrowiCompactSubNavigation = (props) => {
-  // const isPageForbidden = document.querySelector('#grw-compactsubnav').getAttribute('data-is-forbidden-page');
   const { appContainer, pageContainer } = props;
   const {
     path, createdAt, creator, updatedAt, revisionAuthor,
@@ -28,7 +27,7 @@ const GrowiCompactSubNavigation = (props) => {
   // window.addEventListener('scroll', () => {
   //   if (isVisible) {
   return (
-    <div className="d-flex align-items-center fixed-top grw-compactsubnavbar-color">
+    <div className="d-flex align-items-center fixed-top grw-compactsubnavbar-color px-3">
 
       {/* Page Path */}
       <div className="title-container mr-auto">

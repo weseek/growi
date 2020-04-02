@@ -22,6 +22,20 @@
     }
     .grw-compactsubnavbar-color {
       background-color: rgba(250, 250, 250, 0.9);
+      box-shadow: 0 0 2px #999;
+      h2 {
+        font-size: 20px;
+        line-height: 1.1em;
+        @include media-breakpoint-down(md) {
+          font-size: 18px;
+        }
+        @include media-breakpoint-down(sm) {
+          font-size: 14px;
+        }
+        @include media-breakpoint-down(xs) {
+          font-size: 12px;
+        }
+      }
     }
   }
 }
