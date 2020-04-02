@@ -50,8 +50,9 @@ const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
+const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer,
+  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -76,6 +77,7 @@ Object.assign(componentMappings, {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
+  'personal-setting': <PersonalSettings crowi={personalContainer} />,
 });
 
 // additional definitions if data exists
@@ -118,22 +120,6 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
-
-const personalSettingsElem = document.getElementById('personal-setting');
-if (personalSettingsElem != null) {
-  const personalContainer = new PersonalContainer(appContainer);
-  ReactDOM.render(
-    <Provider inject={[injectableContainers, personalContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <PersonalSettings
-          crowi={appContainer}
-        />
-      </I18nextProvider>
-    </Provider>,
-    personalSettingsElem,
-  );
-}
-
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
