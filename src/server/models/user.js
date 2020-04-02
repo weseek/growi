@@ -18,6 +18,7 @@ module.exports = function(crowi) {
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt lastLoginAt admin';
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
+  const USER_POPULATION_FOR_PAGE_LIST = { path: 'lastUpdateUser', select: USER_PUBLIC_FIELDS, populate: IMAGE_POPULATION };
 
   const LANG_EN = 'en';
   const LANG_EN_US = 'en-US';
@@ -787,6 +788,7 @@ module.exports = function(crowi) {
   userSchema.statics.STATUS_INVITED = STATUS_INVITED;
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
   userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
+  userSchema.statics.USER_POPULATION_FOR_PAGE_LIST = USER_POPULATION_FOR_PAGE_LIST;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
 
   userSchema.statics.LANG_EN = LANG_EN;

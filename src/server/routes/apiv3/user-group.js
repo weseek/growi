@@ -584,11 +584,7 @@ module.exports = (crowi) => {
       }, {
         offset,
         limit,
-        populate: {
-          path: 'lastUpdateUser',
-          select: User.USER_PUBLIC_FIELDS,
-          populate: User.IMAGE_POPULATION,
-        },
+        populate: User.USER_POPULATION_FOR_PAGE_LIST,
       });
 
       const current = offset / limit + 1;
