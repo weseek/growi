@@ -6,7 +6,19 @@ import { userPageRoot } from '../../../../lib/util/path-utils';
 
 const RevisionAuthor = (props) => {
   const { revisionAuthor, updatedAt } = props;
-
+  const isCompactMode = true;
+  if (isCompactMode) {
+    return (
+      <div className="d-flex align-items-center">
+        <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
+          <UserPicture user={revisionAuthor} size="xs" />
+        </div>
+        <div>
+          Updated in <span className="text-muted">{updatedAt}</span>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>

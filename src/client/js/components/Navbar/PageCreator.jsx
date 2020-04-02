@@ -6,7 +6,20 @@ import { userPageRoot } from '../../../../lib/util/path-utils';
 
 const PageCreator = (props) => {
   const { creator, createdAt } = props;
+  const isCompactMode = true;
 
+  if (isCompactMode) {
+    return (
+      <div className="d-flex align-items-center">
+        <div className="mr-2" href={userPageRoot(creator)} data-toggle="tooltip" data-placement="bottom" title={creator.name}>
+          <UserPicture user={creator} size="xs" />
+        </div>
+        <div>
+          Created in <span className="text-muted">{createdAt}</span>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2" href={userPageRoot(creator)} data-toggle="tooltip" data-placement="bottom" title={creator.name}>
