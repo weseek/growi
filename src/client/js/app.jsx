@@ -31,10 +31,12 @@ import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
+import PersonalSettings from './components/Me/PersonalSettings';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './bootstrap';
 
@@ -48,8 +50,9 @@ const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
+const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer,
+  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -74,6 +77,7 @@ Object.assign(componentMappings, {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
+  'personal-setting': <PersonalSettings crowi={personalContainer} />,
 });
 
 // additional definitions if data exists
