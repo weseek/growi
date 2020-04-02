@@ -78,19 +78,24 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <div className="ccustom-control custom-switch custom-checkbox-info text-left" onChange={this.handleCheckBox} style={{ flex: 0.95 }}>
+        <div className="col text-left custom-control custom-checkbox custom-checkbox-info text-left" onChange={this.handleCheckBox}>
           <input type="checkbox" id="sendEmail" className="custom-control-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
           <label className="custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
         </div>
         <div>
-          <button type="button" className="fcbtn btn btn-xs btn-outline-secondary" onClick={this.onToggleModal}>
-            Cancel
-          </button>
           <button
             type="button"
-            className="fcbtn btn btn-primary btn-1b"
+            className="fcbtn btn btn-outline-light rounded-pill mr-2"
+            onClick={this.onToggleModal}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            className="fcbtn btn btn-outline-primary rounded-pill btn-1b"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
