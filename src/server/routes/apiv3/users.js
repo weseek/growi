@@ -182,6 +182,7 @@ module.exports = (crowi) => {
         },
         {
           sort: sortOutput,
+          populate: 'imageAttachment',
           page,
           limit: PAGE_ITEMS,
         },
