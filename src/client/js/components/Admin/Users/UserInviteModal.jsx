@@ -6,7 +6,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // import Button from 'react-bootstrap/es/Button';
 import {
-  Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
