@@ -15,9 +15,13 @@ module.exports = {
     const UserGroupRelation = getModelSafely('UserGroupRelation') || require('@server/models/user-group-relation')();
 
     const deletedUsers = await User.find({ status: 4 }); // deleted user
-    await UserGroupRelation.remove({ relatedUser: deletedUsers });
+    const requests = await UserGroupRelation.remove({ relatedUser: deletedUsers });
 
+    if (requests.size === 0) {
+      return logger.info('This migration terminates without any changes.');
+    }
     logger.info('Migration has successfully applied');
+
   },
 
   down(db) {
