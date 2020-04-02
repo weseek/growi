@@ -95,7 +95,7 @@ class UserInviteModal extends React.Component {
 
           <button
             type="button"
-            className="fcbtn btn btn-outline-primary rounded-pill"
+            className="fcbtn btn btn-outline-primary rounded-pill btn-1b"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
