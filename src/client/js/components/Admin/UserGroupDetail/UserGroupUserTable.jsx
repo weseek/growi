@@ -54,7 +54,7 @@ class UserGroupUserTable extends React.Component {
             return (
               <tr key={sRelation._id}>
                 <td>
-                  <UserPicture user={relatedUser} className="picture img-circle" />
+                  <UserPicture user={relatedUser} className="picture rounded-circle" />
                 </td>
                 <td>
                   <strong>{relatedUser.username}</strong>
