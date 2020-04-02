@@ -167,6 +167,11 @@ body.kibela {
         background: transparent !important;
         border-bottom: solid 2.7px #5584e1;
       }
+
+      .dropdown-toggle::after {
+        // hide caret
+        content: none;
+      }
     }
 
     .wiki {
