@@ -252,13 +252,13 @@ class SearchResult extends React.Component {
                 <div className="custom-control custom-checkbox custom-checkbox-danger">
                   <input
                     type="checkbox"
-                    id="page-delete-check"
+                    id={`page-delete-check-${page._id}`}
                     className="custom-control-input search-result-list-delete-checkbox"
                     value={pageId}
                     checked={this.state.selectedPages.has(page)}
                     onChange={() => { return this.toggleCheckbox(page) }}
                   />
-                  <label className="custom-control-label" htmlFor="page-delete-check"></label>
+                  <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
                 </div>
               )
             }
