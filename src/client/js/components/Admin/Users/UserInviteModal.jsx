@@ -87,7 +87,6 @@ class UserInviteModal extends React.Component {
         <div>
           <button
             type="button"
-            color="danger"
             className="fcbtn btn btn-outline-light rounded-pill mr-2"
             onClick={this.onToggleModal}
           >
