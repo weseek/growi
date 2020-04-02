@@ -6,6 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // import Button from 'react-bootstrap/es/Button';
 import {
+  Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
@@ -85,17 +86,12 @@ class UserInviteModal extends React.Component {
           </label>
         </div>
         <div>
-          <button type="button" className="fcbtn btn btn-xs btn-outline-secondary" onClick={this.onToggleModal}>
-            Cancel
-          </button>
-          <button
-            type="button"
-            className="fcbtn btn btn-primary btn-1b"
-            onClick={this.handleSubmit}
-            disabled={!this.validEmail()}
-          >
-            Invite
-          </button>
+          <Button outline color="danger" size="xs" className="fcbtn rounded-pill" onClick={this.onToggleModal}>
+          Cancel
+          </Button>
+          <Button outline color="primary" size="xs" className="fcbtn rounded-pill" onClick={this.handleSubmit} disabled={!this.validEmail()}>
+          Invite
+          </Button>
         </div>
       </>
     );
