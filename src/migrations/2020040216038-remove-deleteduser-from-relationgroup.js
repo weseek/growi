@@ -1,5 +1,5 @@
 require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:adjust-pages-path');
+const logger = require('@alias/logger')('growi:migrate:remove-deleteduser-from-relationgroup');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
