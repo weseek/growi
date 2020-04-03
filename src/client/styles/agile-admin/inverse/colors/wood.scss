@@ -1,23 +1,23 @@
 @import '../variables';
 
-$themecolor: #aaa45f;
+$bgcolor-theme: #aaa45f;
 $themelight: #f5f3ee;
 $subthemecolor: #dddebf;
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-$headingtext: #577254;
-$bodytext: #7c7a70;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
+$color-header: #577254;
+$color-global: #7c7a70;
 $linktext: lighten(#6d8969, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #859083;
-$primary: $themecolor;
-$info: lighten($themecolor, 10%);
-$logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
-$wikilinktext: lighten($themecolor, 5%);
-$wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: darken($themecolor, 20%);
-$inline-code-bg: lighten($subthemecolor, 70%);
+$primary: $bgcolor-theme;
+$info: lighten($bgcolor-theme, 10%);
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 50%), 50%);
+$color-link-wiki: lighten($bgcolor-theme, 5%);
+$color-link-wiki-hover: lighten($color-link-wiki, 15%);
+$color-inline-code: darken($bgcolor-theme, 20%);
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
 $active-nav-tabs-bgcolor: #fffffc;
 
 @import 'apply-colors';
@@ -26,8 +26,8 @@ $active-nav-tabs-bgcolor: #fffffc;
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor, 20%);
     color: $themelight;
+    background-color: lighten($bgcolor-theme, 20%);
 
     .icon-note,
     .icon-link {
@@ -40,18 +40,18 @@ $active-nav-tabs-bgcolor: #fffffc;
   background: $themelight;
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/wood/wood.jpg");
+  background-image: url('/images/themes/wood/wood.jpg');
   background-attachment: fixed;
 }
 
-.bg-title {
+.grw-subnav {
   background-color: rgba(226, 221, 192, 0.205);
 }
 
 #wrapper > .navbar > .navbar-header {
-  background-image: url("/images/themes/wood/wood-navbar.jpg");
+  background-image: url('/images/themes/wood/wood-navbar.jpg');
 }
 
 /*
@@ -62,7 +62,8 @@ body:not(.on-edit) .nav.nav-tabs {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }
 
@@ -78,11 +79,12 @@ body:not(.on-edit) .nav.nav-tabs {
   }
 
   &.login-page {
-    .login-header, .login-dialog {
+    .login-header,
+    .login-dialog {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
-      color: $bodytext;
+      color: $color-global;
     }
   }
 }

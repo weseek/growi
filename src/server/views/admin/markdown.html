@@ -4,18 +4,17 @@
  · {{ path }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('Markdown Settings') }}</h1>
-  </header>
-</div>
+<header id="page-header">
+  <h1 id="admin-title" class="title">{{ t('Markdown Settings') }}</h1>
+</header>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main row">
   {% parent %}
-  <div class="col-md-9" id="admin-markdown-setting"></div>
+  <div class="col-lg-9" id="admin-markdown-setting"></div>
 </div>
+
 {% endblock content_main %}
 
 {% block content_footer %}

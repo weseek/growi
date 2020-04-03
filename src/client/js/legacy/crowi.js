@@ -5,9 +5,8 @@ import { pathUtils } from 'growi-commons';
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
-require('bootstrap-select');
 
-require('./thirdparty-js/agile-admin');
+require('./thirdparty-js/waves');
 
 const Crowi = {};
 
@@ -117,28 +116,6 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
   event.preventDefault();
 };
 
-Crowi.initAffix = () => {
-  const $affixContent = $('#page-header');
-  if ($affixContent.length > 0) {
-    const $affixContentContainer = $('.row.bg-title');
-    const containerHeight = $affixContentContainer.outerHeight(true);
-    $affixContent.affix({
-      offset: {
-        top() {
-          return $('.navbar').outerHeight(true) + containerHeight;
-        },
-      },
-    });
-    $('[data-affix-disable]').on('click', function(e) {
-      const $elm = $($(this).data('affix-disable'));
-      $(window).off('.affix');
-      $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
-      return false;
-    });
-    $affixContentContainer.css({ 'min-height': containerHeight });
-  }
-};
-
 Crowi.initClassesByOS = function() {
   // add classes to cmd-key by OS
   const platform = navigator.platform.toLowerCase();
@@ -222,21 +199,21 @@ $(() => {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
 
-  $('#toggle-sidebar').click((e) => {
-    const $mainContainer = $('.main-container');
-    if ($mainContainer.hasClass('aside-hidden')) {
-      $('.main-container').removeClass('aside-hidden');
+  $('#toggle-crowi-sidebar').click((e) => {
+    const $body = $('body');
+    if ($body.hasClass('aside-hidden')) {
+      $body.removeClass('aside-hidden');
       $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
     }
     else {
-      $mainContainer.addClass('aside-hidden');
+      $body.addClass('aside-hidden');
       $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
     }
     return false;
   });
 
   if ($.cookie('aside-hidden') === 1) {
-    $('.main-container').addClass('aside-hidden');
+    $('body').addClass('aside-hidden');
   }
 
   $('.copy-link').on('click', function() {
@@ -666,7 +643,6 @@ window.addEventListener('load', (e) => {
 
   Crowi.highlightSelectedSection(window.location.hash);
   Crowi.modifyScrollTop();
-  Crowi.initAffix();
   Crowi.initClassesByOS();
 });
 

@@ -343,17 +343,19 @@ class ImportForm extends React.Component {
     }
 
     return (
-      <div className="mt-4">
-        <legend>{groupName} Collections</legend>
-        {wellContent != null && (
-          <div className="well well-sm small">
-            <ul>
-              <li>{wellContent}</li>
-            </ul>
-          </div>
-        )}
-        {this.renderImportItems(collectionNames)}
-        {this.renderWarnForGroups(errors, `warnFor${groupName}`)}
+      <div className="mt-4 row">
+        <div className="col-12">
+          <h3 className="admin-setting-header">{groupName} Collections</h3>
+          { wellContent != null && (
+            <div className="card well small" role="alert">
+              <ul>
+                <li>{wellContent}</li>
+              </ul>
+            </div>
+          )}
+          {this.renderImportItems(collectionNames)}
+          {this.renderWarnForGroups(errors, `warnFor${groupName}`)}
+        </div>
       </div>
     );
   }
@@ -385,7 +387,7 @@ class ImportForm extends React.Component {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
-            <div className="col-xs-6 my-1" key={collectionName}>
+            <div className="col-6 my-1" key={collectionName}>
               <ImportCollectionItem
                 isImporting={isImporting}
                 isImported={collectionProgress ? isImported : false}
@@ -453,12 +455,12 @@ class ImportForm extends React.Component {
       <>
         <form className="form-inline">
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.checkAll}>
+            <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.checkAll}>
               <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
             </button>
           </div>
           <div className="form-group">
-            <button type="button" className="btn btn-sm btn-default mr-2" onClick={this.uncheckAll}>
+            <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.uncheckAll}>
               <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
             </button>
           </div>
@@ -470,7 +472,7 @@ class ImportForm extends React.Component {
         {this.renderOthers()}
 
         <div className="mt-4 text-center">
-          <button type="button" className="btn btn-default mx-1" onClick={this.props.onDiscard}>
+          <button type="button" className="btn btn-light mx-1" onClick={this.props.onDiscard}>
             {t('admin:importer_management.growi_settings.discard')}
           </button>
           <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>

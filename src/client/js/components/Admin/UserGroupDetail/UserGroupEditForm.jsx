@@ -61,18 +61,20 @@ class UserGroupEditForm extends React.Component {
     const { t, adminUserGroupDetailContainer } = this.props;
 
     return (
-      <form className="form-horizontal" onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit}>
         <fieldset>
-          <legend>{t('admin:user_group_management.basic_info')}</legend>
-          <div className="form-group">
-            <label htmlFor="name" className="col-sm-2 control-label">{t('Name')}</label>
-            <div className="col-sm-4">
+          <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
+          <div className="form-group row">
+            <label htmlFor="name" className="col-md-2 col-form-label">
+              {t('Name')}
+            </label>
+            <div className="col-md-4">
               <input className="form-control" type="text" name="name" value={this.state.name} onChange={this.changeUserGroupName} />
             </div>
           </div>
-          <div className="form-group">
-            <label className="col-sm-2 control-label">{t('Created')}</label>
-            <div className="col-sm-4">
+          <div className="form-group row">
+            <label className="col-md-2 col-form-label">{t('Created')}</label>
+            <div className="col-md-4">
               <input
                 type="text"
                 className="form-control"
@@ -81,9 +83,11 @@ class UserGroupEditForm extends React.Component {
               />
             </div>
           </div>
-          <div className="form-group">
-            <div className="col-sm-offset-2 col-sm-10">
-              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{t('Update')}</button>
+          <div className="form-group row">
+            <div className="offset-md-2 col-md-10">
+              <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
+                {t('Update')}
+              </button>
             </div>
           </div>
         </fieldset>

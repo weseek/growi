@@ -32,8 +32,6 @@ class CustomizeThemeOptions extends React.Component {
     }];
 
     const darkTheme = [{
-      name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36',
-    }, {
       name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE',
     }, {
       name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8',

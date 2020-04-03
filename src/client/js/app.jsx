@@ -36,6 +36,7 @@ import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './bootstrap';
@@ -104,6 +105,7 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
+    'grw-subnav': <GrowiSubNavigation />,
   });
 }
 
@@ -129,3 +131,6 @@ $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
     </I18nextProvider>, document.getElementById('revision-history'),
   );
 });
+
+// initialize scrollpos-styler
+ScrollPosStyler.init();

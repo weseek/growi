@@ -95,9 +95,15 @@ export default class PageRevisionList extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="checkbox checkbox-info pull-right">
-          <input id="cbCompactize" type="checkbox" value checked={this.state.isCompactNodiffRevisions} onChange={this.cbCompactizeChangeHandler}></input>
-          <label htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+        <div className="custom-control custom-checkbox custom-checkbox-info float-right">
+          <input
+            type="checkbox"
+            id="cbCompactize"
+            className="custom-control-input"
+            checked={this.state.isCompactNodiffRevisions}
+            onChange={this.cbCompactizeChangeHandler}
+          />
+          <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
         </div>
         <div className="clearfix"></div>
         <div className={classNames.join(' ')}>

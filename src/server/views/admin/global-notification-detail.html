@@ -3,17 +3,15 @@
 {% block html_title %}{{ customizeService.generateCustomTitle(t('Notification settings')) }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('Notification settings') }}</h1>
-  </header>
-</div>
+<header id="page-header">
+  <h1 id="admin-title" class="title">{{ t('Notification settings') }}</h1>
+</header>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main row">
   {% parent %}
-  <div class="col-md-9" id="admin-global-notification-setting"
+  <div class="col-lg-9" id="admin-global-notification-setting"
       data-global-notification="{{ globalNotification|json }}"></div>
 </div>
 

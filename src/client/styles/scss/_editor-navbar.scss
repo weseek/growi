@@ -1,5 +1,10 @@
 .editor-container {
   .navbar-editor {
+    height: 30px;
+    padding: 0;
+
+    border-bottom: 1px solid transparent;
+
     li {
       display: inline-block;
     }
@@ -7,7 +12,7 @@
     button {
       padding: 8px;
       margin: 0 2px;
-      font-size: 14px;
+      font-size: 1rem;
       line-height: 1;
       background-color: transparent;
       border: none;

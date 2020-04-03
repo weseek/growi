@@ -1,7 +1,7 @@
 body.kibela {
   .icon-link,
   .CodeMirror-hint-active,
-  .nav-main-left-tab,
+  .grw-nav-main-left-tab,
   .tav-pane,
   .active {
     color: #5882fa;
@@ -74,7 +74,7 @@ body.kibela {
   }
 
   .kibela-block {
-    position: absolute;
+    position: relative;
     top: 0px;
     right: 100px;
     bottom: 0px;
@@ -86,7 +86,7 @@ body.kibela {
     border-radius: 0.35em;
   }
 
-  .bg-title {
+  .grw-subnav {
     position: relative;
     background: transparent;
     border: none;
@@ -101,12 +101,11 @@ body.kibela {
   }
 
   .revision-toc {
-    &.affix {
-      top: calc(60px + 5px);
-      right: 10rem;
-      min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
-      margin-top: 40px;
-    }
+    position: sticky;
+    top: calc(60px + 5px);
+    right: 10rem;
+    min-width: 100%;
+    margin-top: 40px;
 
     .revision-toc-content {
       padding: 0;
@@ -120,6 +119,24 @@ body.kibela {
     }
   }
 
+  /* admin navigation */
+  .admin-navigation {
+    .list-group-item + .list-group-item.active {
+      margin-top: 2px;
+    }
+
+    .list-group-item.active {
+      color: #fff;
+      background: #1256a3;
+    }
+
+    .list-group-item {
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+
   /* search page */
   .search-result-list,
   .page-list-li {
@@ -128,25 +145,28 @@ body.kibela {
 
   /* Tabs */
   .nav.nav-tabs {
-    border-bottom-color: #f4f5f6;
+    > .nav-item {
+      color: #5882fa;
+      cursor: pointer;
+      background: transparent;
 
-    > li > a {
-      &,
       &:hover,
       &:focus {
-        background: transparent;
-        border-top: none;
-        border-right: none;
-        border-left: none;
+        > .nav-link {
+          color: #7a94d9;
+        }
       }
-    }
 
-    > li.active > a {
-      background: transparent !important;
-      border-top: none;
-      border-right: none;
-      border-bottom: solid 2.7px #5584e1;
-      border-left: none;
+      > .nav-link {
+        color: #5882fa;
+        border: none;
+        border-radius: 3px;
+      }
+
+      > .nav-link.active {
+        background: transparent !important;
+        border-bottom: solid 2.7px #5584e1;
+      }
     }
 
     .wiki {
@@ -158,12 +178,6 @@ body.kibela {
         border-color: solid 1px #5584e1;
       }
     }
-  }
-
-  /* user page */
-  .header-wrap {
-    padding: 0px;
-    margin-left: 2em;
   }
 
   /* edit */

@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
-import Modal from 'react-bootstrap/es/Modal';
-import Checkbox from 'react-bootstrap/es/Checkbox';
+import {
+  Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 export default class DeletePageListModal extends React.Component {
 
@@ -27,26 +28,35 @@ export default class DeletePageListModal extends React.Component {
     });
 
     return (
-      <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-list-delete-modal">
-        <Modal.Header closeButton>
-          <Modal.Title>Deleting pages:</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-list-delete-modal">
+        <ModalHeader tag="h4" toggle={this.props.cancel}>
+          Deleting pages:
+        </ModalHeader>
+        <ModalBody>
           <ul>
             {listView}
           </ul>
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline>Delete completely</Checkbox>
-              <span className="m-l-10">
-                <Button onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
+              <div className="custom-control custom-checkbox custom-checkbox-danger">
+                <input type="checkbox" className="custom-control-input" id="customCheck-delete-completely" />
+                <label
+                  className="custom-control-label text-danger"
+                  htmlFor="customCheck-delete-completely"
+                  onClick={this.props.toggleDeleteCompletely}
+                >
+                  Delete completely
+                </label>
+              </div>
+              <span className="ml-2">
+                <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
               </span>
             </span>
           </div>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

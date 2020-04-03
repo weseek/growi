@@ -11,21 +11,19 @@
 {% block content_header_before %}
 {% endblock %}
 
-<div class="header-wrap">
-  <header id="page-header" class="{% if page %}has-page{% endif %}">
+<header id="page-header" class="{% if page %}has-page{% endif %}">
 
-    <div class="d-flex align-items-center">
-      <div class="title-container">
-        <h1 class="title" id="revision-path"></h1>
-        {% if page and not forbidden and not isTrashPage() %}
-          <div id="tag-label"></div>
-        {% endif %}
-      </div>
-      {% include '../widget/header-buttons.html' %}
+  <div class="d-flex align-items-center">
+    <div class="title-container">
+      <h1 class="title" id="revision-path"></h1>
+      {% if page and not forbidden and not isTrashPage() %}
+        <div id="tag-label"></div>
+      {% endif %}
     </div>
+    {% include '../widget/header-buttons.html' %}
+  </div>
 
-  </header>
-</div>
+</header>
 
 {% endblock %}
 
@@ -49,7 +47,7 @@
     {% include '../widget/page_content.html' %}
   </div>
 
-  <div class="row page-list hidden-print {% if page.isPortal() %}m-t-30{% endif %}">
+  <div class="row page-list hidden-print {% if page.isPortal() %}mt-5{% endif %}">
     <div class="col-md-12">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>

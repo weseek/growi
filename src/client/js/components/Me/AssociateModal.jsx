@@ -3,7 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { createSubscribedElement } from '../UnstatedUtils';
 
@@ -65,13 +70,11 @@ class AssociateModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header className="bg-info" closeButton>
-          <Modal.Title className="text-white">
-            { t('Create External Account') }
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+        <ModalHeader className="bg-info" toggle={this.props.onClose}>
+          { t('Create External Account') }
+        </ModalHeader>
+        <ModalBody>
           <ul className="nav nav-tabs passport-settings mb-2" role="tablist">
             <li className="active">
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i className="fa fa-sitemap"></i> LDAP</a>
@@ -87,13 +90,13 @@ class AssociateModal extends React.Component {
             onChangeUsername={this.onChangeUsername}
             onChangePassword={this.onChangePassword}
           />
-        </Modal.Body>
-        <Modal.Footer>
+        </ModalBody>
+        <ModalFooter>
           <button type="button" className="btn btn-info mt-3" onClick={this.onClickAddBtn}>
             <i className="fa fa-plus-circle" aria-hidden="true"></i>
             {t('add')}
           </button>
-        </Modal.Footer>
+        </ModalFooter>
       </Modal>
     );
   }

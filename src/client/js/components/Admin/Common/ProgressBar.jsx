@@ -17,13 +17,13 @@ class ProgressBar extends React.Component {
 
     return (
       <>
-        <h5 className="my-1">
+        <h6 className="my-1">
           {header}
-          <div className="pull-right">{currentCount} / {totalCount}</div>
-        </h5>
-        <div className="progress progress-sm">
+          <div className="float-right">{currentCount} / {totalCount}</div>
+        </h6>
+        <div className="progress">
           <div
-            className={`progress-bar ${isActive ? 'progress-bar-info progress-bar-striped active' : 'progress-bar-success'}`}
+            className={`progress-bar ${isActive ? 'bg-info progress-bar-striped active' : 'bg-success'}`}
             style={{ width: `${percentage}%` }}
           >
             <span className="sr-only">{percentage.toFixed(0)}% Complete</span>

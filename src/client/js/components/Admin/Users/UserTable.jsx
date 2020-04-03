@@ -34,29 +34,29 @@ class UserTable extends React.Component {
 
     switch (userStatus) {
       case 1:
-        additionalClassName = 'label-info';
+        additionalClassName = 'badge-info';
         text = 'Approval Pending';
         break;
       case 2:
-        additionalClassName = 'label-success';
+        additionalClassName = 'badge-success';
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'label-warning';
+        additionalClassName = 'badge-warning';
         text = 'Suspended';
         break;
       case 4:
-        additionalClassName = 'label-danger';
+        additionalClassName = 'badge-danger';
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'label-info';
+        additionalClassName = 'badge-info';
         text = 'Invited';
         break;
     }
 
     return (
-      <span className={`label ${additionalClassName}`}>
+      <span className={`badge ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -71,7 +71,7 @@ class UserTable extends React.Component {
     const { t } = this.props;
 
     if (isAdmin) {
-      return <span className="label label-inverse label-admin ml-2">{t('admin:user_management.user_table.administrator')}</span>;
+      return <span className="badge badge-primary ml-2">{t('admin:user_management.user_table.administrator')}</span>;
     }
   }
 
@@ -185,7 +185,7 @@ class UserTable extends React.Component {
               return (
                 <tr key={user._id}>
                   <td>
-                    <UserPicture user={user} className="picture img-circle" />
+                    <UserPicture user={user} className="picture rounded-circle" />
                   </td>
                   <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
                   <td>

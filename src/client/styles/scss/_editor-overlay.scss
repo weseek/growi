@@ -34,11 +34,12 @@
 
     pointer-events: none;
 
-    .panel.gfm-cheatsheet {
+    .card.gfm-cheatsheet {
       box-shadow: unset;
       opacity: 0.6;
-      .panel-body {
+      .card-body {
         min-width: 30em;
+        padding-bottom: 0;
         font-family: monospace;
         color: $text-muted;
       }
@@ -51,6 +52,8 @@
       color: $text-muted;
       pointer-events: all;
       cursor: pointer;
+      background-color: transparent;
+      border: none;
 
       opacity: 0.6;
 
@@ -58,11 +61,6 @@
       &:focus {
         opacity: 1;
       }
-    }
-
-    // hide on smartphone
-    @media (max-width: $screen-xs) {
-      display: none;
     }
   }
 }

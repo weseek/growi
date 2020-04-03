@@ -1,52 +1,51 @@
 @import '../variables';
 
-$basecolor:#0a010a;
-$themecolor: #aa4a04;
+$basecolor: #0a010a;
+$bgcolor-theme: #aa4a04;
 $subthemecolor: #e9af2b;
 $linkcolor: #aa4a04;
-$topbar: $themecolor;
-$sidebar:#061f2f;
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: #061f2f;
 $subthemecolor: #e9af2b;
-$bodycolor: #0f0101;
-$headingtext: #e9af2b;
-$bodytext: #e9af2b;
+$bgcolor-global: #0f0101;
+$color-header: #e9af2b;
+$color-global: #e9af2b;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
-$sidebar-text: $themecolor;
-$dark-themecolor:#4f5467;
-$primary: $themecolor;
-$logo-mark-fill: lighten($subthemecolor, 20%);
-$wikilinktext: $linkcolor;
-$wikilinktext-hover: rgba($linktext, 0.8);
-$dark: darken($bodytext, 5%);
-$border: $themecolor;
+$sidebar-text: $bgcolor-theme;
+$dark-themecolor: #4f5467;
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten($subthemecolor, 20%);
+$color-link-wiki: $linkcolor;
+$color-link-wiki-hover: rgba($linktext, 0.8);
+$dark: darken($color-global, 5%);
+$border: $bgcolor-theme;
 $navbar-border: lighten($basecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $active-nav-tabs-bgcolor: #231313;
 $btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-color: #a94f04;
-$inline-code-bg: #0a121b;
+$color-inline-code: #a94f04;
+$bgcolor-inline-code: #0a121b;
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
 
 .wiki {
   .highlighted {
-    background-color: lighten($themecolor, 20%);
+    background-color: lighten($bgcolor-theme, 20%);
   }
 }
 
 .panel {
-
   &,
   &.panel-white,
   &.panel-default {
-    border-color: $bodytext;
     background-color: lighten($basecolor, 5%);
+    border-color: $color-global;
 
     .panel-heading {
       color: $basecolor;
-      background-color: 1px solid $bodytext;
+      background-color: 1px solid $color-global;
     }
   }
 }
@@ -55,22 +54,22 @@ $inline-code-bg: #0a121b;
   background: lighten($basecolor, 7%);
 }
 
-.nav-pills>li>a:hover {
-  background: #d3671a;
+.nav-pills > li > a:hover {
   color: $white;
+  background: #d3671a;
 }
 
 #wrapper > .navbar > .navbar-header {
-  background-image: url("/images/themes/halloween/halloween-navbar.jpg");
+  background-image: url('/images/themes/halloween/halloween-navbar.jpg');
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/halloween/halloween.jpg");
+  background-image: url('/images/themes/halloween/halloween.jpg');
   background-attachment: fixed;
 }
 
-.bg-title {
+.grw-subnav {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -82,6 +81,7 @@ body:not(.on-edit) .nav.nav-tabs {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }

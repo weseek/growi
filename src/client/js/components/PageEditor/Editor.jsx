@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 
 import { Subscribe } from 'unstated';
 
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalHeader, ModalBody,
+} from 'reactstrap';
+
 import Dropzone from 'react-dropzone';
 
 import EditorContainer from '../../services/EditorContainer';
@@ -256,13 +259,13 @@ export default class Editor extends AbstractEditor {
     };
 
     return (
-      <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
-        <Modal.Header closeButton>
-          <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="pt-1">
+      <Modal isOpen={this.state.isCheatsheetModalShown} toggle={hideCheatsheetModal} className="modal modal-gfm-cheatsheet">
+        <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary">
+          <span className="text-white"><i className="icon-fw icon-question" />Markdown Help</span>
+        </ModalHeader>
+        <ModalBody>
           <Cheatsheet />
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     );
   }
@@ -339,14 +342,14 @@ export default class Editor extends AbstractEditor {
             className="btn btn-default btn-block btn-open-dropzone"
             onClick={() => { this.dropzone.open() }}
           >
-
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
             Attach files
-            <span className="desc-long">
+            <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;
               <span className="btn-link">selecting them</span>,&nbsp;
               or pasting from the clipboard.
             </span>
+
           </button>
           )
         }

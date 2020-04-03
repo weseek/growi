@@ -138,7 +138,7 @@ class PageHistory extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <div className="mt-4">
         { this.state.isLoading && (
           <div className="my-5 text-center">
             <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
@@ -158,7 +158,7 @@ class PageHistory extends React.Component {
             onDiffOpenClicked={this.onDiffOpenClicked}
           />
         ) }
-      </React.Fragment>
+      </div>
     );
   }
 

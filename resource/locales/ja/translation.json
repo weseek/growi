@@ -61,7 +61,7 @@
   "No diff": "差分なし",
   "Shrink versions that have no diffs": "差分のないバージョンをコンパクトに表示する",
   "User ID": "ユーザーID",
-  "Home": "ホーム",
+  "User's Home": "ユーザーホーム",
   "User Settings": "ユーザー設定",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
@@ -323,7 +323,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
-      "Create template under": "<code><small>%s</small></code><br />にテンプレートページを作成"
+      "Create template under": "<code>%s</code><br />にテンプレートページを作成"
     },
     "option_label": {
       "select": "テンプレートタイプを選択してください",
@@ -631,7 +631,7 @@
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。",
+    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。</p><strong>ヒント:</strong><p>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
     "create_new_archive_data": "アーカイブデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",

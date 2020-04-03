@@ -5,19 +5,16 @@
   {% block content_header_before %}
   {% endblock %}
 
-  <div class="header-wrap">
-    <header id="page-header">
+  <header id="page-header">
+    <div>
       <div>
-        <div>
-          <h1 class="title" id="revision-path"></h1>
-          {% if not forbidden and not isTrashPage() %}
-            <div id="tag-label"></div>
-          {% endif %}
-        </div>
+        <h1 class="title" id="revision-path"></h1>
+        {% if not forbidden and not isTrashPage() %}
+          <div id="tag-label"></div>
+        {% endif %}
       </div>
-
-    </header>
-  </div>
+    </div>
+  </header>
 
   {% block content_header_after %}
   {% endblock %}

@@ -124,7 +124,7 @@ class UserManagement extends React.Component {
         {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
         <p>
           <InviteUserControl />
-          <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
+          <a className="btn text-dark btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             {t('admin:user_management.external_account')}
           </a>
@@ -148,63 +148,68 @@ class UserManagement extends React.Component {
             </div>
 
             <div className="mx-5 form-inline">
-              <div className="checkbox checkbox-primary pl-0">
+              <div className="custom-control custom-checkbox custom-checkbox-primary mr-2">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c1"
                   checked={adminUsersContainer.isSelected('all')}
                   onClick={() => { this.handleClick('all') }}
                 />
-                <label htmlFor="c1">
-                  <span className="label label-primary d-inline-block vt mt-1">All</span>
+                <label className="custom-control-label" htmlFor="c1">
+                  <span className="badge badge-primary d-inline-block vt mt-1">All</span>
                 </label>
               </div>
 
-              <div className="checkbox checkbox-info">
+              <div className="custom-control custom-checkbox custom-checkbox-info mr-2">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c2"
                   checked={adminUsersContainer.isSelected('registered')}
                   onClick={() => { this.handleClick('registered') }}
                 />
-                <label htmlFor="c2">
-                  <span className="label label-info d-inline-block vt mt-1">Approval Pending</span>
+                <label className="custom-control-label" htmlFor="c2">
+                  <span className="badge badge-info d-inline-block vt mt-1">Approval Pending</span>
                 </label>
               </div>
 
-              <div className="checkbox checkbox-success">
+              <div className="custom-control custom-checkbox custom-checkbox-success mr-2">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c3"
                   checked={adminUsersContainer.isSelected('active')}
                   onClick={() => { this.handleClick('active') }}
                 />
-                <label htmlFor="c3">
-                  <span className="label label-success d-inline-block vt mt-1">Active</span>
+                <label className="custom-control-label" htmlFor="c3">
+                  <span className="badge badge-success d-inline-block vt mt-1">Active</span>
                 </label>
               </div>
 
-              <div className="checkbox checkbox-warning">
+              <div className="custom-control custom-checkbox custom-checkbox-warning mr-2">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c4"
                   checked={adminUsersContainer.isSelected('suspended')}
                   onClick={() => { this.handleClick('suspended') }}
                 />
-                <label htmlFor="c4">
-                  <span className="label label-warning d-inline-block vt mt-1">Suspended</span>
+                <label className="custom-control-label" htmlFor="c4">
+                  <span className="badge badge-warning d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
-              <div className="checkbox checkbox-info">
+              <div className="custom-control custom-checkbox custom-checkbox-info">
                 <input
+                  className="custom-control-input"
                   type="checkbox"
                   id="c5"
                   checked={adminUsersContainer.isSelected('invited')}
                   onClick={() => { this.handleClick('invited') }}
                 />
-                <label htmlFor="c5">
-                  <span className="label label-info d-inline-block vt mt-1">Invited</span>
+                <label className="custom-control-label" htmlFor="c5">
+                  <span className="badge badge-info d-inline-block vt mt-1">Invited</span>
                 </label>
               </div>
             </div>
@@ -212,7 +217,7 @@ class UserManagement extends React.Component {
             <div>
               <button
                 type="button"
-                className="btn btn-default btn-outline btn-sm"
+                className="btn btn-outline-secondary btn-sm"
                 onClick={() => { this.resetButtonClickHandler() }}
               >
                 <span
@@ -224,7 +229,7 @@ class UserManagement extends React.Component {
             </div>
 
             <div className="ml-5">
-              {this.state.isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>}
+              {this.state.isNotifyCommentShow && <span className="text-warning small">{t('admin:user_management.click_twice_same_checkbox')}</span>}
             </div>
 
           </div>

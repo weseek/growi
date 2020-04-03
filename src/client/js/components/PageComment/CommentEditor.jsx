@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
-import Tab from 'react-bootstrap/es/Tab';
-import Tabs from 'react-bootstrap/es/Tabs';
+import {
+  Button,
+  TabContent, TabPane, Nav, NavItem, NavLink,
+} from 'reactstrap';
+
 import * as toastr from 'toastr';
 
 import AppContainer from '../../services/AppContainer';
@@ -39,7 +41,7 @@ class CommentEditor extends React.Component {
       comment: this.props.commentBody || '',
       isMarkdown: true,
       html: '',
-      key: 1,
+      activeTab: 1,
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
@@ -70,8 +72,8 @@ class CommentEditor extends React.Component {
     this.editor.setGfmMode(value);
   }
 
-  handleSelect(key) {
-    this.setState({ key });
+  handleSelect(activeTab) {
+    this.setState({ activeTab });
     this.renderHtml(this.state.comment);
   }
 
@@ -93,7 +95,7 @@ class CommentEditor extends React.Component {
       comment: '',
       isMarkdown: true,
       html: '',
-      key: 1,
+      activeTab: 1,
       errorMessage: undefined,
     });
     // reset value
@@ -212,6 +214,8 @@ class CommentEditor extends React.Component {
 
   render() {
     const { appContainer, commentContainer } = this.props;
+    const { activeTab } = this.state;
+
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
     const emojiStrategy = appContainer.getEmojiStrategy();
 
@@ -219,10 +223,16 @@ class CommentEditor extends React.Component {
     const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
+    const cancelButton = (
+      <Button outline color="danger" size="xs" className="fcbtn rounded-pill" onClick={this.toggleEditor}>
+        Cancel
+      </Button>
+    );
     const submitButton = (
       <Button
-        bsStyle="primary"
-        className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
+        outline
+        color="primary"
+        className="fcbtn rounded-pill btn-1b"
         onClick={this.postHandler}
       >
         Comment
@@ -239,8 +249,22 @@ class CommentEditor extends React.Component {
           ) }
           <div className="comment-form-main">
             <div className="comment-write">
-              <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                <Tab eventKey={1} title="Write">
+              <Nav tabs>
+                <NavItem>
+                  <NavLink type="button" className={activeTab === 1 ? 'active' : ''} onClick={() => this.handleSelect(1)}>
+                    Write
+                  </NavLink>
+                </NavItem>
+                { this.state.isMarkdown && (
+                  <NavItem>
+                    <NavLink type="button" className={activeTab === 2 ? 'active' : ''} onClick={() => this.handleSelect(2)}>
+                      Preview
+                    </NavLink>
+                  </NavItem>
+                ) }
+              </Nav>
+              <TabContent activeTab={activeTab}>
+                <TabPane tabId={1}>
                   <Editor
                     ref={(c) => { this.editor = c }}
                     value={this.state.comment}
@@ -254,34 +278,39 @@ class CommentEditor extends React.Component {
                     onUpload={this.uploadHandler}
                     onCtrlEnter={this.postHandler}
                   />
-                </Tab>
-                { this.state.isMarkdown && (
-                  <Tab eventKey={2} title="Preview">
-                    <div className="comment-form-preview">
-                      {commentPreview}
-                    </div>
-                  </Tab>
-                ) }
-              </Tabs>
+                </TabPane>
+                <TabPane tabId={2}>
+                  <div className="comment-form-preview">
+                    {commentPreview}
+                  </div>
+                </TabPane>
+              </TabContent>
             </div>
             <div className="comment-submit">
               <div className="d-flex">
-                <label style={{ flex: 1 }}>
-                  { isBaloonStyle && this.state.key === 1 && (
-                    <span>
+                <label className="mr-2">
+                  { isBaloonStyle && activeTab === 1 && (
+                    <span className="custom-control custom-checkbox">
                       <input
                         type="checkbox"
+                        className="custom-control-input"
                         id="comment-form-is-markdown"
                         name="isMarkdown"
                         checked={this.state.isMarkdown}
                         value="1"
                         onChange={this.updateStateCheckbox}
                       />
-                      <span className="ml-2">Markdown</span>
+                      <label
+                        className="ml-2 custom-control-label"
+                        htmlFor="comment-form-is-markdown"
+                      >
+                        Markdown
+                      </label>
                     </span>
                   ) }
                 </label>
-                <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                <span className="flex-grow-1" />
+                <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
                 { this.state.hasSlackConfig
                   && (
                   <div className="form-inline align-self-center mr-md-2">
@@ -294,18 +323,14 @@ class CommentEditor extends React.Component {
                   </div>
                   )
                 }
-                <div>
-                  <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.toggleEditor}>
-                    Cancel
-                  </Button>
+                <div className="d-none d-sm-block">
+                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
                 </div>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <div className="hidden-xs">{submitButton}</div>
               </div>
-              <div className="visible-xs mt-2">
+              <div className="d-block d-sm-none mt-2">
                 <div className="d-flex justify-content-end">
                   { this.state.errorMessage && errorMessage }
-                  <div>{submitButton}</div>
+                  <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
                 </div>
               </div>
             </div>

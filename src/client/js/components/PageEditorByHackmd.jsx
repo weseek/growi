@@ -258,9 +258,9 @@ class PageEditorByHackmd extends React.Component {
           <p className="text-center"><strong>{t('hackmd.unsaved_draft')}</strong></p>
 
           { isHackmdDocumentOutdated && (
-            <div className="panel panel-warning">
-              <div className="panel-heading"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
-              <div className="panel-body text-center">
+            <div className="card border-warning">
+              <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
+              <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
                 <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>
 

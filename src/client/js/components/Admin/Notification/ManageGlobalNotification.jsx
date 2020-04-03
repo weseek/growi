@@ -100,10 +100,15 @@ class ManageGlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <a href="/admin/notification#global-notification" className="btn btn-default">
-          <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-          {t('notification_setting.back_to_list')}
-        </a>
+        <div className="my-3">
+          <a href="/admin/notification#global-notification">
+            <button type="button" className="btn page-link text-dark d-inline-block">
+              <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
+              {t('notification_setting.back_to_list')}
+            </button>
+          </a>
+        </div>
+
 
         <div className="row">
           <div className="m-t-20 form-box col-md-12">
@@ -111,25 +116,26 @@ class ManageGlobalNotification extends React.Component {
           </div>
 
           <div className="col-sm-4">
+            <h3 htmlFor="triggerPath">{t('notification_setting.trigger_path')}
+              {/* eslint-disable-next-line react/no-danger */}
+              <small dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help', '<code>*</code>') }} />
+            </h3>
             <div className="form-group">
-              <h3 htmlFor="triggerPath">{t('notification_setting.trigger_path')}
-                {/* eslint-disable-next-line react/no-danger */}
-                <small dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help', '<code>*</code>') }} />
-                <input
-                  className="form-control"
-                  type="text"
-                  name="triggerPath"
-                  value={this.state.triggerPath}
-                  onChange={(e) => { this.onChangeTriggerPath(e.target.value) }}
-                  required
-                />
-              </h3>
+              <input
+                className="form-control"
+                type="text"
+                name="triggerPath"
+                value={this.state.triggerPath}
+                onChange={(e) => { this.onChangeTriggerPath(e.target.value) }}
+                required
+              />
             </div>
 
+            <h3>{t('notification_setting.notify_to')}</h3>
             <div className="form-group form-inline">
-              <h3>{t('notification_setting.notify_to')}</h3>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio">
                 <input
+                  className="custom-control-input"
                   type="radio"
                   id="mail"
                   name="notifyToType"
@@ -137,12 +143,13 @@ class ManageGlobalNotification extends React.Component {
                   checked={this.state.notifyToType === 'mail'}
                   onChange={() => { this.onChangeNotifyToType('mail') }}
                 />
-                <label htmlFor="mail">
+                <label className="custom-control-label" htmlFor="mail">
                   <p className="font-weight-bold">Email</p>
                 </label>
               </div>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio ml-2">
                 <input
+                  className="custom-control-input"
                   type="radio"
                   id="slack"
                   name="notifyToType"
@@ -150,7 +157,7 @@ class ManageGlobalNotification extends React.Component {
                   checked={this.state.notifyToType === 'slack'}
                   onChange={() => { this.onChangeNotifyToType('slack') }}
                 />
-                <label htmlFor="slack">
+                <label className="custom-control-label" htmlFor="slack">
                   <p className="font-weight-bold">Slack</p>
                 </label>
               </div>
@@ -187,77 +194,80 @@ class ManageGlobalNotification extends React.Component {
                   />
                 </div>
               )}
-
           </div>
 
-
-          <div className="col-sm-offset-1 col-sm-5">
+          <div className="offset-1 col-sm-5">
             <div className="form-group">
               <h3>{t('notification_setting.trigger_events')}</h3>
               <TriggerEventCheckBox
+                checkbox="success"
                 event="pageCreate"
                 checked={this.state.triggerEvents.has('pageCreate')}
                 onChange={() => this.onChangeTriggerEvents('pageCreate')}
               >
-                <span className="label label-success">
+                <span className="badge badge-pill badge-success">
                   <i className="icon-doc"></i> CREATE
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="warning"
                 event="pageEdit"
                 checked={this.state.triggerEvents.has('pageEdit')}
                 onChange={() => this.onChangeTriggerEvents('pageEdit')}
               >
-                <span className="label label-warning">
+                <span className="badge badge-pill badge-warning">
                   <i className="icon-pencil"></i>EDIT
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="warning"
                 event="pageMove"
                 checked={this.state.triggerEvents.has('pageMove')}
                 onChange={() => this.onChangeTriggerEvents('pageMove')}
               >
-                <span className="label label-warning">
+                <span className="badge badge-pill badge-warning">
                   <i className="icon-action-redo"></i>MOVE
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="danger"
                 event="pageDelete"
                 checked={this.state.triggerEvents.has('pageDelete')}
                 onChange={() => this.onChangeTriggerEvents('pageDelete')}
               >
-                <span className="label label-danger">
+                <span className="badge badge-pill badge-danger">
                   <i className="icon-fire"></i>DELETE
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="info"
                 event="pageLike"
                 checked={this.state.triggerEvents.has('pageLike')}
                 onChange={() => this.onChangeTriggerEvents('pageLike')}
               >
-                <span className="label label-info">
+                <span className="badge badge-pill badge-info">
                   <i className="icon-like"></i>LIKE
                 </span>
               </TriggerEventCheckBox>
               <TriggerEventCheckBox
+                checkbox="secondary"
                 event="comment"
                 checked={this.state.triggerEvents.has('comment')}
                 onChange={() => this.onChangeTriggerEvents('comment')}
               >
-                <span className="label label-default">
+                <span className="badge badge-pill badge-light">
                   <i className="icon-bubble"></i>POST
                 </span>
               </TriggerEventCheckBox>
 
             </div>
           </div>
-
-          <AdminUpdateButtonRow
-            onClick={this.submitHandler}
-            disabled={this.state.retrieveError != null}
-          />
-
         </div>
+
+        <AdminUpdateButtonRow
+          onClick={this.submitHandler}
+          disabled={this.state.retrieveError != null}
+        />
 
       </React.Fragment>
 

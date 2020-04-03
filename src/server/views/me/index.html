@@ -3,41 +3,47 @@
 {% block html_title %}{{ customizeService.generateCustomTitle(t('User Settings')) }}{% endblock %}
 
 {% block content_header %}
-<div class="header-wrap">
-  <header id="page-header">
-    <h1 id="mypage-title" class="title">{{ t('User Settings') }}</h1>
-  </header>
-</div>
+<header id="page-header">
+  <h1 id="mypage-title" class="title">{{ t('User Settings') }}</h1>
+</header>
 {% endblock %}
 
 {% block content_main %}
 <div class="content-main" id="personal-setting">
 
-  <ul class="nav nav-tabs">
-    <li class="active"><a href="/me"><i class="icon-user"></i> {{ t('User Information') }}</a></li>
-    <li><a href="/me/external-accounts"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a></li>
-    <li><a href="/me/password"><i class="icon-lock"></i> {{ t('Password Settings') }}</a></li>
-    <li><a href="/me/apiToken"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a></li>
+  <ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" href="/me" role="tab" data-toggle="tab"><i class="icon-user"></i> {{ t('User Information') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/me/external-accounts" role="tab" data-toggle="tab"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/me/password" role="tab" data-toggle="tab"><i class="icon-lock"></i> {{ t('Password Settings') }}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/me/apiToken" role="tab" data-toggle="tab"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a>
+    </li>
   </ul>
 
   <div class="tab-content">
 
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
-  <div class="alert alert-success m-t-10">
+  <div class="alert alert-success grw-mt-10px">
     {{ smessage }}
   </div>
   {% endif %}
 
   {% set wmessage = req.flash('warningMessage') %}
   {% if wmessage.length %}
-  <div class="alert alert-danger m-t-10">
+  <div class="alert alert-danger grw-mt-10px">
     {{ wmessage }}
   </div>
   {% endif %}
 
   {% if req.form.errors.length > 0 %}
-  <div class="alert alert-danger m-t-10">
+  <div class="alert alert-danger grw-mt-10px">
     <ul>
     {% for error in req.form.errors %}
       <li>{{ error }}</li>
@@ -47,90 +53,168 @@
   {% endif %}
 
 
-  <div class="form-box m-t-20">
-    <form action="/me" method="post" class="form-horizontal" role="form">
+  <div class="form-box mt-3">
+    <form action="/me" method="post" role="form">
       <fieldset>
-        <legend>{{ t('Basic Info') }}</legend>
-      <div class="form-group">
-        <label for="userForm[name]" class="col-sm-2 control-label">{{ t('Name') }}</label>
-        <div class="col-sm-4">
-          <input class="form-control" type="text" name="userForm[name]" value="{{ user.name }}" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="userForm[email]" class="col-sm-2 control-label">{{ t('Email') }}</label>
-        <div class="col-sm-4">
-          <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}">
-        </div>
-        <div class="col-sm-offset-2 col-sm-10">
-          {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
-          <p class="help-block">
-            {{ t('page_register.form_help.email') }}
-          <ul>
-            {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
-            <li><code>{{ em }}</code></li>
-            {% endfor %}
-          </ul>
-          </p>
-          {% endif %}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="userForm[isEmailPublished]" class="col-sm-2 control-label">{{ t('Disclose E-mail') }}</label>
-        <div class="col-sm-4">
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioEmailShow" name="userForm[isEmailPublished]" value="{{ true }}" {% if user.isEmailPublished == true %}checked="checked"{% endif %}>
-            <label for="radioEmailShow">{{ t('Show') }}</label>
-          </div>
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioEmailHide" name="userForm[isEmailPublished]" value="{{ false }}" {% if user.isEmailPublished == false %}checked="checked"{% endif %}>
-            <label for="radioEmailHide">{{ t('Hide') }}</label>
+        <legend class="border-bottom mb-4">{{ t('Basic Info') }}</legend>
+        <div class="form-group row">
+          <label for="userForm[name]" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="userForm[name]" value="{{ user.name }}" required>
           </div>
         </div>
-      </div>
-      <div class="form-group {% if not user.lang %}has-error{% endif %}">
-        <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
-        <div class="col-sm-4">
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioLangEn" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
-            <label for="radioLangEn">{{ t('English') }}</label>
+        <div class="form-group">
+          <div class="row">
+            <label for="userForm[email]" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-4">
+              <input type="email" class="form-control" name="userForm[email]" value="{{ user.email }}" aria-describedby="userForm[email]" required>
+            </div>
           </div>
-          <div class="radio radio-primary radio-inline">
-            <input type="radio" id="radioLangJa" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>
-            <label for="radioLangJa">{{ t('Japanese') }}</label>
+          <div class="offset-sm-2 col-sm-10">
+            {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
+            <p id="userForm[email]" class="form-text text-muted">
+              {{ t('page_register.form_help.email') }}
+            <ul>
+              {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
+              <li><code>{{ em }}</code></li>
+              {% endfor %}
+            </ul>
+            </p>
+            {% endif %}
           </div>
         </div>
-      </div>
+        <div class="form-group row">
+          <label for="userForm[isEmailPublished]" class="col-sm-2 col-form-label">{{ t('Disclose E-mail') }}</label>
+          <div class="col-sm-4">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioEmailShow"
+                name="userForm[isEmailPublished]"
+                value="{{ true }}"
+                {% if user.isEmailPublished == true %}checked="checked"{% endif %}
+                class="custom-control-input"
+              > 
+              <label class="custom-control-label" for="radioEmailShow">{{ t('Show') }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioEmailHide"
+                name="userForm[isEmailPublished]"
+                value="{{ false }}"
+                {% if user.isEmailPublished == false %}checked="checked"{% endif %}
+                class="custom-control-input"
+              >
+              <label class="custom-control-label" for="radioEmailHide">{{ t('Hide') }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row {% if not user.lang %}has-error{% endif %}">
+          <label for="userForm[lang]" class="col-sm-2 col-form-label">Language</label>
+          <div class="col-sm-4">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioLangEn"
+                name="userForm[lang]"
+                value="{{ consts.language.LANG_EN_US }}"
+                class="custom-control-input"
+                {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}
+              >
+              <label class="custom-control-label" for="radioLangEn">{{ t('English') }}</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioLangJa"
+                name="userForm[lang]"
+                value="{{ consts.language.LANG_JA }}"
+                class="custom-control-input"
+                {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}
+              >
+              <label class="custom-control-label" for="radioLangJa">{{ t('Japanese') }}</label>
+            </div>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+        <div class="form-group row">
+          <div class="offset-sm-2 col-sm-10">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+          </div>
         </div>
-      </div>
-    </fieldset>
+      </fieldset>
     </form>
   </div>
 
-  <div class="form-box m-t-20">
+  <div class="form-box mt-3">
 
     <!-- separeted form tag -->
     <form action="/me/imagetype" id="formImageType" method="post" class="form" role="form"></form>
 
     <fieldset>
-
-      <legend>{{ t('Set Profile Image') }}</legend>
-
-      <div class="form-group col-md-2 col-sm-offset-1 col-sm-4">
-        <h4>
-          <div class="radio radio-primary">
-            <input type="radio" id="radioGravatar" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
-            <label for="radioGravatar">
-              <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
-            </label>
-            <a href="https://gravatar.com/">
-              <small><i class="icon-arrow-right-circle" aria-hidden="true"></i></small>
-            </a>
+      <legend class="border-bottom mb-5">{{ t('Set Profile Image') }}</legend>
+      <div class="form-group row">
+        <div class="col-sm-4 offset-sm-1">
+          <h4>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioGravatar"
+                form="formImageType"
+                name="imagetypeForm[isGravatarEnabled]"
+                value="true"
+                {% if user.isGravatarEnabled %}checked="checked"{% endif %}
+                class="custom-control-input"
+              >
+              <label class="custom-control-label custom-control-inline" for="radioGravatar">
+                <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" />
+                <span class="pl-1">Gravatar</span>
+              </label>
+              <a href="https://gravatar.com/">
+                <small>
+                  <i class="icon-arrow-right-circle" aria-hidden="true"></i>
+                </small>
+              </a>
+            </div>
+          </h4>
+  
+          <img src="{{ user|gravatar }}" width="64">
+        </div>
+        <div class="col-sm-7">
+          <h4>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radioUploadPicture"
+                form="formImageType"
+                name="imagetypeForm[isGravatarEnabled]"
+                value="false"
+                {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}
+                class="custom-control-input"
+              >
+              <label for="radioUploadPicture" class="custom-control-label">{{ t('Upload Image') }}</label>
+            </div>
+          </h4>
+          <div class="form-group">
+            <div id="pictureUploadFormMessage" class=""></div>
+            <div class="row">
+              <label for="" class="col-sm-4">{{ t('Current Image') }}</label>
+              <div class="col-sm-8">
+                <p><img src="{{ user|uploadedpicture }}" class="picture picture-lg rounded-circle" id="settingUserPicture"></p>
+                <form
+                  id="remove-attachment"
+                  action="/_api/attachments.removeProfileImage"
+                  method="post"
+                  class="form-horizontal"
+                  style="{% if not user.imageAttachment %}display: none{% endif %}"
+                >
+                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
+                </form>
+              </div>
+            </div>
           </div>
         </h4>
 
@@ -167,16 +251,14 @@
 
         <div class="form-group">
           <div id="profile-image-uploader"></div>
-        </div><!-- /.form-group -->
-
-      </div><!-- /.col-sm- -->
-
-      <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-6">
-          <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="offset-sm-4 col-sm-6">
+          <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
+        </div>
+      </div>
     </fieldset>
   </div><!-- /.form-box -->
 
@@ -191,7 +273,7 @@
       formData.append('file', this.files[0]);
       formData.append('_csrf', document.getElementsByName("_csrf")[0].value);
 
-      $('#pictureUploadFormProgress').html('<div class="speeding-wheel-sm m-r-5"></div> アップロード中...');
+      $('#pictureUploadFormProgress').html('<div class="speeding-wheel-sm mr-2"></div> アップロード中...');
       $.ajax($form.attr("action"), {
         type: 'post',
         processData: false,

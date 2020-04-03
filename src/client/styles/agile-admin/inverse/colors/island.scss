@@ -1,59 +1,58 @@
 @import '../variables';
 
-$themecolor: #0c2a44;
+$bgcolor-theme: #0c2a44;
 $themelight: rgba(183, 226, 219, 1);
 
 $subthemecolor: rgba($linktext, 0.8);
 $linkcolor: #3c6d72;
-$themecolor: #97cbc3;
-$topbar: #0c2a44;
-$sidebar: $themelight;
-$bodycolor: lighten($themelight, 10%);
-$headingtext:#3c6d72;
-$bodytext: #3c6d72;
+$bgcolor-theme: #97cbc3;
+$bgcolor-navbar: #0c2a44;
+$bgcolor-global: $themelight;
+$bgcolor-global: lighten($themelight, 10%);
+$color-header: #3c6d72;
+$color-global: #3c6d72;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
-$sidebar-text: $themecolor;
-$primary: $themecolor;
-$logo-mark-fill: lighten($themelight, 10%);
-$wikilinktext: $linkcolor;
-$wikilinktext-hover: rgba($linktext, 0.8);
-$dark: darken($bodytext, 5%);
+$sidebar-text: $bgcolor-theme;
+$primary: $bgcolor-theme;
+$fillcolor-logo-mark: lighten($themelight, 10%);
+$color-link-wiki: $linkcolor;
+$color-link-wiki-hover: rgba($linktext, 0.8);
+$dark: darken($color-global, 5%);
 $border: #76b1a8;
 $navbar-border: #76b1a8;
 $active-navbar-border: darken($navbar-border, 13%);
 $active-nav-tabs-bgcolor: #dbf0ed;
-$btn-default-bgcolor: darken($themecolor, 10%);
-$inline-code-color: #8f5313;
-$inline-code-bg: darken($themelight, 3%);
+$btn-default-bgcolor: darken($bgcolor-theme, 10%);
+$color-inline-code: #8f5313;
+$bgcolor-inline-code: darken($themelight, 3%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';
 
 .wiki {
   .highlighted {
-    background-color: lighten($themecolor, 20%);
+    background-color: lighten($bgcolor-theme, 20%);
   }
 }
 
 .panel {
-
   &,
   &.panel-white,
   &.panel-default {
-    background-color: lighten($themecolor, 30%);
+    color: $bgcolor-theme;
+    background-color: lighten($bgcolor-theme, 30%);
     border-color: white;
-    color: $themecolor;
 
     .panel-heading {
-      color: $themecolor;
+      color: $bgcolor-theme;
       background-color: white;
     }
 
     ul {
       li {
         a {
-          color: darken($themecolor, 15%);
+          color: darken($bgcolor-theme, 15%);
         }
       }
     }
@@ -63,8 +62,8 @@ $inline-code-bg: darken($themelight, 3%);
 /* GROWI page list */
 .page-list {
   .page-list-ul {
-    >li {
-      >a strong {
+    > li {
+      > a strong {
         color: $linkcolor;
       }
     }
@@ -75,49 +74,55 @@ $inline-code-bg: darken($themelight, 3%);
   background: lighten($themelight, 5%);
 }
 
-.main-container > #wrapper > #page-wrapper,
+#wrapper > #page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/island/island.png");
+  background-image: url('/images/themes/island/island.png');
   background-attachment: fixed;
 }
 
 /*
  * Tabs
  */
- body:not(.on-edit) .nav.nav-tabs {
+body:not(.on-edit) .nav.nav-tabs {
   > li.active > a {
     background: linear-gradient(
       rgba($active-nav-tabs-bgcolor, 0) 0%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
-      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+      $active-nav-tabs-bgcolor 100%
+    ); // overwrite only the bottom pixel
   }
 }
 
 /* Table */
- .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
- .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
- .table > thead > tr > th, .table-bordered{
-     border-top: 1px solid $border;
- }
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td,
+.table > thead > tr > th,
+.table-bordered {
+  border-top: 1px solid $border;
+}
 
- .table-bordered > thead > tr > th,
- .table-bordered > tbody > tr > th,
- .table-bordered > tfoot > tr > th,
- .table-bordered > thead > tr > td,
- .table-bordered > tbody > tr > td,
- .table-bordered > tfoot > tr > td {
-   border: 1px solid $border;
- }
- .table > thead > tr > th {
-     border-bottom: 1px solid $border;
- }
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  border: 1px solid $border;
+}
 
- .table-bordered {
-     border: 1px solid $border;
- }
+.table > thead > tr > th {
+  border-bottom: 1px solid $border;
+}
 
+.table-bordered {
+  border: 1px solid $border;
+}
 
- // login page
+// login page
 .nologin {
   &.login-page {
     > #wrapper > #page-wrapper {

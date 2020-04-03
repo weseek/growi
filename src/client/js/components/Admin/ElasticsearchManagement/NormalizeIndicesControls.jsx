@@ -15,7 +15,7 @@ class NormalizeIndicesControls extends React.PureComponent {
       <>
         <button
           type="submit"
-          className={`btn btn-outline ${isEnabled ? 'btn-info' : 'btn-default'}`}
+          className={`btn ${isEnabled ? 'btn-outline-info' : 'btn-outline-secondary'}`}
           onClick={() => { this.props.onNormalizingRequested() }}
           disabled={!isEnabled}
         >

@@ -13,6 +13,7 @@ module.exports = {
     jquery: true,
     emojione: true,
     hljs: true,
+    ScrollPosStyler: true,
     window: true,
   },
   plugins: [

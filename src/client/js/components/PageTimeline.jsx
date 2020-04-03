@@ -101,9 +101,9 @@ class PageTimeline extends React.Component {
     return pages.map((page) => {
       return (
         <div className="timeline-body" key={`key-${page.id}`}>
-          <div className="panel panel-timeline">
-            <div className="panel-heading"><a href={page.path}>{page.path}</a></div>
-            <div className="panel-body">
+          <div className="card card-timeline">
+            <div className="card-header"><a href={page.path}>{page.path}</a></div>
+            <div className="card-body">
               <RevisionLoader
                 lazy
                 growiRenderer={this.growiRenderer}

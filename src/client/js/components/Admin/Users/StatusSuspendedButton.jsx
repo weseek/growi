@@ -31,7 +31,7 @@ class StatusSuspendedButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <a className="px-4" onClick={() => { this.onClickDeactiveBtn() }}>
+      <a className="dropdown-item" href="" onClick={() => { this.onClickDeactiveBtn() }}>
         <i className="icon-fw icon-ban"></i> {t('admin:user_management.user_table.deactivate_account')}
       </a>
     );

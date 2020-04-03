@@ -1,40 +1,39 @@
 @import '../variables';
 
-$themecolor: #00587A;
-$themelight: #F7FBFD;
+$bgcolor-theme: #00587a;
+$themelight: #f7fbfd;
 $subthemecolor: #186718;
 
+$bgcolor-navbar: $bgcolor-theme;
+$bgcolor-global: $themelight;
+$bgcolor-global: $themelight;
 
-$topbar: $themecolor;
-$sidebar: $themelight;
-$bodycolor: $themelight;
-
-$headingtext: $themecolor;
-$bodytext: $themecolor;
-$linktext: lighten($themecolor,5%);
+$color-header: $bgcolor-theme;
+$color-global: $bgcolor-theme;
+$linktext: lighten($bgcolor-theme, 5%);
 $linktext-hover: lighten($linktext, 12%);
-$sidebar-text: $themecolor;
+$sidebar-text: $bgcolor-theme;
 
-$primary: $themecolor;
-$info: lighten($themecolor,20%);
+$primary: $bgcolor-theme;
+$info: lighten($bgcolor-theme, 20%);
 
-$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
-$wikilinktext: lighten($themecolor, 20%);
-$wikilinktext-hover: lighten($wikilinktext, 20%);
-$inline-code-color: $subthemecolor;
-$inline-code-bg: lighten($subthemecolor,70%);
+$fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 30%), 20%);
+$color-link-wiki: lighten($bgcolor-theme, 20%);
+$color-link-wiki-hover: lighten($color-link-wiki, 20%);
+$color-inline-code: $subthemecolor;
+$bgcolor-inline-code: lighten($subthemecolor, 70%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';
 
-
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor,20%);
     color: $themelight;
+    background-color: lighten($bgcolor-theme, 20%);
 
-    .icon-note, .icon-link {
+    .icon-note,
+    .icon-link {
       color: $themelight;
     }
   }
