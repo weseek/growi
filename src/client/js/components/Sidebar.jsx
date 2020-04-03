@@ -40,7 +40,7 @@ class Sidebar extends React.Component {
   GlobalNavigation = () => (
     <>
       <div className="grw-logo">
-        <GrowiLogo />
+        <a href="/"><GrowiLogo /></a>
       </div>
       <SidebarNav onItemSelected={this.itemSelectedHandler} />
       <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
