@@ -90,8 +90,10 @@ class InstallerForm extends React.Component {
               </div>
             </div>
 
-            <div className={`input-group${hasErrorClass}`}>
-              <span className="input-group-addon"><i className="icon-user" /></span>
+            <div className={`input-group mb-3${hasErrorClass}`}>
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-user" /></span>
+              </div>
               <input
                 type="text"
                 className="form-control"
@@ -104,8 +106,10 @@ class InstallerForm extends React.Component {
             </div>
             <p className="form-text">{ unavailableUserId }</p>
 
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon-tag" /></span>
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-tag" /></span>
+              </div>
               <input
                 type="text"
                 className="form-control"
@@ -116,8 +120,10 @@ class InstallerForm extends React.Component {
               />
             </div>
 
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon-envelope" /></span>
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-envelope" /></span>
+              </div>
               <input
                 type="email"
                 className="form-control"
@@ -128,8 +134,10 @@ class InstallerForm extends React.Component {
               />
             </div>
 
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon-lock" /></span>
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-lock" /></span>
+              </div>
               <input
                 type="password"
                 className="form-control"
