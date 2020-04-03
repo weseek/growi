@@ -1,9 +1,10 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
 import {
+  withNavigationUIController,
   LayoutManager,
   NavigationProvider,
   ThemeProvider, modeGenerator,
@@ -21,9 +22,11 @@ import History from './Sidebar/History';
 class Sidebar extends React.Component {
 
   static propTypes = {
+    navigationUIController: PropTypes.any.isRequired,
   };
 
   state = {
+    currentContentsId: 'custom',
     isDrawerOpen: false,
   };
 
@@ -32,9 +35,22 @@ class Sidebar extends React.Component {
   closeDrawer = () => this.setState({ isDrawerOpen: false });
 
   itemSelectedHandler = (contentsId) => {
-    if (contentsId === 'drawer') {
-      this.openDrawer();
+    const { navigationUIController } = this.props;
+    const { currentContentsId } = this.state;
+
+    // already selected
+    if (currentContentsId === contentsId) {
+      navigationUIController.toggleCollapse();
     }
+    // switch and expand
+    else {
+      this.setState({ currentContentsId: contentsId });
+      navigationUIController.expand();
+    }
+
+    // if (contentsId === 'drawer') {
+    //   this.openDrawer();
+    // }
   }
 
   GlobalNavigation = () => (
@@ -64,31 +80,34 @@ class Sidebar extends React.Component {
           }),
         })}
       >
-        <NavigationProvider>
-          <LayoutManager
-            globalNavigation={this.GlobalNavigation}
-            productNavigation={() => null}
-            containerNavigation={this.SidebarContents}
-            experimental_flyoutOnHover
-            experimental_alternateFlyoutBehaviour
-            // experimental_fullWidthFlyout
-            shouldHideGlobalNavShadow
-            showContextualNavigation
-          >
-          </LayoutManager>
-        </NavigationProvider>
+        <LayoutManager
+          globalNavigation={this.GlobalNavigation}
+          productNavigation={() => null}
+          containerNavigation={this.SidebarContents}
+          experimental_hideNavVisuallyOnCollapse
+          experimental_flyoutOnHover
+          experimental_alternateFlyoutBehaviour
+          // experimental_fullWidthFlyout
+          shouldHideGlobalNavShadow
+          showContextualNavigation
+        >
+        </LayoutManager>
       </ThemeProvider>
     );
   }
 
 }
 
+const SidebarWithNavigationUI = withNavigationUIController(Sidebar);
+const SidebarWithNavigationUIAndTranslation = withTranslation()(SidebarWithNavigationUI);
 
 /**
  * Wrapper component for using unstated
  */
 const SidebarWrapper = (props) => {
-  return createSubscribedElement(Sidebar, props, [AppContainer]);
+  return createSubscribedElement(SidebarWithNavigationUIAndTranslation, props, [AppContainer]);
 };
 
-export default withTranslation()(SidebarWrapper);
+export default () => (
+  <NavigationProvider><SidebarWrapper /></NavigationProvider>
+);

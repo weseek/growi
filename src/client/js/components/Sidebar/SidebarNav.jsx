@@ -34,7 +34,9 @@ class SidebarNav extends React.Component {
     return (
       <GlobalNav
         primaryItems={[
-          { id: 'create', icon: EditIcon, label: 'Create' },
+          {
+            id: 'custom', icon: EditIcon, label: 'Custom Sidebar', onClick: () => this.itemSelectedHandler('custom'),
+          },
           {
             id: 'drawer', icon: TrayIcon, label: 'Drawer', onClick: () => this.itemSelectedHandler('drawer'),
           },
