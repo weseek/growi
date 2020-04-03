@@ -74,3 +74,10 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-dark';
 }
+
+// admin-navigation
+.list-group-item.active {
+  &:hover {
+    color: white;
+  }
+}
