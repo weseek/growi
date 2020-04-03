@@ -9,7 +9,7 @@ const contributors = [
           { position: 'Founder', name: 'yuki-takei' },
           { position: 'Soncho 1st', name: 'mizozobu' },
           { position: 'Soncho 2nd', name: 'yusuketk' },
-          { position: 'Soncho 3rd', name: 'itizawa' }, // 肩書変更
+          { position: 'Paladin', name: 'itizawa' },
         ],
       },
       {
@@ -20,7 +20,6 @@ const contributors = [
           { name: 'TatsuyaIse' },
           { name: 'shinoka7' },
           { name: 'SeiyaTashiro' },
-          // { name: 'itizawa' },
           { name: 'TsuyoshiSuzukief' },
           { name: 'Yuchan4342' },
           { name: 'ryu-sato' },
@@ -29,16 +28,14 @@ const contributors = [
           { name: 'kaishuu0123' },
           { name: 'kouki-o' },
           { name: 'Angola' },
-          // 追加
           { name: 'Yohei-Shiina' },
-          { name: 'mos' }, // katabesan
+          { name: 'shukmos' },
           { name: 'sooouh' },
           { name: 'ryouhek' },
           { name: 'ryuichi-e' },
-          { name: 'akira-sugiyama' },
+          { name: 'N1koge' },
           { name: 'Ertai87' },
           { name: 'kaoritokashiki' },
-          // 追加終わり
         ],
       },
     ],
