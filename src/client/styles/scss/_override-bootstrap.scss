@@ -171,3 +171,10 @@ fieldset[disabled] .btn {
   margin-bottom: 18px;
   overflow: hidden;
 }
+
+// admin-navigation
+.list-group-item.active {
+  &:hover {
+    color: white;
+  }
+}
