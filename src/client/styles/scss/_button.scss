@@ -1,0 +1,128 @@
+// fill button style
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(lighten(black, 20%), 0.4);
+  border: none;
+
+  .btn-label {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+  }
+
+  .btn-label-text {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+  }
+
+  // effect
+  .eff {
+    position: absolute;
+    top: -50px;
+    left: 0px;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease;
+  }
+
+  &:hover {
+    .eff {
+      top: 0;
+    }
+  }
+}
+
+// login
+.btn-fill.login {
+  .btn-label {
+    background-color: rgba($danger, 0.4);
+  }
+  .eff {
+    background-color: rgba(#7e4153, 0.5);
+  }
+}
+
+// google
+.btn-fill#google {
+  .btn-label {
+    background-color: rgba(#24292e, 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}
+
+// github
+.btn-fill#github {
+  .btn-label {
+    background-color: rgba(lighten(black, 20%), 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}
+
+// facebook
+.btn-fill#facebook {
+  .btn-label {
+    background-color: rgba(#29487d, 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}
+
+// twitter
+.btn-fill#twitter {
+  .btn-label {
+    background-color: rgba(#1da1f2, 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}
+
+// oidc
+.btn-fill#oidc {
+  .btn-label {
+    background-color: rgba(#24292e, 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}
+
+// saml
+.btn-fill#saml {
+  .btn-label {
+    background-color: rgba(#55a79a, 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}
+
+// basic
+.btn-fill#basic {
+  .btn-label {
+    background-color: rgba(#24292e, 0.4);
+  }
+
+  .eff {
+    background-color: #555;
+  }
+}

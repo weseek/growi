@@ -87,7 +87,7 @@ class UserInviteModal extends React.Component {
         <div>
           <button
             type="button"
-            className="fcbtn btn btn-outline-light rounded-pill mr-2"
+            className="btn-fill btn btn-outline-light rounded-pill mr-2"
             onClick={this.onToggleModal}
           >
             Cancel
@@ -95,7 +95,7 @@ class UserInviteModal extends React.Component {
 
           <button
             type="button"
-            className="fcbtn btn btn-outline-primary rounded-pill btn-1b"
+            className="btn-fill btn btn-outline-primary rounded-pill btn-1b"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
@@ -116,7 +116,7 @@ class UserInviteModal extends React.Component {
         </label>
         <button
           type="button"
-          className="fcbtn btn btn-primary"
+          className="btn-fill btn btn-primary"
           onClick={this.onToggleModal}
         >
           Close
