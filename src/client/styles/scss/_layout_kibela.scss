@@ -11,6 +11,10 @@ body.kibela {
     background: #fefffe !important;
   }
 
+  .bg-primary {
+    background-color: #1256a3 !important;
+  }
+
   .logo {
     background: transparent;
 
@@ -22,6 +26,20 @@ body.kibela {
       svg {
         width: 60px;
       }
+    }
+  }
+
+  /* btn */
+  .btn {
+    border-radius: 0.35em;
+  }
+
+  .btn-primary {
+    background: #1256a3;
+    border: 1px solid #1256a3;
+
+    &:hover {
+      opacity: .8;
     }
   }
 
@@ -231,6 +249,57 @@ body.kibela {
       min-height: 60px;
       padding: 13px;
       margin: 0;
+    }
+  }
+
+  /* modal */
+  .modal {
+      .modal-header.bg-primary,
+      .modal-header.bg-primary .close
+      {
+        color: #fff;
+      }
+
+      .modal-content {
+        background-color: #f4f5f6;
+        border-radius: 0.35em;
+      }
+  }
+
+  .modal.create-template {
+    .card-select-template {
+      .card-body {
+        min-height: 120px;
+      }
+    }
+  }
+
+  /* code */
+  :not(.hljs) > code:not(.hljs) {
+    background-color: #fff;
+    color: #5a95d8;
+    padding: 2px 4px;
+  }
+
+  /* card */
+  .card {
+    border-radius: 0.35em;
+    
+    .card-body {
+      background-color: #f4f5f6;
+    }
+
+    .card-header {
+      background-color: rgba(181,203,247,.61);
+      border-bottom: 1px solid rgba(181,203,247,.61);
+      color: #3e4d6c;
+    }
+
+    .card-footer {
+      background: #fff;
+      background-color: rgba(181,203,247,.1);
+      border-top: 1px solid rgba(181,203,247,.61);
+      color: #3e4d6c;
     }
   }
 }
