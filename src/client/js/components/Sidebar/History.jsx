@@ -16,7 +16,7 @@ import AppContainer from '../../services/AppContainer';
 
 class History extends React.Component {
 
-  propTypes = {
+  static propTypes = {
   };
 
   state = {

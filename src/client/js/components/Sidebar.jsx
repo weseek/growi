@@ -9,9 +9,12 @@ import {
   ThemeProvider, modeGenerator,
 } from '@atlaskit/navigation-next';
 
+import Drawer from '@atlaskit/drawer';
+
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
+import GrowiLogo from './GrowiLogo';
 import SidebarNav from './Sidebar/SidebarNav';
 import History from './Sidebar/History';
 
@@ -21,9 +24,32 @@ class Sidebar extends React.Component {
   };
 
   state = {
+    isDrawerOpen: false,
   };
 
-  renderSidebarContents = () => (
+  openDrawer = () => this.setState({ isDrawerOpen: true });
+
+  closeDrawer = () => this.setState({ isDrawerOpen: false });
+
+  itemSelectedHandler = (contentsId) => {
+    if (contentsId === 'drawer') {
+      this.openDrawer();
+    }
+  }
+
+  GlobalNavigation = () => (
+    <>
+      <div className="grw-logo">
+        <GrowiLogo />
+      </div>
+      <SidebarNav onItemSelected={this.itemSelectedHandler} />
+      <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
+        <code>Drawer contents</code>
+      </Drawer>
+    </>
+  );
+
+  SidebarContents = () => (
     <History></History>
   );
 
@@ -40,9 +66,9 @@ class Sidebar extends React.Component {
       >
         <NavigationProvider>
           <LayoutManager
-            globalNavigation={SidebarNav}
+            globalNavigation={this.GlobalNavigation}
             productNavigation={() => null}
-            containerNavigation={this.renderSidebarContents}
+            containerNavigation={this.SidebarContents}
             experimental_flyoutOnHover
             experimental_alternateFlyoutBehaviour
             // experimental_fullWidthFlyout
