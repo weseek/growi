@@ -85,10 +85,15 @@ class UserGroupRelation {
    * @memberof UserGroupRelation
    */
   static findAllRelationForUserGroup(userGroup) {
+    const User = UserGroupRelation.crowi.model('User');
     debug('findAllRelationForUserGroup is called', userGroup);
     return this
       .find({ relatedGroup: userGroup })
-      .populate('relatedUser')
+      .populate({
+        path: 'relatedUser',
+        select: User.USER_PUBLIC_FIELDS,
+        populate: User.IMAGE_POPULATION,
+      })
       .exec();
   }
 
