@@ -30,13 +30,14 @@ const contributors = [
           { name: 'kouki-o' },
           { name: 'Angola' },
           // 追加
-          { name: 'yohei' },
-          { name: 'souh' },
-          { name: 'ryouhei' },
+          { name: 'Yohei-Shiina' },
+          { name: 'mos' }, // katabesan
+          { name: 'sooouh' },
+          { name: 'ryouhek' },
           { name: 'ryuichi-e' },
-          { name: 'akira-s' },
-          { name: 'keisuke-u' },
-          { name: 'kaori-t' },
+          { name: 'akira-sugiyama' },
+          { name: 'Ertai87' },
+          { name: 'kaoritokashiki' },
           // 追加終わり
         ],
       },
