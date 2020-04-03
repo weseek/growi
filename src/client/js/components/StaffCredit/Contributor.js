@@ -9,7 +9,7 @@ const contributors = [
           { position: 'Founder', name: 'yuki-takei' },
           { position: 'Soncho 1st', name: 'mizozobu' },
           { position: 'Soncho 2nd', name: 'yusuketk' },
-          { position: 'Soncho 3rd', name: 'itizawa' },
+          { position: 'Soncho 3rd', name: 'itizawa' }, // 肩書変更
         ],
       },
       {
