@@ -58,12 +58,12 @@
   </li>
   
   {% if !isTrashPage() %}
-    {% if page.isPortal() %}
+    {% if not page.isPortal() %}
     <li class="nav-item dropdown">
       <a
-        {% if user %} role="button" class="nav-link dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link dropdown-toggle c-none-a" data-toggle="dropdown" {% endif %}
         {% if not user %}
-          class="nav-link dropdown-toggle dropdown-toggle-disabled"
+          class="nav-link dropdown-toggle dropdown-toggle-disabled c-none-a"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
@@ -82,9 +82,9 @@
     {% else %}
     <li class="nav-item dropdown">
       <a
-        {% if user %} role="button" class="nav-link dropdown-toggle" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link dropdown-toggle c-none-a" data-toggle="dropdown" {% endif %}
         {% if not user %}
-          class="nav-link dropdown-toggle dropdown-toggle-disabled"
+          class="nav-link dropdown-toggle dropdown-toggle-disabled c-none-a"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
