@@ -47,7 +47,7 @@ module.exports = function(crowi) {
 
     return Bookmark.populate(bookmarks, {
       path: 'page',
-      populate: User.USER_POPULATION_FOR_PAGE_LIST,
+      populate: { path: 'lastUpdateUser', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION },
     });
   };
 
