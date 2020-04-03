@@ -19,10 +19,11 @@ import GrowiLogo from '../GrowiLogo';
 class SidebarNav extends React.Component {
 
   propTypes = {
+    isDrawerOpen: false,
   };
 
   state = {
-    isDrawerOpen: false,
+    // selectedContentsId: null,
   };
 
   openDrawer = () => this.setState({ isDrawerOpen: true });

@@ -3,21 +3,9 @@ import React from 'react';
 
 import { withTranslation } from 'react-i18next';
 
-import BacklogIcon from '@atlaskit/icon/glyph/backlog';
-import BoardIcon from '@atlaskit/icon/glyph/board';
-import GraphLineIcon from '@atlaskit/icon/glyph/graph-line';
-import ShortcutIcon from '@atlaskit/icon/glyph/shortcut';
-import { JiraWordmark } from '@atlaskit/logo';
-
 import {
-  GroupHeading,
-  HeaderSection,
-  Item,
   LayoutManager,
-  MenuSection,
   NavigationProvider,
-  Separator,
-  Wordmark,
   ThemeProvider, modeGenerator,
 } from '@atlaskit/navigation-next';
 
@@ -25,6 +13,7 @@ import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
 import SidebarNav from './Sidebar/SidebarNav';
+import History from './Sidebar/History';
 
 class Sidebar extends React.Component {
 
@@ -35,38 +24,7 @@ class Sidebar extends React.Component {
   };
 
   renderSidebarContents = () => (
-    <>
-      <HeaderSection>
-        { () => (
-          <div className="grw-product-nav-header">
-            <Wordmark wordmark={JiraWordmark} />
-          </div>
-        ) }
-      </HeaderSection>
-      <MenuSection>
-        { () => (
-          <div className="grw-product-nav-menu">
-            <Item
-              before={BacklogIcon}
-              text="Backlog"
-              isSelected
-            />
-            <Item
-              before={BoardIcon}
-              text="Active sprints"
-            />
-            <Item
-              before={GraphLineIcon}
-              text="Reports"
-            />
-            <Separator />
-            <GroupHeading>Shortcuts</GroupHeading>
-            <Item before={ShortcutIcon} text="Project space" />
-            <Item before={ShortcutIcon} text="Looooooooooooooooooooooooooooooong Menu" />
-          </div>
-        ) }
-      </MenuSection>
-    </>
+    <History></History>
   );
 
   render() {
