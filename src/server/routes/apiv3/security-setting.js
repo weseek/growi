@@ -140,6 +140,18 @@ const validator = {
  *            items:
  *              type: string
  *              description: registration whiteList
+ *      MikanAuthSetting:
+ *        type: object
+ *        properties:
+ *          mikanApiUrl:
+ *            type: string
+ *            description: api url for mikan
+ *          mikanLoginUrl:
+ *            type: string
+ *            description: login url in mikan
+ *          mikanCookieName:
+ *            type: string
+ *            description: token key in cookie for mikan
  *      LdapAuthSetting:
  *        type: object
  *        properties:
@@ -597,6 +609,51 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating local setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-local-setting failed'));
+    }
+  });
+
+  /**
+     * @swagger
+     *
+     *    /_api/v3/security-setting/mikan:
+     *      put:
+     *        tags: [SecuritySetting, apiv3]
+     *        description: Update Mikan setting
+     *        requestBody:
+     *          required: true
+     *          content:
+     *            application/json:
+     *              schema:
+     *                $ref: '#/components/schemas/MikanAuthSetting'
+     *        responses:
+     *          200:
+     *            description: Succeeded to update Mikan setting
+     *            content:
+     *              application/json:
+     *                schema:
+     *                  $ref: '#/components/schemas/MikanAuthSetting'
+     */
+  router.put('/mikan', loginRequiredStrictly, adminRequired, csrf, validator.mikanAuth, ApiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'security:passport-mikan:apiUrl': req.body.mikanApiUrl,
+      'security:passport-mikan:loginUrl': req.body.mikanLoginUrl,
+      'security:passport-mikan:cookieName': req.body.mikanCookieName,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.passportService.setupStrategyById('mikan');
+      const securitySettingParams = {
+        mikanApiUrl: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:apiUrl'),
+        mikanLoginUrl: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:loginUrl'),
+        mikanCookieName: await crowi.configManager.getConfig('crowi', 'security:passport-mikan:cookieName'),
+      };
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating Mikan setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-Mikan-failed'));
     }
   });
 

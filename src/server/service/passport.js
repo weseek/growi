@@ -94,6 +94,10 @@ class PassportService {
         setup: 'setupLocalStrategy',
         reset: 'resetLocalStrategy',
       },
+      mikan: {
+        setup: 'setupMikanStrategy',
+        reset: 'resetMikanStrategy',
+      },
       ldap: {
         setup: 'setupLdapStrategy',
         reset: 'resetLdapStrategy',

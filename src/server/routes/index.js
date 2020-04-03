@@ -47,11 +47,10 @@ module.exports = function(crowi, app) {
   }
 
   app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , middlewares.applicationInstalled     , login.preLogin, login.login);
+  app.get('/login'                   , middlewares.applicationInstalled, loginPassport.loginWithMikan, login.preLogin, login.login);
   app.get('/login/invited'           , login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-  //  app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
-  app.post('/login'                  , form.login                           , csrf, loginPassport.loginWithLocal, loginPassport.loginWithMikan, loginPassport.loginFailure);
+  app.post('/login'                  , form.login, csrf, loginPassport.loginWithLocal, loginPassport.loginWithMikan, loginPassport.loginWithLdap, loginPassport.loginFailure);
   app.post('/_api/login/testMikan'   , loginRequiredStrictly , form.login , loginPassport.testMikanCredentials);
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
 
