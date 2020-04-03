@@ -116,7 +116,7 @@ class UserInviteModal extends React.Component {
         </label>
         <button
           type="button"
-          className="btn-fill btn btn-primary"
+          className="btn btn-outline-primary"
           onClick={this.onToggleModal}
         >
           Close
