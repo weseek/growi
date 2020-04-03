@@ -772,7 +772,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       <Button
         key="nav-item-drawio"
         color={buttonColor}
-        bsSize="small"
+        bssize="small"
         title="draw.io"
         onClick={this.showDrawioHandler}
       >

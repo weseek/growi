@@ -134,7 +134,7 @@ class DrawioModal extends React.PureComponent {
 
   render() {
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} className="drawio-modal" bsSize="large" keyboard={false}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} className="drawio-modal" bssize="large" keyboard={false}>
         <ModalBody className="p-0">
           {/* Loading spinner */}
           <div className="w-100 h-100 position-absolute d-flex">
