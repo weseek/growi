@@ -33,7 +33,7 @@ module.exports = function(crowi, app) {
 
     // create /Sandbox/*
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox.md'), '/Sandbox', owner, lang));
-    promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-bootstrap3.md'), '/Sandbox/Bootstrap3', owner, lang));
+    promises.push(createPage(path.join(crowi.localeDir, 'en-US', 'sandbox-bootstrap3.md'), '/Sandbox/Bootstrap3', owner, lang));
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams', owner, lang));
     promises.push(createPage(path.join(crowi.localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math', owner, lang));
 
