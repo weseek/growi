@@ -224,7 +224,7 @@ class CommentEditor extends React.Component {
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
-      <Button outline color="danger" size="xs" className="btn-fill rounded-pill" onClick={this.toggleEditor}>
+      <Button outline color="danger" size="xs" className="btn btn-outline-danger rounded-pill" onClick={this.toggleEditor}>
         Cancel
       </Button>
     );
@@ -232,7 +232,7 @@ class CommentEditor extends React.Component {
       <Button
         outline
         color="primary"
-        className="btn-fill rounded-pill btn-1b"
+        className="btn btn-outline-primary rounded-pill"
         onClick={this.postHandler}
       >
         Comment
