@@ -143,6 +143,7 @@ class InstallerForm extends React.Component {
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
               <button type="submit" className="btn-fill btn btn-success btn-register">
+                <div class="eff"></div>
                 <span className="btn-label"><i className="icon-user-follow" /></span>
                 <span className="btn-label-text">{ this.props.t('Create') }</span>
               </button>
