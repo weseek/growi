@@ -38,91 +38,101 @@
       top: 0;
     }
   }
-}
 
-// login
-.btn-fill.login {
-  .btn-label {
-    background-color: rgba($danger, 0.4);
-  }
-  .eff {
-    background-color: rgba(#7e4153, 0.5);
-  }
-}
-
-// google
-.btn-fill#google {
-  .btn-label {
-    background-color: rgba(#24292e, 0.4);
+  // login
+  &.login {
+    .btn-label {
+      background-color: rgba($danger, 0.4);
+    }
+    .eff {
+      background-color: rgba(#7e4153, 0.5);
+    }
   }
 
-  .eff {
-    background-color: #555;
-  }
-}
+  // google
+  &#google {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
 
-// github
-.btn-fill#github {
-  .btn-label {
-    background-color: rgba(lighten(black, 20%), 0.4);
-  }
-
-  .eff {
-    background-color: #555;
-  }
-}
-
-// facebook
-.btn-fill#facebook {
-  .btn-label {
-    background-color: rgba(#29487d, 0.4);
+    .eff {
+      background-color: #555;
+    }
   }
 
-  .eff {
-    background-color: #555;
-  }
-}
+  // github
+  &#github {
+    .btn-label {
+      background-color: rgba(lighten(black, 20%), 0.4);
+    }
 
-// twitter
-.btn-fill#twitter {
-  .btn-label {
-    background-color: rgba(#1da1f2, 0.4);
-  }
-
-  .eff {
-    background-color: #555;
-  }
-}
-
-// oidc
-.btn-fill#oidc {
-  .btn-label {
-    background-color: rgba(#24292e, 0.4);
+    .eff {
+      background-color: #555;
+    }
   }
 
-  .eff {
-    background-color: #555;
-  }
-}
+  // facebook
+  &#facebook {
+    .btn-label {
+      background-color: rgba(#29487d, 0.4);
+    }
 
-// saml
-.btn-fill#saml {
-  .btn-label {
-    background-color: rgba(#55a79a, 0.4);
-  }
-
-  .eff {
-    background-color: #555;
-  }
-}
-
-// basic
-.btn-fill#basic {
-  .btn-label {
-    background-color: rgba(#24292e, 0.4);
+    .eff {
+      background-color: #555;
+    }
   }
 
-  .eff {
-    background-color: #555;
+  // twitter
+  &#twitter {
+    .btn-label {
+      background-color: rgba(#1da1f2, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // oidc
+  &#oidc {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // saml
+  &#saml {
+    .btn-label {
+      background-color: rgba(#55a79a, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // basic
+  &#basic {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+  // register
+  &#register {
+    .btn-label {
+      background-color: rgba($success, 0.4);
+    }
+
+    .eff {
+      background-color: rgba(#3f7263, 0.5);
+    }
   }
 }
