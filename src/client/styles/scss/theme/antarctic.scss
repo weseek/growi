@@ -1,8 +1,30 @@
-// import colors
-@import '../../agile-admin/inverse/colors/antarctic';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+// == Define Bootstrap theme colors
+//
 
-// override
-@import 'override-agileadmin';
+// colors for overriding bootstrap $theme-colors
+// $secondary: #;
+// $info: #;
+// $success: #;
+// $warning: #;
+// $danger: #;
+// $light: #;
+// $dark: #;
+
+//== Light Mode
+//
+html:not([dark]) {
+  $primary: yellow;
+
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+}
+
+//== Dark Mode
+//
+html[dark] {
+  @import 'apply-colors';
+  @import 'apply-colors-dark';
+}
