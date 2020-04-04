@@ -72,6 +72,15 @@ module.exports = function(crowi, app) {
     next();
   }
 
+  actions.mikanLogin = function(req, res, next) {
+    const mikanLoginUrl = configManager.getConfig('crowi', 'security:passport-mikan:loginUrl');
+    if (mikanLoginUrl) {
+      return res.redirect(mikanLoginUrl);
+    }
+
+    next();
+  }
+
   actions.login = function(req, res) {
     if (req.form) {
       debug(req.form.errors);

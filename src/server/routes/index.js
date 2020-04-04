@@ -47,7 +47,8 @@ module.exports = function(crowi, app) {
   }
 
   app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                   , middlewares.applicationInstalled, loginPassport.loginWithMikan, login.preLogin, login.login);
+  app.get('/login'                   , middlewares.applicationInstalled, loginPassport.loginWithMikan, login.preLogin, login.mikanLogin, login.login);
+  app.get('/login/growiUser'         , middlewares.applicationInstalled, login.preLogin, login.login);
   app.get('/login/invited'           , login.invited);
   app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
   app.post('/login'                  , form.login, csrf, loginPassport.loginWithLocal, loginPassport.loginWithMikan, loginPassport.loginWithLdap, loginPassport.loginFailure);
