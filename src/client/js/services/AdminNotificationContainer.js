@@ -47,13 +47,13 @@ export default class AdminNotificationContainer extends Container {
       const { notificationParams } = response.data;
 
       this.setState({
-        webhookUrl: notificationParams.webhookUrl,
-        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
-        slackToken: notificationParams.slackToken,
-        userNotifications: notificationParams.userNotifications,
-        isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
-        isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
-        globalNotifications: notificationParams.globalNotifications,
+        webhookUrl: notificationParams.webhookUrl || '',
+        isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized || false,
+        slackToken: notificationParams.slackToken || '',
+        userNotifications: notificationParams.userNotifications || [],
+        isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled || false,
+        isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled || false,
+        globalNotifications: notificationParams.globalNotifications || [],
       });
 
     }
