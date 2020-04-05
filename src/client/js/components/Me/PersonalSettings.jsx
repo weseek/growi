@@ -22,14 +22,14 @@ class PersonalSettings extends React.Component {
               <li className="nav-item">
                 <a className="nav-link active" href="#user-settings" data-toggle="tab" role="tab"><i className="icon-user"></i> { t('User Information') }</a>
               </li>
-              <li>
-                <a href="#external-accounts" data-toggle="tab" role="tab"><i className="icon-share-alt"></i> { t('External Accounts') }</a>
+              <li className="nav-item">
+                <a className="nav-link" href="#external-accounts" data-toggle="tab" role="tab"><i className="icon-share-alt"></i> { t('External Accounts') }</a>
               </li>
-              <li>
-                <a href="#password-settings" data-toggle="tab" role="tab"><i className="icon-lock"></i> { t('Password Settings') }</a>
+              <li className="nav-item">
+                <a className="nav-link" href="#password-settings" data-toggle="tab" role="tab"><i className="icon-lock"></i> { t('Password Settings') }</a>
               </li>
-              <li>
-                <a href="#apiToken" data-toggle="tab" role="tab"><i className="icon-paper-plane"></i> { t('API Settings') }</a>
+              <li className="nav-item">
+                <a className="nav-link" href="#apiToken" data-toggle="tab" role="tab"><i className="icon-paper-plane"></i> { t('API Settings') }</a>
               </li>
             </ul>
             <div className="tab-content p-t-10">
