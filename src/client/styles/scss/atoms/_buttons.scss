@@ -41,10 +41,6 @@
 .btn-copy,
 .btn-edit {
   opacity: 0.3;
-
-  &:hover {
-    background-color: $light;
-  }
 }
 
 .btn-edit-tags {
@@ -52,5 +48,47 @@
 
   &.no-tags {
     opacity: 0.7;
+  }
+}
+
+// fill button style
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(lighten(black, 20%), 0.4);
+  border: none;
+
+  .btn-label {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+  }
+
+  .btn-label-text {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+  }
+
+  // effect
+  .eff {
+    position: absolute;
+    top: -50px;
+    left: 0px;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease;
+  }
+
+  &:hover {
+    .eff {
+      top: 0;
+    }
   }
 }
