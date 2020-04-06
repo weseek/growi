@@ -21,6 +21,7 @@ const GrowiSubNavigation = (props) => {
     path, createdAt, creator, updatedAt, revisionAuthor,
   } = pageContainer.state;
   const isCompactMode = true;
+  const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
     return (
@@ -34,37 +35,8 @@ const GrowiSubNavigation = (props) => {
     );
   }
 
-  if (isCompactMode) {
-    return (
-      <div className="d-flex align-items-center fixed-top grw-compact-subnavbar px-3">
-
-        {/* Page Path */}
-        <div className="title-container mr-auto">
-          <h2>
-            <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />
-          </h2>
-          <TagLabels />
-        </div>
-
-        {/* Header Button */}
-        <div className="ml-1">
-          <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />
-        </div>
-        <div>
-          <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />
-        </div>
-
-        {/* Page Authors */}
-        <ul className="authors text-nowrap d-none d-lg-block">
-          {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} /></li>}
-          {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
-        </ul>
-
-      </div>
-    );
-  }
   return (
-    <div className="d-flex align-items-center">
+    <div className={`d-flex align-items-center ${compactClassName}`}>
       {/* Page Path */}
       <div className="title-container mr-auto">
         <h1>
