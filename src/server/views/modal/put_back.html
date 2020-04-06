@@ -5,19 +5,20 @@
       <form role="form" id="revert-delete-page-form" onsubmit="return false;">
 
         <div class="modal-header bg-info">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title"><i class="icon-action-undo"></i> {{ t('modal_putback.label.Put Back Page') }}</div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         </div>
         <div class="modal-body">
           <div class="form-group">
             <label for="">Put back page:</label><br>
             <code>{{ page.path }}</code>
           </div>
-          <div class="checkbox checkbox-warning">
-            <input name="recursively" id="cbPutbackRecursively" value="1" type="checkbox" checked>
-            <label for="cbPutbackRecursively">{{ t('modal_putback.label.recursively') }}</label>
-            <p class="help-block"> {{ t('modal_putback.help.recursively', page.path) }}
-            </p>
+          <div class="custom-control custom-checkbox custom-checkbox-warning">
+            <input class="custom-control-input" name="recursively" id="cbPutbackRecursively" value="1" type="checkbox" checked>
+            <label class="custom-control-label" for="cbPutbackRecursively">
+              {{ t('modal_putback.label.recursively') }}
+              <p class="help-block mt-0"> {{ t('modal_putback.help.recursively', page.path) }}</p>
+            </label>
           </div>
         </div>
         <div class="modal-footer">
