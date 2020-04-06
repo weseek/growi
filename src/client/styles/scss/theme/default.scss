@@ -26,6 +26,7 @@ html:not([dark]) {
 
   // Font colors
   $color-global: #333333;
+  $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
   $color-link: lighten($primary, 20%);
   $color-link-hover: lighten($color-link, 20%);
@@ -58,6 +59,7 @@ html[dark] {
 
   // Font colors
   $color-global: #eeeeee;
+  $color-reversal: #333333;
   // $color-header: desaturate($primary, 20%);
   $color-link: $primary;
   $color-link-hover: lighten($color-link, 10%);
