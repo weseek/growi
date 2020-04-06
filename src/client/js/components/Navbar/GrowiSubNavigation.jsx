@@ -22,6 +22,7 @@ const GrowiSubNavigation = (props) => {
   } = pageContainer.state;
   const isCompactMode = true;
   const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
+
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
     return (
@@ -58,10 +59,11 @@ const GrowiSubNavigation = (props) => {
         {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} /></li>}
         {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
       </ul>
+
     </div>
   );
-};
 
+};
 
 /**
  * Wrapper component for using unstated

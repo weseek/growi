@@ -11,6 +11,7 @@ const RevisionAuthor = (props) => {
     ? (<div>Updated in <span className="text-muted">{updatedAt}</span></div>)
     : (<div><div>Updated in  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name}</a></div><div className="text-muted">{updatedAt}</div></div>);
   const pictureSize = isCompactMode ? 'xs' : 'sm';
+
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
