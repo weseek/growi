@@ -38,6 +38,7 @@ const GrowiSubNavigation = (props) => {
 
   return (
     <div className={`d-flex align-items-center ${compactClassName}`}>
+
       {/* Page Path */}
       <div className="title-container mr-auto">
         <h1>
