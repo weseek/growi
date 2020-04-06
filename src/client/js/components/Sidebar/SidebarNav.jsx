@@ -17,6 +17,7 @@ import AppContainer from '../../services/AppContainer';
 class SidebarNav extends React.Component {
 
   static propTypes = {
+    currentContentsId: PropTypes.string,
     onItemSelected: PropTypes.func,
   };
 
@@ -30,16 +31,22 @@ class SidebarNav extends React.Component {
     }
   }
 
+  generateSidebarItemObj(id, icon, label) {
+    return {
+      id,
+      icon,
+      label,
+      isSelected: this.props.currentContentsId === id,
+      onClick: () => this.itemSelectedHandler(id),
+    };
+  }
+
   render() {
     return (
       <GlobalNav
         primaryItems={[
-          {
-            id: 'custom', icon: EditIcon, label: 'Custom Sidebar', onClick: () => this.itemSelectedHandler('custom'),
-          },
-          {
-            id: 'history', icon: TrayIcon, label: 'History', onClick: () => this.itemSelectedHandler('history'),
-          },
+          this.generateSidebarItemObj('custom', EditIcon, 'Custom Sidebar'),
+          this.generateSidebarItemObj('history', TrayIcon, 'History'),
         ]}
         secondaryItems={[]}
       />

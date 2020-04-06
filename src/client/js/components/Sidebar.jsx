@@ -59,7 +59,7 @@ class Sidebar extends React.Component {
       <div className="grw-logo">
         <a href="/"><GrowiLogo /></a>
       </div>
-      <SidebarNav onItemSelected={this.itemSelectedHandler} />
+      <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
       <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
         <code>Drawer contents</code>
       </Drawer>
