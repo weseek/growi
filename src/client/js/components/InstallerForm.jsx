@@ -90,8 +90,10 @@ class InstallerForm extends React.Component {
               </div>
             </div>
 
-            <div className={`input-group${hasErrorClass}`}>
-              <span className="input-group-addon"><i className="icon-user" /></span>
+            <div className={`input-group mb-3${hasErrorClass}`}>
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-user" /></span>
+              </div>
               <input
                 type="text"
                 className="form-control"
@@ -104,8 +106,10 @@ class InstallerForm extends React.Component {
             </div>
             <p className="form-text">{ unavailableUserId }</p>
 
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon-tag" /></span>
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-tag" /></span>
+              </div>
               <input
                 type="text"
                 className="form-control"
@@ -116,8 +120,10 @@ class InstallerForm extends React.Component {
               />
             </div>
 
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon-envelope" /></span>
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-envelope" /></span>
+              </div>
               <input
                 type="email"
                 className="form-control"
@@ -128,8 +134,10 @@ class InstallerForm extends React.Component {
               />
             </div>
 
-            <div className="input-group">
-              <span className="input-group-addon"><i className="icon-lock" /></span>
+            <div className="input-group mb-3">
+              <div className="input-group-prepend">
+                <span className="input-group-text"><i className="icon-lock" /></span>
+              </div>
               <input
                 type="password"
                 className="form-control"
@@ -142,10 +150,10 @@ class InstallerForm extends React.Component {
             <input type="hidden" name="_csrf" value={this.props.csrf} />
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
-              <button type="submit" className="btn-fill btn btn-success btn-register">
+              <button type="submit" className="btn-fill btn btn-register px-0 py-2" id="register">
                 <div className="eff"></div>
-                <span className="btn-label"><i className="icon-user-follow" /></span>
-                <span className="btn-label-text">{ this.props.t('Create') }</span>
+                <span className="btn-label p-3"><i className="icon-user-follow" /></span>
+                <span className="btn-label-text p-3">{ this.props.t('Create') }</span>
               </button>
             </div>
 
