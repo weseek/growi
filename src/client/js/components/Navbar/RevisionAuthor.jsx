@@ -7,27 +7,16 @@ import { userPageRoot } from '../../../../lib/util/path-utils';
 const RevisionAuthor = (props) => {
   const { revisionAuthor, updatedAt } = props;
   const isCompactMode = true;
-  if (isCompactMode) {
-    return (
-      <div className="d-flex align-items-center">
-        <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
-          <UserPicture user={revisionAuthor} size="xs" />
-        </div>
-        <div>
-          Updated in <span className="text-muted">{updatedAt}</span>
-        </div>
-      </div>
-    );
-  }
+  const updateInfo = isCompactMode
+    ? (<div>Updated in <span className="text-muted">{updatedAt}</span></div>)
+    : (<div><div>Updated in  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name}</a></div><div className="text-muted">{updatedAt}</div></div>);
+  const pictureSize = isCompactMode ? 'xs' : 'sm';
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
-        <UserPicture user={revisionAuthor} size="sm" />
+        <UserPicture user={revisionAuthor} size={pictureSize} />
       </div>
-      <div>
-        <div>Updated by  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name}</a></div>
-        <div className="text-muted">{updatedAt}</div>
-      </div>
+      {updateInfo}
     </div>
   );
 };
