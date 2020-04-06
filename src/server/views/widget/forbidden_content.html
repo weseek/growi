@@ -1,7 +1,7 @@
 <div class="row not-found-message-row mb-4">
-  <div class="col-md-12">
-    <h2 class="text-muted">
-      <i class="icon-ban" aria-hidden="true"></i>
+  <div class="col-lg-12">
+    <h2 class="text-muted"> <!-- TODO #1 "text-muted" is in elitedmin.scss > inverse > agile.admin -->
+      <i class="icon-ban" aria-hidden="true"></i><!-- TODO #2 Reaserach about the icons -->
       Forbidden
     </h2>
   </div>
@@ -10,20 +10,20 @@
 <div id="content-main" class="content-main content-main-not-found page-list"
   data-path="{{ path | preventXss }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-  >
+  > <!-- TODO #3 What is "content-main-not-found" ??  -->
 
   <div class="row row-alerts">
     <div class="col-xs-12">
-        <p class="alert alert-inverse alert-grant"> <!-- TODO remove inverse and grant -->
-          <i class="icon-fw icon-lock" aria-hidden="true"></i> Browsing of this page is restricted
+        <p class="alert alert-inverse"> <!-- TODO #4 "alert-inverse" is in widgets.scss > inverse > agile.admin -->
+          <i class="icon-fw icon-lock" aria-hidden="true"></i> Browsing of this page is restricted <!-- TODO #5 Reaserach about the icons -->
         </p>
     </div>
   </div>
 
-  <ul class="nav nav-tabs hidden-print">
+  <ul class="nav nav-tabs hidden-print"> <!-- TODO #6 what is "hidden-print" ?? -->
     <li class="nav-item grw-nav-main-left-tab">
       <a class="nav-link active" href="#revision-body" data-toggle="tab">
-        <i class="icon-notebook"></i> List
+        <i class="icon-notebook"></i> List <!-- TODO #7 Reaserach about the icons -->
       </a>
     </li>
   </ul>
