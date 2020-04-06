@@ -24,10 +24,12 @@ $link-hover-color: $color-link-hover;
 .dropdown-item {
   color: $color-global;
   &.active,
-  &:active,
-  &:hover {
+  &:active {
     color: $color-reversal;
     background-color: $primary;
+  }
+  &:hover:not(.active) {
+    color: $color-global;
   }
 }
 
