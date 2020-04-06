@@ -7,6 +7,7 @@ $body-bg: $bgcolor-global;
 $body-color: $color-global;
 $link-color: $color-link;
 $link-hover-color: $color-link-hover;
+$link-hover-color-active: white;
 
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
@@ -312,5 +313,11 @@ body.on-edit {
         color: $color-global;
       }
     }
+  }
+}
+
+.list-group-item.active {
+  &:hover {
+    color: $link-hover-color-active;
   }
 }
