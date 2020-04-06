@@ -137,6 +137,14 @@ header.affix {
 }
 
 /*
+ * GROWI subnavigation
+ */
+.grw-compact-subnavbar {
+  background-color: rgba(darken($bgcolor-global, 6%), 0.9);
+  box-shadow: 0 0 2px darken($bgcolor-global, 40%);
+}
+
+/*
  * GROWI search page
  */
 .search-page {
