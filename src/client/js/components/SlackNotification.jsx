@@ -36,7 +36,7 @@ export default class SlackNotification extends React.Component {
   render() {
     return (
       <div className="input-group input-group-sm input-group-slack extended-setting">
-        <label className="input-group-addon">
+        <label className="input-group-addon bg-light">
           <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
           <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
 
