@@ -18,6 +18,7 @@ import AppContainer from '../services/AppContainer';
 import GrowiLogo from './GrowiLogo';
 import SidebarNav from './Sidebar/SidebarNav';
 import History from './Sidebar/History';
+import CustomSidebar from './Sidebar/CustomSidebar';
 
 class Sidebar extends React.Component {
 
@@ -53,7 +54,7 @@ class Sidebar extends React.Component {
     // }
   }
 
-  GlobalNavigation = () => (
+  renderGlobalNavigation = () => (
     <>
       <div className="grw-logo">
         <a href="/"><GrowiLogo /></a>
@@ -65,9 +66,17 @@ class Sidebar extends React.Component {
     </>
   );
 
-  SidebarContents = () => (
-    <History></History>
-  );
+  renderSidebarContents = () => {
+    let contents = <CustomSidebar></CustomSidebar>;
+
+    switch (this.state.currentContentsId) {
+      case 'history':
+        contents = <History></History>;
+        break;
+    }
+
+    return contents;
+  }
 
   render() {
     return (
@@ -81,9 +90,9 @@ class Sidebar extends React.Component {
         })}
       >
         <LayoutManager
-          globalNavigation={this.GlobalNavigation}
+          globalNavigation={this.renderGlobalNavigation}
           productNavigation={() => null}
-          containerNavigation={this.SidebarContents}
+          containerNavigation={this.renderSidebarContents}
           experimental_hideNavVisuallyOnCollapse
           experimental_flyoutOnHover
           experimental_alternateFlyoutBehaviour

@@ -38,7 +38,7 @@ class SidebarNav extends React.Component {
             id: 'custom', icon: EditIcon, label: 'Custom Sidebar', onClick: () => this.itemSelectedHandler('custom'),
           },
           {
-            id: 'drawer', icon: TrayIcon, label: 'Drawer', onClick: () => this.itemSelectedHandler('drawer'),
+            id: 'history', icon: TrayIcon, label: 'History', onClick: () => this.itemSelectedHandler('history'),
           },
         ]}
         secondaryItems={[]}
