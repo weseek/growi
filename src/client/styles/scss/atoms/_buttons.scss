@@ -26,15 +26,18 @@
   border-radius: 35px;
 }
 
-#like-button,
-#bookmark-button {
-  & button {
-    font-size: 1.2em;
-    line-height: 0.8em;
+.btn-like,
+.btn-bookmark {
+  font-size: 1.2em;
+  line-height: 0.8em;
 
-    &:not(:hover):not(.active) {
-      background-color: transparent;
-    }
+  &.active {
+    // header buttons are always white for active
+    color: white !important;
+  }
+
+  &:not(:hover):not(.active) {
+    background-color: transparent;
   }
 }
 
