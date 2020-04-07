@@ -70,28 +70,54 @@ class AssociateModal extends React.Component {
     const { t } = this.props;
 
     return (
-      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
+      <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} className="mw-100 m-4">
         <ModalHeader className="bg-info" toggle={this.props.onClose}>
           { t('Create External Account') }
         </ModalHeader>
         <ModalBody>
           <ul className="nav nav-tabs passport-settings mb-2" role="tablist">
-            <li className="active">
-              <a href="#passport-ldap" data-toggle="tab" role="tab"><i className="fa fa-sitemap"></i> LDAP</a>
+            <li className="nav-item active">
+              <a href="#passport-ldap" className="nav-link active" data-toggle="tab" role="tab">
+                <i className="fa fa-sitemap"></i> LDAP
+              </a>
             </li>
-            <li className="tbd disabled"><a><i className="fa fa-github"></i> (TBD) GitHub</a></li>
-            <li className="tbd disabled"><a><i className="fa fa-google"></i> (TBD) Google OAuth</a></li>
-            <li className="tbd disabled"><a><i className="fa fa-facebook"></i> (TBD) Facebook</a></li>
-            <li className="tbd disabled"><a><i className="fa fa-twitter"></i> (TBD) Twitter</a></li>
+            <li className="nav-item">
+              <a href="#github-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-github"></i> (TBD) GitHub
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="#google-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-google"></i> (TBD) Google OAuth
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="#facebook-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-facebook"></i> (TBD) Facebook
+              </a>
+            </li>
+            <li className="nav-item">
+              <a href="#twitter-tbd" className="nav-link" data-toggle="tab" role="tab">
+                <i className="fa fa-twitter"></i> (TBD) Twitter
+              </a>
+            </li>
           </ul>
-          <LdapAuthTest
-            username={this.state.username}
-            password={this.state.password}
-            onChangeUsername={this.onChangeUsername}
-            onChangePassword={this.onChangePassword}
-          />
+          <div className="tab-content">
+            <div id="passport-ldap" className="tab-pane active">
+              <LdapAuthTest
+                username={this.state.username}
+                password={this.state.password}
+                onChangeUsername={this.onChangeUsername}
+                onChangePassword={this.onChangePassword}
+              />
+            </div>
+            <div id="github-tbd" className="tab-pane" role="tabpanel">TBD</div>
+            <div id="google-tbd" className="tab-pane" role="tabpanel">TBD</div>
+            <div id="facebook-tbd" className="tab-pane" role="tabpanel">TBD</div>
+            <div id="twitter-tbd" className="tab-pane" role="tabpanel">TBD</div>
+          </div>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter className="border-top-0">
           <button type="button" className="btn btn-info mt-3" onClick={this.onClickAddBtn}>
             <i className="fa fa-plus-circle" aria-hidden="true"></i>
             {t('add')}
