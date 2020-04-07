@@ -25,11 +25,11 @@ $link-hover-color: $color-link-hover;
   color: $color-global;
   &.active,
   &:active {
-    color: $dropdown-link-active-color;
-    background-color: $dropdown-link-active-bg;
+    color: $color-dropdown-link-active;
+    background-color: $bgcolor-dropdown-link-active;
   }
   &:hover:not(.active) {
-    color:  $dropdown-link-hover;
+    color: $color-dropdown-link-hover;
   }
 }
 

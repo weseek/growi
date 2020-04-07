@@ -41,9 +41,9 @@ html:not([dark]) {
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
 
   // Dropdown colors
-  $dropdown-link-active-bg: $growi-blue;
-  $dropdown-link-active-color: $color-reversal;
-  $dropdown-link-hover: $color-global;
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -79,9 +79,9 @@ html[dark] {
   $border-color-theme: black; // former: `$navbar-border: #ccc;`
 
   // Dropdown colors
-  $dropdown-link-active-bg: $primary;
-  $dropdown-link-active-color: $color-global;
-  $dropdown-link-hover: $color-reversal;
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
