@@ -84,17 +84,18 @@ class BasicInfoSettings extends React.Component {
         <div className="row mb-3">
           <label className="col-xs-2 text-right">{t('Disclose E-mail')}</label>
           <div className="col-xs-6">
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioEmailShow"
+                className="custom-control-input"
                 name="userForm[isEmailPublished]"
                 checked={personalContainer.state.isEmailPublished}
                 onChange={() => { personalContainer.changeIsEmailPublished(true) }}
               />
-              <label htmlFor="radioEmailShow">{t('Show')}</label>
+              <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
             </div>
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inlinee">
               <input
                 type="radio"
                 id="radioEmailHide"
@@ -110,7 +111,7 @@ class BasicInfoSettings extends React.Component {
         <div className="row mb-3">
           <label className="col-xs-2 text-right">{t('Language')}</label>
           <div className="col-xs-6">
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inlinee">
               <input
                 type="radio"
                 id="radioLangEn"
@@ -120,7 +121,7 @@ class BasicInfoSettings extends React.Component {
               />
               <label htmlFor="radioLangEn">{t('English')}</label>
             </div>
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inlinee">
               <input
                 type="radio"
                 id="radioLangJa"
