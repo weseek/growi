@@ -99,11 +99,12 @@ class BasicInfoSettings extends React.Component {
               <input
                 type="radio"
                 id="radioEmailHide"
+                className="custom-control-input"
                 name="userForm[isEmailPublished]"
                 checked={!personalContainer.state.isEmailPublished}
                 onChange={() => { personalContainer.changeIsEmailPublished(false) }}
               />
-              <label htmlFor="radioEmailHide">{t('Hide')}</label>
+              <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
             </div>
           </div>
         </div>
@@ -115,21 +116,23 @@ class BasicInfoSettings extends React.Component {
               <input
                 type="radio"
                 id="radioLangEn"
+                className="custom-control-input"
                 name="userForm[lang]"
                 checked={personalContainer.state.lang === 'en-US'}
                 onChange={() => { personalContainer.changeLang('en-US') }}
               />
-              <label htmlFor="radioLangEn">{t('English')}</label>
+              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
             </div>
             <div className="custom-control custom-radio custom-control-inlinee">
               <input
                 type="radio"
                 id="radioLangJa"
+                className="custom-control-input"
                 name="userForm[lang]"
                 checked={personalContainer.state.lang === 'ja'}
                 onChange={() => { personalContainer.changeLang('ja') }}
               />
-              <label htmlFor="radioLangJa">{t('Japanese')}</label>
+              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
