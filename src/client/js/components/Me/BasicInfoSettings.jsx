@@ -82,7 +82,7 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-xs-2 text-right">{t('Disclose E-mail')}</label>
+          <label className="col-sm-2 text-right">{t('Disclose E-mail')}</label>
           <div className="col-xs-6">
             <div className="custom-control custom-radio custom-control-inline">
               <input
@@ -110,7 +110,7 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-xs-2 text-right">{t('Language')}</label>
+          <label className="col-sm-2 text-right">{t('Language')}</label>
           <div className="col-xs-6">
             <div className="custom-control custom-radio custom-control-inlinee">
               <input
