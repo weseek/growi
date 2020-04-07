@@ -55,7 +55,7 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-      isConpactMode: false,
+      isCompactMode: false,
     };
 
     this.initStateMarkdown();
@@ -68,8 +68,8 @@ export default class PageContainer extends Container {
   }
 
   componentDidMount() {
-    this.isCompactMode = window.addEventListener('scroll', () => { this.setState({ isCompactMode: window.pageYOffset > 122 }) });
-    console.log(this.state);
+    window.addEventListener('scroll', () => { this.setState({ isCompactMode: window.pageYOffset > 122 }) });
+    console.log(this.state.isCompactMode);
   }
 
   /**
