@@ -45,9 +45,9 @@ class BasicInfoSettings extends React.Component {
     return (
       <Fragment>
 
-        <div className="row mb-3">
+        <div className="row form-group mb-3">
           <label htmlFor="userForm[name]" className="col-sm-4 text-right">{t('Name')}</label>
-          <div className="col-sm-6 text-left">
+          <div className="col-sm-4 text-left">
             <input
               className="form-control"
               type="text"
@@ -58,9 +58,9 @@ class BasicInfoSettings extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-3">
+        <div className="row form-group mb-3">
           <label htmlFor="userForm[email]" className="col-sm-4 text-right">{t('Email')}</label>
-          <div className="col-sm-6 text-left">
+          <div className="col-sm-4 text-left">
             <input
               className="form-control"
               type="text"
@@ -95,7 +95,7 @@ class BasicInfoSettings extends React.Component {
               />
               <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
             </div>
-            <div className="custom-control custom-radio custom-control-inlinee">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioEmailHide"
@@ -110,9 +110,9 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-sm-4 text-right">{t('Language')}</label>
+          <label className="col-sm-4 col-form-label text-right">{t('Language')}</label>
           <div className="col-6">
-            <div className="custom-control custom-radio custom-control-inlinee">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangEn"
@@ -123,7 +123,7 @@ class BasicInfoSettings extends React.Component {
               />
               <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
             </div>
-            <div className="custom-control custom-radio custom-control-inlinee">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangJa"
@@ -138,7 +138,7 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="offset-4 col-5">
             <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
               {t('Update')}
             </button>
