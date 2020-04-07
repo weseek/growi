@@ -18,9 +18,14 @@ const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page');
   const { appContainer, pageContainer } = props;
   const {
-    path, createdAt, creator, updatedAt, revisionAuthor,
+    path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
   } = pageContainer.state;
-  const isCompactMode = true;
+  console.log(isCompactMode);
+  // const isCompactMode = window.addEventListener('scroll', () => {
+  //   console.log(window.pageYOffset);
+  //   console.log(window.pageYOffset > 122);
+  //   return window.pageYOffset > 122;
+  // });
   const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
 
   // Display only the RevisionPath if the page is trash or forbidden
@@ -57,8 +62,8 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Authors */}
       <ul className="authors text-nowrap d-none d-lg-block">
-        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} /></li>}
-        {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
+        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} isCompactMode={isCompactMode} /></li>}
+        {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} /></li>}
       </ul>
 
     </div>
@@ -72,7 +77,6 @@ const GrowiSubNavigation = (props) => {
 const GrowiSubNavigationWrapper = (props) => {
   return createSubscribedElement(GrowiSubNavigation, props, [AppContainer, PageContainer]);
 };
-
 
 GrowiSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
