@@ -56,7 +56,9 @@ const PersonalDropdown = (props) => {
   return (
     <>
       {/* Button */}
-      <a className="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
+      {/* remove .dropdown-toggle for hide caret */}
+      {/* See https://stackoverflow.com/a/44577512/13183572 */}
+      <a className="nav-link waves-effect waves-light" data-toggle="dropdown">
         <UserPicture user={user} withoutLink />&nbsp;{user.name}
       </a>
 
