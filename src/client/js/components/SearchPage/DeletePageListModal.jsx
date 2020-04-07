@@ -41,19 +41,24 @@ export default class DeletePageListModal extends React.Component {
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <div className="custom-control custom-checkbox custom-checkbox-danger">
-                <input type="checkbox" className="custom-control-input" id="customCheck-delete-completely" />
+              <div className="custom-control custom-checkbox custom-checkbox-danger mr-2">
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id="customCheck-delete-completely"
+                  checked={this.props.isDeleteCompletely}
+                  onChange={this.props.toggleDeleteCompletely}
+                />
                 <label
                   className="custom-control-label text-danger"
                   htmlFor="customCheck-delete-completely"
-                  onClick={this.props.toggleDeleteCompletely}
                 >
                   Delete completely
                 </label>
               </div>
-              <span className="ml-2">
-                <Button color="secondary" onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
-              </span>
+              <Button color={this.props.isDeleteCompletely ? 'danger' : 'light'} onClick={this.props.confirmedToDelete}>
+                <i className="icon-trash"></i>Delete
+              </Button>
             </span>
           </div>
         </ModalFooter>
@@ -68,6 +73,7 @@ DeletePageListModal.propTypes = {
   pages: PropTypes.array,
   errorMessage: PropTypes.string,
   cancel: PropTypes.func.isRequired, //                 for cancel evnet handling
+  isDeleteCompletely: PropTypes.bool.isRequired,
   confirmedToDelete: PropTypes.func.isRequired, //      for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
 };

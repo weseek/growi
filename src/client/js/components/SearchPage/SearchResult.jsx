@@ -305,6 +305,7 @@ class SearchResult extends React.Component {
           errorMessage={this.state.errorMessageForDeleting}
           cancel={this.closeDeleteConfirmModal}
           confirmedToDelete={this.deleteSelectedPages}
+          isDeleteCompletely={this.state.isDeleteCompletely}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
       </div> // content-main
