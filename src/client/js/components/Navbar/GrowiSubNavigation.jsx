@@ -46,7 +46,7 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       {/* Header Button */}
-      <div className="ml-1">
+      <div className="mr-2">
         <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />
       </div>
       <div>
