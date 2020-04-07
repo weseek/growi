@@ -46,7 +46,7 @@ class BasicInfoSettings extends React.Component {
       <Fragment>
 
         <div className="row mb-3">
-          <label htmlFor="userForm[name]" className="col-sm-2 text-right">{t('Name')}</label>
+          <label htmlFor="userForm[name]" className="col-sm-4 text-right">{t('Name')}</label>
           <div className="col-sm-4 text-left">
             <input
               className="form-control"
@@ -59,7 +59,7 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label htmlFor="userForm[email]" className="col-sm-2 text-right">{t('Email')}</label>
+          <label htmlFor="userForm[email]" className="col-sm-4 text-right">{t('Email')}</label>
           <div className="col-sm-4 text-left">
             <input
               className="form-control"
@@ -82,8 +82,8 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-sm-2 text-right">{t('Disclose E-mail')}</label>
-          <div className="col-xs-6">
+          <label className="col-sm-4 text-right">{t('Disclose E-mail')}</label>
+          <div className="col-6">
             <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
@@ -110,8 +110,8 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-sm-2 text-right">{t('Language')}</label>
-          <div className="col-xs-6">
+          <label className="col-sm-4 text-right">{t('Language')}</label>
+          <div className="col-6">
             <div className="custom-control custom-radio custom-control-inlinee">
               <input
                 type="radio"
