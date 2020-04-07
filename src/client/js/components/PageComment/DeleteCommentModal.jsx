@@ -45,12 +45,12 @@ export default class DeleteCommentModal extends React.Component {
         </ModalHeader>
         <ModalBody>
           <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
-          <p className="card well p-2 comment-body mt-2">{commentBody}</p>
+          <p className="well well-sm comment-body mt-2">{commentBody}</p>
         </ModalBody>
         <ModalFooter>
           <span className="text-danger">{this.props.errorMessage}</span>&nbsp;
-          <Button onClick={this.props.cancel}>Cancel</Button>
-          <Button color="danger" onClick={this.props.confirmedToDelete}>
+          <Button onClick={this.props.cancel} bsClass="btn btn-sm">Cancel</Button>
+          <Button onClick={this.props.confirmedToDelete} bsClass="btn btn-sm btn-danger">
             <i className="icon icon-fire"></i>
             Delete
           </Button>
