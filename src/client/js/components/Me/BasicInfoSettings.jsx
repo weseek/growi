@@ -47,7 +47,7 @@ class BasicInfoSettings extends React.Component {
 
         <div className="row mb-3">
           <label htmlFor="userForm[name]" className="col-sm-4 text-right">{t('Name')}</label>
-          <div className="col-sm-4 text-left">
+          <div className="col-sm-6 text-left">
             <input
               className="form-control"
               type="text"
@@ -60,7 +60,7 @@ class BasicInfoSettings extends React.Component {
 
         <div className="row mb-3">
           <label htmlFor="userForm[email]" className="col-sm-4 text-right">{t('Email')}</label>
-          <div className="col-sm-4 text-left">
+          <div className="col-sm-6 text-left">
             <input
               className="form-control"
               type="text"
