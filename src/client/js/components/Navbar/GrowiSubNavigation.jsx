@@ -20,12 +20,6 @@ const GrowiSubNavigation = (props) => {
   const {
     path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
   } = pageContainer.state;
-  console.log(isCompactMode);
-  // const isCompactMode = window.addEventListener('scroll', () => {
-  //   console.log(window.pageYOffset);
-  //   console.log(window.pageYOffset > 122);
-  //   return window.pageYOffset > 122;
-  // });
   const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
 
   // Display only the RevisionPath if the page is trash or forbidden
