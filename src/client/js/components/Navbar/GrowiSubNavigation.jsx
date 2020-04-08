@@ -47,7 +47,7 @@ const GrowiSubNavigation = (props) => {
 
       {/* Header Button */}
       <div className="mr-2">
-        <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+        <LikeButton pageId={pageId} />
       </div>
       <div>
         <BookmarkButton pageId={pageId} crowi={appContainer} />

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { toastError } from '../util/apiNotification';
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
@@ -16,23 +17,48 @@ class LikeButton extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick(event) {
-    event.preventDefault();
+  async componentDidMount() {
+    // if guest user
+    if (!this.isUserLoggedIn()) {
+      // do nothing
+      return;
+    }
 
-    const { appContainer } = this.props;
-    const pageId = this.props.pageId;
+    const { appContainer, pageId } = this.props;
 
-    if (!this.state.isLiked) {
-      appContainer.apiPost('/likes.add', { page_id: pageId })
-        .then((res) => {
-          this.setState({ isLiked: true });
-        });
+    try {
+      const res = await appContainer.apiGet('/bookmarks.get', { page_id: pageId });
+      console.log(res);
+      if (res.bookmark) {
+        this.setState({ isLiked: true });
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  async handleClick() {
+    const { appContainer, pageId } = this.props;
+    const { isLiked } = this.state;
+
+    if (!isLiked) {
+      try {
+        await appContainer.apiPost('/likes.add', { page_id: pageId });
+        this.setState({ isLiked: true });
+      }
+      catch (err) {
+        toastError(err);
+      }
     }
     else {
-      appContainer.apiPost('/likes.remove', { page_id: pageId })
-        .then((res) => {
-          this.setState({ isLiked: false });
-        });
+      try {
+        await appContainer.apiPost('/likes.remove', { page_id: pageId });
+        this.setState({ isLiked: false });
+      }
+      catch (err) {
+        toastError(err);
+      }
     }
   }
 
@@ -46,20 +72,11 @@ class LikeButton extends React.Component {
       return <div></div>;
     }
 
-    const btnSizeClassName = this.props.size ? `btn-${this.props.size}` : 'btn-md';
-    const addedClassNames = [
-      this.state.isLiked ? 'active' : '',
-      btnSizeClassName,
-    ];
-    const addedClassName = addedClassNames.join(' ');
-
     return (
       <button
         type="button"
-        href="#"
-        title="Like"
         onClick={this.handleClick}
-        className={`btn btn-circle btn-outline-info btn-like border-0 ${addedClassName}`}
+        className={`btn btn-circle btn-outline-info btn-like border-0 ${this.state.isLiked ? 'active' : ''}`}
       >
         <i className="icon-like"></i>
       </button>
