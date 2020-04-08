@@ -18,8 +18,9 @@ const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page');
   const { appContainer, pageContainer } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
   } = pageContainer.state;
+  const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
 
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
@@ -35,7 +36,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className="d-flex align-items-center">
+    <div className={`d-flex align-items-center ${compactClassName}`}>
 
       {/* Page Path */}
       <div className="title-container mr-auto">
@@ -54,9 +55,15 @@ const GrowiSubNavigation = (props) => {
       </div>
 
       {/* Page Authors */}
-      <ul className="authors hidden-sm hidden-xs text-nowrap">
-        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} /></li>}
-        {revisionAuthor != null && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} /></li>}
+      <ul className="authors text-nowrap d-none d-lg-block">
+        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} isCompactMode={isCompactMode} /></li>}
+        { revisionAuthor != null
+          && (
+            <li className="mt-1">
+              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} />
+            </li>
+          )
+        }
       </ul>
 
     </div>
