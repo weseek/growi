@@ -18,7 +18,7 @@ const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page');
   const { appContainer, pageContainer } = props;
   const {
-    path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
   } = pageContainer.state;
   const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
 
@@ -28,7 +28,7 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex align-items-center">
         <div className="title-container mr-auto">
           <h1>
-            <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />
+            <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
           </h1>
         </div>
       </div>
@@ -41,17 +41,17 @@ const GrowiSubNavigation = (props) => {
       {/* Page Path */}
       <div className="title-container mr-auto">
         <h1>
-          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />
+          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
         <TagLabels />
       </div>
 
       {/* Header Button */}
-      <div className="ml-1">
-        <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />
+      <div className="mr-2">
+        <LikeButton pageId={pageId} />
       </div>
       <div>
-        <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />
+        <BookmarkButton pageId={pageId} crowi={appContainer} />
       </div>
 
       {/* Page Authors */}

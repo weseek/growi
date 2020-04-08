@@ -20,7 +20,7 @@
                 <span class="input-group-text">{{ baseUrl }}</span>
               </div>
               {% if isSearchServiceConfigured() %}
-              <div id="rename-page-name-input" class="page-name-input"></div>
+              <div id="rename-page-name-input" class="page-name-input flex-fill"></div>
               {% else %}
               <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
               {% endif %}
@@ -62,8 +62,10 @@
               <input type="hidden" name="path" value="{{ page.path }}">
               <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
               <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-              <button type="submit" class="btn btn-primary">Rename</button>
             </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Rename</button>
           </div>
         </div>
 

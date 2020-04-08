@@ -28,7 +28,7 @@ class ReplayComments extends React.PureComponent {
 
   renderReply(reply) {
     return (
-      <div key={reply._id} className="page-comment-reply">
+      <div key={reply._id} className="page-comment-reply ml-4 ml-sm-5 mr-3">
         <Comment
           comment={reply}
           deleteBtnClicked={this.props.deleteBtnClicked}

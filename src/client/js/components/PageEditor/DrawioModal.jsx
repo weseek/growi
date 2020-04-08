@@ -7,7 +7,11 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-export default class DrawioModal extends React.PureComponent {
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import EditorContainer from '../../services/EditorContainer';
+
+class DrawioModal extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -17,15 +21,12 @@ export default class DrawioModal extends React.PureComponent {
       drawioMxFile: '',
     };
 
-    this.drawioIFrame = React.createRef();
-
     this.headerColor = '#334455';
     this.fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 
     this.init = this.init.bind(this);
     this.cancel = this.cancel.bind(this);
     this.receiveFromDrawio = this.receiveFromDrawio.bind(this);
-    this.drawioURL = this.drawioURL.bind(this);
   }
 
   init(drawioMxFile) {
@@ -93,7 +94,10 @@ export default class DrawioModal extends React.PureComponent {
         const parser = new DOMParser();
         const dom = parser.parseFromString(event.data, 'text/xml');
         const value = dom.getElementsByTagName('diagram')[0].innerHTML;
-        this.props.onSave(value);
+
+        if (this.props.onSave != null) {
+          this.props.onSave(value);
+        }
       }
 
       window.removeEventListener('message', this.receiveFromDrawio);
@@ -112,8 +116,11 @@ export default class DrawioModal extends React.PureComponent {
     // NOTHING DONE. (Receive unknown iframe message.)
   }
 
-  drawioURL() {
-    const url = new URL('https://www.draw.io/');
+  get drawioURL() {
+    const { config } = this.props.appContainer;
+
+    const drawioUri = config.env.DRAWIO_URI || 'https://www.draw.io/';
+    const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', 1);
@@ -127,8 +134,7 @@ export default class DrawioModal extends React.PureComponent {
 
   render() {
     return (
-      // <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName} keyboard={false}>
-      <Modal isOpen={this.state.show} toggle={this.cancel} className="drawio-modal" bsSize="large" keyboard={false}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} className="drawio-modal" bssize="large" keyboard={false}>
         <ModalBody className="p-0">
           {/* Loading spinner */}
           <div className="w-100 h-100 position-absolute d-flex">
@@ -140,8 +146,7 @@ export default class DrawioModal extends React.PureComponent {
           <div className="w-100 h-100 position-absolute d-flex">
             { this.state.show && (
               <iframe
-                ref={(c) => { this.drawioIFrame = c }}
-                src={this.drawioURL()}
+                src={this.drawioURL}
                 className="border-0 flex-grow-1"
               >
               </iframe>
@@ -154,6 +159,18 @@ export default class DrawioModal extends React.PureComponent {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const DrawioModalWrapper = React.forwardRef((props, ref) => {
+  return createSubscribedElement(DrawioModal, Object.assign({ ref }, props), [AppContainer, EditorContainer]);
+});
+
 DrawioModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
   onSave: PropTypes.func,
 };
+
+export default DrawioModalWrapper;

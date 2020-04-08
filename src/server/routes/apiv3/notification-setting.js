@@ -14,9 +14,9 @@ const removeNullPropertyFromObject = require('../../../lib/util/removeNullProper
 
 const validator = {
   slackConfiguration: [
-    body('webhookUrl').isString().trim(),
+    body('webhookUrl').if(value => value != null).isString().trim(),
     body('isIncomingWebhookPrioritized').isBoolean(),
-    body('slackToken').isString().trim(),
+    body('slackToken').if(value => value != null).isString().trim(),
   ],
   userNotification: [
     body('pathPattern').isString().trim(),

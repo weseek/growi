@@ -5,6 +5,7 @@
   background: linear-gradient(45deg, darken($inverse, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
     linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, $growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($inverse, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
   #page-wrapper {
     background: none;
   }
@@ -47,25 +48,32 @@
             }
           }
         }
-      } // .main
-    } // #page-wrapper
-  } // #wrapper
+      }
+
+      // .main
+    }
+
+    // #page-wrapper
+  }
+
+  // #wrapper
 
   // styles
   .login-header {
     background-color: rgba(white, 0.5);
+
     .logo {
-      .group1,
-      .group2 {
-        fill: rgba(black, 0.5);
-      }
+      background-color: rgba(black, 0);
+      fill: rgba(black, 0.5);
     }
+
     h1 {
       font-size: 22px;
       line-height: 1em;
       color: rgba(black, 0.5);
     }
   }
+
   .login-dialog {
     background-color: rgba(white, 0.5);
   }
@@ -73,21 +81,24 @@
   .input-group {
     margin-bottom: 10px;
 
-    .input-group-addon {
+    .input-group-text {
       color: $gray-800-for-login;
       text-align: center;
       background-color: rgba(black, 0.4);
       border: none;
       border-radius: 0;
     }
+
     .form-control {
       color: white;
       background-color: rgba(lighten(black, 10%), 0.4);
+
       &::placeholder {
         color: $gray-800-for-login;
       }
     }
   }
+
   .input-group:not(.has-error) {
     .form-control {
       border: transparent;
@@ -97,10 +108,12 @@
   .external-auth {
     form {
       flex: 1;
+
       @media (min-width: 350px) {
         flex: 0.49;
       }
     }
+
     .spacer {
       height: 10px;
     }
@@ -108,6 +121,7 @@
 
   .collapse-external-auth {
     overflow: hidden;
+
     &:not(.in) {
       height: 0;
       padding: 0 !important;
@@ -115,9 +129,103 @@
   }
 
   // button style
-  .btn-login.fcbtn,
-  .btn-register.fcbtn,
-  .btn-login-oauth.fcbtn,
+  .btn-fill.login {
+    .btn-label {
+      background-color: rgba($danger, 0.4);
+    }
+    .eff {
+      background-color: rgba(#7e4153, 0.5);
+    }
+  }
+
+  // google
+  .btn-fill#google {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // github
+  .btn-fill#github {
+    .btn-label {
+      background-color: rgba(lighten(black, 20%), 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // facebook
+  .btn-fill#facebook {
+    .btn-label {
+      background-color: rgba(#29487d, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // twitter
+  .btn-fill#twitter {
+    .btn-label {
+      background-color: rgba(#1da1f2, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // oidc
+  .btn-fill#oidc {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // saml
+  .btn-fill#saml {
+    .btn-label {
+      background-color: rgba(#55a79a, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+
+  // basic
+  .btn-fill#basic {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+
+    .eff {
+      background-color: #555;
+    }
+  }
+  // register
+  .btn-fill#register {
+    .btn-label {
+      background-color: rgba($success, 0.4);
+    }
+
+    .eff {
+      background-color: rgba(#3f7263, 0.5);
+    }
+  }
+
+  // external-auth
   .btn-collapse-external-auth {
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -127,80 +235,10 @@
       padding: 9px 15px;
       margin: -8px 20px -8px -20px;
     }
+
     &:focus {
       border: none;
     }
-  }
-  .btn-login-oauth {
-    flex: 1;
-    .btn-label-text {
-      flex: 1;
-    }
-  }
-  .btn-login.fcbtn {
-    .btn-label {
-      background-color: rgba($danger, 0.4);
-    }
-    &:after {
-      background-color: #7e4153;
-    }
-  }
-  .btn-login-oauth.fcbtn#google {
-    .btn-label {
-      background: rgba(#f13d25, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#github {
-    .btn-label {
-      background-color: rgba(#24292e, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#facebook {
-    .btn-label {
-      background-color: rgba(#29487d, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#twitter {
-    .btn-label {
-      background-color: rgba(#1da1f2, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-login-oauth.fcbtn#saml {
-    .btn-label {
-      background-color: rgba(#55a79a, 0.4);
-    }
-    &:after {
-      background-color: #555;
-    }
-  }
-  .btn-register.fcbtn {
-    .btn-label {
-      background-color: rgba($success, 0.4);
-    }
-    .btn-label-text {
-      display: inline-block;
-      min-width: 45px;
-    }
-    &:after {
-      background-color: #3f7263;
-    }
-  }
-
-  hr {
-    margin: 10px 0;
-    border-color: #ccc;
   }
 
   // footer link text
@@ -218,16 +256,20 @@
     &:hover,
     &.focus {
       color: black;
+
       .growi {
         color: darken($growi-green, 20%);
       }
+
       .org {
         color: darken($growi-blue, 15%);
       }
     }
   }
+
   .link-switch {
     color: $gray-200;
+
     &:hover {
       color: white;
     }
@@ -241,11 +283,13 @@
       .col-sm-offset-4 {
         margin-left: calc(50% - 160px);
       }
+
       .col-sm-4 {
         width: 320px;
       }
     }
   }
+
   .link-growi-org {
     position: absolute;
     bottom: 9px;
@@ -258,6 +302,7 @@
 
     &.to-flip {
       min-height: 295px;
+
       // has-error
       &.has-error {
         min-height: #{295px + 32px};
@@ -273,26 +318,30 @@
       -webkit-backface-visibility: hidden;
       -webkit-transform-style: preserve-3d;
     }
+
     .front {
       z-index: 2;
     }
+
     .back {
       position: absolute;
       top: 0;
       right: 15px;
       left: 15px;
     }
+
     .back,
     &.to-flip .front {
       transform: rotateY(180deg);
 
       // fix https://github.com/weseek/growi/issues/330
       // 'backface-visibility: hidden' and 'z-index: -1' breaks layout in iOS
-      .fcbtn:after {
+      ::after {
         z-index: 0;
         opacity: 0.3;
       }
     }
+
     &.to-flip .back {
       transform: rotateY(0deg);
     }
@@ -306,6 +355,7 @@
       .col-sm-offset-4 {
         margin-left: calc(50% - 240px);
       }
+
       .col-sm-4 {
         width: 480px;
       }

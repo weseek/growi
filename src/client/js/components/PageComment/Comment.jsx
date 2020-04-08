@@ -87,7 +87,7 @@ class Comment extends React.PureComponent {
   }
 
   getRootClassName(comment) {
-    let className = 'page-comment';
+    let className = 'page-comment flex-column';
 
     const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
     if (comment.revision === revisionId) {
@@ -197,8 +197,10 @@ class Comment extends React.PureComponent {
           />
         ) : (
           <div id={commentId} className={rootClassName}>
-            <UserPicture user={creator} />
-            <div className="page-comment-main">
+            <div className="page-comment-writer">
+              <UserPicture user={creator} />
+            </div>
+            <div className="page-comment-main ml-0">
               <div className="page-comment-creator">
                 <Username user={creator} />
               </div>

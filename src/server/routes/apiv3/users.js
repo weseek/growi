@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator/check');
+const { body, query } = require('express-validator/check');
 const { isEmail } = require('validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -73,9 +73,35 @@ module.exports = (crowi) => {
     User,
     Page,
     ExternalAccount,
+    UserGroupRelation,
   } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
+
+  const statusNo = {
+    registered: User.STATUS_REGISTERED,
+    active: User.STATUS_ACTIVE,
+    suspended: User.STATUS_SUSPENDED,
+    invited: User.STATUS_INVITED,
+  };
+
+  validator.statusList = [
+    // validate status list status array match to statusNo
+    query('selectedStatusList').custom((value) => {
+      const error = [];
+      value.forEach((status) => {
+        if (!Object.keys(statusNo)) {
+          error.push(status);
+        }
+      });
+      return (error.length === 0);
+    }),
+    // validate sortOrder : asc or desc
+    query('sortOrder').isIn(['asc', 'desc']),
+    // validate sort : what column you will sort
+    query('sort').isIn(['id', 'status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
+    query('page').isInt({ min: 1 }),
+  ];
 
   /**
    * @swagger
@@ -86,7 +112,33 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: listUsers
    *        summary: /users
-   *        description: Get users
+   *        description: Select selected columns from users order by asc or desc
+   *        parameters:
+   *          - name: page
+   *            in: query
+   *            description: page number
+   *            schema:
+   *              type: number
+   *          - name:  selectedStatusList
+   *            in: query
+   *            description: status list
+   *            schema:
+   *              type: string
+   *          - name: searchText
+   *            in: query
+   *            description: For incremental search value from input box
+   *            schema:
+   *              type: string
+   *          - name: sortOrder
+   *            in: query
+   *            description: asc or desc
+   *            schema:
+   *              type: string
+   *          - name: sort
+   *            in: query
+   *            description: sorting column
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: users are fetched
@@ -97,14 +149,40 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+  router.get('/', validator.statusList, ApiV3FormValidator, async(req, res) => {
+
     const page = parseInt(req.query.page) || 1;
+    // status
+    const { selectedStatusList } = req.query;
+    const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
+
+    // Search from input
+    const searchText = req.query.searchText || '';
+    const searchWord = new RegExp(`${searchText}`);
+    // Sort
+    const { sort, sortOrder } = req.query;
+    const sortOutput = {
+      [sort]: (sortOrder === 'desc') ? -1 : 1,
+    };
 
     try {
       const paginateResult = await User.paginate(
-        { status: { $ne: User.STATUS_DELETED } },
         {
-          sort: { status: 1, username: 1, createdAt: 1 },
+          $and: [
+            { status: { $in: statusNoList } },
+            {
+              $or: [
+                { name: { $in: searchWord } },
+                { username: { $in: searchWord } },
+                { email: { $in: searchWord } },
+              ],
+            },
+          ],
+        },
+        {
+          sort: sortOutput,
+          populate: User.IMAGE_POPULATION,
           page,
           limit: PAGE_ITEMS,
         },
@@ -379,6 +457,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
+      await UserGroupRelation.remove({ relatedUser: userData });
       await userData.statusDelete();
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
@@ -423,7 +502,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg + err.message, 'external-account-list-fetch-failed'), 500);
     }
   });
-
 
   /**
    * @swagger

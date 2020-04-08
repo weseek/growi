@@ -1,6 +1,0 @@
-{# This widget will be rendered by React #}
-{% if not size == null %}
-  <span id="like-button-{{size}}" data-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"></span>
-{% else %}
-  <span id="like-button" data-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"></span>
-{% endif %}

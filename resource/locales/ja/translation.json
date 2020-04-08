@@ -122,6 +122,7 @@
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
+  "Disassociate": "連携解除",
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -163,12 +164,16 @@
   },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
-  "Set new Password": "パスワードを新規に設定",
-  "Update Password": "パスワードを更新",
-  "Current password": "現在のパスワード",
-  "New password": "新しいパスワード",
-  "Re-enter new password": "(確認用)",
-  "Password is not set": "パスワードが設定されていません",
+  "personal_settings":{
+    "disassociate_external_account": "External Account の連携解除",
+    "disassociate_external_account_desc": "<strong>{{providerType}}</strong> プロバイダーの <strong>{{accountId}}</strong> アカウントを連携解除します",
+    "set_new_password": "パスワードを新規に設定",
+    "update_password": "パスワードを更新",
+    "current_password": "現在のパスワード",
+    "new_password": "新しいパスワード",
+    "new_password_confirm": "(確認用)",
+    "password_is_not_set": "パスワードが設定されていません"
+  },
   "security_settings": "セキュリティ設定",
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -318,7 +323,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "テンプレートページの作成/編集",
-      "Create template under": "<code><small>%s</small></code><br />にテンプレートページを作成"
+      "Create template under": "<code>%s</code><br />にテンプレートページを作成"
     },
     "option_label": {
       "select": "テンプレートタイプを選択してください",
@@ -363,6 +368,23 @@
     "alt_text": "Alt文字列",
     "insert_image": "で画像を挿入できます",
     "open_sandbox": "Sandbox を開く"
+  },
+  "hackmd":{
+    "not_set_up": "HackMD はセットアップされていません",
+    "start_to_edit": "HackMD を開始する",
+    "clone_page_content": "ページを複製して編集を開始します",
+    "unsaved_draft": "HackMD のドラフトが保存されていません",
+    "draft_outdated": "ドラフトは古くなっている可能性があります",
+    "based_on_revision": "現在のドラフトは次の revision に基づいています",
+    "view_outdated_draft": "HackMD で古いドラフトを表示する",
+    "resume_to_edit": "HackMD で編集を再開する",
+    "discard_changes": "HackMD の変更を破棄する",
+    "integration_failed": "HackMD の統合に失敗しました",
+    "fail_to_connect": "GROWI クライアントが HackMD の GROWI agent に接続できませんでした。",
+    "check_configuration": "<a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
+    "not_initialized": "HackMD コンポーネントは初期化されていません",
+    "someone_editing": "このページは、HackMD で編集されています。",
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
   },
   "security_setting": {
     "Guest Users Access": "ゲストユーザーのアクセス",

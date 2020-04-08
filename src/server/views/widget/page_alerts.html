@@ -2,7 +2,7 @@
   <div class="col-sm-12">
     {% if page && page.grant && page.grant > 1 %}
 
-      <p class="alert alert-inverse alert-grant">
+      <p class="alert alert-primary py-3 px-4">
       {% if page.grant == 2 %}
         <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 4 %}
@@ -29,7 +29,7 @@
     {% endif %}
 
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
-    <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
+    <div class="alert alert-info hide-on-edit py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
@@ -43,7 +43,7 @@
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <input type="hidden" name="path" value="{{ path }}">
-        <button type="submit" class="btn btn-default btn-sm float-right">
+        <button type="submit" class="btn btn-light btn-sm float-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink
         </button>
@@ -53,7 +53,7 @@
     {% endif %}
 
     {% if req.query.duplicated and not page.isDeleted() %}
-    <div class="alert alert-success alert-moved">
+    <div class="alert alert-success py-3 px-4">
       <span>
         <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
       </span>
@@ -61,7 +61,7 @@
     {% endif %}
 
     {% if req.query.unlinked %}
-    <div class="alert alert-info alert-unlinked">
+    <div class="alert alert-info hide-on-edit py-3 px-4">
       <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
     </div>
     {% endif %}
@@ -81,7 +81,7 @@
     {% endif %}
 
     {% if isTrashPage() %}
-    <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
+    <div class="alert alert-warning py-3 px-4 d-flex align-items-center justify-content-between">
       <div>
         This page is in the trash <i class="icon-trash" aria-hidden="true"></i>.
         {% if page.isDeleted() %}

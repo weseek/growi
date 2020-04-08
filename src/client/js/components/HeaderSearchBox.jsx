@@ -85,7 +85,7 @@ class HeaderSearchBox extends React.Component {
             placeholder="Search ..."
           />
           <div className="btn-group-submit-search">
-            <span className="btn-link" onClick={this.search}>
+            <span className="btn-link text-decoration-none" onClick={this.search}>
               <i className="icon-magnifier"></i>
             </span>
           </div>

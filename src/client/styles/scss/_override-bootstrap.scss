@@ -34,9 +34,14 @@ h5 {
   line-height: 18px;
 }
 
-h5 {
-  font-size: 14px;
-  line-height: 16px;
+h6 {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.small {
+  font-size: 65%;
+  line-height: 10px;
 }
 
 // Navs
@@ -165,4 +170,9 @@ fieldset[disabled] .btn {
 .progress {
   margin-bottom: 18px;
   overflow: hidden;
+}
+
+// badge
+.badge {
+  letter-spacing: 0.05em;
 }

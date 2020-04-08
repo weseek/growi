@@ -39,10 +39,11 @@ class PageStatusAlert extends React.Component {
   }
 
   renderSomeoneEditingAlert() {
+    const { t } = this.props;
     return (
       <div className="alert-hackmd-someone-editing alert alert-success fixed-bottom p-3 mb-0">
         <i className="icon-fw icon-people"></i>
-        Someone editing this page on HackMD
+        {t('hackmd.someone_editing')}
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
@@ -54,10 +55,11 @@ class PageStatusAlert extends React.Component {
   }
 
   renderDraftExistsAlert(isRealtime) {
+    const { t } = this.props;
     return (
       <div className="alert-hackmd-draft-exists alert alert-success fixed-bottom p-3 mb-0">
         <i className="icon-fw icon-pencil"></i>
-        This page has a draft on HackMD
+        {t('hackmd.this_page_has_draft')}
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;

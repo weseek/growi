@@ -162,7 +162,7 @@
           {% set sUserId = sUser._id.toString() %}
           <tr>
             <td>
-              <img src="{{ sUser|picture }}" class="picture img-circle" />
+              <img src="{{ sUser|picture }}" class="picture rounded-circle" />
               {% if sUser.admin %}
               <span class="label label-inverse label-admin">
               {{ t('administrator') }}
