@@ -190,9 +190,11 @@ body {
 //
 
 a {
-  color: $link-color;
-  // text-decoration: $link-decoration;
-  background-color: transparent; // Remove the gray background on active links in IE 10.
+  :not(.badge-primary) {
+    color: $link-color;
+    // text-decoration: $link-decoration;
+    background-color: transparent; // Remove the gray background on active links in IE 10.
+  }
 
   @include hover() {
     &:not(.list-group-item) {
