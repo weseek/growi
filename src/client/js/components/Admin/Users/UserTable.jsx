@@ -185,7 +185,7 @@ class UserTable extends React.Component {
               return (
                 <tr key={user._id}>
                   <td>
-                    <UserPicture user={user} className="picture img-circle" />
+                    <UserPicture user={user} className="picture rounded-circle" />
                   </td>
                   <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
                   <td>

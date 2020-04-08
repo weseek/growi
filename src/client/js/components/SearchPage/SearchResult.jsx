@@ -202,12 +202,12 @@ class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
+          <button type="button" className="btn btn-rounded btn-light btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
             <i className="icon-ban" /> Cancel
           </button>
           <button
             type="button"
-            className="btn btn-rounded btn-danger btn-xs"
+            className="btn btn-rounded btn-danger btn-sm"
             onClick={() => { return this.showDeleteConfirmModal() }}
             disabled={this.state.selectedPages.size === 0}
           >
@@ -216,22 +216,22 @@ class SearchResult extends React.Component {
         </div>
       );
       allSelectCheck = (
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              onChange={() => { return this.handleAllSelect() }}
-              checked={this.isAllSelected()}
-            />
-            &nbsp;Check All
-          </label>
+        <div className="custom-control custom-checkbox custom-checkbox-danger">
+          <input
+            id="all-select-check"
+            className="custom-control-input"
+            type="checkbox"
+            onChange={() => { return this.handleAllSelect() }}
+            checked={this.isAllSelected()}
+          />
+          <label className="custom-control-label" htmlFor="all-select-check">&nbsp;Check All</label>
         </div>
       );
     }
     else {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
+          <button type="button" className="btn btn-light rounded-pill btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
             <i className="ti-check-box" /> DeletionMode
           </button>
         </div>
@@ -239,26 +239,33 @@ class SearchResult extends React.Component {
     }
 
     const listView = this.props.pages.map((page) => {
-      const pageId = `#${page._id}`;
+      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
+      const pageId = `#id_${page._id}`;
       return (
         <Page
           page={page}
           linkTo={pageId}
           key={page._id}
         >
-          { this.state.deletionMode
-            && (
-              <input
-                type="checkbox"
-                className="search-result-list-delete-checkbox"
-                value={pageId}
-                checked={this.state.selectedPages.has(page)}
-                onChange={() => { return this.toggleCheckbox(page) }}
-              />
-            )
+          <div className="ml-auto d-flex">
+            { this.state.deletionMode
+              && (
+                <div className="custom-control custom-checkbox custom-checkbox-danger">
+                  <input
+                    type="checkbox"
+                    id={`page-delete-check-${page._id}`}
+                    className="custom-control-input search-result-list-delete-checkbox"
+                    value={pageId}
+                    checked={this.state.selectedPages.has(page)}
+                    onChange={() => { return this.toggleCheckbox(page) }}
+                  />
+                  <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
+                </div>
+              )
             }
-          <div className="page-list-option">
-            <a href={page.path}><i className="icon-login" /></a>
+            <div className="page-list-option">
+              <a href={page.path}><i className="icon-login" /></a>
+            </div>
           </div>
         </Page>
       );
@@ -271,28 +278,25 @@ class SearchResult extends React.Component {
     return (
       <div className="content-main">
         <div className="search-result row" id="search-result">
-          <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
-            <nav data-spy="affix" data-offset-top="50">
-              <div className="float-right">
-                {deletionModeButtons}
-                {allSelectCheck}
+          <div className="col-lg-4 d-none d-lg-block page-list search-result-list" id="search-result-list">
+            <nav>
+              <div className="d-flex align-items-start justify-content-between mt-1">
+                <div className="search-result-meta">
+                  <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
+                </div>
+                <div className="text-nowrap">
+                  {deletionModeButtons}
+                  {allSelectCheck}
+                </div>
               </div>
-              <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
-              </div>
-              <div className="clearfix"></div>
+
               <div className="page-list">
-                <ul className="page-list-ul page-list-ul-flat nav">
-                  {listView}
-                </ul>
+                <ul className="page-list-ul page-list-ul-flat nav nav-pills">{listView}</ul>
               </div>
             </nav>
           </div>
-          <div className="col-md-8 search-result-content" id="search-result-content">
-            <SearchResultList
-              pages={this.props.pages}
-              searchingKeyword={this.props.searchingKeyword}
-            />
+          <div className="col-lg-8 search-result-content" id="search-result-content">
+            <SearchResultList pages={this.props.pages} searchingKeyword={this.props.searchingKeyword} />
           </div>
         </div>
         <DeletePageListModal
@@ -303,8 +307,7 @@ class SearchResult extends React.Component {
           confirmedToDelete={this.deleteSelectedPages}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
-
-      </div>// content-main
+      </div> // content-main
     );
   }
 

@@ -152,7 +152,7 @@ class RevisionPath extends React.Component {
     });
 
     return (
-      <span className="d-flex align-items-center">
+      <span className="d-flex align-items-center flex-wrap">
 
         {rootElement}
         {afterElements}

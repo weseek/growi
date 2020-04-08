@@ -236,6 +236,8 @@ module.exports = function(crowi, app) {
   };
 
   const loginPassportGoogleCallback = async(req, res, next) => {
+    const globalLang = crowi.configManager.getConfig('crowi', 'app:globalLang');
+
     const providerId = 'google';
     const strategyName = 'google';
 
@@ -247,10 +249,24 @@ module.exports = function(crowi, app) {
       return loginFailureHandler(req, res);
     }
 
+    let name;
+
+    switch (globalLang) {
+      case 'en-US':
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+      case 'ja':
+        name = `${response.name.familyName} ${response.name.givenName}`;
+        break;
+      default:
+        name = `${response.name.givenName} ${response.name.familyName}`;
+        break;
+    }
+
     const userInfo = {
       id: response.id,
       username: response.displayName,
-      name: `${response.name.givenName} ${response.name.familyName}`,
+      name,
     };
 
     // Emails are not empty if it exists

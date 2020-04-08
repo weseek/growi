@@ -54,7 +54,7 @@ export default class TagEditor extends React.Component {
           <TagsInput tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByTagsInput} />
         </ModalBody>
         <ModalFooter>
-          <Button variant="primary" onClick={this.handleSubmit}>
+          <Button color="primary" onClick={this.handleSubmit}>
             Done
           </Button>
         </ModalFooter>

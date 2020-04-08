@@ -41,7 +41,7 @@ export default class DeletePageListModal extends React.Component {
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <div className="custom-control custom-checkbox">
+              <div className="custom-control custom-checkbox custom-checkbox-danger">
                 <input type="checkbox" className="custom-control-input" id="customCheck-delete-completely" />
                 <label
                   className="custom-control-label text-danger"
