@@ -148,7 +148,7 @@ class ProfileImageSettings extends React.Component {
                 { t('Current Image') }
               </label>
               <div className="col-sm-8">
-                {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg img-circle" id="settingUserPicture" /></p>)}
+                {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>)}
                 {isUploadedPicture && <button type="button" className="btn btn-danger" onClick={this.onClickDeleteBtn}>{ t('Delete Image') }</button>}
               </div>
             </div>
