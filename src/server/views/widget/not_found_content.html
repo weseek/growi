@@ -7,13 +7,13 @@
   </div>
 </div>
 
-<div id="content-main" class="content-main content-main-not-found page-list"
+<div id="content-main" class="content-main page-list"
   data-path="{{ path | preventXss }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   {% if templateTags %}
     data-template-tags="{{ templateTags }}"
   {% endif %}
-  > <!-- TODO Delete "content-main-not-found"-->
+  >
 
   {% include 'not_found_tabs.html' %}
 
