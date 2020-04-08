@@ -68,12 +68,16 @@ export default class DeletePageListModal extends React.Component {
 
 }
 
+DeletePageListModal.defaultProps = {
+  isDeleteCompletely: false, // for when undefined is passed
+};
+
 DeletePageListModal.propTypes = {
   isShown: PropTypes.bool.isRequired,
   pages: PropTypes.array,
   errorMessage: PropTypes.string,
   cancel: PropTypes.func.isRequired, //                 for cancel evnet handling
-  isDeleteCompletely: PropTypes.bool.isRequired,
+  isDeleteCompletely: PropTypes.bool,
   confirmedToDelete: PropTypes.func.isRequired, //      for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
 };
