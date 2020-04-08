@@ -25,7 +25,11 @@ PageCreator.propTypes = {
 
   creator: PropTypes.object.isRequired,
   createdAt: PropTypes.string.isRequired,
-  isCompactMode: PropTypes.bool.isRequired,
+  isCompactMode: PropTypes.bool,
+};
+
+PageCreator.defaultProps = {
+  isCompactMode: false,
 };
 
 

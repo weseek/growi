@@ -5,7 +5,10 @@ import loggerFactory from '@alias/logger';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 
+import { throttle } from 'throttle-debounce';
+
 const logger = loggerFactory('growi:services:PageContainer');
+const scrollAmountForFixed = 122;
 
 /**
  * Service container related to Page
@@ -66,7 +69,6 @@ export default class PageContainer extends Container {
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
-    const scrollAmountForFixed = 122;
     window.addEventListener('scroll', () => { this.setState({ isCompactMode: window.pageYOffset > scrollAmountForFixed }) });
   }
 
