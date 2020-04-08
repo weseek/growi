@@ -10,7 +10,7 @@ class LikeButton extends React.Component {
     super(props);
 
     this.state = {
-      isLiked: !!props.isLiked,
+      isLiked: props.isLiked,
     };
 
     this.handleClick = this.handleClick.bind(this);
