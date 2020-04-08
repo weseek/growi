@@ -102,7 +102,7 @@ class ProfileImageSettings extends React.Component {
     return (
       <React.Fragment>
         <div className="row">
-          <div className="col-md-2 col-sm-offset-1 col-sm-4">
+          <div className="col-md-2 offset-1 col-sm-4">
             <h4>
               <div className="custom-control custom-radio radio-primary">
                 <input
