@@ -171,7 +171,7 @@ class ProfileImageSettings extends React.Component {
         />
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="offset-4 col-5">
             <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
               {t('Update')}
             </button>
