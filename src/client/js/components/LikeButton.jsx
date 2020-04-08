@@ -17,27 +17,6 @@ class LikeButton extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  async componentDidMount() {
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      // do nothing
-      return;
-    }
-
-    const { appContainer, pageId } = this.props;
-
-    try {
-      const res = await appContainer.apiGet('/bookmarks.get', { page_id: pageId });
-      console.log(res);
-      if (res.bookmark) {
-        this.setState({ isLiked: true });
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   async handleClick() {
     const { appContainer, pageId } = this.props;
     const { isLiked } = this.state;
