@@ -38,7 +38,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path: mainContent.getAttribute('data-path'),
       tocHtml: '',
-      isLiked: false,
+      isLiked: mainContent.getAttribute('data-page-is-liked'),
       seenUserIds: [],
       likerUserIds: [],
       createdAt: mainContent.getAttribute('data-page-created-at'),
@@ -89,10 +89,6 @@ export default class PageContainer extends Container {
   }
 
   initStateOthers() {
-    const likeButtonElem = document.getElementById('like-button');
-    if (likeButtonElem != null) {
-      this.state.isLiked = likeButtonElem.dataset.liked === 'true';
-    }
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {
