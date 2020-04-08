@@ -69,7 +69,9 @@ export default class PageContainer extends Container {
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
-    window.addEventListener('scroll', () => { this.setState({ isCompactMode: window.pageYOffset > scrollAmountForFixed }) });
+    window.addEventListener('scroll', throttle(300, () => {
+      this.setState({ isCompactMode: window.pageYOffset > scrollAmountForFixed });
+    }));
   }
 
   /**
