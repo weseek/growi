@@ -57,8 +57,13 @@ const GrowiSubNavigation = (props) => {
       {/* Page Authors */}
       <ul className="authors text-nowrap d-none d-lg-block">
         {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} isCompactMode={isCompactMode} /></li>}
-        {revisionAuthor != null
-        && <li className="mt-1"><RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} /></li>}
+        { revisionAuthor != null
+          && (
+            <li className="mt-1">
+              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} />
+            </li>
+          )
+        }
       </ul>
 
     </div>
