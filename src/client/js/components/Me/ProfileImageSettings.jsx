@@ -104,16 +104,17 @@ class ProfileImageSettings extends React.Component {
         <div className="row">
           <div className="col-md-2 col-sm-offset-1 col-sm-4">
             <h4>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio radio-primary">
                 <input
                   type="radio"
                   id="radioGravatar"
+                  className="custom-control-input"
                   form="formImageType"
                   name="imagetypeForm[isGravatarEnabled]"
                   checked={isGravatarEnabled}
                   onChange={() => { personalContainer.changeIsGravatarEnabled(true) }}
                 />
-                <label htmlFor="radioGravatar">
+                <label className="custom-control-label" htmlFor="radioGravatar">
                   <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
                 </label>
                 <a href="https://gravatar.com/">
@@ -127,16 +128,17 @@ class ProfileImageSettings extends React.Component {
 
           <div className="col-md-4 col-sm-7">
             <h4>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio radio-primary">
                 <input
                   type="radio"
                   id="radioUploadPicture"
+                  className="custom-control-input"
                   form="formImageType"
                   name="imagetypeForm[isGravatarEnabled]"
                   checked={!isGravatarEnabled}
                   onChange={() => { personalContainer.changeIsGravatarEnabled(false) }}
                 />
-                <label htmlFor="radioUploadPicture">
+                <label className="custom-control-label" htmlFor="radioUploadPicture">
                   { t('Upload Image') }
                 </label>
               </div>
