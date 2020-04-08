@@ -31,7 +31,7 @@
               <img src="{{ page.creator|default(author)|picture }}" class="picture picture-xs img-circle">
             </a>
             <div class="ml-auto">
-              <div>Created in <span class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</span></div>
+              <div>Created at <span class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</span></div>
             </div>
           </div>
         </li>
@@ -42,7 +42,7 @@
             </a>
             <div>
               <div>Updated by <a href="{{ userPageRoot(page.revision.author) }}">{{ author.name }}</a></div>
-              <div class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
+              <div class="text-muted">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
             </div>
           </div>
           <div class="d-flex align-items-center only-affix">
@@ -50,7 +50,7 @@
               <img src="{{ author|picture }}" class="picture picture-xs img-circle">
             </a>
             <div class="ml-auto">
-              <div>Updated in <span class="text-muted"">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</span></div>
+              <div>Updated at <span class="text-muted">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</span></div>
             </div>
           </div>
         </li>
