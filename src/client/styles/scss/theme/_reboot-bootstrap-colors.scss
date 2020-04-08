@@ -190,7 +190,7 @@ body {
 //
 
 a {
-  :not(.badge-primary) {
+  :not(.badge) {
     color: $link-color;
     // text-decoration: $link-decoration;
     background-color: transparent; // Remove the gray background on active links in IE 10.
