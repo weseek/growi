@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class BookmarkButton extends React.Component {
+import { toastError } from '../util/apiNotification';
+import AppContainer from '../services/AppContainer';
+import { createSubscribedElement } from './UnstatedUtils';
+
+class BookmarkButton extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      bookmarked: false,
+      isBookmarked: false,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -23,36 +27,22 @@ export default class BookmarkButton extends React.Component {
     this.props.crowi.apiGet('/bookmarks.get', { page_id: this.props.pageId })
       .then((res) => {
         if (res.bookmark) {
-          this.markBookmarked();
+          this.setState({ isBookmarked: true });
         }
       });
   }
 
-  handleClick(event) {
-    event.preventDefault();
+  async handleClick() {
+    const { appContainer, pageId } = this.props;
+    const { isBookmarked } = this.state;
 
-    const pageId = this.props.pageId;
-
-    if (!this.state.bookmarked) {
-      this.props.crowi.apiPost('/bookmarks.add', { page_id: pageId })
-        .then((res) => {
-          this.markBookmarked();
-        });
+    try {
+      this.setState({ isBookmarked: !isBookmarked });
+      await appContainer.apiv3.put('/bookmarks', { pageId, isBookmarked });
     }
-    else {
-      this.props.crowi.apiPost('/bookmarks.remove', { page_id: pageId })
-        .then((res) => {
-          this.markUnBookmarked();
-        });
+    catch (err) {
+      toastError(err);
     }
-  }
-
-  markBookmarked() {
-    this.setState({ bookmarked: true });
-  }
-
-  markUnBookmarked() {
-    this.setState({ bookmarked: false });
   }
 
   isUserLoggedIn() {
@@ -65,20 +55,13 @@ export default class BookmarkButton extends React.Component {
       return <div></div>;
     }
 
-    const btnSizeClassName = this.props.size ? `btn-${this.props.size}` : 'btn-md';
-    const addedClassNames = [
-      this.state.bookmarked ? 'active' : '',
-      btnSizeClassName,
-    ];
-    const addedClassName = addedClassNames.join(' ');
-
     return (
       <button
         type="button"
         href="#"
         title="Bookmark"
         onClick={this.handleClick}
-        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${addedClassName}`}
+        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${this.state.bookmarked ? 'active' : ''}`}
       >
         <i className="icon-star"></i>
       </button>
@@ -88,7 +71,18 @@ export default class BookmarkButton extends React.Component {
 }
 
 BookmarkButton.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
   size: PropTypes.string,
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+const BookmarkButtonWrapper = (props) => {
+  return createSubscribedElement(BookmarkButton, props, [AppContainer]);
+};
+
+export default BookmarkButtonWrapper;
