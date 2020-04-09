@@ -94,19 +94,15 @@ class ImageCropModal extends React.Component {
           <ReactCrop circularCrop src={this.props.src} crop={this.state.crop} onImageLoaded={this.onImageLoaded} onChange={this.onCropChange} />
         </ModalBody>
         <ModalFooter>
-          <div className="d-flex justify-content-between">
-            <button type="button" className="btn btn-outline-danger rounded-pill" onClick={this.reset}>
+          <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={this.reset}>
               Reset
-            </button>
-            <div className="d-flex">
-              <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={this.props.onModalClose}>
-                Cancel
-              </button>
-              <button type="button" className="btn btn-outline-primary rounded-pill" onClick={this.crop}>
-                Crop
-              </button>
-            </div>
-          </div>
+          </button>
+          <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={this.props.onModalClose}>
+                  Cancel
+          </button>
+          <button type="button" className="btn btn-outline-primary rounded-pill" onClick={this.crop}>
+                  Crop
+          </button>
         </ModalFooter>
       </Modal>
     );
