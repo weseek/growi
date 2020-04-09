@@ -38,6 +38,18 @@ const router = express.Router();
  *            $ref: '#/components/schemas/Page/properties/_id'
  *          user:
  *            $ref: '#/components/schemas/User/properties/_id'
+ *
+ *      BookmarkParams:
+ *        description: BookmarkParams
+ *        type: object
+ *        properties:
+ *          pageId:
+ *            type: string
+ *            description: page ID
+ *            example: 5e07345972560e001761fa63
+ *          bool:
+ *            type: boolean
+ *            description: boolean for bookmark status
  */
 
 module.exports = (crowi) => {
@@ -117,33 +129,24 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /bookmarks.add:
-   *      post:
-   *        tags: [Bookmarks, CrowiCompatibles]
-   *        operationId: addBookmark
-   *        summary: /bookmarks.add
-   *        description: Add bookmark of the page
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            required: true
+   *    /bookmarks:
+   *      put:
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks
+   *        description: Update bookmarked status
+   *        operationId: updateBookmarkedStatus
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/BookmarkParams'
    *        responses:
    *          200:
-   *            description: Succeeded to add bookmark of the page.
+   *            description: Succeeded to update bookmarked status.
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    bookmark:
-   *                      $ref: '#/components/schemas/Bookmark'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
+   *                  $ref: '#/components/schemas/Bookmark'
    */
   router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, ApiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
@@ -171,58 +174,6 @@ module.exports = (crowi) => {
 
     return res.apiv3({ bookmark });
   });
-
-  /**
-   * @swagger
-   *
-   *    /bookmarks.remove:
-   *      post:
-   *        tags: [Bookmarks, CrowiCompatibles]
-   *        operationId: removeBookmark
-   *        summary: /bookmarks.remove
-   *        description: Remove bookmark of the page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to remove bookmark of the page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /bookmarks.remove Remove bookmark of the page
-   * @apiName RemoveBookmark
-   * @apiGroup Bookmark
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  // actions.api.remove = function(req, res) {
-  //   const pageId = req.body.page_id;
-
-  //   Bookmark.removeBookmark(pageId, req.user)
-  //     .then((data) => {
-  //       debug('Bookmark removed.', data); // if the bookmark is not exists, this 'data' is null
-  //       return res.json(ApiResponse.success());
-  //     })
-  //     .catch((err) => {
-  //       return res.json(ApiResponse.error(err));
-  //     });
-  // };
 
   return router;
 };
