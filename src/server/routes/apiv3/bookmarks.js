@@ -51,7 +51,7 @@ module.exports = (crowi) => {
   const validator = {
     bookmarks: [
       body('pageId').isString(),
-      body('isBookmarked').isBoolean(),
+      body('bool').isBoolean(),
     ],
   };
   /**
@@ -145,8 +145,8 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.put('/bookmarks', accessTokenParser, loginRequired, csrf, validator.bookmarks, ApiV3FormValidator, async(req, res) => {
-    const { pageId, isBookmarked } = req.body;
+  router.put('/', accessTokenParser, loginRequired, csrf, validator.bookmarks, ApiV3FormValidator, async(req, res) => {
+    const { pageId, bool } = req.body;
 
     let bookmark;
     try {
@@ -154,11 +154,11 @@ module.exports = (crowi) => {
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
-      if (isBookmarked) {
-        bookmark = await Bookmark.removeBookmark(page, req.user);
+      if (bool) {
+        bookmark = await Bookmark.add(page, req.user);
       }
       else {
-        bookmark = await Bookmark.add(page, req.user);
+        bookmark = await Bookmark.removeBookmark(page, req.user);
       }
     }
     catch (err) {

@@ -34,11 +34,11 @@ class BookmarkButton extends React.Component {
 
   async handleClick() {
     const { appContainer, pageId } = this.props;
-    const { isBookmarked } = this.state;
+    const bool = !this.state.isBookmarked;
 
     try {
-      this.setState({ isBookmarked: !isBookmarked });
-      await appContainer.apiv3.put('/bookmarks', { pageId, isBookmarked });
+      await appContainer.apiv3.put('/bookmarks', { pageId, bool });
+      this.setState({ isBookmarked: bool });
     }
     catch (err) {
       toastError(err);
