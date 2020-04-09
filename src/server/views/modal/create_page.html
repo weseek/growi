@@ -21,7 +21,7 @@
                   <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
                 </div>
                 <div class="create-page-button-container">
-                  <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                  <button type="submit" class="btn btn-outline-primary rounded-pill"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
                 </div>
               </div>
             </fieldset>
@@ -41,7 +41,7 @@
                   {% endif %}
                 </div>
                 <div class="create-page-button-container">
-                  <button type="submit" class="fcbtn btn btn-outline-primary rounded-pill btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+                  <button type="submit" class="btn btn-outline-primary rounded-pill"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
                 </div>
               </div>
             </fieldset>
@@ -72,7 +72,7 @@
 
               </div>
               <div class="create-page-button-container my-auto">
-                <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline-primary rounded-pill btn-1b disabled">
+                <a id="link-to-template" href="{{ page.path || path }}" class="btn btn-outline-primary rounded-pill disabled">
                   <i class="icon-fw icon-doc"></i>
                   <span id="create-template-button-link">{{ t('Edit') }}</span>
                 </a>

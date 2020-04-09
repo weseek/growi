@@ -102,18 +102,19 @@ class ProfileImageSettings extends React.Component {
     return (
       <React.Fragment>
         <div className="row">
-          <div className="col-md-2 col-sm-offset-1 col-sm-4">
+          <div className="col-md-2 offset-1 col-sm-4">
             <h4>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio radio-primary">
                 <input
                   type="radio"
                   id="radioGravatar"
+                  className="custom-control-input"
                   form="formImageType"
                   name="imagetypeForm[isGravatarEnabled]"
                   checked={isGravatarEnabled}
                   onChange={() => { personalContainer.changeIsGravatarEnabled(true) }}
                 />
-                <label htmlFor="radioGravatar">
+                <label className="custom-control-label" htmlFor="radioGravatar">
                   <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
                 </label>
                 <a href="https://gravatar.com/">
@@ -127,16 +128,17 @@ class ProfileImageSettings extends React.Component {
 
           <div className="col-md-4 col-sm-7">
             <h4>
-              <div className="radio radio-primary">
+              <div className="custom-control custom-radio radio-primary">
                 <input
                   type="radio"
                   id="radioUploadPicture"
+                  className="custom-control-input"
                   form="formImageType"
                   name="imagetypeForm[isGravatarEnabled]"
                   checked={!isGravatarEnabled}
                   onChange={() => { personalContainer.changeIsGravatarEnabled(false) }}
                 />
-                <label htmlFor="radioUploadPicture">
+                <label className="custom-control-label" htmlFor="radioUploadPicture">
                   { t('Upload Image') }
                 </label>
               </div>
@@ -146,7 +148,7 @@ class ProfileImageSettings extends React.Component {
                 { t('Current Image') }
               </label>
               <div className="col-sm-8">
-                {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg img-circle" id="settingUserPicture" /></p>)}
+                {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>)}
                 {isUploadedPicture && <button type="button" className="btn btn-danger" onClick={this.onClickDeleteBtn}>{ t('Delete Image') }</button>}
               </div>
             </div>
@@ -169,7 +171,7 @@ class ProfileImageSettings extends React.Component {
         />
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="offset-4 col-5">
             <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
               {t('Update')}
             </button>

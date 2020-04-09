@@ -23,8 +23,6 @@ import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
 import TagLabels from './components/Page/TagLabels';
-import BookmarkButton from './components/BookmarkButton';
-import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -90,11 +88,8 @@ if (pageContainer.state.pageId != null) {
     'page-timeline': <PageTimeline />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
-    'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
-    'bookmark-button': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
-    'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
   });
