@@ -372,7 +372,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        this.logger.warn('liker not updated');
+        debug('liker not updated');
         return reject(self);
       }
     }));

@@ -41,7 +41,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path: mainContent.getAttribute('data-path'),
       tocHtml: '',
-      isLiked: mainContent.getAttribute('data-page-is-liked'),
+      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUserIds: [],
       likerUserIds: [],
       createdAt: mainContent.getAttribute('data-page-created-at'),

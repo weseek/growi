@@ -20,24 +20,12 @@ class LikeButton extends React.Component {
   async handleClick() {
     const { appContainer, pageId } = this.props;
     const { isLiked } = this.state;
-
-    if (!isLiked) {
-      try {
-        await appContainer.apiPost('/likes.add', { page_id: pageId });
-        this.setState({ isLiked: true });
-      }
-      catch (err) {
-        toastError(err);
-      }
+    try {
+      await appContainer.apiv3.put('/page/likes', { pageId, isLiked });
+      this.setState({ isLiked: !isLiked });
     }
-    else {
-      try {
-        await appContainer.apiPost('/likes.remove', { page_id: pageId });
-        this.setState({ isLiked: false });
-      }
-      catch (err) {
-        toastError(err);
-      }
+    catch (err) {
+      toastError(err);
     }
   }
 
