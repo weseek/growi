@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { toastError } from '../util/apiNotification';
-import AppContainer from '../services/AppContainer';
-import { createSubscribedElement } from './UnstatedUtils';
 
 class BookmarkButton extends React.Component {
 
@@ -33,11 +31,11 @@ class BookmarkButton extends React.Component {
   }
 
   async handleClick() {
-    const { appContainer, pageId } = this.props;
+    const { crowi, pageId } = this.props;
     const bool = !this.state.isBookmarked;
 
     try {
-      await appContainer.apiv3.put('/bookmarks', { pageId, bool });
+      await crowi.apiv3.put('/bookmarks', { pageId, bool });
       this.setState({ isBookmarked: bool });
     }
     catch (err) {
@@ -61,7 +59,7 @@ class BookmarkButton extends React.Component {
         href="#"
         title="Bookmark"
         onClick={this.handleClick}
-        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${this.state.bookmarked ? 'active' : ''}`}
+        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${this.state.isBookmarked ? 'active' : ''}`}
       >
         <i className="icon-star"></i>
       </button>
@@ -71,18 +69,9 @@ class BookmarkButton extends React.Component {
 }
 
 BookmarkButton.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
   size: PropTypes.string,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const BookmarkButtonWrapper = (props) => {
-  return createSubscribedElement(BookmarkButton, props, [AppContainer]);
-};
-
-export default BookmarkButtonWrapper;
+export default BookmarkButton;
