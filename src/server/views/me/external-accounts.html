@@ -195,6 +195,12 @@
         /**
          * associate (submit the form)
          */
+        function associateMikan() {
+          var $form = $('#formMikanAssociationContainer > form');
+          var $action = '/me/external-accounts/associateMikan';
+          $form.attr('action', $action);
+          $form.submit();
+        }
         function associateLdap() {
           var $form = $('#formLdapAssociationContainer > form');
           var $action = '/me/external-accounts/associateLdap';
