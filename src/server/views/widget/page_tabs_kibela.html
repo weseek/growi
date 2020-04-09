@@ -58,7 +58,7 @@
   </li>
   
   {% if !isTrashPage() %}
-    {% if not page.isPortal() %}
+    {% if page.isPortal() %}
     <li class="nav-item dropdown">
       <a
         {% if user %} role="button" class="nav-link dropdown-toggle c-none-a" data-toggle="dropdown" {% endif %}
