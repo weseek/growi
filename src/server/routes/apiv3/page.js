@@ -106,8 +106,9 @@ const router = express.Router();
  *            type: string
  *            description: page ID
  *            example: 5e07345972560e001761fa63
- *          isLiked:
+ *          bool:
  *            type: boolean
+ *            description: boolean for like status
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
@@ -122,7 +123,7 @@ module.exports = (crowi) => {
   const validator = {
     likes: [
       body('pageId').isString(),
-      body('isLiked').isBoolean(),
+      body('bool').isBoolean(),
     ],
   };
 
@@ -149,7 +150,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, ApiV3FormValidator, async(req, res) => {
-    const { pageId, isLiked } = req.body;
+    const { pageId, bool } = req.body;
 
     let page;
     try {
@@ -157,11 +158,11 @@ module.exports = (crowi) => {
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
-      if (isLiked) {
-        page = await page.unlike(req.user);
+      if (bool) {
+        page = await page.like(req.user);
       }
       else {
-        page = await page.like(req.user);
+        page = await page.unlike(req.user);
       }
     }
     catch (err) {
