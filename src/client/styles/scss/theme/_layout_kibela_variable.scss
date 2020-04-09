@@ -25,6 +25,8 @@ $color-inline-code: $subthemecolor;
 $bgcolor-inline-code: lighten($subthemecolor, 70%);
 $border: $lightthemecolor;
 
+$color-control: $bgcolor-theme;
+
 // change color of highlighted header in wiki (default: orange)
 .wiki {
   .code-line.revision-head.highlighted {

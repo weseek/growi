@@ -17,6 +17,17 @@ body.kibela {
     background-color: $primary !important;
   }
 
+  /* h element */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $color-header;
+    margin: 10px 0;
+  }
+
   .logo {
     background: transparent;
 
@@ -232,6 +243,20 @@ body.kibela {
   .btn-primary {
     background: $primary;
     border: 1px solid $primary;
+  }
+
+  /* Custom Control */
+  .custom-control {
+    .custom-control-input {
+      ~ .custom-control-label::before {
+        border-color: $lightthemecolor;
+      }
+
+      &:checked~ .custom-control-label::before {
+        background-color: $color-control;
+        border-color: $color-control;
+      }
+    }
   }
 
   /* edit */
