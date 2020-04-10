@@ -73,6 +73,7 @@ module.exports = (crowi) => {
     User,
     Page,
     ExternalAccount,
+    UserGroupRelation,
   } = crowi.models;
 
   const { ApiV3FormValidator } = crowi.middlewares;
@@ -181,6 +182,7 @@ module.exports = (crowi) => {
         },
         {
           sort: sortOutput,
+          populate: User.IMAGE_POPULATION,
           page,
           limit: PAGE_ITEMS,
         },
@@ -455,6 +457,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await User.findById(id);
+      await UserGroupRelation.remove({ relatedUser: userData });
       await userData.statusDelete();
       await ExternalAccount.remove({ user: userData });
       await Page.removeByPath(`/user/${userData.username}`);
