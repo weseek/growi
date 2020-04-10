@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { throttle } from 'throttle-debounce';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -14,9 +15,17 @@ const GrowiSubNavigationForUserPage = (props) => {
   const pageUser = JSON.parse(document.querySelector('#grw-subnav-for-user-page').getAttribute('data-page-user'));
   const { appContainer, pageContainer } = props;
   const { pageId } = pageContainer.state;
+  const [isCompactMode, setIsCompactMode] = useState(false);
+  const scrollAmountForFixed = 175;
+
+  useEffect(() => {
+    window.addEventListener('scroll', throttle(300, () => {
+      setIsCompactMode(window.pageYOffset > scrollAmountForFixed);
+    }));
+  }, []);
 
   return (
-    <div>
+    <div className={isCompactMode && 'fixed-top grw-compact-subnavbar px-3'}>
 
       {/* Page Path */}
       <h4>
