@@ -64,7 +64,7 @@ class SecuritySetting extends React.Component {
           <div className="col-6">
             <div className="dropdown">
               <button
-                className={`btn btn-light dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                className={`btn btn-outline-secondary dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -144,7 +144,7 @@ class SecuritySetting extends React.Component {
           <div className="col-9">
             <div className="dropdown">
               <button
-                className="btn btn-light dropdown-toggle"
+                className="btn btn-outline-secondary dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"

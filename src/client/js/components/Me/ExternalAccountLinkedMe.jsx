@@ -69,7 +69,7 @@ class ExternalAccountLinkedMe extends React.Component {
       <Fragment>
         <div className="container-fluid p-0 my-4">
           <h2 className="border-bottom">
-            <button type="button" className="btn btn-light btn-sm pull-right" onClick={this.openAssociateModal}>
+            <button type="button" className="btn btn-outline-secondary btn-sm pull-right" onClick={this.openAssociateModal}>
               <i className="icon-plus" aria-hidden="true" />
             Add
             </button>
