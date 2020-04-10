@@ -27,7 +27,6 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error(`Failed to create ${pagePath}`, err);
-
     }
   }
 
