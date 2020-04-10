@@ -20,7 +20,7 @@
                 <span class="input-group-text">{{ baseUrl }}</span>
               </div>
                 {% if isSearchServiceConfigured() %}
-                <div id="duplicate-page-name-input" class="page-name-input"></div>
+                <div id="duplicate-page-name-input" class="page-name-input flex-fill"></div>
                 {% else %}
                 <input type="text" class="form-control" name="new_path" id="duplicatePageName" value="{{ page.path }}">
                 {% endif %}

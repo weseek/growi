@@ -2,6 +2,7 @@
 /* eslint-disable no-return-await */
 
 /* eslint-disable no-use-before-define */
+const logger = require('@alias/logger')('growi:models:page');
 
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
@@ -367,12 +368,12 @@ module.exports = function(crowi) {
           if (err) {
             return reject(err);
           }
-          debug('liker updated!', added);
+          logger.debug('liker updated!', added);
           return resolve(data);
         });
       }
       else {
-        debug('liker not updated');
+        logger.debug('liker not updated');
         return reject(self);
       }
     }));
@@ -393,7 +394,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        logger.debug('liker not updated');
         return reject(self);
       }
     }));

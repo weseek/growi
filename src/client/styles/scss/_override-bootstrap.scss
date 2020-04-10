@@ -82,6 +82,11 @@ h6 {
   .dropdown-toggle.btn.disabled {
     cursor: not-allowed;
   }
+
+  // hide caret
+  .dropdown-toggle.dropdown-toggle-no-caret::after {
+    content: none;
+  }
 }
 
 // agile-admin style
