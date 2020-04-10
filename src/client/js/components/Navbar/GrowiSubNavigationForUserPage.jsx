@@ -57,7 +57,7 @@ const GrowiSubNavigationForUserPage = (props) => {
         </div>
 
         {/* Header Button */}
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
+        <BookmarkButton pageId={pageId} crowi={appContainer} size="lg" />
       </div>
 
 
