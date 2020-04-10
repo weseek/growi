@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import EditIcon from '@atlaskit/icon/glyph/edit';
-import TrayIcon from '@atlaskit/icon/glyph/tray';
-
 import {
   GlobalNav,
 } from '@atlaskit/navigation-next';
@@ -31,7 +28,7 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generateSidebarItemObj(id, icon, label) {
+  generateSidebarItemObj(id, label, icon) {
     return {
       id,
       icon,
@@ -41,12 +38,16 @@ class SidebarNav extends React.Component {
     };
   }
 
+  generateIconFactory(classNames) {
+    return () => <i className={classNames}></i>;
+  }
+
   render() {
     return (
       <GlobalNav
         primaryItems={[
-          this.generateSidebarItemObj('custom', EditIcon, 'Custom Sidebar'),
-          this.generateSidebarItemObj('history', TrayIcon, 'History'),
+          this.generateSidebarItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-2x fa-code')),
+          this.generateSidebarItemObj('history', 'History', this.generateIconFactory('icon-clock fa-2x')),
         ]}
         secondaryItems={[]}
       />
