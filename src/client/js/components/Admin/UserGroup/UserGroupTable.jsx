@@ -81,7 +81,7 @@ class UserGroupTable extends React.Component {
                           <button
                             type="button"
                             id={`admin-group-menu-button-${group._id}`}
-                            className="btn btn-light btn-sm dropdown-toggle"
+                            className="btn btn-outline-secondary btn-sm dropdown-toggle"
                             data-toggle="dropdown"
                           >
                             <i className="icon-settings"></i>

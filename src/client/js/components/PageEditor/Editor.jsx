@@ -339,7 +339,7 @@ export default class Editor extends AbstractEditor {
           && (
           <button
             type="button"
-            className="btn btn-light btn-block btn-open-dropzone"
+            className="btn btn-outline-secondary btn-block btn-open-dropzone"
             onClick={() => { this.dropzone.open() }}
           >
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
