@@ -90,14 +90,6 @@
     react-addons-text-content "^0.0.4"
     uuid "^3.1.0"
 
-"@atlaskit/logo@^12.3.3":
-  version "12.3.3"
-  resolved "https://registry.yarnpkg.com/@atlaskit/logo/-/logo-12.3.3.tgz#dd329f35f32e84ff9b135ffa566ca19ba31c9d7d"
-  integrity sha512-xeuseG2xDRmja+O9Wa1lib7VFkBMGBdC1N/L+lPcazL+hWEJou+garwZ2Ir6FQktqCr5/yk5AAPMn11GNLseSA==
-  dependencies:
-    react-uid "^2.2.0"
-    tslib "^1.9.3"
-
 "@atlaskit/navigation-next@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/navigation-next/-/navigation-next-8.0.2.tgz#045839d292d21ab01655325f6942e587c00a311d"
@@ -11890,11 +11882,6 @@ react-transition-group@^2.2.1, react-transition-group@^2.3.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
-
-react-uid@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/react-uid/-/react-uid-2.2.0.tgz#0f77e1e0594fbf29fc4fe528cc9aa415c5bf9159"
-  integrity sha512-z+g5+hFOQ08hCfrGcJ1PNs+cmvH8Uq2CVzCmPeWBsUi5A4W4NWXR5jouledzy3oSKGMU9HOzf8zFuGi15TXJoQ==
 
 react-waypoint@^9.0.0:
   version "9.0.0"
