@@ -66,65 +66,43 @@ module.exports = (crowi) => {
       body('bool').isBoolean(),
     ],
   };
+
   /**
    * @swagger
    *
-   *    /bookmarks.get:
+   *    /bookmarks:
    *      get:
-   *        tags: [Bookmarks, CrowiCompatibles]
-   *        operationId: getBookmark
-   *        summary: /bookmarks.get
-   *        description: Get bookmark of the page with the user
+   *        tags: [Bookmarks]
+   *        summary: /bookmarks
+   *        description: Get bookmarked status
+   *        operationId: getBookmarkedStatus
    *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            required: true
+   *          - name: pageId
+   *            in: query
+   *            description: page id
    *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
+   *              type: string
    *        responses:
    *          200:
-   *            description: Succeeded to get bookmark of the page with the user.
+   *            description: Succeeded to get bookmarked status.
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    bookmark:
-   *                      $ref: '#/components/schemas/Bookmark'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
+   *                  $ref: '#/components/schemas/Bookmark'
    */
-  // actions.api.get = function(req, res) {
-  //   const pageId = req.query.page_id;
+  router.get('/', accessTokenParser, loginRequired, async(req, res) => {
+    const { pageId } = req.query;
 
-  //   Bookmark.findByPageIdAndUserId(pageId, req.user)
-  //     .then((data) => {
-  //       debug('bookmark found', pageId, data);
-  //       const result = {};
+    try {
+      const bookmark = await Bookmark.findByPageIdAndUserId(pageId, req.user);
+      return res.apiv3({ bookmark });
+    }
+    catch (err) {
+      logger.error('get-bookmark-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
 
-  //       result.bookmark = data;
-  //       return res.json(ApiResponse.success(result));
-  //     })
-  //     .catch((err) => {
-  //       return res.json(ApiResponse.error(err));
-  //     });
-  // };
-
-  // actions.api.list = function(req, res) {
-  //   const paginateOptions = ApiPaginate.parseOptions(req.query);
-
-  //   const options = Object.assign(paginateOptions, { populatePage: true });
-  //   Bookmark.findByUserId(req.user._id, options)
-  //     .then((result) => {
-  //       return res.json(ApiResponse.success(result));
-  //     })
-  //     .catch((err) => {
-  //       return res.json(ApiResponse.error(err));
-  //     });
-  // };
 
   /**
    * @swagger
