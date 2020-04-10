@@ -79,7 +79,7 @@ class MailSetting extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminAppContainer.state.SmtpUser || ''}
+              defaultValue={adminAppContainer.state.smtpUser || ''}
               onChange={(e) => { adminAppContainer.changeSmtpUser(e.target.value) }}
             />
           </div>
