@@ -45,7 +45,7 @@ class BasicInfoSettings extends React.Component {
     return (
       <Fragment>
 
-        <div className="row mb-3">
+        <div className="row form-group mb-3">
           <label htmlFor="userForm[name]" className="col-sm-2 text-right">{t('Name')}</label>
           <div className="col-sm-4 text-left">
             <input
@@ -58,7 +58,7 @@ class BasicInfoSettings extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-3">
+        <div className="row form-group mb-3">
           <label htmlFor="userForm[email]" className="col-sm-2 text-right">{t('Email')}</label>
           <div className="col-sm-4 text-left">
             <input
@@ -82,59 +82,63 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-xs-2 text-right">{t('Disclose E-mail')}</label>
-          <div className="col-xs-6">
-            <div className="radio radio-primary radio-inline">
+          <label className="col-sm-2 text-right">{t('Disclose E-mail')}</label>
+          <div className="col-6">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioEmailShow"
+                className="custom-control-input"
                 name="userForm[isEmailPublished]"
                 checked={personalContainer.state.isEmailPublished}
                 onChange={() => { personalContainer.changeIsEmailPublished(true) }}
               />
-              <label htmlFor="radioEmailShow">{t('Show')}</label>
+              <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
             </div>
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioEmailHide"
+                className="custom-control-input"
                 name="userForm[isEmailPublished]"
                 checked={!personalContainer.state.isEmailPublished}
                 onChange={() => { personalContainer.changeIsEmailPublished(false) }}
               />
-              <label htmlFor="radioEmailHide">{t('Hide')}</label>
+              <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
             </div>
           </div>
         </div>
 
         <div className="row mb-3">
-          <label className="col-xs-2 text-right">{t('Language')}</label>
-          <div className="col-xs-6">
-            <div className="radio radio-primary radio-inline">
+          <label className="col-sm-2 col-form-label text-right">{t('Language')}</label>
+          <div className="col-6">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangEn"
+                className="custom-control-input"
                 name="userForm[lang]"
                 checked={personalContainer.state.lang === 'en-US'}
                 onChange={() => { personalContainer.changeLang('en-US') }}
               />
-              <label htmlFor="radioLangEn">{t('English')}</label>
+              <label className="custom-control-label" htmlFor="radioLangEn">{t('English')}</label>
             </div>
-            <div className="radio radio-primary radio-inline">
+            <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
                 id="radioLangJa"
+                className="custom-control-input"
                 name="userForm[lang]"
                 checked={personalContainer.state.lang === 'ja'}
                 onChange={() => { personalContainer.changeLang('ja') }}
               />
-              <label htmlFor="radioLangJa">{t('Japanese')}</label>
+              <label className="custom-control-label" htmlFor="radioLangJa">{t('Japanese')}</label>
             </div>
           </div>
         </div>
 
         <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
+          <div className="offset-4 col-5">
             <button type="button" className="btn btn-primary" onClick={this.onClickSubmit} disabled={personalContainer.state.retrieveError != null}>
               {t('Update')}
             </button>

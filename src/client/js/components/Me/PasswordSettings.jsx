@@ -76,8 +76,8 @@ class PasswordSettings extends React.Component {
         {(personalContainer.state.isPasswordSet)
         && (
           <div className="row mb-3">
-            <label htmlFor="oldPassword" className="col-xs-3 text-right">{ t('personal_settings.current_password') }</label>
-            <div className="col-xs-6">
+            <label htmlFor="oldPassword" className="col-3 text-right">{ t('personal_settings.current_password') }</label>
+            <div className="col-6">
               <input
                 className="form-control"
                 type="password"
@@ -89,8 +89,8 @@ class PasswordSettings extends React.Component {
           </div>
         )}
         <div className="row mb-3">
-          <label htmlFor="newPassword" className="col-xs-3 text-right">{t('personal_settings.new_password') }</label>
-          <div className="col-xs-6">
+          <label htmlFor="newPassword" className="col-3 text-right">{t('personal_settings.new_password') }</label>
+          <div className="col-6">
             <input
               className="form-control"
               type="password"
@@ -101,10 +101,10 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
         <div className={`row mb-3 ${isIncorrectConfirmPassword && 'has-error'}`}>
-          <label htmlFor="newPasswordConfirm" className="col-xs-3 text-right">{t('personal_settings.new_password_confirm') }</label>
-          <div className="col-xs-6">
+          <label htmlFor="newPasswordConfirm" className="col-3 text-right">{t('personal_settings.new_password_confirm') }</label>
+          <div className="col-6">
             <input
-              className="form-control col-xs-4"
+              className="form-control"
               type="password"
               name="newPasswordConfirm"
               value={this.state.newPasswordConfirm}
@@ -115,17 +115,15 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
 
-        <div className="row my-3">
-          <div className="col-xs-offset-4 col-xs-5">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={this.onClickSubmit}
-              disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
-            >
-              {t('Update')}
-            </button>
-          </div>
+        <div className="my-3 text-center">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.onClickSubmit}
+            disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
+          >
+            {t('Update')}
+          </button>
         </div>
       </React.Fragment>
     );

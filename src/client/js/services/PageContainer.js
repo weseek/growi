@@ -5,7 +5,10 @@ import loggerFactory from '@alias/logger';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 
+import { throttle } from 'throttle-debounce';
+
 const logger = loggerFactory('growi:services:PageContainer');
+const scrollAmountForFixed = 122;
 
 /**
  * Service container related to Page
@@ -38,7 +41,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path: mainContent.getAttribute('data-path'),
       tocHtml: '',
-      isLiked: false,
+      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUserIds: [],
       likerUserIds: [],
       createdAt: mainContent.getAttribute('data-page-created-at'),
@@ -55,6 +58,7 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
+      isCompactMode: false,
     };
 
     this.initStateMarkdown();
@@ -64,6 +68,10 @@ export default class PageContainer extends Container {
     this.save = this.save.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
+
+    window.addEventListener('scroll', throttle(300, () => {
+      this.setState({ isCompactMode: window.pageYOffset > scrollAmountForFixed });
+    }));
   }
 
   /**
@@ -89,10 +97,6 @@ export default class PageContainer extends Container {
   }
 
   initStateOthers() {
-    const likeButtonElem = document.getElementById('like-button');
-    if (likeButtonElem != null) {
-      this.state.isLiked = likeButtonElem.dataset.liked === 'true';
-    }
 
     const seenUserListElem = document.getElementById('seen-user-list');
     if (seenUserListElem != null) {

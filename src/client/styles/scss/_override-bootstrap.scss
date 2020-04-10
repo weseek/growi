@@ -82,6 +82,11 @@ h6 {
   .dropdown-toggle.btn.disabled {
     cursor: not-allowed;
   }
+
+  // hide caret
+  .dropdown-toggle.dropdown-toggle-no-caret::after {
+    content: none;
+  }
 }
 
 // agile-admin style
@@ -170,4 +175,9 @@ fieldset[disabled] .btn {
 .progress {
   margin-bottom: 18px;
   overflow: hidden;
+}
+
+// badge
+.badge {
+  letter-spacing: 0.05em;
 }

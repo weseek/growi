@@ -78,7 +78,7 @@ export default class BookmarkButton extends React.Component {
         href="#"
         title="Bookmark"
         onClick={this.handleClick}
-        className={`btn btn-circle btn-outline-warning border-0 ${addedClassName}`}
+        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${addedClassName}`}
       >
         <i className="icon-star"></i>
       </button>

@@ -202,12 +202,12 @@ class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons = (
         <div className="btn-group">
-          <button type="button" className="btn btn-rounded btn-light btn-sm" onClick={() => { return this.handleDeletionModeChange() }}>
+          <button type="button" className="btn btn-light btn-sm rounded-pill-weak" onClick={() => { return this.handleDeletionModeChange() }}>
             <i className="icon-ban" /> Cancel
           </button>
           <button
             type="button"
-            className="btn btn-rounded btn-danger btn-sm"
+            className="btn btn-danger btn-sm rounded-pill-weak"
             onClick={() => { return this.showDeleteConfirmModal() }}
             disabled={this.state.selectedPages.size === 0}
           >
@@ -305,6 +305,7 @@ class SearchResult extends React.Component {
           errorMessage={this.state.errorMessageForDeleting}
           cancel={this.closeDeleteConfirmModal}
           confirmedToDelete={this.deleteSelectedPages}
+          isDeleteCompletely={this.state.isDeleteCompletely}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
       </div> // content-main

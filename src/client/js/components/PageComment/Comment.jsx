@@ -206,7 +206,7 @@ class Comment extends React.PureComponent {
               </div>
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
-                {commentedDate}
+                <span><a href={`#${commentId}`}>{commentedDate}</a></span>
                 <UncontrolledTooltip placement="bottom" fade={false} target={commentedDateId}>{commentedDateFormatted}</UncontrolledTooltip>
                 { isEdited && (
                   <>

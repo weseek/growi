@@ -1,3 +1,5 @@
+@import '../scss/theme/layout_kibela_variable';
+
 body.kibela {
   .icon-link,
   .CodeMirror-hint-active,
@@ -9,6 +11,10 @@ body.kibela {
 
   .bg-white {
     background: #fefffe !important;
+  }
+
+  .bg-primary {
+    background-color: $primary !important;
   }
 
   .logo {
@@ -178,6 +184,54 @@ body.kibela {
         border-color: solid 1px #5584e1;
       }
     }
+  }
+
+  /* Modal */
+  .modal-content {
+    background-color: $themelight;
+
+    .modal-header.bg-primary {
+      color: white;
+
+      .close {
+        color: white;
+      }
+    }
+  }
+
+  /* Inline Code */
+  :not(.hljs) > code:not(.hljs) {
+    background-color: $bgcolor-inline-code;
+    color: $color-inline-code;
+  }
+
+  /* Card */
+  .card {
+    border: 1px solid $border;
+
+    .card-header {
+      background-color: $lightthemecolor;
+      border-bottom: 1px solid $border;
+    }
+
+    .card-body {
+      background-color: $themelight;
+    }
+
+    .card-footer {
+      background: white;
+      border-top: 1px solid $border
+    }
+  }
+
+  /* button */
+  .btn {
+    border-radius: $radius;
+  }
+
+  .btn-primary {
+    background: $primary;
+    border: 1px solid $primary;
   }
 
   /* edit */

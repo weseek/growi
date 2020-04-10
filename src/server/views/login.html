@@ -30,74 +30,76 @@
         <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
         <h1>{{ appService.getAppTitle() }}</h1>
 
-        <div class="login-form-errors">
-          {% if isLdapSetupFailed() %}
-          <div class="alert alert-warning small">
-            <strong><i class="icon-fw icon-info"></i>LDAP is enabled but the configuration has something wrong.</strong>
-            <br>
-            (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
-          </div>
-          {% endif %}
+        <div class="row">
+          <div class="login-form-errors col-12">
+            {% if isLdapSetupFailed() %}
+            <div class="alert alert-warning small">
+              <strong><i class="icon-fw icon-info"></i>LDAP is enabled but the configuration has something wrong.</strong>
+              <br>
+              (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
+            </div>
+            {% endif %}
 
-          {#
-          # The case that there already exists a user whose username matches ID of the newly created LDAP user
-          # https://github.com/weseek/growi/issues/193
-          #}
-          {% set failedProviderForDuplicatedUsernameException = req.flash('provider-DuplicatedUsernameException') %}
-          {% if failedProviderForDuplicatedUsernameException != null %}
-          <div class="alert alert-warning small">
-            <p><strong><i class="icon-fw icon-ban"></i>DuplicatedUsernameException occured</strong></p>
-            <p>
-              Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeess, but a new user could not be created.
-              See the issue <a href="https://github.com/weseek/growi/issues/193">#193</a>.
-            </p>
-          </div>
-          {% endif %}
+            {#
+            # The case that there already exists a user whose username matches ID of the newly created LDAP user
+            # https://github.com/weseek/growi/issues/193
+            #}
+            {% set failedProviderForDuplicatedUsernameException = req.flash('provider-DuplicatedUsernameException') %}
+            {% if failedProviderForDuplicatedUsernameException != null %}
+            <div class="alert alert-warning small">
+              <p><strong><i class="icon-fw icon-ban"></i>DuplicatedUsernameException occured</strong></p>
+              <p>
+                Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeess, but a new user could not be created.
+                See the issue <a href="https://github.com/weseek/growi/issues/193">#193</a>.
+              </p>
+            </div>
+            {% endif %}
 
-          {% set success = req.flash('successMessage') %}
-          {% if success.length %}
-          <div class="alert alert-success">
-            {{ success }}
-          </div>
-          {% endif %}
+            {% set success = req.flash('successMessage') %}
+            {% if success.length %}
+            <div class="alert alert-success">
+              {{ success }}
+            </div>
+            {% endif %}
 
-          {% set warn = req.flash('warningMessage') %}
-          {% if warn.length %}
-          {% for w in warn %}
-          <div class="alert alert-warning">
-            {{ w }}
-          </div>
-          {% endfor %}
-          {% endif %}
-
-          {% set error = req.flash('errorMessage') %}
-          {% if error.length %}
-          {% for e in error %}
-          <div class="alert alert-danger">
-            {{ e }}
-          </div>
-          {% endfor %}
-          {% endif %}
-
-          {% if req.form.errors.length > 0 %}
-          <div class="alert alert-danger">
-            <ul>
-            {% for error in req.form.errors %}
-              <li>{{ error }}</li>
+            {% set warn = req.flash('warningMessage') %}
+            {% if warn.length %}
+            {% for w in warn %}
+            <div class="alert alert-warning">
+              {{ w }}
+            </div>
             {% endfor %}
-            </ul>
+            {% endif %}
+
+            {% set error = req.flash('errorMessage') %}
+            {% if error.length %}
+            {% for e in error %}
+            <div class="alert alert-danger">
+              {{ e }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if req.form.errors.length > 0 %}
+            <div class="alert alert-danger">
+              <ul>
+              {% for error in req.form.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
           </div>
-          {% endif %}
-        </div>
-        <div id="register-form-errors">
-          {% set message = req.flash('registerWarningMessage') %}
-          {% if message.length %}
-          <div class="alert alert-danger">
-            {% for msg in message %}
-            {{ msg }}<br>
-            {% endfor  %}
+          <div id="register-form-errors">
+            {% set message = req.flash('registerWarningMessage') %}
+            {% if message.length %}
+            <div class="alert alert-danger">
+              {% for msg in message %}
+              {{ msg }}<br>
+              {% endfor  %}
+            </div>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
       </div>
     </div>
@@ -118,17 +120,17 @@
             {% if isLocalOrLdapStrategiesEnabled %}
             <form role="form" action="/login" method="post">
 
-              <div class="input-group">
+              <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="icon-user"></i></span>
                 </div>
                 <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
                 {% if passportService.isLdapStrategySetup %}
-                <span class="input-group-append">
-                  <small class="text-success">
+                <div class="input-group-append">
+                  <small class="input-group-text text-success">
                     <i class="icon-fw icon-check"></i> LDAP
                   </small>
-                </span>
+                </div>
                 {% endif %}
               </div>
 
@@ -141,7 +143,7 @@
 
               <div class="input-group justify-content-center d-flex mt-5">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn fcbtn login px-0 py-2">
+                <button type="submit" class="btn btn-fill login px-0 py-2">
                   <div class="eff"></div>
                   <span class="btn-label p-3"><i class="icon-login"></i></span>
                   <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -167,7 +169,7 @@
                 {% if getConfig('crowi', 'security:passport-google:isEnabled') %}
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/google" class="d-inline-flex flex-column">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="google">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="google">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-google"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -180,7 +182,7 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/github" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="github">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="github">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-github"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -193,7 +195,7 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="facebook">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="facebook">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-facebook"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -206,7 +208,7 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="twitter">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="twitter">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-twitter"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -219,7 +221,7 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/oidc" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="oidc">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="oidc">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-openid"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -232,7 +234,7 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/saml" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="saml">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="saml">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-key"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -245,7 +247,7 @@
                 <div class="input-group justify-content-center d-flex mt-5">
                   <form role="form" action="/passport/basic" class="d-inline-flex flex-column">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <button type="submit" class="btn fcbtn px-0 py-2" id="basic">
+                    <button type="submit" class="btn btn-fill px-0 py-2" id="basic">
                       <div class="eff"></div>
                       <span class="btn-label p-3"><i class="fa fa-lock"></i></span>
                       <span class="btn-label-text p-3">{{ t('Sign in') }}</span>
@@ -352,7 +354,7 @@
 
               <div class="input-group justify-content-center mt-5">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn fcbtn px-0 py-2" id="register">
+                <button type="submit" class="btn btn-fill px-0 py-2" id="register">
                   <div class="eff"></div>
                   <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
                   <span class="btn-label-text p-3">{{ t('Sign up') }}</span>
