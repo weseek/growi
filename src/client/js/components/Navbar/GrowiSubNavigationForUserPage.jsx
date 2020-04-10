@@ -14,7 +14,6 @@ const GrowiSubNavigationForUserPage = (props) => {
   const pageUser = JSON.parse(document.querySelector('#grw-subnav-for-user-page').getAttribute('data-page-user'));
   const { appContainer, pageContainer } = props;
   const { pageId } = pageContainer.state;
-  // const compactClassName = isCompactMode ? 'fixed-top grw-compact-subnavbar px-3' : null;
 
   return (
     <div>
