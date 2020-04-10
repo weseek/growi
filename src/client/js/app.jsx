@@ -35,7 +35,6 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
 import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
 import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './bootstrap';
@@ -102,7 +101,6 @@ if (pageContainer.state.path != null) {
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
     'grw-subnav': <GrowiSubNavigation />,
-    'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
 }
 
