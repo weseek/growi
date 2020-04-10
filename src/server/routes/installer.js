@@ -21,8 +21,14 @@ module.exports = function(crowi, app) {
   }
 
   async function createPage(filePath, pagePath, owner, lang) {
-    const markdown = fs.readFileSync(filePath);
-    return Page.create(pagePath, markdown, owner, {});
+    try {
+      const markdown = fs.readFileSync(filePath);
+      return Page.create(pagePath, markdown, owner, {});
+    }
+    catch (err) {
+      logger.error(`Failed to create ${pagePath}`, err);
+
+    }
   }
 
   async function createInitialPages(owner, lang) {
