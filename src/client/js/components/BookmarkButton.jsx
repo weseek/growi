@@ -58,13 +58,20 @@ class BookmarkButton extends React.Component {
       return <div></div>;
     }
 
+    const btnSizeClassName = this.props.size ? `btn-${this.props.size}` : 'btn-md';
+    const addedClassNames = [
+      this.state.bookmarked ? 'active' : '',
+      btnSizeClassName,
+    ];
+    const addedClassName = addedClassNames.join(' ');
+
     return (
       <button
         type="button"
         href="#"
         title="Bookmark"
         onClick={this.handleClick}
-        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${this.state.isBookmarked ? 'active' : ''}`}
+        className={`btn btn-circle btn-outline-warning btn-bookmark border-0 ${addedClassName}`}
       >
         <i className="icon-star"></i>
       </button>
