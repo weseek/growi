@@ -159,8 +159,8 @@ class LocalSecuritySetting extends React.Component {
                     defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
                     onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                   />
-                  <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
-                    <code>@growi.org</code>{t('security_setting.only_those')}<br />
+                  <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_example')}
+                    <code>@growi.org</code>{t('security_setting.in_this_case')}<br />
                     {t('security_setting.insert_single')}
                   </p>
                 </div>
