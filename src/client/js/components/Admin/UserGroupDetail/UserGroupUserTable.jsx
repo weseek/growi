@@ -67,7 +67,7 @@ class UserGroupUserTable extends React.Component {
                     <button
                       type="button"
                       id={`admin-group-menu-button-${relatedUser._id}`}
-                      className="btn btn-light btn-sm dropdown-toggle"
+                      className="btn btn-outline-secondary btn-sm dropdown-toggle"
                       data-toggle="dropdown"
                     >
                       <i className="icon-settings"></i>
@@ -91,7 +91,7 @@ class UserGroupUserTable extends React.Component {
           <tr>
             <td></td>
             <td className="text-center">
-              <button className="btn btn-light" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
+              <button className="btn btn-outline-secondary" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
                 <i className="ti-plus"></i>
               </button>
             </td>

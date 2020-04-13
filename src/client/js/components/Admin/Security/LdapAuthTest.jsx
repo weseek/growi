@@ -116,7 +116,7 @@ class LdapAuthTest extends React.Component {
           <textarea id="taLogs" className="col-xs-12" rows="4" value={this.state.logs} readOnly />
         </div>
 
-        <button type="button" className="btn btn-default mt-3 col-xs-offset-5 col-xs-2" onClick={this.testLdapCredentials}>Test</button>
+        <button type="button" className="btn btn-outline-secondary mt-3 col-xs-offset-5 col-xs-2" onClick={this.testLdapCredentials}>Test</button>
 
       </React.Fragment>
 

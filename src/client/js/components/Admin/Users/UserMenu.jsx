@@ -81,7 +81,7 @@ class UserMenu extends React.Component {
     return (
       <Fragment>
         <div className="btn-group admin-user-menu" role="group">
-          <button id="userMenu" type="button" className="btn btn-light btn-sm dropdown-toggle" data-toggle="dropdown">
+          <button id="userMenu" type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
             <i className="icon-settings"></i>
           </button>
           <div className="dropdown-menu" aria-labelledby="userMenu">
