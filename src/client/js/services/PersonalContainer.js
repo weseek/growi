@@ -70,6 +70,9 @@ export default class PersonalContainer extends Container {
    * define a function for uploaded picture
    */
   getUploadedPictureSrc(user) {
+    if (user == null) {
+      return DEFAULT_IMAGE;
+    }
     if (user.image) {
       this.setState({ isUploadedPicture: true });
       return user.image;
