@@ -26,38 +26,40 @@ const GrowiSubNavigationForUserPage = (props) => {
   }, []);
 
   return (
-    <div className={(isCompactMode && layoutType === 'growi') && 'fixed-top grw-compact-subnavbar px-3'}>
+    <div className={`row ${(isCompactMode && layoutType === 'growi') && 'grw-compact-subnavbar w-100'}`}>
 
-      {/* Page Path */}
-      <h4>
-        <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
-      </h4>
+      <div className="col-12">
+        {/* Page Path */}
+        <h4>
+          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
+        </h4>
 
-      <div className="d-flex">
-        <div className="users-info d-flex align-items-center mr-auto">
-          <UserPicture user={pageUser} />
+        <div className="d-flex">
+          <div className="users-info d-flex align-items-center mr-auto">
+            <UserPicture user={pageUser} />
 
-          <div className="users-meta">
-            <div className="d-flex align-items-center">
-              <h1>
-                {pageUser.name}
-              </h1>
-            </div>
-            <div className="user-page-meta">
-              <ul>
-                <li className="user-page-username"><i className="icon-user mr-1"></i>{pageUser.username}</li>
-                <li className="user-page-email">
-                  <i className="icon-envelope mr-1"></i>
-                  {pageUser.isEmailPublished ? pageUser.email : '*****'}
-                </li>
-                {pageUser.introduction && <li className="user-page-introduction"><p>{pageUser.introduction}</p></li>}
-              </ul>
+            <div className="users-meta">
+              <div className="d-flex align-items-center">
+                <h1>
+                  {pageUser.name}
+                </h1>
+              </div>
+              <div className="user-page-meta">
+                <ul>
+                  <li className="user-page-username"><i className="icon-user mr-1"></i>{pageUser.username}</li>
+                  <li className="user-page-email">
+                    <i className="icon-envelope mr-1"></i>
+                    {pageUser.isEmailPublished ? pageUser.email : '*****'}
+                  </li>
+                  {pageUser.introduction && <li className="user-page-introduction"><p>{pageUser.introduction}</p></li>}
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Header Button */}
-        <BookmarkButton pageId={pageId} crowi={appContainer} size="lg" />
+          {/* Header Button */}
+          <BookmarkButton pageId={pageId} crowi={appContainer} size="lg" />
+        </div>
       </div>
 
 
