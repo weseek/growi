@@ -3,7 +3,7 @@
     "management_wiki": "Management Wiki",
     "system_information": "System Information",
     "wiki_administrator": "Only Wiki administrator can access this page",
-    "assign_administrator": "You can assign administrator from Assign administrator button in the User management page",
+    "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give Admin Access' button.",
     "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
     "specified_version": "Specified version",
