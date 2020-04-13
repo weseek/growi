@@ -24,6 +24,9 @@ $color-link-wiki-hover: lighten($color-link-wiki, 20%);
 $color-inline-code: $subthemecolor;
 $bgcolor-inline-code: lighten($subthemecolor, 70%);
 $border: $lightthemecolor;
+$thinborder: rgb(85, 132, 225);
+
+$bgcolor-hover: #eee;
 
 // change color of highlighted header in wiki (default: orange)
 .wiki {
