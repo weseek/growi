@@ -25,5 +25,5 @@ Slack
 
 <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
 
-Let's join our Slack channel for all to help make GROWI better.
+Please join Slack by all means to make GROWI better.
 In addition to discussing development, we also accept questions at the time of introduction.
