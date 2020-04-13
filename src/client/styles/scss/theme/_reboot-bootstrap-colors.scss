@@ -197,7 +197,7 @@ a {
   }
 
   @include hover() {
-    &:not(.list-group-item) {
+    &:not(.list-group-item):not(.dropdown-item) {
       color: $link-hover-color;
       // text-decoration: $link-hover-decoration;
     }
