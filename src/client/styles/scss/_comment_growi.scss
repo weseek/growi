@@ -56,6 +56,8 @@
 
   .page-comment {
     position: relative;
+    padding-top: 70px;
+    margin-top: -70px;
 
     // ユーザー名
     .page-comment-creator {
@@ -72,7 +74,7 @@
     // コメントセクション
     .page-comment-main {
       @extend %comment-section;
-      @include media-breakpoint-up(sm){
+      @include media-breakpoint-up(sm) {
         margin-left: 4.5em !important;
       }
       @include media-breakpoint-down(xs) {
