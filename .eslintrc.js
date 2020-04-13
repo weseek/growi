@@ -30,6 +30,12 @@ module.exports = {
         FunctionExpression: { body: 1, parameters: 2 },
       },
     ],
+    'camelcase': [
+      'error',
+      {
+        properties: "always"
+      }
+    ],
     // eslint-plugin-import rules
     'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
   },
