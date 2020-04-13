@@ -68,11 +68,11 @@
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}
     {% if page.isPortal() %}
-    <li class="nav-item">
+    <li class="nav-item dropdown">
       <a
-        {% if user %} role="button" class="nav-link" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
         {% if not user %}
-          class="dropdown-toggle dropdown-toggle-disabled"
+          class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
@@ -90,11 +90,11 @@
       </div>
     </li>
     {% else %}
-    <li class="nav-item dropdown d-flex align-items-center">
+    <li class="nav-item dropdown">
       <a
-        {% if user %} role="button" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
         {% if not user %}
-          class="dropdown-toggle dropdown-toggle-disabled"
+          class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
         {% endif %}
       >
