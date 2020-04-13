@@ -397,7 +397,7 @@
     "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
     "users_without_account": "Users without account is not accessible",
     "example": "Example",
-    "restrict_emails": "You can restrict registerable e-mail address.",
+    "restrict_emails": "You can restrict email registration to your wiki by writing an email domain (beginning with @). ",
     "for_instance": " For instance, if you use growi within a company, you can write ",
     "only_those": " Only those whose e-mail address including the company address can register.",
     "insert_single": "Please insert single e-mail address per line.",
