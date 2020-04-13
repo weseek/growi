@@ -105,7 +105,7 @@
     },
     "behavior": "Behavior",
     "behavior_desc": {
-      "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page。",
+      "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page",
       "growi_text2": "<code>/nonexistent_page</code> shows editing form",
       "growi_text3": "All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b>",
       "crowi_text1": "<code>/page</code> shows the page",
