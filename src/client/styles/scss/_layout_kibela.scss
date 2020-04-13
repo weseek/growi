@@ -70,13 +70,13 @@ body.kibela {
   }
 
   .round-corner {
-    border-radius: 0.35em;
+    border-radius: $radius;
   }
 
   .round-corner-top {
     z-index: absolute;
-    border-top: solid 0.4em #5584e1;
-    border-radius: 0.35em;
+    border-top: solid 0.4em $subthemecolor;
+    border-radius: $radius;
   }
 
   .kibela-block {
@@ -88,8 +88,8 @@ body.kibela {
     z-index: absolute;
     height: 11em;
     margin: auto;
-    border-top: solid 0.4em #5584e1;
-    border-radius: 0.35em;
+    border-top: solid 0.4em $thinborder;
+    border-radius: $radius;
   }
 
   .grw-subnav {
@@ -130,59 +130,70 @@ body.kibela {
     .list-group-item + .list-group-item.active {
       margin-top: 2px;
     }
-
-    .list-group-item.active {
-      color: #fff;
-      background: #1256a3;
-    }
-
+    
     .list-group-item {
+      background: transparent;
+      color: $color-global;
+      
       &:hover {
-        background: #eee;
+        background: $bgcolor-hover;
       }
     }
+
+    
+    .list-group-item.active {
+      color: white;
+      background: $bgcolor-navbar;
+
+      &:hover {
+        background: $bgcolor-navbar;
+      }
+    }
+
   }
 
   /* search page */
   .search-result-list,
   .page-list-li {
-    background: #f4f5f6;
+    background: $themelight;
   }
 
   /* Tabs */
   .nav.nav-tabs {
     > .nav-item {
-      color: #5882fa;
+      color: $info;
       cursor: pointer;
       background: transparent;
 
       &:hover,
       &:focus {
         > .nav-link {
-          color: #7a94d9;
+          color: $linktext-hover;
         }
       }
 
       > .nav-link {
-        color: #5882fa;
+        color: $linktext;
         border: none;
         border-radius: 3px;
       }
 
       > .nav-link.active {
         background: transparent !important;
-        border-bottom: solid 2.7px #5584e1;
+        border-bottom: solid 2.7px $thinborder;
       }
     }
+  }
 
-    .wiki {
-      h1 {
-        border-bottom: solid 2px #5584e1 !important;
-      }
 
-      h2 {
-        border-color: solid 1px #5584e1;
-      }
+  /* wiki */
+  .wiki {
+    h1 {
+      border-bottom: solid 1px $border !important;
+    }
+
+    h2 {
+      border-color: solid 1px $border;
     }
   }
 
@@ -234,11 +245,16 @@ body.kibela {
     border: 1px solid $primary;
   }
 
+  /* a tag */
+  a {
+    color: $linktext;
+  }
+
   /* edit */
   .CodeMirror {
     border: solid 1.2px #d8d8d8;
-    border-top: solid 0.3em #5584e1 !important;
-    border-radius: 0.35em;
+    border-top: solid 0.3em $border !important;
+    border-radius: $radius;
   }
 
   &.on-edit {
