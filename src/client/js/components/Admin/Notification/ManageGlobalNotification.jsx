@@ -183,16 +183,24 @@ class ManageGlobalNotification extends React.Component {
                 </div>
               )
               : (
-                <div className="form-group notify-to-option" id="slack-input">
-                  <input
-                    className="form-control"
-                    type="text"
-                    name="notificationGlobal[slackChannels]"
-                    placeholder="Slack Channel"
-                    value={this.state.slackChannelToSend}
-                    onChange={(e) => { this.onChangeSlackChannelToSend(e.target.value) }}
-                  />
-                </div>
+                <>
+                  <div className="input-group notify-to-option mb-2" id="slack-input">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="slack-shannel-addon">#</span>
+                    </div>
+                    <input
+                      className="form-control"
+                      type="text"
+                      aria-describedby="slack-shannel-addon1"
+                      name="notificationGlobal[slackChannels]"
+                      placeholder="Slack Channel"
+                      value={this.state.slackChannelToSend}
+                      onChange={(e) => { this.onChangeSlackChannelToSend(e.target.value) }}
+                    />
+                  </div>
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <p dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                </>
               )}
           </div>
 
