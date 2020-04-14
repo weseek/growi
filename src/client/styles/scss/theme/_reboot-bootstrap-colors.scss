@@ -197,7 +197,7 @@ a {
   }
 
   @include hover() {
-    &:not(.list-group-item):not(.btn) {
+    &:not(.list-group-item):not(.btn-info) {
       color: $link-hover-color;
       // text-decoration: $link-hover-decoration;
     }
