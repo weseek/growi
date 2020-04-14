@@ -16,7 +16,7 @@ const GrowiSubNavigationForUserPage = (props) => {
   const { appContainer, pageContainer } = props;
   const { pageId } = pageContainer.state;
   const [isCompactMode, setIsCompactMode] = useState(false);
-  const scrollAmountForFixed = 175;
+  const scrollAmountForFixed = 50;
   const layoutType = appContainer.getConfig().layoutType;
 
   useEffect(() => {
