@@ -165,41 +165,50 @@ class ManageGlobalNotification extends React.Component {
 
             {this.state.notifyToType === 'mail'
               ? (
-                <div className="form-group notify-to-option" id="mail-input">
-                  <input
-                    className="form-control"
-                    type="text"
-                    name="toEmail"
-                    placeholder="Email"
-                    value={this.state.emailToSend}
-                    onChange={(e) => { this.onChangeEmailToSend(e.target.value) }}
-                  />
-                  <p className="help">
+                <>
+                  <div className="input-group notify-to-option" id="mail-input">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="mail-addon"><i className="ti-email" /></span>
+                    </div>
+                    <input
+                      className="form-control"
+                      type="text"
+                      aria-describedby="mail-addon"
+                      name="toEmail"
+                      placeholder="Email"
+                      value={this.state.emailToSend}
+                      onChange={(e) => { this.onChangeEmailToSend(e.target.value) }}
+                    />
+
+                  </div>
+                  <p className="help mt-2">
                     <b>Hint: </b>
                     <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
                       <i className="icon-share-alt" />
                     </a>
                   </p>
-                </div>
+                </>
               )
               : (
                 <>
-                  <div className="input-group notify-to-option mb-2" id="slack-input">
+                  <div className="input-group notify-to-option" id="slack-input">
                     <div className="input-group-prepend">
-                      <span className="input-group-text" id="slack-shannel-addon">#</span>
+                      <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-slack" /></span>
                     </div>
                     <input
                       className="form-control"
                       type="text"
-                      aria-describedby="slack-shannel-addon1"
+                      aria-describedby="slack-channel-addon"
                       name="notificationGlobal[slackChannels]"
                       placeholder="Slack Channel"
                       value={this.state.slackChannelToSend}
                       onChange={(e) => { this.onChangeSlackChannelToSend(e.target.value) }}
                     />
                   </div>
-                  {/* eslint-disable-next-line react/no-danger */}
-                  <p dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                  <p className="help mt-2">
+                    {/* eslint-disable-next-line react/no-danger */}
+                    <p dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                  </p>
                 </>
               )}
           </div>
