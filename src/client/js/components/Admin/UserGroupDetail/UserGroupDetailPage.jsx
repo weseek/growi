@@ -16,10 +16,10 @@ class UserGroupDetailPage extends React.Component {
 
     return (
       <div>
-        <a href="/admin/user-groups" className="btn btn-outline-secondary">
+        <button type="button" href="/admin/user-groups" className="btn btn-outline-secondary">
           <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
           {t('admin:user_group_management.back_to_list')}
-        </a>
+        </button>
         <div className="mt-4 form-box">
           <UserGroupEditForm />
         </div>
