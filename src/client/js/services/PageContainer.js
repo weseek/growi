@@ -8,7 +8,7 @@ import * as toastr from 'toastr';
 import { throttle } from 'throttle-debounce';
 
 const logger = loggerFactory('growi:services:PageContainer');
-const scrollAmountForFixed = 122;
+const scrollAmountForFixed = 50;
 
 /**
  * Service container related to Page
