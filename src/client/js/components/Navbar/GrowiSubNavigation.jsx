@@ -20,7 +20,7 @@ const GrowiSubNavigation = (props) => {
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
   } = pageContainer.state;
-  const compactClassName = isCompactMode ? 'grw-compact-subnavbar w-100' : null;
+  const compactClassName = isCompactMode ? 'grw-compact-subnavbar' : null;
 
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
