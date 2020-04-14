@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
+import loginForm from './components/LoginFoem';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
@@ -63,6 +64,8 @@ logger.info('unstated containers have been initialized');
  *  value: React Element
  */
 Object.assign(componentMappings, {
+  'login-form': <LoginForm crowi={appContainer} />,
+
   'search-page': <SearchPage crowi={appContainer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,

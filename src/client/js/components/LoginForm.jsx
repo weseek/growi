@@ -1,33 +1,32 @@
-{% extends 'layout/layout.html' %}
+import React from 'react';
+import PropTypes from 'prop-types';
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
 
-{% block html_base_css %}login-page nologin{% endblock %}
+class LoginForm extends React.Component {
 
-{% block html_title %}{{ customizeService.generateCustomTitle(t('Sign in')) }}{% endblock %}
+  constructor(props) {
+    super(props);
 
+    this.state = {
+    };
 
+  }
 
-{#
- # Remove default contents
- #}
-{% block html_head_loading_legacy %}
-{% endblock %}
-{% block html_head_loading_app %}
-{% endblock %}
-{% block layout_head_nav %}
-{% endblock %}
-{% block sidebar %}
-{% endblock %}
+  componentDidMount() {
+  }
 
+  componentWillUnmount() {
+  }
 
+  render() {
 
-{% block layout_main %}
+    return (
+      <div className="main container-fluid">
 
-<div class="main container-fluid">
-
-  <div class="row">
+        {/*  <div class="row">
     <div class="col-md-12">
-      <div id="login-form">
-      <!-- <div class="login-header mx-auto">
+      <div class="login-header mx-auto">
         <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
         <h1>{{ appService.getAppTitle() }}</h1>
 
@@ -102,7 +101,7 @@
             {% endif %}
           </div>
         </div>
-      </div>
+     </div>
       <div class="row mb-5">
         <div class="col-md-12">
 
@@ -381,41 +380,33 @@
 
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
-  </div>
+  </div>   */}
 </div>
+    );
+  }
 
-{% endblock %}
+}
 
+/**
+ * Wrapper component for using unstated
+ */
+const LoginFormWrapper = (props) => {
+  return createSubscribedElement(LoginForm, props, [AppContainer]);
+};
 
-{% block body_end %}
-<!-- <script>
-  // login
-  $('#register').on('click', function() {
-    $('#login-dialog').addClass('to-flip');
-    return false;
-  });
-  $('#login').on('click', function() {
-    $('#login-dialog').removeClass('to-flip');
-    return false;
-  });
+LoginForm.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  $('#register-form input[name="registerForm[username]"]').change(function(e) {
-    var username = $(this).val();
-    $('#login-dialog').removeClass('has-error');
-    $('#input-group-username').removeClass('has-error');
-    $('#help-block-username').html("");
+  keyword: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
+  onInputChange: PropTypes.func,
+};
 
-    $.getJSON('/_api/check_username', {username: username}, function(json) {
-      if (!json.valid) {
-        $('#help-block-username').html(
-          '<i class="icon-fw icon-ban"></i> This User ID is not available.'
-        );
-        $('#login-dialog').addClass('has-error');
-        $('#input-group-username').addClass('has-error');
-      }
-    });
-  });
-</script> -->
-{% endblock %}
+LoginForm.defaultProps = {
+  onInputChange: () => { },
+};
+
+export default LoginFormWrapper;
