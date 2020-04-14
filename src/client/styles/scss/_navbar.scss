@@ -7,15 +7,9 @@
     padding: 0 1rem;
   }
 
-  #personal-dropdown {
-    & > .dropdown-menu {
-      // Adjust to be on top of the growi subnavigation
-      z-index: $zindex-sticky + 10;
-    }
-    &::after {
-      // hide caret
-      content: none;
-    }
+  #personal-dropdown::after {
+    // hide caret
+    content: none;
   }
 
   .nav-link {
