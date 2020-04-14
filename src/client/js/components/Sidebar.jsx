@@ -1,73 +1,82 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import BacklogIcon from '@atlaskit/icon/glyph/backlog';
-import BoardIcon from '@atlaskit/icon/glyph/board';
-import GraphLineIcon from '@atlaskit/icon/glyph/graph-line';
-import ShortcutIcon from '@atlaskit/icon/glyph/shortcut';
-import { JiraWordmark } from '@atlaskit/logo';
-
 import {
-  GroupHeading,
-  HeaderSection,
-  Item,
+  withNavigationUIController,
   LayoutManager,
-  MenuSection,
   NavigationProvider,
-  Separator,
-  Wordmark,
   ThemeProvider, modeGenerator,
 } from '@atlaskit/navigation-next';
+
+import Drawer from '@atlaskit/drawer';
 
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
+import GrowiLogo from './GrowiLogo';
 import SidebarNav from './Sidebar/SidebarNav';
+import History from './Sidebar/History';
+import CustomSidebar from './Sidebar/CustomSidebar';
 
 class Sidebar extends React.Component {
 
   static propTypes = {
+    navigationUIController: PropTypes.any.isRequired,
   };
 
   state = {
+    currentContentsId: 'custom',
+    isDrawerOpen: false,
   };
 
-  renderSidebarContents = () => (
+  openDrawer = () => this.setState({ isDrawerOpen: true });
+
+  closeDrawer = () => this.setState({ isDrawerOpen: false });
+
+  itemSelectedHandler = (contentsId) => {
+    const { navigationUIController } = this.props;
+    const { currentContentsId } = this.state;
+
+    // already selected
+    if (currentContentsId === contentsId) {
+      navigationUIController.toggleCollapse();
+    }
+    // switch and expand
+    else {
+      this.setState({ currentContentsId: contentsId });
+      navigationUIController.expand();
+    }
+
+    // if (contentsId === 'drawer') {
+    //   this.openDrawer();
+    // }
+  }
+
+  renderGlobalNavigation = () => (
     <>
-      <HeaderSection>
-        { () => (
-          <div className="grw-product-nav-header">
-            <Wordmark wordmark={JiraWordmark} />
-          </div>
-        ) }
-      </HeaderSection>
-      <MenuSection>
-        { () => (
-          <div className="grw-product-nav-menu">
-            <Item
-              before={BacklogIcon}
-              text="Backlog"
-              isSelected
-            />
-            <Item
-              before={BoardIcon}
-              text="Active sprints"
-            />
-            <Item
-              before={GraphLineIcon}
-              text="Reports"
-            />
-            <Separator />
-            <GroupHeading>Shortcuts</GroupHeading>
-            <Item before={ShortcutIcon} text="Project space" />
-            <Item before={ShortcutIcon} text="Looooooooooooooooooooooooooooooong Menu" />
-          </div>
-        ) }
-      </MenuSection>
+      <div className="grw-logo">
+        <a href="/"><GrowiLogo /></a>
+      </div>
+      <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
+      <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
+        <code>Drawer contents</code>
+      </Drawer>
     </>
   );
+
+  renderSidebarContents = () => {
+    let contents = <CustomSidebar></CustomSidebar>;
+
+    switch (this.state.currentContentsId) {
+      case 'history':
+        contents = <History></History>;
+        break;
+    }
+
+    return contents;
+  }
 
   render() {
     return (
@@ -80,31 +89,34 @@ class Sidebar extends React.Component {
           }),
         })}
       >
-        <NavigationProvider>
-          <LayoutManager
-            globalNavigation={SidebarNav}
-            productNavigation={() => null}
-            containerNavigation={this.renderSidebarContents}
-            experimental_flyoutOnHover
-            experimental_alternateFlyoutBehaviour
-            // experimental_fullWidthFlyout
-            shouldHideGlobalNavShadow
-            showContextualNavigation
-          >
-          </LayoutManager>
-        </NavigationProvider>
+        <LayoutManager
+          globalNavigation={this.renderGlobalNavigation}
+          productNavigation={() => null}
+          containerNavigation={this.renderSidebarContents}
+          experimental_hideNavVisuallyOnCollapse
+          experimental_flyoutOnHover
+          experimental_alternateFlyoutBehaviour
+          // experimental_fullWidthFlyout
+          shouldHideGlobalNavShadow
+          showContextualNavigation
+        >
+        </LayoutManager>
       </ThemeProvider>
     );
   }
 
 }
 
+const SidebarWithNavigationUI = withNavigationUIController(Sidebar);
+const SidebarWithNavigationUIAndTranslation = withTranslation()(SidebarWithNavigationUI);
 
 /**
  * Wrapper component for using unstated
  */
 const SidebarWrapper = (props) => {
-  return createSubscribedElement(Sidebar, props, [AppContainer]);
+  return createSubscribedElement(SidebarWithNavigationUIAndTranslation, props, [AppContainer]);
 };
 
-export default withTranslation()(SidebarWrapper);
+export default () => (
+  <NavigationProvider><SidebarWrapper /></NavigationProvider>
+);

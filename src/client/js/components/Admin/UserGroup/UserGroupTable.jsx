@@ -69,7 +69,7 @@ class UserGroupTable extends React.Component {
                   <td>
                     <ul className="list-inline">
                       {this.state.userGroupRelations[group._id].map((user) => {
-                        return <li key={user._id} className="list-inline-item badge badge-pill badge-primary">{this.xss.process(user.username)}</li>;
+                        return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{this.xss.process(user.username)}</li>;
                       })}
                     </ul>
                   </td>
@@ -81,7 +81,7 @@ class UserGroupTable extends React.Component {
                           <button
                             type="button"
                             id={`admin-group-menu-button-${group._id}`}
-                            className="btn btn-light btn-sm dropdown-toggle"
+                            className="btn btn-outline-secondary btn-sm dropdown-toggle"
                             data-toggle="dropdown"
                           >
                             <i className="icon-settings"></i>

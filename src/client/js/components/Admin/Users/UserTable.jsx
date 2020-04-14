@@ -42,7 +42,7 @@ class UserTable extends React.Component {
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'badge-warning';
+        additionalClassName = 'badge-secondary';
         text = 'Suspended';
         break;
       case 4:

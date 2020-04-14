@@ -294,7 +294,7 @@ class PageEditorByHackmd extends React.Component {
 
           <div className="text-center hackmd-discard-button-container mb-3">
             <button
-              className="btn btn-default btn-lg waves-effect waves-light"
+              className="btn btn-outline-secondary btn-lg waves-effect waves-light"
               type="button"
               onClick={() => { return this.discardChanges() }}
             >

@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
@@ -9,46 +9,47 @@ import TrayIcon from '@atlaskit/icon/glyph/tray';
 import {
   GlobalNav,
 } from '@atlaskit/navigation-next';
-import Drawer from '@atlaskit/drawer';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
-import GrowiLogo from '../GrowiLogo';
 
 class SidebarNav extends React.Component {
 
-  propTypes = {
+  static propTypes = {
+    currentContentsId: PropTypes.string,
+    onItemSelected: PropTypes.func,
   };
 
   state = {
-    isDrawerOpen: false,
   };
 
-  openDrawer = () => this.setState({ isDrawerOpen: true });
+  itemSelectedHandler = (contentsId) => {
+    const { onItemSelected } = this.props;
+    if (onItemSelected != null) {
+      onItemSelected(contentsId);
+    }
+  }
 
-  closeDrawer = () => this.setState({ isDrawerOpen: false });
+  generateSidebarItemObj(id, icon, label) {
+    return {
+      id,
+      icon,
+      label,
+      isSelected: this.props.currentContentsId === id,
+      onClick: () => this.itemSelectedHandler(id),
+    };
+  }
 
   render() {
-    const { isDrawerOpen } = this.state;
     return (
-      <>
-        <div className="grw-logo">
-          <GrowiLogo />
-        </div>
-        <GlobalNav
-          primaryItems={[
-            { id: 'create', icon: EditIcon, label: 'Create' },
-            {
-              id: 'drawer', icon: TrayIcon, label: 'Drawer', onClick: this.openDrawer,
-            },
-          ]}
-          secondaryItems={[]}
-        />
-        <Drawer onClose={this.closeDrawer} isOpen={isDrawerOpen} width="wide">
-          <code>Drawer contents</code>
-        </Drawer>
-      </>
+      <GlobalNav
+        primaryItems={[
+          this.generateSidebarItemObj('custom', EditIcon, 'Custom Sidebar'),
+          this.generateSidebarItemObj('history', TrayIcon, 'History'),
+        ]}
+        secondaryItems={[]}
+      />
     );
   }
 
