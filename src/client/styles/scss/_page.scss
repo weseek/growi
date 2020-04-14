@@ -68,8 +68,25 @@
       }
 
       .revision-history-diff {
+        max-width: 30%;
         padding-left: 40px;
         color: #333;
+        .d2h-file-wrapper {
+          max-width: 30%;
+        }
+        .d2h-file-side-diff {
+          max-width: 30%;
+        }
+        .d2h-code-line-ctn {
+          max-width: 30%;
+        }
+        tr {
+          max-width: 20%;
+          overflow: hidden !important;
+        }
+        .d2h-cntx {
+          max-width: 30%;
+        }
       }
     }
 
