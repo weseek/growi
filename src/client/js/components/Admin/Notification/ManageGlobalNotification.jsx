@@ -181,7 +181,7 @@ class ManageGlobalNotification extends React.Component {
                     />
 
                   </div>
-                  <p className="help mt-2">
+                  <p className="help p-2">
                     <b>Hint: </b>
                     <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
                       <i className="icon-share-alt" />
@@ -205,9 +205,9 @@ class ManageGlobalNotification extends React.Component {
                       onChange={(e) => { this.onChangeSlackChannelToSend(e.target.value) }}
                     />
                   </div>
-                  <p className="help mt-2">
+                  <p className="p-2">
                     {/* eslint-disable-next-line react/no-danger */}
-                    <p dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                    <span dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
                   </p>
                 </>
               )}
