@@ -25,6 +25,10 @@ $themecolor: #000080;
 $themelight: #f0f8ff;
 $accentcolor: #ffd700;
 
+.grw-navbar {
+  border-bottom: $accentcolor 4px solid;
+}
+
 //== Light Mode
 //
 html:not([dark]) {
