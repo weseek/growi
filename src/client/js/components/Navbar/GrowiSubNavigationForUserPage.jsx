@@ -26,7 +26,7 @@ const GrowiSubNavigationForUserPage = (props) => {
   }, []);
 
   return (
-    <div className={`row ${(isCompactMode && layoutType === 'growi') && 'grw-compact-subnavbar'}`}>
+    <div className={`row px-3 py-1 ${(isCompactMode && layoutType === 'growi') && 'grw-compact-subnavbar'}`}>
 
       <div className="col-12">
         {/* Page Path */}
