@@ -13,6 +13,14 @@
 // $light: #;
 // $dark: #;
 
+// add background-image
+#page-wrapper {
+  background-image: url('/images/themes/antarctic/bg.svg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+}
+
 $themecolor: #000080;
 $themelight: #f0f8ff;
 $accentcolor: #ffd700;
