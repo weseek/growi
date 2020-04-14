@@ -181,7 +181,7 @@ class ManageGlobalNotification extends React.Component {
                     />
 
                   </div>
-                  <p className="help p-2">
+                  <p className="p-2">
                     <b>Hint: </b>
                     <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
                       <i className="icon-share-alt" />
