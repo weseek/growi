@@ -189,7 +189,7 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-xs-12">
-                <legend>Page Collections</legend>
+                <legend>MongoDB Page Collections</legend>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
