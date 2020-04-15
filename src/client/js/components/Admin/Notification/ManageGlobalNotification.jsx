@@ -193,7 +193,7 @@ class ManageGlobalNotification extends React.Component {
                 <>
                   <div className="input-group notify-to-option" id="slack-input">
                     <div className="input-group-prepend">
-                      <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-slack" /></span>
+                      <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
                     </div>
                     <input
                       className="form-control"
