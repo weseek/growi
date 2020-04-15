@@ -208,7 +208,7 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-xs-12">
-                <legend>Other Collections</legend>
+                <legend>MongoDB Other Collections</legend>
                 {this.renderOthers()}
               </div>
             </div>
