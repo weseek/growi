@@ -126,7 +126,7 @@ class GlobalNotificationList extends React.Component {
                 {notification.__t === 'mail'
                   && <span data-toggle="tooltip" data-placement="top" title="Email"><i className="ti-email"></i> {notification.toEmail}</span>}
                 {notification.__t === 'slack'
-                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-slack"></i> {notification.slackChannels}</span>}
+                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-hashtag"></i> {notification.slackChannels}</span>}
               </td>
               <td className="td-abs-center">
                 <div className="dropdown">
