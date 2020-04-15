@@ -374,10 +374,12 @@ export default class AppContainer extends Container {
 
     // switch to dark mode
     if (isDarkMode) {
+      document.documentElement.removeAttribute('light');
       document.documentElement.setAttribute('dark', 'true');
     }
     // switch to light mode
     else {
+      document.documentElement.setAttribute('light', 'true');
       document.documentElement.removeAttribute('dark');
     }
   }
