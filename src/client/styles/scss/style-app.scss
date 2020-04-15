@@ -8,8 +8,10 @@
 // vendor
 @import 'vendor';
 
-// override bootstrap
-@import 'override-bootstrap';
+// override bootstrap against to 'html[plain]' for GROWI theming
+html[plain] {
+  @import 'override-bootstrap';
+}
 
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';
@@ -20,7 +22,7 @@
 @import 'atoms/spinners';
 @import 'atoms/custom_control';
 
-// crowi component
+// growi component
 @import 'admin';
 @import 'attachments';
 @import 'comment';
