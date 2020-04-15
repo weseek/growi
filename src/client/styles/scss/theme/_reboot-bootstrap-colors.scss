@@ -190,17 +190,13 @@ body {
 //
 
 a {
-  :not(.badge) {
-    color: $link-color;
-    // text-decoration: $link-decoration;
-    background-color: transparent; // Remove the gray background on active links in IE 10.
-  }
+  color: $link-color;
+  text-decoration: $link-decoration;
+  background-color: transparent; // Remove the gray background on active links in IE 10.
 
   @include hover() {
-    &:not(.list-group-item) {
-      color: $link-hover-color;
-      // text-decoration: $link-hover-decoration;
-    }
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
   }
 }
 
