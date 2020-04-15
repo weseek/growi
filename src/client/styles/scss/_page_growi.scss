@@ -1,5 +1,7 @@
 .growi {
   header {
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-sticky - 100;
     ul.authors {
       padding-left: 1.5em;
       margin: 0;

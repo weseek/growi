@@ -128,7 +128,7 @@ class LdapSecuritySetting extends React.Component {
               <div className="col-6">
                 <div className="dropdown">
                   <button
-                    className="btn btn-light dropdown-toggle"
+                    className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
                     data-toggle="dropdown"
@@ -425,7 +425,12 @@ class LdapSecuritySetting extends React.Component {
                 >
                   {t('Update')}
                 </button>
-                <button type="button" className="btn btn-light ml-2" onClick={this.openLdapAuthTestModal}>{t('security_setting.ldap.test_config')}</button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary ml-2"
+                  onClick={this.openLdapAuthTestModal}
+                >{t('security_setting.ldap.test_config')}
+                </button>
               </div>
             </div>
 

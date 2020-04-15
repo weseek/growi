@@ -25,7 +25,7 @@
     </div>
 
     {# relocate #revision-toc #}
-    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container pr-2">
       {% include './widget/liker-and-seenusers.html' %}
       <div id="revision-toc" class="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
         <div id="revision-toc-content" class="revision-toc-content"></div>
@@ -34,7 +34,7 @@
 
   </div>
 
-  <div class="row page-list hidden-print {% if page.isPortal() %}mt-5{% endif %}">
+  <div class="row page-list d-print-none {% if page.isPortal() %}mt-5{% endif %}">
     <div class="col-md-10">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>

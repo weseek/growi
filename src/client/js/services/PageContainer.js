@@ -8,7 +8,7 @@ import * as toastr from 'toastr';
 import { throttle } from 'throttle-debounce';
 
 const logger = loggerFactory('growi:services:PageContainer');
-const scrollAmountForFixed = 122;
+const scrollAmountForFixed = 50;
 
 /**
  * Service container related to Page
@@ -41,7 +41,7 @@ export default class PageContainer extends Container {
       revisionAuthor: JSON.parse(mainContent.getAttribute('data-page-revision-author')),
       path: mainContent.getAttribute('data-path'),
       tocHtml: '',
-      isLiked: mainContent.getAttribute('data-page-is-liked'),
+      isLiked: JSON.parse(mainContent.getAttribute('data-page-is-liked')),
       seenUserIds: [],
       likerUserIds: [],
       createdAt: mainContent.getAttribute('data-page-created-at'),

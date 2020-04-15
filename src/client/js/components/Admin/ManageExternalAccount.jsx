@@ -48,7 +48,7 @@ class ManageExternalAccount extends React.Component {
     return (
       <Fragment>
         <p>
-          <a className="btn btn-default" href="/admin/users">
+          <a className="btn btn-outline-secondary" href="/admin/users">
             <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
             {t('admin:user_management.back_to_user_management')}
           </a>

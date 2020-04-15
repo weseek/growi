@@ -57,7 +57,7 @@ class DisassociateModal extends React.Component {
           <p dangerouslySetInnerHTML={{ __html: t('personal_settings.disassociate_external_account_desc', { providerType, accountId }) }} />
         </ModalBody>
         <ModalFooter>
-          <button type="button" className="btn btn-sm btn-default" onClick={this.props.onClose}>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>
             { t('Cancel') }
           </button>
           <button type="button" className="btn btn-sm btn-danger" onClick={this.onClickDisassociateBtn}>

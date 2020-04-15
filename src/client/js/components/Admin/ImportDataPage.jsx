@@ -216,7 +216,7 @@ class ImportDataPage extends React.Component {
                     name="Esa"
                     type="button"
                     id="importFromEsa"
-                    className="btn btn-light btn-esa"
+                    className="btn btn-outline-secondary btn-esa"
                     onClick={this.esaHandleSubmitTest}
                     value={t('admin:importer_management.esa_settings.test_connection')}
                   />
@@ -309,7 +309,7 @@ class ImportDataPage extends React.Component {
                     name="Qiita"
                     type="button"
                     id="importFromQiita"
-                    className="btn btn-light btn-qiita"
+                    className="btn btn-outline-secondary btn-qiita"
                     onClick={this.qiitaHandleSubmitTest}
                     value={t('admin:importer_management.qiita_settings.test_connection')}
                   />

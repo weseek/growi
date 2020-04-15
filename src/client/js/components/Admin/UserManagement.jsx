@@ -95,7 +95,7 @@ class UserManagement extends React.Component {
     const { t, adminUsersContainer } = this.props;
 
     const pager = (
-      <div className="pull-right">
+      <div className="pull-right my-3">
         <PaginationWrapper
           activePage={adminUsersContainer.state.activePage}
           changePage={this.handlePage}
@@ -187,7 +187,7 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-warning mr-2">
+              <div className="custom-control custom-checkbox custom-checkbox-secondary mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
@@ -196,7 +196,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('suspended') }}
                 />
                 <label className="custom-control-label" htmlFor="c4">
-                  <span className="badge badge-warning d-inline-block vt mt-1">Suspended</span>
+                  <span className="badge badge-secondary d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
