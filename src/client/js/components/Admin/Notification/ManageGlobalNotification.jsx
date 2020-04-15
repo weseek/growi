@@ -216,66 +216,78 @@ class ManageGlobalNotification extends React.Component {
           <div className="offset-1 col-sm-5">
             <div className="form-group">
               <h3>{t('notification_setting.trigger_events')}</h3>
-              <TriggerEventCheckBox
-                checkbox="success"
-                event="pageCreate"
-                checked={this.state.triggerEvents.has('pageCreate')}
-                onChange={() => this.onChangeTriggerEvents('pageCreate')}
-              >
-                <span className="badge badge-pill badge-success">
-                  <i className="icon-doc"></i> CREATE
-                </span>
-              </TriggerEventCheckBox>
-              <TriggerEventCheckBox
-                checkbox="warning"
-                event="pageEdit"
-                checked={this.state.triggerEvents.has('pageEdit')}
-                onChange={() => this.onChangeTriggerEvents('pageEdit')}
-              >
-                <span className="badge badge-pill badge-warning">
-                  <i className="icon-pencil"></i>EDIT
-                </span>
-              </TriggerEventCheckBox>
-              <TriggerEventCheckBox
-                checkbox="warning"
-                event="pageMove"
-                checked={this.state.triggerEvents.has('pageMove')}
-                onChange={() => this.onChangeTriggerEvents('pageMove')}
-              >
-                <span className="badge badge-pill badge-warning">
-                  <i className="icon-action-redo"></i>MOVE
-                </span>
-              </TriggerEventCheckBox>
-              <TriggerEventCheckBox
-                checkbox="danger"
-                event="pageDelete"
-                checked={this.state.triggerEvents.has('pageDelete')}
-                onChange={() => this.onChangeTriggerEvents('pageDelete')}
-              >
-                <span className="badge badge-pill badge-danger">
-                  <i className="icon-fire"></i>DELETE
-                </span>
-              </TriggerEventCheckBox>
-              <TriggerEventCheckBox
-                checkbox="info"
-                event="pageLike"
-                checked={this.state.triggerEvents.has('pageLike')}
-                onChange={() => this.onChangeTriggerEvents('pageLike')}
-              >
-                <span className="badge badge-pill badge-info">
-                  <i className="icon-like"></i>LIKE
-                </span>
-              </TriggerEventCheckBox>
-              <TriggerEventCheckBox
-                checkbox="secondary"
-                event="comment"
-                checked={this.state.triggerEvents.has('comment')}
-                onChange={() => this.onChangeTriggerEvents('comment')}
-              >
-                <span className="badge badge-pill badge-light">
-                  <i className="icon-bubble"></i>POST
-                </span>
-              </TriggerEventCheckBox>
+              <div className="my-1">
+                <TriggerEventCheckBox
+                  checkbox="success"
+                  event="pageCreate"
+                  checked={this.state.triggerEvents.has('pageCreate')}
+                  onChange={() => this.onChangeTriggerEvents('pageCreate')}
+                >
+                  <span className="badge badge-pill badge-success">
+                    <i className="icon-doc mr-1" /> CREATE
+                  </span>
+                </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
+                <TriggerEventCheckBox
+                  checkbox="warning"
+                  event="pageEdit"
+                  checked={this.state.triggerEvents.has('pageEdit')}
+                  onChange={() => this.onChangeTriggerEvents('pageEdit')}
+                >
+                  <span className="badge badge-pill badge-warning">
+                    <i className="icon-pencil mr-1" />EDIT
+                  </span>
+                </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
+                <TriggerEventCheckBox
+                  checkbox="warning"
+                  event="pageMove"
+                  checked={this.state.triggerEvents.has('pageMove')}
+                  onChange={() => this.onChangeTriggerEvents('pageMove')}
+                >
+                  <span className="badge badge-pill badge-warning">
+                    <i className="icon-action-redo mr-1" />MOVE
+                  </span>
+                </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
+                <TriggerEventCheckBox
+                  checkbox="danger"
+                  event="pageDelete"
+                  checked={this.state.triggerEvents.has('pageDelete')}
+                  onChange={() => this.onChangeTriggerEvents('pageDelete')}
+                >
+                  <span className="badge badge-pill badge-danger">
+                    <i className="icon-fire mr-1" />DELETE
+                  </span>
+                </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
+                <TriggerEventCheckBox
+                  checkbox="info"
+                  event="pageLike"
+                  checked={this.state.triggerEvents.has('pageLike')}
+                  onChange={() => this.onChangeTriggerEvents('pageLike')}
+                >
+                  <span className="badge badge-pill badge-info">
+                    <i className="icon-like mr-1" />LIKE
+                  </span>
+                </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
+                <TriggerEventCheckBox
+                  checkbox="secondary"
+                  event="comment"
+                  checked={this.state.triggerEvents.has('comment')}
+                  onChange={() => this.onChangeTriggerEvents('comment')}
+                >
+                  <span className="badge badge-pill badge-secondary">
+                    <i className="icon-bubble mr-1" />POST
+                  </span>
+                </TriggerEventCheckBox>
+              </div>
 
             </div>
           </div>
