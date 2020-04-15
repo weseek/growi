@@ -229,7 +229,6 @@ class ManageGlobalNotification extends React.Component {
                 </TriggerEventCheckBox>
               </div>
               <div className="my-1">
-
                 <TriggerEventCheckBox
                   checkbox="warning"
                   event="pageEdit"
@@ -264,6 +263,8 @@ class ManageGlobalNotification extends React.Component {
                     <i className="icon-fire mr-1" />DELETE
                   </span>
                 </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
                 <TriggerEventCheckBox
                   checkbox="info"
                   event="pageLike"
@@ -274,6 +275,8 @@ class ManageGlobalNotification extends React.Component {
                     <i className="icon-like mr-1" />LIKE
                   </span>
                 </TriggerEventCheckBox>
+              </div>
+              <div className="my-1">
                 <TriggerEventCheckBox
                   checkbox="secondary"
                   event="comment"
