@@ -1,9 +1,41 @@
-// import colors
-@import '../../agile-admin/inverse/colors/kibela';
-@import 'layout_kibela_valiable';
+@import '../variables';
+@import '../override-bootstrap-variables';
 
-// apply agile-admin theme
-@import '../../agile-admin/inverse/style';
+// Light Mode
+html:not([dark]) {
+  $bgcolor-theme: rgb(18, 86, 163);
+  $themelight: #f4f5f6;
+  $subthemecolor: rgb(90, 149, 216);
+  $lightthemecolor: rgba(181, 203, 247, 0.61);
 
-// override
-@import 'override-agileadmin';
+  $bgcolor-navbar: $bgcolor-theme;
+  $bgcolor-global: $themelight;
+  $bgcolor-global: $themelight;
+
+  $color-header: $bgcolor-theme;
+  $color-global: #3c4a60;
+  $color-link: rgb(74, 109, 204);
+  $color-link-hover: lighten($color-link, 12%);
+  $sidebar-text: $bgcolor-theme;
+  $color-reversal: #eee;
+
+  $primary: $bgcolor-theme;
+  $info: lighten($bgcolor-theme, 20%);
+
+  $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+  $color-link-wiki: lighten($bgcolor-theme, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-inline-code: $subthemecolor;
+  $bgcolor-inline-code: lighten($subthemecolor, 70%);
+
+  // border colors
+  $border-color-theme: $lightthemecolor;
+  $thickborder: #5584e1;
+
+  // dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  @import 'apply-colors-kibela';
+}
