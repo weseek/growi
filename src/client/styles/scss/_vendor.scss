@@ -4,8 +4,8 @@
 @import '~bootstrap/scss/mixins';
 @import '~bootstrap/scss/utilities';
 
-// import styles against to 'html[plain]' for GROWI theming
-html[plain] {
+// increase specificity with ':root' for GROWI theming
+:root {
   // import bootstrap
   @import '~bootstrap/scss/bootstrap';
   // import toastr styles
