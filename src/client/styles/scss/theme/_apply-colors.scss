@@ -32,9 +32,6 @@ $link-hover-color: $color-link-hover;
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
   }
-  &:hover:not(.active) {
-    color: $color-dropdown-link-hover;
-  }
 }
 
 // Form
