@@ -152,7 +152,7 @@ class RevisionPath extends React.Component {
     });
 
     const editable = [];
-    if (this.state.isInTrash === false) {
+    if ((this.state.isInTrash === false) && (this.props.pagePath !== '/trash')) {
       editable.push(
         <a href="#edit" className="btn btn-default btn-edit" style={buttonStyle}>
           <i className="icon-note" />
