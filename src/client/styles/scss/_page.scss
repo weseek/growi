@@ -33,6 +33,7 @@
 .main .content-main .revision-history {
   .revision-history-list {
     .revision-history-outer {
+      max-width: 50%;
       // add border-top except of first element
       &:not(:first-of-type) {
         border-top: 1px solid $border;
@@ -68,27 +69,31 @@
       }
 
       .revision-history-diff {
-        max-width: 30%;
+        // max-width: 30%;
         padding-left: 40px;
         color: #333;
-        // .d2h-file-wrapper {
-        //   max-width: 30%;
+        // // .d2h-file-wrapper {
+        // //   max-width: 30%;
+        // // }
+        // // .d2h-file-side-diff {
+        // //   max-width: 30%;
+        // // }
+        // // .d2h-code-line-ctn {
+        // //   max-width: 30%;
+        // // }
+        // tr {
+        //   max-width: 20%;
+        //   overflow: hidden !important;
         // }
-        // .d2h-file-side-diff {
-        //   max-width: 30%;
-        // }
-        // .d2h-code-line-ctn {
-        //   max-width: 30%;
-        // }
-        tr {
-          max-width: 20%;
-          overflow: hidden !important;
-        }
-        // .d2h-cntx {
-        //   max-width: 30%;
-        // }
+        // // .d2h-cntx {
+        // //   max-width: 30%;
+        // // }
       }
     }
+
+    // .hoge {
+    //   max-width: 50%;
+    // }
 
     li {
       position: relative;
