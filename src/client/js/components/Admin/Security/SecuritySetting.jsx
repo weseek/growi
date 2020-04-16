@@ -167,7 +167,7 @@ class SecuritySetting extends React.Component {
                   {t('security_setting.admin_and_author')}
                 </a>
               </div>
-              <p className="help-block small">
+              <p className="form-text text-muted small">
                 {t('security_setting.complete_deletion_explain')}
               </p>
             </div>

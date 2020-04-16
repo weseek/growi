@@ -96,7 +96,7 @@ class GoogleSecurityManagement extends React.Component {
               value={adminGoogleSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {!adminGeneralSecurityContainer.state.appSiteUrl && (
               <div className="alert alert-danger">
                 <i
@@ -125,7 +125,7 @@ class GoogleSecurityManagement extends React.Component {
                   defaultValue={adminGoogleSecurityContainer.state.googleClientId || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GOOGLE_CLIENT_ID' }) }} />
                 </p>
               </div>
@@ -141,7 +141,7 @@ class GoogleSecurityManagement extends React.Component {
                   defaultValue={adminGoogleSecurityContainer.state.googleClientSecret || ''}
                   onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GOOGLE_CLIENT_SECRET' }) }} />
                 </p>
               </div>
@@ -163,7 +163,7 @@ class GoogleSecurityManagement extends React.Component {
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
                 </p>
               </div>

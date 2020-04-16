@@ -112,7 +112,7 @@ class LdapSecuritySetting extends React.Component {
                 />
                 <small>
                   <p
-                    className="help-block"
+                    className="form-text text-muted"
                     // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.server_url_detail') }}
                   />
@@ -164,7 +164,7 @@ class LdapSecuritySetting extends React.Component {
                   onChange={e => adminLdapSecurityContainer.changeBindDN(e.target.value)}
                 />
                 {(adminLdapSecurityContainer.state.isUserBind === true) ? (
-                  <p className="help-block passport-ldap-userbind">
+                  <p className="form-text text-muted passport-ldap-userbind">
                     <small>
                       {t('security_setting.ldap.bind_DN_user_detail1')}<br />
                       {/* eslint-disable-next-line react/no-danger */}
@@ -175,7 +175,7 @@ class LdapSecuritySetting extends React.Component {
                   </p>
                 )
                   : (
-                    <p className="help-block passport-ldap-managerbind">
+                    <p className="form-text text-muted passport-ldap-managerbind">
                       <small>
                         {t('security_setting.ldap.bind_DN_manager_detail')}<br />
                         {t('security_setting.example')}1: <code>uid=admin,dc=domain,dc=com</code><br />
@@ -229,7 +229,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapSearchFilter || ''}
                   onChange={e => adminLdapSecurityContainer.changeSearchFilter(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {t('security_setting.ldap.search_filter_detail1')}<br />
                     {/* eslint-disable-next-line react/no-danger */}
@@ -238,7 +238,7 @@ class LdapSecuritySetting extends React.Component {
                     <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.search_filter_detail3') }} />
                   </small>
                 </p>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {t('security_setting.example')}1 - {t('security_setting.ldap.search_filter_example1')}:
                     <code>(|(uid={'{{ username }}'})(mail={'{{ username }}'}))</code><br />
@@ -266,7 +266,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapAttrMapUsername || ''}
                   onChange={e => adminLdapSecurityContainer.changeAttrMapUsername(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.username_detail') }} />
                 </p>
@@ -290,7 +290,7 @@ class LdapSecuritySetting extends React.Component {
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
                 </p>
@@ -310,7 +310,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapAttrMapMail || ''}
                   onChange={e => adminLdapSecurityContainer.changeAttrMapMail(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {t('security_setting.ldap.mail_detail')}
                   </small>
@@ -330,7 +330,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapAttrMapName || ''}
                   onChange={e => adminLdapSecurityContainer.changeAttrMapName(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {t('security_setting.ldap.name_detail')}
                   </small>
@@ -355,7 +355,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapGroupSearchBase || ''}
                   onChange={e => adminLdapSecurityContainer.changeGroupSearchBase(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {/* eslint-disable-next-line react/no-danger */}
                     <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_base_DN_detail') }} /><br />
@@ -377,7 +377,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapGroupSearchFilter || ''}
                   onChange={e => adminLdapSecurityContainer.changeGroupSearchFilter(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {/* eslint-disable react/no-danger */}
                     <span dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_filter_detail1') }} /><br />
@@ -386,7 +386,7 @@ class LdapSecuritySetting extends React.Component {
                     {/* eslint-enable react/no-danger */}
                   </small>
                 </p>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small>
                     {t('security_setting.example')}:
                     {/* eslint-disable-next-line react/no-danger */}
@@ -409,7 +409,7 @@ class LdapSecuritySetting extends React.Component {
                   defaultValue={adminLdapSecurityContainer.state.ldapGroupDnProperty || ''}
                   onChange={e => adminLdapSecurityContainer.changeGroupDnProperty(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.ldap.group_search_user_DN_property_detail') }} />
                 </p>

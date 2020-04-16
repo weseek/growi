@@ -111,7 +111,7 @@ class PasswordSettings extends React.Component {
               onChange={(e) => { this.onChangeNewPasswordConfirm(e.target.value) }}
             />
 
-            <p className="help-block">{t('page_register.form_help.password') }</p>
+            <p className="form-text text-muted">{t('page_register.form_help.password') }</p>
           </div>
         </div>
 
