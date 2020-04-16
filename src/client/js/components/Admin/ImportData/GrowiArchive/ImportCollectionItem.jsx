@@ -203,7 +203,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <div className="card border-light">
         <div className="card-header bg-light">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center flex-wrap">
             {/* left */}
             {this.renderCheckbox()}
             {/* right */}
