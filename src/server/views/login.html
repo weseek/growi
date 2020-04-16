@@ -18,7 +18,9 @@
 {% block sidebar %}
 {% endblock %}
 
-
+{% block html_additional_headers %}
+  <script src="{{ webpack_asset('js/login.js') }}" defer></script>
+{% endblock %}
 
 {% block layout_main %}
 
@@ -27,6 +29,7 @@
   <div class="row">
     <div class="col-md-12">
       <div id="login-form">
+      </div>
       <!-- <div class="login-header mx-auto">
         <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
         <h1>{{ appService.getAppTitle() }}</h1>
@@ -382,7 +385,6 @@
           </div>
         </div>
       </div> -->
-    </div>
   </div>
 </div>
 
