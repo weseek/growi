@@ -182,6 +182,7 @@ module.exports = (crowi) => {
         },
         {
           sort: sortOutput,
+          populate: User.IMAGE_POPULATION,
           page,
           limit: PAGE_ITEMS,
         },

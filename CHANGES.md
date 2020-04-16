@@ -1,8 +1,25 @@
 # CHANGES
 
-## v3.7.3-RC
+## v3.7.5
 
 *
+
+## v3.7.4
+
+* Fix: Broken by displaying user image
+
+## v3.7.3
+
+* Feature: Profile Image Cropping
+* Improvement: Reactify users pages
+* Improvement: Detect language and adjust the order of first and last names when creating accounts in OAuth
+* Fix: Installation is broken when selecting Japanese
+    * Introduced by 3.7.0
+* Fix: Mathjax Rendering is unstable (workaround)
+    * Introduced by 3.7.0
+* Fix: Notification Setting couldn't update without slack token
+    * Introduced by 3.6.6
+* Support: Add GROWI Contributers
 
 ## v3.7.2
 
