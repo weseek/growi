@@ -16,7 +16,8 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
-  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt lastLoginAt admin';
+  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
+  + 'status lang createdAt lastLoginAt admin imageAttachmentPath';
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
@@ -226,6 +227,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
+    this.imageAttachmentPath = attachment.filePathProxied;
     return this.save();
   };
 
@@ -241,6 +243,7 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
+    this.imageAttachmentPath = undefined;
     return this.save();
   };
 
