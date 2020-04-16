@@ -95,7 +95,7 @@ class UserManagement extends React.Component {
     const { t, adminUsersContainer } = this.props;
 
     const pager = (
-      <div className="pull-right">
+      <div className="pull-right my-3">
         <PaginationWrapper
           activePage={adminUsersContainer.state.activePage}
           changePage={this.handlePage}

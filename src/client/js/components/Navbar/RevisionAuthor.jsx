@@ -7,8 +7,8 @@ import { userPageRoot } from '../../../../lib/util/path-utils';
 const RevisionAuthor = (props) => {
   const { revisionAuthor, updatedAt, isCompactMode } = props;
   const updateInfo = isCompactMode
-    ? (<div>Updated in <span className="text-muted">{updatedAt}</span></div>)
-    : (<div><div>Updated in  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name}</a></div><div className="text-muted">{updatedAt}</div></div>);
+    ? (<div>Updated at <span className="text-muted">{updatedAt}</span></div>)
+    : (<div><div>Updated by  <a href={userPageRoot(revisionAuthor)}>{revisionAuthor.name}</a></div><div className="text-muted">{updatedAt}</div></div>);
   const pictureSize = isCompactMode ? 'xs' : 'sm';
 
   return (

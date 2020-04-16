@@ -7,7 +7,7 @@ import { userPageRoot } from '../../../../lib/util/path-utils';
 const PageCreator = (props) => {
   const { creator, createdAt, isCompactMode } = props;
   const creatInfo = isCompactMode
-    ? (<div>Created in <span className="text-muted">{createdAt}</span></div>)
+    ? (<div>Created at <span className="text-muted">{createdAt}</span></div>)
     : (<div><div>Created by <a href={userPageRoot(creator)}>{creator.name}</a></div><div className="text-muted">{createdAt}</div></div>);
   const pictureSize = isCompactMode ? 'xs' : 'sm';
 

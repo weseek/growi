@@ -19,7 +19,7 @@ class UserNotificationRow extends React.PureComponent {
             {notification.pathPattern}
           </td>
           <td className="px-4">
-            <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-slack"></i> {notification.channel}</span>
+            <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-hashtag"></i> {notification.channel}</span>
           </td>
           <td>
             <button type="submit" className="btn btn-outline-danger" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
