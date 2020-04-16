@@ -15,7 +15,8 @@
 
 .growi:not(.login-page) {
   // add background-image
-  #page-wrapper {
+  #page-wrapper,
+  .page-editor-preview-container {
     background-image: url('/images/themes/antarctic/bg.svg');
     background-attachment: fixed;
     background-position: center center;
