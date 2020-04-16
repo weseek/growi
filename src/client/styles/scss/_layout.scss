@@ -48,7 +48,7 @@
   border-bottom: 1px solid $grw-line-gray;
 }
 
-header {
+header#page-header {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 
@@ -90,11 +90,11 @@ header {
   }
 }
 
-  .revision-toc {
-    // to get on the Attachment row
-    z-index: 1;
-    overflow: hidden;
-    font-size: 0.9em;
+.revision-toc {
+  // to get on the Attachment row
+  z-index: 1;
+  overflow: hidden;
+  font-size: 0.9em;
 
   .revision-toc-content {
     padding: 10px;

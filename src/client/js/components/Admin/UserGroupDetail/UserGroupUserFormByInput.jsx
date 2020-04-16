@@ -140,7 +140,7 @@ class UserGroupUserFormByInput extends React.Component {
         <div className="col-2 pl-0">
           <button
             type="button"
-            className="btn btn-sm btn-success"
+            className="btn btn-success"
             disabled={!this.validateForm()}
             onClick={this.addUserBySubmit}
           >
