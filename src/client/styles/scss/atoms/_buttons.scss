@@ -31,7 +31,8 @@
   font-size: 1.2em;
   line-height: 0.8em;
 
-  &.active {
+  &.active,
+  &:hover {
     // header buttons are always white for active
     color: white !important;
   }
