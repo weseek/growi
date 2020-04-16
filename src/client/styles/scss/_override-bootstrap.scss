@@ -181,6 +181,8 @@
   .badge {
     letter-spacing: 0.05em;
     border-radius: 100px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     &.badge-warning {
       // badge-warning text is white color in bootstrap3
       color: white;
