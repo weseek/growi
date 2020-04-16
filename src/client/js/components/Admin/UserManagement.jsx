@@ -121,7 +121,14 @@ class UserManagement extends React.Component {
 
     return (
       <Fragment>
-        {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
+        {adminUsersContainer.state.userForPasswordResetModal
+        && (
+        <PasswordResetModal
+          isOpen={adminUsersContainer.state.isPasswordResetModalShown}
+          onClose={adminUsersContainer.hidePasswordResetModal}
+          userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
+        />
+        )}
         <p>
           <InviteUserControl />
           <a className="btn btn-default btn-outline ml-2" href="/admin/users/external-accounts">
