@@ -67,15 +67,14 @@
         }
       }
 
-      .d2h-files-diff {
-        display: table;
-        table-layout: fixed;
-        border-collapse: collapse;
-      }
-
       .revision-history-diff {
         padding-left: 40px;
         color: #333;
+      }
+
+      .d2h-files-diff {
+        display: table;
+        table-layout: fixed;
       }
     }
 
