@@ -464,7 +464,6 @@ class ImportForm extends React.Component {
           </div>
         </form>
 
-        {this.renderGroups(GROUPS_USER, 'User', warnForUserGroups)}
         {this.renderGroups(GROUPS_CONFIG, 'Config', warnForConfigGroups)}
         {this.renderOthers()}
 
