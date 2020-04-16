@@ -35,6 +35,6 @@ module.exports = {
   },
 
   down(db) {
-    // db.collection('users').update({}, { $unset: 'imageAttachmentPath' });
+    db.collection('users').update({}, { $unset: 'imageAttachmentPath' });
   },
 };
