@@ -113,7 +113,7 @@ jobs:
         MONGO_URI: mongodb://localhost:27017/growi_test
 
     - name: Slack Notification
-      uses: homoluctus/slatify@master
+      uses: weseek/slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
