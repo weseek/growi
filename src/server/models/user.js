@@ -38,6 +38,7 @@ module.exports = function(crowi) {
     userId: String,
     image: String,
     imageAttachment: { type: ObjectId, ref: 'Attachment' },
+    imageAttachmentPath: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
     googleId: String,
