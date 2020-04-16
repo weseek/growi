@@ -151,6 +151,15 @@ class RevisionPath extends React.Component {
       );
     });
 
+    const editable = [];
+    if (this.state.isInTrash === false) {
+      editable.push(
+        <a href="#edit" className="btn btn-default btn-edit" style={buttonStyle}>
+          <i className="icon-note" />
+        </a>,
+      );
+    }
+
     return (
       <span className="d-flex align-items-center">
 
@@ -159,9 +168,7 @@ class RevisionPath extends React.Component {
 
         <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
 
-        <a href="#edit" className="btn btn-default btn-edit" style={buttonStyle}>
-          <i className="icon-note" />
-        </a>
+        {editable}
       </span>
     );
   }
