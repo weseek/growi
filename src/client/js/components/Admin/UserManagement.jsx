@@ -121,7 +121,7 @@ class UserManagement extends React.Component {
 
     return (
       <Fragment>
-        {adminUsersContainer.state.userForPasswordResetModal
+        {adminUsersContainer.state.userForPasswordResetModal != null
         && (
         <PasswordResetModal
           isOpen={adminUsersContainer.state.isPasswordResetModalShown}
