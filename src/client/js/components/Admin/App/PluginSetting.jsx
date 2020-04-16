@@ -43,7 +43,7 @@ class PluginSetting extends React.Component {
 
         <div className="row form-group mb-5">
           <div className="offset-3 col-6 text-left">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 id="isEnabledPlugins"
                 className="custom-control-input"
