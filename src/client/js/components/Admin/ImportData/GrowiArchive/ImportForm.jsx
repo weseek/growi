@@ -464,6 +464,7 @@ class ImportForm extends React.Component {
           </div>
         </form>
 
+        {this.renderGroups(GROUPS_PAGE, 'MongoDB Page', warnForPageGroups, { wellContent: t('admin:importer_management.growi_settings.overwrite_documents') })}
         {this.renderOthers()}
 
         <div className="mt-4 text-center">
