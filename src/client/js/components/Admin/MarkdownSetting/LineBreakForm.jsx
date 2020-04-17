@@ -44,22 +44,20 @@ class LineBreakForm extends React.Component {
     const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
 
     return (
-      <div className="form-group text-left my-3">
-        <div className="col-8 offset-4">
-          <div className="custom-control custom-checkbox custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="isEnabledLinebreaks"
-              checked={isEnabledLinebreaks}
-              onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
-            />
-            <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
-              {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
-            </label>
-          </div>
-          <p className="help-block" dangerouslySetInnerHTML={helpLineBreak} />
+      <div className="col">
+        <div className="custom-control custom-checkbox custom-checkbox-success">
+          <input
+            type="checkbox"
+            className="custom-control-input"
+            id="isEnabledLinebreaks"
+            checked={isEnabledLinebreaks}
+            onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
+          />
+          <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
+            {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
+          </label>
         </div>
+        <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreak} />
       </div>
     );
   }
@@ -71,22 +69,20 @@ class LineBreakForm extends React.Component {
     const helpLineBreakInComment = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment_desc') };
 
     return (
-      <div className="form-group text-left my-3">
-        <div className="col-8 offset-4">
-          <div className="custom-control custom-checkbox custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="isEnabledLinebreaksInComments"
-              checked={isEnabledLinebreaksInComments}
-              onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
-            />
-            <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
-              {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
-            </label>
-          </div>
-          <p className="help-block" dangerouslySetInnerHTML={helpLineBreakInComment} />
+      <div className="col">
+        <div className="custom-control custom-checkbox custom-checkbox-success">
+          <input
+            type="checkbox"
+            className="custom-control-input"
+            id="isEnabledLinebreaksInComments"
+            checked={isEnabledLinebreaksInComments}
+            onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
+          />
+          <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
+            {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
+          </label>
         </div>
+        <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreakInComment} />
       </div>
     );
   }
@@ -96,7 +92,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="col-12">
+        <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>
