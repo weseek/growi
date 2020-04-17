@@ -76,8 +76,8 @@
     "xss_desc": "You can change the handling of HTML tags in markdown text.",
     "xss_options": {
       "enable_xss_prevention": "Enable XSS Prevention",
-      "ignore_all_tags": "Ignore All Tags",
-      "ignore_all_tags_desc": "Stripe all HTML tags and attributes",
+      "remove_all_tags": "Remove All Tags",
+      "remove_all_tags_desc": "Stripe all HTML tags and attributes",
       "recommended_setting": "Recommended Setting",
       "custom_whitelist": "Custom Whitelist",
       "tag_names": "Tag names",
