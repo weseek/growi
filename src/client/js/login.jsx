@@ -11,12 +11,27 @@ const i18n = i18nFactory();
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
-  const isRegistering = loginFormElem.dataset.isRegistering === 'true';
+  const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
   const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
+  const isExternalAuthEnabledMap = {
+    google: loginFormElem.dataset.isGoogleAuthEnabled,
+    github: loginFormElem.dataset.isGithubAuthEnabled,
+    facebook: loginFormElem.dataset.isFacebookAuthEnabled,
+    twitter: loginFormElem.dataset.isTwitterAuthEnabled,
+    oidc: loginFormElem.dataset.isOidcAuthEnabled,
+    saml: loginFormElem.dataset.isSamlAuthEnabled,
+    basic: loginFormElem.dataset.isBasicAuthEnabled,
+  };
+
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <LoginForm isRegistering={isRegistering} isLdapStrategySetup={isLdapStrategySetup} isLocalStrategySetup={isLocalStrategySetup} />
+      <LoginForm
+        isRegistrationEnabled={isRegistrationEnabled}
+        isLdapStrategySetup={isLdapStrategySetup}
+        isLocalStrategySetup={isLocalStrategySetup}
+        isExternalAuthEnabledMap={isExternalAuthEnabledMap}
+      />
     </I18nextProvider>,
     loginFormElem,
   );
