@@ -18,6 +18,9 @@
 {% block sidebar %}
 {% endblock %}
 
+{% block html_additional_headers %}
+  <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+{% endblock %}
 
 
 {% block layout_main %}
