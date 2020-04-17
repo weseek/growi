@@ -103,11 +103,10 @@ class LoginForm extends React.Component {
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
             {isExternalAuthEnabledMap.keys().map((auth) => {
-              if (isExternalAuthEnabledMap(auth)) {
-                return this.renderExternalAuthInput(auth);
-              } else {
+              if (!isExternalAuthEnabledMap(auth)) {
                 return;
               }
+              return this.renderExternalAuthInput(auth);
             })}
           </div>
           <div className="spacer"></div>
