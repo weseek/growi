@@ -36,7 +36,7 @@ const GrowiSubNavigation = (props) => {
 
   if (isCompactMode) {
     return (
-      <header className={`px-3 py-1 align-items-center grw-compact-subnavbar ${isHideCompactMode ? 'd-none' : 'd-flex'}`}>
+      <header className={`sticky-top px-3 py-1 align-items-center grw-compact-subnavbar ${isHideCompactMode ? 'd-none' : 'd-flex'}`}>
 
         {/* Page Path */}
         <div className="title-container mr-auto">
@@ -63,7 +63,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <header className="d-flex px-3 py-1 align-items-center">
+    <header className={`px-3 py-1 align-items-center ${isHideCompactMode ? 'd-flex' : 'd-none'}`}>
 
       {/* Page Path */}
       <div className="title-container mr-auto">
