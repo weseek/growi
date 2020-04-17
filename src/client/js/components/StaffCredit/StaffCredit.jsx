@@ -111,6 +111,7 @@ export default class StaffCredit extends React.Component {
   render() {
     const keyMap = { check: ['up', 'down', 'right', 'left', 'b', 'a'] };
     const handlers = { check: (event) => { return this.check(event) } };
+
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
         {this.renderContributors()}
