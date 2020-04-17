@@ -25,18 +25,18 @@ const GrowiSubNavigation = (props) => {
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
     return (
-      <div className="d-flex align-items-center">
+      <header className="d-flex align-items-center">
         <div className="title-container mr-auto">
           <h1>
             <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
           </h1>
         </div>
-      </div>
+      </header>
     );
   }
 
   return (
-    <div className={`d-flex px-3 py-1 align-items-center ${compactClassName}`}>
+    <header className={`d-flex px-3 py-1 align-items-center ${compactClassName}`}>
 
       {/* Page Path */}
       <div className="title-container mr-auto">
@@ -66,7 +66,7 @@ const GrowiSubNavigation = (props) => {
         }
       </ul>
 
-    </div>
+    </header>
   );
 
 };
@@ -83,6 +83,8 @@ GrowiSubNavigation.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  isCompactMode: PropTypes.bool,
 };
 
 export default withTranslation()(GrowiSubNavigationWrapper);
