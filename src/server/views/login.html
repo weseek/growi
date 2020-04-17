@@ -111,7 +111,8 @@
     {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %}
     {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %}
     {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
-
+      <div id="login-form"></div>
+      <!-- [TODO][GW-1772][GW-1863] remove the old login-form -->
       <div class="login-dialog mx-auto flipper {% if req.query.register or req.body.registerForm or isRegistering %}to-flip{% endif %}" id="login-dialog">
 
         <div class="col-12">
