@@ -108,4 +108,8 @@ GrowiSubNavigation.propTypes = {
   isCompactMode: PropTypes.bool,
 };
 
+GrowiSubNavigation.defaultProps = {
+  isCompactMode: false,
+};
+
 export default withTranslation()(GrowiSubNavigationWrapper);
