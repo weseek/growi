@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18nFactory from './util/i18n';
 
 import InstallerForm from './components/InstallerForm';
+import LoginForm from './components/LoginForm';
 
 const i18n = i18nFactory();
 
@@ -20,5 +21,16 @@ if (installerFormElem) {
       <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
     </I18nextProvider>,
     installerFormElem,
+  );
+}
+
+// render loginForm
+const loginFormElem = document.getElementById('login-form');
+if (loginFormElem) {
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <LoginForm />
+    </I18nextProvider>,
+    loginFormElem,
   );
 }
