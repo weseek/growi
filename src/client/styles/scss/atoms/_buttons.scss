@@ -1,4 +1,4 @@
-.btn-circle {
+.btn.btn-circle {
   width: 30px;
   height: 30px;
   padding: 6px 0;
@@ -26,12 +26,13 @@
   border-radius: 35px;
 }
 
-.btn-like,
-.btn-bookmark {
+.btn.btn-like,
+.btn.btn-bookmark {
   font-size: 1.2em;
-  line-height: 0.8em;
+  line-height: 1em;
 
-  &.active {
+  &.active,
+  &:hover {
     // header buttons are always white for active
     color: white !important;
   }
