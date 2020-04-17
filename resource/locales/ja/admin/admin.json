@@ -76,8 +76,8 @@
     "xss_desc": "マークダウンテキスト内の HTML タグの扱いを設定し、悪意のあるプログラムからの攻撃を防ぎます",
     "xss_options": {
       "enable_xss_prevention": "XSSを抑制する",
-      "ignore_all_tags": "すべてのタグを抑制する",
-      "ignore_all_tags_desc": "すべてのHTMLタグと属性を使用不可にします",
+      "remove_all_tags": "すべてのタグを抑制する",
+      "remove_all_tags_desc": "すべてのHTMLタグと属性を使用不可にします",
       "recommended_setting": "おすすめ設定",
       "custom_whitelist": "カスタムホワイトリスト",
       "tag_names": "タグ名",
