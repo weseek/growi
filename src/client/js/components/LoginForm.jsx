@@ -18,7 +18,7 @@ class LoginForm extends React.Component {
     const { t, isLdapStrategySetup } = this.props;
 
     return (
-      <form role="form" action="/login" method="post">
+      <form className="col-12" role="form" action="/login" method="post">
 
         <div className="input-group mb-3">
           <div className="input-group-prepend">
@@ -43,7 +43,7 @@ class LoginForm extends React.Component {
 
         <div className="input-group justify-content-center d-flex mt-5">
           <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-          <button type="submit" className="btn btn-fill login px-0 py-2">
+          <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
             <div className="eff"></div>
             <span className="btn-label p-3"><i className="icon-login"></i></span>
             <span className="btn-label-text p-3">{ t('Sign in') }</span>
@@ -67,7 +67,7 @@ class LoginForm extends React.Component {
     return (
       <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
         <div className="row">
-          <div className="col-md-12">
+          <div className="col-12">
             { isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm() }
           </div>
         </div>
