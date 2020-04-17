@@ -129,7 +129,7 @@
   }
 
   // button style
-  .btn-fill#login {
+  .btn-fill.login {
     .btn-label {
       background-color: rgba($danger, 0.4);
     }
@@ -278,9 +278,16 @@
 
 .login-page {
   // layout
-  .main .row .login-header,
-  .login-dialog {
-    width: 320px;
+  .main .row {
+    @media (min-width: 350px) {
+      .col-sm-offset-4 {
+        margin-left: calc(50% - 160px);
+      }
+
+      .col-sm-4 {
+        width: 320px;
+      }
+    }
   }
 
   .link-growi-org {
