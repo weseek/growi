@@ -300,6 +300,14 @@ body.on-edit {
 }
 
 /*
+ * react bootstrap typeahead
+ */
+mark.rbt-highlight-text {
+  // Temporarily the highlight color is black
+  color: black;
+}
+
+/*
  * GROWI page attachments
  */
 .page-attachments-row {
