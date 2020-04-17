@@ -79,14 +79,9 @@ $link-hover-color: $color-link-hover;
 }
 
 .grw-navbar {
-  // TODO: coloring
-  // background: $bgcolor-navbar;
-  // .nav-item > .nav-link {
-  //   color: white;
-  // }
-  background: darken($bgcolor-global, 8%);
+  background: $bgcolor-navbar;
   .nav-item > .nav-link {
-    color: #333;
+    color: $color-link-nabvar;
   }
 }
 
