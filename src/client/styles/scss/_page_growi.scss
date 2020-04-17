@@ -22,7 +22,9 @@
         }
       }
     }
-    .grw-compact-subnavbar {
+    &.grw-compact-subnavbar {
+      // prevent the screen from shifting
+      margin-bottom: 35px;
       h2 {
         font-size: 20px;
         line-height: 1.1em;
