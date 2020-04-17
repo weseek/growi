@@ -7,7 +7,7 @@ class CustomizeFunctionOption extends React.PureComponent {
   render() {
     return (
       <React.Fragment>
-        <div className="custom-control custom-switch custom-checkbox-success">
+        <div className="custom-control custom-checkbox custom-checkbox-success">
           <input
             className="custom-control-input"
             type="checkbox"
