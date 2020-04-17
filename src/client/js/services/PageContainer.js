@@ -8,7 +8,7 @@ import * as toastr from 'toastr';
 import { throttle } from 'throttle-debounce';
 
 const logger = loggerFactory('growi:services:PageContainer');
-const scrollAmountForFixed = 50;
+const scrollAmountForFixed = 150;
 
 /**
  * Service container related to Page
@@ -58,7 +58,7 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-      isCompactMode: false,
+      isHideCompactMode: true,
     };
 
     this.initStateMarkdown();
@@ -70,7 +70,7 @@ export default class PageContainer extends Container {
     this.addWebSocketEventHandlers();
 
     window.addEventListener('scroll', throttle(300, () => {
-      this.setState({ isCompactMode: window.pageYOffset > scrollAmountForFixed });
+      this.setState({ isHideCompactMode: window.pageYOffset < scrollAmountForFixed });
     }));
   }
 

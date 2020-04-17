@@ -7,14 +7,14 @@
 {% endblock %}
 
 {% block layout_main %}
+<div id="grw-compact-subnav" class="sticky-top" data-is-forbidden-page="{{ forbidden }}"></div>
+
 <div id="grw-subnav" data-is-forbidden-page="{{ forbidden }}"></div>
 {% if not page and not forbidden and ('/' === path or 'crowi' === getConfig('crowi', 'customize:behavior')) and not isUserPageList(path) and !isTrashPage() %}
   {% if '/' === path.slice(-1) %}
     {% include '../../widget/create_portal.html' %}
   {% endif %}
 {% endif %}
-
-<div id="grw-compact-subnav" data-is-forbidden-page="{{ forbidden }}"></div>
 
 <div class="container-fluid">
   <div class="row">
