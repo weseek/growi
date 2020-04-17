@@ -4,13 +4,16 @@ const logger = require('@alias/logger')('growi:migrate:add-image-attachment-parh
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
+const { getModelSafely } = require('@commons/util/mongoose-utils');
+
 module.exports = {
 
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-    const User = require('@server/models/user')();
-    require('@server/models/attachment')();
+
+    const User = getModelSafely('User') || require('@server/models/user')();
+    require('@server/models/attachment')(); // for populating imageAttachment
 
     const users = await User.find({ imageAttachment: { $exists: true } })
       .populate({
