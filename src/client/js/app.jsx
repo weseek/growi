@@ -102,6 +102,7 @@ if (pageContainer.state.path != null) {
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
     'grw-subnav': <GrowiSubNavigation />,
+    'grw-compact-subnav': <GrowiSubNavigation isCompactMode />,
     'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
 }
