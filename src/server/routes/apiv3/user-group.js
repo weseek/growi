@@ -577,6 +577,7 @@ module.exports = (crowi) => {
     const { id } = req.params;
     const { limit, offset } = req.query;
 
+    // [TODO][user-profile-cache] change how to get profile image data in client side.
     try {
       const { docs, total } = await Page.paginate({
         grant: Page.GRANT_USER_GROUP,
@@ -587,7 +588,6 @@ module.exports = (crowi) => {
         populate: {
           path: 'lastUpdateUser',
           select: User.USER_PUBLIC_FIELDS,
-          populate: User.IMAGE_POPULATION,
         },
       });
 

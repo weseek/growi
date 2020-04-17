@@ -18,7 +18,6 @@ module.exports = function(crowi) {
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + 'status lang createdAt lastLoginAt admin imageAttachmentPath';
-  const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
   const LANG_EN_US = 'en-US';
@@ -154,11 +153,6 @@ module.exports = function(crowi) {
 
     return lang;
   }
-
-  userSchema.methods.populateImage = async function() {
-    // eslint-disable-next-line no-return-await
-    return await this.populate(IMAGE_POPULATION);
-  };
 
   userSchema.methods.isPasswordSet = function() {
     if (this.password) {
@@ -774,7 +768,6 @@ module.exports = function(crowi) {
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
   userSchema.statics.STATUS_INVITED = STATUS_INVITED;
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
-  userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
 
   userSchema.statics.LANG_EN = LANG_EN;

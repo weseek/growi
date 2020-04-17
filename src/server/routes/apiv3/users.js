@@ -167,6 +167,7 @@ module.exports = (crowi) => {
     };
 
     try {
+    // [TODO][user-profile-cache] change how to get profile image data in client side.
       const paginateResult = await User.paginate(
         {
           $and: [
@@ -182,7 +183,6 @@ module.exports = (crowi) => {
         },
         {
           sort: sortOutput,
-          populate: User.IMAGE_POPULATION,
           page,
           limit: PAGE_ITEMS,
         },
