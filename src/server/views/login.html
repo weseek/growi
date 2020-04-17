@@ -1,8 +1,28 @@
-{% extends 'layout/layout.html' %} {% block html_base_css %}login-page nologin{% endblock %} {% block html_title %}{{ customizeService.generateCustomTitle(t('Sign
-in')) }}{% endblock %} {# # Remove default contents #} {% block html_head_loading_legacy %} {% endblock %} {% block html_head_loading_app
-%} {% endblock %} {% block layout_head_nav %} {% endblock %} {% block sidebar %} {% endblock %} {% block html_additional_headers
-%}
-<script src="{{ webpack_asset('js/login.js') }}" defer></script> {% endblock %} {% block layout_main %}
+{% extends 'layout/layout.html' %}
+
+{% block html_base_css %}login-page nologin{% endblock %}
+
+{% block html_title %}{{ customizeService.generateCustomTitle(t('Sign in')) }}{% endblock %}
+
+
+
+{#
+ # Remove default contents
+ #}
+{% block html_head_loading_legacy %}
+{% endblock %}
+{% block html_head_loading_app %}
+{% endblock %}
+{% block layout_head_nav %}
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
+
+{% block html_additional_headers %}
+  <script src="{{ webpack_asset('js/login.js') }}" defer></script>
+{% endblock %}
+
+{% block layout_main %}
 
 <div class="main container-fluid">
 
@@ -17,10 +37,16 @@ in')) }}{% endblock %} {# # Remove default contents #} {% block html_head_loadin
             {% if isLdapSetupFailed() %}
             <div class="alert alert-warning small">
               <strong><i class="icon-fw icon-info"></i>LDAP is enabled but the configuration has something wrong.</strong>
-              <br> (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
+              <br>
+              (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
             </div>
-            {% endif %} {# # The case that there already exists a user whose username matches ID of the newly created LDAP user # https://github.com/weseek/growi/issues/193
-            #} {% set failedProviderForDuplicatedUsernameException = req.flash('provider-DuplicatedUsernameException') %}
+            {% endif %}
+
+            {#
+            # The case that there already exists a user whose username matches ID of the newly created LDAP user
+            # https://github.com/weseek/growi/issues/193
+            #}
+            {% set failedProviderForDuplicatedUsernameException = req.flash('provider-DuplicatedUsernameException') %}
             {% if failedProviderForDuplicatedUsernameException != null %}
             <div class="alert alert-warning small">
               <p><strong><i class="icon-fw icon-ban"></i>DuplicatedUsernameException occured</strong></p>
@@ -29,48 +55,73 @@ in')) }}{% endblock %} {# # Remove default contents #} {% block html_head_loadin
                 See the issue <a href="https://github.com/weseek/growi/issues/193">#193</a>.
               </p>
             </div>
-            {% endif %} {% set success = req.flash('successMessage') %} {% if success.length %}
+            {% endif %}
+
+            {% set success = req.flash('successMessage') %}
+            {% if success.length %}
             <div class="alert alert-success">
               {{ success }}
             </div>
-            {% endif %} {% set warn = req.flash('warningMessage') %} {% if warn.length %} {% for w in warn %}
+            {% endif %}
+
+            {% set warn = req.flash('warningMessage') %}
+            {% if warn.length %}
+            {% for w in warn %}
             <div class="alert alert-warning">
               {{ w }}
             </div>
-            {% endfor %} {% endif %} {% set error = req.flash('errorMessage') %} {% if error.length %} {% for e in error %}
+            {% endfor %}
+            {% endif %}
+
+            {% set error = req.flash('errorMessage') %}
+            {% if error.length %}
+            {% for e in error %}
             <div class="alert alert-danger">
               {{ e }}
             </div>
-            {% endfor %} {% endif %} {% if req.form.errors.length > 0 %}
+            {% endfor %}
+            {% endif %}
+
+            {% if req.form.errors.length > 0 %}
             <div class="alert alert-danger">
               <ul>
-                {% for error in req.form.errors %}
+              {% for error in req.form.errors %}
                 <li>{{ error }}</li>
-                {% endfor %}
+              {% endfor %}
               </ul>
             </div>
             {% endif %}
           </div>
           <div id="register-form-errors">
-            {% set message = req.flash('registerWarningMessage') %} {% if message.length %}
+            {% set message = req.flash('registerWarningMessage') %}
+            {% if message.length %}
             <div class="alert alert-danger">
-              {% for msg in message %} {{ msg }}<br> {% endfor %}
+              {% for msg in message %}
+              {{ msg }}<br>
+              {% endfor  %}
             </div>
             {% endif %}
           </div>
         </div>
       </div>
-      {% set isLocalStrategySetup = passportService.isLocalStrategySetup %} {% set isLdapStrategySetup = passportService.isLdapStrategySetup
-      %}
-      <!-- {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %} -->
-      <!-- {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %} -->
-      <!-- {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %} -->
+        {% set isLocalStrategySetup = passportService.isLocalStrategySetup %}
+        {% set isLdapStrategySetup = passportService.isLdapStrategySetup %}
+        <!-- {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %} -->
+        <!-- {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %} -->
+        <!-- {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %} -->
 
-      <div id="login-form" data-is-local-strategy-setup="{{ isLocalStrategySetup }}" data-is-ldap-strategy-setup="{{ isLdapStrategySetup }}"
-        data-is-registration-enabled="{{ req.query.register or req.body.registerForm or isRegistering }}" data-is-google-auth-enabled="{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
-        data-is-github-auth-enabled="{{ getConfig('crowi', 'security:passport-github:isEnabled') }}" data-is-facebool-auth-enabled="{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
-        data-is-twitter-auth-enabled="{{ getConfig('crowi', 'security:passport-twitter:isEnabled') }}" data-is-oidc-auth-enabled="{{ getConfig('crowi', 'security:passport-oidc:isEnabled') }}"
-        data-is-saml-auth-enabled="{{ getConfig('crowi', 'security:passport-saml:isEnabled') }}" data-is-basic-auth-enabled="{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"></div>
+      <div id="login-form"
+        data-is-local-strategy-setup="{{ isLocalStrategySetup }}"
+        data-is-ldap-strategy-setup="{{ isLdapStrategySetup }}"
+        data-is-registration-enabled="{{ req.query.register or req.body.registerForm or isRegistering }}"
+        data-is-google-auth-enabled="{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
+        data-is-github-auth-enabled="{{ getConfig('crowi', 'security:passport-github:isEnabled') }}"
+        data-is-facebool-auth-enabled="{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
+        data-is-twitter-auth-enabled="{{ getConfig('crowi', 'security:passport-twitter:isEnabled') }}"
+        data-is-oidc-auth-enabled="{{ getConfig('crowi', 'security:passport-oidc:isEnabled') }}"
+        data-is-saml-auth-enabled="{{ getConfig('crowi', 'security:passport-saml:isEnabled') }}"
+        data-is-basic-auth-enabled="{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"
+      ></div>
 
 
       {% if isRegistrationEnabled %}
@@ -157,7 +208,10 @@ in')) }}{% endblock %} {# # Remove default contents #} {% block html_head_loadin
   </div>
 </div>
 
-{% endblock %} {% block body_end %}
+{% endblock %}
+
+
+{% block body_end %}
 <!-- <script>
   // login
   $('#register').on('click', function() {
@@ -187,3 +241,5 @@ in')) }}{% endblock %} {# # Remove default contents #} {% block html_head_loadin
   });
 </script> -->
 {% endblock %}
+
+
