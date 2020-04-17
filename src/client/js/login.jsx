@@ -11,9 +11,12 @@ const i18n = i18nFactory();
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
+  const isRegistering = loginFormElem.dataset.isRegistering === 'true';
+  const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
+  const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <LoginForm />
+      <LoginForm isRegistering={isRegistering} isLdapStrategySetup={isLdapStrategySetup} isLocalStrategySetup={isLocalStrategySetup} />
     </I18nextProvider>,
     loginFormElem,
   );
