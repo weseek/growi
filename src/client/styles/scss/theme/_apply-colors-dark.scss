@@ -139,6 +139,12 @@ header.affix {
 /*
  * GROWI subnavigation
  */
+.admin-page {
+  .grw-header {
+    background-color: rgba(darken($bgcolor-global, 90%), 0.9);
+  }
+}
+
 .grw-subnavbar-sticky {
   background-color: rgba(darken($bgcolor-global, 90%), 0.9);
   box-shadow: 0 3px 2px -2px darken($bgcolor-global, 5%);
