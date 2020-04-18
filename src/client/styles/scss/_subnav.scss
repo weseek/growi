@@ -1,19 +1,34 @@
-.grw-subnav-container {
-  h1 {
-    @include variable-font-size(28px);
-    line-height: 1.1em;
-  }
+body:not(.admin-page) {
+  /*
+   * layout for sticky
+   */
+  .grw-header {
+    pointer-events: none; // disable pointer events for sticky
 
-  &:hover {
-    .btn-copy,
-    .btn-edit,
-    .btn-edit-tags {
-      // change button opacity
-      opacity: unset;
+    .grw-subnav {
+      overflow: unset;
+      pointer-events: all; // enable pointer events
     }
   }
-}
 
-.grw-subnav {
-  overflow: unset;
+  /*
+   * styles
+   */
+  .grw-header {
+    &:hover {
+      .btn-copy,
+      .btn-edit,
+      .btn-edit-tags {
+        // change button opacity
+        opacity: unset;
+      }
+    }
+  }
+
+  .grw-subnav {
+    h1 {
+      @include variable-font-size(28px);
+      line-height: 1.1em;
+    }
+  }
 }

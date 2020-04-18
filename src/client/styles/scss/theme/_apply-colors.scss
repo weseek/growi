@@ -85,8 +85,8 @@ $link-hover-color: $color-link-hover;
   }
 }
 
-body.admin-page {
-  .grw-subnav-container {
+.admin-page {
+  .grw-header {
     background: darken($bgcolor-global, 2%);
   }
 }

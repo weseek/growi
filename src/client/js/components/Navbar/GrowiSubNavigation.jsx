@@ -25,46 +25,46 @@ const GrowiSubNavigation = (props) => {
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
     return (
-      <div className="d-flex align-items-center">
-        <div className="title-container mr-auto">
-          <h1>
-            <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
-          </h1>
-        </div>
+      <div className="d-flex align-items-center px-3 py-3">
+        <h1 className="m-0">
+          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
+        </h1>
       </div>
     );
   }
 
   return (
-    <div className={`d-flex px-3 py-1 align-items-center ${compactClassName}`}>
+    <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${compactClassName}`}>
 
       {/* Page Path */}
-      <div className="title-container mr-auto">
-        <h1>
+      <div>
+        <h1 className="m-0">
           <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
         <TagLabels />
       </div>
 
-      {/* Header Button */}
-      <div className="mr-2">
-        <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
-      </div>
-      <div>
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
-      </div>
+      <div className="d-flex align-items-center">
+        {/* Header Button */}
+        <div className="mr-2">
+          <LikeButton pageId={pageId} isLiked={pageContainer.state.isLiked} />
+        </div>
+        <div>
+          <BookmarkButton pageId={pageId} crowi={appContainer} />
+        </div>
 
-      {/* Page Authors */}
-      <ul className="authors text-nowrap d-none d-lg-block">
-        {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} isCompactMode={isCompactMode} /></li>}
-        { revisionAuthor != null
-          && (
-            <li className="mt-1">
-              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} />
-            </li>
-          )
-        }
-      </ul>
+        {/* Page Authors */}
+        <ul className="authors text-nowrap d-none d-lg-block">
+          {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} isCompactMode={isCompactMode} /></li>}
+          { revisionAuthor != null
+            && (
+              <li className="mt-1">
+                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} />
+              </li>
+            )
+          }
+        </ul>
+      </div>
 
     </div>
   );
