@@ -1,11 +1,6 @@
 .admin-page {
-  .admin-title {
-    padding: 0.5rem 15px;
-
-    line-height: 1em;
-
-    @include variable-font-size(28px);
-    line-height: 1.1em;
+  .grw-header.sticky-top {
+    height: unset;
   }
 
   .admin-user-menu {

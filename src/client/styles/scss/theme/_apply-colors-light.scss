@@ -26,7 +26,8 @@
 /*
  * GROWI subnavigation
  */
-.admin-page {
+.admin-page,
+.user-settings-page {
   .grw-header {
     background-color: rgba(darken($bgcolor-global, 6%), 0.9);
   }
