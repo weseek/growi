@@ -16,7 +16,6 @@ class RevisionPath extends React.Component {
       pages: [],
       isListPage: false,
       isLinkToListPage: true,
-      isInTrash: false,
     };
 
     // retrieve xss library from window
@@ -60,12 +59,6 @@ class RevisionPath extends React.Component {
     const pages = [];
     const pagePaths = [];
     splitted.forEach((pageName) => {
-      // skip trash
-      if (pageName === 'trash' && splitted.length > 1) {
-        this.setState({ isInTrash: true });
-        return;
-      }
-
       pagePaths.push(encodeURIComponent(pageName));
       pages.push({
         pagePath: urljoin('/', ...pagePaths),
@@ -109,10 +102,10 @@ class RevisionPath extends React.Component {
       padding: '0 2px',
     };
 
-    const { isInTrash } = this.state;
+    const { isPageInTrash, isPageForbidden } = this.props;
     const pageLength = this.state.pages.length;
 
-    const rootElement = isInTrash
+    const rootElement = isPageInTrash
       ? (
         <>
           <span className="path-segment">
@@ -159,9 +152,11 @@ class RevisionPath extends React.Component {
 
         <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
 
-        <a href="#edit" className="d-block text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
-          <i className="icon-note" />
-        </a>
+        { !isPageInTrash && !isPageForbidden && (
+          <a href="#edit" className="d-block text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
+            <i className="icon-note" />
+          </a>
+        ) }
       </span>
     );
   }
@@ -173,6 +168,15 @@ RevisionPath.propTypes = {
   behaviorType: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
+  isPageNotFound: PropTypes.bool,
+  isPageForbidden: PropTypes.bool,
+  isPageInTrash: PropTypes.bool,
+};
+
+RevisionPath.defaultProps = {
+  isPageNotFound: false,
+  isPageForbidden: false,
+  isPageInTrash: false,
 };
 
 export default withTranslation()(RevisionPath);

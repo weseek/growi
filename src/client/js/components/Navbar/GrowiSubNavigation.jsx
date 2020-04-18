@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage } from '../../../../lib/util/path-utils';
+import { isTrashPage } from '@commons/util/path-utils';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import RevisionPath from '../Page/RevisionPath';
@@ -21,12 +22,22 @@ const GrowiSubNavigation = (props) => {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isHeaderSticky, isSubnavCompact,
   } = pageContainer.state;
 
-  // Display only the RevisionPath if the page is trash or forbidden
-  if (isTrashPage(path) || isPageForbidden) {
+  const isPageNotFound = pageId == null;
+  const isPageInTrash = isTrashPage(path);
+
+  // Display only the RevisionPath
+  if (isPageNotFound || isPageForbidden || isPageInTrash) {
     return (
-      <div className="d-flex align-items-center px-3 py-3">
+      <div className="d-flex align-items-center px-3 py-3 grw-subnavbar">
         <h1 className="m-0">
-          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
+          <RevisionPath
+            behaviorType={appContainer.config.behaviorType}
+            pageId={pageId}
+            pagePath={pageContainer.state.path}
+            isPageNotFound
+            isPageForbidden
+            isPageInTrash
+          />
         </h1>
       </div>
     );
