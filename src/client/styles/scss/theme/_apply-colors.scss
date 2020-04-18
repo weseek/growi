@@ -85,8 +85,10 @@ $link-hover-color: $color-link-hover;
   }
 }
 
-.grw-title-bar {
-  background: darken($bgcolor-global, 2%);
+body.admin-page {
+  .grw-subnav-container {
+    background: darken($bgcolor-global, 2%);
+  }
 }
 
 .grw-sidebar {

@@ -1,0 +1,19 @@
+.grw-subnav-container {
+  h1 {
+    @include variable-font-size(28px);
+    line-height: 1.1em;
+  }
+
+  &:hover {
+    .btn-copy,
+    .btn-edit,
+    .btn-edit-tags {
+      // change button opacity
+      opacity: unset;
+    }
+  }
+}
+
+.grw-subnav {
+  overflow: unset;
+}
