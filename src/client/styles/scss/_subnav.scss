@@ -19,11 +19,7 @@ body:not(.admin-page) {
    * Compact Mode Switching
    */
   .grw-subnavbar {
-    transition: background-color, box-shadow 400ms linear;
-
     h1 {
-      line-height: 1.1em;
-
       // set transition-duration (compact -> normal)
       transition: font-size 0;
 
@@ -41,6 +37,19 @@ body:not(.admin-page) {
   }
 
   /*
+   * Sticky Mode Switching
+   */
+  .grw-subnavbar {
+    // set transition-duration (sticky -> init)
+    transition: background-color, box-shadow 0;
+
+    &.grw-subnavbar-sticky {
+      // set transition-duration (init -> sticky)
+      transition: background-color, box-shadow 400ms linear;
+    }
+  }
+
+  /*
    * styles
    */
   .grw-subnavbar {
@@ -51,6 +60,10 @@ body:not(.admin-page) {
         // change button opacity
         opacity: unset;
       }
+    }
+
+    h1 {
+      line-height: 1.1em;
     }
 
     ul.authors {
