@@ -123,7 +123,9 @@ textarea.form-control {
 /*
  * GROWI subnavigation
  */
-.admin-page {
+.admin-page,
+.user-settings-page,
+.tags-page {
   .grw-header {
     background-color: rgba(darken($bgcolor-global, 90%), 0.9);
   }
