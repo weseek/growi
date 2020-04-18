@@ -59,7 +59,9 @@ const GrowiSubNavigation = (props) => {
         <h1 className="m-0">
           <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
-        <TagLabels />
+        { !isPageNotFound && !isPageForbidden && (
+          <TagLabels />
+        ) }
       </div>
 
       <div className="d-flex align-items-center">
