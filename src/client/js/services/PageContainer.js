@@ -5,11 +5,10 @@ import loggerFactory from '@alias/logger';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 
-import { throttle } from 'throttle-debounce';
-
 const logger = loggerFactory('growi:services:PageContainer');
 const scrollThresForSticky = 50;
 const scrollThresForCompact = 100;
+const scrollThresForThrottling = 200;
 
 /**
  * Service container related to Page
@@ -72,14 +71,19 @@ export default class PageContainer extends Container {
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
-    window.addEventListener('scroll', throttle(150, () => {
+    window.addEventListener('scroll', () => {
       const currentYOffset = window.pageYOffset;
+
+      // original throttling
+      if (this.state.isSubnavCompact && scrollThresForThrottling < currentYOffset) {
+        return;
+      }
 
       this.setState({
         isHeaderSticky: scrollThresForSticky < currentYOffset,
         isSubnavCompact: scrollThresForCompact < currentYOffset,
       });
-    }));
+    });
   }
 
   /**
