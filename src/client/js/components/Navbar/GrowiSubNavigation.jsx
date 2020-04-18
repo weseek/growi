@@ -18,9 +18,8 @@ const GrowiSubNavigation = (props) => {
   const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page');
   const { appContainer, pageContainer } = props;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isCompactMode,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isHeaderSticky, isSubnavCompact,
   } = pageContainer.state;
-  const compactClassName = isCompactMode ? 'grw-compact-subnavbar' : null;
 
   // Display only the RevisionPath if the page is trash or forbidden
   if (isTrashPage(path) || isPageForbidden) {
@@ -33,8 +32,16 @@ const GrowiSubNavigation = (props) => {
     );
   }
 
+  const additionalClassNames = [];
+  if (isHeaderSticky) {
+    additionalClassNames.push('grw-subnavbar-sticky');
+  }
+  if (isSubnavCompact) {
+    additionalClassNames.push('grw-subnavbar-compact');
+  }
+
   return (
-    <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${compactClassName}`}>
+    <div className={`d-flex align-items-center justify-content-between px-3 py-1 grw-subnavbar ${additionalClassNames.join(' ')}`}>
 
       {/* Page Path */}
       <div>
@@ -55,14 +62,16 @@ const GrowiSubNavigation = (props) => {
 
         {/* Page Authors */}
         <ul className="authors text-nowrap d-none d-lg-block">
-          {creator != null && <li><PageCreator creator={creator} createdAt={createdAt} isCompactMode={isCompactMode} /></li>}
-          { revisionAuthor != null
-            && (
-              <li className="mt-1">
-                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isCompactMode} />
-              </li>
-            )
-          }
+          { creator != null && (
+            <li>
+              <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
+            </li>
+          ) }
+          { revisionAuthor != null && (
+            <li className="mt-1">
+              <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} isCompactMode={isSubnavCompact} />
+            </li>
+          ) }
         </ul>
       </div>
 
