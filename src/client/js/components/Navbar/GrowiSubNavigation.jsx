@@ -43,7 +43,7 @@ const GrowiSubNavigation = (props) => {
     );
   }
 
-  const additionalClassNames = [];
+  const additionalClassNames = ['grw-subnavbar'];
   if (isHeaderSticky) {
     additionalClassNames.push('grw-subnavbar-sticky');
   }
@@ -52,7 +52,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className={`d-flex align-items-center justify-content-between px-3 py-1 grw-subnavbar ${additionalClassNames.join(' ')}`}>
+    <div className={`d-flex align-items-center justify-content-between px-3 py-1 ${additionalClassNames.join(' ')}`}>
 
       {/* Page Path */}
       <div>

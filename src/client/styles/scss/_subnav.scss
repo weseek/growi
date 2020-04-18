@@ -1,89 +1,85 @@
-body:not(.admin-page) {
-  /*
-   * layout for sticky
-   */
-  .grw-header {
-    // Adjust to be on top of the growi subnavigation
-    z-index: $zindex-sticky - 100;
+$easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
 
-    height: 80px;
-    pointer-events: none; // disable pointer events for sticky
+@mixin setTransitionForCompactMode() {
+  // set transition-duration (normal -> compact)
+  transition: all 300ms $easeInOutCubic;
+}
 
-    .grw-subnav {
-      overflow: unset;
-      pointer-events: all; // enable pointer events
-    }
+/*
+ * layout for sticky
+ */
+.grw-header {
+  // Adjust to be on top of the growi subnavigation
+  z-index: $zindex-sticky - 100;
+
+  height: 80px;
+  pointer-events: none; // disable pointer events for sticky
+
+  .grw-subnav {
+    overflow: unset;
+    pointer-events: all; // enable pointer events
   }
+}
 
-  /*
-   * Compact Mode Switching
-   */
-  .grw-subnavbar {
-    h1 {
-      // set transition-duration (compact -> normal)
-      transition: font-size 0;
-
-      @include variable-font-size(28px);
-    }
-
-    &.grw-subnavbar-compact {
-      h1 {
-        // set transition-duration (normal -> compact)
-        transition: font-size 300ms cubic-bezier(0.65, 0, 0.35, 1);
-
-        @include variable-font-size(18px);
-      }
-    }
-  }
-
-  /*
-   * Sticky Mode Switching
-   */
-  .grw-subnavbar {
-    // set transition-duration (sticky -> init)
-    transition: background-color, box-shadow 0;
-
-    &.grw-subnavbar-sticky {
-      // set transition-duration (init -> sticky)
-      transition: background-color, box-shadow 400ms linear;
-    }
-  }
-
-  /*
-   * styles
-   */
-  .grw-subnavbar {
-    &:hover {
-      .btn-copy,
-      .btn-edit,
-      .btn-edit-tags {
-        // change button opacity
-        opacity: unset;
-      }
-    }
+/*
+ * Compact Mode Switching
+ */
+.grw-subnavbar {
+  &.grw-subnavbar-compact {
+    @include setTransitionForCompactMode();
 
     h1 {
-      line-height: 1.1em;
+      @include variable-font-size(18px);
+      @include setTransitionForCompactMode();
+    }
+  }
+}
+
+/*
+ * Sticky Mode Switching
+ */
+.grw-subnavbar {
+  &.grw-subnavbar-sticky {
+    // set transition-duration (init -> sticky)
+    transition: all 400ms linear !important;
+  }
+}
+
+/*
+ * styles
+ */
+.grw-subnavbar {
+  &:hover {
+    .btn-copy,
+    .btn-edit,
+    .btn-edit-tags {
+      // change button opacity
+      opacity: unset;
+    }
+  }
+
+  h1 {
+    @include variable-font-size(28px);
+    line-height: 1.1em;
+  }
+
+  ul.authors {
+    padding-left: 1.5em;
+    margin: 0;
+
+    li {
+      font-size: 12px;
+      list-style: none;
     }
 
-    ul.authors {
-      padding-left: 1.5em;
-      margin: 0;
+    .picture {
+      width: 22px;
+      height: 22px;
+      border: 1px solid #ccc;
 
-      li {
-        font-size: 12px;
-        list-style: none;
-      }
-
-      .picture {
-        width: 22px;
-        height: 22px;
-        border: 1px solid #ccc;
-
-        &.picture-xs {
-          width: 14px;
-          height: 14px;
-        }
+      &.picture-xs {
+        width: 14px;
+        height: 14px;
       }
     }
   }
