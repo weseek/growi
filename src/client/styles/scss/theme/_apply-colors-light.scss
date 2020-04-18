@@ -41,9 +41,13 @@ header.affix {
   }
 }
 
-.grw-subnavbar-sticky {
-  background-color: rgba(darken($bgcolor-global, 6%), 0.9);
-  box-shadow: 0 3px 2px -2px darken($bgcolor-global, 40%);
+.grw-subnavbar {
+  background-color: rgba(darken($bgcolor-global, 5%), 1);
+
+  &.grw-subnavbar-sticky {
+    background-color: rgba(darken($bgcolor-global, 6%), 0.9);
+    box-shadow: 0 3px 2px -2px darken($bgcolor-global, 40%);
+  }
 }
 
 /*
