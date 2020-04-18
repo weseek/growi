@@ -1,10 +1,3 @@
-.logo {
-  .logo-mark,
-  .logo-text {
-    fill: white;
-  }
-}
-
 /*
  * Button
  */
@@ -109,15 +102,6 @@ textarea.form-control {
 .table-bordered {
   // FIXME: use $table-dark-*
   // border: 1px solid $border;
-}
-
-/*
- * GROWI header
- */
-header.affix {
-  .logo-mark {
-    fill: white;
-  }
 }
 
 /*
