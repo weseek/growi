@@ -25,6 +25,7 @@ body.on-edit {
   }
 
   // hide unnecessary elements
+  header,
   .grw-subnav,
   .row.row-alerts,
   .row.page-list,
@@ -71,8 +72,8 @@ body.on-edit {
     }
   }
 
-  // show compact subnav
-  .grw-compact-subnav {
+  // show revision path
+  .grw-revision-path-for-edit {
     display: block !important;
   }
 
@@ -96,7 +97,7 @@ body.on-edit {
 
     background: none;
 
-    > .grw-title-bar {
+    > .grw-subnav-container {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events

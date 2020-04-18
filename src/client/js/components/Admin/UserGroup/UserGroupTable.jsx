@@ -69,7 +69,7 @@ class UserGroupTable extends React.Component {
                   <td>
                     <ul className="list-inline">
                       {this.state.userGroupRelations[group._id].map((user) => {
-                        return <li key={user._id} className="list-inline-item badge badge-pill badge-primary">{this.xss.process(user.username)}</li>;
+                        return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{this.xss.process(user.username)}</li>;
                       })}
                     </ul>
                   </td>

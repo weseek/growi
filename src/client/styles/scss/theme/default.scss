@@ -15,7 +15,7 @@
 
 //== Light Mode
 //
-html:not([dark]) {
+html[light] {
   $primary: #112744;
 
   // Background colors
@@ -32,6 +32,7 @@ html:not([dark]) {
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
 
   // Logo colors
@@ -43,7 +44,7 @@ html:not([dark]) {
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
   $color-dropdown-link-active: $color-reversal;
-  $color-dropdown-link-hover: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -70,6 +71,7 @@ html[dark] {
   $color-link-hover: lighten($color-link, 10%);
   $color-link-wiki: lighten($basecolor, 50%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
+  $color-link-nabvar: $color-global;
   $color-inline-code: #c7254e;
 
   // Logo colors

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { throttle } from 'throttle-debounce';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -14,53 +13,47 @@ import UserPicture from '../User/UserPicture';
 const GrowiSubNavigationForUserPage = (props) => {
   const pageUser = JSON.parse(document.querySelector('#grw-subnav-for-user-page').getAttribute('data-page-user'));
   const { appContainer, pageContainer } = props;
-  const { pageId } = pageContainer.state;
-  const [isCompactMode, setIsCompactMode] = useState(false);
-  const scrollAmountForFixed = 175;
-  const layoutType = appContainer.getConfig().layoutType;
+  const { pageId, isHeaderSticky, isSubnavCompact } = pageContainer.state;
 
-  useEffect(() => {
-    window.addEventListener('scroll', throttle(300, () => {
-      setIsCompactMode(window.pageYOffset > scrollAmountForFixed);
-    }));
-  }, []);
+  const additionalClassNames = ['grw-subnavbar', 'grw-subnavbar-user-page'];
+  if (isHeaderSticky) {
+    additionalClassNames.push('grw-subnavbar-sticky');
+  }
+  if (isSubnavCompact) {
+    additionalClassNames.push('py-2 grw-subnavbar-compact');
+  }
+  else {
+    additionalClassNames.push('py-3');
+  }
 
   return (
-    <div className={(isCompactMode && layoutType === 'growi') && 'fixed-top grw-compact-subnavbar px-3'}>
-
-      {/* Page Path */}
-      <h4>
+    <div className={`px-3 ${additionalClassNames.join(' ')}`}>
+      <h4 className="grw-user-page-path">
         <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
       </h4>
 
-      <div className="d-flex">
-        <div className="users-info d-flex align-items-center mr-auto">
+      <div className="d-flex align-items-center justify-content-between">
+
+        <div className="users-info d-flex align-items-center">
           <UserPicture user={pageUser} />
 
           <div className="users-meta">
-            <div className="d-flex align-items-center">
-              <h1>
-                {pageUser.name}
-              </h1>
-            </div>
-            <div className="user-page-meta">
-              <ul>
-                <li className="user-page-username"><i className="icon-user mr-1"></i>{pageUser.username}</li>
-                <li className="user-page-email">
-                  <i className="icon-envelope mr-1"></i>
-                  {pageUser.isEmailPublished ? pageUser.email : '*****'}
-                </li>
-                {pageUser.introduction && <li className="user-page-introduction"><p>{pageUser.introduction}</p></li>}
-              </ul>
-            </div>
+            <h1>
+              {pageUser.name}
+            </h1>
+            <ul className="user-page-meta mt-1 mb-0">
+              <li className="user-page-username"><i className="icon-user mr-1"></i>{pageUser.username}</li>
+              <li className="user-page-email">
+                <i className="icon-envelope mr-1"></i>
+                {pageUser.isEmailPublished ? pageUser.email : '*****'}
+              </li>
+              {pageUser.introduction && <li className="user-page-introduction"><p>{pageUser.introduction}</p></li>}
+            </ul>
           </div>
         </div>
 
-        {/* Header Button */}
         <BookmarkButton pageId={pageId} crowi={appContainer} size="lg" />
       </div>
-
-
     </div>
   );
 

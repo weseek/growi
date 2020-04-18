@@ -1,183 +1,193 @@
-* {
-  outline: none !important;
-}
-
+// increase specificity with ':root' for GROWI theming
 :root {
   font-size: $font-size-root;
   > body {
     font-family: $font-family-sans-serif;
   }
-}
 
-h1 {
-  font-size: 36px;
-  line-height: 48px;
-}
+  * {
+    outline: none !important;
+  }
 
-h2 {
-  font-size: 24px;
-  line-height: 36px;
-}
+  h1 {
+    font-size: 36px;
+    line-height: 48px;
+  }
 
-h3 {
-  font-size: 21px;
-  line-height: 30px;
-}
+  h2 {
+    font-size: 24px;
+    line-height: 36px;
+  }
 
-h4 {
-  font-size: 18px;
-  line-height: 22px;
-}
+  h3 {
+    font-size: 21px;
+    line-height: 30px;
+  }
 
-h5 {
-  font-size: 16px;
-  line-height: 18px;
-}
+  h4 {
+    font-size: 18px;
+    line-height: 22px;
+  }
 
-h6 {
-  font-size: 12px;
-  line-height: 14px;
-}
+  h5 {
+    font-size: 16px;
+    line-height: 18px;
+  }
 
-.small {
-  font-size: 65%;
-  line-height: 10px;
-}
+  h6 {
+    font-size: 12px;
+    line-height: 14px;
+  }
 
-// Navs
-.nav-tabs {
-  .nav-item {
-    margin-right: 0.15rem;
-    a.active {
-      cursor: default;
+  .small {
+    font-size: 65%;
+    line-height: 10px;
+  }
+
+  code {
+    padding: 2px 4px;
+    font-size: 90%;
+  }
+
+  // Navs
+  .nav-tabs {
+    .nav-item {
+      margin-right: 0.15rem;
+      a.active {
+        cursor: default;
+      }
     }
   }
-}
 
-// card (substitute panel of bootstrap3)
-.card {
-  margin-bottom: 20px;
-  border-radius: $card-border-radius;
-}
+  // card (substitute panel of bootstrap3)
+  .card {
+    margin-bottom: 20px;
+    border-radius: $card-border-radius;
+  }
 
-.card-header {
-  font-weight: 700;
-  text-transform: none;
-  border-radius: $card-border-radius;
-}
+  .card-header {
+    font-weight: 700;
+    text-transform: none;
+    border-radius: $card-border-radius;
+  }
 
-.card-header:first-child {
-  border-radius: $card-border-radius;
-}
+  .card-header:first-child {
+    border-radius: $card-border-radius;
+  }
 
-// Well (substitute Well of bootstrap3)
-.card.well {
-  min-height: 20px;
-  padding: $card-spacer-y $card-spacer-x;
-  border-radius: 3px;
-}
+  // Well (substitute Well of bootstrap3)
+  .card.well {
+    min-height: 20px;
+    padding: $card-spacer-y $card-spacer-x;
+    border-radius: 3px;
+  }
 
-// Dropdowns
-.dropdown {
-  .dropdown-toggle.btn.disabled {
+  // Dropdowns
+  .dropdown {
+    .dropdown-toggle.btn.disabled {
+      cursor: not-allowed;
+    }
+
+    // hide caret
+    .dropdown-toggle.dropdown-toggle-no-caret::after {
+      content: none;
+    }
+  }
+
+  // agile-admin style
+  .dropdown-menu {
+    padding-bottom: 8px;
+    margin-top: 0px;
+    border: 1px solid $border;
+    border-radius: $radius;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .dropdown-menu > li > a {
+    width: 100%;
+    padding: 9px 20px;
+  }
+
+  .dropdown-menu > li > a:focus,
+  .dropdown-menu > li > a:hover {
+    background: $extralight;
+  }
+
+  // btn-light (substitute for btn-default of bootstrap3)  (agile-admin style)
+  .btn-light,
+  .btn-light.disabled {
+    color: $bodytext;
+    $this-color: $btn-default-bgcolor;
+    background: $this-color;
+    border: 1px solid $this-color;
+
+    &:hover,
+    &:focus,
+    &.focus {
+      color: $bodytext;
+      background: $this-color;
+      border: 1px solid $this-color;
+      opacity: 0.8;
+    }
+
+    &:active &.active {
+      box-shadow: none;
+    }
+  }
+
+  .btn-light.btn-outline {
+    background-color: transparent;
+
+    &:hover,
+    &:focus,
+    &.focus {
+      background: $btn-default-bgcolor;
+    }
+  }
+
+  //Modals
+  .modal-content {
+    box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #e5e5e5;
+  }
+
+  // col-form-label (substitute for control-label of bootstrap3)
+  .col-form-label {
+    text-align: right;
+  }
+
+  // label
+  label {
+    font-weight: 700;
+  }
+
+  // disabled button (reproduction from bootstrap3.)
+  // see https://cccabinet.jpn.org/bootstrap4/components/buttons#disabled-state
+  .btn.disabled,
+  .btn[disabled],
+  fieldset[disabled] .btn {
     cursor: not-allowed;
   }
 
-  // hide caret
-  .dropdown-toggle.dropdown-toggle-no-caret::after {
-    content: none;
-  }
-}
-
-// agile-admin style
-.dropdown-menu {
-  padding-bottom: 8px;
-  margin-top: 0px;
-  border: 1px solid $border;
-  border-radius: $radius;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
-}
-
-.dropdown-menu > li > a {
-  width: 100%;
-  padding: 9px 20px;
-}
-
-.dropdown-menu > li > a:focus,
-.dropdown-menu > li > a:hover {
-  background: $extralight;
-}
-
-// btn-light (substitute for btn-default of bootstrap3)  (agile-admin style)
-.btn-light,
-.btn-light.disabled {
-  color: $bodytext;
-  $this-color: $btn-default-bgcolor;
-  background: $this-color;
-  border: 1px solid $this-color;
-
-  &:hover,
-  &:focus,
-  &.focus {
-    color: $bodytext;
-    background: $this-color;
-    border: 1px solid $this-color;
-    opacity: 0.8;
+  // progress bar
+  .progress {
+    margin-bottom: 18px;
+    overflow: hidden;
   }
 
-  &:active &.active {
-    box-shadow: none;
+  // badge
+  .badge {
+    letter-spacing: 0.05em;
+    &.badge-warning {
+      // badge-warning text is white color in bootstrap3
+      color: white;
+    }
   }
-}
-
-.btn-light.btn-outline {
-  background-color: transparent;
-
-  &:hover,
-  &:focus,
-  &.focus {
-    background: $btn-default-bgcolor;
-  }
-}
-
-//Modals
-.modal-content {
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.modal-footer {
-  border-top: 1px solid #e5e5e5;
-}
-
-// col-form-label (substitute for control-label of bootstrap3)
-.col-form-label {
-  text-align: right;
-}
-
-// label
-label {
-  font-weight: 700;
-}
-
-// disabled button (reproduction from bootstrap3.)
-// see https://cccabinet.jpn.org/bootstrap4/components/buttons#disabled-state
-.btn.disabled,
-.btn[disabled],
-fieldset[disabled] .btn {
-  cursor: not-allowed;
-}
-
-// progress bar
-.progress {
-  margin-bottom: 18px;
-  overflow: hidden;
-}
-
-// badge
-.badge {
-  letter-spacing: 0.05em;
 }

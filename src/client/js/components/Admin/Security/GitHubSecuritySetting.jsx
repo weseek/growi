@@ -83,7 +83,7 @@ class GitHubSecurityManagement extends React.Component {
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled)
-              && <div className="badg badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -149,7 +149,7 @@ class GitHubSecurityManagement extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserNameGitHub"
                     className="custom-control-input"
