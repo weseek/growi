@@ -107,19 +107,19 @@
     "behavior_desc": {
       "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page",
       "growi_text2": "<code>/nonexistent_page</code> shows editing form",
-      "growi_text3": "All pages show the list of sub pages <b>if using GROWI Enhanced Layout</b>",
+      "growi_text3": "All pages show the list of child pages <b>if using GROWI Enhanced Layout</b>",
       "crowi_text1": "<code>/page</code> shows the page",
-      "crowi_text2": "<code>/page/</code> shows the list of sub pages",
-      "crowi_text3": "If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown",
+      "crowi_text2": "<code>/page/</code> shows the list of child pages",
+      "crowi_text3": "If portal is applied to <code>/page/</code> , the portal and the list of child pages are shown",
       "crowi_text4": "<code>/nonexistent_page</code> shows editing form<",
-      "crowi_text5": "<code>/nonexistent_page/</code> the list of sub pages"
+      "crowi_text5": "<code>/nonexistent_page/</code> the list of child pages"
     },
     "function": "Function",
     "function_desc": "You can choose Valid/Invalid of the function",
     "function_options": {
       "timeline": "Timeline function",
-      "timeline_desc1": "You can show the timeline of the subpages.",
-      "timeline_desc2": "If there are many subpages, performance decreases while page loading.",
+      "timeline_desc1": "You can show the timeline of the child pages.",
+      "timeline_desc2": "If there are many child pages, performance decreases while page loading.",
       "timeline_desc3": "You can speed up list page display by invalidating.",
       "tab_switch": "Save tab-switching in the browser",
       "tab_switch_desc1": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
