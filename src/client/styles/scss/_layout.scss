@@ -34,6 +34,13 @@
   .ak-navigation-resize-button {
     top: calc(50vh - 20px);
   }
+
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: unset;
+      border-right: 1px solid $border;
+    }
+  }
 }
 
 #page-wrapper {
