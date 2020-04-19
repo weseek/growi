@@ -34,14 +34,13 @@ class SidebarNav extends React.Component {
 
     return {
       id,
-      onClick: () => this.itemSelectedHandler(id),
-      component: ({ className, onClick }) => (
+      component: ({ className }) => (
         <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
           <GlobalItem
             icon={icon}
             label={label}
             isSelected={isSelected}
-            onClick={onClick}
+            onClick={() => this.itemSelectedHandler(id)}
           />
         </div>
       ),
