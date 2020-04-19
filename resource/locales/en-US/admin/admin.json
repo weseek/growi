@@ -55,9 +55,9 @@
     "lineBreak_desc": "You can change line break settings.",
     "lineBreak_options": {
       "enable_lineBreak": "Enable Line Break",
-      "enable_lineBreak_desc": "Treat line break in the text page as<code>&lt;br&gt;</code>in HTML",
+      "enable_lineBreak_desc": "Convert line break in the text page to<code>&lt;br&gt;</code>in HTML",
       "enable_lineBreak_for_comment": "Enable Line Break in comment",
-      "enable_lineBreak_for_comment_desc": "Treat line break in comment as<code>&lt;br&gt;</code>in HTML"
+      "enable_lineBreak_for_comment_desc": "Convert line break in comment to<code>&lt;br&gt;</code>in HTML"
     },
     "presentation_header": "Presentation Setting",
     "presentation_desc": "You can change presentation settings.",
