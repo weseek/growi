@@ -35,6 +35,11 @@
     top: calc(50vh - 20px);
   }
 
+  div[class$='-NavigationContainer'] {
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-sticky + 5;
+  }
+
   div[class$='-Outer'] {
     div[class$='-Shadow'] {
       background: unset;

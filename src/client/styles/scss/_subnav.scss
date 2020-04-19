@@ -12,7 +12,8 @@ header.grw-header {
   top: $grw-navbar-height;
 
   // Adjust to be on top of the growi subnavigation
-  z-index: $zindex-sticky - 100;
+  z-index: $zindex-sticky;
+
   height: 80px;
   pointer-events: none; // disable pointer events for sticky
 
