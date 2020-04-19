@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import {
   GlobalNav,
+  GlobalItem,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -29,12 +30,20 @@ class SidebarNav extends React.Component {
   }
 
   generateSidebarItemObj(id, label, icon) {
+    const isSelected = this.props.currentContentsId === id;
+
     return {
       id,
-      icon,
-      label,
-      isSelected: this.props.currentContentsId === id,
-      onClick: () => this.itemSelectedHandler(id),
+      component: ({ className }) => (
+        <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
+          <GlobalItem
+            icon={icon}
+            label={label}
+            isSelected={isSelected}
+            onClick={() => this.itemSelectedHandler(id)}
+          />
+        </div>
+      ),
     };
   }
 
