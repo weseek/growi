@@ -8,7 +8,9 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
 /*
  * layout for sticky
  */
-.grw-header.sticky-top {
+header.grw-header {
+  top: $grw-navbar-height;
+
   // Adjust to be on top of the growi subnavigation
   z-index: $zindex-sticky - 100;
   height: 80px;

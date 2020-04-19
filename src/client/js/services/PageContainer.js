@@ -6,9 +6,9 @@ import * as entities from 'entities';
 import * as toastr from 'toastr';
 
 const logger = loggerFactory('growi:services:PageContainer');
-const scrollThresForSticky = 50;
-const scrollThresForCompact = 100;
-const scrollThresForThrottling = 200;
+const scrollThresForSticky = 0;
+const scrollThresForCompact = 30;
+const scrollThresForThrottling = 100;
 
 /**
  * Service container related to Page
