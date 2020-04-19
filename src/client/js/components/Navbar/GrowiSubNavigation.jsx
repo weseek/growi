@@ -16,7 +16,7 @@ import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 
 const GrowiSubNavigation = (props) => {
-  const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page');
+  const isPageForbidden = document.querySelector('#grw-subnav').getAttribute('data-is-forbidden-page') === 'true';
   const { appContainer, pageContainer } = props;
   const {
     pageId, path, createdAt, creator, updatedAt, revisionAuthor, isHeaderSticky, isSubnavCompact,
@@ -25,6 +25,9 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
+  console.log({
+    isPageForbidden, isPageNotFound, isPageInTrash, pageId, path,
+  });
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden || isPageInTrash) {
     return (
@@ -34,9 +37,9 @@ const GrowiSubNavigation = (props) => {
             behaviorType={appContainer.config.behaviorType}
             pageId={pageId}
             pagePath={pageContainer.state.path}
-            isPageNotFound
-            isPageForbidden
-            isPageInTrash
+            isPageNotFound={isPageNotFound}
+            isPageForbidden={isPageForbidden}
+            isPageInTrash={isPageInTrash}
           />
         </h1>
       </div>
@@ -59,7 +62,9 @@ const GrowiSubNavigation = (props) => {
         <h1 className="m-0">
           <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
-        <TagLabels />
+        { !isPageNotFound && !isPageForbidden && (
+          <TagLabels />
+        ) }
       </div>
 
       <div className="d-flex align-items-center">

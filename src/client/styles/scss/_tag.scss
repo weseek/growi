@@ -3,29 +3,29 @@
     height: unset;
   }
 
-  .tag-viewer {
-    .manage-tags {
-      font-size: 10px;
-      cursor: pointer;
-    }
-
-    .tag-icon:not(:first-child) {
-      margin-left: 5px;
-    }
-
-    .btn.btn-edit-tags,
-    .tag-icon {
-      font-size: 10px;
-    }
-
-    .tag-name {
-      margin-left: 1px;
-      font-size: 10px;
-    }
-  }
-
   .list-tag-count {
     background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.tag-labels {
+  .manage-tags {
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  .tag-icon:not(:first-child) {
+    margin-left: 5px;
+  }
+
+  .btn.btn-edit-tags,
+  .tag-icon {
+    font-size: 10px;
+  }
+
+  .tag-name {
+    margin-left: 1px;
+    font-size: 10px;
   }
 }
 
