@@ -56,6 +56,8 @@ $link-hover-color: $color-link-hover;
 //
 
 .grw-logo {
+  background-color: darken($bgcolor-navbar, 10%);
+
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -82,12 +84,6 @@ $link-hover-color: $color-link-hover;
   background: $bgcolor-navbar;
   .nav-item > .nav-link {
     color: $color-link-nabvar;
-  }
-}
-
-.grw-sidebar {
-  .grw-logo {
-    background-color: darken($bgcolor-navbar, 10%);
   }
 }
 

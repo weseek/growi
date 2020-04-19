@@ -32,8 +32,12 @@
 
 .grw-sidebar {
   .ak-navigation-resize-button {
-    top: 110px;
+    top: calc(50vh - 20px);
   }
+}
+
+#page-wrapper {
+  margin-top: $grw-navbar-height;
 }
 
 .grw-sidebar-header-container {
