@@ -87,6 +87,15 @@ $link-hover-color: $color-link-hover;
   }
 }
 
+.grw-sidebar {
+  .grw-global-item-container.active {
+    button:after {
+      // fukidashi color
+      border-right-color: darken($bgcolor-global, 4%);
+    }
+  }
+}
+
 /*
  * code color of inline-code
  */
