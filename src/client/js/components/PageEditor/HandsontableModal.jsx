@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button, ButtonGroup,
+  Button,
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -440,11 +440,11 @@ export default class HandsontableModal extends React.PureComponent {
             <button type="button" className="mr-4 data-import-button btn btn-secondary" onClick={this.toggleDataImportArea}>
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </button>
-            <ButtonGroup>
-              <button type="button" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
-              <button type="button" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
-              <button type="button" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
-            </ButtonGroup>
+            <div data-toggle="buttons" className="btn-group btn-group-toggle">
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
+            </div>
             <Collapse isOpen={this.state.isDataImportAreaExpanded}>
               <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
