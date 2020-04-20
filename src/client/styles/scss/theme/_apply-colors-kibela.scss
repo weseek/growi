@@ -6,13 +6,23 @@ body.kibela {
   .active {
     color: $subthemecolor;
   }
-
+  
   .bg-white {
     background: #fefffe !important;
   }
-
+  
   .bg-primary {
     background-color: $primary !important;
+  }
+  
+  /* kibela block */
+  .kibela-block {
+    border-top: solid 0.4em $thickborder;
+  }
+
+  /* page wrapper */
+  #page-wrapper {
+    background-color: $bgcolor-global;
   }
 
   /* Logo */
@@ -56,15 +66,17 @@ body.kibela {
 
   /* admin navigation */
   .admin-navigation {
-    .list-group-item.active {
-      color: white;
-      background: $bgcolor-navbar;
-    }
-
     .list-group-item {
+      background-color: transparent;
+
       &:hover {
         background: #eee;
       }
+    }
+
+    .list-group-item.active {
+      color: white;
+      background: $bgcolor-navbar-active;
     }
   }
 
@@ -176,8 +188,25 @@ body.kibela {
     }
   }
 
-  /* kibela block */
-  .kibela-block {
-    border-top: solid 0.4em $thickborder;
+  /* subnav */
+  .grw-subnav {
+    background: transparent;
+  }
+
+  /* navbar */
+  .grw-navbar {
+    .nav-item > .nav-link:hover {
+      color: $color-link-nabvar-hover;
+    }
+  }
+
+  /* h */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $color-header;
   }
 }
