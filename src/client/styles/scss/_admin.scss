@@ -1,4 +1,8 @@
 .admin-page {
+  .grw-header.sticky-top {
+    height: unset;
+  }
+
   .admin-user-menu {
     .dropdown-menu {
       right: 0;

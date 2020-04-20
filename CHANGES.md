@@ -5,9 +5,13 @@
 * Support: Upgrade libs
     * bootstrap
 
-## v3.7.4-RC
+## v3.7.5
 
 *
+
+## v3.7.4
+
+* Fix: Broken by displaying user image
 
 ## v3.7.3
 
