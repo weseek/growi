@@ -70,7 +70,7 @@ class LoginForm extends React.Component {
     );
   }
 
-  // [TODO]
+  // [TODO][GW-1865]
   // onHoverCollapseOnMobile() {
   // if (isExternalAuthCollapsible) {
   //   const isMobile = /iphone|ipad|android/.test(window.navigator.userAgent.toLowerCase());
