@@ -95,7 +95,7 @@ class UserManagement extends React.Component {
     const { t, adminUsersContainer } = this.props;
 
     const pager = (
-      <div className="pull-right">
+      <div className="pull-right my-3">
         <PaginationWrapper
           activePage={adminUsersContainer.state.activePage}
           changePage={this.handlePage}
@@ -121,7 +121,14 @@ class UserManagement extends React.Component {
 
     return (
       <Fragment>
-        {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
+        {adminUsersContainer.state.userForPasswordResetModal != null
+        && (
+        <PasswordResetModal
+          isOpen={adminUsersContainer.state.isPasswordResetModalShown}
+          onClose={adminUsersContainer.hidePasswordResetModal}
+          userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
+        />
+        )}
         <p>
           <InviteUserControl />
           <a className="btn text-dark btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
@@ -157,7 +164,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('all') }}
                 />
                 <label className="custom-control-label" htmlFor="c1">
-                  <span className="badge badge-primary d-inline-block vt mt-1">All</span>
+                  <span className="badge badge-pill badge-primary d-inline-block vt mt-1">All</span>
                 </label>
               </div>
 
@@ -170,7 +177,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('registered') }}
                 />
                 <label className="custom-control-label" htmlFor="c2">
-                  <span className="badge badge-info d-inline-block vt mt-1">Approval Pending</span>
+                  <span className="badge badge-pill badge-info d-inline-block vt mt-1">Approval Pending</span>
                 </label>
               </div>
 
@@ -183,7 +190,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('active') }}
                 />
                 <label className="custom-control-label" htmlFor="c3">
-                  <span className="badge badge-success d-inline-block vt mt-1">Active</span>
+                  <span className="badge badge-pill badge-success d-inline-block vt mt-1">Active</span>
                 </label>
               </div>
 
@@ -196,7 +203,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('suspended') }}
                 />
                 <label className="custom-control-label" htmlFor="c4">
-                  <span className="badge badge-secondary d-inline-block vt mt-1">Suspended</span>
+                  <span className="badge badge-pill badge-secondary d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
@@ -209,7 +216,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('invited') }}
                 />
                 <label className="custom-control-label" htmlFor="c5">
-                  <span className="badge badge-info d-inline-block vt mt-1">Invited</span>
+                  <span className="badge badge-pill badge-info d-inline-block vt mt-1">Invited</span>
                 </label>
               </div>
             </div>

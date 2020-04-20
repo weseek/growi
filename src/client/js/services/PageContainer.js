@@ -5,10 +5,10 @@ import loggerFactory from '@alias/logger';
 import * as entities from 'entities';
 import * as toastr from 'toastr';
 
-import { throttle } from 'throttle-debounce';
-
 const logger = loggerFactory('growi:services:PageContainer');
-const scrollAmountForFixed = 122;
+const scrollThresForSticky = 50;
+const scrollThresForCompact = 100;
+const scrollThresForThrottling = 200;
 
 /**
  * Service container related to Page
@@ -58,7 +58,9 @@ export default class PageContainer extends Container {
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd') || null,
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       isHackmdDraftUpdatingInRealtime: false,
-      isCompactMode: false,
+
+      isHeaderSticky: false,
+      isSubnavCompact: false,
     };
 
     this.initStateMarkdown();
@@ -69,9 +71,19 @@ export default class PageContainer extends Container {
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
-    window.addEventListener('scroll', throttle(300, () => {
-      this.setState({ isCompactMode: window.pageYOffset > scrollAmountForFixed });
-    }));
+    window.addEventListener('scroll', () => {
+      const currentYOffset = window.pageYOffset;
+
+      // original throttling
+      if (this.state.isSubnavCompact && scrollThresForThrottling < currentYOffset) {
+        return;
+      }
+
+      this.setState({
+        isHeaderSticky: scrollThresForSticky < currentYOffset,
+        isSubnavCompact: scrollThresForCompact < currentYOffset,
+      });
+    });
   }
 
   /**

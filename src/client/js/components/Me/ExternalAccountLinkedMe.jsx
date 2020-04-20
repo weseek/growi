@@ -67,7 +67,7 @@ class ExternalAccountLinkedMe extends React.Component {
 
     return (
       <Fragment>
-        <div className="container-fluid p-0 my-4">
+        <div className="container-fluid my-4">
           <h2 className="border-bottom">
             <button type="button" className="btn btn-outline-secondary btn-sm pull-right" onClick={this.openAssociateModal}>
               <i className="icon-plus" aria-hidden="true" />
@@ -77,31 +77,27 @@ class ExternalAccountLinkedMe extends React.Component {
           </h2>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <table className="table table-bordered table-user-list">
-              <thead>
-                <tr>
-                  <th width="120px">Authentication Provider</th>
-                  <th>
-                    <code>accountId</code>
-                  </th>
-                  <th width="200px">{ t('Created') }</th>
-                  <th width="150px">{ t('Admin') }</th>
-                </tr>
-              </thead>
-              <tbody>
-                {externalAccounts !== 0 && externalAccounts.map(account => (
-                  <ExternalAccountRow
-                    account={account}
-                    key={account._id}
-                    openDisassociateModal={this.openDisassociateModal}
-                  />
+        <table className="table table-bordered table-user-list">
+          <thead>
+            <tr>
+              <th width="120px">Authentication Provider</th>
+              <th>
+                <code>accountId</code>
+              </th>
+              <th width="200px">{ t('Created') }</th>
+              <th width="150px">{ t('Admin') }</th>
+            </tr>
+          </thead>
+          <tbody>
+            {externalAccounts !== 0 && externalAccounts.map(account => (
+              <ExternalAccountRow
+                account={account}
+                key={account._id}
+                openDisassociateModal={this.openDisassociateModal}
+              />
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+          </tbody>
+        </table>
 
         <AssociateModal
           isOpen={this.state.isAssociateModalOpen}

@@ -42,7 +42,7 @@ class PresentationForm extends React.Component {
     return (
       <fieldset className="form-group col-12 my-2">
 
-        <label className="col-12 control-label font-weight-bold text-left mt-3">
+        <label className="col-8 offset-4 control-label font-weight-bold text-left mt-3">
           {t('admin:markdown_setting.presentation_options.page_break_setting')}
         </label>
 
@@ -60,7 +60,12 @@ class PresentationForm extends React.Component {
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
                 <div className="mt-3">
                   { t('admin:markdown_setting.presentation_options.preset_one_separator_desc') }
-                  <pre><code>{ t('admin:markdown_setting.presentation_options.preset_one_separator_value') }</code></pre>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={t('admin:markdown_setting.presentation_options.preset_one_separator_value')}
+                    readOnly
+                  />
                 </div>
               </label>
             </div>
@@ -79,7 +84,12 @@ class PresentationForm extends React.Component {
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
                 <div className="mt-3">
                   { t('admin:markdown_setting.presentation_options.preset_two_separator_desc') }
-                  <pre><code>{ t('admin:markdown_setting.presentation_options.preset_two_separator_value') }</code></pre>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={t('admin:markdown_setting.presentation_options.preset_two_separator_value')}
+                    readOnly
+                  />
                 </div>
               </label>
             </div>

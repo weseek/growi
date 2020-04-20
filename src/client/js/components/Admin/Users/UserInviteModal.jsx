@@ -87,7 +87,7 @@ class UserInviteModal extends React.Component {
         <div>
           <button
             type="button"
-            className="btn btn-outline-danger rounded-pill mr-2"
+            className="btn btn-outline-secondary mr-2"
             onClick={this.onToggleModal}
           >
             Cancel
@@ -95,7 +95,7 @@ class UserInviteModal extends React.Component {
 
           <button
             type="button"
-            className="btn btn-outline-primary rounded-pill"
+            className="btn btn-primary"
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
@@ -116,7 +116,7 @@ class UserInviteModal extends React.Component {
         </label>
         <button
           type="button"
-          className="btn btn-outline-primary"
+          className="btn btn-outline-secondary"
           onClick={this.onToggleModal}
         >
           Close
@@ -193,7 +193,7 @@ class UserInviteModal extends React.Component {
 
 
     return (
-      <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown} toggle={this.onToggleModal}>
+      <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown}>
         <ModalHeader tag="h4" toggle={this.onToggleModal} className="modal-header">
           {t('admin:user_management.invite_users') }
         </ModalHeader>
