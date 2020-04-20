@@ -8,9 +8,11 @@ html:not([dark]) {
   $subthemecolor: rgb(90, 149, 216);
   $lightthemecolor: rgba(181, 203, 247, 0.61);
 
+  // Background colors
   $bgcolor-navbar: $bgcolor-theme;
   $bgcolor-global: $themelight;
   $bgcolor-global: $themelight;
+  $bgcolor-card: #e3e5e7;
 
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
@@ -37,5 +39,51 @@ html:not([dark]) {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
+  @import 'apply-colors';
+  @import 'apply-colors-light';
+  @import 'apply-colors-kibela';
+}
+
+
+// Dark Mode
+html[dark] {
+  $bgcolor-theme: rgb(18, 86, 163);
+  $themelight: #f4f5f6;
+  $subthemecolor: rgb(90, 149, 216);
+  $lightthemecolor: rgba(181, 203, 247, 0.61);
+
+  // Background colors
+  $bgcolor-navbar: $bgcolor-theme;
+  $bgcolor-global: $themelight;
+  $bgcolor-global: $themelight;
+  $bgcolor-card: #f5f5f5;
+
+  $color-header: $bgcolor-theme;
+  $color-global: #3c4a60;
+  $color-link: rgb(74, 109, 204);
+  $color-link-hover: lighten($color-link, 12%);
+  $sidebar-text: $bgcolor-theme;
+  $color-reversal: #eee;
+
+  $primary: $bgcolor-theme;
+  $info: lighten($bgcolor-theme, 20%);
+
+  $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+  $color-link-wiki: lighten($bgcolor-theme, 20%);
+  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-inline-code: $subthemecolor;
+  $bgcolor-inline-code: lighten($subthemecolor, 70%);
+
+  // border colors
+  $border-color-theme: $lightthemecolor;
+  $thickborder: #5584e1;
+
+  // dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-global;
+
+  @import 'apply-colors';
+  @import 'apply-colors-dark';
   @import 'apply-colors-kibela';
 }
