@@ -89,7 +89,7 @@ class SlackAppConfiguration extends React.Component {
                     {t('notification_setting.prioritize_webhook')}
                   </label>
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   {t('notification_setting.prioritize_webhook_desc')}
                 </p>
               </div>

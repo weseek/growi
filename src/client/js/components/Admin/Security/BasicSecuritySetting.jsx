@@ -81,7 +81,7 @@ class BasicSecurityManagement extends React.Component {
                 { t('security_setting.Basic.enable_basic') }
               </label>
             </div>
-            <p className="help-block">
+            <p className="form-text text-muted">
               <small>
                 <span dangerouslySetInnerHTML={{ __html: t('security_setting.Basic.desc_1') }} /><br />
                 { t('security_setting.Basic.desc_2')}
@@ -110,7 +110,7 @@ class BasicSecurityManagement extends React.Component {
                   dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
                 />
               </div>
-              <p className="help-block">
+              <p className="form-text text-muted">
                 <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
               </p>
             </div>
