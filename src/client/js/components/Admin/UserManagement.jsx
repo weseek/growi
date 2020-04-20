@@ -203,7 +203,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('suspended') }}
                 />
                 <label className="custom-control-label" htmlFor="c4">
-                  <span className="badge badge-pill badge-secondary d-inline-block vt mt-1">Suspended</span>
+                  <span className="badge badge-pill badge-warning d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
