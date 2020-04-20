@@ -68,9 +68,28 @@
     }
   }
 
-  .grw-global-item-container.active {
-    button {
-      @extend %fukidashi-for-active;
+  .grw-global-item-container {
+    i {
+      font-size: 1.5em;
+    }
+
+    // icon opacity
+    &:not(.active) {
+      i {
+        opacity: 0.4;
+      }
+      &:hover,
+      &:focus {
+        i {
+          opacity: 0.7;
+        }
+      }
+    }
+
+    &.active {
+      button {
+        @extend %fukidashi-for-active;
+      }
     }
   }
 }

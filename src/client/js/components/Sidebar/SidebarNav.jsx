@@ -29,7 +29,7 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generateSidebarItemObj(id, label, icon) {
+  generatePrimaryItemObj(id, label, icon) {
     const isSelected = this.props.currentContentsId === id;
 
     return {
@@ -47,6 +47,22 @@ class SidebarNav extends React.Component {
     };
   }
 
+  generateSecondaryItemObj(id, label, icon, href) {
+    return {
+      id,
+      component: ({ className }) => (
+        <div className={`${className} grw-global-item-container`}>
+          <a href={href}>
+            <GlobalItem
+              icon={icon}
+              label={label}
+            />
+          </a>
+        </div>
+      ),
+    };
+  }
+
   generateIconFactory(classNames) {
     return () => <i className={classNames}></i>;
   }
@@ -55,10 +71,13 @@ class SidebarNav extends React.Component {
     return (
       <GlobalNav
         primaryItems={[
-          this.generateSidebarItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-2x fa-code')),
-          this.generateSidebarItemObj('history', 'History', this.generateIconFactory('icon-clock fa-2x')),
+          this.generatePrimaryItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-code')),
+          this.generatePrimaryItemObj('history', 'History', this.generateIconFactory('icon-clock')),
         ]}
-        secondaryItems={[]}
+        secondaryItems={[
+          this.generateSecondaryItemObj('admin', 'Admin', this.generateIconFactory('icon-settings'), '/admin'),
+          this.generateSecondaryItemObj('help', 'Help', this.generateIconFactory('icon-question'), 'https://docs.growi.org'),
+        ]}
       />
     );
   }
