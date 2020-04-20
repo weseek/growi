@@ -104,6 +104,7 @@
           </div>
         </div>
       </div>
+        <!-- [TODO][GW-1913] react component gets params without swig  -->
         {% set isLocalStrategySetup = passportService.isLocalStrategySetup %}
         {% set isLdapStrategySetup = passportService.isLdapStrategySetup %}
         <!-- {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %} -->
@@ -212,7 +213,7 @@
 
 
 {% block body_end %}
-<!-- <script>
+<script>
   // login
   $('#register').on('click', function() {
     $('#login-dialog').addClass('to-flip');
@@ -239,7 +240,7 @@
       }
     });
   });
-</script> -->
+</script>
 {% endblock %}
 
 
