@@ -68,7 +68,7 @@ class PasswordSettings extends React.Component {
     return (
       <React.Fragment>
         {(!personalContainer.state.isPasswordSet) && <div className="alert alert-warning m-t-10">{ t('Password is not set') }</div>}
-        <div className="mb-5 container-fluid">
+        <div className="container-fluid my-4">
           {(personalContainer.state.isPasswordSet)
             ? <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
           : <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>}

@@ -36,34 +36,20 @@
   }
 }
 
-/*
-  * header
-  */
-.grw-subnav {
-  overflow: unset;
+.grw-sidebar-header-container {
+  padding: 10px;
+
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
+.grw-sidebar-content-container {
 }
 
 .grw-modal-head {
   font-size: 1em;
   border-bottom: 1px solid $grw-line-gray;
-}
-
-header {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-
-  line-height: 1em;
-  // the container of h1
-  div.title-container {
-    padding-right: 5px;
-    padding-left: 5px;
-    margin-right: auto;
-  }
-
-  h1 {
-    @include variable-font-size(28px);
-    line-height: 1.1em;
-  }
 }
 
 .main {
@@ -90,11 +76,11 @@ header {
   }
 }
 
-  .revision-toc {
-    // to get on the Attachment row
-    z-index: 1;
-    overflow: hidden;
-    font-size: 0.9em;
+.revision-toc {
+  // to get on the Attachment row
+  z-index: 1;
+  overflow: hidden;
+  font-size: 0.9em;
 
   .revision-toc-content {
     padding: 10px;

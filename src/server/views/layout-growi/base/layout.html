@@ -7,20 +7,15 @@
 {% endblock %}
 
 {% block layout_main %}
+
+{% block content_header_wrapper %}
+<header class="sticky-top py-0 grw-header">
+  {% block content_header %}
+  {% endblock %}
+</header>
+{% endblock %}
+
 <div class="container-fluid">
-
-  <header class="sticky-top py-0" id="page-header">
-
-    <div id="grw-subnav" data-is-forbidden-page="{{ forbidden }}"></div>
-
-      {% if not page and not forbidden and ('/' === path or 'crowi' === getConfig('crowi', 'customize:behavior')) and not isUserPageList(path) and !isTrashPage() %}
-        {% if '/' === path.slice(-1) %}
-          {% include '../../widget/create_portal.html' %}
-        {% endif %}
-      {% endif %}
-
-  </header>
-
   <div class="row">
     <div id="main" class="main col-md-12 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
       {% block content_main_before %}
@@ -33,7 +28,6 @@
       {% endblock %}
     </div><!-- /.main -->
   </div><!-- /.row -->
-
 </div><!-- /.container-fluid -->
 
 <footer class="footer">

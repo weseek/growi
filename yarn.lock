@@ -90,14 +90,6 @@
     react-addons-text-content "^0.0.4"
     uuid "^3.1.0"
 
-"@atlaskit/logo@^12.3.3":
-  version "12.3.3"
-  resolved "https://registry.yarnpkg.com/@atlaskit/logo/-/logo-12.3.3.tgz#dd329f35f32e84ff9b135ffa566ca19ba31c9d7d"
-  integrity sha512-xeuseG2xDRmja+O9Wa1lib7VFkBMGBdC1N/L+lPcazL+hWEJou+garwZ2Ir6FQktqCr5/yk5AAPMn11GNLseSA==
-  dependencies:
-    react-uid "^2.2.0"
-    tslib "^1.9.3"
-
 "@atlaskit/navigation-next@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/navigation-next/-/navigation-next-8.0.2.tgz#045839d292d21ab01655325f6942e587c00a311d"
@@ -1656,10 +1648,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@kaishuu0123/markdown-it-fence@0.1.4", "@kaishuu0123/markdown-it-fence@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@kaishuu0123/markdown-it-fence/-/markdown-it-fence-0.1.4.tgz#759cf0dd80cca23a08e70b9cbb33c999cb23f3c3"
-  integrity sha512-u00GhVLpTeIbeflMKCozzaCAEmuwGngryomtbsYoyRwdYLfrH2nJHZa41+gwKLXsrq7Ii3N+Rei5GHaqHT3j5A==
+"@kaishuu0123/markdown-it-fence@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@kaishuu0123/markdown-it-fence/-/markdown-it-fence-0.2.0.tgz#f46722bfce4ab7eb3e051def5090dcae1bd6e36b"
+  integrity sha512-mdqKA+bXfJPl7gAg9tis8fGlea2oppBM068YbMDSXKWM6H18nVSZLrVKPHXpPWBgSv1ceeKkoWj8K1ntpIHlrw==
 
 "@lykmapipo/common@>=0.21.0":
   version "0.21.0"
@@ -8905,23 +8897,23 @@ markdown-escapes@^1.0.0:
   resolved "https://registry.yarnpkg.com/markdown-escapes/-/markdown-escapes-1.0.3.tgz#6155e10416efaafab665d466ce598216375195f5"
   integrity sha512-XUi5HJhhV5R74k8/0H2oCbCiYf/u4cO/rX8tnGkRvrqhsr5BRNU6Mg0yt/8UIx1iIS8220BNJsDb7XnILhLepw==
 
-markdown-it-blockdiag@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/markdown-it-blockdiag/-/markdown-it-blockdiag-1.0.3.tgz#7c2be967d21a17f559da5860b6179b34f29192a3"
-  integrity sha512-2y4C5L6V3twWhDdQLl3zzYvBiumKcS7D1CD8/OTN2Y57G1gE2ot86vTPrfljaf2Q8q6J1UgcG40zTjDGcHgHrg==
+markdown-it-blockdiag@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/markdown-it-blockdiag/-/markdown-it-blockdiag-1.1.1.tgz#f89d9a56c4ef693f4cec88fc62655fce23d15115"
+  integrity sha512-e8IvRZE7hS0eQqNMyJ8l3EI89swTUVvIkQ8MlmLA0DacumMauHCAfKgzxcZ2UMSj2wQPCmUUM9L9iAOAFcAByw==
   dependencies:
-    "@kaishuu0123/markdown-it-fence" "0.1.4"
+    "@kaishuu0123/markdown-it-fence" "^0.2.0"
     pako "^1.0.6"
     paths "^0.1.1"
     url-join "^4.0.0"
     utf8-bytes "0.0.1"
 
-markdown-it-drawio-viewer@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.1.3.tgz#e5f7fa9a1d200a8711e2aeb691551add413ffe33"
-  integrity sha512-FELyH+ko9sOAC6hHQqBYi4tI1Qv8HTzVPXsYuwTFy0NF5gY1A9oriN051rHn4UtyAAXEUIMquNNYYkxC9bhMVw==
+markdown-it-drawio-viewer@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.2.0.tgz#d47648c039f12e4c5ca706ed4d0f5dc19400c9a2"
+  integrity sha512-Hu9jxqKLVfFhk2T8J4ayaVbuoW2RSugRrXIsREMW7MMWFDciBgs9C8ADKaTav7JITY5fp7q6KJU7pqP/5dMRnA==
   dependencies:
-    "@kaishuu0123/markdown-it-fence" "^0.1.4"
+    "@kaishuu0123/markdown-it-fence" "^0.2.0"
     xmldoc "^1.1.2"
 
 markdown-it-emoji@^1.4.0:
@@ -11890,11 +11882,6 @@ react-transition-group@^2.2.1, react-transition-group@^2.3.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
-
-react-uid@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/react-uid/-/react-uid-2.2.0.tgz#0f77e1e0594fbf29fc4fe528cc9aa415c5bf9159"
-  integrity sha512-z+g5+hFOQ08hCfrGcJ1PNs+cmvH8Uq2CVzCmPeWBsUi5A4W4NWXR5jouledzy3oSKGMU9HOzf8zFuGi15TXJoQ==
 
 react-waypoint@^9.0.0:
   version "9.0.0"

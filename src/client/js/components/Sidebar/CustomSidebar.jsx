@@ -3,12 +3,9 @@ import React from 'react';
 
 import { withTranslation } from 'react-i18next';
 
-import { JiraWordmark } from '@atlaskit/logo';
-
 import {
   HeaderSection,
   MenuSection,
-  Wordmark,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -22,19 +19,25 @@ class CustomSidebar extends React.Component {
   state = {
   };
 
+  renderHeaderWordmark() {
+    return <h3>Custom Sidebar</h3>;
+  }
+
   render() {
     return (
       <>
         <HeaderSection>
           { () => (
-            <div className="grw-product-nav-header">
-              <Wordmark wordmark={JiraWordmark} />
+            <div className="grw-sidebar-header-container">
+              {this.renderHeaderWordmark()}
             </div>
           ) }
         </HeaderSection>
         <MenuSection>
           { () => (
-            <span>(TBD) CustomSidebar Contents</span>
+            <div className="grw-sidebar-content-container">
+              <span>(TBD) CustomSidebar Contents</span>
+            </div>
           ) }
         </MenuSection>
       </>
