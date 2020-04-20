@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button, ButtonGroup,
+  Button,
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -437,15 +437,14 @@ export default class HandsontableModal extends React.PureComponent {
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
-            <Button className="mr-4 data-import-button bg-light" onClick={this.toggleDataImportArea}>
+            <button type="button" className="mr-4 data-import-button btn btn-secondary" onClick={this.toggleDataImportArea}>
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
-
-            </Button>
-            <ButtonGroup>
-              <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
-              <Button onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></Button>
-              <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
-            </ButtonGroup>
+            </button>
+            <div role="group" className="btn-group">
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
+              <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
+            </div>
             <Collapse isOpen={this.state.isDataImportAreaExpanded}>
               <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />

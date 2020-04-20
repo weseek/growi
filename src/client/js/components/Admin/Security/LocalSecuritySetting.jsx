@@ -130,7 +130,7 @@ class LocalSecuritySetting extends React.Component {
                   </div>
                 </div>
 
-                <p className="help-block small">
+                <p className="form-text text-muted small">
                   {t('security_setting.Register limitation desc')}
                 </p>
               </div>
@@ -147,7 +147,7 @@ class LocalSecuritySetting extends React.Component {
                   defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
                   onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                 />
-                <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
+                <p className="form-text text-muted small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
                   <code>@growi.org</code>{t('security_setting.only_those')}<br />
                   {t('security_setting.insert_single')}
                 </p>

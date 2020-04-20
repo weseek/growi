@@ -157,7 +157,7 @@ class CustomizeBehaviorSetting extends React.Component {
                   isChecked={adminCustomizeContainer.state.isAllReplyShown || false}
                   onChecked={() => { adminCustomizeContainer.switchIsAllReplyShown() }}
                 >
-                  <p className="help-block">
+                  <p className="form-text text-muted">
                     {t('admin:customize_setting.function_options.show_all_reply_comments_desc')}
                   </p>
                 </CustomizeFunctionOption>

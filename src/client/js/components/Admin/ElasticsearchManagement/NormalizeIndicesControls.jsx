@@ -22,7 +22,7 @@ class NormalizeIndicesControls extends React.PureComponent {
           { t('full_text_search_management.normalize_button') }
         </button>
 
-        <p className="help-block">
+        <p className="form-text text-muted">
           { t('full_text_search_management.normalize_description') }<br />
         </p>
       </>
