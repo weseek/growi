@@ -74,25 +74,27 @@
 <div id="wrapper">
 
   {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 p-0">
+  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark fixed-top mb-0 p-sm-0">
+    <div id="grw-navbar-toggler" class="d-sm-none mr-auto"></div>
+
     {# Brand Logo #}
-    <div class="navbar-brand">
+    <div class="navbar-brand mr-sm-auto">
       <a class="grw-logo d-block" href="/">
         {% include '../widget/logo.html' %}
       </a>
     </div>
 
-    {# Navbar Left #}
-    <ul class="navbar-nav ml-auto mr-auto">
+    {# Navbar Center #}
+    <ul class="navbar-nav d-none d-md-block">
       <li>
         {% if isSearchServiceConfigured() %}
-        <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
+        <div class="search-top" role="search" id="search-top"></div>
         {% endif %}
       </li>
     </ul>
 
     {# Navbar Right #}
-    <ul class="navbar-nav">
+    <ul class="navbar-nav ml-auto">
       {% if user and user.admin %}
       <li class="nav-item d-none d-md-block">
         <a class="nav-link" href="/admin">
