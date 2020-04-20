@@ -2,7 +2,7 @@
 @import '../override-bootstrap-variables';
 
 // Light Mode
-html:not([dark]) {
+html[light] {
   $bgcolor-theme: rgb(18, 86, 163);
   $themelight: #f4f5f6;
   $subthemecolor: rgb(88, 130, 250);
