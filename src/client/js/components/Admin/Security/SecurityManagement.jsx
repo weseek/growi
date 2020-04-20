@@ -62,11 +62,16 @@ class SecurityManagement extends React.Component {
           <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
 
           <ul className="nav nav-tabs">
+
             <li className="nav-item">
-              <a className="nav-link active" href="#">Active</a>
+              <a className="nav-link active" href="#">
+                <i className="fa fa-users mr-1" />
+                ID/Pass
+              </a>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="#">Link</a>
+              <a className="nav-link" href="#">LDAP</a>
             </li>
           </ul>
 
