@@ -25,6 +25,9 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
+  console.log({
+    isPageForbidden, isPageNotFound, isPageInTrash, pageId, path,
+  });
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden || isPageInTrash) {
     return (
