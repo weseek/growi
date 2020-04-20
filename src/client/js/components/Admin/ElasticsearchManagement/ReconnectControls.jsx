@@ -22,7 +22,7 @@ class ReconnectControls extends React.PureComponent {
           { t('full_text_search_management.reconnect_button') }
         </button>
 
-        <p className="help-block">
+        <p className="form-text text-muted">
           { t('full_text_search_management.reconnect_description') }<br />
         </p>
       </>

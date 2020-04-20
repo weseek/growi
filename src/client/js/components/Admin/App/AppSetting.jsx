@@ -38,9 +38,9 @@ class AppSetting extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">{t('admin:app_setting.site_name')}</label>
-          <div className="col-6">
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -53,8 +53,8 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
-          <div className="col-6">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -67,8 +67,8 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">{t('admin:app_setting.default_language')}</label>
-          <div className="col-6">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.default_language')}</label>
+          <div className="col-md-6">
             <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
@@ -97,8 +97,8 @@ class AppSetting extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
-          <div className="col-6">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.file_uploading')}</label>
+          <div className="col-md-6">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
