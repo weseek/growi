@@ -60,7 +60,6 @@ class SecurityManagement extends React.Component {
 
         <div className="auth-mechanism-configurations m-t-10">
           <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
-
           <Nav tabs>
             <NavItem>
               <NavLink
