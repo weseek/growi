@@ -107,6 +107,12 @@ class LoginForm extends React.Component {
     );
   }
 
+  renderRegisterForm() {
+    return (
+      <div className="back"></div>
+    );
+  }
+
   render() {
     const {
       t,
@@ -128,7 +134,7 @@ class LoginForm extends React.Component {
               { isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm() }
               { isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm() }
             </div>
-            {/* [TODO][GW-1863] render register form here */}
+            {isRegistrationEnabled && this.renderRegisterForm()}
           </div>
         </div>
         {isRegistrationEnabled && (
