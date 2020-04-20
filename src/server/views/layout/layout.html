@@ -74,44 +74,46 @@
 <div id="wrapper">
 
   {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark fixed-top mb-0 p-0">
+  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark fixed-top mb-0 p-sm-0">
+    <div id="grw-navbar-toggler" class="d-sm-none mr-auto"></div>
+
     {# Brand Logo #}
-    <div class="navbar-brand">
+    <div class="navbar-brand mr-sm-auto">
       <a class="grw-logo d-block" href="/">
         {% include '../widget/logo.html' %}
       </a>
     </div>
 
-    {# Navbar Left #}
-    <ul class="navbar-nav ml-auto mr-auto">
+    {# Navbar Center #}
+    <ul class="navbar-nav d-none d-md-block">
       <li>
         {% if isSearchServiceConfigured() %}
-        <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
+        <div class="search-top" role="search" id="search-top"></div>
         {% endif %}
       </li>
     </ul>
 
     {# Navbar Right #}
-    <ul class="navbar-nav">
+    <ul class="navbar-nav ml-auto">
       {% if user and user.admin %}
-      <li class="nav-item">
+      <li class="nav-item d-none d-md-block">
         <a class="nav-link" href="/admin">
           <i class="icon-settings mr-2"></i>
-          <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
+          {{ t('Admin') }}
         </a>
       </li>
       {% endif %}
 
       {% if user %}
-      <li class="nav-item">
+      <li class="nav-item d-none d-md-block">
         <a class="nav-link create-page" href="#" data-target="#create-page" data-toggle="modal">
           <i class="icon-pencil mr-2"></i>
-          <span class="d-none d-md-inline-block">{{ t('New') }}</span>
+          {{ t('New') }}
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item d-none d-md-block">
         <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-          <i class="icon-question mr-2"></i><span class="d-none d-md-inline-block mr-2">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
+          <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
         </a>
       </li>
       <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
@@ -132,7 +134,7 @@
 
   <div class="d-flex">
     {# Sidebar #}
-    <nav>
+    <nav class="d-none d-sm-block">
       <div id="grw-sidebar" class="grw-sidebar"></div>
     </nav>
     <div id="page-wrapper" class="flex-grow-1">
@@ -142,6 +144,14 @@
   </div>
 
 </div><!-- /#wrapper -->
+
+<div class="grw-fixed-controls-container d-md-none animated fadeInUp faster">
+  <div class="grw-fixed-controls-button-container rounded-circle">
+    <button class="btn btn-lg btn-primary rounded-circle waves-effect waves-light" type="button" data-target="#create-page" data-toggle="modal">
+      <i class="icon-pencil"></i>
+    </button>
+  </div>
+</div>
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
