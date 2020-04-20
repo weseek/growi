@@ -11,9 +11,8 @@
 }
 
 .rbt-input-wrapper {
-  .close {
-    // default bootstrap .close has padding 0
-    padding: 3px 7px !important;
+  .close.rbt-close {
+    padding: 3px 7px;
   }
 }
 
