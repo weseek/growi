@@ -193,26 +193,26 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">Page Collections</h3>
+                <h3 className="admin-setting-header">MongoDB Page Collections</h3>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">User Collections</h3>
+                <h3 className="admin-setting-header">MongoDB User Collections</h3>
                 {this.renderGroups(GROUPS_USER, 'danger')}
                 {this.renderWarnForUser()}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">Config Collections</h3>
+                <h3 className="admin-setting-header">MongoDB Config Collections</h3>
                 {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">Other Collections</h3>
+                <h3 className="admin-setting-header">MongoDB Other Collections</h3>
                 {this.renderOthers()}
               </div>
             </div>

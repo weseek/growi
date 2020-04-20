@@ -49,14 +49,6 @@ $wikilinktext-hover: gba(171, 224, 174, 0.9);
   border-top-color: $third-main-color;
 }
 
-/*
- * Accentcolor (green)
- */
-
-header.affix {
-  border-bottom: 4px solid $accentcolor;
-}
-
 .modal {
   .modal-header {
     border-bottom: 4px solid $accentcolor;

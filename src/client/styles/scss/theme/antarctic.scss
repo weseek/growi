@@ -60,6 +60,7 @@ html[light] {
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
 
   // Logo colors
@@ -98,6 +99,7 @@ html[dark] {
   $color-link-hover: lighten($color-link, 10%);
   $color-link-wiki: lighten($basecolor, 50%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
+  $color-link-nabvar: $color-global;
   $color-inline-code: #c7254e;
 
   // Logo colors

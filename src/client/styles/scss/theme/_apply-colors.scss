@@ -85,10 +85,6 @@ $link-hover-color: $color-link-hover;
   }
 }
 
-.grw-title-bar {
-  background: darken($bgcolor-global, 2%);
-}
-
 .grw-sidebar {
   .grw-logo {
     background-color: darken($bgcolor-navbar, 10%);
@@ -208,13 +204,6 @@ $link-hover-color: $color-link-hover;
       color: $color-link-wiki-hover;
     }
   }
-}
-
-/*
- * GROWI header
- */
-header.affix {
-  background: rgba(darken($bgcolor-global, 2%), 0.9);
 }
 
 /*

@@ -1,4 +1,14 @@
-.tag-viewer {
+.tags-page {
+  .grw-header.sticky-top {
+    height: unset;
+  }
+
+  .list-tag-count {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.tag-labels {
   .manage-tags {
     font-size: 10px;
     cursor: pointer;
@@ -19,13 +29,7 @@
   }
 }
 
-#tags-page {
-  .list-tag-count {
-    background: rgba(0, 0, 0, 0.08);
-  }
-}
-
-#editTagModal {
+#edit-tag-modal {
   .form-control {
     height: auto;
   }

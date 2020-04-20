@@ -72,8 +72,8 @@ body.on-edit {
     }
   }
 
-  // show compact subnav
-  .grw-compact-subnav {
+  // show revision path
+  .grw-revision-path-for-edit {
     display: block !important;
   }
 
@@ -97,7 +97,7 @@ body.on-edit {
 
     background: none;
 
-    > .grw-title-bar {
+    > .grw-subnav-container {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
@@ -117,7 +117,7 @@ body.on-edit {
       }
     }
 
-    .tag-viewer.new-page {
+    .tag-labels.new-page {
       display: block;
     }
   }
