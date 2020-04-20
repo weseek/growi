@@ -105,7 +105,10 @@
         </div>
       </div>
 
-      <div id="login-form"></div>
+      <div id="login-form"
+        data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
+        data-csrf="{{ csrf() }}"
+      ></div>
 
       <div>
         <div>

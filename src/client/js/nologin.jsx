@@ -27,9 +27,14 @@ if (installerFormElem) {
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
+  const isRegistering = loginFormElem.dataset.isRegistering;
+  const csrf = loginFormElem.dataset.csrf;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <LoginForm />
+      <LoginForm
+        isRegistering={isRegistering}
+        csrf={csrf}
+      />
     </I18nextProvider>,
     loginFormElem,
   );

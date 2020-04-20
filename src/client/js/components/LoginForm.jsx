@@ -127,10 +127,10 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, isRegistering } = this.props;
 
     const isLocalOrLdapStrategiesEnabled = this.isLocalStrategySetup || this.isLdapStrategySetup;
-    const registerFormClass = this.isRegistrationEnabled ? 'to-flip' : '';
+    const registerFormClass = isRegistering ? 'to-flip' : '';
     const isSomeExternalAuthEnabled = Object.values(this.objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
@@ -162,6 +162,8 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
+  isRegistering: PropTypes.bool,
+  csrf: PropTypes.string,
 };
 
 export default withTranslation()(LoginForm);
