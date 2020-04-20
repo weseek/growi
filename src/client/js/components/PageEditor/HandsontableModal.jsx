@@ -440,7 +440,7 @@ export default class HandsontableModal extends React.PureComponent {
             <button type="button" className="mr-4 data-import-button btn btn-secondary" onClick={this.toggleDataImportArea}>
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </button>
-            <div data-toggle="buttons" className="btn-group btn-group-toggle">
+            <div role="group" className="btn-group">
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
