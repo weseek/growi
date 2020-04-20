@@ -38,12 +38,16 @@
     font-size: 12px;
     line-height: 14px;
   }
-
-  .small {
-    font-size: 95%;
-    line-height: 13px;
+  .help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
   }
-
+  .small {
+    font-size: 85%;
+    line-height: 1.6;
+  }
   code {
     padding: 2px 4px;
     font-size: 100%;
