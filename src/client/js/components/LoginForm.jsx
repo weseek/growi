@@ -70,24 +70,6 @@ class LoginForm extends React.Component {
     );
   }
 
-  // [TODO][GW-1865]
-  // onHoverCollapseOnMobile() {
-  // if (isExternalAuthCollapsible) {
-  //   const isMobile = /iphone|ipad|android/.test(window.navigator.userAgent.toLowerCase());
-
-  //   if (!isMobile) {
-  //     $(".collapse-anchor").hover(
-  //       function () {
-  //         $('.collapse-external-auth').collapse('show');
-  //       },
-  //       function () {
-  //         $('.collapse-external-auth').collapse('hide');
-  //       }
-  //     );
-  //   }
-  // }
-  // }
-
   renderExternalAuthLoginForm() {
     const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = this.props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
@@ -136,7 +118,7 @@ class LoginForm extends React.Component {
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
     const registerFormClass = isRegistrationEnabled ? 'to-flip' : '';
-    const isExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+    const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
       <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
@@ -144,8 +126,9 @@ class LoginForm extends React.Component {
           <div className="col-12">
             <div className="front">
               { isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm() }
-              { isExternalAuthEnabled && this.renderExternalAuthLoginForm() }
+              { isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm() }
             </div>
+            {/* [TODO][GW-1863] render register form here */}
           </div>
         </div>
         {isRegistrationEnabled && (
