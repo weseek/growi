@@ -102,11 +102,11 @@ class LoginForm extends React.Component {
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
-            {isExternalAuthEnabledMap.keys().map((auth) => {
-              if (!isExternalAuthEnabledMap(auth)) {
+            {Object.keys(isExternalAuthEnabledMap).map((auth) => {
+              if (!isExternalAuthEnabledMap[auth]) {
                 return;
               }
-              return this.renderExternalAuthInput(auth);
+              return this.renderExternalAuthInput([auth]);
             })}
           </div>
           <div className="spacer"></div>
@@ -129,7 +129,6 @@ class LoginForm extends React.Component {
   }
 
   render() {
-
     const {
       t,
       isRegistrationEnabled,
@@ -152,15 +151,15 @@ class LoginForm extends React.Component {
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-12 text-right py-2">
-            {isRegistrationEnabled && (
+        {isRegistrationEnabled && (
+          <div className="row">
+            <div className="col-12 text-right py-2">
               <a href="#register" id="register" className="link-switch">
                 <i className="ti-check-box"></i> { t('Sign up is here') }
               </a>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
