@@ -30,9 +30,6 @@ class CommentEditorLazyRenderer extends React.Component {
     const user = appContainer.currentUser;
     const isLoggedIn = user != null;
 
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
     if (!isLoggedIn) {
       return <React.Fragment></React.Fragment>;
     }
@@ -43,16 +40,14 @@ class CommentEditorLazyRenderer extends React.Component {
         { !this.state.isEditorShown && (
           <div className="form page-comment-form">
             <div className="comment-form">
-              { isBaloonStyle && (
-                <div className="comment-form-user">
-                  <UserPicture user={user} />
-                </div>
-              ) }
+              <div className="comment-form-user">
+                <UserPicture user={user} />
+              </div>
               <div className="comment-form-main">
                 { !this.state.isEditorShown && (
                   <button
                     type="button"
-                    className={`btn btn-lg ${isBaloonStyle ? 'btn-link' : 'btn-primary'} center-block`}
+                    className="btn btn-lg btn-link center-block"
                     onClick={this.showCommentFormBtnClickHandler}
                   >
                     <i className="icon-bubble"></i> Add Comment
