@@ -5,7 +5,7 @@
 html:not([dark]) {
   $bgcolor-theme: rgb(18, 86, 163);
   $themelight: #f4f5f6;
-  $subthemecolor: rgb(90, 149, 216);
+  $subthemecolor: rgb(88, 130, 250);
   $lightthemecolor: rgba(181, 203, 247, 0.61);
 
   // Background colors
@@ -51,7 +51,7 @@ html:not([dark]) {
 html[dark] {
   $bgcolor-theme: rgb(18, 86, 163);
   $themelight: #f4f5f6;
-  $subthemecolor: rgb(90, 149, 216);
+  $subthemecolor: rgb(88, 130, 250);
   $lightthemecolor: rgba(181, 203, 247, 0.61);
 
   // Background colors
