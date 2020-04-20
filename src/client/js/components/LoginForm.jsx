@@ -8,9 +8,6 @@ class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-    };
-
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
@@ -92,7 +89,7 @@ class LoginForm extends React.Component {
   // }
 
   renderExternalAuthLoginForm() {
-    const { isLocalStrategySetup, isLdapStrategySetup, isExternalAuthEnabledMap } = this.props;
+    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = this.props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth collapse-anchor' : '';
 
@@ -102,8 +99,8 @@ class LoginForm extends React.Component {
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
-            {Object.keys(isExternalAuthEnabledMap).map((auth) => {
-              if (!isExternalAuthEnabledMap[auth]) {
+            {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
+              if (!objOfIsExternalAuthEnableds[auth]) {
                 return;
               }
               return this.renderExternalAuthInput([auth]);
@@ -134,12 +131,12 @@ class LoginForm extends React.Component {
       isRegistrationEnabled,
       isLocalStrategySetup,
       isLdapStrategySetup,
-      isExternalAuthEnabledMap,
+      objOfIsExternalAuthEnableds,
     } = this.props;
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
     const registerFormClass = isRegistrationEnabled ? 'to-flip' : '';
-    const isExternalAuthEnabled = Object.values(isExternalAuthEnabledMap).some(elem => elem);
+    const isExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
       <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
@@ -172,7 +169,7 @@ LoginForm.propTypes = {
   isRegistrationEnabled: PropTypes.bool,
   isLocalStrategySetup: PropTypes.bool,
   isLdapStrategySetup: PropTypes.bool,
-  isExternalAuthEnabledMap: PropTypes.object,
+  objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
 export default withTranslation()(LoginForm);

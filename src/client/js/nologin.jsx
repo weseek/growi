@@ -30,7 +30,7 @@ if (loginFormElem) {
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
   const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
-  const isExternalAuthEnabledMap = {
+  const objOfIsExternalAuthEnableds = {
     google: loginFormElem.dataset.isGoogleAuthEnabled,
     github: loginFormElem.dataset.isGithubAuthEnabled,
     facebook: loginFormElem.dataset.isFacebookAuthEnabled,
@@ -46,7 +46,7 @@ if (loginFormElem) {
         isRegistrationEnabled={isRegistrationEnabled}
         isLdapStrategySetup={isLdapStrategySetup}
         isLocalStrategySetup={isLocalStrategySetup}
-        isExternalAuthEnabledMap={isExternalAuthEnabledMap}
+        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
       />
     </I18nextProvider>,
     loginFormElem,
