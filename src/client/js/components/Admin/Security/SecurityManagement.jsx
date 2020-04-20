@@ -65,6 +65,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-local' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-local') }}
+                href="#passport-local"
               >
                 <i className="fa fa-users" /> ID/Pass
               </NavLink>
@@ -73,6 +74,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-ldap' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-ldap') }}
+                href="#passport-ldap"
               >
                 <i className="fa fa-sitemap" /> LDAP
               </NavLink>
@@ -81,6 +83,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-saml' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-saml') }}
+                href="#passport-saml"
               >
                 <i className="fa fa-key" /> SAML
               </NavLink>
@@ -89,6 +92,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-oidc' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-oidc') }}
+                href="#passport-oidc"
               >
                 <i className="fa fa-openid" /> OIDC
               </NavLink>
@@ -97,6 +101,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-basic' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-basic') }}
+                href="#passport-basic"
               >
                 <i className="fa fa-lock" /> BASIC
               </NavLink>
@@ -105,6 +110,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-google' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-google') }}
+                href="#passport-google"
               >
                 <i className="fa fa-google" /> Google
               </NavLink>
@@ -113,6 +119,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-github' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-github') }}
+                href="#passport-github"
               >
                 <i className="fa fa-github" /> GitHub
               </NavLink>
@@ -121,6 +128,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-twitter' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-twitter') }}
+                href="#passport-twitter"
               >
                 <i className="fa fa-twitter" /> Twitter
               </NavLink>
@@ -129,6 +137,7 @@ class SecurityManagement extends React.Component {
               <NavLink
                 className={`${activeTab === 'passport-facebook' && 'active'} `}
                 onClick={() => { this.toggleActiveTab('passport-facebook') }}
+                href="#passport-facebook"
               >
                 <i className="fa fa-facebook" /> (TBD) Facebook
               </NavLink>
