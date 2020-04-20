@@ -139,6 +139,14 @@ module.exports = {
       },
     },
     {
+      name: 'animate.css',
+      url: 'https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      },
+    },
+    {
       name: 'jquery-ui',
       url: 'https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css',
       args: {
