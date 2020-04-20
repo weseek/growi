@@ -437,14 +437,13 @@ export default class HandsontableModal extends React.PureComponent {
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
-            <Button className="mr-4 data-import-button bg-light" onClick={this.toggleDataImportArea}>
+            <button type="button" className="mr-4 data-import-button btn btn-secondary" onClick={this.toggleDataImportArea}>
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
-
-            </Button>
+            </button>
             <ButtonGroup>
-              <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
-              <Button onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></Button>
-              <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
+              <button type="button" onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></button>
+              <button type="button" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
+              <button type="button" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
             </ButtonGroup>
             <Collapse isOpen={this.state.isDataImportAreaExpanded}>
               <div className="mt-4">
