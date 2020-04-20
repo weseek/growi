@@ -194,7 +194,7 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-secondary mr-2">
+              <div className="custom-control custom-checkbox custom-checkbox-warning mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
