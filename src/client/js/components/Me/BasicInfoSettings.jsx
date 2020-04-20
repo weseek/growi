@@ -71,7 +71,7 @@ class BasicInfoSettings extends React.Component {
           </div>
           {registrationWhiteList.length !== 0 && (
             <div className="col-sm-offset-2 col-sm-10">
-              <div className="help-block">
+              <div className="form-text text-muted">
                 {t('page_register.form_help.email')}
                 <ul>
                   {registrationWhiteList.map(data => <li key={data}><code>{data}</code></li>)}

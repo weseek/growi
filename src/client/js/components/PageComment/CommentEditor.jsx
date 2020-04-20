@@ -219,9 +219,6 @@ class CommentEditor extends React.Component {
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
     const emojiStrategy = appContainer.getEmojiStrategy();
 
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
       <Button outline color="danger" size="xs" className="btn btn-outline-danger rounded-pill" onClick={this.toggleEditor}>
@@ -242,11 +239,9 @@ class CommentEditor extends React.Component {
     return (
       <div className="form page-comment-form">
         <div className="comment-form">
-          { isBaloonStyle && (
-            <div className="comment-form-user">
-              <UserPicture user={appContainer.currentUser} />
-            </div>
-          ) }
+          <div className="comment-form-user">
+            <UserPicture user={appContainer.currentUser} />
+          </div>
           <div className="comment-form-main">
             <div className="comment-write">
               <Nav tabs>
@@ -271,7 +266,7 @@ class CommentEditor extends React.Component {
                     isGfmMode={this.state.isMarkdown}
                     lineNumbers={false}
                     isMobile={appContainer.isMobile}
-                    isUploadable={this.state.isUploadable && layoutType !== 'crowi'} // disabled upload with crowi layout
+                    isUploadable={this.state.isUploadable}
                     isUploadableFile={this.state.isUploadableFile}
                     emojiStrategy={emojiStrategy}
                     onChange={this.updateState}
@@ -289,7 +284,7 @@ class CommentEditor extends React.Component {
             <div className="comment-submit">
               <div className="d-flex">
                 <label className="mr-2">
-                  { isBaloonStyle && activeTab === 1 && (
+                  {activeTab === 1 && (
                     <span className="custom-control custom-checkbox">
                       <input
                         type="checkbox"
