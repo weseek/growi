@@ -112,7 +112,7 @@
       <div id="login-form"
         data-is-local-strategy-setup="{{ isLocalStrategySetup }}"
         data-is-ldap-strategy-setup="{{ isLdapStrategySetup }}"
-        data-is-registration-enabled="{{ req.query.register or req.body.registerForm or isRegistering }}"
+        data-is-registration-enabled="{{ isRegistrationEnabled }}"
         data-is-google-auth-enabled="{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
         data-is-github-auth-enabled="{{ getConfig('crowi', 'security:passport-github:isEnabled') }}"
         data-is-facebook-auth-enabled="{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
