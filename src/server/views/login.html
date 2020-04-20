@@ -107,9 +107,6 @@
         <!-- [TODO][GW-1913] react component gets params without swig  -->
         {% set isLocalStrategySetup = passportService.isLocalStrategySetup %}
         {% set isLdapStrategySetup = passportService.isLdapStrategySetup %}
-        <!-- {% set isLocalOrLdapStrategiesEnabled = passportService.isLocalStrategySetup || passportService.isLdapStrategySetup %} -->
-        <!-- {% set isExternalAuthCollapsible = isLocalOrLdapStrategiesEnabled %} -->
-        <!-- {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %} -->
 
       <div id="login-form"
         data-is-local-strategy-setup="{{ isLocalStrategySetup }}"
@@ -124,87 +121,89 @@
         data-is-basic-auth-enabled="{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"
       ></div>
 
+      <div>
+        <div>
+          {% if isRegistrationEnabled %}
+          <div class="back">
+            {% if getConfig('crowi', 'security:registrationMode') == 'Restricted' %}
+            <p class="alert alert-warning">
+              {{ t('page_register.notice.restricted') }}<br>
+              {{ t('page_register.notice.restricted_defail') }}
+            </p>
+            {% endif %}
 
-      {% if isRegistrationEnabled %}
-      <div class="back">
-        {% if getConfig('crowi', 'security:registrationMode') == 'Restricted' %}
-        <p class="alert alert-warning">
-          {{ t('page_register.notice.restricted') }}<br> {{ t('page_register.notice.restricted_defail') }}
-        </p>
-        {% endif %}
+            <form role="form" action="/register" method="post" id="register-form">
+              <div class="input-group" id="input-group-username">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="icon-user"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
+              </div>
+              <p class="form-text text-danger">
+                <span id="help-block-username"></span>
+              </p>
 
-        <form role="form" action="/register" method="post" id="register-form">
-          <div class="input-group" id="input-group-username">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="icon-user"></i></span>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="icon-tag"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
+              </div>
+
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="icon-envelope"></i></span>
+                </div>
+                <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ req.body.registerForm.email }}" required>
+              </div>
+              {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length %}
+              <p class="form-text">
+                {{ t('page_register.form_help.email') }}
+              </p>
+              <ul>
+                {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
+                <li><code>{{ em }}</code></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="icon-lock"></i></span>
+                </div>
+                <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
+              </div>
+
+              <div class="input-group justify-content-center mt-5">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" class="btn btn-fill px-0 py-2" id="register">
+                  <div class="eff"></div>
+                  <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
+                  <span class="btn-label-text p-3">{{ t('Sign up') }}</span>
+                </button>
+              </div>
+
+            </form>
+
+            <div class="border-bottom mb-3"></div>
+
+            <div class="row">
+              <div class="text-right col-12 py-1">
+                <a href="#login" id="login" class="link-switch">
+                  <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
+                </a>
+              </div>
             </div>
-            <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}"
-              required>
-          </div>
-          <p class="form-text text-danger">
-            <span id="help-block-username"></span>
-          </p>
-
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="icon-tag"></i></span>
-            </div>
-            <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ req.body.registerForm.name }}"
-              required>
           </div>
 
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="icon-envelope"></i></span>
-            </div>
-            <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ req.body.registerForm.email }}"
-              required>
-          </div>
-          {% if getConfig('crowi', 'security:registrationWhiteList') && getConfig('crowi', 'security:registrationWhiteList').length
-          %}
-          <p class="form-text">
-            {{ t('page_register.form_help.email') }}
-          </p>
-          <ul>
-            {% for em in getConfig('crowi', 'security:registrationWhiteList') %}
-            <li><code>{{ em }}</code></li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="icon-lock"></i></span>
-            </div>
-            <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
-          </div>
-
-          <div class="input-group justify-content-center mt-5">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-fill px-0 py-2" id="register">
-              <div class="eff"></div>
-              <span class="btn-label p-3"><i class="icon-user-follow"></i></span>
-              <span class="btn-label-text p-3">{{ t('Sign up') }}</span>
-            </button>
-          </div>
-
-        </form>
-
-        <div class="border-bottom mb-3"></div>
-
-        <div class="row">
-          <div class="text-right col-12 py-1">
-            <a href="#login" id="login" class="link-switch">
-              <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
-            </a>
-          </div>
+          {% endif %} {# if isRegistrationEnabled id false #}
         </div>
-      </div>
-      {% endif %} {# if isRegistrationEnabled id false #}
 
-      <a href="https://growi.org" class="link-growi-org pl-3">
-        <span class="growi">GROWI</span>.<span class="org">ORG
-      </a>
+        <a href="https://growi.org" class="link-growi-org pl-3">
+          <span class="growi">GROWI</span>.<span class="org">ORG
+        </a>
+
+      </div>
     </div>
   </div>
 </div>
@@ -242,5 +241,3 @@
   });
 </script>
 {% endblock %}
-
-
