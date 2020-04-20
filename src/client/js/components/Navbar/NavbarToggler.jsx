@@ -7,6 +7,8 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 const NavbarToggler = (props) => {
+
+  // eslint-disable-next-line no-unused-vars
   const { appContainer } = props;
 
   return (
