@@ -51,7 +51,7 @@ class SidebarNav extends React.Component {
     return {
       id,
       component: ({ className }) => (
-        <div className={`${className} grw-global-item-container`}>
+        <div className={`${className} grw-global-item-container d-block d-md-none`}>
           <a href={href}>
             <GlobalItem
               icon={icon}
