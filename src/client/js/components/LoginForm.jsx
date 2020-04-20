@@ -19,6 +19,7 @@ class LoginForm extends React.Component {
   }
 
   componentWillMount() {
+    // [TODO][GW-1913] get params from server with axios
     this.isRegistrationEnabled = true;
     this.isLocalStrategySetup = true;
     this.isLdapStrategySetup = true;
