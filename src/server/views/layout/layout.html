@@ -74,7 +74,7 @@
 <div id="wrapper">
 
   {% block layout_head_nav %}
-  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark fixed-top mb-0 p-0">
+  <nav class="navbar grw-navbar navbar-expand navbar-dark fixed-top mb-0 p-0">
     {# Brand Logo #}
     <div class="navbar-brand">
       <a class="grw-logo d-block" href="/">
@@ -94,24 +94,24 @@
     {# Navbar Right #}
     <ul class="navbar-nav">
       {% if user and user.admin %}
-      <li class="nav-item">
+      <li class="nav-item d-none d-md-block">
         <a class="nav-link" href="/admin">
           <i class="icon-settings mr-2"></i>
-          <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
+          {{ t('Admin') }}
         </a>
       </li>
       {% endif %}
 
       {% if user %}
-      <li class="nav-item">
+      <li class="nav-item d-none d-md-block">
         <a class="nav-link create-page" href="#" data-target="#create-page" data-toggle="modal">
           <i class="icon-pencil mr-2"></i>
-          <span class="d-none d-md-inline-block">{{ t('New') }}</span>
+          {{ t('New') }}
         </a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item d-none d-md-block">
         <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-          <i class="icon-question mr-2"></i><span class="d-none d-md-inline-block mr-2">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
+          <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
         </a>
       </li>
       <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
