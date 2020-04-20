@@ -38,6 +38,12 @@
       border-color: $input-focus-border-color;
     }
   }
+  .custom-checkbox-primary.checkbox-all {
+    .custom-control-input:checked + .custom-control-label::before {
+      background-color: $input-focus-border-color;
+      border-color: $input-focus-border-color;
+    }
+  }
 }
 
 @each $theme-color, $color in $theme-colors {
