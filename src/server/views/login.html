@@ -104,22 +104,8 @@
           </div>
         </div>
       </div>
-        <!-- [TODO][GW-1913] react component gets params without swig  -->
-        {% set isLocalStrategySetup = passportService.isLocalStrategySetup %}
-        {% set isLdapStrategySetup = passportService.isLdapStrategySetup %}
 
-      <div id="login-form"
-        data-is-local-strategy-setup="{{ isLocalStrategySetup }}"
-        data-is-ldap-strategy-setup="{{ isLdapStrategySetup }}"
-        data-is-registration-enabled="{{ req.query.register or req.body.registerForm or isRegistering }}"
-        data-is-google-auth-enabled="{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
-        data-is-github-auth-enabled="{{ getConfig('crowi', 'security:passport-github:isEnabled') }}"
-        data-is-facebool-auth-enabled="{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
-        data-is-twitter-auth-enabled="{{ getConfig('crowi', 'security:passport-twitter:isEnabled') }}"
-        data-is-oidc-auth-enabled="{{ getConfig('crowi', 'security:passport-oidc:isEnabled') }}"
-        data-is-saml-auth-enabled="{{ getConfig('crowi', 'security:passport-saml:isEnabled') }}"
-        data-is-basic-auth-enabled="{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"
-      ></div>
+      <div id="login-form"></div>
 
       <div>
         <div>

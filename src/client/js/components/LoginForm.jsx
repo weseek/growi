@@ -8,13 +8,33 @@ class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.isRegistrationEnabled = false;
+    this.isLocalStrategySetup = false;
+    this.isLdapStrategySetup = false;
+    this.objOfIsExternalAuthEnableds = {};
+
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
   }
 
+  componentWillMount() {
+    this.isRegistrationEnabled = true;
+    this.isLocalStrategySetup = true;
+    this.isLdapStrategySetup = true;
+    this.objOfIsExternalAuthEnableds = {
+      google: true,
+      github: true,
+      facebook: true,
+      twitter: true,
+      oidc: true,
+      saml: true,
+      basic: true,
+    };
+  }
+
   renderLocalOrLdapLoginForm() {
-    const { t, isLdapStrategySetup } = this.props;
+    const { t } = this.props;
 
     return (
       <form className="col-12" role="form" action="/login" method="post">
@@ -24,7 +44,7 @@ class LoginForm extends React.Component {
             <span className="input-group-text"><i className="icon-user"></i></span>
           </div>
           <input type="text" className="form-control" placeholder="Username or E-mail" name="loginForm[username]" />
-          {isLdapStrategySetup && (
+          {this.isLdapStrategySetup && (
             <div className="input-group-append">
               <small className="input-group-text text-success">
                 <i className="icon-fw icon-check"></i> LDAP
@@ -71,8 +91,7 @@ class LoginForm extends React.Component {
   }
 
   renderExternalAuthLoginForm() {
-    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = this.props;
-    const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
+    const isExternalAuthCollapsible = this.isLocalStrategySetup || this.isLdapStrategySetup;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth collapse-anchor' : '';
 
     return (
@@ -81,11 +100,11 @@ class LoginForm extends React.Component {
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
-            {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
-              if (!objOfIsExternalAuthEnableds[auth]) {
+            {Object.keys(this.objOfIsExternalAuthEnableds).map((auth) => {
+              if (!this.objOfIsExternalAuthEnableds[auth]) {
                 return;
               }
-              return this.renderExternalAuthInput([auth]);
+              return this.renderExternalAuthInput(auth);
             })}
           </div>
           <div className="spacer"></div>
@@ -108,17 +127,11 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const {
-      t,
-      isRegistrationEnabled,
-      isLocalStrategySetup,
-      isLdapStrategySetup,
-      objOfIsExternalAuthEnableds,
-    } = this.props;
+    const { t } = this.props;
 
-    const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-    const registerFormClass = isRegistrationEnabled ? 'to-flip' : '';
-    const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+    const isLocalOrLdapStrategiesEnabled = this.isLocalStrategySetup || this.isLdapStrategySetup;
+    const registerFormClass = this.isRegistrationEnabled ? 'to-flip' : '';
+    const isSomeExternalAuthEnabled = Object.values(this.objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
       <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
@@ -131,7 +144,7 @@ class LoginForm extends React.Component {
             {/* [TODO][GW-1863] render register form here */}
           </div>
         </div>
-        {isRegistrationEnabled && (
+        {this.isRegistrationEnabled && (
           <div className="row">
             <div className="col-12 text-right py-2">
               <a href="#register" id="register" className="link-switch">
@@ -149,10 +162,6 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
-  isRegistrationEnabled: PropTypes.bool,
-  isLocalStrategySetup: PropTypes.bool,
-  isLdapStrategySetup: PropTypes.bool,
-  objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
 export default withTranslation()(LoginForm);
