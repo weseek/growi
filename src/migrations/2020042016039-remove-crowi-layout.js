@@ -17,7 +17,7 @@ module.exports = {
 
     await Config.findOneAndUpdate(query, { value: JSON.stringify('growi') }); // update layout
 
-    logger.info('Migration has successfully');
+    logger.info('Migration has successfully applied');
   },
 
   down(db) {
