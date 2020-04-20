@@ -162,6 +162,18 @@
   }
 }
 
+.grw-fixed-controls-container {
+  position: fixed;
+  right: 1em;
+  bottom: 3em;
+
+  transition: all 200ms linear;
+
+  .grw-fixed-controls-button-container {
+    box-shadow: 0 3px 4px rgba($black, 0.3);
+  }
+}
+
 // printable style
 @media print {
   padding: 30px;
