@@ -47,7 +47,7 @@ html[light] {
 }
 
 
-// Dark Mode
+// Dark Mode ( same as Light Mode )
 html[dark] {
   $bgcolor-theme: rgb(18, 86, 163);
   $themelight: #f4f5f6;
@@ -88,6 +88,6 @@ html[dark] {
   $color-dropdown-link-hover: $color-global;
 
   @import 'apply-colors';
-  @import 'apply-colors-dark';
+  @import 'apply-colors-light';
   @import 'apply-colors-kibela';
 }
