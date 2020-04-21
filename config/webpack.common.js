@@ -38,7 +38,7 @@ module.exports = (options) => {
       // 'styles/theme-mono-blue':       './src/client/styles/scss/theme/mono-blue.scss',
       // 'styles/theme-future':          './src/client/styles/scss/theme/future.scss',
       // 'styles/theme-blue-night':      './src/client/styles/scss/theme/blue-night.scss',
-      // 'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
+      'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
       // 'styles/theme-halloween':       './src/client/styles/scss/theme/halloween.scss',
       // 'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
       // 'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',

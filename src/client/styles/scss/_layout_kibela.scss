@@ -1,28 +1,8 @@
-@import '../scss/theme/layout_kibela_variable';
-
 body.kibela {
-  .icon-link,
-  .CodeMirror-hint-active,
-  .grw-nav-main-left-tab,
-  .tav-pane,
-  .active {
-    color: #5882fa;
-  }
-
-  .bg-white {
-    background: #fefffe !important;
-  }
-
-  .bg-primary {
-    background-color: $primary !important;
-  }
-
+  /* Logo */
   .logo {
-    background: transparent;
-
     .logo-mark {
       height: 50px;
-      background-color: white;
       box-shadow: none;
 
       svg {
@@ -32,10 +12,6 @@ body.kibela {
   }
 
   /* header */
-  .background-t {
-    background-color: transparent;
-  }
-
   .authors {
     padding-top: 10px;
 
@@ -44,28 +20,12 @@ body.kibela {
     }
   }
 
-  .search-input-group,
-  .search-typeahead {
-    .btn {
-      background-color: transparent;
-    }
-  }
-
   .panel-heading {
     border-radius: 0 !important;
   }
 
-  .btn-open-dropzone {
-    background: rgb(243, 245, 247);
-  }
-
   /* page list */
-  .page-list {
-    background: white;
-  }
-
   .page-attachments-row {
-    background-color: #e5ecf1 !important;
     border: 0px;
   }
 
@@ -75,7 +35,6 @@ body.kibela {
 
   .round-corner-top {
     z-index: absolute;
-    border-top: solid 0.4em #5584e1;
     border-radius: 0.35em;
   }
 
@@ -86,16 +45,14 @@ body.kibela {
     bottom: 0px;
     left: 0px;
     z-index: absolute;
-    height: 11em;
     max-width: 840px;
+    height: 11em;
     margin: auto;
-    border-top: solid 0.4em #5584e1;
     border-radius: 0.35em;
   }
 
   .grw-subnav {
     position: relative;
-    background: transparent;
     border: none;
 
     svg {
@@ -131,114 +88,27 @@ body.kibela {
     .list-group-item + .list-group-item.active {
       margin-top: 2px;
     }
-
-    .list-group-item.active {
-      color: #fff;
-      background: #1256a3;
-    }
-
-    .list-group-item {
-      &:hover {
-        background: #eee;
-      }
-    }
-  }
-
-  /* search page */
-  .search-result-list,
-  .page-list-li {
-    background: #f4f5f6;
   }
 
   /* Tabs */
   .nav.nav-tabs {
     > .nav-item {
-      color: #5882fa;
       cursor: pointer;
-      background: transparent;
-
-      &:hover,
-      &:focus {
-        > .nav-link {
-          color: #7a94d9;
-        }
-      }
 
       > .nav-link {
-        color: #5882fa;
         border: none;
         border-radius: 3px;
       }
-
-      > .nav-link.active {
-        background: transparent !important;
-        border-bottom: solid 2.7px #5584e1;
-      }
-    }
-
-    .wiki {
-      h1 {
-        border-bottom: solid 2px #5584e1 !important;
-      }
-
-      h2 {
-        border-color: solid 1px #5584e1;
-      }
-    }
-  }
-
-  /* Modal */
-  .modal-content {
-    background-color: $themelight;
-
-    .modal-header.bg-primary {
-      color: white;
-
-      .close {
-        color: white;
-      }
-    }
-  }
-
-  /* Inline Code */
-  :not(.hljs) > code:not(.hljs) {
-    background-color: $bgcolor-inline-code;
-    color: $color-inline-code;
-  }
-
-  /* Card */
-  .card {
-    border: 1px solid $border;
-
-    .card-header {
-      background-color: $lightthemecolor;
-      border-bottom: 1px solid $border;
-    }
-
-    .card-body {
-      background-color: $themelight;
-    }
-
-    .card-footer {
-      background: white;
-      border-top: 1px solid $border;
     }
   }
 
   /* button */
   .btn {
-    border-radius: $radius;
-  }
-
-  .btn-primary {
-    background: $primary;
-    border: 1px solid $primary;
+    // border-radius: $radius;
   }
 
   /* edit */
   .CodeMirror {
-    border: solid 1.2px #d8d8d8;
-    border-top: solid 0.3em #5584e1 !important;
     border-radius: 0.35em;
   }
 
@@ -279,7 +149,6 @@ body.kibela {
     .page-editor-preview-container {
       padding-right: 0px !important;
       padding-left: 2em;
-      background: white !important;
     }
 
     .page-editor-footer {
