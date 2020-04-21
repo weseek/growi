@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
+const md5 = require('md5');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
@@ -192,6 +193,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
+    this.imagePathCache = this.generateImagePathCache();
     const userData = await this.save();
     return userData;
   };
@@ -227,7 +229,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
-    this.imagePathCache = attachment.filePath;
+    this.imagePathCache = this.generateImagePathCache();
     return this.save();
   };
 
@@ -243,8 +245,23 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
-    this.imagePathCache = undefined;
+    this.imagePathCache = this.generateImagePathCache();
     return this.save();
+  };
+
+  userSchema.methods.generateImagePathCache = function() {
+    if (this.isGravatarEnabled) {
+      const email = this.email || '';
+      const hash = md5(email.trim().toLowerCase());
+      return `https://gravatar.com/avatar/${hash}`;
+    }
+    if (this.image) {
+      return this.image;
+    }
+    if (this.imageAttachment != null) {
+      return this.imageAttachment.filePathProxied;
+    }
+    return '/images/icons/user.svg';
   };
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
