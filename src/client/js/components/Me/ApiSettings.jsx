@@ -79,7 +79,7 @@ class ApiSettings extends React.Component {
           <div className="offset-4 col-5">
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary text-nowrap"
               onClick={this.onClickSubmit}
             >
               {t('Update API Token')}
