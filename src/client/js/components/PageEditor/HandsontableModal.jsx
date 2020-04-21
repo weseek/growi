@@ -437,7 +437,15 @@ export default class HandsontableModal extends React.PureComponent {
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
-            <button type="button" className="mr-4 data-import-button btn btn-secondary" onClick={this.toggleDataImportArea}>
+            <button
+              type="button"
+              className="mr-4 data-import-button btn btn-secondary"
+              data-toggle="collapse"
+              data-target="#collapseExample"
+              aria-expanded={this.state.isDataImportAreaExpanded}
+              aria-controls="collapseExample"
+              onClick={this.toggleDataImportArea}
+            >
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </button>
             <div role="group" className="btn-group">
@@ -445,11 +453,11 @@ export default class HandsontableModal extends React.PureComponent {
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
             </div>
-            <Collapse isOpen={this.state.isDataImportAreaExpanded}>
+            <div id="collapseExample" className="collapse">
               <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
-            </Collapse>
+            </div>
           </div>
           <div ref={(c) => { this.hotTableContainer = c }} className="m-4 hot-table-container">
             <HotTable
