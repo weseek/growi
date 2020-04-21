@@ -155,7 +155,7 @@ class UserManagement extends React.Component {
             </div>
 
             <div className="mx-5 form-inline">
-              <div className="custom-control custom-checkbox custom-checkbox-primary mr-2 checkbox-all">
+              <div className="custom-control custom-checkbox custom-checkbox-primary mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
