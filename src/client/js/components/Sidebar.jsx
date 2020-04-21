@@ -22,17 +22,17 @@ import CustomSidebar from './Sidebar/CustomSidebar';
 class Sidebar extends React.Component {
 
   static propTypes = {
+    appContainer: PropTypes.instanceOf(AppContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
   };
 
   state = {
     currentContentsId: 'custom',
-    isDrawerOpen: false,
   };
 
-  openDrawer = () => this.setState({ isDrawerOpen: true });
+  openDrawer = () => this.props.appContainer.setState({ isDrawerOpened: true });
 
-  closeDrawer = () => this.setState({ isDrawerOpen: false });
+  closeDrawer = () => this.props.appContainer.setState({ isDrawerOpened: false });
 
   itemSelectedHandler = (contentsId) => {
     const { navigationUIController } = this.props;
@@ -47,16 +47,12 @@ class Sidebar extends React.Component {
       this.setState({ currentContentsId: contentsId });
       navigationUIController.expand();
     }
-
-    // if (contentsId === 'drawer') {
-    //   this.openDrawer();
-    // }
   }
 
   renderGlobalNavigation = () => (
     <>
       <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
-      <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
+      <Drawer onClose={this.closeDrawer} isOpen={this.props.appContainer.state.isDrawerOpened}>
         <code>Drawer contents</code>
       </Drawer>
     </>

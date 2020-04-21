@@ -94,6 +94,16 @@
   }
 }
 
+// Atlaskit Drawer
+.atlaskit-portal-container {
+  // override @atlaskit/navigation-next styles
+  div[class$='-Wrapper'],
+  .jyecer {
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-fixed + 5;
+  }
+}
+
 #page-wrapper {
   margin-top: $grw-navbar-height;
 }

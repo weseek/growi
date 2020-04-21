@@ -8,11 +8,14 @@ import AppContainer from '../../services/AppContainer';
 
 const NavbarToggler = (props) => {
 
-  // eslint-disable-next-line no-unused-vars
   const { appContainer } = props;
 
+  const clickHandler = () => {
+    appContainer.setState({ isDrawerOpened: true });
+  };
+
   return (
-    <button className="navbar-toggler grw-navbar-toggler border-0" type="button" aria-expanded="false" aria-label="Toggle navigation">
+    <button className="navbar-toggler grw-navbar-toggler border-0" type="button" aria-expanded="false" aria-label="Toggle navigation" onClick={clickHandler}>
       <i className="icon-menu"></i>
     </button>
   );

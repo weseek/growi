@@ -33,6 +33,7 @@ export default class AppContainer extends Container {
       editorMode: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
+      isDrawerOpen: false,
     };
 
     const body = document.querySelector('body');
