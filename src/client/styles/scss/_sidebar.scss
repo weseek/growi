@@ -1,0 +1,59 @@
+.grw-sidebar {
+  // @include media-breakpoint-down(xs) {
+  //   position: fixed;
+  // }
+
+  .ak-navigation-resize-button {
+    top: calc(50vh - 20px);
+  }
+
+  // override @atlaskit/navigation-next styles
+  div[class$='-NavigationContainer'] {
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-sticky + 5;
+  }
+
+  // override @atlaskit/navigation-next styles
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: unset;
+      border-right: 1px solid $border;
+    }
+  }
+
+  .grw-global-item-container {
+    i {
+      font-size: 1.5em;
+    }
+
+    // icon opacity
+    &:not(.active) {
+      i {
+        opacity: 0.4;
+      }
+      &:hover,
+      &:focus {
+        i {
+          opacity: 0.7;
+        }
+      }
+    }
+
+    &.active {
+      button {
+        @extend %fukidashi-for-active;
+      }
+    }
+  }
+}
+
+.grw-sidebar-header-container {
+  padding: 10px;
+
+  h3 {
+    margin-bottom: 0;
+  }
+}
+
+.grw-sidebar-content-container {
+}
