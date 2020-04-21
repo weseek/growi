@@ -78,6 +78,7 @@ class LoginForm extends React.Component {
     const { t } = this.props;
     return (
       <div key={auth} className="input-group justify-content-center d-flex mt-5">
+        {/* [TODO][GW-1913] use onClick, and delete form tag */}
         <form role="form" action={`/passport/${auth}`} className="d-inline-flex flex-column">
           <input type="hidden" name="_csrf" value="{{ csrf() }}" />
           <button type="submit" className="btn btn-fill px-0 py-2" id={auth}>

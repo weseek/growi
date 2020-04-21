@@ -105,6 +105,7 @@
         </div>
       </div>
 
+      <!-- [TODO][GW-1913] An AppContainer gets csrf data -->
       <div id="login-form"
         data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
         data-csrf="{{ csrf() }}"
