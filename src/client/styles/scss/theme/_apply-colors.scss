@@ -39,6 +39,9 @@ $link-hover-color: $color-link-hover;
   .list-group-item {
     color: $color-list;
     background-color: $bgcolor-list;
+    &:hover {
+      background-color: $color-dropdown-link-hover;
+    }
     &.active {
       color: $color-list-active;
       background-color: $bgcolor-list-active;
