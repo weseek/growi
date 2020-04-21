@@ -10,8 +10,6 @@ import {
   ThemeProvider, modeGenerator,
 } from '@atlaskit/navigation-next';
 
-import Drawer from '@atlaskit/drawer';
-
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
@@ -30,10 +28,6 @@ class Sidebar extends React.Component {
     currentContentsId: 'custom',
   };
 
-  openDrawer = () => this.props.appContainer.setState({ isDrawerOpened: true });
-
-  closeDrawer = () => this.props.appContainer.setState({ isDrawerOpened: false });
-
   itemSelectedHandler = (contentsId) => {
     const { navigationUIController } = this.props;
     const { currentContentsId } = this.state;
@@ -50,12 +44,7 @@ class Sidebar extends React.Component {
   }
 
   renderGlobalNavigation = () => (
-    <>
-      <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
-      <Drawer onClose={this.closeDrawer} isOpen={this.props.appContainer.state.isDrawerOpened}>
-        <code>Drawer contents</code>
-      </Drawer>
-    </>
+    <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
   );
 
   renderSidebarContents = () => {
@@ -71,30 +60,34 @@ class Sidebar extends React.Component {
   }
 
   render() {
+    const { isDrawerOpened } = this.props.appContainer.state;
+
     return (
-      <ThemeProvider
-        theme={theme => ({
-          ...theme,
-          context: 'product',
-          mode: modeGenerator({
-            product: { text: '#ffffff', background: '#334455' },
-          }),
-        })}
-      >
-        <LayoutManager
-          globalNavigation={this.renderGlobalNavigation}
-          productNavigation={() => null}
-          containerNavigation={this.renderSidebarContents}
-          experimental_hideNavVisuallyOnCollapse
-          experimental_flyoutOnHover
-          experimental_alternateFlyoutBehaviour
-          // experimental_fullWidthFlyout
-          shouldHideGlobalNavShadow
-          showContextualNavigation
-          topOffset={50}
+      <div className={`grw-sidebar ${isDrawerOpened ? 'open' : ''}`}>
+        <ThemeProvider
+          theme={theme => ({
+            ...theme,
+            context: 'product',
+            mode: modeGenerator({
+              product: { text: '#ffffff', background: '#334455' },
+            }),
+          })}
         >
-        </LayoutManager>
-      </ThemeProvider>
+          <LayoutManager
+            globalNavigation={this.renderGlobalNavigation}
+            productNavigation={() => null}
+            containerNavigation={this.renderSidebarContents}
+            experimental_hideNavVisuallyOnCollapse
+            experimental_flyoutOnHover
+            experimental_alternateFlyoutBehaviour
+            // experimental_fullWidthFlyout
+            shouldHideGlobalNavShadow
+            showContextualNavigation
+            topOffset={50}
+          >
+          </LayoutManager>
+        </ThemeProvider>
+      </div>
     );
   }
 

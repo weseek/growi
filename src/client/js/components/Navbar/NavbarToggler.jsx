@@ -11,7 +11,7 @@ const NavbarToggler = (props) => {
   const { appContainer } = props;
 
   const clickHandler = () => {
-    appContainer.setState({ isDrawerOpened: true });
+    appContainer.toggleDrawer();
   };
 
   return (

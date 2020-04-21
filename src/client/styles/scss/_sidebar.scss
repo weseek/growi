@@ -1,19 +1,16 @@
 .grw-sidebar {
-  // @include media-breakpoint-down(xs) {
-  //   position: fixed;
-  // }
-
   .ak-navigation-resize-button {
     top: calc(50vh - 20px);
   }
 
   // override @atlaskit/navigation-next styles
+  div[data-testid='GlobalNavigation'] {
+    width: $grw-sidebar-nav-width;
+  }
   div[class$='-NavigationContainer'] {
     // Adjust to be on top of the growi subnavigation
     z-index: $zindex-sticky + 5;
   }
-
-  // override @atlaskit/navigation-next styles
   div[class$='-Outer'] {
     div[class$='-Shadow'] {
       background: unset;
@@ -42,6 +39,31 @@
     &.active {
       button {
         @extend %fukidashi-for-active;
+      }
+    }
+  }
+}
+
+// Drawer Mode
+@include media-breakpoint-down(xs) {
+  .grw-sidebar {
+    position: fixed;
+    z-index: $zindex-fixed - 5;
+
+    // override @atlaskit/navigation-next styles
+    div[class$='-Outer'],
+    div[class$='-teprsg'] {
+      display: none;
+    }
+
+    &:not(.open) {
+      div[class$='-NavigationContainer'] {
+        left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
+      }
+    }
+    &.open {
+      div[class$='-NavigationContainer'] {
+        left: 0;
       }
     }
   }
