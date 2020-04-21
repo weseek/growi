@@ -285,6 +285,21 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {get} /attachments.getProfileImage get attachments as profile image
+   * @apiName get
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} id
+   */
+  api.getProfileImage = async function(req, res) {
+    const id = req.params.id;
+
+    const attachment = await Attachment.findById(id);
+
+    return responseForAttachment(req, res, attachment);
+  };
+
+  /**
    * @api {get} /attachments.obsoletedGetForMongoDB get attachments from mongoDB
    * @apiName get
    * @apiGroup Attachment
