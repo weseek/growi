@@ -38,10 +38,10 @@
       border-color: $input-focus-border-color;
     }
   }
-  .custom-checkbox-primary.checkbox-all {
+  .checkbox-all {
     .custom-control-input:checked + .custom-control-label::before {
-      background-color: $input-focus-border-color;
-      border-color: $input-focus-border-color;
+      background-color: $growi-blue;
+      border-color: $growi-blue;
     }
   }
 }
