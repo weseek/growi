@@ -100,7 +100,7 @@ module.exports = (crowi) => {
       ]),
     ],
     layoutTheme: [
-      body('layoutType').isString().isIn(['growi', 'kibela', 'crowi']),
+      body('layoutType').isString().isIn(['growi', 'kibela']),
       body('themeType').isString().isIn([
         'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'blue-night', 'halloween', 'spring',
       ]),
