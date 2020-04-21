@@ -441,9 +441,8 @@ export default class HandsontableModal extends React.PureComponent {
               type="button"
               className="mr-4 data-import-button btn btn-secondary"
               data-toggle="collapse"
-              data-target="#collapseExample"
+              data-target="#collapseDataImport"
               aria-expanded={this.state.isDataImportAreaExpanded}
-              aria-controls="collapseExample"
               onClick={this.toggleDataImportArea}
             >
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
@@ -453,7 +452,7 @@ export default class HandsontableModal extends React.PureComponent {
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
             </div>
-            <div id="collapseExample" className="collapse">
+            <div id="collapseDataImport" className="collapse">
               <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
