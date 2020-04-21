@@ -38,12 +38,6 @@
       border-color: $input-focus-border-color;
     }
   }
-  .checkbox-all {
-    .custom-control-input:checked + .custom-control-label::before {
-      background-color: $growi-blue;
-      border-color: $growi-blue;
-    }
-  }
 }
 
 @each $theme-color, $color in $theme-colors {
@@ -60,5 +54,13 @@
         color: lighten($color, 30%);
       }
     }
+  }
+}
+
+@each $theme-color, $color in $theme-colors {
+  .badge.badge-#{$theme-color} {
+    color: $bgcolor-global;
+    background: $color;
+    border: none;
   }
 }
