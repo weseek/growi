@@ -552,7 +552,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   renderCheatsheetModalButton() {
     return (
-      <button type="button" className="btn-link gfm-cheatsheet-modal-link" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link small" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
         <i className="icon-question" /> Markdown
       </button>
     );
@@ -562,12 +562,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const cheatsheetModalButton = this.renderCheatsheetModalButton();
 
     return (
-      <div className="overlay overlay-gfm-cheatsheet mt-1 p-2">
+      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
         { this.state.isSimpleCheatsheetShown
           ? (
             <div className="text-right">
               {cheatsheetModalButton}
-              <div className="mb-3">
+              <div className="mb-2">
                 <SimpleCheatsheet />
               </div>
             </div>
