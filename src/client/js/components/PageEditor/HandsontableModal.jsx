@@ -432,8 +432,11 @@ export default class HandsontableModal extends React.PureComponent {
 
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
-        <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
-        <ModalBody className="p-0 d-flex flex-column">
+        <div className="modal-header" toggle={this.cancel}>
+          <h4>Edit Table</h4>
+          {buttons}
+        </div>
+        <div className="p-0 d-flex flex-column modal-body">
           <div className="px-4 py-3 modal-navbar bg-light">
             <button
               type="button"
@@ -470,14 +473,14 @@ export default class HandsontableModal extends React.PureComponent {
               afterColumnMove={this.afterColumnMoveHandler}
             />
           </div>
-        </ModalBody>
-        <ModalFooter className="grw-modal-footer">
+        </div>
+        <div className="grw-modal-footer modal-footer">
           <button type="button" className="btn btn-danger" onClick={this.reset}>Reset</button>
           <div className="ml-auto">
             <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
             <button type="button" className="btn btn-primary" onClick={this.save}>Done</button>
           </div>
-        </ModalFooter>
+        </div>
       </Modal>
     );
   }
