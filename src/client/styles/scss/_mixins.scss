@@ -72,6 +72,7 @@
         .hackmd-preinit,
         .hackmd-error,
         #iframe-hackmd-container > iframe {
+          width: 100%;
           height: calc(100vh - #{$header-plus-footer});
           min-height: calc(100vh - #{$header-plus-footer}); // for IE11
         }
