@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal,
 } from 'reactstrap';
 
 import Handsontable from 'handsontable';
