@@ -1,6 +1,6 @@
 $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
 
-@mixin setTransitionForCompactMode() {
+%transitionForCompactMode {
   // set transition-duration (normal -> compact)
   transition: all 300ms $easeInOutCubic;
 }
@@ -18,24 +18,24 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
       margin-bottom: 0;
       font-size: 14px;
 
-      @include setTransitionForCompactMode();
+      @extend %transitionForCompactMode;
     }
     .picture {
       width: 62px;
       height: 62px;
 
-      @include setTransitionForCompactMode();
+      @extend %transitionForCompactMode;
     }
     h1 {
       font-size: 1.5em;
       line-height: 30px;
 
-      @include setTransitionForCompactMode();
+      @extend %transitionForCompactMode;
     }
     .users-meta {
       margin-left: 15px;
 
-      @include setTransitionForCompactMode();
+      @extend %transitionForCompactMode;
     }
   }
 }

@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import {
   GlobalNav,
+  GlobalItem,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -28,13 +29,37 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generateSidebarItemObj(id, label, icon) {
+  generatePrimaryItemObj(id, label, icon) {
+    const isSelected = this.props.currentContentsId === id;
+
     return {
       id,
-      icon,
-      label,
-      isSelected: this.props.currentContentsId === id,
-      onClick: () => this.itemSelectedHandler(id),
+      component: ({ className }) => (
+        <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
+          <GlobalItem
+            icon={icon}
+            label={label}
+            isSelected={isSelected}
+            onClick={() => this.itemSelectedHandler(id)}
+          />
+        </div>
+      ),
+    };
+  }
+
+  generateSecondaryItemObj(id, label, icon, href) {
+    return {
+      id,
+      component: ({ className }) => (
+        <div className={`${className} grw-global-item-container d-block d-md-none`}>
+          <a href={href}>
+            <GlobalItem
+              icon={icon}
+              label={label}
+            />
+          </a>
+        </div>
+      ),
     };
   }
 
@@ -46,10 +71,13 @@ class SidebarNav extends React.Component {
     return (
       <GlobalNav
         primaryItems={[
-          this.generateSidebarItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-2x fa-code')),
-          this.generateSidebarItemObj('history', 'History', this.generateIconFactory('icon-clock fa-2x')),
+          this.generatePrimaryItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-code')),
+          this.generatePrimaryItemObj('history', 'History', this.generateIconFactory('icon-clock')),
         ]}
-        secondaryItems={[]}
+        secondaryItems={[
+          this.generateSecondaryItemObj('admin', 'Admin', this.generateIconFactory('icon-settings'), '/admin'),
+          this.generateSecondaryItemObj('help', 'Help', this.generateIconFactory('icon-question'), 'https://docs.growi.org'),
+        ]}
       />
     );
   }
