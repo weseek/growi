@@ -91,7 +91,7 @@ class OidcSecurityManagement extends React.Component {
               value={adminOidcSecurityContainer.state.callbackUrl}
               readOnly
             />
-            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {!adminGeneralSecurityContainer.state.appSiteUrl && (
               <div className="alert alert-danger">
                 <i
@@ -132,7 +132,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcIssuerHost || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcIssuerHost(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_ISSUER_HOST' }) }} />
                 </p>
               </div>
@@ -148,7 +148,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcClientId || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcClientId(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_ID' }) }} />
                 </p>
               </div>
@@ -164,7 +164,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcClientSecret || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcClientSecret(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_SECRET' }) }} />
                 </p>
               </div>
@@ -184,7 +184,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcAttrMapId || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapId(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.id_detail') }} />
                 </p>
               </div>
@@ -200,7 +200,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcAttrMapUserName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapUserName(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.username_detail') }} />
                 </p>
               </div>
@@ -216,7 +216,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcAttrMapName || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapName(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.name_detail') }} />
                 </p>
               </div>
@@ -232,7 +232,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.oidcAttrMapEmail || ''}
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapEmail(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.mapping_detail', { target: t('Email') }) }} />
                 </p>
               </div>
@@ -247,7 +247,7 @@ class OidcSecurityManagement extends React.Component {
                   defaultValue={adminOidcSecurityContainer.state.callbackUrl || ''}
                   readOnly
                 />
-                <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+                <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
                 {!adminGeneralSecurityContainer.state.appSiteUrl && (
                   <div className="alert alert-danger">
                     <i
@@ -276,7 +276,7 @@ class OidcSecurityManagement extends React.Component {
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
                 </p>
               </div>
@@ -298,7 +298,7 @@ class OidcSecurityManagement extends React.Component {
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
                 </p>
               </div>
