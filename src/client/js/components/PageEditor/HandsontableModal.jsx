@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button,
-  Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
@@ -474,10 +472,10 @@ export default class HandsontableModal extends React.PureComponent {
           </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
-          <Button color="danger" onClick={this.reset}>Reset</Button>
+          <button type="button" className="btn btn-danger" onClick={this.reset}>Reset</button>
           <div className="ml-auto">
-            <Button className="mr-2" color="secondary" onClick={this.cancel}>Cancel</Button>
-            <Button color="primary" onClick={this.save}>Done</Button>
+            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
+            <button type="button" className="btn btn-primary" onClick={this.save}>Done</button>
           </div>
         </ModalFooter>
       </Modal>
