@@ -38,39 +38,41 @@ class LoginForm extends React.Component {
     const { t } = this.props;
 
     return (
-      <form className="col-12" role="form" action="/login" method="post">
+      <div className="row">
+        <form className="col-12" role="form" action="/login" method="post">
 
-        <div className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text"><i className="icon-user"></i></span>
-          </div>
-          <input type="text" className="form-control" placeholder="Username or E-mail" name="loginForm[username]" />
-          {this.isLdapStrategySetup && (
-            <div className="input-group-append">
-              <small className="input-group-text text-success">
-                <i className="icon-fw icon-check"></i> LDAP
-              </small>
+          <div className="input-group mb-3">
+            <div className="input-group-prepend">
+              <span className="input-group-text"><i className="icon-user"></i></span>
             </div>
-          )}
-        </div>
-
-        <div className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text"><i className="icon-lock"></i></span>
+            <input type="text" className="form-control" placeholder="Username or E-mail" name="loginForm[username]" />
+            {this.isLdapStrategySetup && (
+              <div className="input-group-append">
+                <small className="input-group-text text-success">
+                  <i className="icon-fw icon-check"></i> LDAP
+                </small>
+              </div>
+            )}
           </div>
-          <input type="password" className="form-control" placeholder="Password" name="loginForm[password]" />
-        </div>
 
-        <div className="input-group justify-content-center d-flex mt-5">
-          <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-          <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
-            <div className="eff"></div>
-            <span className="btn-label p-3"><i className="icon-login"></i></span>
-            <span className="btn-label-text p-3">{ t('Sign in') }</span>
-          </button>
-        </div>
+          <div className="input-group mb-3">
+            <div className="input-group-prepend">
+              <span className="input-group-text"><i className="icon-lock"></i></span>
+            </div>
+            <input type="password" className="form-control" placeholder="Password" name="loginForm[password]" />
+          </div>
 
-      </form>
+          <div className="input-group justify-content-center d-flex mt-5">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}" />
+            <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
+              <div className="eff"></div>
+              <span className="btn-label p-3"><i className="icon-login"></i></span>
+              <span className="btn-label-text p-3">{ t('Sign in') }</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
     );
   }
 
