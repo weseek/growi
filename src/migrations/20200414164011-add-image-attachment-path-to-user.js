@@ -25,7 +25,7 @@ module.exports = {
       return {
         updateOne: {
           filter: { _id: user._id },
-          update: { $set: { imageAttachmentPath: user.imageAttachment.filePathProxied } },
+          update: { $set: { imageAttachmentPathCache: user.imageAttachment.filePathProxied } },
         },
       };
     });
@@ -38,6 +38,6 @@ module.exports = {
   },
 
   down(db) {
-    db.collection('users').update({}, { $unset: 'imageAttachmentPath' });
+    db.collection('users').update({}, { $unset: 'imageAttachmentPathCache' });
   },
 };

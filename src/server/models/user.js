@@ -17,7 +17,7 @@ module.exports = function(crowi) {
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
-  + 'status lang createdAt lastLoginAt admin imageAttachmentPath';
+  + 'status lang createdAt lastLoginAt admin imageAttachmentPathCache';
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
@@ -39,7 +39,7 @@ module.exports = function(crowi) {
     userId: String,
     image: String,
     imageAttachment: { type: ObjectId, ref: 'Attachment' },
-    imageAttachmentPath: String,
+    imageAttachmentPathCache: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
     googleId: String,
@@ -227,7 +227,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
-    this.imageAttachmentPath = attachment.filePathProxied;
+    this.imageAttachmentPathCache = attachment.filePathProxied;
     return this.save();
   };
 
@@ -243,7 +243,7 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
-    this.imageAttachmentPath = undefined;
+    this.imageAttachmentPathCache = undefined;
     return this.save();
   };
 
