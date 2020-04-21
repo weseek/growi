@@ -1,5 +1,24 @@
 @import 'layout_variable';
 
+%fukidashi-for-active {
+  position: relative;
+
+  // speech balloon
+  &:after {
+    position: absolute;
+    top: 0.5em;
+    right: -1em;
+    display: block;
+    width: 0;
+    content: '';
+    border: 1em solid transparent;
+    border-left-width: 0;
+
+    // @include media-breakpoint-down(xs) {
+    // }
+  }
+}
+
 // FIXME: replace with mt-2 or mt-3
 .grw-mt-10px {
   margin-top: 10px !important;
@@ -32,8 +51,51 @@
 
 .grw-sidebar {
   .ak-navigation-resize-button {
-    top: 110px;
+    top: calc(50vh - 20px);
   }
+
+  // override @atlaskit/navigation-next styles
+  div[class$='-NavigationContainer'] {
+    // Adjust to be on top of the growi subnavigation
+    z-index: $zindex-sticky + 5;
+  }
+
+  // override @atlaskit/navigation-next styles
+  div[class$='-Outer'] {
+    div[class$='-Shadow'] {
+      background: unset;
+      border-right: 1px solid $border;
+    }
+  }
+
+  .grw-global-item-container {
+    i {
+      font-size: 1.5em;
+    }
+
+    // icon opacity
+    &:not(.active) {
+      i {
+        opacity: 0.4;
+      }
+      &:hover,
+      &:focus {
+        i {
+          opacity: 0.7;
+        }
+      }
+    }
+
+    &.active {
+      button {
+        @extend %fukidashi-for-active;
+      }
+    }
+  }
+}
+
+#page-wrapper {
+  margin-top: $grw-navbar-height;
 }
 
 .grw-sidebar-header-container {
@@ -97,6 +159,18 @@
       padding: 5px;
       margin: 4px 4px 4px 17px;
     }
+  }
+}
+
+.grw-fixed-controls-container {
+  position: fixed;
+  right: 1em;
+  bottom: 3em;
+
+  transition: all 200ms linear;
+
+  .grw-fixed-controls-button-container {
+    box-shadow: 0 3px 4px rgba($black, 0.3);
   }
 }
 
