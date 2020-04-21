@@ -43,8 +43,8 @@ class ApiSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label htmlFor="apiToken" className="col-3 text-right">{t('Current API Token')}</label>
-          <div className="col-6">
+          <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
+          <div className="col-md-6">
             {personalContainer.state.apiToken != null
             ? (
               <input
