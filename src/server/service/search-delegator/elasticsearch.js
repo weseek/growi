@@ -449,7 +449,7 @@ class ElasticsearchDelegator {
         callback();
       },
       final(callback) {
-        logger.info(`Adding pages has terminated: (totalCount=${totalCount}, skipped=${skipped})`);
+        logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
         if (isEmittingProgressEvent) {
           searchEvent.emit('finishAddPage', totalCount, count, skipped);
