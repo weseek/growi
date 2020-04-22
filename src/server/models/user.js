@@ -19,6 +19,7 @@ module.exports = function(crowi) {
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + 'status lang createdAt lastLoginAt admin imageUrlCached';
+  /* eslint-disable no-unused-vars */
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
