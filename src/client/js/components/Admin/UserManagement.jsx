@@ -131,7 +131,7 @@ class UserManagement extends React.Component {
         )}
         <p>
           <InviteUserControl />
-          <a className="btn text-dark btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
+          <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             {t('admin:user_management.external_account')}
           </a>
