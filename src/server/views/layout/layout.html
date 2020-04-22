@@ -71,73 +71,87 @@
   data-userlang="{% if user %}{{ user.lang }}{% endif %}"
  >
 
-<div id="wrapper" class="d-flex">
+<div id="wrapper">
 
-  {# Sidebar #}
-  <nav>
-    <div id="grw-sidebar" class="grw-sidebar"></div>
+  {% block layout_head_nav %}
+  <nav class="navbar grw-navbar navbar-expand-sm navbar-dark fixed-top mb-0 p-sm-0">
+    <div id="grw-navbar-toggler" class="d-sm-none mr-auto"></div>
+
+    {# Brand Logo #}
+    <div class="navbar-brand mr-sm-auto">
+      <a class="grw-logo d-block" href="/">
+        {% include '../widget/logo.html' %}
+      </a>
+    </div>
+
+    {# Navbar Center #}
+    <ul class="navbar-nav d-none d-md-block">
+      <li>
+        {% if isSearchServiceConfigured() %}
+        <div class="search-top" role="search" id="search-top"></div>
+        {% endif %}
+      </li>
+    </ul>
+
+    {# Navbar Right #}
+    <ul class="navbar-nav ml-auto">
+      {% if user and user.admin %}
+      <li class="nav-item d-none d-md-block">
+        <a class="nav-link" href="/admin">
+          <i class="icon-settings mr-2"></i>
+          {{ t('Admin') }}
+        </a>
+      </li>
+      {% endif %}
+
+      {% if user %}
+      <li class="nav-item d-none d-md-block">
+        <a class="nav-link create-page" href="#" data-target="#create-page" data-toggle="modal">
+          <i class="icon-pencil mr-2"></i>
+          {{ t('New') }}
+        </a>
+      </li>
+      <li class="nav-item d-none d-md-block">
+        <a class="nav-link" href="https://docs.growi.org/" target="_blank">
+          <i class="icon-question mr-2"></i><span class="mr-2">{{ t('Help') }}</span><span class="small"><i class="icon-share-alt"></i></span>
+        </a>
+      </li>
+      <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
+      {% else %}
+      <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+      {% endif %}
+      {% if getConfig('crowi', 'app:confidential') %}
+      <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
+      {% endif %}
+    </ul>
+
   </nav>
+  {% include '../modal/create_page.html' %}
+  {% endblock  %} {# layout_head_nav #}
 
-  <div class="flex-grow-1">
+  {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
+  {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
-    {% block layout_head_nav %}
-    <nav class="navbar grw-navbar navbar-expand-sm navbar-dark mb-0 p-0">
-      {# Navbar Left #}
-      <ul class="navbar-nav mr-auto pl-4">
-        <li>
-          {% if isSearchServiceConfigured() %}
-          <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
-          {% endif %}
-        </li>
-      </ul>
-
-      {# Navbar Right #}
-      <ul class="navbar-nav">
-        {% if user and user.admin %}
-        <li class="nav-item">
-          <a class="nav-link" href="/admin">
-            <i class="icon-settings mr-2"></i>
-            <span class="d-none d-md-inline-block">{{ t('Admin') }}</span>
-          </a>
-        </li>
-        {% endif %}
-
-        {% if user %}
-        <li class="nav-item">
-          <a class="nav-link create-page" href="#" data-target="#create-page" data-toggle="modal">
-            <i class="icon-pencil mr-2"></i>
-            <span class="d-none d-md-inline-block">{{ t('New') }}</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://docs.growi.org/" target="_blank">
-            <i class="icon-question mr-2"></i><span class="d-none d-md-inline-block mr-2">{{ t('Help') }}</span><span class="text-muted small"><i class="icon-share-alt"></i></span>
-          </a>
-        </li>
-        <li id="personal-dropdown" class="nav-item dropdown dropdown-toggle"></li>
-        {% else %}
-        <li id="login-user" class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-        {% endif %}
-        {% if getConfig('crowi', 'app:confidential') %}
-        <li class="nav-item confidential text-light">{{ getConfig('crowi', 'app:confidential') }}</li>
-        {% endif %}
-      </ul>
-
+  <div class="d-flex">
+    {# Sidebar #}
+    <nav class="d-none d-sm-block">
+      <div id="grw-sidebar" class="grw-sidebar"></div>
     </nav>
-    {% include '../modal/create_page.html' %}
-    {% endblock  %} {# layout_head_nav #}
-
-    {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
-    {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
-
-    <div id="page-wrapper">
+    <div id="page-wrapper" class="flex-grow-1">
       {% block layout_main %}
       {% endblock %} {# layout_main #}
     </div>
-
   </div>
 
 </div><!-- /#wrapper -->
+
+<div class="grw-fixed-controls-container d-md-none animated fadeInUp faster">
+  <div class="grw-fixed-controls-button-container rounded-circle">
+    <button class="btn btn-lg btn-primary rounded-circle waves-effect waves-light" type="button" data-target="#create-page" data-toggle="modal">
+      <i class="icon-pencil"></i>
+    </button>
+  </div>
+</div>
 
 <!-- /#staff-credit -->
 <div id="staff-credit"></div>
