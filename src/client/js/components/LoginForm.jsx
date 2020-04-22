@@ -198,7 +198,7 @@ class LoginForm extends React.Component {
             <>
               <p className="form-text">{t('page_register.form_help.email')}</p>
               <ul>
-                {this.registrationWhiteList.map(elem => {
+                {this.registrationWhiteList.map((elem) => {
                   return (
                     <li>
                       <code>{{ elem }}</code>
@@ -278,6 +278,7 @@ class LoginForm extends React.Component {
       </div>
     );
   }
+
 }
 
 LoginForm.propTypes = {
