@@ -89,7 +89,7 @@ class PasswordSettings extends React.Component {
           </div>
         )}
         <div className="row mb-3">
-          <label htmlFor="newPassword" className="col-3 text-right">{t('personal_settings.new_password') }</label>
+          <label htmlFor="newPassword" className="col-md-3 text-md-right">{t('personal_settings.new_password') }</label>
           <div className="col-6">
             <input
               className="form-control"
@@ -101,7 +101,7 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
         <div className={`row mb-3 ${isIncorrectConfirmPassword && 'has-error'}`}>
-          <label htmlFor="newPasswordConfirm" className="col-3 text-right">{t('personal_settings.new_password_confirm') }</label>
+          <label htmlFor="newPasswordConfirm" className="col-md-3 text-md-right">{t('personal_settings.new_password_confirm') }</label>
           <div className="col-6">
             <input
               className="form-control"
