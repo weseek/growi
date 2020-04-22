@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Modal,
+  Collapse,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import Handsontable from 'handsontable';
@@ -432,11 +433,8 @@ export default class HandsontableModal extends React.PureComponent {
 
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
-        <div className="modal-header" toggle={this.cancel}>
-          <h4>Edit Table</h4>
-          {buttons}
-        </div>
-        <div className="p-0 d-flex flex-column modal-body">
+        <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
+        <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
             <button
               type="button"
@@ -453,11 +451,11 @@ export default class HandsontableModal extends React.PureComponent {
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></button>
               <button type="button" className="btn btn-secondary" onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></button>
             </div>
-            <div id="collapseDataImport" className="collapse">
+            <Collapse isOpen={this.state.isDataImportAreaExpanded}>
               <div className="mt-4">
                 <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
-            </div>
+            </Collapse>
           </div>
           <div ref={(c) => { this.hotTableContainer = c }} className="m-4 hot-table-container">
             <HotTable
@@ -473,14 +471,14 @@ export default class HandsontableModal extends React.PureComponent {
               afterColumnMove={this.afterColumnMoveHandler}
             />
           </div>
-        </div>
-        <div className="grw-modal-footer modal-footer">
+        </ModalBody>
+        <ModalFooter className="grw-modal-footer">
           <button type="button" className="btn btn-danger" onClick={this.reset}>Reset</button>
           <div className="ml-auto">
             <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
             <button type="button" className="btn btn-primary" onClick={this.save}>Done</button>
           </div>
-        </div>
+        </ModalFooter>
       </Modal>
     );
   }
