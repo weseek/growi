@@ -27,26 +27,14 @@ if (installerFormElem) {
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
-  const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
-  const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
-  const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
-  const objOfIsExternalAuthEnableds = {
-    google: loginFormElem.dataset.isGoogleAuthEnabled,
-    github: loginFormElem.dataset.isGithubAuthEnabled,
-    facebook: loginFormElem.dataset.isFacebookAuthEnabled,
-    twitter: loginFormElem.dataset.isTwitterAuthEnabled,
-    oidc: loginFormElem.dataset.isOidcAuthEnabled,
-    saml: loginFormElem.dataset.isSamlAuthEnabled,
-    basic: loginFormElem.dataset.isBasicAuthEnabled,
-  };
-
+  const isRegistering = loginFormElem.dataset.isRegistering === 'true';
+  // [TODO][GW-1913] An AppContainer gets csrf data
+  const csrf = loginFormElem.dataset.csrf;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <LoginForm
-        isRegistrationEnabled={isRegistrationEnabled}
-        isLdapStrategySetup={isLdapStrategySetup}
-        isLocalStrategySetup={isLocalStrategySetup}
-        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
+        isRegistering={isRegistering}
+        csrf={csrf}
       />
     </I18nextProvider>,
     loginFormElem,

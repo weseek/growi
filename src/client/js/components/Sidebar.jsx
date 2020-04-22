@@ -15,7 +15,6 @@ import Drawer from '@atlaskit/drawer';
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
-import GrowiLogo from './GrowiLogo';
 import SidebarNav from './Sidebar/SidebarNav';
 import History from './Sidebar/History';
 import CustomSidebar from './Sidebar/CustomSidebar';
@@ -56,9 +55,6 @@ class Sidebar extends React.Component {
 
   renderGlobalNavigation = () => (
     <>
-      <div className="grw-logo">
-        <a href="/"><GrowiLogo /></a>
-      </div>
       <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
       <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
         <code>Drawer contents</code>
@@ -99,6 +95,7 @@ class Sidebar extends React.Component {
           // experimental_fullWidthFlyout
           shouldHideGlobalNavShadow
           showContextualNavigation
+          topOffset={50}
         >
         </LayoutManager>
       </ThemeProvider>

@@ -104,22 +104,12 @@
           </div>
         </div>
       </div>
-        <!-- [TODO][GW-1913] react component gets params without swig  -->
-        {% set isLocalStrategySetup = passportService.isLocalStrategySetup %}
-        {% set isLdapStrategySetup = passportService.isLdapStrategySetup %}
         {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
 
+      <!-- [TODO][GW-1913] An AppContainer gets csrf data -->
       <div id="login-form"
-        data-is-local-strategy-setup="{{ isLocalStrategySetup }}"
-        data-is-ldap-strategy-setup="{{ isLdapStrategySetup }}"
-        data-is-registration-enabled="{{ isRegistrationEnabled }}"
-        data-is-google-auth-enabled="{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
-        data-is-github-auth-enabled="{{ getConfig('crowi', 'security:passport-github:isEnabled') }}"
-        data-is-facebook-auth-enabled="{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
-        data-is-twitter-auth-enabled="{{ getConfig('crowi', 'security:passport-twitter:isEnabled') }}"
-        data-is-oidc-auth-enabled="{{ getConfig('crowi', 'security:passport-oidc:isEnabled') }}"
-        data-is-saml-auth-enabled="{{ getConfig('crowi', 'security:passport-saml:isEnabled') }}"
-        data-is-basic-auth-enabled="{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"
+        data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
+        data-csrf="{{ csrf() }}"
       ></div>
 
       <div>

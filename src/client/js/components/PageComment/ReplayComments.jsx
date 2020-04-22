@@ -40,15 +40,8 @@ class ReplayComments extends React.PureComponent {
 
   render() {
 
-    const layoutType = this.props.appContainer.getConfig().layoutType;
-    const isBaloonStyle = layoutType.match(/crowi-plus|growi|kibela/);
-
     const isAllReplyShown = this.props.appContainer.getConfig().isAllReplyShown || false;
-
-    let replyList = this.props.replyList;
-    if (!isBaloonStyle) {
-      replyList = replyList.slice().reverse();
-    }
+    const replyList = this.props.replyList;
 
     if (isAllReplyShown) {
       return (
