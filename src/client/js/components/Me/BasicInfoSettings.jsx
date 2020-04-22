@@ -46,8 +46,8 @@ class BasicInfoSettings extends React.Component {
       <Fragment>
 
         <div className="row form-group mb-3">
-          <label htmlFor="userForm[name]" className="col-sm-2 text-right">{t('Name')}</label>
-          <div className="col-sm-4 text-left">
+          <label htmlFor="userForm[name]" className="col-3 text-right">{t('Name')}</label>
+          <div className="col-md-4 col-9 text-left">
             <input
               className="form-control"
               type="text"
@@ -59,8 +59,8 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row form-group mb-3">
-          <label htmlFor="userForm[email]" className="col-sm-2 text-right">{t('Email')}</label>
-          <div className="col-sm-4 text-left">
+          <label htmlFor="userForm[email]" className="col-3 text-right">{t('Email')}</label>
+          <div className="col-md-4 col-9 text-left">
             <input
               className="form-control"
               type="text"
@@ -70,7 +70,7 @@ class BasicInfoSettings extends React.Component {
             />
           </div>
           {registrationWhiteList.length !== 0 && (
-            <div className="col-sm-offset-2 col-sm-10">
+            <div className="col-md-offset-2 col-md-10">
               <div className="form-text text-muted">
                 {t('page_register.form_help.email')}
                 <ul>
@@ -82,7 +82,7 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-sm-2 text-right">{t('Disclose E-mail')}</label>
+          <label className="col-3 text-right">{t('Disclose E-mail')}</label>
           <div className="col-6">
             <div className="custom-control custom-radio custom-control-inline">
               <input
@@ -110,7 +110,7 @@ class BasicInfoSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label className="col-sm-2 col-form-label text-right">{t('Language')}</label>
+          <label className="col-3 col-form-label text-right">{t('Language')}</label>
           <div className="col-6">
             <div className="custom-control custom-radio custom-control-inline">
               <input
