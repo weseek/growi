@@ -292,10 +292,10 @@
   "modal_shortcuts": {
     "global": {
       "title": "グローバルショートカット",
-      "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
+      "Open/Close shortcut help": "ショートカットヘルプ<br>の表示/非表示",
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
-      "Show Contributors": "コントリビューターを表示",
+      "Show Contributors": "コントリビューター<br>を表示",
       "Konami Code": "コナミコマンド",
       "konami_code_url": "https://ja.wikipedia.org/wiki/コナミコマンド"
     },
