@@ -176,18 +176,6 @@ $link-hover-color: $color-link-hover;
 }
 
 /*
- * Crowi sidebar
- */
-.crowi-sidebar {
-  background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border-color;
-
-  .system-version {
-    background-color: darken($bgcolor-global, 4%);
-  }
-}
-
-/*
  * GROWI wiki
  */
 .wiki {
