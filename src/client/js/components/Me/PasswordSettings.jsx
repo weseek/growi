@@ -115,7 +115,8 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
 
-        <div className="my-3 text-center">
+        <div className="row my-3">
+          <div className="offset-5">
           <button
             type="button"
             className="btn btn-primary"
@@ -124,6 +125,7 @@ class PasswordSettings extends React.Component {
           >
             {t('Update')}
           </button>
+        </div>
         </div>
       </React.Fragment>
     );
