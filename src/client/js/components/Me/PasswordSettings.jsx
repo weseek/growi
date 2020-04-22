@@ -76,7 +76,7 @@ class PasswordSettings extends React.Component {
         {(personalContainer.state.isPasswordSet)
         && (
           <div className="row mb-3">
-            <label htmlFor="oldPassword" className="col-3 text-right">{ t('personal_settings.current_password') }</label>
+            <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
             <div className="col-6">
               <input
                 className="form-control"
