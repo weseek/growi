@@ -77,7 +77,7 @@ class PasswordSettings extends React.Component {
         && (
           <div className="row mb-3">
             <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
-            <div className="col-md-4">
+            <div className="col-md-5">
               <input
                 className="form-control"
                 type="password"
@@ -90,7 +90,7 @@ class PasswordSettings extends React.Component {
         )}
         <div className="row mb-3">
           <label htmlFor="newPassword" className="col-md-3 text-md-right">{t('personal_settings.new_password') }</label>
-          <div className="col-md-4">
+          <div className="col-md-5">
             <input
               className="form-control"
               type="password"
@@ -102,7 +102,7 @@ class PasswordSettings extends React.Component {
         </div>
         <div className={`row mb-3 ${isIncorrectConfirmPassword && 'has-error'}`}>
           <label htmlFor="newPasswordConfirm" className="col-md-3 text-md-right">{t('personal_settings.new_password_confirm') }</label>
-          <div className="col-md-4">
+          <div className="col-md-5">
             <input
               className="form-control"
               type="password"
@@ -117,15 +117,15 @@ class PasswordSettings extends React.Component {
 
         <div className="row my-3">
           <div className="offset-5">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.onClickSubmit}
-            disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
-          >
-            {t('Update')}
-          </button>
-        </div>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
+            >
+              {t('Update')}
+            </button>
+          </div>
         </div>
       </React.Fragment>
     );
