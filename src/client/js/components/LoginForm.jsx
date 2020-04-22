@@ -81,6 +81,7 @@ class LoginForm extends React.Component {
         </div>
 
         <div className="input-group justify-content-center d-flex mt-5">
+          {/* [TODO][GW-1913] An AppContainer gets csrf data */}
           <input type="hidden" name="_csrf" value={csrf} />
           <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
             <div className="eff"></div>
@@ -100,6 +101,7 @@ class LoginForm extends React.Component {
       <div key={auth} className="input-group justify-content-center d-flex mt-5">
         {/* [TODO][GW-1913] use onClick, and delete form tag */}
         <form role="form" action={`/passport/${auth}`} className="d-inline-flex flex-column">
+          {/* [TODO][GW-1913] An AppContainer gets csrf data */}
           <input type="hidden" name="_csrf" value={csrf} />
           <button type="submit" className="btn btn-fill px-0 py-2" id={auth}>
             <div className="eff"></div>
@@ -217,6 +219,7 @@ class LoginForm extends React.Component {
           </div>
 
           <div className="input-group justify-content-center mt-5">
+            {/* [TODO][GW-1913] An AppContainer gets csrf data */}
             <input type="hidden" name="_csrf" value={csrf} />
             <button type="submit" className="btn btn-fill px-0 py-2" id="register">
               <div className="eff"></div>
