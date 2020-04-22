@@ -46,74 +46,76 @@ class PresentationForm extends React.Component {
           {t('admin:markdown_setting.presentation_options.page_break_setting')}
         </label>
 
-        <div className="form-group form-check-inline col-12 my-3">
-          <div className="col-4 align-self-start">
-            <div className="custom-control custom-radio">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="pageBreakOption1"
-                checked={pageBreakSeparator === 1}
-                onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
-              />
-              <label className="custom-control-label" htmlFor="pageBreakOption1">
-                <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
-                <div className="mt-3">
-                  { t('admin:markdown_setting.presentation_options.preset_one_separator_desc') }
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={t('admin:markdown_setting.presentation_options.preset_one_separator_value')}
-                    readOnly
-                  />
-                </div>
-              </label>
+        <div className="form-group  col-12 my-3">
+          <div className="row">
+            <div className="col-md-4 col-sm-12 align-self-start">
+              <div className="custom-control custom-radio">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="pageBreakOption1"
+                  checked={pageBreakSeparator === 1}
+                  onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
+                />
+                <label className="custom-control-label" htmlFor="pageBreakOption1">
+                  <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
+                  <div className="mt-3">
+                    { t('admin:markdown_setting.presentation_options.preset_one_separator_desc') }
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={t('admin:markdown_setting.presentation_options.preset_one_separator_value')}
+                      readOnly
+                    />
+                  </div>
+                </label>
+              </div>
             </div>
-          </div>
 
-          <div className="col-4 align-self-start">
-            <div className="custom-control custom-radio">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="pageBreakOption2"
-                checked={pageBreakSeparator === 2}
-                onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
-              />
-              <label className="custom-control-label" htmlFor="pageBreakOption2">
-                <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
-                <div className="mt-3">
-                  { t('admin:markdown_setting.presentation_options.preset_two_separator_desc') }
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={t('admin:markdown_setting.presentation_options.preset_two_separator_value')}
-                    readOnly
-                  />
-                </div>
-              </label>
+            <div className="col-md-4 col-sm-12 align-self-start">
+              <div className="custom-control custom-radio">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  id="pageBreakOption2"
+                  checked={pageBreakSeparator === 2}
+                  onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
+                />
+                <label className="custom-control-label" htmlFor="pageBreakOption2">
+                  <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
+                  <div className="mt-3">
+                    { t('admin:markdown_setting.presentation_options.preset_two_separator_desc') }
+                    <input
+                      className="form-control"
+                      type="text"
+                      value={t('admin:markdown_setting.presentation_options.preset_two_separator_value')}
+                      readOnly
+                    />
+                  </div>
+                </label>
+              </div>
             </div>
-          </div>
-          <div className="col-4 align-self-start">
-            <div className="custom-control custom-radio">
-              <input
-                type="radio"
-                id="pageBreakOption3"
-                className="custom-control-input"
-                checked={pageBreakSeparator === 3}
-                onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
-              />
-              <label className="custom-control-label" htmlFor="pageBreakOption3">
-                <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
-                <div className="mt-3">
-                  { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
-                  <input
-                    className="form-control"
-                    defaultValue={pageBreakCustomSeparator}
-                    onChange={(e) => { adminMarkDownContainer.setPageBreakCustomSeparator(e.target.value) }}
-                  />
-                </div>
-              </label>
+            <div className="col-md-4 col-sm-12 align-self-start">
+              <div className="custom-control custom-radio">
+                <input
+                  type="radio"
+                  id="pageBreakOption3"
+                  className="custom-control-input"
+                  checked={pageBreakSeparator === 3}
+                  onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
+                />
+                <label className="custom-control-label" htmlFor="pageBreakOption3">
+                  <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
+                  <div className="mt-3">
+                    { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
+                    <input
+                      className="form-control"
+                      defaultValue={pageBreakCustomSeparator}
+                      onChange={(e) => { adminMarkDownContainer.setPageBreakCustomSeparator(e.target.value) }}
+                    />
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
         </div>
