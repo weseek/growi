@@ -19,11 +19,11 @@ class StatusTable extends React.PureComponent {
 
     return (
       <div className="card">
-        <div className="card-header">
+        <div className="card-header text-nowrap">
           <a role="button" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
             <i className="fa fa-fw fa-database"></i> {indexName}
           </a>
-          <span className="ml-3">{aliasLabels}</span>
+          <span className="ml-md-3">{aliasLabels}</span>
         </div>
         <div id={collapseId} className="collapse">
           <div className="card-body">
