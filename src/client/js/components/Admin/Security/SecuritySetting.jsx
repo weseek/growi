@@ -58,10 +58,10 @@ class SecuritySetting extends React.Component {
         </div>
           )}
         <div className="row mb-5">
-          <div className="col-3 text-right py-2">
+          <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
-          <div className="col-6">
+          <div className="col-md-6">
             <div className="dropdown">
               <button
                 className={`btn btn-outline-secondary dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
@@ -102,8 +102,8 @@ class SecuritySetting extends React.Component {
         </div>
           )}
         <div className="row mb-5">
-          <strong className="col-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
-          <div className="col-6">
+          <strong className="col-md-3 text-md-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
+          <div className="col-md-6">
             <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 type="checkbox"
@@ -120,8 +120,8 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <strong className="col-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
-          <div className="col-6">
+          <strong className="col-md-3 text-md-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
+          <div className="col-md-6">
             <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 type="checkbox"
@@ -138,7 +138,7 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <div className="col-3 text-right">
+          <div className="col-md-3 text-md-right">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
           <div className="col-9">
