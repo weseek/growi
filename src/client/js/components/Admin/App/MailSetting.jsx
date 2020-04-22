@@ -41,7 +41,7 @@ class MailSetting extends React.Component {
         <p className="card well">{t('admin:app_setting.smtp_used')} {t('admin:app_setting.smtp_but_aws')}<br />{t('admin:app_setting.neihter_of')}</p>
         <div className="row form-group mb-5">
           <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.from_e-mail_address')}</label>
-          <div className="col-md-9 col-md-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
