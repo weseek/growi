@@ -40,8 +40,8 @@ class MailSetting extends React.Component {
       <React.Fragment>
         <p className="card well">{t('admin:app_setting.smtp_used')} {t('admin:app_setting.smtp_but_aws')}<br />{t('admin:app_setting.neihter_of')}</p>
         <div className="row form-group mb-5">
-          <label className="col-sm-3 col-form-label text-left">{t('admin:app_setting.from_e-mail_address')}</label>
-          <div className="col-sm-9 col-md-6">
+          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.from_e-mail_address')}</label>
+          <div className="col-md-9 col-md-6">
             <input
               className="form-control"
               type="text"
@@ -53,7 +53,7 @@ class MailSetting extends React.Component {
         </div>
 
         <div className="row form-group mb-5">
-          <label className="col-sm-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
+          <label className="col-md-3 col-form-label text-left">{t('admin:app_setting.smtp_settings')}</label>
           <div className="col-md-4">
             <label>{t('admin:app_setting.host')}</label>
             <input
