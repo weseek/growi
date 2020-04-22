@@ -58,10 +58,10 @@ class SecuritySetting extends React.Component {
         </div>
           )}
         <div className="row mb-5">
-          <div className="col-md-3 text-md-right py-2">
+          <div className="col-md-3 text-md-right text-nowrap py-2 mr-md-5">
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
                 className={`btn btn-outline-secondary dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
@@ -102,9 +102,9 @@ class SecuritySetting extends React.Component {
         </div>
           )}
         <div className="row mb-5">
-          <strong className="col-md-3 text-md-right mb-2" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
+          <strong className="col-md-3 text-md-right text-nowrap mb-2 mr-md-5" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
           <div className="col-md-6">
-            <div className="custom-control custom-checkbox custom-checkbox-success">
+            <div className="custom-control custom-checkbox custom-checkbox-success ml-md-5">
               <input
                 type="checkbox"
                 className="custom-control-input"
@@ -120,8 +120,8 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <strong className="col-md-3 text-md-right mb-2" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
-          <div className="col-md-6">
+          <strong className="col-md-3 text-md-right text-nowrap mr-md-5 mb-2" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
+          <div className="col-md-6 ml-md-5">
             <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 type="checkbox"
@@ -138,10 +138,10 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <div className="col-md-3 text-md-right mb-2">
+          <div className="col-md-3 text-md-right mr-md-5 mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
-          <div className="col-9">
+          <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
                 className="btn btn-outline-secondary dropdown-toggle"
