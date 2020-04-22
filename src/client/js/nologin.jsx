@@ -28,12 +28,19 @@ if (installerFormElem) {
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
   const isRegistering = loginFormElem.dataset.isRegistering === 'true';
+  const username = loginFormElem.dataset.username;
+  const name = loginFormElem.dataset.name;
+  const email = loginFormElem.dataset.email;
   // [TODO][GW-1913] An AppContainer gets csrf data
   const csrf = loginFormElem.dataset.csrf;
+
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <LoginForm
         isRegistering={isRegistering}
+        username={username}
+        name={name}
+        email={email}
         csrf={csrf}
       />
     </I18nextProvider>,
