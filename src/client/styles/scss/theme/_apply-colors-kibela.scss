@@ -6,15 +6,15 @@ body.kibela {
   .active {
     color: $subthemecolor;
   }
-  
+
   .bg-white {
     background: #fefffe !important;
   }
-  
+
   .bg-primary {
     background-color: $primary !important;
   }
-  
+
   /* kibela block */
   .kibela-block {
     border-top: solid 0.4em $thickborder;
@@ -23,15 +23,6 @@ body.kibela {
   /* page wrapper */
   #page-wrapper {
     background-color: $bgcolor-global;
-  }
-
-  /* Logo */
-  .logo {
-    background: transparent;
-
-    .logo-mark {
-      background-color: white;
-    }
   }
 
   /* header*/
@@ -166,7 +157,7 @@ body.kibela {
 
     .card-footer {
       background: white;
-      border-top: 1px solid $border-color-theme
+      border-top: 1px solid $border-color-theme;
     }
   }
 
