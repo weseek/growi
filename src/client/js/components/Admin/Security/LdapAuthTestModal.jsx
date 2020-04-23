@@ -43,8 +43,8 @@ class LdapAuthTestModal extends React.Component {
 
     return (
       <Modal show={this.props.isOpen} onHide={this.props.onClose}>
-        <Modal.Header className="modal-header" closeButton>
-          <Modal.Title>
+        <Modal.Header className="bg-info modal-header" closeButton>
+          <Modal.Title className="text-white">
             Test LDAP Account
           </Modal.Title>
         </Modal.Header>
@@ -56,7 +56,6 @@ class LdapAuthTestModal extends React.Component {
             onChangePassword={this.onChangePassword}
           />
         </Modal.Body>
-        <Modal.Footer />
       </Modal>
     );
   }
