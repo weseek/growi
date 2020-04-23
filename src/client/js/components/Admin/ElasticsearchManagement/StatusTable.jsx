@@ -83,7 +83,7 @@ class StatusTable extends React.PureComponent {
       <div className="row">
         { Object.keys(indexNameToDataMap).map((indexName) => {
           return (
-            <div key={`col-${indexName}`} className="col-6">
+            <div key={`col-${indexName}`} className="col-md-6">
               { this.renderIndexInfoPanel(indexName, indexNameToDataMap[indexName], indexNameToAliasMap[indexName]) }
             </div>
           );
