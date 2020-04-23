@@ -142,25 +142,6 @@ body.kibela {
     background-color: $bgcolor-inline-code;
   }
 
-  /* Card */
-  .card {
-    border: 1px solid $border-color-theme;
-
-    .card-header {
-      background-color: $lightthemecolor;
-      border-bottom: 1px solid $border-color-theme;
-    }
-
-    .card-body {
-      background-color: $themelight;
-    }
-
-    .card-footer {
-      background: white;
-      border-top: 1px solid $border-color-theme;
-    }
-  }
-
   /* button */
   .btn-primary {
     background: $primary;
