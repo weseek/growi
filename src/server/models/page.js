@@ -274,7 +274,7 @@ class PageQueryBuilder {
     return this;
   }
 
-  populateDataToShowRevision(userPublicFields, imagePopulation) {
+  populateDataToShowRevision(userPublicFields) {
     this.query = populateDataToShowRevision(this.query, userPublicFields);
     return this;
   }
