@@ -189,7 +189,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
-    this.imageUrlCached = this.generateimageUrlCached();
+    this.imageUrlCached = this.generateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
@@ -225,7 +225,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
-    this.imageUrlCached = this.generateimageUrlCached();
+    this.imageUrlCached = this.generateImageUrlCached();
     return this.save();
   };
 
@@ -241,11 +241,11 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
-    this.imageUrlCached = this.generateimageUrlCached();
+    this.imageUrlCached = this.generateImageUrlCached();
     return this.save();
   };
 
-  userSchema.methods.generateimageUrlCached = function() {
+  userSchema.methods.generateImageUrlCached = function() {
     if (this.isGravatarEnabled) {
       const email = this.email || '';
       const hash = md5(email.trim().toLowerCase());
@@ -254,7 +254,7 @@ module.exports = function(crowi) {
     if (this.image) {
       return this.image;
     }
-    if (this.imageAttachment != null) {
+    if (this.imageAttachment) {
       return this.imageAttachment.filePathProxied;
     }
     return '/images/icons/user.svg';
@@ -737,6 +737,30 @@ module.exports = function(crowi) {
     });
   };
 
+  userSchema.statics.addImageUrlCachedsByIdList = async function(userIdList) {
+    const users = await this.find(
+      {
+        $and: [
+          { _id: { $in: userIdList } },
+          { $or: [{ imageUrlCached: { $exists: false } }, { imageUrlCached: { $eq: null } }] },
+        ],
+      },
+    );
+    const requests = users.map((user) => {
+      return {
+        updateOne: {
+          filter: { _id: user._id },
+          update: { $set: { imageUrlCached: user.generateImageUrlCached() } },
+        },
+      };
+    });
+
+    if (requests.length > 0) {
+      this.bulkWrite(requests);
+    }
+  };
+
+
   /**
    * A wrapper function of createUserByEmailAndPasswordAndStatus with callback
    *
@@ -787,6 +811,7 @@ module.exports = function(crowi) {
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
   userSchema.statics.STATUS_INVITED = STATUS_INVITED;
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
+  userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
 
   userSchema.statics.LANG_EN = LANG_EN;

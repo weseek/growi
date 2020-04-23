@@ -46,12 +46,19 @@ module.exports = function(crowi) {
     const User = crowi.model('User');
 
     // [TODO][user-profile-cache] change how to get profile image data in client side.
-    return Bookmark.populate(bookmarks, {
-      path: 'page',
-      populate: {
-        path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS,
-      },
-    });
+    return Bookmark
+      .populate(bookmarks, {
+        path: 'page',
+        populate: {
+          path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS,
+        },
+      })
+      .then((pages) => {
+        const lastUpdateUserIds = pages.map((page) => {
+          return page.user;
+        });
+        User.addImageUrlCachedsByIdList(lastUpdateUserIds);
+      });
   };
 
   // bookmark チェック用
