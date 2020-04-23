@@ -107,20 +107,6 @@ body.kibela {
     // border-radius: $radius;
   }
 
-  /* Custom Control */
-  .custom-control {
-    .custom-control-input {
-      ~ .custom-control-label::before {
-        border-color: $lightthemecolor;
-      }
-
-      &:checked~ .custom-control-label::before {
-        background-color: $color-control;
-        border-color: $color-control;
-      }
-    }
-  }
-
   /* edit */
   .CodeMirror {
     border-radius: 0.35em;
