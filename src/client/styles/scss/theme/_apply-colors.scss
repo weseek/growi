@@ -56,6 +56,8 @@ $link-hover-color: $color-link-hover;
 //
 
 .grw-logo {
+  background-color: darken($bgcolor-logo, 10%);
+
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
@@ -79,24 +81,18 @@ $link-hover-color: $color-link-hover;
 }
 
 .grw-navbar {
-  // TODO: coloring
-  // background: $bgcolor-navbar;
-  // .nav-item > .nav-link {
-  //   color: white;
-  // }
-  background: darken($bgcolor-global, 8%);
+  background: $bgcolor-navbar;
   .nav-item > .nav-link {
-    color: #333;
+    color: $color-link-nabvar;
   }
 }
 
-.grw-title-bar {
-  background: darken($bgcolor-global, 2%);
-}
-
 .grw-sidebar {
-  .grw-logo {
-    background-color: darken($bgcolor-navbar, 10%);
+  .grw-global-item-container.active {
+    button:after {
+      // fukidashi color
+      border-right-color: darken($bgcolor-global, 4%);
+    }
   }
 }
 
@@ -216,13 +212,6 @@ $link-hover-color: $color-link-hover;
 }
 
 /*
- * GROWI header
- */
-header.affix {
-  background: rgba(darken($bgcolor-global, 2%), 0.9);
-}
-
-/*
  * GROWI on-edit
  */
 body.on-edit {
@@ -297,6 +286,14 @@ body.on-edit {
       }
     }
   }
+}
+
+/*
+ * react bootstrap typeahead
+ */
+mark.rbt-highlight-text {
+  // Temporarily the highlight color is black
+  color: black;
 }
 
 /*

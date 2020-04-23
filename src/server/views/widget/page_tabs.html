@@ -11,31 +11,33 @@
   </li>
 
   {% if !isTrashPage() %}
-  <li class="nav-item grw-main-nav-item-left grw-nav-item-edit">
-    <a
-      {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
-      {% if not user %}
-        class="edit-button edit-button-disabled"
-        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-      {% endif %}
-    >
-      <i class="icon-note"></i> {{ t('Edit') }}
-    </a>
-  </li>
-  {% if isHackmdSetup() %}
-  <li class="nav-item grw-main-nav-item-left grw-nav-tab-hackmd">
-    <a
-      {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
-      {% if not user %}
-        class="edit-button edit-button-disabled"
-        data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
-      {% endif %}
-    >
-      <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
-    </a>
-  </li>
-  {% endif %}
-    <div class="grw-compact-subnav d-none ml-2">
+    <li class="nav-item grw-main-nav-item-left grw-nav-item-edit">
+      <a
+        {% if user %} href="#edit" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if not user %}
+          class="edit-button edit-button-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
+        <i class="icon-note"></i> {{ t('Edit') }}
+      </a>
+    </li>
+
+    {% if isHackmdSetup() %}
+    <li class="nav-item grw-main-nav-item-left grw-nav-tab-hackmd">
+      <a
+        {% if user %} href="#hackmd" data-toggle="tab" class="nav-link edit-button" {% endif %}
+        {% if not user %}
+          class="edit-button edit-button-disabled"
+          data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
+        {% endif %}
+      >
+        <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
+      </a>
+    </li>
+    {% endif %}
+
+    <div class="grw-revision-path-for-edit d-none ml-2">
       <h4 id="revision-path" class="mb-0"></h4>
       <div id="tag-label"></div>
     </div>
@@ -70,7 +72,7 @@
     {% if page.isPortal() %}
     <li class="nav-item dropdown">
       <a
-        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" href="#" data-toggle="dropdown" {% endif %}
         {% if not user %}
           class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"
@@ -92,7 +94,7 @@
     {% else %}
     <li class="nav-item dropdown">
       <a
-        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" data-toggle="dropdown" {% endif %}
+        {% if user %} role="button" class="nav-link dropdown-toggle dropdown-toggle-no-caret" href="#" data-toggle="dropdown" {% endif %}
         {% if not user %}
           class="nav-link dropdown-toggle dropdown-toggle-disabled dropdown-toggle-no-caret"
           data-toggle="tooltip" data-placement="top" data-container="body" title="{{ t('Not available for guest') }}"

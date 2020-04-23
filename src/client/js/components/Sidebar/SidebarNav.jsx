@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import EditIcon from '@atlaskit/icon/glyph/edit';
-import TrayIcon from '@atlaskit/icon/glyph/tray';
-
 import {
   GlobalNav,
+  GlobalItem,
 } from '@atlaskit/navigation-next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -31,24 +29,55 @@ class SidebarNav extends React.Component {
     }
   }
 
-  generateSidebarItemObj(id, icon, label) {
+  generatePrimaryItemObj(id, label, icon) {
+    const isSelected = this.props.currentContentsId === id;
+
     return {
       id,
-      icon,
-      label,
-      isSelected: this.props.currentContentsId === id,
-      onClick: () => this.itemSelectedHandler(id),
+      component: ({ className }) => (
+        <div className={`${className} grw-global-item-container ${isSelected ? 'active' : ''}`}>
+          <GlobalItem
+            icon={icon}
+            label={label}
+            isSelected={isSelected}
+            onClick={() => this.itemSelectedHandler(id)}
+          />
+        </div>
+      ),
     };
+  }
+
+  generateSecondaryItemObj(id, label, icon, href) {
+    return {
+      id,
+      component: ({ className }) => (
+        <div className={`${className} grw-global-item-container d-block d-md-none`}>
+          <a href={href}>
+            <GlobalItem
+              icon={icon}
+              label={label}
+            />
+          </a>
+        </div>
+      ),
+    };
+  }
+
+  generateIconFactory(classNames) {
+    return () => <i className={classNames}></i>;
   }
 
   render() {
     return (
       <GlobalNav
         primaryItems={[
-          this.generateSidebarItemObj('custom', EditIcon, 'Custom Sidebar'),
-          this.generateSidebarItemObj('history', TrayIcon, 'History'),
+          this.generatePrimaryItemObj('custom', 'Custom Sidebar', this.generateIconFactory('fa fa-code')),
+          this.generatePrimaryItemObj('history', 'History', this.generateIconFactory('icon-clock')),
         ]}
-        secondaryItems={[]}
+        secondaryItems={[
+          this.generateSecondaryItemObj('admin', 'Admin', this.generateIconFactory('icon-settings'), '/admin'),
+          this.generateSecondaryItemObj('help', 'Help', this.generateIconFactory('icon-question'), 'https://docs.growi.org'),
+        ]}
       />
     );
   }

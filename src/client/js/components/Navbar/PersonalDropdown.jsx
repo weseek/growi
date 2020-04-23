@@ -59,7 +59,7 @@ const PersonalDropdown = (props) => {
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
       <a className="nav-link waves-effect waves-light" data-toggle="dropdown">
-        <UserPicture user={user} withoutLink />&nbsp;{user.name}
+        <UserPicture user={user} withoutLink /><span className="d-none d-sm-inline-block">&nbsp;{user.name}</span>
       </a>
 
       {/* Menu */}

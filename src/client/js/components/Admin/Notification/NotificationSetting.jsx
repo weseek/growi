@@ -63,6 +63,7 @@ class NotificationSetting extends React.Component {
             <NavLink
               className={`${activeTab === 'slack-configuration' && 'active'} `}
               onClick={() => { this.toggleActiveTab('slack-configuration') }}
+              href="#slack-configuration"
             >
               <i className="icon-settings"></i> Slack Configuration
             </NavLink>
@@ -71,6 +72,7 @@ class NotificationSetting extends React.Component {
             <NavLink
               className={`${activeTab === 'user-trigger-notification' && 'active'} `}
               onClick={() => { this.toggleActiveTab('user-trigger-notification') }}
+              href="#user-trigger-notification"
             >
               <i className="icon-settings"></i> User Trigger Notification
             </NavLink>
@@ -79,6 +81,7 @@ class NotificationSetting extends React.Component {
             <NavLink
               className={`${activeTab === 'global-notification' && 'active'} `}
               onClick={() => { this.toggleActiveTab('global-notification') }}
+              href="#global-notification"
             >
               <i className="icon-settings"></i> Global Notification
             </NavLink>

@@ -9,6 +9,14 @@
     }
   }
 }
+
+.rbt-input-wrapper {
+  .close.rbt-close {
+    // default bootstrap .close has padding 0
+    padding: 3px 7px;
+  }
+}
+
 // hide loading icon
 .rbt-aux {
   display: none;

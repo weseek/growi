@@ -121,10 +121,17 @@ class UserManagement extends React.Component {
 
     return (
       <Fragment>
-        {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
+        {adminUsersContainer.state.userForPasswordResetModal != null
+        && (
+        <PasswordResetModal
+          isOpen={adminUsersContainer.state.isPasswordResetModalShown}
+          onClose={adminUsersContainer.hidePasswordResetModal}
+          userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
+        />
+        )}
         <p>
           <InviteUserControl />
-          <a className="btn text-dark btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
+          <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             {t('admin:user_management.external_account')}
           </a>
@@ -157,7 +164,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('all') }}
                 />
                 <label className="custom-control-label" htmlFor="c1">
-                  <span className="badge badge-primary d-inline-block vt mt-1">All</span>
+                  <span className="badge badge-pill badge-primary d-inline-block vt mt-1">All</span>
                 </label>
               </div>
 
@@ -170,7 +177,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('registered') }}
                 />
                 <label className="custom-control-label" htmlFor="c2">
-                  <span className="badge badge-info d-inline-block vt mt-1">Approval Pending</span>
+                  <span className="badge badge-pill badge-info d-inline-block vt mt-1">Approval Pending</span>
                 </label>
               </div>
 
@@ -183,11 +190,11 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('active') }}
                 />
                 <label className="custom-control-label" htmlFor="c3">
-                  <span className="badge badge-success d-inline-block vt mt-1">Active</span>
+                  <span className="badge badge-pill badge-success d-inline-block vt mt-1">Active</span>
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-secondary mr-2">
+              <div className="custom-control custom-checkbox custom-checkbox-warning mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
@@ -196,7 +203,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('suspended') }}
                 />
                 <label className="custom-control-label" htmlFor="c4">
-                  <span className="badge badge-secondary d-inline-block vt mt-1">Suspended</span>
+                  <span className="badge badge-pill badge-warning d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
@@ -209,7 +216,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('invited') }}
                 />
                 <label className="custom-control-label" htmlFor="c5">
-                  <span className="badge badge-info d-inline-block vt mt-1">Invited</span>
+                  <span className="badge badge-pill badge-info d-inline-block vt mt-1">Invited</span>
                 </label>
               </div>
             </div>
@@ -228,8 +235,8 @@ class UserManagement extends React.Component {
               </button>
             </div>
 
-            <div className="ml-5">
-              {this.state.isNotifyCommentShow && <span className="text-warning small">{t('admin:user_management.click_twice_same_checkbox')}</span>}
+            <div className="ml-4">
+              {this.state.isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>}
             </div>
 
           </div>

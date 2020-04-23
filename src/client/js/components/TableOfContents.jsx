@@ -60,11 +60,6 @@ class TableOfContents extends React.Component {
   }
 
   init() {
-    const { layoutType } = this.props.appContainer.config;
-    if (layoutType === 'crowi') {
-      return;
-    }
-
     /*
      * set event listener
      */

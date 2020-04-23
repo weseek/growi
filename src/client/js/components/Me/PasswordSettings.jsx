@@ -68,7 +68,7 @@ class PasswordSettings extends React.Component {
     return (
       <React.Fragment>
         {(!personalContainer.state.isPasswordSet) && <div className="alert alert-warning m-t-10">{ t('Password is not set') }</div>}
-        <div className="mb-5 container-fluid">
+        <div className="container-fluid my-4">
           {(personalContainer.state.isPasswordSet)
             ? <h2 className="border-bottom">{t('personal_settings.update_password')}</h2>
           : <h2 className="border-bottom">{t('personal_settings.set_new_password')}</h2>}
@@ -76,8 +76,8 @@ class PasswordSettings extends React.Component {
         {(personalContainer.state.isPasswordSet)
         && (
           <div className="row mb-3">
-            <label htmlFor="oldPassword" className="col-3 text-right">{ t('personal_settings.current_password') }</label>
-            <div className="col-6">
+            <label htmlFor="oldPassword" className="col-md-3 text-md-right">{ t('personal_settings.current_password') }</label>
+            <div className="col-md-5">
               <input
                 className="form-control"
                 type="password"
@@ -89,8 +89,8 @@ class PasswordSettings extends React.Component {
           </div>
         )}
         <div className="row mb-3">
-          <label htmlFor="newPassword" className="col-3 text-right">{t('personal_settings.new_password') }</label>
-          <div className="col-6">
+          <label htmlFor="newPassword" className="col-md-3 text-md-right">{t('personal_settings.new_password') }</label>
+          <div className="col-md-5">
             <input
               className="form-control"
               type="password"
@@ -101,8 +101,8 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
         <div className={`row mb-3 ${isIncorrectConfirmPassword && 'has-error'}`}>
-          <label htmlFor="newPasswordConfirm" className="col-3 text-right">{t('personal_settings.new_password_confirm') }</label>
-          <div className="col-6">
+          <label htmlFor="newPasswordConfirm" className="col-md-3 text-md-right">{t('personal_settings.new_password_confirm') }</label>
+          <div className="col-md-5">
             <input
               className="form-control"
               type="password"
@@ -111,19 +111,21 @@ class PasswordSettings extends React.Component {
               onChange={(e) => { this.onChangeNewPasswordConfirm(e.target.value) }}
             />
 
-            <p className="help-block">{t('page_register.form_help.password') }</p>
+            <p className="form-text text-muted">{t('page_register.form_help.password') }</p>
           </div>
         </div>
 
-        <div className="my-3 text-center">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.onClickSubmit}
-            disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
-          >
-            {t('Update')}
-          </button>
+        <div className="row my-3">
+          <div className="offset-5">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.onClickSubmit}
+              disabled={this.state.retrieveError != null || isIncorrectConfirmPassword}
+            >
+              {t('Update')}
+            </button>
+          </div>
         </div>
       </React.Fragment>
     );

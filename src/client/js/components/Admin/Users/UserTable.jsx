@@ -42,7 +42,7 @@ class UserTable extends React.Component {
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'badge-secondary';
+        additionalClassName = 'badge-warning';
         text = 'Suspended';
         break;
       case 4:
@@ -56,7 +56,7 @@ class UserTable extends React.Component {
     }
 
     return (
-      <span className={`badge ${additionalClassName}`}>
+      <span className={`badge badge-pill ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -71,7 +71,7 @@ class UserTable extends React.Component {
     const { t } = this.props;
 
     if (isAdmin) {
-      return <span className="badge badge-primary ml-2">{t('admin:user_management.user_table.administrator')}</span>;
+      return <span className="badge badge-primary badge-pill ml-2">{t('admin:user_management.user_table.administrator')}</span>;
     }
   }
 

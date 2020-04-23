@@ -387,7 +387,7 @@ class ImportForm extends React.Component {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
-            <div className="col-6 my-1" key={collectionName}>
+            <div className="col-md-6 my-1" key={collectionName}>
               <ImportCollectionItem
                 isImporting={isImporting}
                 isImported={collectionProgress ? isImported : false}

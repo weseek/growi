@@ -12,15 +12,6 @@
 }
 
 /*
- * GROWI header
- */
-header.affix {
-  .logo-mark {
-    fill: theme-color('primary');
-  }
-}
-
-/*
  * GROWI search-top
  */
 .search-top {
@@ -35,9 +26,21 @@ header.affix {
 /*
  * GROWI subnavigation
  */
-.grw-compact-subnavbar {
-  background-color: rgba(darken($bgcolor-global, 6%), 0.9);
-  box-shadow: 0 0 2px darken($bgcolor-global, 40%);
+.admin-page,
+.user-settings-page,
+.tags-page {
+  .grw-header {
+    background-color: rgba(darken($bgcolor-global, 6%), 0.9);
+  }
+}
+
+.grw-subnavbar {
+  background-color: rgba(darken($bgcolor-global, 5%), 1);
+
+  &.grw-subnavbar-sticky {
+    background-color: rgba(darken($bgcolor-global, 6%), 0.9);
+    box-shadow: 0 3px 2px -2px darken($bgcolor-global, 40%);
+  }
 }
 
 /*

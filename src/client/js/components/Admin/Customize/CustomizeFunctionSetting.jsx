@@ -150,14 +150,14 @@ class CustomizeBehaviorSetting extends React.Component {
             </div>
 
             <div className="form-group row">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
+              <div className="offset-3 col-6 text-left">
                 <CustomizeFunctionOption
                   optionId="isAllReplyShown"
                   label={t('admin:customize_setting.function_options.show_all_reply_comments')}
                   isChecked={adminCustomizeContainer.state.isAllReplyShown || false}
                   onChecked={() => { adminCustomizeContainer.switchIsAllReplyShown() }}
                 >
-                  <p className="help-block">
+                  <p className="form-text text-muted">
                     {t('admin:customize_setting.function_options.show_all_reply_comments_desc')}
                   </p>
                 </CustomizeFunctionOption>
