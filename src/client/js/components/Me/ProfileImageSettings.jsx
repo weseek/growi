@@ -102,7 +102,7 @@ class ProfileImageSettings extends React.Component {
     return (
       <React.Fragment>
         <div className="row">
-          <div className="col-md-2 offset-1 col-sm-4">
+          <div className="col-md-3 offset-1 col-sm-4">
             <h4>
               <div className="custom-control custom-radio radio-primary">
                 <input
@@ -126,7 +126,7 @@ class ProfileImageSettings extends React.Component {
             <img src={this.generateGravatarSrc()} width="64" />
           </div>
 
-          <div className="col-md-4 col-sm-7">
+          <div className="col-md-3 offset-1 col-sm-4">
             <h4>
               <div className="custom-control custom-radio radio-primary">
                 <input
@@ -144,19 +144,19 @@ class ProfileImageSettings extends React.Component {
               </div>
             </h4>
             <div className="row mb-3">
-              <label className="col-sm-4 control-label">
+              <label className="col-sm-4 col-12 control-label">
                 { t('Current Image') }
               </label>
-              <div className="col-sm-8">
+              <div className="col-sm-8 col-12">
                 {uploadedPictureSrc && (<p><img src={uploadedPictureSrc} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>)}
                 {isUploadedPicture && <button type="button" className="btn btn-danger" onClick={this.onClickDeleteBtn}>{ t('Delete Image') }</button>}
               </div>
             </div>
             <div className="row">
-              <label className="col-sm-4 control-label">
+              <label className="col-sm-4 col-12 control-label">
                 {t('Upload new image')}
               </label>
-              <div className="col-sm-8">
+              <div className="col-sm-8 col-12">
                 <input type="file" onChange={this.onSelectFile} name="profileImage" accept="image/*" />
               </div>
             </div>
