@@ -265,7 +265,7 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
-    // [TODO][user-profile-cache] change how to get profile image data in client side.
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {

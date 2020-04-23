@@ -87,7 +87,7 @@ class UserGroupRelation {
   static findAllRelationForUserGroup(userGroup) {
     const User = UserGroupRelation.crowi.model('User');
     debug('findAllRelationForUserGroup is called', userGroup);
-    // [TODO][user-profile-cache] change how to get profile image data in client side.
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     return this
       .find({ relatedGroup: userGroup })
       .populate({

@@ -737,6 +737,7 @@ module.exports = function(crowi) {
     });
   };
 
+  // maybe use in GW-1942
   userSchema.statics.addImageUrlCachedsByIdList = async function(userIdList) {
     const users = await this.find(
       {

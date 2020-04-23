@@ -352,7 +352,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters page_id is required.'));
     }
 
-    // [TODO][user-profile-cache] change how to get profile image data in client side.
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     let attachments = await Attachment.find({ page: id })
       .sort({ updatedAt: 1 })
       .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });

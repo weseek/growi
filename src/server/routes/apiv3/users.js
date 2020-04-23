@@ -167,7 +167,7 @@ module.exports = (crowi) => {
     };
 
     try {
-    // [TODO][user-profile-cache] change how to get profile image data in client side.
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
       const paginateResult = await User.paginate(
         {
           $and: [
