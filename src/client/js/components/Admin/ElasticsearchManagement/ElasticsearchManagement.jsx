@@ -182,11 +182,6 @@ class ElasticsearchManagement extends React.Component {
               isRebuildingCompleted={isRebuildingCompleted}
               isNormalized={isNormalized}
               onNormalizingRequested={this.normalizeIndices}
-            />
-          </div>
-        </div>
-
-        <hr />
 
         <div className="row">
           <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>

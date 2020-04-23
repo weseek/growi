@@ -98,7 +98,7 @@ class RebuildIndexControls extends React.Component {
  * Wrapper component for using unstated
  */
 const RebuildIndexControlsWrapper = (props) => {
-  return createSubscribedElement(RebuildIndexControls, props, [AppContainer, WebsocketContainer]);
+createSubscribedElement(RebuildIndexControls, props, [AppContainer, WebsocketContainer]);
 };
 
 RebuildIndexControls.propTypes = {
