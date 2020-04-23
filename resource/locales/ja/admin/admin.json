@@ -169,7 +169,12 @@
     "import_from": "{{from}} からインポート",
     "import_growi_archive": "GROWI アーカイブをインポート",
     "growi_settings": {
-      "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
+      "description_of_import_mode": {
+        "about": "重複したデータをインポートする際の挙動は以下の3つから選べます。",
+        "insert": "Insert: 同名と判断できるデータが存在しない場合のみインポートし、存在する場合はスキップします。",
+        "upsert": "Upsert: 同名と判断できるデータが存在する場合、そのデータを上書き更新します。",
+        "flash_and_insert": "Flash and Insert: 同名と判断できるデータが存在する場合、既存のデータを完全に削除した後、インポートを行います。"
+      },
       "growi_archive_file": "GROWI アーカイブファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
