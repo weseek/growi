@@ -1,18 +1,18 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
 
+$bgcolor-theme: rgb(18, 86, 163);
+$themelight: #f4f5f6;
+$subthemecolor: rgb(88, 130, 250);
+$lightthemecolor: rgba(181, 203, 247, 0.61);
+
 // Light Mode
 html[light] {
-  $bgcolor-theme: rgb(18, 86, 163);
-  $themelight: #f4f5f6;
-  $subthemecolor: rgb(88, 130, 250);
-  $lightthemecolor: rgba(181, 203, 247, 0.61);
-
   // Background colors
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: #e3e5e7;
+  $bgcolor-card: $lightthemecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
 
   $color-header: $bgcolor-theme;
@@ -51,11 +51,6 @@ html[light] {
 
 // Dark Mode ( same as Light Mode )
 html[dark] {
-  $bgcolor-theme: rgb(18, 86, 163);
-  $themelight: #f4f5f6;
-  $subthemecolor: rgb(88, 130, 250);
-  $lightthemecolor: rgba(181, 203, 247, 0.61);
-
   // Background colors
   $bgcolor-navbar: transparent;
   $bgcolor-navbar-active: $bgcolor-theme;
