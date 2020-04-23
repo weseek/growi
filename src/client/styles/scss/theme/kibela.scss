@@ -25,7 +25,10 @@ html[light] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
+  // Logo colors
+  $bgcolor-logo: transparent;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-global;
@@ -46,7 +49,6 @@ html[light] {
   @import 'apply-colors-kibela';
 }
 
-
 // Dark Mode ( same as Light Mode )
 html[dark] {
   $bgcolor-theme: rgb(18, 86, 163);
@@ -55,7 +57,7 @@ html[dark] {
   $lightthemecolor: rgba(181, 203, 247, 0.61);
 
   // Background colors
-  $bgcolor-navbar: white;
+  $bgcolor-navbar: transparent;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
   $bgcolor-card: #e3e5e7;
@@ -71,7 +73,10 @@ html[dark] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
+  // Logo colors
+  $bgcolor-logo: red;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-global;

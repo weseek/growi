@@ -56,7 +56,7 @@ $link-hover-color: $color-link-hover;
 //
 
 .grw-logo {
-  background-color: darken($bgcolor-navbar, 10%);
+  background-color: darken($bgcolor-logo, 10%);
 
   // set transition for fill
   svg * {

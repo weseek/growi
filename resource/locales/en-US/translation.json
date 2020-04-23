@@ -294,7 +294,7 @@
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Open/Close shortcut help": "Open/Close<br>shortcut help",
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Show Contributors": "Show Contributors",

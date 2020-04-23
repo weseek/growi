@@ -20,10 +20,11 @@ class StatusTable extends React.PureComponent {
     return (
       <div className="card">
         <div className="card-header">
-          <a role="button" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
+
+          <a role="button" className="text-nowrap mr-2" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
             <i className="fa fa-fw fa-database"></i> {indexName}
           </a>
-          <span className="ml-3">{aliasLabels}</span>
+          <span className="ml-md-3">{aliasLabels}</span>
         </div>
         <div id={collapseId} className="collapse">
           <div className="card-body">
@@ -82,7 +83,7 @@ class StatusTable extends React.PureComponent {
       <div className="row">
         { Object.keys(indexNameToDataMap).map((indexName) => {
           return (
-            <div key={`col-${indexName}`} className="col-6">
+            <div key={`col-${indexName}`} className="col-md-6">
               { this.renderIndexInfoPanel(indexName, indexNameToDataMap[indexName], indexNameToAliasMap[indexName]) }
             </div>
           );
