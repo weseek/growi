@@ -12,7 +12,7 @@ module.exports = (crowi) => {
   require('./response')(express, crowi);
 
   router.use('/healthcheck', require('./healthcheck')(crowi));
-  
+
   router.use('/login', require('./login')(crowi));
 
   // admin
