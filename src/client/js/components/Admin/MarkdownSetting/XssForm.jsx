@@ -44,7 +44,7 @@ class XssForm extends React.Component {
     return (
       <div className="form-group col-12 my-3">
         <div className="row">
-          <div className="col-md-4 col-sm-12  align-self-start">
+          <div className="col-md-4 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio ">
               <input
                 type="radio"
@@ -63,7 +63,7 @@ class XssForm extends React.Component {
             </div>
           </div>
 
-          <div className="col-md-4 col-sm-12  align-self-start">
+          <div className="col-md-4 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio">
               <input
                 type="radio"
@@ -105,7 +105,7 @@ class XssForm extends React.Component {
             </div>
           </div>
 
-          <div className="col-md-4 col-sm-12  align-self-start">
+          <div className="col-md-4 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio">
               <input
                 type="radio"
