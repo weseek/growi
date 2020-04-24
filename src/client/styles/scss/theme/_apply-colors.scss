@@ -25,6 +25,12 @@ $link-hover-color: $color-link-hover;
 }
 
 // Dropdown
+.dropdown-menu {
+  form {
+    color: $color-global;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
   &.active,
