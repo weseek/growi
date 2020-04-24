@@ -152,10 +152,10 @@
     "import_growi_archive": "Import GROWI Archive",
     "growi_settings": {
       "description_of_import_mode": {
-        "about": "既存のデータと同名であるデータをインポートする際の挙動は以下の3つのモードから選べます。",
-        "insert": "Insert: 当該データのインポートをスキップします。",
-        "upsert": "Upsert: 既存のデータをインポートデータで上書き更新します。",
-        "flash_and_insert": "Flash and Insert: 既存のデータを完全に削除した後、インポートを行います。"
+        "about": "These modes is behavior of importing overlapping data.",
+        "insert": "Insert: Skip importing the data.",
+        "upsert": "Upsert: Overwrite and update the existing data with imported data.",
+        "flash_and_insert": "Flash and Insert: After Delete the existing data completely, import the data"
       },
       "growi_archive_file": "GROWI Archive File",
       "uploaded_data": "Uploaded Data",
