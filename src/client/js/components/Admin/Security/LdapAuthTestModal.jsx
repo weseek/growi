@@ -47,7 +47,7 @@ class LdapAuthTestModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader tag="h4" className="modal-header" toggle={this.props.onClose}>
+        <ModalHeader tag="h4" className="bg-info" toggle={this.props.onClose}>
           Test LDAP Account
         </ModalHeader>
         <ModalBody>

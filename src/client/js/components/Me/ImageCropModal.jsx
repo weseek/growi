@@ -87,7 +87,7 @@ class ImageCropModal extends React.Component {
   render() {
     return (
       <Modal isOpen={this.props.show} toggle={this.props.onModalClose}>
-        <ModalHeader tag="h4" toggle={this.props.onModalClose}>
+        <ModalHeader tag="h4" toggle={this.props.onModalClose} className="bg-info">
           Image Crop
         </ModalHeader>
         <ModalBody className="my-4">

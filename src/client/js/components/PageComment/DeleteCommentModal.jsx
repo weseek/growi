@@ -37,9 +37,9 @@ export default class DeleteCommentModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isShown} toggle={this.props.cancel} className="page-comment-delete-modal">
-        <ModalHeader tag="h4" toggle={this.props.cancel}>
+        <ModalHeader tag="h4" toggle={this.props.cancel} className="bg-danger">
           <span>
-            <i className="icon-fw icon-fire text-danger"></i>
+            <i className="icon-fw icon-fire"></i>
             Delete comment?
           </span>
         </ModalHeader>

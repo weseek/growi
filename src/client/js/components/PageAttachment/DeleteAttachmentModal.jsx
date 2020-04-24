@@ -73,7 +73,7 @@ export default class DeleteAttachmentModal extends React.Component {
 
     return (
       <Modal {...props} className="attachment-delete-modal" bssize="large" aria-labelledby="contained-modal-title-lg">
-        <ModalHeader tag="h4" toggle={this.props.toggle}>
+        <ModalHeader tag="h4" toggle={this.props.toggle} className="bg-danger">
           <span id="contained-modal-title-lg">Delete attachment?</span>
         </ModalHeader>
         <ModalBody>
