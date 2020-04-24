@@ -217,7 +217,7 @@ class GrantSelector extends React.Component {
         isOpen={this.state.isSelectGroupModalShown}
         toggle={this.hideSelectGroupModal}
       >
-        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-info">
+        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-info text-light">
           Select a Group
         </ModalHeader>
         <ModalBody>

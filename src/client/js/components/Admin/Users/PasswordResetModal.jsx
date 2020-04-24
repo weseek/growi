@@ -83,7 +83,7 @@ class PasswordResetModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-warning">
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-warning text-light">
           {t('admin:user_management.reset_password') }
         </ModalHeader>
         <ModalBody>
