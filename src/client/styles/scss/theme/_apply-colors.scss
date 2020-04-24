@@ -116,10 +116,10 @@ $link-hover-color: $color-link-hover;
     &.bg-success,
     &.bg-warning,
     &.bg-danger {
-      color: white;
+      color: $light;
 
       .close {
-        color: white;
+        color: $light;
       }
     }
 
