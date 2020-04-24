@@ -27,6 +27,11 @@ module.exports = (crowi) => {
    *            description: Succeeded to get data for rendering login form.
    *            content:
    *              application/json:
+   *                schema:
+   *                  properties:
+   *                    data:
+   *                      type: object
+   *                      description: data for rendering login form
    */
   router.get('/', accessTokenParser, async(req, res) => {
     const data = {};
