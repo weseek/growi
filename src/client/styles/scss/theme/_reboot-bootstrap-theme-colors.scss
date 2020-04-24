@@ -56,3 +56,10 @@
     }
   }
 }
+
+@each $theme-color, $color in $theme-colors {
+  .badge.badge-#{$theme-color} {
+    color: $bgcolor-global;
+    background: $color;
+  }
+}

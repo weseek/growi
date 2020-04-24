@@ -131,7 +131,7 @@ class UserManagement extends React.Component {
         )}
         <p>
           <InviteUserControl />
-          <a className="btn text-dark btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
+          <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             {t('admin:user_management.external_account')}
           </a>
@@ -194,7 +194,7 @@ class UserManagement extends React.Component {
                 </label>
               </div>
 
-              <div className="custom-control custom-checkbox custom-checkbox-secondary mr-2">
+              <div className="custom-control custom-checkbox custom-checkbox-warning mr-2">
                 <input
                   className="custom-control-input"
                   type="checkbox"
@@ -203,7 +203,7 @@ class UserManagement extends React.Component {
                   onClick={() => { this.handleClick('suspended') }}
                 />
                 <label className="custom-control-label" htmlFor="c4">
-                  <span className="badge badge-pill badge-secondary d-inline-block vt mt-1">Suspended</span>
+                  <span className="badge badge-pill badge-warning d-inline-block vt mt-1">Suspended</span>
                 </label>
               </div>
 
@@ -235,8 +235,8 @@ class UserManagement extends React.Component {
               </button>
             </div>
 
-            <div className="ml-5">
-              {this.state.isNotifyCommentShow && <span className="text-warning small">{t('admin:user_management.click_twice_same_checkbox')}</span>}
+            <div className="ml-4">
+              {this.state.isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>}
             </div>
 
           </div>

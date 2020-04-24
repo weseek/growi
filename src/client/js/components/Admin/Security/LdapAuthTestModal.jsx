@@ -6,7 +6,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
 } from 'reactstrap';
 
 import { createSubscribedElement } from '../../UnstatedUtils';
@@ -59,7 +58,6 @@ class LdapAuthTestModal extends React.Component {
             onChangePassword={this.onChangePassword}
           />
         </ModalBody>
-        <ModalFooter />
       </Modal>
     );
   }

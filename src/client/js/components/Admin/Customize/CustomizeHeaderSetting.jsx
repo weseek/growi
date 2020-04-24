@@ -53,7 +53,9 @@ class CustomizeHeaderSetting extends React.Component {
               { t('Example') }:
               <pre className="hljs">
                 {/* eslint-disable-next-line react/no-unescaped-entities */}
-                <code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code>
+                <code className="text-wrap">&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js"
+                defer&gt;&lt;/script&gt;
+                </code>
               </pre>
             </div>
 

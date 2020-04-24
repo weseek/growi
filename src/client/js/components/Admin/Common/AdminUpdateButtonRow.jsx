@@ -7,7 +7,7 @@ const AdminUpdateButtonRow = (props) => {
 
   return (
     <div className="row my-3">
-      <div className="offset-4 col-5">
+      <div className="mx-auto">
         <button type="button" className="btn btn-primary" onClick={props.onClick} disabled={props.disabled}>{ t('Update') }</button>
       </div>
     </div>
