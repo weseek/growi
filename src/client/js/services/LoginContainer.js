@@ -53,7 +53,6 @@ export default class LoginForm extends Container {
         isLdapStrategySetup: data.isLdapStrategySetup,
         objOfIsExternalAuthEnableds: data.objOfIsExternalAuthEnableds,
       });
-
     }
     catch (err) {
       logger.error(err);

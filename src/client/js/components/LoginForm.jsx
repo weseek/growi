@@ -9,15 +9,9 @@ import { createSubscribedElement } from './UnstatedUtils';
 const logger = loggerFactory('growi:loginForm');
 
 class LoginForm extends React.Component {
+
   constructor(props) {
     super(props);
-
-    this.isRegistrationEnabled = false;
-    this.registrationMode = 'Closed';
-    this.registrationWhiteList = [];
-    this.isLocalStrategySetup = false;
-    this.isLdapStrategySetup = false;
-    this.objOfIsExternalAuthEnableds = {};
 
     this.switchForm = this.switchForm.bind(this);
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
@@ -113,7 +107,8 @@ class LoginForm extends React.Component {
   }
 
   renderExternalAuthLoginForm() {
-    const isExternalAuthCollapsible = this.isLocalStrategySetup || this.isLdapStrategySetup;
+    const { loginContainer } = this.props;
+    const isExternalAuthCollapsible = loginContainer.state.isLocalStrategySetup || loginContainer.state.isLdapStrategySetup;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth collapse-anchor' : '';
 
     return (
@@ -122,8 +117,8 @@ class LoginForm extends React.Component {
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
-            {Object.keys(this.objOfIsExternalAuthEnableds).map(auth => {
-              if (!this.objOfIsExternalAuthEnableds[auth]) {
+            {Object.keys(loginContainer.state.objOfIsExternalAuthEnableds).map((auth) => {
+              if (!loginContainer.state.objOfIsExternalAuthEnableds[auth]) {
                 return;
               }
               return this.renderExternalAuthInput(auth);
@@ -149,7 +144,7 @@ class LoginForm extends React.Component {
   }
 
   renderRegisterForm() {
-    const { t, csrf } = this.props;
+    const { t, loginContainer, csrf } = this.props;
     return (
       <div className="back">
         {this.registrationMode === 'Restricted' && (
@@ -190,11 +185,11 @@ class LoginForm extends React.Component {
             <input type="email" className="form-control" placeholder={t('Email')} name="registerForm[email]" defaultValue={this.props.email} required />
           </div>
 
-          {this.registrationWhiteList.length > 0 && (
+          {loginContainer.state.registrationWhiteList.length > 0 && (
             <>
               <p className="form-text">{t('page_register.form_help.email')}</p>
               <ul>
-                {this.registrationWhiteList.map(elem => {
+                {loginContainer.state.registrationWhiteList.map((elem) => {
                   return (
                     <li>
                       <code>{{ elem }}</code>
@@ -242,11 +237,11 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const { t, isRegistering } = this.props;
+    const { t, loginContainer, isRegistering } = this.props;
 
-    const isLocalOrLdapStrategiesEnabled = this.isLocalStrategySetup || this.isLdapStrategySetup;
+    const isLocalOrLdapStrategiesEnabled = loginContainer.state.isLocalStrategySetup || loginContainer.state.isLdapStrategySetup;
     const registerFormClass = isRegistering ? 'to-flip' : '';
-    const isSomeExternalAuthEnabled = Object.values(this.objOfIsExternalAuthEnableds).some(elem => elem);
+    const isSomeExternalAuthEnabled = Object.values(loginContainer.state.objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
       <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
@@ -255,7 +250,7 @@ class LoginForm extends React.Component {
             <div className="front">
               {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
               {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-              {this.isRegistrationEnabled && (
+              {loginContainer.state.isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
@@ -265,7 +260,7 @@ class LoginForm extends React.Component {
                 </div>
               )}
             </div>
-            {this.isRegistrationEnabled && this.renderRegisterForm()}
+            {loginContainer.state.isRegistrationEnabled && this.renderRegisterForm()}
             <a href="https://growi.org" className="link-growi-org pl-3">
               <span className="growi">GROWI</span>.<span className="org">ORG</span>
             </a>
@@ -274,6 +269,7 @@ class LoginForm extends React.Component {
       </div>
     );
   }
+
 }
 
 /**
