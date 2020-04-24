@@ -12,6 +12,8 @@ module.exports = (crowi) => {
   require('./response')(express, crowi);
 
   router.use('/healthcheck', require('./healthcheck')(crowi));
+  
+  router.use('/login', require('./login')(crowi));
 
   // admin
   router.use('/admin-home', require('./admin-home')(crowi));
