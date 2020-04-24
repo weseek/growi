@@ -177,8 +177,9 @@
 
 .search-page-input {
   position: sticky;
-  top: 15px;
-  z-index: 1;
+  top: 65px;
+  // placed at front-most
+  z-index: 15;
 
   margin-bottom: 15px;
 
