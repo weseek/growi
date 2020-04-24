@@ -66,6 +66,11 @@ jobs:
         additional-tags: 'latest'
         publish: true
 
+    - name: Check whether workspace is clean
+      run: |
+        STATUS=`git status --porcelain`
+        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
+
   publish-desc:
 
     runs-on: ubuntu-latest

@@ -194,11 +194,6 @@ jobs:
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Check whether workspace is clean
-      run: |
-        STATUS=`git status --porcelain`
-        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
-
   build-prod:
     runs-on: ubuntu-latest
 
@@ -283,8 +278,3 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-    - name: Check whether workspace is clean
-      run: |
-        STATUS=`git status --porcelain`
-        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
