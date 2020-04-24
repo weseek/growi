@@ -60,6 +60,10 @@
         left: 0;
       }
     }
+
+    div[class$='-NavigationContainer'] {
+      transition: left 300ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
   }
 
   .grw-sidebar-backdrop.modal-backdrop {
