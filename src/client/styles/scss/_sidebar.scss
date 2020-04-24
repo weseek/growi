@@ -48,7 +48,7 @@
 @include media-breakpoint-down(sm) {
   .grw-sidebar {
     position: fixed;
-    z-index: $zindex-fixed - 5;
+    z-index: $zindex-fixed - 2;
 
     &:not(.open) {
       div[class$='-NavigationContainer'] {
@@ -60,6 +60,10 @@
         left: 0;
       }
     }
+  }
+
+  .grw-sidebar-backdrop.modal-backdrop {
+    z-index: $zindex-fixed - 4;
   }
 }
 

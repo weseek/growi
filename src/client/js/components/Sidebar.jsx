@@ -32,8 +32,6 @@ class Sidebar extends React.Component {
   };
 
   componentWillMount() {
-    // const { appContainer, navigationUIController } = this.props;
-    // appContainer.registerComponentInstance('UIController', navigationUIController);
     this.initBreakpointEvents();
   }
 
@@ -53,6 +51,8 @@ class Sidebar extends React.Component {
           appContainer.setState({ isDrawerOpened: false });
           navigationUIController.disableResize();
           navigationUIController.expand();
+
+          // fix width
           navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
         }
         else {
@@ -76,6 +76,11 @@ class Sidebar extends React.Component {
       // xsHandler(mediaQueryForXs);
       smHandler(mediaQueryForSm);
     });
+  }
+
+  backdropClickedHandler = () => {
+    const { appContainer } = this.props;
+    appContainer.setState({ isDrawerOpened: false });
   }
 
   itemSelectedHandler = (contentsId) => {
@@ -113,31 +118,37 @@ class Sidebar extends React.Component {
     const { isDrawerOpened } = this.props.appContainer.state;
 
     return (
-      <div className={`grw-sidebar ${isDrawerOpened ? 'open' : ''}`}>
-        <ThemeProvider
-          theme={theme => ({
-            ...theme,
-            context: 'product',
-            mode: modeGenerator({
-              product: { text: '#ffffff', background: '#334455' },
-            }),
-          })}
-        >
-          <LayoutManager
-            globalNavigation={this.renderGlobalNavigation}
-            productNavigation={() => null}
-            containerNavigation={this.renderSidebarContents}
-            experimental_hideNavVisuallyOnCollapse
-            experimental_flyoutOnHover
-            experimental_alternateFlyoutBehaviour
-            // experimental_fullWidthFlyout
-            shouldHideGlobalNavShadow
-            showContextualNavigation
-            topOffset={50}
+      <>
+        <div className={`grw-sidebar ${isDrawerOpened ? 'open' : ''}`}>
+          <ThemeProvider
+            theme={theme => ({
+              ...theme,
+              context: 'product',
+              mode: modeGenerator({
+                product: { text: '#ffffff', background: '#334455' },
+              }),
+            })}
           >
-          </LayoutManager>
-        </ThemeProvider>
-      </div>
+            <LayoutManager
+              globalNavigation={this.renderGlobalNavigation}
+              productNavigation={() => null}
+              containerNavigation={this.renderSidebarContents}
+              experimental_hideNavVisuallyOnCollapse
+              experimental_flyoutOnHover
+              experimental_alternateFlyoutBehaviour
+              // experimental_fullWidthFlyout
+              shouldHideGlobalNavShadow
+              showContextualNavigation
+              topOffset={50}
+            >
+            </LayoutManager>
+          </ThemeProvider>
+        </div>
+
+        { isDrawerOpened && (
+          <div className="grw-sidebar-backdrop modal-backdrop show" onClick={this.backdropClickedHandler}></div>
+        ) }
+      </>
     );
   }
 
