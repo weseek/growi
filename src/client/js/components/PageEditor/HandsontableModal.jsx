@@ -433,7 +433,9 @@ export default class HandsontableModal extends React.PureComponent {
 
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
-        <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
+        <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
+          Edit Table
+        </ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
             <button
