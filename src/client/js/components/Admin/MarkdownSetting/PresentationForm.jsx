@@ -46,7 +46,7 @@ class PresentationForm extends React.Component {
           {t('admin:markdown_setting.presentation_options.page_break_setting')}
         </label>
 
-        <div className="form-group  col-12 my-3">
+        <div className="form-group col-12 my-3">
           <div className="row">
             <div className="col-md-4 col-sm-12 align-self-start">
               <div className="custom-control custom-radio">

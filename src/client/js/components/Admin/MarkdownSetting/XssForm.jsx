@@ -42,82 +42,84 @@ class XssForm extends React.Component {
     const { xssOption } = adminMarkDownContainer.state;
 
     return (
-      <div className="form-group form-check-inline col-12 my-3">
-        <div className="col-4 align-self-start">
-          <div className="custom-control custom-radio ">
-            <input
-              type="radio"
-              className="custom-control-input"
-              id="xssOption1"
-              name="XssOption"
-              checked={xssOption === 1}
-              onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
-            />
-            <label className="custom-control-label" htmlFor="xssOption1">
-              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.ignore_all_tags') }</p>
-              <div className="mt-4">
-                {t('admin:markdown_setting.xss_options.ignore_all_tags_desc') }
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <div className="col-4 align-self-start">
-          <div className="custom-control custom-radio">
-            <input
-              type="radio"
-              className="custom-control-input"
-              id="xssOption2"
-              name="XssOption"
-              checked={xssOption === 2}
-              onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
-            />
-            <label className="custom-control-label" htmlFor="xssOption2">
-              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
-              <div className="m-t-15">
-                <div className="d-flex justify-content-between">
-                  {t('admin:markdown_setting.xss_options.tag_names')}
+      <div className="form-group col-12 my-3">
+        <div className="row">
+          <div className="col-md-4 col-sm-12  align-self-start">
+            <div className="custom-control custom-radio ">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="xssOption1"
+                name="XssOption"
+                checked={xssOption === 1}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
+              />
+              <label className="custom-control-label" htmlFor="xssOption1">
+                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.ignore_all_tags')}</p>
+                <div className="mt-4">
+                  {t('admin:markdown_setting.xss_options.ignore_all_tags_desc')}
                 </div>
-                <textarea
-                  className="form-control xss-list"
-                  name="recommendedTags"
-                  rows="6"
-                  cols="40"
-                  readOnly
-                  defaultValue={tags}
-                />
-              </div>
-              <div className="m-t-15">
-                <div className="d-flex justify-content-between">
-                  {t('admin:markdown_setting.xss_options.tag_attributes')}
-                </div>
-                <textarea
-                  className="form-control xss-list"
-                  name="recommendedAttrs"
-                  rows="6"
-                  cols="40"
-                  readOnly
-                  defaultValue={attrs}
-                />
-              </div>
-            </label>
+              </label>
+            </div>
           </div>
-        </div>
 
-        <div className="col-4 align-self-start">
-          <div className="custom-control custom-radio">
-            <input
-              type="radio"
-              className="custom-control-input"
-              id="xssOption3"
-              name="XssOption"
-              checked={xssOption === 3}
-              onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
-            />
-            <label className="custom-control-label" htmlFor="xssOption3">
-              <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist') }</p>
-              <WhiteListInput customizable />
-            </label>
+          <div className="col-md-4 col-sm-12  align-self-start">
+            <div className="custom-control custom-radio">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="xssOption2"
+                name="XssOption"
+                checked={xssOption === 2}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
+              />
+              <label className="custom-control-label" htmlFor="xssOption2">
+                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
+                <div className="m-t-15">
+                  <div className="d-flex justify-content-between">
+                    {t('admin:markdown_setting.xss_options.tag_names')}
+                  </div>
+                  <textarea
+                    className="form-control xss-list"
+                    name="recommendedTags"
+                    rows="6"
+                    cols="40"
+                    readOnly
+                    defaultValue={tags}
+                  />
+                </div>
+                <div className="m-t-15">
+                  <div className="d-flex justify-content-between">
+                    {t('admin:markdown_setting.xss_options.tag_attributes')}
+                  </div>
+                  <textarea
+                    className="form-control xss-list"
+                    name="recommendedAttrs"
+                    rows="6"
+                    cols="40"
+                    readOnly
+                    defaultValue={attrs}
+                  />
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div className="col-md-4 col-sm-12  align-self-start">
+            <div className="custom-control custom-radio">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id="xssOption3"
+                name="XssOption"
+                checked={xssOption === 3}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
+              />
+              <label className="custom-control-label" htmlFor="xssOption3">
+                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist')}</p>
+                <WhiteListInput customizable />
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -143,7 +145,7 @@ class XssForm extends React.Component {
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label className="custom-control-label" htmlFor="XssEnable">
-                  {t('admin:markdown_setting.xss_options.enable_xss_prevention') }
+                  {t('admin:markdown_setting.xss_options.enable_xss_prevention')}
                 </label>
               </div>
             </div>
