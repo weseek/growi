@@ -59,7 +59,6 @@ class LdapAuthTestModal extends React.Component {
             onChangePassword={this.onChangePassword}
           />
         </ModalBody>
-        <ModalFooter />
       </Modal>
     );
   }
