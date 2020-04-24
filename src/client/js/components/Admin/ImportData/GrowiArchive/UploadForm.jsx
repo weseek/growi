@@ -51,8 +51,8 @@ class UploadForm extends React.Component {
       <form onSubmit={this.uploadZipFile}>
         <fieldset>
           <div className="form-group row">
-            <label htmlFor="file" className="col-3 control-label">{t('admin:importer_management.growi_settings.growi_archive_file')}</label>
-            <div className="col-6">
+            <label htmlFor="file" className="col-md-3 control-label">{t('admin:importer_management.growi_settings.growi_archive_file')}</label>
+            <div className="col-md-6">
               <input
                 type="file"
                 name="file"
@@ -64,7 +64,7 @@ class UploadForm extends React.Component {
             </div>
           </div>
           <div className="form-group row">
-            <div className="offset-3 col-6">
+            <div className="mx-auto">
               <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
                 {t('admin:importer_management.growi_settings.upload')}
               </button>
