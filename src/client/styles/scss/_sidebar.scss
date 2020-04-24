@@ -50,6 +50,12 @@
     position: fixed;
     z-index: $zindex-fixed - 2;
 
+    // override @atlaskit/navigation-next styles
+    div[class$='-Outer'],
+    div[class$='-teprsg'] {
+      display: none;
+    }
+
     &:not(.open) {
       div[class$='-NavigationContainer'] {
         left: -#{$grw-sidebar-nav-width + $grw-sidebar-content-min-width};
