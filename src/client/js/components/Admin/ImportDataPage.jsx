@@ -211,12 +211,12 @@ class ImportDataPage extends React.Component {
                   value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
-                <span className="offset-1">
+                <span className="offset-md-1">
                   <input
-                    name="Esa"
-                    type="button"
                     id="importFromEsa"
-                    className="btn btn-secondary btn-esa"
+                    type="button"
+                    name="Esa"
+                    className="mt-3 mt-md-0 btn btn-secondary btn-esa"
                     onClick={this.esaHandleSubmitTest}
                     value={t('admin:importer_management.esa_settings.test_connection')}
                   />
@@ -304,12 +304,12 @@ class ImportDataPage extends React.Component {
                   value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
-                <span className="offset-1">
+                <span className="offset-md-1">
                   <input
                     name="Qiita"
                     type="button"
                     id="importFromQiita"
-                    className="btn btn-secondary btn-qiita"
+                    className="mt-3 mt-md-0 btn btn-secondary btn-qiita"
                     onClick={this.qiitaHandleSubmitTest}
                     value={t('admin:importer_management.qiita_settings.test_connection')}
                   />
