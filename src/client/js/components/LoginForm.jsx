@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import AppContainer from '../services/AppContainer';
+import { createSubscribedElement } from './UnstatedUtils';
+
 class LoginForm extends React.Component {
 
   constructor(props) {
@@ -281,6 +284,13 @@ class LoginForm extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const LoginFormWrapper = (props) => {
+  return createSubscribedElement(LoginForm, props, [AppContainer]);
+};
+
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
@@ -291,4 +301,4 @@ LoginForm.propTypes = {
   csrf: PropTypes.string,
 };
 
-export default withTranslation()(LoginForm);
+export default withTranslation()(LoginFormWrapper);

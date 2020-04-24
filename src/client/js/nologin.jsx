@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
 import i18nFactory from './util/i18n';
@@ -7,7 +8,11 @@ import i18nFactory from './util/i18n';
 import InstallerForm from './components/InstallerForm';
 import LoginForm from './components/LoginForm';
 
+import AppContainer from './services/AppContainer';
+
 const i18n = i18nFactory();
+
+const nologinContainer = new AppContainer();
 
 // render InstallerForm
 const installerFormElem = document.getElementById('installer-form');
@@ -36,13 +41,9 @@ if (loginFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <LoginForm
-        isRegistering={isRegistering}
-        username={username}
-        name={name}
-        email={email}
-        csrf={csrf}
-      />
+      <Provider inject={[nologinContainer]}>
+        <LoginForm isRegistering={isRegistering} username={username} name={name} email={email} csrf={csrf} />
+      </Provider>
     </I18nextProvider>,
     loginFormElem,
   );
