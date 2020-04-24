@@ -59,6 +59,14 @@
     }
   }
 
+  // Custom Control
+  .custom-control {
+    .custom-control-input,
+    .custom-control-input + .custom-control-label {
+      cursor: pointer;
+    }
+  }
+
   // card (substitute panel of bootstrap3)
   .card {
     margin-bottom: 20px;

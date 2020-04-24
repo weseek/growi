@@ -88,10 +88,10 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
     }
   }
 
-  .btn.btn-like,
   .btn.btn-bookmark {
     &.btn-lg {
-      padding: 8px;
+      width: 50px;
+      height: 50px;
       font-size: 1.5em;
     }
   }
