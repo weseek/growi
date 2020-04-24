@@ -223,8 +223,8 @@ class UserManagement extends React.Component {
               </div>
               <div>
                 {
-                  this.state.isNotifyCommentShow &&
-                  <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>
+                  this.state.isNotifyCommentShow
+                  && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>
                 }
               </div>
             </div>
