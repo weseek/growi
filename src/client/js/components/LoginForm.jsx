@@ -25,7 +25,8 @@ class LoginForm extends React.Component {
 
     try {
       await loginContainer.retrieveData();
-    } catch (err) {
+    }
+    catch (err) {
       loginContainer.setState({ retrieveError: err.message });
       logger.error(err);
     }
@@ -35,7 +36,8 @@ class LoginForm extends React.Component {
   switchForm(e) {
     if (e.target.id === 'register') {
       $('#login-dialog').addClass('to-flip');
-    } else {
+    }
+    else {
       $('#login-dialog').removeClass('to-flip');
     }
   }
