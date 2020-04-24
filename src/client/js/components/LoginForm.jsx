@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import loggerFactory from '@alias/logger';
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../services/AppContainer';
+import LoginContainer from '../services/LoginContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 
-class LoginForm extends React.Component {
+const logger = loggerFactory('growi:loginForm');
 
+class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,30 +26,22 @@ class LoginForm extends React.Component {
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
   }
 
-  componentWillMount() {
-    // [TODO][GW-1913] get params from server with axios
-    this.isRegistrationEnabled = true;
-    this.registrationMode = 'Open';
-    this.registrationWhiteList = [];
-    this.isLocalStrategySetup = true;
-    this.isLdapStrategySetup = true;
-    this.objOfIsExternalAuthEnableds = {
-      google: true,
-      github: true,
-      facebook: true,
-      twitter: true,
-      oidc: true,
-      saml: true,
-      basic: true,
-    };
+  async componentDidMount() {
+    const { loginContainer } = this.props;
+
+    try {
+      await loginContainer.retrieveData();
+    } catch (err) {
+      loginContainer.setState({ retrieveError: err.message });
+      logger.error(err);
+    }
   }
 
   // for flip [TODO][GW-1865] use state or react component for flip
   switchForm(e) {
     if (e.target.id === 'register') {
       $('#login-dialog').addClass('to-flip');
-    }
-    else {
+    } else {
       $('#login-dialog').removeClass('to-flip');
     }
   }
@@ -129,7 +122,7 @@ class LoginForm extends React.Component {
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
-            {Object.keys(this.objOfIsExternalAuthEnableds).map((auth) => {
+            {Object.keys(this.objOfIsExternalAuthEnableds).map(auth => {
               if (!this.objOfIsExternalAuthEnableds[auth]) {
                 return;
               }
@@ -201,7 +194,7 @@ class LoginForm extends React.Component {
             <>
               <p className="form-text">{t('page_register.form_help.email')}</p>
               <ul>
-                {this.registrationWhiteList.map((elem) => {
+                {this.registrationWhiteList.map(elem => {
                   return (
                     <li>
                       <code>{{ elem }}</code>
@@ -281,19 +274,19 @@ class LoginForm extends React.Component {
       </div>
     );
   }
-
 }
 
 /**
  * Wrapper component for using unstated
  */
 const LoginFormWrapper = (props) => {
-  return createSubscribedElement(LoginForm, props, [AppContainer]);
+  return createSubscribedElement(LoginForm, props, [LoginContainer]);
 };
 
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
+  loginContainer: PropTypes.instanceOf(LoginContainer).isRequired,
   isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,

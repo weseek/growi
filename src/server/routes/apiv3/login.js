@@ -29,9 +29,23 @@ module.exports = (crowi) => {
    *              application/json:
    */
   router.get('/', accessTokenParser, async(req, res) => {
-    console.log('aaaa');
+    const data = {};
     try {
-      return res.apiv3({ content: 'aa' });
+      data.isRegistrationEnabled = true;
+      data.registrationMode = 'Open';
+      data.registrationWhiteList = [];
+      data.isLocalStrategySetup = true;
+      data.isLdapStrategySetup = true;
+      data.objOfIsExternalAuthEnableds = {
+        google: true,
+        github: true,
+        facebook: true,
+        twitter: true,
+        oidc: true,
+        saml: true,
+        basic: true,
+      };
+      return res.apiv3({ data });
     }
     catch (err) {
       logger.error('get-auth-setting-data-failed', err);
