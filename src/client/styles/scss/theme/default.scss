@@ -47,6 +47,12 @@ html[light] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-reversal;
 
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
   @import 'apply-colors';
   @import 'apply-colors-light';
 }
@@ -86,6 +92,12 @@ html[dark] {
   $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-global;
   $color-dropdown-link-hover: $color-reversal;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
