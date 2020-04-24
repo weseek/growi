@@ -2,6 +2,7 @@ import React from 'react';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 import loggerFactory from '@alias/logger';
+import Modal from 'react-bootstrap/es/Modal';
 
 import contributors from './Contributor';
 
@@ -113,7 +114,11 @@ export default class StaffCredit extends React.Component {
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        {this.renderContributors()}
+        <Modal show={this.state.isShown} dialogClassName="staff-credit">
+          <Modal.Body scrollable>
+            {this.renderContributors()}
+          </Modal.Body>
+        </Modal>
       </GlobalHotKeys>
     );
   }

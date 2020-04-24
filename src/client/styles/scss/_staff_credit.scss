@@ -1,5 +1,11 @@
 // Staff Credit
-#staff-credit {
+.staff-credit {
+  width: 80vw;
+  height: 80vh;
+  .modal-body {
+    width: 80vw;
+    height: 80vh;
+  }
   // see https://css-tricks.com/old-timey-terminal-styling/
   @mixin old-timey-terminal-styling() {
     text-shadow: 0 0 10px #c8c8c8;
@@ -33,12 +39,12 @@
 
   // see https://css-tricks.com/old-timey-terminal-styling/
   .credit-curtain {
-    position: fixed;
-    top: 10vh;
-    left: 20vh;
+    // position: fixed;
+    // top: 10vh;
+    // left: 20vh;
     width: 80vw;
     height: 80vh;
-    overflow-y: hidden;
+    // overflow-y: hidden;
 
     @include old-timey-terminal-styling();
   }
