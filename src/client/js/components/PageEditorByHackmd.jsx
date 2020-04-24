@@ -376,7 +376,7 @@ class PageEditorByHackmd extends React.Component {
 
         { this.state.hasError && (
           <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
-            <div className="white-box text-center">
+            <div className="bg-box p-5 text-center">
               <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> {t('hackmd.integration_failed')}</h2>
               <h4>{this.state.errorMessage}</h4>
               <p className="well well-sm text-danger">
