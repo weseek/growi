@@ -21,10 +21,12 @@
 
   {% include 'page_alerts.html' %}
 
-  {% if !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}
-    {% include 'page_tabs_kibela.html' %}
-  {% else %}
-    {% include 'page_tabs.html' %}
+  {% if !isTrashPage() %}
+    {% if !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}
+      {% include 'page_tabs_kibela.html' %}
+    {% else %}
+      {% include 'page_tabs.html' %}
+    {% endif %}
   {% endif %}
 
   <div class="tab-content">
