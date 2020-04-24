@@ -17,6 +17,9 @@ import SidebarNav from './Sidebar/SidebarNav';
 import History from './Sidebar/History';
 import CustomSidebar from './Sidebar/CustomSidebar';
 
+
+const sidebarDefaultWidth = 240;
+
 class Sidebar extends React.Component {
 
   static propTypes = {
@@ -27,6 +30,53 @@ class Sidebar extends React.Component {
   state = {
     currentContentsId: 'custom',
   };
+
+  componentWillMount() {
+    // const { appContainer, navigationUIController } = this.props;
+    // appContainer.registerComponentInstance('UIController', navigationUIController);
+    this.initBreakpointEvents();
+  }
+
+  initBreakpointEvents() {
+    const { appContainer, navigationUIController } = this.props;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // get the value of '--breakpoint-*'
+      // const breakpointSm = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-sm'), 10);
+      const breakpointMd = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-md'), 10);
+
+      const smHandler = (mql) => {
+        if (mql.matches) {
+          // cache width
+          this.sidebarWidthCached = navigationUIController.state.productNavWidth;
+
+          appContainer.setState({ isDrawerOpened: false });
+          navigationUIController.disableResize();
+          navigationUIController.expand();
+          navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+        }
+        else {
+          appContainer.setState({ isDrawerOpened: false });
+          navigationUIController.enableResize();
+
+          // restore width
+          if (this.sidebarWidthCached != null) {
+            navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
+          }
+        }
+      };
+
+      // const mediaQueryForXs = window.matchMedia(`(max-width: ${breakpointSm}px)`);
+      const mediaQueryForSm = window.matchMedia(`(max-width: ${breakpointMd}px)`);
+
+      // add event listener
+      // mediaQueryForXs.addListener(xsHandler);
+      mediaQueryForSm.addListener(smHandler);
+      // initialize
+      // xsHandler(mediaQueryForXs);
+      smHandler(mediaQueryForSm);
+    });
+  }
 
   itemSelectedHandler = (contentsId) => {
     const { navigationUIController } = this.props;

@@ -45,16 +45,10 @@
 }
 
 // Drawer Mode
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(sm) {
   .grw-sidebar {
     position: fixed;
     z-index: $zindex-fixed - 5;
-
-    // override @atlaskit/navigation-next styles
-    div[class$='-Outer'],
-    div[class$='-teprsg'] {
-      display: none;
-    }
 
     &:not(.open) {
       div[class$='-NavigationContainer'] {

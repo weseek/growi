@@ -3224,11 +3224,6 @@ browserslist@^4.8.3:
     electron-to-chromium "^1.3.349"
     node-releases "^1.1.49"
 
-bs-breakpoints@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/bs-breakpoints/-/bs-breakpoints-1.1.1.tgz#023f0c501059529f6d2647e906cedd656a00b7a9"
-  integrity sha512-lSLbE0L2Nr1yHhukDHc7UIiNoWcKbBLcVNA7QKuHL3w+iNLIo6JlX3tHJWbaLqb/dGKD0xzlPLZ5FKfIMAJbXg==
-
 bs-recipes@1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/bs-recipes/-/bs-recipes-1.3.4.tgz#0d2d4d48a718c8c044769fdc4f89592dc8b69585"

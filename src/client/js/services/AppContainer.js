@@ -3,10 +3,6 @@ import { Container } from 'unstated';
 import axios from 'axios';
 import urljoin from 'url-join';
 
-import { throttle } from 'throttle-debounce';
-
-import bsBreakpoints from 'bs-breakpoints';
-
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
@@ -38,7 +34,6 @@ export default class AppContainer extends Container {
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
       isDrawerOpened: false,
-      breakpoint: null,
     };
 
     const body = document.querySelector('body');
@@ -106,33 +101,9 @@ export default class AppContainer extends Container {
   }
 
   init() {
-    this.initBreakpointEvents();
+    // this.initBreakpointEvents();
     this.initColorScheme();
     this.initPlugins();
-  }
-
-  initBreakpointEvents() {
-    document.addEventListener('DOMContentLoaded', () => {
-      // bsBreakpoints.init(); // unused for throttling
-      bsBreakpoints.detectBreakpoint();
-      window.addEventListener('resize', throttle(50, () => {
-        bsBreakpoints.dispatchBreakpoint(bsBreakpoints.detectBreakpoint());
-      }));
-
-      this.setState({ breakpoint: bsBreakpoints.getCurrentBreakpoint() });
-
-      // -- Activate the following VanillaJS version when window.jQuery is null
-      //   cz: bs-breakpoints switch jQuery/VanillaJS automatically
-      //   see: https://github.com/Johann-S/bs-breakpoints/blob/beecfa28b4f42a43383234e867c2cea2c0eca5f5/src/index.js#L80-L92
-
-      // window.addEventListener('new.bs.breakpoint', (e) => {
-      $(window).on('new.bs.breakpoint', (e) => {
-        // console.log(e);
-        // this.setState({ breakpoint: e.breakpoint });
-      });
-    });
-
-
   }
 
   async initColorScheme() {
