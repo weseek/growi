@@ -737,31 +737,6 @@ module.exports = function(crowi) {
     });
   };
 
-  // use in GW-1942
-  userSchema.statics.addImageUrlCachedsByIdList = async function(userIdList) {
-    const users = await this.find(
-      {
-        $and: [
-          { _id: { $in: userIdList } },
-          { $or: [{ imageUrlCached: { $exists: false } }, { imageUrlCached: { $eq: null } }] },
-        ],
-      },
-    );
-    const requests = users.map((user) => {
-      return {
-        updateOne: {
-          filter: { _id: user._id },
-          update: { $set: { imageUrlCached: user.generateImageUrlCached() } },
-        },
-      };
-    });
-
-    if (requests.length > 0) {
-      this.bulkWrite(requests);
-    }
-  };
-
-
   /**
    * A wrapper function of createUserByEmailAndPasswordAndStatus with callback
    *
