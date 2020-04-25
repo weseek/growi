@@ -47,7 +47,7 @@ export default class TagEditor extends React.Component {
   render() {
     return (
       <Modal isOpen={this.state.isOpenModal} toggle={this.closeModalHandler} id="edit-tag-modal">
-        <ModalHeader tag="h4" toggle={this.closeModalHandler} className="bg-primary">
+        <ModalHeader tag="h4" toggle={this.closeModalHandler} className="bg-primary text-light">
           <span className="text-white">Edit Tags</span>
         </ModalHeader>
         <ModalBody>

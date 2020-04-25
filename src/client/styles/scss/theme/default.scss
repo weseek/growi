@@ -17,6 +17,7 @@
 //
 html[light] {
   $primary: #112744;
+  $light: white;
 
   // Background colors
   $bgcolor-global: white;
@@ -47,6 +48,12 @@ html[light] {
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-reversal;
 
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
+
   @import 'apply-colors';
   @import 'apply-colors-light';
 }
@@ -55,6 +62,7 @@ html[light] {
 //
 html[dark] {
   $primary: #d65a31;
+  $light: white;
 
   $basecolor: #222831;
 
@@ -86,6 +94,12 @@ html[dark] {
   $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-global;
   $color-dropdown-link-hover: $color-reversal;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';

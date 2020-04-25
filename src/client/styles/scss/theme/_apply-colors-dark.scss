@@ -7,7 +7,7 @@
   &.active,
   &.active:hover,
   &.active:focus {
-    color: white;
+    color: $light;
     background-color: lighten($bgcolor-global, 5%);
   }
 }
@@ -44,14 +44,6 @@ textarea.form-control {
   background-color: $bgcolor-global;
   > li > a {
     color: $color-global;
-  }
-}
-
-.modal {
-  .modal-header {
-    .close {
-      color: white;
-    }
   }
 }
 
