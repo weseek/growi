@@ -19,6 +19,7 @@ module.exports = function(crowi) {
   const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + 'status lang createdAt lastLoginAt admin imageUrlCached';
+  /* eslint-disable no-unused-vars */
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
   const LANG_EN = 'en';
@@ -156,11 +157,6 @@ module.exports = function(crowi) {
     return lang;
   }
 
-  userSchema.methods.populateImage = async function() {
-    // eslint-disable-next-line no-return-await
-    return await this.populate(IMAGE_POPULATION);
-  };
-
   userSchema.methods.isPasswordSet = function() {
     if (this.password) {
       return true;
@@ -193,7 +189,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
-    this.imageUrlCached = this.generateimageUrlCached();
+    this.imageUrlCached = this.generateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
@@ -229,7 +225,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateImage = async function(attachment) {
     this.imageAttachment = attachment;
-    this.imageUrlCached = this.generateimageUrlCached();
+    this.imageUrlCached = this.generateImageUrlCached();
     return this.save();
   };
 
@@ -245,11 +241,11 @@ module.exports = function(crowi) {
     }
 
     this.imageAttachment = undefined;
-    this.imageUrlCached = this.generateimageUrlCached();
+    this.imageUrlCached = this.generateImageUrlCached();
     return this.save();
   };
 
-  userSchema.methods.generateimageUrlCached = function() {
+  userSchema.methods.generateImageUrlCached = function() {
     if (this.isGravatarEnabled) {
       const email = this.email || '';
       const hash = md5(email.trim().toLowerCase());
@@ -258,7 +254,7 @@ module.exports = function(crowi) {
     if (this.image) {
       return this.image;
     }
-    if (this.imageAttachment != null) {
+    if (this.imageAttachment) {
       return this.imageAttachment.filePathProxied;
     }
     return '/images/icons/user.svg';

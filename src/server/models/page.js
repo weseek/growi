@@ -108,14 +108,15 @@ const addSlashOfEnd = (path) => {
  * @param {string} userPublicFields string to set to select
  */
 /* eslint-disable object-curly-newline, object-property-newline */
-const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => {
+const populateDataToShowRevision = (page, userPublicFields) => {
+  // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
   return page
     .populate([
-      { path: 'lastUpdateUser', model: 'User', select: userPublicFields, populate: imagePopulation },
-      { path: 'creator', model: 'User', select: userPublicFields, populate: imagePopulation },
+      { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
+      { path: 'creator', model: 'User', select: userPublicFields },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
-        path: 'author', model: 'User', select: userPublicFields, populate: imagePopulation,
+        path: 'author', model: 'User', select: userPublicFields,
       } },
     ]);
 };
@@ -263,18 +264,18 @@ class PageQueryBuilder {
     return this;
   }
 
-  populateDataToList(userPublicFields, imagePopulation) {
+  populateDataToList(userPublicFields) {
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     this.query = this.query
       .populate({
         path: 'lastUpdateUser',
         select: userPublicFields,
-        populate: imagePopulation,
       });
     return this;
   }
 
-  populateDataToShowRevision(userPublicFields, imagePopulation) {
-    this.query = populateDataToShowRevision(this.query, userPublicFields, imagePopulation);
+  populateDataToShowRevision(userPublicFields) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields);
     return this;
   }
 
@@ -460,8 +461,9 @@ module.exports = function(crowi) {
   pageSchema.methods.populateDataToShowRevision = async function() {
     validateCrowi();
 
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION)
+    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
       .execPopulate();
   };
 
@@ -754,7 +756,8 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -795,9 +798,10 @@ module.exports = function(crowi) {
     // count
     const totalCount = await builder.query.exec('count');
 
+    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
     const pages = await builder.query.exec('find');
 
     const result = {

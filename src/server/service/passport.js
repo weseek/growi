@@ -850,7 +850,8 @@ class PassportService {
     });
     passport.deserializeUser(async(id, done) => {
       try {
-        const user = await User.findById(id).populate(User.IMAGE_POPULATION);
+        // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
+        const user = await User.findById(id);
         if (user == null) {
           throw new Error('user not found');
         }
