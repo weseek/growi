@@ -194,7 +194,7 @@ class UserInviteModal extends React.Component {
 
     return (
       <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown}>
-        <ModalHeader tag="h4" toggle={this.onToggleModal} className="modal-header">
+        <ModalHeader tag="h4" toggle={this.onToggleModal} className="bg-info text-light">
           {t('admin:user_management.invite_users') }
         </ModalHeader>
         <ModalBody>
