@@ -333,7 +333,7 @@ class ImportForm extends React.Component {
     );
   }
 
-  renderGroups(groupList, groupName, errors, { wellContent } = {}) {
+  renderGroups(groupList, groupName, errors) {
     const collectionNames = groupList.filter((collectionName) => {
       return this.allCollectionNames.includes(collectionName);
     });
@@ -345,13 +345,6 @@ class ImportForm extends React.Component {
     return (
       <div className="mt-4">
         <legend>{groupName} Collections</legend>
-        {wellContent != null && (
-          <div className="well well-sm small">
-            <ul>
-              <li>{wellContent}</li>
-            </ul>
-          </div>
-        )}
         {this.renderImportItems(collectionNames)}
         {this.renderWarnForGroups(errors, `warnFor${groupName}`)}
       </div>
@@ -464,7 +457,18 @@ class ImportForm extends React.Component {
           </div>
         </form>
 
-        {this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups, { wellContent: t('admin:importer_management.growi_settings.overwrite_documents') })}
+        <div className="well well-sm small my-4">
+          <ul>
+            <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
+            <ul>
+              <li>{t('admin:importer_management.growi_settings.description_of_import_mode.insert')}</li>
+              <li>{t('admin:importer_management.growi_settings.description_of_import_mode.upsert')}</li>
+              <li>{t('admin:importer_management.growi_settings.description_of_import_mode.flash_and_insert')}</li>
+            </ul>
+          </ul>
+        </div>
+
+        {this.renderGroups(GROUPS_PAGE, 'Page', warnForPageGroups)}
         {this.renderGroups(GROUPS_USER, 'User', warnForUserGroups)}
         {this.renderGroups(GROUPS_CONFIG, 'Config', warnForConfigGroups)}
         {this.renderOthers()}
