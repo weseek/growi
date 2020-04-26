@@ -40,8 +40,6 @@ body.on-edit {
   .btn-edit,
   .authors,
   .hide-on-edit,
-  .grw-nav-item-edit,
-  #page-editor-options-selector,
   footer {
     display: none !important;
   }
@@ -60,6 +58,16 @@ body.on-edit {
   // show only either Edit button or HackMD button
   &.hackmd .nav-tab-edit {
     display: none;
+  }
+
+  &.hackmd .grw-nav-item-edit {
+    display: none;
+  }
+
+  &.hackmd {
+    #page-editor-options-selector {
+      display: none !important;
+    }
   }
 
   &:not(.hackmd) .nav-tab-hackmd {
