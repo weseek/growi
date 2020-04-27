@@ -92,7 +92,7 @@ class UserManagement extends React.Component {
   }
 
   renderCheckbox(status, statusLabel, statusColor) {
-    return  (
+    return (
       <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} mr-2`}>
         <input
           className="custom-control-input"
@@ -107,7 +107,7 @@ class UserManagement extends React.Component {
           </span>
         </label>
       </div>
-    )
+    );
   }
 
   render() {
