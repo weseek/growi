@@ -49,7 +49,7 @@ class PageHistory extends React.Component {
     const diffOpened = {};
     const lastId = rev.length - 1;
     res.revisions.forEach((revision, i) => {
-      const user = this.props.crowi.findUserById(revision.author);
+      const user = revision.author;
       if (user) {
         rev[i].author = user;
       }
