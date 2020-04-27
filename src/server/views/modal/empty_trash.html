@@ -1,0 +1,31 @@
+<div class="modal" id="emptyTrash">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+    <form role="form" id="empty-trash-form" onsubmit="return false;">
+
+      <div class="modal-header bg-danger">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="modal-title">
+          <i class="icon-fw icon-trash"></i> ゴミ箱を空にします
+        </div>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex justify-content-end">
+          <div>
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="m-l-10 btn btn-danger delete-button">
+              <i class="icon-trash" aria-hidden="true"></i>
+              {{ t('Delete') }}
+            </button>
+          </div>
+        </div>
+      </div><!-- /.modal-footer -->
+
+    </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
