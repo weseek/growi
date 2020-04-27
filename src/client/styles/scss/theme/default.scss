@@ -17,7 +17,6 @@
 //
 html[light] {
   $primary: #112744;
-  $light: white;
 
   // Background colors
   $bgcolor-global: white;
@@ -35,6 +34,13 @@ html[light] {
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
@@ -62,7 +68,6 @@ html[light] {
 //
 html[dark] {
   $primary: #d65a31;
-  $light: white;
 
   $basecolor: #222831;
 
@@ -82,6 +87,13 @@ html[dark] {
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-global;
   $color-inline-code: #c7254e;
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-global;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;

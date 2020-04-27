@@ -60,6 +60,16 @@ body.on-edit {
     display: none;
   }
 
+  &.hackmd .grw-nav-item-edit {
+    display: none;
+  }
+
+  &.hackmd {
+    #page-editor-options-selector {
+      display: none !important;
+    }
+  }
+
   &:not(.hackmd) .nav-tab-hackmd {
     display: none;
   }

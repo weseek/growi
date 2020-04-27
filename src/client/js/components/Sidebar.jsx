@@ -10,8 +10,6 @@ import {
   ThemeProvider, modeGenerator,
 } from '@atlaskit/navigation-next';
 
-import Drawer from '@atlaskit/drawer';
-
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 
@@ -19,20 +17,71 @@ import SidebarNav from './Sidebar/SidebarNav';
 import History from './Sidebar/History';
 import CustomSidebar from './Sidebar/CustomSidebar';
 
+
+const sidebarDefaultWidth = 240;
+
 class Sidebar extends React.Component {
 
   static propTypes = {
+    appContainer: PropTypes.instanceOf(AppContainer).isRequired,
     navigationUIController: PropTypes.any.isRequired,
   };
 
   state = {
     currentContentsId: 'custom',
-    isDrawerOpen: false,
   };
 
-  openDrawer = () => this.setState({ isDrawerOpen: true });
+  componentWillMount() {
+    this.initBreakpointEvents();
+  }
 
-  closeDrawer = () => this.setState({ isDrawerOpen: false });
+  initBreakpointEvents() {
+    const { appContainer, navigationUIController } = this.props;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // get the value of '--breakpoint-*'
+      // const breakpointSm = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-sm'), 10);
+      const breakpointMd = parseInt(window.getComputedStyle(document.documentElement).getPropertyValue('--breakpoint-md'), 10);
+
+      const smHandler = (mql) => {
+        if (mql.matches) {
+          // cache width
+          this.sidebarWidthCached = navigationUIController.state.productNavWidth;
+
+          appContainer.setState({ isDrawerOpened: false });
+          navigationUIController.disableResize();
+          navigationUIController.expand();
+
+          // fix width
+          navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+        }
+        else {
+          appContainer.setState({ isDrawerOpened: false });
+          navigationUIController.enableResize();
+
+          // restore width
+          if (this.sidebarWidthCached != null) {
+            navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
+          }
+        }
+      };
+
+      // const mediaQueryForXs = window.matchMedia(`(max-width: ${breakpointSm}px)`);
+      const mediaQueryForSm = window.matchMedia(`(max-width: ${breakpointMd}px)`);
+
+      // add event listener
+      // mediaQueryForXs.addListener(xsHandler);
+      mediaQueryForSm.addListener(smHandler);
+      // initialize
+      // xsHandler(mediaQueryForXs);
+      smHandler(mediaQueryForSm);
+    });
+  }
+
+  backdropClickedHandler = () => {
+    const { appContainer } = this.props;
+    appContainer.setState({ isDrawerOpened: false });
+  }
 
   itemSelectedHandler = (contentsId) => {
     const { navigationUIController } = this.props;
@@ -47,19 +96,10 @@ class Sidebar extends React.Component {
       this.setState({ currentContentsId: contentsId });
       navigationUIController.expand();
     }
-
-    // if (contentsId === 'drawer') {
-    //   this.openDrawer();
-    // }
   }
 
   renderGlobalNavigation = () => (
-    <>
-      <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
-      <Drawer onClose={this.closeDrawer} isOpen={this.state.isDrawerOpen} width="wide">
-        <code>Drawer contents</code>
-      </Drawer>
-    </>
+    <SidebarNav currentContentsId={this.state.currentContentsId} onItemSelected={this.itemSelectedHandler} />
   );
 
   renderSidebarContents = () => {
@@ -75,30 +115,40 @@ class Sidebar extends React.Component {
   }
 
   render() {
+    const { isDrawerOpened } = this.props.appContainer.state;
+
     return (
-      <ThemeProvider
-        theme={theme => ({
-          ...theme,
-          context: 'product',
-          mode: modeGenerator({
-            product: { text: '#ffffff', background: '#334455' },
-          }),
-        })}
-      >
-        <LayoutManager
-          globalNavigation={this.renderGlobalNavigation}
-          productNavigation={() => null}
-          containerNavigation={this.renderSidebarContents}
-          experimental_hideNavVisuallyOnCollapse
-          experimental_flyoutOnHover
-          experimental_alternateFlyoutBehaviour
-          // experimental_fullWidthFlyout
-          shouldHideGlobalNavShadow
-          showContextualNavigation
-          topOffset={50}
-        >
-        </LayoutManager>
-      </ThemeProvider>
+      <>
+        <div className={`grw-sidebar ${isDrawerOpened ? 'open' : ''}`}>
+          <ThemeProvider
+            theme={theme => ({
+              ...theme,
+              context: 'product',
+              mode: modeGenerator({
+                product: { text: '#ffffff', background: '#334455' },
+              }),
+            })}
+          >
+            <LayoutManager
+              globalNavigation={this.renderGlobalNavigation}
+              productNavigation={() => null}
+              containerNavigation={this.renderSidebarContents}
+              experimental_hideNavVisuallyOnCollapse
+              experimental_flyoutOnHover
+              experimental_alternateFlyoutBehaviour
+              // experimental_fullWidthFlyout
+              shouldHideGlobalNavShadow
+              showContextualNavigation
+              topOffset={50}
+            >
+            </LayoutManager>
+          </ThemeProvider>
+        </div>
+
+        { isDrawerOpened && (
+          <div className="grw-sidebar-backdrop modal-backdrop show" onClick={this.backdropClickedHandler}></div>
+        ) }
+      </>
     );
   }
 

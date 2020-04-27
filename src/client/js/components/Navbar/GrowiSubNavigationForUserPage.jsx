@@ -16,14 +16,18 @@ const GrowiSubNavigationForUserPage = (props) => {
   const { pageId, isHeaderSticky, isSubnavCompact } = pageContainer.state;
 
   const additionalClassNames = ['grw-subnavbar', 'grw-subnavbar-user-page'];
-  if (isHeaderSticky) {
-    additionalClassNames.push('grw-subnavbar-sticky');
-  }
-  if (isSubnavCompact) {
-    additionalClassNames.push('py-2 grw-subnavbar-compact');
-  }
-  else {
-    additionalClassNames.push('py-3');
+  const layoutType = appContainer.getConfig().layoutType;
+
+  if (layoutType === 'growi') {
+    if (isHeaderSticky) {
+      additionalClassNames.push('grw-subnavbar-sticky');
+    }
+    if (isSubnavCompact) {
+      additionalClassNames.push('py-2 grw-subnavbar-compact');
+    }
+    else {
+      additionalClassNames.push('py-3');
+    }
   }
 
   return (

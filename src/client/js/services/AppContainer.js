@@ -33,6 +33,7 @@ export default class AppContainer extends Container {
       editorMode: null,
       preferDarkModeByMediaQuery: false,
       preferDarkModeByUser: null,
+      isDrawerOpened: false,
     };
 
     const body = document.querySelector('body');
@@ -100,6 +101,7 @@ export default class AppContainer extends Container {
   }
 
   init() {
+    // this.initBreakpointEvents();
     this.initColorScheme();
     this.initPlugins();
   }
@@ -321,6 +323,11 @@ export default class AppContainer extends Container {
     }
 
     return users;
+  }
+
+  toggleDrawer() {
+    const { isDrawerOpened } = this.state;
+    this.setState({ isDrawerOpened: !isDrawerOpened });
   }
 
   launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {

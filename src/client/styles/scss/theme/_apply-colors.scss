@@ -40,6 +40,21 @@ $link-hover-color: $color-link-hover;
   }
 }
 
+// List Group
+.list-group {
+  .list-group-item {
+    color: $color-list;
+    background-color: $bgcolor-list;
+    &:hover {
+      background-color: $color-list-hover;
+    }
+    &.active {
+      color: $color-list-active;
+      background-color: $bgcolor-list-active;
+    }
+  }
+}
+
 // Form
 .form-control {
   @include form-control-focus();
@@ -164,18 +179,6 @@ $link-hover-color: $color-link-hover;
 
   input:focus + .slider {
     box-shadow: 0 0 1px #007bff;
-  }
-}
-
-/*
- * Crowi sidebar
- */
-.crowi-sidebar {
-  background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border-color;
-
-  .system-version {
-    background-color: darken($bgcolor-global, 4%);
   }
 }
 
@@ -307,4 +310,11 @@ mark.rbt-highlight-text {
       }
     }
   }
+}
+
+/*
+ * HackMd
+ */
+.bg-box {
+  background-color: $bgcolor-global;
 }
