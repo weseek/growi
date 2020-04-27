@@ -68,8 +68,8 @@ class GoogleSecurityManagement extends React.Component {
           </div>
         )}
 
-        <div className="row mb-5">
-          <div className="offset-3 col-6">
+        <div className="row mb-5 mt-3">
+          <div className="col-12 offset-md-3 col-md-6">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isGoogleEnabled"
@@ -88,8 +88,8 @@ class GoogleSecurityManagement extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
-          <div className="col-6">
+          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-12 col-md-6">
             <input
               className="form-control"
               type="text"
