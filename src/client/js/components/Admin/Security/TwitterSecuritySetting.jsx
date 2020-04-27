@@ -69,7 +69,7 @@ class TwitterSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="offset-3 col-6">
+          <div className="offset-md-3 col-md-6">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isTwitterEnabled"
@@ -88,8 +88,8 @@ class TwitterSecurityManagement extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
-          <div className="col-6">
+          <label className="col-md-3 text-md-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -116,8 +116,8 @@ class TwitterSecurityManagement extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="TwitterConsumerId" className="col-3 text-right py-2">{t('security_setting.clientID')}</label>
-              <div className="col-6">
+              <label htmlFor="TwitterConsumerId" className="col-md-3 text-md-right py-2">{t('security_setting.clientID')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -132,8 +132,8 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="TwitterConsumerSecret" className="col-3 text-right py-2">{t('security_setting.client_secret')}</label>
-              <div className="col-6">
+              <label htmlFor="TwitterConsumerSecret" className="col-md-3 text-md-right py-2">{t('security_setting.client_secret')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -148,7 +148,7 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row mb-5">
-              <div className="offset-3 col-6">
+              <div className="offset-md-3 col-md-6">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserNameTwitter"
@@ -170,7 +170,7 @@ class TwitterSecurityManagement extends React.Component {
             </div>
 
             <div className="row my-3">
-              <div className="offset-3 col-5">
+              <div className="offset-4 col-5">
                 <button
                   type="button"
                   className="btn btn-primary"
