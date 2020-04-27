@@ -25,6 +25,12 @@ $link-hover-color: $color-link-hover;
 }
 
 // Dropdown
+.dropdown-menu {
+  form {
+    color: $color-global;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
   &.active,
@@ -110,22 +116,8 @@ $link-hover-color: $color-link-hover;
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
-
-    &.bg-primary,
-    &.bg-info,
-    &.bg-success,
-    &.bg-warning,
-    &.bg-danger {
-      color: white;
-
-      .close {
-        color: white;
-      }
-    }
-
     .close {
       opacity: 0.5;
-
       &:hover {
         opacity: 0.9;
       }

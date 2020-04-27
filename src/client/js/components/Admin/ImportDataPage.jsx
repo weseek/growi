@@ -182,26 +182,26 @@ class ImportDataPage extends React.Component {
             </div>
 
             <div className="form-group row">
-              <label htmlFor="settingForm[importer:esa:team_name]" className="col-3 col-form-label">
+              <label htmlFor="settingForm[importer:esa:team_name]" className="text-left text-md-right col-md-3 col-form-label">
                 { t('admin:importer_management.esa_settings.team_name') }
               </label>
-              <div className="col-6">
+              <div className="col-md-6">
                 <input className="form-control" type="text" name="esaTeamName" value={esaTeamName} onChange={this.handleInputValue} />
               </div>
 
             </div>
 
             <div className="form-group row">
-              <label htmlFor="settingForm[importer:esa:access_token]" className="col-3 col-form-label">
+              <label htmlFor="settingForm[importer:esa:access_token]" className="text-left text-md-right col-md-3 col-form-label">
                 { t('admin:importer_management.esa_settings.access_token') }
               </label>
-              <div className="col-6">
+              <div className="col-md-6">
                 <input className="form-control" type="password" name="esaAccessToken" value={esaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
             <div className="form-group row">
-              <div className="offset-3 col-6">
+              <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToEsa"
                   type="button"
@@ -211,11 +211,11 @@ class ImportDataPage extends React.Component {
                   value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.esaHandleSubmitUpdate} value={t('Update')} />
-                <span className="offset-1">
+                <span className="offset-0 offset-sm-1">
                   <input
-                    name="Esa"
-                    type="button"
                     id="importFromEsa"
+                    type="button"
+                    name="Esa"
                     className="btn btn-secondary btn-esa"
                     onClick={this.esaHandleSubmitTest}
                     value={t('admin:importer_management.esa_settings.test_connection')}
@@ -275,26 +275,26 @@ class ImportDataPage extends React.Component {
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
             <div className="form-group row">
-              <label htmlFor="settingForm[importer:qiita:team_name]" className="col-3 col-form-label">
+              <label htmlFor="settingForm[importer:qiita:team_name]" className="text-left text-md-right col-md-3 col-form-label">
                 { t('admin:importer_management.qiita_settings.team_name') }
               </label>
-              <div className="col-6">
+              <div className="col-md-6">
                 <input className="form-control" type="text" name="qiitaTeamName" value={qiitaTeamName} onChange={this.handleInputValue} />
               </div>
             </div>
 
             <div className="form-group row">
-              <label htmlFor="settingForm[importer:qiita:access_token]" className="col-3 col-form-label">
+              <label htmlFor="settingForm[importer:qiita:access_token]" className="text-left text-md-right col-md-3 col-form-label">
                 { t('admin:importer_management.qiita_settings.access_token') }
               </label>
-              <div className="col-6">
+              <div className="col-md-6">
                 <input className="form-control" type="password" name="qiitaAccessToken" value={qiitaAccessToken} onChange={this.handleInputValue} />
               </div>
             </div>
 
 
             <div className="form-group row">
-              <div className="offset-3 col-6">
+              <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToQiita"
                   type="button"
@@ -304,7 +304,7 @@ class ImportDataPage extends React.Component {
                   value={t('admin:importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={this.qiitaHandleSubmitUpdate} value={t('Update')} />
-                <span className="offset-1">
+                <span className="offset-0 offset-sm-1">
                   <input
                     name="Qiita"
                     type="button"

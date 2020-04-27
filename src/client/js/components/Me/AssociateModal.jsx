@@ -71,7 +71,7 @@ class AssociateModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
-        <ModalHeader className="bg-info" toggle={this.props.onClose}>
+        <ModalHeader className="bg-info text-light" toggle={this.props.onClose}>
           { t('Create External Account') }
         </ModalHeader>
         <ModalBody>
