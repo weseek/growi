@@ -172,10 +172,14 @@
   }
 }
 
-@include media-breakpoint-down(md) {
-  :root .dropdown-toggle::after {
-    position: absolute;
-    top: 40%;
-    right: 2%;
+.admin-security {
+  #admin-security-setting {
+    @include media-breakpoint-down(md) {
+      .dropdown-toggle::after {
+        position: absolute;
+        top: 40%;
+        right: 2%;
+      }
+    }
   }
 }
