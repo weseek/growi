@@ -153,7 +153,7 @@ class RevisionPath extends React.Component {
         <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
 
         { !isPageInTrash && !isPageForbidden && (
-          <a href="#edit" className="d-block d-none-on-edit text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
+          <a href="#edit" className="d-block d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
             <i className="icon-note" />
           </a>
         ) }

@@ -34,7 +34,7 @@ const GrowiSubNavigationForUserPage = (props) => {
 
       <div className="d-flex align-items-center justify-content-between">
 
-        <div className="users-info d-flex align-items-center d-none-on-edit">
+        <div className="users-info d-flex align-items-center d-edit-none">
           <UserPicture user={pageUser} />
 
           <div className="users-meta">

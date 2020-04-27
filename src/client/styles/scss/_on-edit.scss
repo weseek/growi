@@ -27,7 +27,7 @@ body.on-edit {
   // hide unnecessary elements
   header,
   footer,
-  .d-none-on-edit {
+  .d-edit-none {
     display: none !important;
   }
 

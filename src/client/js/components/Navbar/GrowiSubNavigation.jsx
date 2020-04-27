@@ -74,7 +74,7 @@ const GrowiSubNavigation = (props) => {
         </div>
 
         {/* Page Authors */}
-        <ul className="authors text-nowrap d-none d-lg-block d-none-on-edit">
+        <ul className="authors text-nowrap d-none d-lg-block d-edit-none">
           { creator != null && (
             <li>
               <PageCreator creator={creator} createdAt={createdAt} isCompactMode={isSubnavCompact} />
