@@ -577,7 +577,6 @@ module.exports = (crowi) => {
     const { id } = req.params;
     const { limit, offset } = req.query;
 
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     try {
       const { docs, total } = await Page.paginate({
         grant: Page.GRANT_USER_GROUP,

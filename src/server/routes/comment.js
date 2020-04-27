@@ -127,7 +127,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     const comments = await fetcher.populate(
       { path: 'creator', select: User.USER_PUBLIC_FIELDS },
     );
