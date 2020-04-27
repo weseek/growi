@@ -30,6 +30,7 @@ html[light] {
   $bgcolor-list: $bgcolor-global;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
 
   // Logo colors
   $bgcolor-logo: transparent;
@@ -85,6 +86,7 @@ html[dark] {
   $bgcolor-list: $bgcolor-global;
   $color-list-active: $color-reversal;
   $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
 
   // Logo colors
   $bgcolor-logo: red;

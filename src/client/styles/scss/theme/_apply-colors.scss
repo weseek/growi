@@ -46,7 +46,7 @@ $link-hover-color: $color-link-hover;
     color: $color-list;
     background-color: $bgcolor-list;
     &:hover {
-      background-color: $color-dropdown-link-hover;
+      background-color: $color-list-hover;
     }
     &.active {
       color: $color-list-active;
