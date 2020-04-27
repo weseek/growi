@@ -25,6 +25,12 @@ html[light] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+
   // Logo colors
   $bgcolor-logo: transparent;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
@@ -73,6 +79,12 @@ html[dark] {
 
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
+
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
 
   // Logo colors
   $bgcolor-logo: red;
