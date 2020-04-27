@@ -64,6 +64,10 @@ textarea.form-control {
 /*
  * Table
  */
+.table {
+  @extend .table-dark;
+}
+
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
