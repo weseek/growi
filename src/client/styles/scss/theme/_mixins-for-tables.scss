@@ -1,3 +1,9 @@
+//== Table
+$table-variants: (
+  'light': $light,
+  'dark': $dark,
+);
+
 // remove when master version is released
 // show https://github.com/twbs/bootstrap/blob/28cb1ff2b23253293601c51aff434c39b461025e/scss/mixins/_table-variants.scss
 @mixin table-variant($state, $background) {
