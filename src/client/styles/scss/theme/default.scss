@@ -23,6 +23,7 @@ html[light] {
   $bgcolor-navbar: #334455;
   $bgcolor-inline-code: #f9f2f4;
   $bgcolor-card: #f5f5f5;
+  $bgcolor-card-header: $bgcolor-global;
 
   // Font colors
   $color-global: #333333;
@@ -76,6 +77,7 @@ html[dark] {
   $bgcolor-navbar: #151515;
   $bgcolor-inline-code: darken($basecolor, 5%);
   $bgcolor-card: darken($basecolor, 5%);
+  $bgcolor-card-header: darken($bgcolor-card, 5%);
 
   // Font colors
   $color-global: #eeeeee;

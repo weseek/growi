@@ -151,8 +151,12 @@ $link-hover-color: $color-link-hover;
 /*
  * cards
  */
-.card-header {
-  border: 0;
+.card {
+  background-color: $bgcolor-card;
+  .card-header {
+    background-color: $bgcolor-card-header;
+    border: 0;
+  }
 }
 
 .card.well {
