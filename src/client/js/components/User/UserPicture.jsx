@@ -7,28 +7,6 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 // TODO UserComponent?
 export default class UserPicture extends React.Component {
 
-  getUserPicture(user) {
-    // gravatar
-    if (user.isGravatarEnabled === true) {
-      return this.generateGravatarSrc(user);
-    }
-    // uploaded image
-    if (user.image != null) {
-      return user.image;
-    }
-    if (user.imageAttachment != null) {
-      return user.imageAttachment.filePathProxied;
-    }
-
-    return DEFAULT_IMAGE;
-  }
-
-  generateGravatarSrc(user) {
-    const email = user.email || '';
-    const hash = md5(email.trim().toLowerCase());
-    return `https://gravatar.com/avatar/${hash}`;
-  }
-
   getClassName() {
     const className = ['img-circle', 'picture'];
     // size
@@ -56,9 +34,14 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
+    if (!user.imageUrlCached) {
+      // [TODO][GW-1942] add imageUrlCached
+      return this.renderForNull();
+    }
+
     const imgElem = (
       <img
-        src={this.getUserPicture(user)}
+        src={user.imageUrlCached}
         alt={user.username}
         className={this.getClassName()}
       />
