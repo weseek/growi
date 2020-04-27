@@ -118,6 +118,13 @@ $link-hover-color: $color-link-hover;
 }
 
 /*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: $color-global;
+}
+
+/*
  * code color of inline-code
  */
 :not(.hljs) > code:not(.hljs) {
