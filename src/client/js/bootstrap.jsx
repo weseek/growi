@@ -44,7 +44,7 @@ const componentMappings = {
   'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
   'personal-dropdown': <PersonalDropdown />,
 
-  'grw-sidebar': <Sidebar />,
+  'grw-sidebar-wrapper': <Sidebar />,
 
   'staff-credit': <StaffCredit />,
 };
