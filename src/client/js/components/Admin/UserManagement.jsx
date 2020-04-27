@@ -106,11 +106,11 @@ class UserManagement extends React.Component {
       active: 'Active',
       suspended: 'Suspended',
       invited: 'Invited',
-    }
+    };
 
-    let labels = [];
+    const labels = [];
 
-    for(let [status, color] of Object.entries(statusColor)) {
+    for (const [status, color] of Object.entries(statusColor)) {
       labels.push(
         <div className={`custom-control custom-checkbox custom-checkbox-${color} mr-2`}>
           <input
@@ -125,8 +125,8 @@ class UserManagement extends React.Component {
               {statusName[status]}
             </span>
           </label>
-        </div>
-      )
+        </div>,
+      );
     }
 
     return labels;
@@ -179,7 +179,6 @@ class UserManagement extends React.Component {
         </p>
 
         <h2>{t('User_Management')}</h2>
-        
         <div className="border-top border-bottom">
 
           <div className="d-flex justify-content-start align-items-center my-2">
