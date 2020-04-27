@@ -64,7 +64,9 @@ class SecuritySetting extends React.Component {
           <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className={`btn btn-outline-secondary dropdown-toggle w-100 grw-button-width text-left position-relative ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                className={`btn btn-outline-secondary dropdown-toggle w-100 grw-button-width text-left
+                            position-relative ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}
+                          `}
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
