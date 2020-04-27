@@ -54,7 +54,7 @@ class XssForm extends React.Component {
                 checked={xssOption === 1}
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
               />
-              <label className="custom-control-label" htmlFor="xssOption1">
+              <label className="custom-control-label w-100" htmlFor="xssOption1">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.ignore_all_tags')}</p>
                 <div className="mt-4">
                   {t('admin:markdown_setting.xss_options.ignore_all_tags_desc')}
@@ -73,7 +73,7 @@ class XssForm extends React.Component {
                 checked={xssOption === 2}
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
               />
-              <label className="custom-control-label" htmlFor="xssOption2">
+              <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
                 <div className="m-t-15">
                   <div className="d-flex justify-content-between">
@@ -115,7 +115,7 @@ class XssForm extends React.Component {
                 checked={xssOption === 3}
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
               />
-              <label className="custom-control-label" htmlFor="xssOption3">
+              <label className="custom-control-label w-100" htmlFor="xssOption3">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist')}</p>
                 <WhiteListInput customizable />
               </label>
@@ -144,7 +144,7 @@ class XssForm extends React.Component {
                   checked={isEnabledXss}
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
-                <label className="custom-control-label" htmlFor="XssEnable">
+                <label className="custom-control-label w-100" htmlFor="XssEnable">
                   {t('admin:markdown_setting.xss_options.enable_xss_prevention')}
                 </label>
               </div>

@@ -57,7 +57,7 @@ class PresentationForm extends React.Component {
                   checked={pageBreakSeparator === 1}
                   onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
                 />
-                <label className="custom-control-label" htmlFor="pageBreakOption1">
+                <label className="custom-control-label w-100" htmlFor="pageBreakOption1">
                   <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
                   <div className="mt-3">
                     { t('admin:markdown_setting.presentation_options.preset_one_separator_desc') }
@@ -81,7 +81,7 @@ class PresentationForm extends React.Component {
                   checked={pageBreakSeparator === 2}
                   onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
                 />
-                <label className="custom-control-label" htmlFor="pageBreakOption2">
+                <label className="custom-control-label w-100" htmlFor="pageBreakOption2">
                   <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
                   <div className="mt-3">
                     { t('admin:markdown_setting.presentation_options.preset_two_separator_desc') }
@@ -104,7 +104,7 @@ class PresentationForm extends React.Component {
                   checked={pageBreakSeparator === 3}
                   onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
                 />
-                <label className="custom-control-label" htmlFor="pageBreakOption3">
+                <label className="custom-control-label w-100" htmlFor="pageBreakOption3">
                   <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
                   <div className="mt-3">
                     { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
