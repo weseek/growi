@@ -100,10 +100,10 @@ class LocalSecuritySetting extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row">
-              <div className="col-3 text-right py-2">
+              <div className="col-12 col-md-3 text-left text-md-right py-2">
                 <strong>{t('Register limitation')}</strong>
               </div>
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                 <div className="dropdown">
                   <button
                     className="btn btn-outline-secondary dropdown-toggle"
@@ -136,10 +136,10 @@ class LocalSecuritySetting extends React.Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-3 text-right">
+              <div className="col-12 col-md-3 text-left text-md-right">
                 <strong dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
               </div>
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                 <textarea
                   className="form-control"
                   type="textarea"

@@ -42,7 +42,7 @@ class CustomizeBehaviorSetting extends React.Component {
           <div className="col-12">
             <h2 className="admin-setting-header">{t('admin:customize_setting.behavior')}</h2>
             <div className="row">
-              <div className="col-6">
+              <div className="col-md-6">
                 <CustomizeBehaviorOption
                   behaviorType="growi"
                   isSelected={adminCustomizeContainer.state.currentBehavior === 'growi'}
@@ -57,7 +57,7 @@ class CustomizeBehaviorSetting extends React.Component {
                 </CustomizeBehaviorOption>
               </div>
 
-              <div className="col-6">
+              <div className="col-md-6">
                 <CustomizeBehaviorOption
                   behaviorType="crowi-plus"
                   isSelected={adminCustomizeContainer.state.currentBehavior === 'crowi-plus'}
