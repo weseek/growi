@@ -1,5 +1,4 @@
 import React from 'react';
-import md5 from 'md5';
 import PropTypes from 'prop-types';
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
