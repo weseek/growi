@@ -88,16 +88,21 @@
         <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
         {% endif %}
       </div>
-      {% if page.isDeleted() and user %}
       <ul class="list-inline">
+        {% if user and user.admin %}
+        <li>
+          <button href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#trashEmpty" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>ゴミ箱を空にする</button>
+        </li>
+        {% endif %}
+        {% if page.isDeleted() and user %}
         <li>
           <button href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</button>
         </li>
         <li>
             <button href="#" class="btn btn-danger btn-rounded btn-sm" {% if !user.canDeleteCompletely(page.creator._id) %} disabled="disabled" {% endif %} data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
         </li>
+        {% endif %}
       </ul>{# /.pull-right #}
-      {% endif %}
     </div>
     {% endif %}
   </div>
