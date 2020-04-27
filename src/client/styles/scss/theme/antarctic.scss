@@ -70,6 +70,7 @@ html[light] {
   $bgcolor-list-active: $primary;
 
   // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 
   // Border colors
@@ -79,6 +80,12 @@ html[light] {
   $bgcolor-dropdown-link-active: $growi-blue;
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -115,6 +122,7 @@ html[dark] {
   $bgcolor-list-active: $primary;
 
   // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: #444;
 
   // Border colors
@@ -124,6 +132,12 @@ html[dark] {
   $bgcolor-dropdown-link-active: $primary;
   $color-dropdown-link-active: $color-global;
   $color-dropdown-link-hover: $color-reversal;
+
+  // alert
+  $color-alert: $color-global;
+
+  // badge
+  $color-badge: $color-global;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';

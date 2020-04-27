@@ -43,8 +43,8 @@ class ApiSettings extends React.Component {
         </div>
 
         <div className="row mb-3">
-          <label htmlFor="apiToken" className="col-3 text-right">{t('Current API Token')}</label>
-          <div className="col-6">
+          <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
+          <div className="col-md-6">
             {personalContainer.state.apiToken != null
             ? (
               <input
@@ -65,7 +65,7 @@ class ApiSettings extends React.Component {
 
 
         <div className="row">
-          <div className="offset-3 col-6">
+          <div className="offset-lg-1 col-lg-7">
 
             <p className="alert alert-warning">
               { t('page_me_apitoken.notice.update_token1') }<br />
@@ -79,7 +79,7 @@ class ApiSettings extends React.Component {
           <div className="offset-4 col-5">
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary text-nowrap"
               onClick={this.onClickSubmit}
             >
               {t('Update API Token')}

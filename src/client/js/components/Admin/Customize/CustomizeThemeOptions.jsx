@@ -42,7 +42,7 @@ class CustomizeThemeOptions extends React.Component {
     return (
       <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
         {/* Light Themes  */}
-        <div className="d-flex">
+        <div className="d-flex flex-wrap">
           {lightTheme.map((theme) => {
             return (
               <ThemeColorBox

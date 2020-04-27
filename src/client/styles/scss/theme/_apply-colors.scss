@@ -25,6 +25,12 @@ $link-hover-color: $color-link-hover;
 }
 
 // Dropdown
+.dropdown-menu {
+  form {
+    color: $color-global;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
   &.active,
@@ -71,7 +77,7 @@ $link-hover-color: $color-link-hover;
 //
 
 .grw-logo {
-  background-color: darken($bgcolor-navbar, 10%);
+  background-color: darken($bgcolor-logo, 10%);
 
   // set transition for fill
   svg * {
@@ -125,22 +131,8 @@ $link-hover-color: $color-link-hover;
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
-
-    &.bg-primary,
-    &.bg-info,
-    &.bg-success,
-    &.bg-warning,
-    &.bg-danger {
-      color: white;
-
-      .close {
-        color: white;
-      }
-    }
-
     .close {
       opacity: 0.5;
-
       &:hover {
         opacity: 0.9;
       }
@@ -187,18 +179,6 @@ $link-hover-color: $color-link-hover;
 
   input:focus + .slider {
     box-shadow: 0 0 1px #007bff;
-  }
-}
-
-/*
- * Crowi sidebar
- */
-.crowi-sidebar {
-  background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border-color;
-
-  .system-version {
-    background-color: darken($bgcolor-global, 4%);
   }
 }
 

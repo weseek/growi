@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button,
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -434,10 +433,19 @@ export default class HandsontableModal extends React.PureComponent {
 
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={dialogClassName}>
-        <ModalHeader tag="h4" toggle={this.cancel} close={buttons}>Edit Table</ModalHeader>
+        <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
+          Edit Table
+        </ModalHeader>
         <ModalBody className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar bg-light">
-            <button type="button" className="mr-4 data-import-button btn btn-secondary" onClick={this.toggleDataImportArea}>
+            <button
+              type="button"
+              className="mr-4 data-import-button btn btn-secondary"
+              data-toggle="collapse"
+              data-target="#collapseDataImport"
+              aria-expanded={this.state.isDataImportAreaExpanded}
+              onClick={this.toggleDataImportArea}
+            >
               <span className="mr-3">Data Import</span><i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </button>
             <div role="group" className="btn-group">
@@ -467,10 +475,10 @@ export default class HandsontableModal extends React.PureComponent {
           </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
-          <Button color="danger" onClick={this.reset}>Reset</Button>
+          <button type="button" className="btn btn-danger" onClick={this.reset}>Reset</button>
           <div className="ml-auto">
-            <Button className="mr-2" color="secondary" onClick={this.cancel}>Cancel</Button>
-            <Button color="primary" onClick={this.save}>Done</Button>
+            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>Cancel</button>
+            <button type="button" className="btn btn-primary" onClick={this.save}>Done</button>
           </div>
         </ModalFooter>
       </Modal>
