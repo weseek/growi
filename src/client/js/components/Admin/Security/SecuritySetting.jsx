@@ -64,7 +64,7 @@ class SecuritySetting extends React.Component {
           <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className={`btn btn-outline-secondary dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                className={`btn btn-outline-secondary dropdown-toggle w-100 grw-button-width text-left position-relative ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -144,7 +144,7 @@ class SecuritySetting extends React.Component {
           <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className="btn btn-outline-secondary dropdown-toggle"
+                className="btn btn-outline-secondary dropdown-toggle w-100 grw-button-width text-left position-relative"
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -174,7 +174,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
         <div className="row my-3">
-          <div className="offset-3 col-5">
+          <div className="text-center text-md-left offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.putSecuritySetting}>
               {t('Update')}
             </button>
