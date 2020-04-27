@@ -46,6 +46,9 @@ html[light] {
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 
+  // Icon colors
+  $color-icon: $color-global;
+
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
 
@@ -98,6 +101,9 @@ html[dark] {
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: #444;
+
+  // Icon colors
+  $color-icon: $color-global;
 
   // Border colors
   $border-color-theme: black; // former: `$navbar-border: #ccc;`
