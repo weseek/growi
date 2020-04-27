@@ -91,45 +91,23 @@ class UserManagement extends React.Component {
     this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
   }
 
-  renderLabels() {
-    const { adminUsersContainer } = this.props;
-    const statusColor = {
-      all: 'primary',
-      registered: 'info',
-      active: 'success',
-      suspended: 'warning',
-      invited: 'info',
-    };
-    const statusName = {
-      all: 'All',
-      registered: 'Approval Pending',
-      active: 'Active',
-      suspended: 'Suspended',
-      invited: 'Invited',
-    };
-
-    const labels = [];
-
-    for (const [status, color] of Object.entries(statusColor)) {
-      labels.push(
-        <div className={`custom-control custom-checkbox custom-checkbox-${color} mr-2`}>
-          <input
-            className="custom-control-input"
-            type="checkbox"
-            id={`c_${status}`}
-            checked={adminUsersContainer.isSelected(status)}
-            onClick={() => { this.handleClick(status) }}
-          />
-          <label className="custom-control-label" htmlFor={`c_${status}`}>
-            <span className={`badge badge-pill badge-${color} d-inline-block vt mt-1`}>
-              {statusName[status]}
-            </span>
-          </label>
-        </div>,
-      );
-    }
-
-    return labels;
+  renderCheckbox(status, statusLabel, statusColor) {
+    return  (
+      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} mr-2`}>
+        <input
+          className="custom-control-input"
+          type="checkbox"
+          id={`c_${status}`}
+          checked={this.props.adminUsersContainer.isSelected(status)}
+          onClick={() => { this.handleClick(status) }}
+        />
+        <label className="custom-control-label" htmlFor={`c_${status}`}>
+          <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
+            {statusLabel}
+          </span>
+        </label>
+      </div>
+    )
   }
 
   render() {
@@ -195,7 +173,13 @@ class UserManagement extends React.Component {
             </div>
 
             <div className="mx-5">
-              <div className="form-inline">{this.renderLabels()}</div>
+              <div className="form-inline">
+                {this.renderCheckbox('all', 'All', 'primary')}
+                {this.renderCheckbox('registered', 'Approval Pending', 'info')}
+                {this.renderCheckbox('active', 'Active', 'success')}
+                {this.renderCheckbox('suspended', 'Suspended', 'warning')}
+                {this.renderCheckbox('invited', 'Invited', 'info')}
+              </div>
               <div>
                 {
                   this.state.isNotifyCommentShow
