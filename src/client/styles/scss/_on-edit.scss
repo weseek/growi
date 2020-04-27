@@ -26,21 +26,8 @@ body.on-edit {
 
   // hide unnecessary elements
   header,
-  .grw-subnav,
-  .row.row-alerts,
-  .row.page-list,
-  .row.page-comments-row,
-  .row.page-attachments-row,
-  .row.not-found-message-row,
-  .users-info,
-  .user-page-content-container,
-  .portal-form-button,
-  .btn-like,
-  .btn-bookmark,
-  .btn-edit,
-  .authors,
-  .hide-on-edit,
-  footer {
+  footer,
+  .d-none-on-edit {
     display: none !important;
   }
 
