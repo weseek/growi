@@ -50,8 +50,6 @@ html[light] {
   $bgcolor-global: $themelight;
   $bgcolor-navbar: #334455;
   $bgcolor-inline-code: #f9f2f4;
-  $bgcolor-card: #f5f5f5;
-  $bgcolor-card-header: $themelight;
 
   // Font colors
   $color-global: black;
@@ -63,6 +61,11 @@ html[light] {
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
+
+  // Card colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-card-header: $bgcolor-global;
+  $bgcolor-card-footer: $secondary;
 
   // List Group colors
   $color-list: $color-global;
@@ -104,8 +107,6 @@ html[dark] {
   $bgcolor-global: $basecolor;
   $bgcolor-navbar: #151515;
   $bgcolor-inline-code: darken($basecolor, 5%);
-  $bgcolor-card: darken($basecolor, 5%);
-  $bgcolor-card-header: $basecolor;
 
   // Font colors
   $color-global: #eeeeee;
@@ -117,6 +118,11 @@ html[dark] {
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-global;
   $color-inline-code: #c7254e;
+
+  // Card colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-card-header: $bgcolor-global;
+  $bgcolor-card-footer: $secondary;
 
   // List Group colors
   $color-list: $color-global;

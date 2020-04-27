@@ -12,8 +12,6 @@ html[light] {
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: $lightthemecolor;
-  $bgcolor-card-header: $themelight;
 
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
 
@@ -26,6 +24,11 @@ html[light] {
 
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
+
+  // Card colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-card-header: $bgcolor-global;
+  $bgcolor-card-footer: $secondary;
 
   // List Group colors
   $color-list: $color-global;
@@ -70,8 +73,6 @@ html[dark] {
   $bgcolor-navbar: transparent;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: #e3e5e7;
-  $bgcolor-card-header: $themelight;
 
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
 
@@ -84,6 +85,11 @@ html[dark] {
 
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
+
+  // Card colors
+  $bgcolor-card: #f5f5f5;
+  $bgcolor-card-header: $bgcolor-global;
+  $bgcolor-card-footer: $secondary;
 
   // List Group colors
   $color-list: $color-global;

@@ -157,6 +157,9 @@ $link-hover-color: $color-link-hover;
     background-color: $bgcolor-card-header;
     border: 0;
   }
+  .card-footer {
+    background-color: $bgcolor-card-footer;
+  }
 }
 
 .card.well {
