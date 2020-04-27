@@ -123,6 +123,11 @@ div.body {
     }
   }
 
+  // in code block
+  pre {
+    line-height: $line-height-base;
+  }
+
   // only inline code blocks
   p code {
     font-family: $font-family-monospace-not-strictly;
