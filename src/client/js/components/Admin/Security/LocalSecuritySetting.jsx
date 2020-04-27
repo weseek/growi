@@ -100,7 +100,7 @@ class LocalSecuritySetting extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row">
-              <div className="col-12 col-md-3 text-left text-md-rightpy-2">
+              <div className="col-12 col-md-3 text-left text-md-right py-2">
                 <strong>{t('Register limitation')}</strong>
               </div>
               <div className="col-12 col-md-6">
