@@ -43,7 +43,8 @@ class LikeButton extends React.Component {
       <button
         type="button"
         onClick={this.handleClick}
-        className={`btn rounded-circle btn-outline-info btn-like border-0 d-edit-none ${this.state.isLiked ? 'active' : ''}`}
+        className={`btn rounded-circle btn-like border-0 d-edit-none
+        ${this.state.isLiked ? 'btn-info active' : 'btn-outline-info'}`}
       >
         <i className="icon-like"></i>
       </button>
