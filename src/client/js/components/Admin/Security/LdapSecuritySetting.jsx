@@ -256,8 +256,8 @@ class LdapSecuritySetting extends React.Component {
             <div className="form-group row">
               <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapUsername">{t('username')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
