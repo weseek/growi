@@ -40,6 +40,9 @@ html[light] {
   $bgcolor-logo: transparent;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
 
+  // Icon colors
+  $color-editor-icons: $color-global;
+
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-global;
@@ -99,6 +102,9 @@ html[dark] {
   // Logo colors
   $bgcolor-logo: red;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
