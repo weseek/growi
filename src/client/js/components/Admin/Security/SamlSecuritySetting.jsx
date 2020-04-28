@@ -420,8 +420,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
-            <div className="row mb-5">
-              <div className="offset-3 col-6 text-left">
+            <div className="row form-group mb-5">
+              <div className="offset-md-3 col-md-6 text-left">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserName-SAML"
