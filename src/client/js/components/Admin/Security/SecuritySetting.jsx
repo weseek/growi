@@ -76,7 +76,20 @@ class SecuritySetting extends React.Component {
             </tr>
             <tr>
               <th scope="row">{ t('Just me') }</th>
-              <td>[switch] 表示/非表示</td>
+              <td>
+                <div className="custom-control custom-checkbox custom-checkbox-success ml-md-5">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="isShowRestrictedByOwner"
+                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
+                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
+                  />
+                  <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                    {t('Desplay or non-sisplay')}
+                  </label>
+                </div>
+              </td>
             </tr>
             <tr>
               <th scope="row">{ t('Only inside the group') }</th>
