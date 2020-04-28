@@ -96,7 +96,7 @@ class LoginForm extends React.Component {
     const { t } = this.props;
     return (
       <div key={auth} className="input-group justify-content-center d-flex mt-5">
-        <button type="button" className="btn btn-fill px-0 py-2" id={auth} onClick={ this.handleLoginWithExternalAuth }>
+        <button type="button" className="btn btn-fill px-0 py-2" id={auth} onClick={this.handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label p-3">
             <i className={`fa fa-${auth}`}></i>
