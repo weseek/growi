@@ -11,6 +11,7 @@ $link-hover-color: $color-link-hover;
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import 'mixins-for-tables';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-toastr-colors';
@@ -118,6 +119,13 @@ $link-hover-color: $color-link-hover;
 }
 
 /*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: $color-editor-icons;
+}
+
+/*
  * code color of inline-code
  */
 :not(.hljs) > code:not(.hljs) {
@@ -151,10 +159,6 @@ $link-hover-color: $color-link-hover;
 /*
  * cards
  */
-.card-header {
-  border: 0;
-}
-
 .card.well {
   background-color: $bgcolor-card;
   border-color: $light;
