@@ -63,8 +63,6 @@ class SecuritySetting extends React.Component {
             <tr>
               <th scope="col">ページの公開範囲</th>
               <th scope="col">設定値</th>
-              {/* <th scope="col">見出し２</th>
-              <th scope="col">見出し３</th> */}
             </tr>
           </thead>
           <tbody>
