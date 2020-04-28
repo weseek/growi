@@ -60,6 +60,11 @@ html[light] {
   // badge
   $color-badge: $color-reversal;
 
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-theme;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-theme, 10%);
+
   @import 'apply-colors';
   @import 'apply-colors-light';
   @import 'apply-colors-kibela';
@@ -118,6 +123,11 @@ html[dark] {
 
   // badge
   $color-badge: $color-global;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-theme;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-theme, 5%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
