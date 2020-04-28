@@ -62,6 +62,15 @@ export default class UserPicture extends React.Component {
     return <a href={href} {...props}>{props.children}</a>;
   }
 
+  withTooltip = (RootElm) => {
+    const { user } = this.props;
+    const title = `@${user.username}<br />${user.name}`;
+
+    return props => (
+      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>{props.children}</RootElm>
+    );
+  }
+
   render() {
     const user = this.props.user;
 
@@ -69,12 +78,16 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
-    const { withoutLink } = this.props;
-    const RootElm = withoutLink ? this.RootElmWithoutLink : this.RootElmWithLink;
-    const title = `@${user.username}<br />${user.name}`;
+    const { withoutLink, withoutTooltip } = this.props;
+
+    // determine RootElm
+    let RootElm = withoutLink ? this.RootElmWithoutLink : this.RootElmWithLink;
+    if (!withoutTooltip) {
+      RootElm = this.withTooltip(RootElm);
+    }
 
     return (
-      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>
+      <RootElm>
         <img
           src={this.getUserPicture(user)}
           alt={user.username}
