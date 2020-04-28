@@ -11,6 +11,7 @@ $link-hover-color: $color-link-hover;
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import 'mixins-for-tables';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-toastr-colors';
@@ -115,6 +116,13 @@ $link-hover-color: $color-link-hover;
       border-right-color: darken($bgcolor-global, 4%);
     }
   }
+}
+
+/*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: $color-editor-icons;
 }
 
 /*

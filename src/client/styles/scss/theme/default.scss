@@ -1,6 +1,5 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
-
 // == Define Bootstrap theme colors
 //
 
@@ -45,6 +44,9 @@ html[light] {
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
@@ -98,6 +100,9 @@ html[dark] {
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: #444;
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: black; // former: `$navbar-border: #ccc;`
