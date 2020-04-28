@@ -57,6 +57,39 @@ class SecuritySetting extends React.Component {
           <p>{t('Error occurred')} : {this.state.retrieveError}</p>
         </div>
           )}
+
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">見出し１</th>
+              <th scope="col">見出し２</th>
+              <th scope="col">見出し３</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>項目１</td>
+              <td>項目２</td>
+              <td>項目３</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>項目４</td>
+              <td>項目５</td>
+              <td>項目６</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>項目７</td>
+              <td>項目８</td>
+              <td>項目９</td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* ゲストユーザーのアクセス */}
         <div className="row mb-5">
           <div className="col-md-3 text-md-right text-nowrap py-2 mr-md-5">
             <strong>{t('security_setting.Guest Users Access')}</strong>
