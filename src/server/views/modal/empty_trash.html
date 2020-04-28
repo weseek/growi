@@ -7,7 +7,7 @@
       <div class="modal-header bg-danger">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <div class="modal-title">
-          <i class="icon-fw icon-trash"></i> ゴミ箱を空にします
+          <i class="icon-fw icon-trash"></i>  {{ t('modal_empty.empty_the_trash') }}
         </div>
       </div>
       <div class="modal-body">
@@ -34,7 +34,7 @@
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="m-l-10 btn btn-danger delete-button">
               <i class="icon-trash" aria-hidden="true"></i>
-              {{ t('Delete') }}
+              Empty
             </button>
           </div>
         </div>

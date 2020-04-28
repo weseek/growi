@@ -89,9 +89,9 @@
         {% endif %}
       </div>
       <ul class="list-inline">
-        {% if user and user.admin %}
+        {% if user and user.admin and not page.isDeleted() %}
         <li>
-          <button href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>ゴミ箱を空にする</button>
+          <button href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>{{ t('modal_empty.empty_the_trash') }}</button>
         </li>
         {% endif %}
         {% if page.isDeleted() and user %}
