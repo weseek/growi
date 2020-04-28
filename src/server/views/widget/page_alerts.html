@@ -1,4 +1,4 @@
-<div class="row row-alerts">
+<div class="row row-alerts d-edit-none">
   <div class="col-sm-12">
     {% if page && page.grant && page.grant > 1 %}
 
@@ -29,7 +29,7 @@
     {% endif %}
 
     {% if redirectFrom or req.query.renamed or req.query.redirectFrom %}
-    <div class="alert alert-info hide-on-edit py-3 px-4 d-flex align-items-center justify-content-between">
+    <div class="alert alert-info d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.renamed or req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
@@ -61,7 +61,7 @@
     {% endif %}
 
     {% if req.query.unlinked %}
-    <div class="alert alert-info hide-on-edit py-3 px-4">
+    <div class="alert alert-info d-edit-none py-3 px-4">
       <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
     </div>
     {% endif %}
