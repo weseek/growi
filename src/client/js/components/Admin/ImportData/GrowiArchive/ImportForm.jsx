@@ -457,7 +457,7 @@ class ImportForm extends React.Component {
           </div>
         </form>
 
-        <div className="well well-sm small my-4">
+        <div className="card well small my-4">
           <ul>
             <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
             <ul>

@@ -63,3 +63,7 @@
     background: $color;
   }
 }
+
+@each $color, $value in $table-variants {
+  @include table-variant($color, $value);
+}

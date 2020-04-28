@@ -11,6 +11,7 @@ $link-hover-color: $color-link-hover;
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
+@import 'mixins-for-tables';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-toastr-colors';
@@ -37,6 +38,21 @@ $link-hover-color: $color-link-hover;
   &:active {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
+  }
+}
+
+// List Group
+.list-group {
+  .list-group-item {
+    color: $color-list;
+    background-color: $bgcolor-list;
+    &:hover {
+      background-color: $color-list-hover;
+    }
+    &.active {
+      color: $color-list-active;
+      background-color: $bgcolor-list-active;
+    }
   }
 }
 
@@ -103,6 +119,13 @@ $link-hover-color: $color-link-hover;
 }
 
 /*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: $color-editor-icons;
+}
+
+/*
  * code color of inline-code
  */
 :not(.hljs) > code:not(.hljs) {
@@ -136,10 +159,6 @@ $link-hover-color: $color-link-hover;
 /*
  * cards
  */
-.card-header {
-  border: 0;
-}
-
 .card.well {
   background-color: $bgcolor-card;
   border-color: $light;
@@ -164,18 +183,6 @@ $link-hover-color: $color-link-hover;
 
   input:focus + .slider {
     box-shadow: 0 0 1px #007bff;
-  }
-}
-
-/*
- * Crowi sidebar
- */
-.crowi-sidebar {
-  background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border-color;
-
-  .system-version {
-    background-color: darken($bgcolor-global, 4%);
   }
 }
 
@@ -307,4 +314,11 @@ mark.rbt-highlight-text {
       }
     }
   }
+}
+
+/*
+ * HackMd
+ */
+.bg-box {
+  background-color: $bgcolor-global;
 }

@@ -12,9 +12,8 @@ html[light] {
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: $lightthemecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
-
+  $bgcolor-card: $lightthemecolor;
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
@@ -25,9 +24,19 @@ html[light] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
   // Logo colors
   $bgcolor-logo: transparent;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
@@ -61,9 +70,8 @@ html[dark] {
   $bgcolor-navbar: transparent;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: #e3e5e7;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
-
+  $bgcolor-card: #e3e5e7;
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
@@ -74,9 +82,19 @@ html[dark] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
   // Logo colors
   $bgcolor-logo: red;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);

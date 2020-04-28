@@ -14,47 +14,68 @@
 <div class="alert alert-warning" role="alert"><b>Warning!</b> Better check yourself, you're not looking too good. </div>
 <div class="alert alert-danger" role="alert"><b>Oh snap!</b> Change a few things up and try submitting again. </div>
 
-# Panels
+# Cards
 
-<div class="panel panel-default">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-primary">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-light">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-success">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-secondary text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-info">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-dark text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-warning">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-primary text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-danger">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-success text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
+  </div>
+</div>
+
+<div class="card bg-info text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
+  </div>
+</div>
+
+<div class="card bg-warning text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
+  </div>
+</div>
+
+<div class="card bg-danger text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
@@ -86,8 +107,8 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Alignment classes
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
     <p class="text-left">Left aligned text.</p>
     <p class="text-center">Center aligned text.</p>
     <p class="text-right">Right aligned text.</p>
@@ -98,8 +119,8 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Transformation classes
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
     <p class="text-lowercase">Lowercased text.</p>
     <p class="text-uppercase">Uppercased text.</p>
     <p class="text-capitalize">Capitalized text.</p>
@@ -111,9 +132,12 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Contextual colors
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card">
+  <div class="card-body">
     <p class="text-muted">Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.</p>
+    <p class="text-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <p class="text-secondary">Sed luctus venenatis tellus, in aliquam ligula scelerisque eget.</p>
+    <p class="text-dark">Ut vel lorem aliquet, rhoncus libero at, condimentum mi. Fusce pellentesque quam nec magna maximus porta.</p>
     <p class="text-primary">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
     <p class="text-success">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
     <p class="text-info">Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
@@ -124,12 +148,15 @@ You can use the mark tag to <mark>highlight</mark> text.
 
 ## Contextual backgrounds
 
-<div class="panel panel-default">
-  <div class="panel-body">
-    <p class="bg-primary">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-    <p class="bg-success">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-    <p class="bg-info">Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-    <p class="bg-warning">Etiam porta sem malesuada magna mollis euismod.</p>
-    <p class="bg-danger">Donec ullamcorper nulla non metus auctor fringilla.</p>
+<div class="card">
+  <div class="card-body">
+    <p class="bg-light">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <p class="bg-secondary text-white">Sed luctus venenatis tellus, in aliquam ligula scelerisque eget.</p>
+    <p class="bg-dark text-white">Ut vel lorem aliquet, rhoncus libero at, condimentum mi.</p>
+    <p class="bg-primary text-white">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+    <p class="bg-success text-white">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
+    <p class="bg-info text-white">Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    <p class="bg-warning text-white">Etiam porta sem malesuada magna mollis euismod.</p>
+    <p class="bg-danger text-white">Donec ullamcorper nulla non metus auctor fringilla.</p>
   </div>
 </div>

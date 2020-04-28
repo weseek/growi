@@ -44,11 +44,15 @@ const GrowiSubNavigation = (props) => {
   }
 
   const additionalClassNames = ['grw-subnavbar'];
-  if (isHeaderSticky) {
-    additionalClassNames.push('grw-subnavbar-sticky');
-  }
-  if (isSubnavCompact) {
-    additionalClassNames.push('grw-subnavbar-compact');
+  const layoutType = appContainer.getConfig().layoutType;
+
+  if (layoutType === 'growi') {
+    if (isHeaderSticky) {
+      additionalClassNames.push('grw-subnavbar-sticky');
+    }
+    if (isSubnavCompact) {
+      additionalClassNames.push('grw-subnavbar-compact');
+    }
   }
 
   return (
