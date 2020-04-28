@@ -61,30 +61,28 @@ class SecuritySetting extends React.Component {
         <table className="table">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">見出し１</th>
-              <th scope="col">見出し２</th>
-              <th scope="col">見出し３</th>
+              <th scope="col">ページの公開範囲</th>
+              <th scope="col">設定値</th>
+              {/* <th scope="col">見出し２</th>
+              <th scope="col">見出し３</th> */}
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row">1</th>
+              <th scope="row">公開</th>
               <td>項目１</td>
-              <td>項目２</td>
-              <td>項目３</td>
             </tr>
             <tr>
-              <th scope="row">2</th>
+              <th scope="row">リンクを知っている人</th>
               <td>項目４</td>
-              <td>項目５</td>
-              <td>項目６</td>
             </tr>
             <tr>
-              <th scope="row">3</th>
+              <th scope="row">自分のみ</th>
               <td>項目７</td>
-              <td>項目８</td>
-              <td>項目９</td>
+            </tr>
+            <tr>
+              <th scope="row">特定のグループのみ</th>
+              <td>項目７</td>
             </tr>
           </tbody>
         </table>
