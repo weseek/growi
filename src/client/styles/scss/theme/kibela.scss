@@ -37,7 +37,7 @@ html[light] {
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
 
   // Icon colors
-  $color-icon: $color-global;
+  $color-editor-icons: $color-global;
 
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
@@ -96,7 +96,7 @@ html[dark] {
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
 
   // Icon colors
-  $color-icon: $color-global;
+  $color-editor-icons: $color-global;
 
   $color-link-wiki: lighten($bgcolor-theme, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);

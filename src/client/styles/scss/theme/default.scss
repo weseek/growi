@@ -47,7 +47,7 @@ html[light] {
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
 
   // Icon colors
-  $color-icon: $color-global;
+  $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
@@ -103,7 +103,7 @@ html[dark] {
   $fillcolor-logo-mark: #444;
 
   // Icon colors
-  $color-icon: $color-global;
+  $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: black; // former: `$navbar-border: #ccc;`
