@@ -282,8 +282,8 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="offset-3 col-6">
+            <div className="row mb-5 form-group">
+              <div className="offset-md-3 col-md-6">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByEmail-oidc"
