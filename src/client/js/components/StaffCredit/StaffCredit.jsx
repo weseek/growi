@@ -2,7 +2,9 @@ import React from 'react';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 import loggerFactory from '@alias/logger';
-import Modal from 'react-bootstrap/es/Modal';
+import {
+  Modal, ModalBody,
+} from 'reactstrap';
 
 import contributors from './Contributor';
 
@@ -97,7 +99,7 @@ export default class StaffCredit extends React.Component {
         );
       });
       return (
-        <div className="text-center credit-curtain" onClick={this.deleteCredit}>
+        <div className="text-center" onClick={this.deleteCredit}>
           <div className="credit-body">
             <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
             <div className="clearfix"></div>
@@ -114,10 +116,10 @@ export default class StaffCredit extends React.Component {
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        <Modal show={this.state.isShown} dialogClassName="staff-credit">
-          <Modal.Body scrollable>
+        <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
+          <ModalBody className="credit-curtain">
             {this.renderContributors()}
-          </Modal.Body>
+          </ModalBody>
         </Modal>
       </GlobalHotKeys>
     );
