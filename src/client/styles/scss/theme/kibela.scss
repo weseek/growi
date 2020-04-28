@@ -24,11 +24,6 @@ html[light] {
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
 
-  // Card colors
-  $bgcolor-card: #f5f5f5;
-  $bgcolor-card-header: $bgcolor-global;
-  $bgcolor-card-footer: $secondary;
-
   // List Group colors
   $color-list: $color-global;
   $bgcolor-list: $bgcolor-global;
@@ -86,11 +81,6 @@ html[dark] {
 
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
-
-  // Card colors
-  $bgcolor-card: #f5f5f5;
-  $bgcolor-card-header: $bgcolor-global;
-  $bgcolor-card-footer: $secondary;
 
   // List Group colors
   $color-list: $color-global;
