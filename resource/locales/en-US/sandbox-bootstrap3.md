@@ -14,7 +14,7 @@
 <div class="alert alert-warning" role="alert"><b>Warning!</b> Better check yourself, you're not looking too good. </div>
 <div class="alert alert-danger" role="alert"><b>Oh snap!</b> Change a few things up and try submitting again. </div>
 
-# Panels
+# Cards
 
 <div class="card">
   <div class="card-header">Card header without title</div>
