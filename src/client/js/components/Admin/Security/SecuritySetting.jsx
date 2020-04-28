@@ -58,7 +58,7 @@ class SecuritySetting extends React.Component {
         </div>
           )}
 
-        <table className="table">
+        <table className="table col-md-8">
           <thead>
             <tr>
               <th scope="col">ページの公開範囲</th>
