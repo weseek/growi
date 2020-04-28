@@ -2,6 +2,8 @@ import React from 'react';
 import md5 from 'md5';
 import PropTypes from 'prop-types';
 
+import { userPageRoot } from '@commons/util/path-utils';
+
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
@@ -49,6 +51,17 @@ export default class UserPicture extends React.Component {
     );
   }
 
+  RootElmWithoutLink = (props) => {
+    return <span {...props}>{props.children}</span>;
+  }
+
+  RootElmWithLink = (props) => {
+    const { user } = this.props;
+    const href = userPageRoot(user);
+
+    return <a href={href} {...props}>{props.children}</a>;
+  }
+
   render() {
     const user = this.props.user;
 
@@ -56,18 +69,18 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
-    const imgElem = (
-      <img
-        src={this.getUserPicture(user)}
-        alt={user.username}
-        className={this.getClassName()}
-      />
-    );
+    const { withoutLink } = this.props;
+    const RootElm = withoutLink ? this.RootElmWithoutLink : this.RootElmWithLink;
+    const title = `@${user.username}<br />${user.name}`;
 
     return (
-      (this.props.withoutLink)
-        ? <span>{imgElem}</span>
-        : <a href={`/user/${user.username}`}>{imgElem}</a>
+      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>
+        <img
+          src={this.getUserPicture(user)}
+          alt={user.username}
+          className={this.getClassName()}
+        />
+      </RootElm>
     );
   }
 
@@ -77,8 +90,11 @@ UserPicture.propTypes = {
   user: PropTypes.object,
   size: PropTypes.string,
   withoutLink: PropTypes.bool,
+  withoutTooltip: PropTypes.bool,
 };
 
 UserPicture.defaultProps = {
   size: null,
+  withoutLink: false,
+  withoutTooltip: false,
 };
