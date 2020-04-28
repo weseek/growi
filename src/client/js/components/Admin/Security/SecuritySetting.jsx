@@ -80,7 +80,19 @@ class SecuritySetting extends React.Component {
             </tr>
             <tr>
               <th scope="row">{ t('Only inside the group') }</th>
-              <td>[switch] 表示/非表示</td>
+              <td>
+                <div className="custom-control custom-switch custom-checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="isLocalEnabled"
+                    onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
+                  />
+                  <label className="custom-control-label" htmlFor="isLocalEnabled">
+                    {t('security_setting.Local.enable_local')}
+                  </label>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
