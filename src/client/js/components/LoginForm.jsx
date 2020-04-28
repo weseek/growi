@@ -193,8 +193,8 @@ class LoginForm extends React.Component {
               <ul>
                 {loginContainer.state.registrationWhiteList.map((elem) => {
                   return (
-                    <li>
-                      <code>{{ elem }}</code>
+                    <li key={elem}>
+                      <code>{elem}</code>
                     </li>
                   );
                 })}
