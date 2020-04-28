@@ -151,17 +151,6 @@ $link-hover-color: $color-link-hover;
 /*
  * cards
  */
-.card {
-  background-color: $bgcolor-card;
-  .card-header {
-    background-color: $bgcolor-card-header;
-    border: 0;
-  }
-  .card-footer {
-    background-color: $bgcolor-card-footer;
-  }
-}
-
 .card.well {
   background-color: $bgcolor-card;
   border-color: $light;
