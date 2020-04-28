@@ -170,6 +170,40 @@ class SearchResult extends React.Component {
     });
   }
 
+  renderListView(pages) {
+    return pages.map((page) => {
+      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
+      const pageId = `#id_${page._id}`;
+      return (
+        <li key={page._id} className="nav-item page-list-li w-100">
+          <a className="nav-link page-list-link d-flex align-items-center" href={pageId}>
+            <Page page={page} noLink />
+            <div className="ml-auto d-flex">
+              { this.state.deletionMode
+                && (
+                  <div className="custom-control custom-checkbox custom-checkbox-danger">
+                    <input
+                      type="checkbox"
+                      id={`page-delete-check-${page._id}`}
+                      className="custom-control-input search-result-list-delete-checkbox"
+                      value={pageId}
+                      checked={this.state.selectedPages.has(page)}
+                      onChange={() => { return this.toggleCheckbox(page) }}
+                    />
+                    <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
+                  </div>
+                )
+              }
+              <div className="page-list-option">
+                <a href={page.path}><i className="icon-login" /></a>
+              </div>
+            </div>
+          </a>
+        </li>
+      );
+    });
+  }
+
   render() {
     if (this.isError()) {
       return (
@@ -238,38 +272,7 @@ class SearchResult extends React.Component {
       );
     }
 
-    const listView = this.props.pages.map((page) => {
-      // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
-      const pageId = `#id_${page._id}`;
-      return (
-        <Page
-          page={page}
-          linkTo={pageId}
-          key={page._id}
-        >
-          <div className="ml-auto d-flex">
-            { this.state.deletionMode
-              && (
-                <div className="custom-control custom-checkbox custom-checkbox-danger">
-                  <input
-                    type="checkbox"
-                    id={`page-delete-check-${page._id}`}
-                    className="custom-control-input search-result-list-delete-checkbox"
-                    value={pageId}
-                    checked={this.state.selectedPages.has(page)}
-                    onChange={() => { return this.toggleCheckbox(page) }}
-                  />
-                  <label className="custom-control-label" htmlFor={`page-delete-check-${page._id}`}></label>
-                </div>
-              )
-            }
-            <div className="page-list-option">
-              <a href={page.path}><i className="icon-login" /></a>
-            </div>
-          </div>
-        </Page>
-      );
-    });
+    const listView = this.renderListView(this.props.pages);
 
     /*
     UI あとで考える
