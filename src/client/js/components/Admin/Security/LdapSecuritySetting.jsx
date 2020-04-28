@@ -102,7 +102,7 @@ class LdapSecuritySetting extends React.Component {
               <label htmlFor="serverUrl" className="text-left text-md-right col-md-3 col-form-label">
                 Server URL
               </label>
-              <div className="col-6">
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
