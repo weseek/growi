@@ -98,8 +98,8 @@ class LdapSecuritySetting extends React.Component {
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
-            <div className="row mb-5">
-              <label htmlFor="serverUrl" className="col-3 control-label text-right py-2">
+            <div className="form-group row">
+              <label htmlFor="serverUrl" className="text-left text-md-right col-md-3 col-form-label">
                 Server URL
               </label>
               <div className="col-6">
