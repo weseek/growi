@@ -67,19 +67,19 @@ class SecuritySetting extends React.Component {
           </thead>
           <tbody>
             <tr>
-              <th scope="row">公開</th>
+              <th scope="row">{ t('Public') }</th>
               <td>表示(固定)</td>
             </tr>
             <tr>
-              <th scope="row">リンクを知っている人</th>
+              <th scope="row">{ t('Anyone with the link') }</th>
               <td>非表示(固定)</td>
             </tr>
             <tr>
-              <th scope="row">自分のみ</th>
+              <th scope="row">{ t('Just me') }</th>
               <td>[switch] 表示/非表示</td>
             </tr>
             <tr>
-              <th scope="row">特定のグループのみ</th>
+              <th scope="row">{ t('Only inside the group') }</th>
               <td>[switch] 表示/非表示</td>
             </tr>
           </tbody>
