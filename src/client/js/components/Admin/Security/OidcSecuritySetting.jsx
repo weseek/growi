@@ -174,9 +174,9 @@ class OidcSecurityManagement extends React.Component {
               Attribute Mapping ({t('security_setting.optional')})
             </h3>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcAttrMapId" className="col-3 text-right py-2">Identifier</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAttrMapId" className="text-left text-md-right col-md-3 col-form-label">Identifier</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
