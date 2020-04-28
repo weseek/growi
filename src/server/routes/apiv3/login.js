@@ -14,7 +14,7 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middleware/access-token-parser')(crowi);
-
+  const { passportService, configManager } = crowi;
   /**
    * @swagger
    *
@@ -36,19 +36,20 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, async(req, res) => {
     const data = {};
     try {
-      data.isRegistrationEnabled = true;
-      data.registrationMode = 'Open';
-      data.registrationWhiteList = [];
-      data.isLocalStrategySetup = true;
-      data.isLdapStrategySetup = true;
+      data.isRegistrationEnabled = passportService.isLocalStrategySetup
+        && await configManager.getConfig('crowi', 'security:registrationMode') !== 'Closed';
+      data.registrationMode = await configManager.getConfig('crowi', 'security:registrationMode');
+      data.registrationWhiteList = await configManager.getConfig('crowi', 'security:registrationWhiteList');
+      data.isLocalStrategySetup = passportService.isLocalStrategySetup;
+      data.isLdapStrategySetup = passportService.isLdapStrategySetup;
       data.objOfIsExternalAuthEnableds = {
-        google: true,
-        github: true,
-        facebook: true,
-        twitter: true,
-        oidc: true,
-        saml: true,
-        basic: true,
+        google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
+        github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+        facebook: configManager.getConfig('crowi', 'security:passport-facebook:isEnabled'),
+        twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
+        oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
+        saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
+        basic: configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
       };
       return res.apiv3({ data });
     }
