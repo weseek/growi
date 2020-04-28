@@ -109,9 +109,9 @@ class OidcSecurityManagement extends React.Component {
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcProviderName" className="col-3 text-right py-2">{t('security_setting.providerName')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcProviderName" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.providerName')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
