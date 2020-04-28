@@ -190,9 +190,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcAttrMapUserName" className="col-3 text-right py-2">{t('username')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAttrMapUserName" className="text-left text-md-right col-md-3 col-form-label">{t('username')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
