@@ -9,6 +9,7 @@ import UserMenu from './UserMenu';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import SortIcons from './SortIcons';
 
 class UserTable extends React.Component {
 
@@ -55,7 +56,7 @@ class UserTable extends React.Component {
     }
 
     return (
-      <span className={`badge ${additionalClassName}`}>
+      <span className={`badge badge-pill ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -70,12 +71,21 @@ class UserTable extends React.Component {
     const { t } = this.props;
 
     if (isAdmin) {
-      return <span className="badge badge-primary ml-2">{t('admin:user_management.user_table.administrator')}</span>;
+      return <span className="badge badge-primary badge-pill ml-2">{t('admin:user_management.user_table.administrator')}</span>;
     }
+  }
+
+  sortIconsClickedHandler(sort, sortOrder) {
+    const isAsc = sortOrder === 'asc';
+
+    const { adminUsersContainer } = this.props;
+    adminUsersContainer.sort(sort, isAsc);
   }
 
   render() {
     const { t, adminUsersContainer } = this.props;
+
+    const isCurrentSortOrderAsc = adminUsersContainer.state.sortOrder === 'asc';
 
     return (
       <Fragment>
@@ -83,12 +93,90 @@ class UserTable extends React.Component {
           <thead>
             <tr>
               <th width="100px">#</th>
-              <th>{t('status')}</th>
-              <th><code>username</code></th>
-              <th>{t('Name')}</th>
-              <th>{t('Email')}</th>
-              <th width="100px">{t('Created')}</th>
-              <th width="150px">{t('Last_Login')}</th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('status')}
+                  </div>
+                  <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'status'}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('status', sortOrder);
+                    }}
+                  />
+                </div>
+              </th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    <code>username</code>
+                  </div>
+                  <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'username'}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('username', sortOrder);
+                    }}
+                  />
+                </div>
+              </th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Name')}
+                  </div>
+                  <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'name'}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('name', sortOrder);
+                    }}
+                  />
+                </div>
+              </th>
+              <th>
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Email')}
+                  </div>
+                  <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'email'}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('email', sortOrder);
+                    }}
+                  />
+                </div>
+              </th>
+              <th width="100px">
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Created')}
+                  </div>
+                  <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'createdAt'}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('createdAt', sortOrder);
+                    }}
+                  />
+                </div>
+              </th>
+              <th width="150px">
+                <div className="d-flex align-items-center">
+                  <div className="mr-3">
+                    {t('Last_Login')}
+                  </div>
+                  <SortIcons
+                    isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
+                    isAsc={isCurrentSortOrderAsc}
+                    onClick={(sortOrder) => {
+                      this.sortIconsClickedHandler('lastLoginAt', sortOrder);
+                    }}
+                  />
+                </div>
+              </th>
               <th width="70px"></th>
             </tr>
           </thead>
@@ -97,7 +185,7 @@ class UserTable extends React.Component {
               return (
                 <tr key={user._id}>
                   <td>
-                    <UserPicture user={user} className="picture img-circle" />
+                    <UserPicture user={user} className="picture rounded-circle" />
                   </td>
                   <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
                   <td>
@@ -123,15 +211,16 @@ class UserTable extends React.Component {
 
 }
 
-const UserTableWrapper = (props) => {
-  return createSubscribedElement(UserTable, props, [AppContainer, AdminUsersContainer]);
-};
 
 UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
+};
+
+const UserTableWrapper = (props) => {
+  return createSubscribedElement(UserTable, props, [AppContainer, AdminUsersContainer]);
 };
 
 export default withTranslation()(UserTableWrapper);

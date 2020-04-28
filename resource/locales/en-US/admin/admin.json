@@ -7,7 +7,10 @@
     "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
     "specified_version": "Specified version",
-    "installed_version": "Installed version"
+    "installed_version": "Installed version",
+    "list_of_env_vars":"List of environment variables",
+    "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
+    "about_security": "Check <a href='/admin/security'>Securtiy Management</a> for security environment variables."
   },
   "app_setting": {
     "site_name": "Site name",
@@ -102,7 +105,7 @@
     },
     "behavior": "Behavior",
     "behavior_desc": {
-      "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page。",
+      "growi_text1": "Both of <code>/page</code> and <code>/page/</code> shows the same page.",
       "growi_text2": "<code>/nonexistent_page</code> shows editing form",
       "growi_text3": "All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b>",
       "crowi_text1": "<code>/page</code> shows the page",
@@ -148,7 +151,12 @@
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI Archive",
     "growi_settings": {
-      "overwrite_documents": "Imported documents will overwrite existing documents",
+      "description_of_import_mode": {
+        "about": "When you import data with the same name as an existing one, choose from the following three modes below.",
+        "insert": "Insert: Skip importing the data.",
+        "upsert": "Upsert: Overwrite and update the existing data with imported data.",
+        "flash_and_insert": "Flash and Insert: After deleting the existing data completely, import the data"
+      },
       "growi_archive_file": "GROWI Archive File",
       "uploaded_data": "Uploaded Data",
       "extracted_file": "Extracted File",
@@ -221,6 +229,7 @@
   },
   "user_management": {
     "invite_users": "Invite New Users",
+    "click_twice_same_checkbox": "You should check at least one checkbox.",
     "invite_modal": {
       "emails": "Emails",
       "invite_thru_email": "Send Invitation Email",

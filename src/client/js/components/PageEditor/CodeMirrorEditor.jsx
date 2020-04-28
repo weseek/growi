@@ -71,6 +71,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
     };
 
+    this.handsontableModal = React.createRef();
+    this.drawioModal = React.createRef();
+
     this.init();
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
@@ -549,7 +552,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   renderCheatsheetModalButton() {
     return (
-      <button type="button" className="btn-link gfm-cheatsheet-modal-link text-muted small p-0" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
+      <button type="button" className="btn-link gfm-cheatsheet-modal-link small" onClick={() => { this.markdownHelpButtonClickedHandler() }}>
         <i className="icon-question" /> Markdown
       </button>
     );
@@ -564,13 +567,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
           ? (
             <div className="text-right">
               {cheatsheetModalButton}
-              <div className="mt-2">
+              <div className="mb-2">
                 <SimpleCheatsheet />
               </div>
             </div>
           )
           : (
-            <div className="mr-4">
+            <div className="mr-4 mb-2">
               {cheatsheetModalButton}
             </div>
           )
@@ -647,18 +650,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showHandsonTableHandler() {
-    this.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   showDrawioHandler() {
-    this.drawioIFrame.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
   getNavbarItems() {
+    const buttonColor = '';
     return [
       /* eslint-disable max-len */
       <Button
         key="nav-item-bold"
+        color={buttonColor}
         size="sm"
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
@@ -667,6 +672,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-italic"
+        color={buttonColor}
         size="sm"
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
@@ -675,6 +681,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-strikethrough"
+        color={buttonColor}
         size="sm"
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
@@ -683,6 +690,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-header"
+        color={buttonColor}
         size="sm"
         title="Heading"
         onClick={this.makeHeaderHandler}
@@ -691,6 +699,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-code"
+        color={buttonColor}
         size="sm"
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
@@ -699,6 +708,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-quote"
+        color={buttonColor}
         size="sm"
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
@@ -707,6 +717,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ul"
+        color={buttonColor}
         size="sm"
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
@@ -715,6 +726,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-ol"
+        color={buttonColor}
         size="sm"
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
@@ -723,6 +735,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-checkbox"
+        color={buttonColor}
         size="sm"
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
@@ -731,6 +744,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-link"
+        color={buttonColor}
         size="sm"
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
@@ -739,6 +753,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-image"
+        color={buttonColor}
         size="sm"
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
@@ -747,6 +762,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-table"
+        color={buttonColor}
         size="sm"
         title="Table"
         onClick={this.showHandsonTableHandler}
@@ -755,7 +771,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
       <Button
         key="nav-item-drawio"
-        bsSize="small"
+        color={buttonColor}
+        bssize="small"
         title="draw.io"
         onClick={this.showDrawioHandler}
       >
@@ -836,11 +853,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
 
         <HandsontableModal
-          ref={(c) => { this.handsontableModal = c }}
+          ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
         />
         <DrawioModal
-          ref={(c) => { this.drawioIFrame = c }}
+          ref={this.drawioModal}
           onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
         />
 

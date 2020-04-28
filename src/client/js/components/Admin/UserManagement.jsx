@@ -20,7 +20,12 @@ class UserManagement extends React.Component {
   constructor(props) {
     super();
 
+    this.state = {
+      isNotifyCommentShow: false,
+    };
+
     this.handlePage = this.handlePage.bind(this);
+    this.handleChangeSearchText = this.handleChangeSearchText.bind(this);
   }
 
   componentWillMount() {
@@ -36,11 +41,80 @@ class UserManagement extends React.Component {
     }
   }
 
+  /**
+   * For checking same check box twice
+   * @param {string} statusType
+   */
+  async handleClick(statusType) {
+    const { adminUsersContainer } = this.props;
+    if (!this.validateToggleStatus(statusType)) {
+      return this.setState({ isNotifyCommentShow: true });
+    }
+
+    if (this.state.isNotifyCommentShow) {
+      await this.setState({ isNotifyCommentShow: false });
+    }
+    adminUsersContainer.handleClick(statusType);
+  }
+
+  /**
+   * Workaround user status check box
+   * @param {string} statusType
+   */
+  validateToggleStatus(statusType) {
+    if (this.props.adminUsersContainer.isSelected(statusType)) {
+      return this.props.adminUsersContainer.state.selectedStatusList.size > 1;
+    }
+    return true;
+  }
+
+  /**
+   * Reset button
+   */
+  resetButtonClickHandler() {
+    const { adminUsersContainer } = this.props;
+    try {
+      adminUsersContainer.resetAllChanges();
+      this.searchUserElement.value = '';
+      this.state.isNotifyCommentShow = false;
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
+   * Workaround increamental search
+   * @param {string} event
+   */
+  handleChangeSearchText(event) {
+    this.props.adminUsersContainer.handleChangeSearchText(event.target.value);
+  }
+
+  renderCheckbox(status, statusLabel, statusColor) {
+    return (
+      <div className={`custom-control custom-checkbox custom-checkbox-${statusColor} mr-2`}>
+        <input
+          className="custom-control-input"
+          type="checkbox"
+          id={`c_${status}`}
+          checked={this.props.adminUsersContainer.isSelected(status)}
+          onClick={() => { this.handleClick(status) }}
+        />
+        <label className="custom-control-label" htmlFor={`c_${status}`}>
+          <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
+            {statusLabel}
+          </span>
+        </label>
+      </div>
+    );
+  }
+
   render() {
     const { t, adminUsersContainer } = this.props;
 
     const pager = (
-      <div className="pull-right">
+      <div className="pull-right my-3">
         <PaginationWrapper
           activePage={adminUsersContainer.state.activePage}
           changePage={this.handlePage}
@@ -50,18 +124,86 @@ class UserManagement extends React.Component {
       </div>
     );
 
+    const clearButton = (
+      adminUsersContainer.state.searchText.length > 0
+        ? (
+          <i
+            className="icon-close search-clear"
+            onClick={() => {
+              adminUsersContainer.clearSearchText();
+              this.searchUserElement.value = '';
+            }}
+          />
+        )
+        : ''
+    );
+
     return (
       <Fragment>
-        {adminUsersContainer.state.userForPasswordResetModal && <PasswordResetModal />}
+        {adminUsersContainer.state.userForPasswordResetModal != null
+        && (
+        <PasswordResetModal
+          isOpen={adminUsersContainer.state.isPasswordResetModalShown}
+          onClose={adminUsersContainer.hidePasswordResetModal}
+          userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
+        />
+        )}
         <p>
           <InviteUserControl />
-          <a className="btn text-dark btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
+          <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
             <i className="icon-user-follow" aria-hidden="true"></i>
             {t('admin:user_management.external_account')}
           </a>
         </p>
 
         <h2>{t('User_Management')}</h2>
+        <div className="border-top border-bottom">
+
+          <div className="d-flex justify-content-start align-items-center my-2">
+            <div className="d-flex align-items-baseline">
+              <i className="icon-magnifier mr-1"></i>
+              <span className="search-typeahead">
+                <input
+                  type="text"
+                  ref={(searchUserElement) => { this.searchUserElement = searchUserElement }}
+                  onChange={this.handleChangeSearchText}
+                />
+                { clearButton }
+              </span>
+            </div>
+
+            <div className="mx-5">
+              <div className="form-inline">
+                {this.renderCheckbox('all', 'All', 'primary')}
+                {this.renderCheckbox('registered', 'Approval Pending', 'info')}
+                {this.renderCheckbox('active', 'Active', 'success')}
+                {this.renderCheckbox('suspended', 'Suspended', 'warning')}
+                {this.renderCheckbox('invited', 'Invited', 'info')}
+              </div>
+              <div>
+                {
+                  this.state.isNotifyCommentShow
+                  && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>
+                }
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="button"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() => { this.resetButtonClickHandler() }}
+              >
+                <span
+                  className="icon-refresh mr-1"
+                >
+                </span>
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
 
         {pager}
         <UserTable />

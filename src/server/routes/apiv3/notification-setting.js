@@ -10,12 +10,13 @@ const router = express.Router();
 const { body } = require('express-validator/check');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const removeNullPropertyFromObject = require('../../../lib/util/removeNullPropertyFromObject');
 
 const validator = {
   slackConfiguration: [
-    body('webhookUrl').isString().trim(),
+    body('webhookUrl').if(value => value != null).isString().trim(),
     body('isIncomingWebhookPrioritized').isBoolean(),
-    body('slackToken').isString().trim(),
+    body('slackToken').if(value => value != null).isString().trim(),
   ],
   userNotification: [
     body('pathPattern').isString().trim(),
@@ -31,6 +32,10 @@ const validator = {
     body('slackChannels').trim().custom((value, { req }) => {
       return (req.body.notifyToType === 'slack') ? !!value : true;
     }),
+  ],
+  notifyForPageGrant: [
+    body('isNotificationForOwnerPageEnabled').isBoolean(),
+    body('isNotificationForGroupPageEnabled').isBoolean(),
   ],
 };
 
@@ -66,6 +71,15 @@ const validator = {
  *          channel:
  *            type: string
  *            description: slack channel name without '#'
+ *      NotifyForPageGrant:
+ *        type: object
+ *        properties:
+ *          isNotificationForOwnerPageEnabled:
+ *            type: string
+ *            description: Whether to notify on owner page
+ *          isNotificationForGroupPageEnabled:
+ *            type: string
+ *            description: Whether to notify on group page
  *      GlobalNotificationParams:
  *        type: object
  *        properties:
@@ -125,6 +139,8 @@ module.exports = (crowi) => {
       isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
       slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
       userNotifications: await UpdatePost.findAll(),
+      isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
+      isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
       globalNotifications: await GlobalNotificationSetting.findAll(),
     };
     return res.apiv3({ notificationParams });
@@ -401,6 +417,51 @@ module.exports = (crowi) => {
 
   });
 
+
+  /**
+   * @swagger
+   *
+   *    /notification-setting/notify-for-page-grant:
+   *      put:
+   *        tags: [NotificationSetting]
+   *        description: Update settings for notify for page grant
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/NotifyForPageGrant'
+   *        responses:
+   *          200:
+   *            description: Succeeded to settings for notify for page grant
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/NotifyForPageGrant'
+   */
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, validator.notifyForPageGrant, ApiV3FormValidator, async(req, res) => {
+
+    let requestParams = {
+      'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
+      'notification:group-page:isEnabled': req.body.isNotificationForGroupPageEnabled,
+    };
+
+    requestParams = removeNullPropertyFromObject(requestParams);
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
+      const responseParams = {
+        isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
+        isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
+      };
+      return res.apiv3({ responseParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating notify for page grant';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-notify-for-page-grant-failed'));
+    }
+  });
   /**
    * @swagger
    *

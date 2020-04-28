@@ -4,7 +4,7 @@
     {# default(author) としているのは、v1.1.1 以前に page.creator データが入ってないから。暫定として最新更新ユーザーを表示しちゃう。 #}
     <div class="col-md-3 creator-picture">
       <a href="{{ userPageRoot(page.creator) }}">
-        <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg img-circle"><br>
+        <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg rounded-circle"><br>
       </a>
     </div>
     <div class="col-md-9">
@@ -13,7 +13,7 @@
       </p>
       <p class="created-at">
         {{ t('Created') }}: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
-        {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs img-circle" alt="{{ page.revision.author.name }}"></a>
+        {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs rounded-circle" alt="{{ page.revision.author.name }}"></a>
       </p>
     </div>
   </div>

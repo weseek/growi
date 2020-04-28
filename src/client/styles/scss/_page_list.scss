@@ -6,10 +6,8 @@
 
   .page-list-ul {
     padding-left: 0;
-    margin: 0;
 
     > li {
-      margin: 0;
       list-style: none;
 
       .picture {
@@ -18,20 +16,27 @@
       }
 
       > a {
-        display: inline;
-        padding: 0 4px;
+        padding: 0px;
         color: inherit;
-      }
 
-      > span.page-list-meta {
-        font-size: 0.9em;
-
-        > span {
-          margin-right: 0.3rem;
+        &:hover {
+          color: inherit;
         }
 
-        i {
-          margin-right: 2px;
+        span.page-path {
+          padding: 0 4px;
+        }
+
+        > span.page-list-meta {
+          font-size: 0.9em;
+
+          > span {
+            margin-right: 0.3rem;
+          }
+
+          i {
+            margin-right: 2px;
+          }
         }
       }
     }

@@ -204,7 +204,7 @@ class ImportCollectionConfigurationModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} onEnter={this.initialize}>
-        <ModalHeader tag="h4" toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-info text-light">
           {`'${collectionName}'`} Configuration
         </ModalHeader>
 
@@ -213,7 +213,7 @@ class ImportCollectionConfigurationModal extends React.Component {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" className="btn btn-sm btn-light" onClick={this.props.onClose}>{t('Cancel')}</button>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>{t('Cancel')}</button>
           <button type="button" className="btn btn-sm btn-primary" onClick={this.updateOption}>{t('Update')}</button>
         </ModalFooter>
       </Modal>

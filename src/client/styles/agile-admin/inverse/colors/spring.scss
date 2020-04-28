@@ -19,7 +19,7 @@ $accentdark: rgba(224, 141, 188, 0.5);
 $background-color: rgba(171, 224, 174, 0.4);
 $third-main-color: antiquewhite;
 $textcolor: dimgray;
-$primary: $themecolor;
+$primary: #e87b98;
 $logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
 $wikilinktext: $subthemecolor;
 $wikilinktext-hover: gba(171, 224, 174, 0.9);
@@ -31,7 +31,7 @@ $wikilinktext-hover: gba(171, 224, 174, 0.9);
 .main-container > #wrapper > #page-wrapper,
 .page-editor-preview-container {
   background-color: rgba(255, 255, 255, 0.8);
-  background-image: url('/images/themes/spring/spring04.svg');
+  background-image: url('/images/themes/spring/spring02.svg');
   background-attachment: fixed;
   background-position: bottom;
   background-size: cover;
@@ -47,14 +47,6 @@ $wikilinktext-hover: gba(171, 224, 174, 0.9);
 
 .growi .main .page-comments-row {
   border-top-color: $third-main-color;
-}
-
-/*
- * Accentcolor (green)
- */
-
-header.affix {
-  border-bottom: 4px solid $accentcolor;
 }
 
 .modal {
@@ -124,7 +116,7 @@ body:not(.on-edit) .nav.nav-tabs {
 }
 
 .label-default {
-  background-color: $themecolor;
+  background-color: $primary;
 }
 
 div .btn-inverse {

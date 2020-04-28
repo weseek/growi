@@ -58,13 +58,13 @@ class SecuritySetting extends React.Component {
         </div>
           )}
         <div className="row mb-5">
-          <div className="col-3 text-right py-2">
+          <div className="col-md-3 text-md-right text-nowrap py-2 mr-md-5">
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
-          <div className="col-6">
+          <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className={`btn btn-light dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                className={`btn btn-outline-secondary dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -102,9 +102,9 @@ class SecuritySetting extends React.Component {
         </div>
           )}
         <div className="row mb-5">
-          <strong className="col-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
-          <div className="col-6">
-            <div className="custom-control custom-switch custom-checkbox-success">
+          <strong className="col-md-3 text-md-right text-nowrap mb-2 mr-md-5" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
+          <div className="col-md-6">
+            <div className="custom-control custom-checkbox custom-checkbox-success ml-md-5">
               <input
                 type="checkbox"
                 className="custom-control-input"
@@ -120,9 +120,9 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <strong className="col-3 text-right" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
-          <div className="col-6">
-            <div className="custom-control custom-switch custom-checkbox-success">
+          <strong className="col-md-3 text-md-right text-nowrap mr-md-5 mb-2" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
+          <div className="col-md-6 ml-md-5">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
               <input
                 type="checkbox"
                 className="custom-control-input"
@@ -138,13 +138,13 @@ class SecuritySetting extends React.Component {
         </div>
 
         <div className="row mb-5">
-          <div className="col-3 text-right">
+          <div className="col-md-3 text-md-right mr-md-5 mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
-          <div className="col-9">
+          <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className="btn btn-light dropdown-toggle"
+                className="btn btn-outline-secondary dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -167,7 +167,7 @@ class SecuritySetting extends React.Component {
                   {t('security_setting.admin_and_author')}
                 </a>
               </div>
-              <p className="help-block small">
+              <p className="form-text text-muted small">
                 {t('security_setting.complete_deletion_explain')}
               </p>
             </div>

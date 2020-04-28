@@ -6,8 +6,12 @@ $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', Mei
 
 //== Layout
 $grw-navbar-height: 50px;
-$grw-logo-width: 60px;
-$grw-logomark-width: 32px;
+
+$grw-sidebar-nav-width: 64px;
+$grw-sidebar-content-min-width: 240px;
+
+$grw-logo-width: $grw-sidebar-nav-width;
+$grw-logomark-width: 40px;
 
 // fix tab width to 95 pixels
 // see also '_on-edit.scss'

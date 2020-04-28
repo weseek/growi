@@ -166,7 +166,7 @@ class GrantSelector extends React.Component {
     return (
       <div className="form-group grw-grant-selector mb-0">
         <UncontrolledDropdown direction="up" size="sm">
-          <DropdownToggle caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
+          <DropdownToggle color="light" caret className="d-flex justify-content-between align-items-center" disabled={this.props.disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
           <DropdownMenu>
@@ -217,7 +217,7 @@ class GrantSelector extends React.Component {
         isOpen={this.state.isSelectGroupModalShown}
         toggle={this.hideSelectGroupModal}
       >
-        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal}>
+        <ModalHeader tag="h4" toggle={this.hideSelectGroupModal} className="bg-info text-light">
           Select a Group
         </ModalHeader>
         <ModalBody>

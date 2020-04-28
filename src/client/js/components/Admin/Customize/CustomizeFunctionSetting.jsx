@@ -60,7 +60,7 @@ class CustomizeBehaviorSetting extends React.Component {
 
 
             <div className="form-group row">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
                   optionId="isEnabledTimeline"
                   label={t('admin:customize_setting.function_options.timeline')}
@@ -77,7 +77,7 @@ class CustomizeBehaviorSetting extends React.Component {
             </div>
 
             <div className="form-group row">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
                   optionId="isSavedStatesOfTabChanges"
                   label={t('admin:customize_setting.function_options.tab_switch')}
@@ -93,7 +93,7 @@ class CustomizeBehaviorSetting extends React.Component {
             </div>
 
             <div className="form-group row">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
                   optionId="isEnabledAttachTitleHeader"
                   label={t('admin:customize_setting.function_options.attach_title_header')}
@@ -108,7 +108,7 @@ class CustomizeBehaviorSetting extends React.Component {
             </div>
 
             <div className="form-group row">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-md-3 col-md-6 text-left">
                 <div className="my-0 w-100">
                   <label>{t('admin:customize_setting.function_options.recent_created__n_draft_num_desc')}</label>
                 </div>
@@ -135,7 +135,7 @@ class CustomizeBehaviorSetting extends React.Component {
             </div>
 
             <div className="form-group row">
-              <div className="offset-3 col-6 text-left">
+              <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
                   optionId="isEnabledStaleNotification"
                   label={t('admin:customize_setting.function_options.stale_notification')}
@@ -150,14 +150,14 @@ class CustomizeBehaviorSetting extends React.Component {
             </div>
 
             <div className="form-group row">
-              <div className="col-xs-offset-3 col-xs-6 text-left">
+              <div className="offset-md-3 col-md-6 text-left">
                 <CustomizeFunctionOption
                   optionId="isAllReplyShown"
                   label={t('admin:customize_setting.function_options.show_all_reply_comments')}
                   isChecked={adminCustomizeContainer.state.isAllReplyShown || false}
                   onChecked={() => { adminCustomizeContainer.switchIsAllReplyShown() }}
                 >
-                  <p className="help-block">
+                  <p className="form-text text-muted">
                     {t('admin:customize_setting.function_options.show_all_reply_comments_desc')}
                   </p>
                 </CustomizeFunctionOption>

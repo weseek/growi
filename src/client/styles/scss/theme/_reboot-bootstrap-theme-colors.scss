@@ -42,7 +42,7 @@
 
 @each $theme-color, $color in $theme-colors {
   .alert.alert-#{$theme-color} {
-    color: $bgcolor-global;
+    color: $color-alert;
     background: $color;
     border: none;
 
@@ -55,4 +55,15 @@
       }
     }
   }
+}
+
+@each $theme-color, $color in $theme-colors {
+  .badge.badge-#{$theme-color} {
+    color: $color-badge;
+    background: $color;
+  }
+}
+
+@each $color, $value in $table-variants {
+  @include table-variant($color, $value);
 }

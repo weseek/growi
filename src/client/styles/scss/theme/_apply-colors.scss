@@ -8,8 +8,13 @@ $body-color: $color-global;
 $link-color: $color-link;
 $link-hover-color: $color-link-hover;
 
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import 'mixins-for-tables';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
+@import 'reboot-toastr-colors';
 
 // Link buttons
 .btn-link {
@@ -21,10 +26,33 @@ $link-hover-color: $color-link-hover;
 }
 
 // Dropdown
+.dropdown-menu {
+  form {
+    color: $color-global;
+  }
+}
+
 .dropdown-item {
+  color: $color-global;
   &.active,
   &:active {
-    @include gradient-bg($dropdown-link-active-bg);
+    color: $color-dropdown-link-active;
+    background-color: $bgcolor-dropdown-link-active;
+  }
+}
+
+// List Group
+.list-group {
+  .list-group-item {
+    color: $color-list;
+    background-color: $bgcolor-list;
+    &:hover {
+      background-color: $color-list-hover;
+    }
+    &.active {
+      color: $color-list-active;
+      background-color: $bgcolor-list-active;
+    }
   }
 }
 
@@ -49,24 +77,26 @@ $link-hover-color: $color-link-hover;
 //== Apply to GROWI Elements
 //
 
-.logo {
+.grw-logo {
+  background-color: darken($bgcolor-logo, 10%);
+
   // set transition for fill
   svg * {
     transition: fill 0.8s ease-out;
   }
 
-  .logo-mark {
+  svg {
+    fill: $fillcolor-logo-mark;
+  }
+
+  &:hover {
     svg {
-      fill: $fillcolor-logo-mark;
+      .group1 {
+        fill: $growi-green;
+      }
 
-      &:hover {
-        .group1 {
-          fill: $growi-green;
-        }
-
-        .group2 {
-          fill: $growi-blue;
-        }
+      .group2 {
+        fill: $growi-blue;
       }
     }
   }
@@ -75,16 +105,24 @@ $link-hover-color: $color-link-hover;
 .grw-navbar {
   background: $bgcolor-navbar;
   .nav-item > .nav-link {
-    color: white;
-  }
-
-  .logo {
-    background-color: darken($bgcolor-navbar, 10%);
+    color: $color-link-nabvar;
   }
 }
 
-.grw-title-bar {
-  background: darken($bgcolor-global, 2%);
+.grw-sidebar {
+  .grw-global-item-container.active {
+    button:after {
+      // fukidashi color
+      border-right-color: darken($bgcolor-global, 4%);
+    }
+  }
+}
+
+/*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: $color-editor-icons;
 }
 
 /*
@@ -101,22 +139,8 @@ $link-hover-color: $color-link-hover;
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
-
-    &.bg-primary,
-    &.bg-info,
-    &.bg-success,
-    &.bg-warning,
-    &.bg-danger {
-      color: white;
-
-      .close {
-        color: white;
-      }
-    }
-
     .close {
       opacity: 0.5;
-
       &:hover {
         opacity: 0.9;
       }
@@ -167,18 +191,6 @@ $link-hover-color: $color-link-hover;
 }
 
 /*
- * Crowi sidebar
- */
-.crowi-sidebar {
-  background-color: darken($bgcolor-global, 4%);
-  border-left: solid 1px $border-color;
-
-  .system-version {
-    background-color: darken($bgcolor-global, 4%);
-  }
-}
-
-/*
  * GROWI wiki
  */
 .wiki {
@@ -200,13 +212,6 @@ $link-hover-color: $color-link-hover;
       color: $color-link-wiki-hover;
     }
   }
-}
-
-/*
- * GROWI header
- */
-header.affix {
-  background: rgba(darken($bgcolor-global, 2%), 0.9);
 }
 
 /*
@@ -252,7 +257,7 @@ body.on-edit {
     }
 
     .nav.nav-tabs {
-      > li.active > a {
+      > li > a.active {
         background: transparent;
         border-bottom: solid 1px darken($bgcolor-global, 4%);
         border-bottom-color: darken($bgcolor-global, 4%);
@@ -268,21 +273,30 @@ body.on-edit {
   .search-result-list {
     .page-list {
       .page-list-ul {
-        > li > a {
-          background-color: transparent;
+        > li.nav-item > a.nav-link {
+          color: inherit;
         }
 
-        li:hover {
-          background-color: darken($bgcolor-global, 4%);
-        }
-
-        li.active {
-          background-color: darken($bgcolor-global, 8%);
-          border-color: theme-color('primary');
+        a {
+          &.hover {
+            background-color: darken($bgcolor-global, 4%);
+          }
+          &.active {
+            background-color: darken($bgcolor-global, 8%);
+            border-color: theme-color('primary');
+          }
         }
       }
     }
   }
+}
+
+/*
+ * react bootstrap typeahead
+ */
+mark.rbt-highlight-text {
+  // Temporarily the highlight color is black
+  color: black;
 }
 
 /*
@@ -304,4 +318,11 @@ body.on-edit {
       }
     }
   }
+}
+
+/*
+ * HackMd
+ */
+.bg-box {
+  background-color: $bgcolor-global;
 }

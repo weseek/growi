@@ -3,9 +3,7 @@
 {% block html_title %}{{ customizeService.generateCustomTitle(t('User_Management')) }}{% endblock %}
 
 {% block content_header %}
-<header id="page-header">
-  <h1 id="admin-title" class="title">{{ t('User_Management') }}</h1>
-</header>
+<h1 class="title">{{ t('User_Management') }}</h1>
 {% endblock %}
 
 {% block content_main %}
@@ -29,7 +27,7 @@
       {% include './widget/menu.html' with {current: 'user'} %}
     </div>
 
-    <div class="col-md-9">
+    <div class="col-lg-9">
       <p>
         <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm" {% if isUserCountExceedsUpperLimit %}disabled{% endif %}>
           {{ t("user_management.invite_users") }}
@@ -162,7 +160,7 @@
           {% set sUserId = sUser._id.toString() %}
           <tr>
             <td>
-              <img src="{{ sUser|picture }}" class="picture img-circle" />
+              <img src="{{ sUser|picture }}" class="picture rounded-circle" />
               {% if sUser.admin %}
               <span class="label label-inverse label-admin">
               {{ t('administrator') }}

@@ -5,8 +5,8 @@
       <form role="form" id="renamePageForm" onsubmit="return false;">
 
         <div class="modal-header bg-primary">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title">{{ t('modal_rename.label.Move/Rename page') }}</div>
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -16,9 +16,11 @@
           <div class="form-group">
             <label for="newPageName">{{ t('modal_rename.label.New page name') }}</label><br>
             <div class="input-group">
-              <span class="input-group-addon">{{ baseUrl }}</span>
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ baseUrl }}</span>
+              </div>
               {% if isSearchServiceConfigured() %}
-              <div id="rename-page-name-input" class="page-name-input"></div>
+              <div id="rename-page-name-input" class="page-name-input flex-fill"></div>
               {% else %}
               <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
               {% endif %}
@@ -31,7 +33,7 @@
             <input class="custom-control-input" name="recursively" id="cbRenameRecursively" value="1" type="checkbox" checked　>
             <label class="custom-control-label" for="cbRenameRecursively">
               {{ t('modal_rename.label.Recursively') }}
-              <p class="help-block mt-0">{{ t('modal_rename.help.recursive', page.path) }}</p>
+              <p class="form-text text-muted mt-0">{{ t('modal_rename.help.recursive', page.path) }}</p>
             </label>
           </div>
 
@@ -39,7 +41,7 @@
             <input class="custom-control-input" name="create_redirect" id="cbRenameRedirect" value="1" type="checkbox">
             <label class="custom-control-label" for="cbRenameRedirect">
               {{ t('modal_rename.label.Redirect') }}
-              <p class="help-block mt-0">{{ t('modal_rename.help.redirect', page.path) }}</p>
+              <p class="form-text text-muted mt-0">{{ t('modal_rename.help.redirect', page.path) }}</p>
             </label>
           </div>
 
@@ -47,7 +49,7 @@
             <input class="custom-control-input" name="remain_metadata" id="cbRenameMetadata" value="1" type="checkbox">
             <label class="custom-control-label" for="cbRenameMetadata">
               {{ t('modal_rename.label.Do not update metadata') }}
-              <p class="help-block mt-0">{{ t('modal_rename.help.metadata') }}</p>
+              <p class="form-text text-muted mt-0">{{ t('modal_rename.help.metadata') }}</p>
             </label>
           </div>
 
@@ -60,8 +62,10 @@
               <input type="hidden" name="path" value="{{ page.path }}">
               <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
               <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-              <button type="submit" class="btn btn-primary">Rename</button>
             </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Rename</button>
           </div>
         </div>
 

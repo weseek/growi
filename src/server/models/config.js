@@ -117,6 +117,9 @@ module.exports = function(crowi) {
       'customize:isEnabledStaleNotification': false,
       'customize:isAllReplyShown': false,
 
+      'notification:owner-page:isEnabled': false,
+      'notification:group-page:isEnabled': false,
+
       'importer:esa:team_name': undefined,
       'importer:esa:access_token': undefined,
       'importer:qiita:team_name': undefined,
@@ -186,6 +189,7 @@ module.exports = function(crowi) {
         image: crowi.fileUploadService.getIsUploadable(),
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
+      registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
       behaviorType: crowi.configManager.getConfig('crowi', 'customize:behavior'),
       layoutType: crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
@@ -211,6 +215,7 @@ module.exports = function(crowi) {
       env: {
         PLANTUML_URI: env.PLANTUML_URI || null,
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
+        DRAWIO_URI: env.DRAWIO_URI || null,
         HACKMD_URI: env.HACKMD_URI || null,
         MATHJAX: env.MATHJAX || null,
         NO_CDN: env.NO_CDN || null,

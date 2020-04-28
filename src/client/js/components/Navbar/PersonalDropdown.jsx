@@ -56,8 +56,10 @@ const PersonalDropdown = (props) => {
   return (
     <>
       {/* Button */}
-      <a className="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
-        <UserPicture user={user} withoutLink />&nbsp;{user.name}
+      {/* remove .dropdown-toggle for hide caret */}
+      {/* See https://stackoverflow.com/a/44577512/13183572 */}
+      <a className="nav-link waves-effect waves-light" data-toggle="dropdown">
+        <UserPicture user={user} withoutLink /><span className="d-none d-sm-inline-block">&nbsp;{user.name}</span>
       </a>
 
       {/* Menu */}
@@ -76,7 +78,7 @@ const PersonalDropdown = (props) => {
         <h6 className="dropdown-header">Color Scheme</h6>
         <form className="px-4">
           <div className="form-row align-items-center">
-            <div className="col-auto">
+            <div className="form-group col-auto">
               <div className="custom-control custom-checkbox">
                 <input
                   id="cbFollowOs"
@@ -85,12 +87,12 @@ const PersonalDropdown = (props) => {
                   checked={!isUserPreferenceExists}
                   onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
                 />
-                <label className="custom-control-label" htmlFor="cbFollowOs">Use OS Setting</label>
+                <label className="custom-control-label text-nowrap" htmlFor="cbFollowOs">Use OS Setting</label>
               </div>
             </div>
           </div>
           <div className="form-row align-items-center">
-            <div className="col-auto d-flex">
+            <div className="form-group col-auto mb-0 d-flex">
               <span className={isUserPreferenceExists ? '' : 'text-muted'}>Light</span>
               <div className="custom-control custom-switch custom-checkbox-secondary ml-2">
                 <input

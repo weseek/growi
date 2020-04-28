@@ -123,6 +123,7 @@
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
+  "Disassociate": "Disassociate",
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
@@ -164,12 +165,16 @@
   },
   "Password": "Password",
   "Password Settings": "Password Settings",
-  "Set new Password": "Set new Password",
-  "Update Password": "Update Password",
-  "Current password": "Current password",
-  "New password": "New password",
-  "Re-enter new password": "Re-enter new password",
-  "Password is not set": "Password is not set",
+    "personal_settings": {
+    "disassociate_external_account": "Disassociate External Account",
+    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
+    "set_new_password": "Set new Password",
+    "update_password": "Update Password",
+      "current_password": "Current password",
+      "new_password": "New password",
+      "new_password_confirm": "Re-enter new password",
+      "password_is_not_set": "Password is not set"
+    },
   "security_settings": "Security Settings",
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",
@@ -289,7 +294,7 @@
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Open/Close shortcut help": "Open/Close<br>shortcut help",
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Show Contributors": "Show Contributors",
@@ -320,7 +325,7 @@
   "template": {
     "modal_label": {
       "Create/Edit Template Page": "Create/Edit Template Page",
-      "Create template under": "Create template page under:<br /><code><small>%s</small></code>"
+      "Create template under": "Create template page under:<br /><code>%s</code>"
     },
     "option_label": {
       "create/edit": "Create/Edit Template page..",
@@ -365,6 +370,23 @@
     "alt_text": "Alt Text",
     "insert_image": "inserts an image",
     "open_sandbox": "Open Sandbox"
+  },
+  "hackmd": {
+    "not_set_up": "HackMD is not set up.",
+    "start_to_edit": "Start to edit with HackMD",
+    "clone_page_content": "Click to clone page content and start to edit.",
+    "unsaved_draft": "HackMD has unsaved draft.",
+    "draft_outdated": "DRAFT MAY BE OUTDATED",
+    "based_on_revision": "The current draft on HackMD is based on",
+    "view_outdated_draft": "View the outdated draft on HackMD",
+    "resume_to_edit": "Resume to edit with HackMD",
+    "discard_changes": "Discard changes of HackMD",
+    "integration_failed": "HackMD Integration failed",
+    "fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
+    "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
+    "not_initialized": "HackmdEditor component has not initialized",
+    "someone_editing": "Someone editing this page on HackMD",
+    "this_page_has_draft": "This page has a draft on HackMD"
   },
   "security_setting": {
     "Security settings": "Security settings",
@@ -565,6 +587,10 @@
     "channel": "Channel",
     "pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
     "channel_desc": "Slack channel name. Without <code>#</code>.",
+    "valid_page": "Enable/Disable Notification",
+    "link_notification_help": "<strong>The page that is able to be viewed only by those who know the link 'Anyone with the link'</strong> is not notified always.",
+    "just_me_notification_help": "<strong>The page that is restricted by 'only me'</strong> is notify when the page edited.",
+    "group_notification_help": "<strong>The page that is restricted by 'User Group'</strong> is notify when the page edited.",
     "notification_list": "List of Notification Settings",
     "add_notification": "Add New",
     "trigger_path": "Trigger Path",

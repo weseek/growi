@@ -833,10 +833,10 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage.path, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
     }
     catch (err) {
-      logger.error(err);
+      logger.error('Create notification failed', err);
     }
 
     // user notification
@@ -961,10 +961,10 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page.path, req.user);
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page, req.user);
     }
     catch (err) {
-      logger.error(err);
+      logger.error('Edit notification failed', err);
     }
 
     // user notification
@@ -1233,150 +1233,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /likes.add:
-   *      post:
-   *        tags: [Likes, CrowiCompatibles]
-   *        operationId: addLike
-   *        summary: /likes.add
-   *        description: Like page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page liked.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /likes.add Like page
-   * @apiName LikePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.like = async function(req, res) {
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`);
-      }
-      page = await page.like(req.user);
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = { page };
-    result.seenUser = page.seenUsers;
-    res.json(ApiResponse.success(result));
-
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page.path, req.user);
-    }
-    catch (err) {
-      logger.error('Like failed', err);
-    }
-  };
-
-  /**
-   * @swagger
-   *
-   *    /likes.remove:
-   *      post:
-   *        tags: [Likes, CrowiCompatibles]
-   *        operationId: removeLike
-   *        summary: /likes.remove
-   *        description: Unlike page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to not be page liked.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /likes.remove Unlike page
-   * @apiName UnlikePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.unlike = async function(req, res) {
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (req.user == null) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`);
-      }
-      page = await page.unlike(req.user);
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = { page };
-    result.seenUser = page.seenUsers;
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
    *    /pages.updatePost:
    *      get:
    *        tags: [Pages, CrowiCompatibles]
@@ -1499,8 +1355,13 @@ module.exports = function(crowi, app) {
 
     res.json(ApiResponse.success(result));
 
-    // global notification
-    await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page.path, req.user);
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
+    }
+    catch (err) {
+      logger.error('Delete notification failed', err);
+    }
   };
 
   /**
@@ -1652,10 +1513,15 @@ module.exports = function(crowi, app) {
 
     res.json(ApiResponse.success(result));
 
-    // global notification
-    globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page.path, req.user, {
-      oldPath: req.body.path,
-    });
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
+        oldPath: req.body.path,
+      });
+    }
+    catch (err) {
+      logger.error('Move notification failed', err);
+    }
 
     return page;
   };

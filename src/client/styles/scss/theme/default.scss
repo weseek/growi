@@ -1,6 +1,5 @@
 @import '../variables';
 @import '../override-bootstrap-variables';
-
 // == Define Bootstrap theme colors
 //
 
@@ -15,7 +14,7 @@
 
 //== Light Mode
 //
-html:not([dark]) {
+html[light] {
   $primary: #112744;
 
   // Background colors
@@ -26,18 +25,42 @@ html:not([dark]) {
 
   // Font colors
   $color-global: #333333;
+  $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
   $color-link: lighten($primary, 20%);
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
+  $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e;
 
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-reversal;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
   // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $growi-blue;
+  $color-dropdown-link-active: $color-reversal;
+  $color-dropdown-link-hover: $color-reversal;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -58,18 +81,42 @@ html[dark] {
 
   // Font colors
   $color-global: #eeeeee;
+  $color-reversal: #333333;
   // $color-header: desaturate($primary, 20%);
   $color-link: $primary;
   $color-link-hover: lighten($color-link, 10%);
   $color-link-wiki: lighten($basecolor, 50%);
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
+  $color-link-nabvar: $color-global;
   $color-inline-code: #c7254e;
 
+  // List Group colors
+  $color-list: $color-global;
+  $bgcolor-list: $bgcolor-global;
+  $color-list-active: $color-global;
+  $bgcolor-list-active: $primary;
+  $color-list-hover: $color-reversal;
+
   // Logo colors
+  $bgcolor-logo: $bgcolor-navbar;
   $fillcolor-logo-mark: #444;
+
+  // Icon colors
+  $color-editor-icons: $color-global;
 
   // Border colors
   $border-color-theme: black; // former: `$navbar-border: #ccc;`
+
+  // Dropdown colors
+  $bgcolor-dropdown-link-active: $primary;
+  $color-dropdown-link-active: $color-global;
+  $color-dropdown-link-hover: $color-reversal;
+
+  // alert
+  $color-alert: $color-reversal;
+
+  // badge
+  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-dark';

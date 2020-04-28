@@ -69,7 +69,7 @@ class GitHubSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="offset-3 col-6 text-left">
+          <div className="col-12 offset-md-3 col-md-6">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isGitHubEnabled"
@@ -83,20 +83,20 @@ class GitHubSecurityManagement extends React.Component {
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled)
-              && <div className="badg badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
-          <div className="col-6">
+          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_setting.callback_URL')}</label>
+          <div className="col-12 col-md-6">
             <input
               className="form-control"
               type="text"
               value={adminGitHubSecurityContainer.state.appSiteUrl}
               readOnly
             />
-            <p className="help-block small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {!adminGeneralSecurityContainer.state.appSiteUrl && (
               <div className="alert alert-danger">
                 <i
@@ -125,7 +125,7 @@ class GitHubSecurityManagement extends React.Component {
                   value={adminGitHubSecurityContainer.state.githubClientId || ''}
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_ID' }) }} />
                 </p>
               </div>
@@ -141,7 +141,7 @@ class GitHubSecurityManagement extends React.Component {
                   defaultValue={adminGitHubSecurityContainer.state.githubClientSecret || ''}
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_SECRET' }) }} />
                 </p>
               </div>
@@ -149,7 +149,7 @@ class GitHubSecurityManagement extends React.Component {
 
             <div className="row mb-5">
               <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-switch custom-checkbox-success">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserNameGitHub"
                     className="custom-control-input"
@@ -163,7 +163,7 @@ class GitHubSecurityManagement extends React.Component {
                     dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
                   />
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
                 </p>
               </div>

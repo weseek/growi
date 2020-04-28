@@ -18,9 +18,10 @@ class SearchResultList extends React.Component {
       const showTags = (page.tags != null) && (page.tags.length > 0);
 
       return (
-        <div id={page._id} key={page._id} className="search-result-page mb-5">
+        // Add prefix 'id_' in id attr, because scrollspy of bootstrap doesn't work when the first letter of id of target component is numeral.
+        <div id={`id_${page._id}`} key={page._id} className="search-result-page mb-5">
           <h2>
-            <a href={page.path}>{page.path}</a>
+            <a href={page.path} className="text-break">{page.path}</a>
             { showTags && (
               <div className="mt-1 small"><i className="tag-icon icon-tag"></i> {page.tags.join(', ')}</div>
             )}

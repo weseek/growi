@@ -8,9 +8,9 @@
 {% endif %}
 
 <li>
-  <img src="{{ page.lastUpdateUser|picture }}" class="picture img-circle">
+  <img src="{{ page.lastUpdateUser|picture }}" class="picture rounded-circle">
   <a href="{{ page.path }}"
-    class="page-list-link"
+    class="page-list-link text-break"
     data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
   </a>
   <span class="page-list-meta">

@@ -175,7 +175,7 @@ class SelectCollectionsModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader tag="h4" toggle={this.props.onClose}>
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-info text-light">
           {t('admin:export_management.export_collections')}
         </ModalHeader>
 
@@ -183,43 +183,43 @@ class SelectCollectionsModal extends React.Component {
           <ModalBody>
             <div className="row">
               <div className="col-sm-12">
-                <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.checkAll}>
+                <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.checkAll}>
                   <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
                 </button>
-                <button type="button" className="btn btn-sm btn-light mr-2" onClick={this.uncheckAll}>
+                <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={this.uncheckAll}>
                   <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
                 </button>
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">Page Collections</h3>
+                <h3 className="admin-setting-header">MongoDB Page Collections</h3>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">User Collections</h3>
+                <h3 className="admin-setting-header">MongoDB User Collections</h3>
                 {this.renderGroups(GROUPS_USER, 'danger')}
                 {this.renderWarnForUser()}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">Config Collections</h3>
+                <h3 className="admin-setting-header">MongoDB Config Collections</h3>
                 {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-sm-12">
-                <h3 className="admin-setting-header">Other Collections</h3>
+                <h3 className="admin-setting-header">MongoDB Other Collections</h3>
                 {this.renderOthers()}
               </div>
             </div>
           </ModalBody>
 
           <ModalFooter>
-            <button type="button" className="btn btn-sm btn-light" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
+            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>{t('export_management.cancel')}</button>
             <button type="submit" className="btn btn-sm btn-primary" disabled={!this.validateForm()}>{t('export_management.export')}</button>
           </ModalFooter>
         </form>

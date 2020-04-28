@@ -50,11 +50,11 @@ class AwsSetting extends React.Component {
           </span>
         </p>
 
-        <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.region')}
           </label>
-          <div className="col-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               placeholder={`${t('eg')} ap-northeast-1`}
@@ -66,11 +66,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.custom_endpoint')}
           </label>
-          <div className="col-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -84,11 +84,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             {t('admin:app_setting.bucket_name')}
           </label>
-          <div className="col-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -101,11 +101,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             Access Key ID
           </label>
-          <div className="col-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -117,11 +117,11 @@ class AwsSetting extends React.Component {
           </div>
         </div>
 
-        <div className="row form-group mb-5">
-          <label className="col-3 col-form-label">
+        <div className="row form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">
             Secret Access Key
           </label>
-          <div className="col-6">
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"

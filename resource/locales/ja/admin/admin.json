@@ -7,7 +7,10 @@
     "list_of_installed_plugins": "インストールされているプラグイン一覧",
     "package_name": "パッケージ名",
     "specified_version": "指定バージョン",
-    "installed_version": "インストールされているバージョン"
+    "installed_version": "インストールされているバージョン",
+    "list_of_env_vars":"サーバー側で設定されている環境変数一覧",
+    "env_var_priority":"セキュリティに関する環境変数を除き、データベースの値が優先的に取得されます。",
+    "about_security":"セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください。"
   },
   "app_setting": {
     "site_name": "サイト名",
@@ -166,7 +169,12 @@
     "import_from": "{{from}} からインポート",
     "import_growi_archive": "GROWI アーカイブをインポート",
     "growi_settings": {
-      "overwrite_documents": "インポートされたドキュメントは既存のドキュメントを上書きします",
+      "description_of_import_mode": {
+        "about": "既存のデータと同名であるデータをインポートする際の挙動は以下の3つのモードから選べます。",
+        "insert": "Insert: 当該データのインポートをスキップします。",
+        "upsert": "Upsert: 既存のデータをインポートデータで上書き更新します。",
+        "flash_and_insert": "Flash and Insert: 既存のデータを完全に削除した後、インポートを行います。"
+      },
       "growi_archive_file": "GROWI アーカイブファイル",
       "uploaded_data": "アップロードされたデータ",
       "extracted_file": "展開されたファイル",
@@ -221,6 +229,7 @@
   },
   "user_management": {
     "invite_users": "新規ユーザーの招待",
+    "click_twice_same_checkbox": "少なくとも一つはチェックしてください。",
     "invite_modal": {
       "emails": "メールアドレス (複数行入力で複数人招待可能)",
       "invite_thru_email": "招待をメールで送信",

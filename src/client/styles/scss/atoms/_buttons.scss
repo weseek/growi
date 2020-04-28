@@ -1,50 +1,21 @@
-.btn-circle {
-  width: 30px;
-  height: 30px;
-  padding: 6px 0;
-  font-size: 12px;
-  line-height: 1.428571429;
-  text-align: center;
-  border-radius: 15px;
-}
-
-.btn-circle.btn-lg {
-  width: 50px;
-  height: 50px;
-  padding: 10px 16px;
-  font-size: 18px;
-  line-height: 1.33;
-  border-radius: 25px;
-}
-
-.btn-circle.btn-xl {
-  width: 70px;
-  height: 70px;
-  padding: 10px 16px;
-  font-size: 24px;
-  line-height: 1.33;
-  border-radius: 35px;
-}
-
-#like-button,
-#bookmark-button {
-  & button {
-    font-size: 1.2em;
-    line-height: 0.8em;
-
-    &:not(:hover):not(.active) {
-      background-color: transparent;
-    }
+.btn.btn-like,
+.btn.btn-bookmark {
+  &.active,
+  &:hover {
+    // header buttons are always white for active
+    color: white !important;
   }
+
+  &:not(:hover):not(.active) {
+    background-color: transparent;
+  }
+  width: 35px;
+  height: 35px;
 }
 
 .btn-copy,
 .btn-edit {
   opacity: 0.3;
-
-  &:hover {
-    background-color: $light;
-  }
 }
 
 .btn-edit-tags {
@@ -52,5 +23,51 @@
 
   &.no-tags {
     opacity: 0.7;
+  }
+}
+
+.rounded-pill-weak {
+  border-radius: 60px;
+}
+
+// fill button style
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(lighten(black, 20%), 0.4);
+  border: none;
+
+  .btn-label {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+  }
+
+  .btn-label-text {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-decoration: none;
+  }
+
+  // effect
+  .eff {
+    position: absolute;
+    top: -50px;
+    left: 0px;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease;
+  }
+
+  &:hover {
+    .eff {
+      top: 0;
+    }
   }
 }

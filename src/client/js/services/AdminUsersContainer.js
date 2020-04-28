@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
-
 import loggerFactory from '@alias/logger';
+import { debounce } from 'throttle-debounce';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
@@ -18,17 +18,23 @@ export default class AdminUsersContainer extends Container {
 
     this.state = {
       users: [],
+      sort: 'id',
+      sortOrder: 'asc',
       isPasswordResetModalShown: false,
       isUserInviteModalShown: false,
       userForPasswordResetModal: null,
       totalUsers: 0,
       activePage: 1,
       pagingLimit: Infinity,
+      selectedStatusList: new Set(['all']),
+      searchText: '',
     };
 
     this.showPasswordResetModal = this.showPasswordResetModal.bind(this);
     this.hidePasswordResetModal = this.hidePasswordResetModal.bind(this);
     this.toggleUserInviteModal = this.toggleUserInviteModal.bind(this);
+
+    this.handleChangeSearchTextDebouce = debounce(3000, () => this.retrieveUsersByPagingNum(1));
   }
 
   /**
@@ -39,13 +45,94 @@ export default class AdminUsersContainer extends Container {
   }
 
   /**
+   * Workaround for status list
+   */
+  isSelected(statusType) {
+    return this.state.selectedStatusList.has(statusType);
+  }
+
+  handleClick(statusType) {
+    const all = 'all';
+    if (this.isSelected(statusType)) {
+      this.deleteStatusFromList(statusType);
+    }
+    else {
+      if (statusType === all) {
+        this.clearStatusList();
+      }
+      else {
+        this.deleteStatusFromList(all);
+      }
+      this.addStatusToList(statusType);
+    }
+  }
+
+  async clearStatusList() {
+    const { selectedStatusList } = this.state;
+    selectedStatusList.clear();
+    await this.setState({ selectedStatusList });
+  }
+
+  async addStatusToList(statusType) {
+    const { selectedStatusList } = this.state;
+    selectedStatusList.add(statusType);
+    await this.setState({ selectedStatusList });
+    this.retrieveUsersByPagingNum(1);
+  }
+
+  async deleteStatusFromList(statusType) {
+    const { selectedStatusList } = this.state;
+    selectedStatusList.delete(statusType);
+    await this.setState({ selectedStatusList });
+    this.retrieveUsersByPagingNum(1);
+  }
+
+  /**
+   * Workaround for Increment Search Text Input
+   */
+  async handleChangeSearchText(searchText) {
+    await this.setState({ searchText });
+    this.handleChangeSearchTextDebouce();
+  }
+
+  async clearSearchText() {
+    await this.setState({ searchText: '' });
+    this.retrieveUsersByPagingNum(1);
+  }
+
+  /**
+   * Workaround for Sorting
+   */
+  async sort(sort, isAsc) {
+    const sortOrder = isAsc ? 'asc' : 'desc';
+    await this.setState({ sort, sortOrder });
+    this.retrieveUsersByPagingNum(1);
+  }
+
+  async resetAllChanges() {
+    await this.setState({
+      sort: 'id',
+      sortOrder: 'asc',
+      searchText: '',
+      selectedStatusList: new Set(['all']),
+    });
+    this.retrieveUsersByPagingNum(1);
+  }
+
+  /**
    * syncUsers of selectedPage
    * @memberOf AdminUsersContainer
    * @param {number} selectedPage
    */
   async retrieveUsersByPagingNum(selectedPage) {
 
-    const params = { page: selectedPage };
+    const params = {
+      page: selectedPage,
+      sort: this.state.sort,
+      sortOrder: this.state.sortOrder,
+      selectedStatusList: Array.from(this.state.selectedStatusList),
+      searchText: this.state.searchText,
+    };
     const { data } = await this.appContainer.apiv3.get('/users', params);
 
     if (data.paginateResult == null) {
@@ -96,7 +183,10 @@ export default class AdminUsersContainer extends Container {
    * @memberOf AdminUsersContainer
    */
   async hidePasswordResetModal() {
-    await this.setState({ isPasswordResetModalShown: false });
+    await this.setState({
+      isPasswordResetModalShown: false,
+      userForPasswordResetModal: null,
+    });
   }
 
   /**

@@ -23,18 +23,20 @@ import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
 import TagLabels from './components/Page/TagLabels';
-import BookmarkButton from './components/BookmarkButton';
-import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 import TableOfContents from './components/TableOfContents';
 
+import PersonalSettings from './components/Me/PersonalSettings';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
+import GrowiSubNavigationForUserPage from './components/Navbar/GrowiSubNavigationForUserPage';
+import PersonalContainer from './services/PersonalContainer';
 
 import { appContainer, componentMappings } from './bootstrap';
 
@@ -48,8 +50,9 @@ const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
+const personalContainer = new PersonalContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer,
+  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -74,6 +77,7 @@ Object.assign(componentMappings, {
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,
+  'personal-setting': <PersonalSettings crowi={personalContainer} />,
 });
 
 // additional definitions if data exists
@@ -85,11 +89,8 @@ if (pageContainer.state.pageId != null) {
     'page-timeline': <PageTimeline />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
-    'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
-    'bookmark-button': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
-    'bookmark-button-lg': <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
   });
@@ -100,6 +101,8 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'revision-path': <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} />,
     'tag-label': <TagLabels />,
+    'grw-subnav': <GrowiSubNavigation />,
+    'grw-subnav-for-user-page': <GrowiSubNavigationForUserPage />,
   });
 }
 

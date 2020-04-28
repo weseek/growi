@@ -68,7 +68,7 @@ class BasicSecurityManagement extends React.Component {
         )}
 
         <div className="row mb-5">
-          <div className="col-6 offset-3">
+          <div className="col-md-6 offset-md-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isBasicEnabled"
@@ -81,7 +81,7 @@ class BasicSecurityManagement extends React.Component {
                 { t('security_setting.Basic.enable_basic') }
               </label>
             </div>
-            <p className="help-block">
+            <p className="form-text text-muted">
               <small>
                 <span dangerouslySetInnerHTML={{ __html: t('security_setting.Basic.desc_1') }} /><br />
                 { t('security_setting.Basic.desc_2')}
@@ -95,8 +95,8 @@ class BasicSecurityManagement extends React.Component {
         {isBasicEnabled && (
         <React.Fragment>
           <div className="row mb-5">
-            <div className="offset-3 col-6">
-              <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="offset-md-3 col-md-6">
+              <div className="custom-control custom-checkbox custom-checkbox-success">
                 <input
                   id="bindByEmail-basic"
                   className="custom-control-input"
@@ -110,7 +110,7 @@ class BasicSecurityManagement extends React.Component {
                   dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
                 />
               </div>
-              <p className="help-block">
+              <p className="form-text text-muted">
                 <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
               </p>
             </div>

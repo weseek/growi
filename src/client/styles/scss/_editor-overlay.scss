@@ -39,6 +39,7 @@
       opacity: 0.6;
       .card-body {
         min-width: 30em;
+        padding-bottom: 0;
         font-family: monospace;
         color: $text-muted;
       }
@@ -51,6 +52,8 @@
       color: $text-muted;
       pointer-events: all;
       cursor: pointer;
+      background-color: transparent;
+      border: none;
 
       opacity: 0.6;
 

@@ -11,7 +11,7 @@ class StatusTable extends React.PureComponent {
 
     const aliasLabels = aliases.map((aliasName) => {
       return (
-        <span key={`badge-${indexName}-${aliasName}`} className="badge badge-primary mr-2">
+        <span key={`badge-${indexName}-${aliasName}`} className="badge badge-pill badge-primary mr-2">
           <i className="icon-tag"></i> {aliasName}
         </span>
       );
@@ -20,10 +20,11 @@ class StatusTable extends React.PureComponent {
     return (
       <div className="card">
         <div className="card-header">
-          <a role="button" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
+
+          <a role="button" className="text-nowrap mr-2" data-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
             <i className="fa fa-fw fa-database"></i> {indexName}
           </a>
-          <span className="ml-3">{aliasLabels}</span>
+          <span className="ml-md-3">{aliasLabels}</span>
         </div>
         <div id={collapseId} className="collapse">
           <div className="card-body">
@@ -82,7 +83,7 @@ class StatusTable extends React.PureComponent {
       <div className="row">
         { Object.keys(indexNameToDataMap).map((indexName) => {
           return (
-            <div key={`col-${indexName}`} className="col-xs-6">
+            <div key={`col-${indexName}`} className="col-md-6">
               { this.renderIndexInfoPanel(indexName, indexNameToDataMap[indexName], indexNameToAliasMap[indexName]) }
             </div>
           );
@@ -96,39 +97,37 @@ class StatusTable extends React.PureComponent {
     const { isConfigured, isConnected, isNormalized } = this.props;
 
 
-    let connectionStatusLabel = <span className="badge badge-default">――</span>;
+    let connectionStatusLabel = <span className="badge badge-pill badge-secondary">――</span>;
     if (isConfigured != null && !isConfigured) {
-      connectionStatusLabel = <span className="badge badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+      connectionStatusLabel = <span className="badge badge-pill badge-secondary">{t('full_text_search_management.connection_status_label_unconfigured')}</span>;
     }
     else if (isConnected != null) {
       connectionStatusLabel = isConnected
-        ? <span className="badge badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="badge badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+        ? <span className="badge badge-pill badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge badge-pill badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
     }
 
-    let indicesStatusLabel = <span className="label badge-default">――</span>;
+    let indicesStatusLabel = <span className="badge badge-pill badge-secondary">――</span>;
     if (isNormalized != null) {
       indicesStatusLabel = isNormalized
-        ? <span className="badge badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-        : <span className="badge badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+        ? <span className="badge badge-pill badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+        : <span className="badge badge-pill badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
     }
 
     return (
       <table className="table table-bordered">
         <tbody>
           <tr>
-            <th>{ t('full_text_search_management.connection_status') }</th>
-            <td>{connectionStatusLabel}</td>
+            <th className="w-25">{t('full_text_search_management.connection_status')}</th>
+            <td className="w-75">{connectionStatusLabel}</td>
           </tr>
           <tr>
-            <th>{ t('full_text_search_management.indices_status') }</th>
-            <td>{indicesStatusLabel}</td>
+            <th className="w-25">{t('full_text_search_management.indices_status')}</th>
+            <td className="w-75">{indicesStatusLabel}</td>
           </tr>
           <tr>
-            <th className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
-            <td className="p-4">
-              { this.renderIndexInfoPanels() }
-            </td>
+            <th className="w-25">{t('full_text_search_management.indices_summary')}</th>
+            <td className="p-4 w-75">{this.renderIndexInfoPanels()}</td>
           </tr>
         </tbody>
       </table>

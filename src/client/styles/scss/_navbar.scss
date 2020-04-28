@@ -1,4 +1,9 @@
 .grw-navbar {
+  .grw-navbar-toggler {
+    padding: 0.5rem;
+    font-size: 1.5em;
+  }
+
   .nav-link,
   .nav-item.confidential {
     display: flex;
@@ -7,7 +12,7 @@
     padding: 0 1rem;
   }
 
-  .personal-dropdown > .dropdown-toggle::after {
+  #personal-dropdown::after {
     // hide caret
     content: none;
   }

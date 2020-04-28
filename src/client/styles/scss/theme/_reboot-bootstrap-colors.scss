@@ -1,6 +1,3 @@
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '~bootstrap/scss/mixins';
 //
 //
 // Apply partially
@@ -191,12 +188,12 @@ body {
 
 a {
   color: $link-color;
-  // text-decoration: $link-decoration;
+  text-decoration: $link-decoration;
   background-color: transparent; // Remove the gray background on active links in IE 10.
 
   @include hover() {
     color: $link-hover-color;
-    // text-decoration: $link-hover-decoration;
+    text-decoration: $link-hover-decoration;
   }
 }
 

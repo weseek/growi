@@ -91,47 +91,49 @@ class GlobalNotificationList extends React.Component {
                 {notification.triggerPath}
               </td>
               <td>
-                {notification.triggerEvents.includes('pageCreate') && (
-                  <span className="badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" title="Page Create">
+                <ul className="list-inline">
+                  {notification.triggerEvents.includes('pageCreate') && (
+                  <li className="list-inline-item badge badge-pill badge-success" data-toggle="tooltip" data-placement="top" title="Page Create">
                     <i className="icon-doc"></i> CREATE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageEdit') && (
-                  <span className="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
+                  {notification.triggerEvents.includes('pageEdit') && (
+                  <li className="list-inline-item badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Edit">
                     <i className="icon-pencil"></i> EDIT
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageMove') && (
-                  <span className="badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
+                  {notification.triggerEvents.includes('pageMove') && (
+                  <li className="list-inline-item badge badge-pill badge-warning" data-toggle="tooltip" data-placement="top" title="Page Move">
                     <i className="icon-action-redo"></i> MOVE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageDelete') && (
-                  <span className="badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
+                  {notification.triggerEvents.includes('pageDelete') && (
+                  <li className="list-inline-item badge badge-pill badge-danger" data-toggle="tooltip" data-placement="top" title="Page Delte">
                     <i className="icon-fire"></i> DELETE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('pageLike') && (
-                  <span className="badge badge-pill badge-info" data-toggle="tooltip" data-placement="top" title="Page Like">
+                  {notification.triggerEvents.includes('pageLike') && (
+                  <li className="list-inline-item badge badge-pill badge-info" data-toggle="tooltip" data-placement="top" title="Page Like">
                     <i className="icon-like"></i> LIKE
-                  </span>
+                  </li>
                 )}
-                {notification.triggerEvents.includes('comment') && (
-                  <span className="badge badge-pill badge-light" data-toggle="tooltip" data-placement="top" title="New Comment">
+                  {notification.triggerEvents.includes('comment') && (
+                  <li className="list-inline-item badge badge-pill badge-light" data-toggle="tooltip" data-placement="top" title="New Comment">
                     <i className="icon-fw icon-bubble"></i> POST
-                  </span>
+                  </li>
                 )}
+                </ul>
               </td>
               <td>
                 {notification.__t === 'mail'
                   && <span data-toggle="tooltip" data-placement="top" title="Email"><i className="ti-email"></i> {notification.toEmail}</span>}
                 {notification.__t === 'slack'
-                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-slack"></i> {notification.slackChannels}</span>}
+                  && <span data-toggle="tooltip" data-placement="top" title="Slack"><i className="fa fa-hashtag"></i> {notification.slackChannels}</span>}
               </td>
               <td className="td-abs-center">
                 <div className="dropdown">
                   <button
-                    className="btn btn-secondary dropdown-toggle"
+                    className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
                     data-toggle="dropdown"

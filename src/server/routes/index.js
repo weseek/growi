@@ -23,7 +23,6 @@ module.exports = function(crowi, app) {
   const user = require('./user')(crowi, app);
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
-  const bookmark = require('./bookmark')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
@@ -119,17 +118,8 @@ module.exports = function(crowi, app) {
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.download);
 
   app.get('/me'                       , loginRequiredStrictly , me.index);
-  app.get('/me/password'              , loginRequiredStrictly , me.password);
-  app.get('/me/apiToken'              , loginRequiredStrictly , me.apiToken);
-  app.post('/me'                      , loginRequiredStrictly , csrf , form.me.user , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);
-  app.post('/me/external-accounts/disassociate'           , loginRequiredStrictly , me.externalAccounts.disassociate);
-  app.post('/me/external-accounts/associateLdap'          , loginRequiredStrictly , form.login , me.externalAccounts.associateLdap);
-
-  app.post('/me/password'             , form.me.password          , loginRequiredStrictly , me.password);
-  app.post('/me/imagetype'            , form.me.imagetype         , loginRequiredStrictly , me.imagetype);
-  app.post('/me/apiToken'             , form.me.apiToken          , loginRequiredStrictly , me.apiToken);
 
   app.get('/:id([0-9a-z]{24})'       , loginRequired , page.redirector);
   app.get('/_r/:id([0-9a-z]{24})'    , loginRequired , page.redirector); // alias
@@ -169,11 +159,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , csrf, comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , csrf, comment.api.remove);
-  app.get('/_api/bookmarks.get'       , accessTokenParser , loginRequired , bookmark.api.get);
-  app.post('/_api/bookmarks.add'      , accessTokenParser , loginRequiredStrictly , csrf, bookmark.api.add);
-  app.post('/_api/bookmarks.remove'   , accessTokenParser , loginRequiredStrictly , csrf, bookmark.api.remove);
-  app.post('/_api/likes.add'          , accessTokenParser , loginRequiredStrictly , csrf, page.api.like);
-  app.post('/_api/likes.remove'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.unlike);
   app.get('/_api/attachments.list'    , accessTokenParser , loginRequired , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.add);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly ,csrf, attachment.api.uploadProfileImage);

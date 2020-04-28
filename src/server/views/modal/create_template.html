@@ -1,7 +1,7 @@
 {% set templateParentPath = parentPath(page.path | preventXss | escape) %}
 
 <div class="modal create-template" id="create-template">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
 
       <div class="modal-header bg-primary">
@@ -12,14 +12,14 @@
         <div class="form-group">
           <label class="mb-4">{{ t('template.modal_label.Create template under', templateParentPath ) }}</label>
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-md-6">
               <div class="card card-select-template">
                 <div class="card-header">{{ t('template.children.label') }}</div>
                 <div class="card-body">
                   <p class="text-center"><code>_template</code></p>
-                  <p class="help-block text-center"><small>{{ t('template.children.desc') }}</small></p>
+                  <p class="form-text text-muted text-center"><small>{{ t('template.children.desc') }}</small></p>
                 </div>
-                <div class="card-footer text-center">
+                <div class="card-footer text-center bg-white">
                   <a href="{{templateParentPath}}_template#edit"
                       class="btn btn-sm btn-primary" id="template-button-children">
                       {{ t("Edit") }}
@@ -27,14 +27,14 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-md-6">
               <div class="card card-select-template">
                 <div class="card-header">{{ t('template.decendants.label') }}</div>
                 <div class="card-body">
                   <p class="text-center"><code>__template</code></p>
-                  <p class="help-block text-center"><small>{{ t('template.decendants.desc') }}</small></p>
+                  <p class="form-text text-muted text-center"><small>{{ t('template.decendants.desc') }}</small></p>
                 </div>
-                <div class="card-footer text-center">
+                <div class="card-footer text-center bg-white">
                   <a href="{{templateParentPath}}__template#edit"
                       class="btn btn-sm btn-primary" id="template-button-decendants">
                       {{ t("Edit") }}

@@ -100,13 +100,13 @@ class LocalSecuritySetting extends React.Component {
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
             <div className="row">
-              <div className="col-3 text-right py-2">
+              <div className="col-12 col-md-3 text-left text-md-right py-2">
                 <strong>{t('Register limitation')}</strong>
               </div>
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                 <div className="dropdown">
                   <button
-                    className="btn btn-light dropdown-toggle"
+                    className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
                     data-toggle="dropdown"
@@ -130,16 +130,16 @@ class LocalSecuritySetting extends React.Component {
                   </div>
                 </div>
 
-                <p className="help-block small">
+                <p className="form-text text-muted small">
                   {t('security_setting.Register limitation desc')}
                 </p>
               </div>
             </div>
             <div className="row">
-              <div className="col-3 text-right">
+              <div className="col-12 col-md-3 text-left text-md-right">
                 <strong dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
               </div>
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                 <textarea
                   className="form-control"
                   type="textarea"
@@ -147,7 +147,7 @@ class LocalSecuritySetting extends React.Component {
                   defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
                   onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                 />
-                <p className="help-block small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
+                <p className="form-text text-muted small">{t('security_setting.restrict_emails')}<br />{t('security_setting.for_instance')}
                   <code>@growi.org</code>{t('security_setting.only_those')}<br />
                   {t('security_setting.insert_single')}
                 </p>

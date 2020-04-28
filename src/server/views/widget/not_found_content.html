@@ -1,4 +1,4 @@
-<div class="row not-found-message-row mb-4">
+<div class="row not-found-message-row mb-4 d-edit-none">
   <div class="col-md-12">
     <h2 class="text-muted">
       <i class="icon-info" aria-hidden="true"></i>
@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<div id="content-main" class="content-main content-main-not-found page-list"
+<div id="content-main" class="content-main page-list"
   data-path="{{ path | preventXss }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   {% if templateTags %}

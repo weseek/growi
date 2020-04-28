@@ -147,7 +147,7 @@ class ElasticsearchManagement extends React.Component {
     return (
       <>
         <div className="row">
-          <div className="col-sm-12">
+          <div className="col-md-12">
             <StatusTable
               isConfigured={isConfigured}
               isConnected={isConnected}
@@ -162,8 +162,8 @@ class ElasticsearchManagement extends React.Component {
 
         {/* Controls */}
         <div className="row">
-          <label className="col-sm-3 col-form-label">{ t('full_text_search_management.reconnect') }</label>
-          <div className="col-sm-6">
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
+          <div className="col-md-6">
             <ReconnectControls
               isConfigured={isConfigured}
               isConnected={isConnected}
@@ -175,8 +175,8 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-sm-3 col-form-label">{ t('full_text_search_management.normalize') }</label>
-          <div className="col-sm-6">
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
+          <div className="col-md-6">
             <NormalizeIndicesControls
               isRebuildingProcessing={isRebuildingProcessing}
               isRebuildingCompleted={isRebuildingCompleted}
@@ -189,8 +189,8 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-sm-3 col-form-label">{ t('full_text_search_management.rebuild') }</label>
-          <div className="col-sm-6">
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
+          <div className="col-md-6">
             <RebuildIndexControls
               isRebuildingProcessing={isRebuildingProcessing}
               isRebuildingCompleted={isRebuildingCompleted}

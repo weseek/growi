@@ -64,32 +64,32 @@ class SlackAppConfiguration extends React.Component {
             <h2 className="border-bottom mb-5">{t('notification_setting.slack_incoming_configuration')}</h2>
 
             <div className="row mb-3">
-              <label className="col-3 text-right">Webhook URL</label>
-              <div className="col-6">
+              <label className="col-md-3 text-left text-md-right">Webhook URL</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
-                  defaultValue={adminNotificationContainer.state.webhookUrl}
+                  defaultValue={adminNotificationContainer.state.webhookUrl || ''}
                   onChange={e => adminNotificationContainer.changeWebhookUrl(e.target.value)}
                 />
               </div>
             </div>
 
             <div className="row mb-3">
-              <div className="offset-3 col-6 text-left">
-                <div className="custom-control custom-switch custom-checkbox-success">
+              <div className="offset-md-3 col-md-6 text-left">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     type="checkbox"
                     className="custom-control-input"
                     id="cbPrioritizeIWH"
-                    checked={adminNotificationContainer.state.isIncomingWebhookPrioritized}
+                    checked={adminNotificationContainer.state.isIncomingWebhookPrioritized || false}
                     onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
                   />
                   <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_setting.prioritize_webhook')}
                   </label>
                 </div>
-                <p className="help-block">
+                <p className="form-text text-muted">
                   {t('notification_setting.prioritize_webhook_desc')}
                 </p>
               </div>
@@ -116,12 +116,12 @@ class SlackAppConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="col-3 text-right">OAuth Access Token</label>
-                <div className="col-6">
+                <label className="col-md-3 text-left text-md-right">OAuth Access Token</label>
+                <div className="col-md-6">
                   <input
                     className="form-control"
                     type="text"
-                    defaultValue={adminNotificationContainer.state.slackToken}
+                    defaultValue={adminNotificationContainer.state.slackToken || ''}
                     onChange={e => adminNotificationContainer.changeSlackToken(e.target.value)}
                   />
                 </div>

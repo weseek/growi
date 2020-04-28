@@ -69,7 +69,7 @@ class UserGroupTable extends React.Component {
                   <td>
                     <ul className="list-inline">
                       {this.state.userGroupRelations[group._id].map((user) => {
-                        return <li key={user._id} className="list-inline-item badge badge-primary">{this.xss.process(user.username)}</li>;
+                        return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{this.xss.process(user.username)}</li>;
                       })}
                     </ul>
                   </td>
@@ -78,23 +78,22 @@ class UserGroupTable extends React.Component {
                     ? (
                       <td>
                         <div className="btn-group admin-group-menu">
-                          <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                            <i className="icon-settings"></i> <span className="caret"></span>
+                          <button
+                            type="button"
+                            id={`admin-group-menu-button-${group._id}`}
+                            className="btn btn-outline-secondary btn-sm dropdown-toggle"
+                            data-toggle="dropdown"
+                          >
+                            <i className="icon-settings"></i>
                           </button>
-                          <ul className="dropdown-menu" role="menu">
-                            <li>
-                              <a href={`/admin/user-group-detail/${group._id}`}>
-                                <i className="icon-fw icon-note"></i> {t('Edit')}
-                              </a>
-                            </li>
-
-                            <li>
-                              <a role="button" onClick={this.onDelete} data-user-group-id={group._id}>
-                                <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
-                              </a>
-                            </li>
-
-                          </ul>
+                          <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
+                            <a className="dropdown-item" href={`/admin/user-group-detail/${group._id}`}>
+                              <i className="icon-fw icon-note"></i> {t('Edit')}
+                            </a>
+                            <a className="dropdown-item" role="button" onClick={this.onDelete} data-user-group-id={group._id}>
+                              <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                            </a>
+                          </div>
                         </div>
                       </td>
                     )

@@ -83,7 +83,7 @@ class RebuildIndexControls extends React.Component {
           { t('full_text_search_management.rebuild_button') }
         </button>
 
-        <p className="help-block">
+        <p className="form-text text-muted">
           { t('full_text_search_management.rebuild_description_1') }<br />
           { t('full_text_search_management.rebuild_description_2') }<br />
         </p>

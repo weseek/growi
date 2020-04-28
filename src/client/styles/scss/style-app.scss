@@ -20,7 +20,7 @@
 @import 'atoms/spinners';
 @import 'atoms/custom_control';
 
-// crowi component
+// growi component
 @import 'admin';
 @import 'attachments';
 @import 'comment';
@@ -30,7 +30,6 @@
 @import 'drawio';
 @import 'navbar_kibela';
 @import 'create-page';
-@import 'create-template';
 @import 'draft';
 @import 'editor-attachment';
 @import 'editor-navbar';
@@ -42,16 +41,17 @@
 @import 'layout_kibela';
 @import 'layout_variable';
 @import 'login';
+@import 'me';
 @import 'navbar';
 @import 'navbar_kibela';
 @import 'notification';
 @import 'on-edit';
 @import 'page_list';
 @import 'page';
-@import 'page_header';
-@import 'page_growi';
 @import 'search';
 @import 'shortcuts';
+@import 'sidebar';
+@import 'subnav';
 @import 'tag';
 @import 'user';
 @import 'user_growi';

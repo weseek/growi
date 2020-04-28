@@ -87,7 +87,7 @@ class Comment extends React.PureComponent {
   }
 
   getRootClassName(comment) {
-    let className = 'page-comment';
+    let className = 'page-comment flex-column';
 
     const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
     if (comment.revision === revisionId) {
@@ -109,7 +109,7 @@ class Comment extends React.PureComponent {
 
   getRevisionLabelClassName() {
     return `page-comment-revision badge ${
-      this.isCurrentRevision() ? 'badge-primary' : 'badge-default'}`;
+      this.isCurrentRevision() ? 'badge-primary' : 'badge-secondary'}`;
   }
 
   editBtnClickedHandler() {
@@ -197,14 +197,16 @@ class Comment extends React.PureComponent {
           />
         ) : (
           <div id={commentId} className={rootClassName}>
-            <UserPicture user={creator} />
-            <div className="page-comment-main">
+            <div className="page-comment-writer">
+              <UserPicture user={creator} />
+            </div>
+            <div className="page-comment-main ml-0">
               <div className="page-comment-creator">
                 <Username user={creator} />
               </div>
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
-                {commentedDate}
+                <span><a href={`#${commentId}`}>{commentedDate}</a></span>
                 <UncontrolledTooltip placement="bottom" fade={false} target={commentedDateId}>{commentedDateFormatted}</UncontrolledTooltip>
                 { isEdited && (
                   <>

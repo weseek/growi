@@ -25,22 +25,9 @@
     }
   }
 
-  .tag-viewer.new-page {
+  .tag-labels.new-page {
     display: none;
   }
-}
-
-// alert component settings
-.alert-trash,
-.alert-moved,
-.alert-unlinked,
-.alert-grant {
-  padding: 10px 15px;
-}
-
-// show PageStatusAlert in default
-#page-status-alert .myadmin-alert {
-  display: block;
 }
 
 .main .content-main .revision-history {
@@ -83,6 +70,7 @@
       .revision-history-diff {
         padding-left: 40px;
         color: #333;
+        table-layout: fixed;
       }
     }
 
