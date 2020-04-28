@@ -16,45 +16,66 @@
 
 # Panels
 
-<div class="panel panel-default">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-primary">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-light">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-success">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-secondary text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-info">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-dark text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-warning">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-primary text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
-<div class="panel panel-danger">
-  <div class="panel-heading">Panel heading without title</div>
-  <div class="panel-body">
-    Panel content
+<div class="card bg-success text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
+  </div>
+</div>
+
+<div class="card bg-info text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
+  </div>
+</div>
+
+<div class="card bg-warning text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
+  </div>
+</div>
+
+<div class="card bg-danger text-white">
+  <div class="card-header">Card header without title</div>
+  <div class="card-body">
+    Card body content
   </div>
 </div>
 
