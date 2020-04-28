@@ -121,15 +121,8 @@ body.kibela {
 
     @include expand-editor($header-plus-footer);
 
-    .main {
-      > .row.page-content {
-        > .col-xs-12 {
-          width: 100%;
-          padding: 0;
-        }
-      }
-
-      max-width: 100%;
+    .kibela-block {
+      max-width: unset;
     }
 
     .tab-content {
