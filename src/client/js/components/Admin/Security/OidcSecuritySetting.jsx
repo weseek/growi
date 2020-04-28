@@ -63,7 +63,7 @@ class OidcSecurityManagement extends React.Component {
           {t('security_setting.OAuth.OIDC.name')}
         </h2>
 
-        <div className="row mb-5">
+        <div className="row mb-5 form-group">
           <div className="offset-3 col-6">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
