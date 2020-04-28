@@ -62,6 +62,15 @@ export default class UserPicture extends React.Component {
     return <a href={href} {...props}>{props.children}</a>;
   }
 
+  withTooltip = (RootElm) => {
+    const { user } = this.props;
+    const title = `@${user.username}<br />${user.name}`;
+
+    return props => (
+      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>{props.children}</RootElm>
+    );
+  }
+
   render() {
     const user = this.props.user;
 
@@ -69,12 +78,16 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
-    const { withoutLink } = this.props;
-    const RootElm = withoutLink ? this.RootElmWithoutLink : this.RootElmWithLink;
-    const title = `@${user.username}<br />${user.name}`;
+    const { noLink, noTooltip } = this.props;
+
+    // determine RootElm
+    let RootElm = noLink ? this.RootElmWithoutLink : this.RootElmWithLink;
+    if (!noTooltip) {
+      RootElm = this.withTooltip(RootElm);
+    }
 
     return (
-      <RootElm data-toggle="tooltip" data-placement="bottom" data-html="true" title={title}>
+      <RootElm>
         <img
           src={this.getUserPicture(user)}
           alt={user.username}
@@ -89,12 +102,12 @@ export default class UserPicture extends React.Component {
 UserPicture.propTypes = {
   user: PropTypes.object,
   size: PropTypes.string,
-  withoutLink: PropTypes.bool,
-  withoutTooltip: PropTypes.bool,
+  noLink: PropTypes.bool,
+  noTooltip: PropTypes.bool,
 };
 
 UserPicture.defaultProps = {
   size: null,
-  withoutLink: false,
-  withoutTooltip: false,
+  noLink: false,
+  noTooltip: false,
 };
