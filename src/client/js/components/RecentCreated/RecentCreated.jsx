@@ -66,8 +66,8 @@ class RecentCreated extends React.Component {
    */
   generatePageList(pages) {
     return pages.map(page => (
-      <li>
-        <Page page={page} key={`recent-created:list-view:${page._id}`} />
+      <li key={`recent-created:list-view:${page._id}`}>
+        <Page page={page} />
       </li>
     ));
   }
