@@ -68,19 +68,19 @@ class SecuritySetting extends React.Component {
           <tbody>
             <tr>
               <th scope="row">公開</th>
-              <td>項目１</td>
+              <td>表示(固定)</td>
             </tr>
             <tr>
               <th scope="row">リンクを知っている人</th>
-              <td>項目４</td>
+              <td>非表示(固定)</td>
             </tr>
             <tr>
               <th scope="row">自分のみ</th>
-              <td>項目７</td>
+              <td>[switch] 表示/非表示</td>
             </tr>
             <tr>
               <th scope="row">特定のグループのみ</th>
-              <td>項目７</td>
+              <td>[switch] 表示/非表示</td>
             </tr>
           </tbody>
         </table>
