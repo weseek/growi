@@ -124,8 +124,8 @@ class LdapSecuritySetting extends React.Component {
             <div className="form-group row">
               <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_setting.ldap.bind_mode')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <div className="dropdown">
                   <button
                     className="btn btn-outline-secondary dropdown-toggle"
