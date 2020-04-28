@@ -190,7 +190,7 @@ class LdapSecuritySetting extends React.Component {
               <div htmlFor="bindDNPassword" className="text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_setting.ldap.bind_DN_password')}</strong>
               </div>
-              <div className="col-6">
+              <div className="col-md-6">
                 {(adminLdapSecurityContainer.state.isUserBind) ? (
                   <p className="well card passport-ldap-userbind">
                     <small>
