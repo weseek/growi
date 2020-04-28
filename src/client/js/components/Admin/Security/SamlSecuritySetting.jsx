@@ -89,7 +89,7 @@ class SamlSecurityManagement extends React.Component {
           />
         )}
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
