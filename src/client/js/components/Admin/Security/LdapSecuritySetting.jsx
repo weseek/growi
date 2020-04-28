@@ -151,8 +151,8 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong>Bind DN</strong>
               </div>
               <div className="col-6">
