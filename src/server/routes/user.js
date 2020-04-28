@@ -138,7 +138,6 @@ module.exports = function(crowi, app) {
 
     const data = {};
     try {
-      // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
       const users = await userFetcher;
       data.users = users.map((user) => {
         // omit email

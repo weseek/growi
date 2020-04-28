@@ -109,7 +109,6 @@ const addSlashOfEnd = (path) => {
  */
 /* eslint-disable object-curly-newline, object-property-newline */
 const populateDataToShowRevision = (page, userPublicFields) => {
-  // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
   return page
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
@@ -265,7 +264,6 @@ class PageQueryBuilder {
   }
 
   populateDataToList(userPublicFields) {
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     this.query = this.query
       .populate({
         path: 'lastUpdateUser',
@@ -461,7 +459,6 @@ module.exports = function(crowi) {
   pageSchema.methods.populateDataToShowRevision = async function() {
     validateCrowi();
 
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     const User = crowi.model('User');
     return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
       .execPopulate();
@@ -756,7 +753,6 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     builder.populateDataToList(User.USER_PUBLIC_FIELDS);
     const pages = await builder.query.exec('find');
 
@@ -798,7 +794,6 @@ module.exports = function(crowi) {
     // count
     const totalCount = await builder.query.exec('count');
 
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_PUBLIC_FIELDS);

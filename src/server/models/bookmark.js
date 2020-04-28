@@ -45,7 +45,6 @@ module.exports = function(crowi) {
     const Bookmark = this;
     const User = crowi.model('User');
 
-    // [TODO][user-profile-cache][GW-1775] change how to get profile image data in client side.
     return Bookmark.populate(bookmarks, {
       path: 'page',
       populate: {
