@@ -116,6 +116,17 @@ $link-hover-color: $color-link-hover;
       border-right-color: darken($bgcolor-global, 4%);
     }
   }
+  div[data-testid='GlobalNavigation'] {
+    div {
+      background-color: $bgcolor-sidebar;
+    }
+  }
+  div[data-testid='ContextualNavigation'] {
+    div {
+      color: $color-sidebar-context;
+      background-color: $bgcolor-sidebar-context;
+    }
+  }
 }
 
 /*
