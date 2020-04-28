@@ -78,11 +78,11 @@ export default class UserPicture extends React.Component {
       return this.renderForNull();
     }
 
-    const { withoutLink, withoutTooltip } = this.props;
+    const { noLink, noTooltip } = this.props;
 
     // determine RootElm
-    let RootElm = withoutLink ? this.RootElmWithoutLink : this.RootElmWithLink;
-    if (!withoutTooltip) {
+    let RootElm = noLink ? this.RootElmWithoutLink : this.RootElmWithLink;
+    if (!noTooltip) {
       RootElm = this.withTooltip(RootElm);
     }
 
@@ -102,12 +102,12 @@ export default class UserPicture extends React.Component {
 UserPicture.propTypes = {
   user: PropTypes.object,
   size: PropTypes.string,
-  withoutLink: PropTypes.bool,
-  withoutTooltip: PropTypes.bool,
+  noLink: PropTypes.bool,
+  noTooltip: PropTypes.bool,
 };
 
 UserPicture.defaultProps = {
   size: null,
-  withoutLink: false,
-  withoutTooltip: false,
+  noLink: false,
+  noTooltip: false,
 };
