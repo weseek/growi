@@ -98,11 +98,12 @@ class SecuritySetting extends React.Component {
                   <input
                     type="checkbox"
                     className="custom-control-input"
-                    id="isLocalEnabled"
-                    onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
+                    id="isShowRestrictedByGroup"
+                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                   />
-                  <label className="custom-control-label" htmlFor="isLocalEnabled">
-                    {t('security_setting.Local.enable_local')}
+                  <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                    {t('Desplay or non-sisplay')}
                   </label>
                 </div>
               </td>
