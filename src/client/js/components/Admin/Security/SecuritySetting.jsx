@@ -57,8 +57,7 @@ class SecuritySetting extends React.Component {
           <p>{t('Error occurred')} : {this.state.retrieveError}</p>
         </div>
           )}
-
-        <table className="table col-md-8">
+          <table className="table col-md-8 m-3">
           <thead>
             <tr>
               <th scope="col">{ t('Scope of page showing') }</th>
