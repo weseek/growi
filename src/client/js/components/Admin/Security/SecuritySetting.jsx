@@ -61,18 +61,18 @@ class SecuritySetting extends React.Component {
         <table className="table col-md-8">
           <thead>
             <tr>
-              <th scope="col">ページの公開範囲</th>
-              <th scope="col">設定値</th>
+              <th scope="col">{ t('Scope of page showing') }</th>
+              <th scope="col">{ t('Set point') }</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">{ t('Public') }</th>
-              <td>表示(固定)</td>
+              <td>{ t('Always displayed') }</td>
             </tr>
             <tr>
               <th scope="row">{ t('Anyone with the link') }</th>
-              <td>非表示(固定)</td>
+              <td>{ t('Always non-display') }</td>
             </tr>
             <tr>
               <th scope="row">{ t('Just me') }</th>
