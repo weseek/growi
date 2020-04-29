@@ -58,7 +58,9 @@ class SecuritySetting extends React.Component {
         </div>
           )}
 
-        <h4>{ t('Page list and search results') }</h4>
+        <h4>
+          { t('Page list and search results') }
+        </h4>
         <table className="table col-md-8 m-md-3">
           <thead>
             <tr>
