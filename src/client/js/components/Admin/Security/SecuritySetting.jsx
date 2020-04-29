@@ -57,7 +57,8 @@ class SecuritySetting extends React.Component {
           <p>{t('Error occurred')} : {this.state.retrieveError}</p>
         </div>
           )}
-          <table className="table col-md-8 m-3">
+
+        <table className="table col-md-8 m-3">
           <thead>
             <tr>
               <th scope="col">{ t('Scope of page showing') }</th>
@@ -76,7 +77,7 @@ class SecuritySetting extends React.Component {
             <tr>
               <th scope="row">{ t('Just me') }</th>
               <td>
-                <div className="custom-control custom-checkbox custom-checkbox-success ml-md-5">
+                <div className="custom-control custom-switch custom-checkbox-success">
                   <input
                     type="checkbox"
                     className="custom-control-input"
@@ -111,8 +112,8 @@ class SecuritySetting extends React.Component {
         </table>
 
         {/* ゲストユーザーのアクセス */}
-        <div className="row mb-5">
-          <div className="col-md-3 text-md-right text-nowrap py-2 mr-md-5">
+        <div className="row mb-4">
+          <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
           <div className="col-md-6 ml-md-5">
@@ -140,7 +141,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
         {adminGeneralSecurityContainer.isWikiModeForced && (
-        <div className="row mb-5">
+        <div className="row mb-4">
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <p className="alert alert-warning mt-2 text-left">
               <i className="icon-exclamation icon-fw">
@@ -194,7 +195,7 @@ class SecuritySetting extends React.Component {
         </div> */}
 
         <div className="row mb-5">
-          <div className="col-md-3 text-md-right mr-md-5 mb-2">
+          <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
           <div className="col-md-6 ml-md-5">
