@@ -58,7 +58,7 @@ class SecuritySetting extends React.Component {
         </div>
           )}
 
-        <h4>
+        <h4 className="mt-4">
           { t('Page list and search results') }
         </h4>
         <table className="table col-md-8 m-md-3">
@@ -160,7 +160,7 @@ class SecuritySetting extends React.Component {
         </div>
           )}
 
-        <div className="row mb-5">
+        <div className="row mb-4">
           <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
