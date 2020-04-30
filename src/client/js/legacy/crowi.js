@@ -360,6 +360,9 @@ $(() => {
   });
 
   // empty trash
+  $('#emptyTrash').on('shown.bs.modal', (e) => {
+    $('#emptyTrash .msg').hide();
+  });
   $('#empty-trash-form').submit((e) => {
     // create name-value map
     const nameValueMap = {};
@@ -374,14 +377,14 @@ $(() => {
     }).done((res) => {
       console.log(res);
       // error
-      // if (!res.ok) {
-      //   $('#deletePage .msg').hide();
-      //   $(`#deletePage .msg-${res.code}`).show();
-      // }
-      // else {
-      //   const page = res.page;
-      //   window.location.href = page.path;
-      // }
+      if (!res.ok) {
+        $('#deletePage .msg').hide();
+        $(`#deletePage .msg-${res.code}`).show();
+      }
+      else {
+        const page = res.page;
+        window.location.href = page.path;
+      }
     });
 
     return false;

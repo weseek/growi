@@ -30,6 +30,7 @@
       </div>
       <div class="modal-footer">
         <div class="d-flex justify-content-end">
+          {% include '../widget/modal/page-api-error-messages.html' %}
           <div>
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="m-l-10 btn btn-danger delete-button">
