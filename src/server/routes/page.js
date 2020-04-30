@@ -1523,7 +1523,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error('Delete trash pages failed', err);
-      return res.json(ApiResponse.error('Failed to delete trash pages.'));
+      return res.json(ApiResponse.error('Failed to delete trash pages.', 'unknown'));
     }
   };
 
