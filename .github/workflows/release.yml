@@ -42,3 +42,13 @@ jobs:
         changelog_file: CHANGES.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Slack Notification
+      uses: weseek/ghaction-slack-notification@master
+      if: sucusess()
+      with:
+        type: ${{ job.status }}
+        job_name: '*Release v${{ env.RELEASE_VERSION }}*'
+        channel: '#general'
+        url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        icon_emoji: 'tada'
