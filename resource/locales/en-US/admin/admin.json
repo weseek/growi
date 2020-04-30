@@ -51,18 +51,18 @@
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used."
   },
   "markdown_setting": {
-    "lineBreak_header": "Line Break Setting",
+    "lineBreak_header": "Line break setting",
     "lineBreak_desc": "You can change line break settings.",
     "lineBreak_options": {
-      "enable_lineBreak": "Enable Line Break",
+      "enable_lineBreak": "Enable line break",
       "enable_lineBreak_desc": "Convert line break in the text page to<code>&lt;br&gt;</code>in HTML",
-      "enable_lineBreak_for_comment": "Enable Line Break in comment",
+      "enable_lineBreak_for_comment": "Enable line break in comment",
       "enable_lineBreak_for_comment_desc": "Convert line break in comment to<code>&lt;br&gt;</code>in HTML"
     },
-    "presentation_header": "Presentation Setting",
+    "presentation_header": "Presentation setting",
     "presentation_desc": "You can change presentation settings.",
     "presentation_options": {
-      "page_break_setting": "Page break Setting",
+      "page_break_setting": "Page break setting",
       "preset_one_separator": "Preset 1",
       "preset_one_separator_desc": "3 Blank lines",
       "preset_one_separator_value": "\\n\\n\\n",
@@ -70,16 +70,16 @@
       "preset_two_separator_desc": "5 Hyphens",
       "preset_two_separator_value": "-----",
       "custom_separator": "Custom",
-      "custom_separator_desc": "Regular Expression"
+      "custom_separator_desc": "Regular expression"
     },
-    "xss_header": "Prevent XSS(Cross Site Scripting) Setting",
+    "xss_header": "Prevent XSS(cross site scripting) setting",
     "xss_desc": "You can change the handling of HTML tags in markdown text.",
     "xss_options": {
-      "enable_xss_prevention": "Enable XSS Prevention",
-      "remove_all_tags": "Remove All Tags",
+      "enable_xss_prevention": "Enable XSS prevention",
+      "remove_all_tags": "Remove all tags",
       "remove_all_tags_desc": "Stripe all HTML tags and attributes",
-      "recommended_setting": "Recommended Setting",
-      "custom_whitelist": "Custom Whitelist",
+      "recommended_setting": "Recommended setting",
+      "custom_whitelist": "Custom whitelist",
       "tag_names": "Tag names",
       "tag_attributes": "Tag attributes",
       "import_recommended": "Import recommended {{target}}"
