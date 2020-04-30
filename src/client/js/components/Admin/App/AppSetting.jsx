@@ -112,8 +112,6 @@ class AppSetting extends React.Component {
             </div>
 
             <p className="form-text text-muted">
-              {t('admin:app_setting.enable_files_except_image')}
-              <br />
               {t('admin:app_setting.attach_enable')}
             </p>
           </div>

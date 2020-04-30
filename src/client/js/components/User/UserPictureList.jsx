@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { UncontrolledTooltip } from 'reactstrap';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -24,30 +24,12 @@ class UserPictureList extends React.Component {
 
   }
 
-  renderPictAndTooltip(user) {
-    const userId = user._id;
-    const userPictureContainerId = `userPictureContainer-${userId}`;
-
-    return (
-      <span key={userId}>
-        <span id={userPictureContainerId}>
-          <UserPicture user={user} size="xs" />
-        </span>
-        <UncontrolledTooltip
-          key={`tooltip-${userId}`}
-          placement="bottom"
-          target={userPictureContainerId}
-        >
-          @{user.username}<br />{user.name}
-        </UncontrolledTooltip>
-      </span>
-    );
-  }
-
   render() {
-    return this.state.users.map((user) => {
-      return this.renderPictAndTooltip(user);
-    });
+    return this.state.users.map(user => (
+      <span key={user._id}>
+        <UserPicture user={user} size="xs" />
+      </span>
+    ));
   }
 
 }

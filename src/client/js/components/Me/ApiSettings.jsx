@@ -65,7 +65,7 @@ class ApiSettings extends React.Component {
 
 
         <div className="row">
-          <div className="offset-lg-1 col-lg-7">
+          <div className="offset-lg-2 col-lg-7">
 
             <p className="alert alert-warning">
               { t('page_me_apitoken.notice.update_token1') }<br />

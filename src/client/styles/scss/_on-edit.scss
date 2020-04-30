@@ -26,21 +26,8 @@ body.on-edit {
 
   // hide unnecessary elements
   header,
-  .grw-subnav,
-  .row.row-alerts,
-  .row.page-list,
-  .row.page-comments-row,
-  .row.page-attachments-row,
-  .row.not-found-message-row,
-  .users-info,
-  .user-page-content-container,
-  .portal-form-button,
-  .btn-like,
-  .btn-bookmark,
-  .btn-edit,
-  .authors,
-  .hide-on-edit,
-  footer {
+  footer,
+  .d-edit-none {
     display: none !important;
   }
 
@@ -58,6 +45,16 @@ body.on-edit {
   // show only either Edit button or HackMD button
   &.hackmd .nav-tab-edit {
     display: none;
+  }
+
+  &.hackmd .grw-nav-item-edit {
+    display: none;
+  }
+
+  &.hackmd {
+    #page-editor-options-selector {
+      display: none !important;
+    }
   }
 
   &:not(.hackmd) .nav-tab-hackmd {

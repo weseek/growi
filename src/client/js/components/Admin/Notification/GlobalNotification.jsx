@@ -40,7 +40,7 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <h2 className="border-bottom">{t('notification_setting.valid_page')}</h2>
+        <h2 className="border-bottom my-4">{t('notification_setting.valid_page')}</h2>
 
         <p className="card well">
           {/* eslint-disable-next-line react/no-danger */}

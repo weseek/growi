@@ -63,7 +63,7 @@ class OidcSecurityManagement extends React.Component {
           {t('security_setting.OAuth.OIDC.name')}
         </h2>
 
-        <div className="row mb-5">
+        <div className="row mb-5 form-group">
           <div className="offset-3 col-6">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
@@ -82,9 +82,9 @@ class OidcSecurityManagement extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
-          <div className="col-6">
+        <div className="row mb-5 form-group">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -109,9 +109,9 @@ class OidcSecurityManagement extends React.Component {
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcProviderName" className="col-3 text-right py-2">{t('security_setting.providerName')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcProviderName" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.providerName')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -122,9 +122,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcIssuerHost" className="col-3 text-right py-2">{t('security_setting.issuerHost')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcIssuerHost" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.issuerHost')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -138,9 +138,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcClientId" className="col-3 text-right py-2">{t('security_setting.clientID')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcClientId" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.clientID')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -154,9 +154,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcClientSecret" className="col-3 text-right py-2">{t('security_setting.client_secret')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcClientSecret" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.client_secret')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -174,9 +174,9 @@ class OidcSecurityManagement extends React.Component {
               Attribute Mapping ({t('security_setting.optional')})
             </h3>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcAttrMapId" className="col-3 text-right py-2">Identifier</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAttrMapId" className="text-left text-md-right col-md-3 col-form-label">Identifier</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -190,9 +190,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcAttrMapUserName" className="col-3 text-right py-2">{t('username')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAttrMapUserName" className="text-left text-md-right col-md-3 col-form-label">{t('username')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -206,9 +206,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcAttrMapName" className="col-3 text-right py-2">{t('Name')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAttrMapName" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -222,9 +222,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label htmlFor="oidcAttrMapEmail" className="col-3 text-right py-2">{t('Email')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label htmlFor="oidcAttrMapEmail" className="text-left text-md-right col-md-3 col-form-label">{t('Email')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -238,9 +238,9 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
-              <div className="col-6">
+            <div className="row mb-5 form-group">
+              <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -260,8 +260,8 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-3">
-              <div className="offset-3 col-6">
+            <div className="row mb-5 form-group">
+              <div className="offset-md-3 col-md-6">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserName-oidc"
@@ -282,8 +282,8 @@ class OidcSecurityManagement extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="offset-3 col-6">
+            <div className="row mb-5 form-group">
+              <div className="offset-md-3 col-md-6">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByEmail-oidc"
