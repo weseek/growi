@@ -375,15 +375,13 @@ $(() => {
       data: nameValueMap,
       dataType: 'json',
     }).done((res) => {
-      console.log(res);
       // error
       if (!res.ok) {
-        $('#deletePage .msg').hide();
-        $(`#deletePage .msg-${res.code}`).show();
+        $('#emptyTrash .msg').hide();
+        $(`#emptyTrash .msg-${res.code}`).show();
       }
       else {
-        const page = res.page;
-        window.location.href = page.path;
+        window.location.href = '/trash';
       }
     });
 
