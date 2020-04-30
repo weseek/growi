@@ -75,7 +75,7 @@ class SecuritySetting extends React.Component {
             </tr>
             <tr>
               <th scope="row">{ t('Anyone with the link') }</th>
-              <td>{ t('Always non-display') }</td>
+              <td>{ t('Always hidden') }</td>
             </tr>
             <tr>
               <th scope="row">{ t('Just me') }</th>
@@ -89,7 +89,7 @@ class SecuritySetting extends React.Component {
                     onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                   />
                   <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                    {t('Desplay or non-sisplay')}
+                    {t('Displayed or hidden')}
                   </label>
                 </div>
               </td>
@@ -106,7 +106,7 @@ class SecuritySetting extends React.Component {
                     onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                   />
                   <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
-                    {t('Desplay or non-sisplay')}
+                    {t('Displayed or hidden')}
                   </label>
                 </div>
               </td>
