@@ -59,23 +59,23 @@ class SecuritySetting extends React.Component {
           )}
 
         <h4 className="mt-4">
-          { t('Page list and search results') }
+          { t('page_list_and_search_results') }
         </h4>
         <table className="table col-lg-9">
           <thead>
             <tr>
-              <th scope="col">{ t('Scope of page disclosure') }</th>
-              <th scope="col">{ t('Set point') }</th>
+              <th scope="col">{ t('scope_of_page_disclosure') }</th>
+              <th scope="col">{ t('set_point') }</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">{ t('Public') }</th>
-              <td>{ t('Always displayed') }</td>
+              <td>{ t('always_displayed') }</td>
             </tr>
             <tr>
               <th scope="row">{ t('Anyone with the link') }</th>
-              <td>{ t('Always hidden') }</td>
+              <td>{ t('always_hidden') }</td>
             </tr>
             <tr>
               <th scope="row">{ t('Just me') }</th>
@@ -89,7 +89,7 @@ class SecuritySetting extends React.Component {
                     onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                   />
                   <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                    {t('Displayed or hidden')}
+                    {t('displayed_or_hidden')}
                   </label>
                 </div>
               </td>
@@ -106,7 +106,7 @@ class SecuritySetting extends React.Component {
                     onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                   />
                   <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
-                    {t('Displayed or hidden')}
+                    {t('displayed_or_hidden')}
                   </label>
                 </div>
               </td>
