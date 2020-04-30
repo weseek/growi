@@ -149,7 +149,7 @@
   "importer_management": {
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
-    "import_growi_archive": "Import GROWI Archive",
+    "import_growi_archive": "Import GROWI archive",
     "growi_settings": {
       "overwrite_documents": "Imported documents will overwrite existing documents",
       "growi_archive_file": "GROWI Archive File",
@@ -157,7 +157,7 @@
       "extracted_file": "Extracted File",
       "collection": "Collection",
       "upload": "Upload",
-      "discard": "Discard Uploaded Data",
+      "discard": "Discard uploaded data",
       "errors": {
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
@@ -202,7 +202,7 @@
     },
     "import": "Import",
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
-    "Directory_hierarchy_tag": "Directory Hierarchy Tag"
+    "Directory_hierarchy_tag": "Directory hierarchy tag"
   },
   "export_management": {
     "exporting_collection_list": "Exporting Collection List",

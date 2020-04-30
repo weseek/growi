@@ -344,7 +344,7 @@ class ImportForm extends React.Component {
 
     return (
       <div className="mt-4">
-        <legend>{groupName} Collections</legend>
+        <legend>{groupName} collections</legend>
         {wellContent != null && (
           <div className="well well-sm small">
             <ul>
@@ -464,9 +464,9 @@ class ImportForm extends React.Component {
           </div>
         </form>
 
-        {this.renderGroups(GROUPS_PAGE, 'MongoDB Page', warnForPageGroups, { wellContent: t('admin:importer_management.growi_settings.overwrite_documents') })}
-        {this.renderGroups(GROUPS_USER, 'MongoDB User', warnForUserGroups)}
-        {this.renderGroups(GROUPS_CONFIG, 'MongoDB Config', warnForConfigGroups)}
+        {this.renderGroups(GROUPS_PAGE, 'MongoDB page', warnForPageGroups, { wellContent: t('admin:importer_management.growi_settings.overwrite_documents') })}
+        {this.renderGroups(GROUPS_USER, 'MongoDB user', warnForUserGroups)}
+        {this.renderGroups(GROUPS_CONFIG, 'MongoDB config', warnForConfigGroups)}
         {this.renderOthers()}
 
         <div className="mt-4 text-center">
