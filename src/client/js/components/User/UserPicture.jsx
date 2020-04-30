@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import AppContainer from '../../services/AppContainer';
+
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 // TODO UserComponent?
@@ -27,14 +29,14 @@ export default class UserPicture extends React.Component {
   }
 
   render() {
-    const user = this.props.user;
+    const { user, appContainer } = this.props;
 
     if (user == null) {
       return this.renderForNull();
     }
 
     if (!user.imageUrlCached) {
-      // [TODO][GW-1942] add imageUrlCached
+      appContainer.addUserIdWillUpdateImageUrlCached(user.id);
       return this.renderForNull();
     }
 
@@ -59,6 +61,7 @@ UserPicture.propTypes = {
   user: PropTypes.object,
   size: PropTypes.string,
   withoutLink: PropTypes.bool,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 UserPicture.defaultProps = {

@@ -31,6 +31,7 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
+      willUpdateImageUrlCacheUserIds: []
     };
 
     const body = document.querySelector('body');
@@ -157,6 +158,16 @@ export default class AppContainer extends Container {
     }
 
     this.containerInstances[className] = instance;
+  }
+
+  /**
+   * add user id that will be update imageUrlCached
+   * @param {id} userId added user id
+   */
+  addUserIdWillUpdateImageUrlCached(userId) {
+    const willUpdateImageUrlCacheUserIds = this.state.willUpdateImageUrlCacheUserIds;
+    willUpdateImageUrlCacheUserIds.push(userId);
+    this.setState({ willUpdateImageUrlCacheUserIds });
   }
 
   /**
