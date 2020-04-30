@@ -89,7 +89,7 @@ class SamlSecurityManagement extends React.Component {
           />
         )}
 
-        <div className="row mb-5">
+        <div className="row form-group mb-5">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
@@ -109,9 +109,9 @@ class SamlSecurityManagement extends React.Component {
           </div>
         </div>
 
-        <div className="row mb-5">
-          <label className="col-3 text-right py-2">{t('security_setting.callback_URL')}</label>
-          <div className="col-6">
+        <div className="row form-group mb-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+          <div className="col-md-6">
             <input
               className="form-control"
               type="text"
@@ -420,8 +420,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               Attribute Mapping Options
             </h3>
 
-            <div className="row mb-5">
-              <div className="offset-3 col-6 text-left">
+            <div className="row form-group mb-5">
+              <div className="offset-md-3 col-md-6 text-left">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByUserName-SAML"
@@ -442,8 +442,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="offset-3 col-6 text-left">
+            <div className="row form-group mb-5">
+              <div className="offset-md-3 col-md-6 text-left">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     id="bindByEmail-SAML"
