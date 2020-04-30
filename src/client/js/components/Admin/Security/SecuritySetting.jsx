@@ -114,7 +114,6 @@ class SecuritySetting extends React.Component {
           </tbody>
         </table>
 
-        {/* ゲストユーザーのアクセス */}
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
