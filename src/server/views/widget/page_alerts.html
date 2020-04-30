@@ -89,7 +89,7 @@
         {% endif %}
       </div>
       <ul class="list-inline">
-        {% if user and user.admin and not page.isDeleted() %}
+        {% if user and user.admin %}
         <li>
           <button href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#emptyTrash" data-toggle="modal"><i class="icon-trash" aria-hidden="true"></i>{{ t('modal_empty.empty_the_trash') }}</button>
         </li>
