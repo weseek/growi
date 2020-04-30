@@ -135,7 +135,7 @@ Crowi.initAffix = () => {
       $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
       return false;
     });
-    $affixContentContainer.css({ 'min-height': containerHeight });
+    $affixContentContainer.css({ minHeight: containerHeight });
   }
 };
 
@@ -359,6 +359,10 @@ $(() => {
     return false;
   });
 
+  // empty trash
+  $('#empty-trash-form').submit((e) => {
+    // TODO GW-2060 create api
+  });
   // delete
   $('#deletePage').on('shown.bs.modal', (e) => {
     $('#deletePage .msg').hide();
