@@ -1508,6 +1508,13 @@ module.exports = function(crowi, app) {
     }
   };
 
+  // TODO jsDoc
+  api.emptyTrash = async function(req, res) {
+    console.log('here is api');
+
+    res.json(ApiResponse.success());
+  };
+
   /**
    * @api {post} /pages.revertRemove Revert removed page
    * @apiName RevertRemovePage

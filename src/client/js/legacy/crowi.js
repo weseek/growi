@@ -361,7 +361,29 @@ $(() => {
 
   // empty trash
   $('#empty-trash-form').submit((e) => {
-    // TODO GW-2060 create api
+    // create name-value map
+    const nameValueMap = {};
+    $('#empty-trash-form').serializeArray().forEach((obj) => {
+      nameValueMap[obj.name] = obj.value;
+    });
+    $.ajax({
+      type: 'POST',
+      url: '/_api/empty-trash',
+      dataType: 'json',
+    }).done((res) => {
+      console.log(res);
+      // error
+      // if (!res.ok) {
+      //   $('#deletePage .msg').hide();
+      //   $(`#deletePage .msg-${res.code}`).show();
+      // }
+      // else {
+      //   const page = res.page;
+      //   window.location.href = page.path;
+      // }
+    });
+
+    return false;
   });
   // delete
   $('#deletePage').on('shown.bs.modal', (e) => {
