@@ -369,6 +369,7 @@ $(() => {
     $.ajax({
       type: 'POST',
       url: '/_api/empty-trash',
+      data: nameValueMap,
       dataType: 'json',
     }).done((res) => {
       console.log(res);
