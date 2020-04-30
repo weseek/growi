@@ -68,6 +68,13 @@ textarea.form-control {
   @extend .table-dark;
 }
 
+/*
+ * Card
+ */
+.card:not([class*='bg-']) {
+  @extend .bg-dark;
+}
+
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,

@@ -73,7 +73,7 @@ class LdapSecuritySetting extends React.Component {
           LDAP
         </h2>
 
-        <div className="row mb-5">
+        <div className="form-group row">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
@@ -98,11 +98,11 @@ class LdapSecuritySetting extends React.Component {
 
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
 
-            <div className="row mb-5">
-              <label htmlFor="serverUrl" className="col-3 control-label text-right py-2">
+            <div className="form-group row">
+              <label htmlFor="serverUrl" className="text-left text-md-right col-md-3 col-form-label">
                 Server URL
               </label>
-              <div className="col-6">
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -121,11 +121,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_setting.ldap.bind_mode')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <div className="dropdown">
                   <button
                     className="btn btn-outline-secondary dropdown-toggle"
@@ -151,11 +151,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong>Bind DN</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -186,11 +186,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div htmlFor="bindDNPassword" className="col-3 text-right py-2">
+            <div className="form-group row">
+              <div htmlFor="bindDNPassword" className="text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_setting.ldap.bind_DN_password')}</strong>
               </div>
-              <div className="col-6">
+              <div className="col-md-6">
                 {(adminLdapSecurityContainer.state.isUserBind) ? (
                   <p className="well card passport-ldap-userbind">
                     <small>
@@ -217,11 +217,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong>{t('security_setting.ldap.search_filter')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -253,11 +253,11 @@ class LdapSecuritySetting extends React.Component {
               Attribute Mapping ({t('security_setting.optional')})
             </h3>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapUsername">{t('username')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -273,8 +273,8 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="offset-3 col-6">
+            <div className="form-group row">
+              <div className="offset-md-3 col-md-6">
                 <div className="custom-control custom-checkbox custom-checkbox-success">
                   <input
                     type="checkbox"
@@ -297,11 +297,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapMail">{t('Email')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -318,11 +318,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="attrMapName">{t('Name')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -343,11 +343,11 @@ class LdapSecuritySetting extends React.Component {
               {t('security_setting.ldap.group_search_filter')} ({t('security_setting.optional')})
             </h3>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="groupSearchBase">{t('security_setting.ldap.group_search_base_DN')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -365,11 +365,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="groupSearchFilter">{t('security_setting.ldap.group_search_filter')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
@@ -396,11 +396,11 @@ class LdapSecuritySetting extends React.Component {
               </div>
             </div>
 
-            <div className="row mb-5">
-              <div className="col-3 text-right py-2">
+            <div className="form-group row">
+              <label className="text-left text-md-right col-md-3 col-form-label">
                 <strong htmlFor="groupDnProperty">{t('security_setting.ldap.group_search_user_DN_property')}</strong>
-              </div>
-              <div className="col-6">
+              </label>
+              <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"

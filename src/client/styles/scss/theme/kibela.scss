@@ -12,9 +12,8 @@ html[light] {
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: $lightthemecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
-
+  $bgcolor-card: $lightthemecolor;
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
@@ -71,9 +70,8 @@ html[dark] {
   $bgcolor-navbar: transparent;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: #e3e5e7;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
-
+  $bgcolor-card: #e3e5e7;
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);

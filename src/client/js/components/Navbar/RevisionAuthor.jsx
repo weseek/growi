@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { userPageRoot } from '@commons/util/path-utils';
+
 import UserPicture from '../User/UserPicture';
-import { userPageRoot } from '../../../../lib/util/path-utils';
 
 const RevisionAuthor = (props) => {
   const { revisionAuthor, updatedAt, isCompactMode } = props;
@@ -13,7 +14,7 @@ const RevisionAuthor = (props) => {
 
   return (
     <div className="d-flex align-items-center">
-      <div className="mr-2" href={userPageRoot(revisionAuthor)} data-toggle="tooltip" data-placement="bottom" title={revisionAuthor.name}>
+      <div className="mr-2">
         <UserPicture user={revisionAuthor} size={pictureSize} />
       </div>
       {updateInfo}
