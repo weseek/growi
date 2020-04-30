@@ -1508,7 +1508,11 @@ module.exports = function(crowi, app) {
     }
   };
 
-  // TODO jsDoc
+  /**
+   * @api {post} /empty.trash Empty trash
+   * @apiName EmptyTrash
+   * @apiGroup Page
+   */
   api.emptyTrash = async function(req, res) {
 
     try {
