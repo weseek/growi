@@ -64,7 +64,7 @@ class SecuritySetting extends React.Component {
         <table className="table col-lg-9">
           <thead>
             <tr>
-              <th scope="col">{ t('Scope of page showing') }</th>
+              <th scope="col">{ t('Scope of page disclosure') }</th>
               <th scope="col">{ t('Set point') }</th>
             </tr>
           </thead>
