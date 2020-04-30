@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { userPageRoot } from '@commons/util/path-utils';
+
 import UserPicture from '../User/UserPicture';
-import { userPageRoot } from '../../../../lib/util/path-utils';
 
 const PageCreator = (props) => {
   const { creator, createdAt, isCompactMode } = props;
@@ -13,7 +14,7 @@ const PageCreator = (props) => {
 
   return (
     <div className="d-flex align-items-center">
-      <div className="mr-2" href={userPageRoot(creator)} data-toggle="tooltip" data-placement="bottom" title={creator.name}>
+      <div className="mr-2">
         <UserPicture user={creator} size={pictureSize} />
       </div>
       {creatInfo}
