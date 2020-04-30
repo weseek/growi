@@ -1510,9 +1510,17 @@ module.exports = function(crowi, app) {
 
   // TODO jsDoc
   api.emptyTrash = async function(req, res) {
-    console.log('here is api');
 
-    res.json(ApiResponse.success());
+    try {
+      const pages = await Page.deleteMany({
+        path: { $in: /^\/trash/ },
+      });
+      res.json(ApiResponse.success({ pages }));
+    }
+    catch (err) {
+      logger.error('Delete trash pages failed', err);
+      return res.json(ApiResponse.error('Failed to delete trash pages.'));
+    }
   };
 
   /**
