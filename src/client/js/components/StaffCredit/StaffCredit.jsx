@@ -8,6 +8,8 @@ import {
 
 import contributors from './Contributor';
 
+const scrollSpeed = 0.3;
+
 /**
  * Page staff credit component
  *
@@ -42,6 +44,10 @@ export default class StaffCredit extends React.Component {
           isShown: true,
           userCommand: [],
         });
+        const target = $('.credit-curtain');
+        const scrollTargetHeight = target.children().innerHeight();
+        const duration = scrollTargetHeight / scrollSpeed;
+        target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
       }
       else {
         // add UserCommand
@@ -100,11 +106,9 @@ export default class StaffCredit extends React.Component {
       });
       return (
         <div className="text-center" onClick={this.deleteCredit}>
-          <div className="credit-body">
-            <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
-            <div className="clearfix"></div>
-            {credit}
-          </div>
+          <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
+          <div className="clearfix"></div>
+          {credit}
         </div>
       );
     }
