@@ -1,6 +1,6 @@
 // Staff Credit
 .staff-credit {
-  // .modal-dialog のスタイルを打ち消すために !important を付ける
+  // attached !important for updating from .modal-dialog class style
   width: 80vw !important;
   height: 80vh !important;
   max-width: initial !important;
@@ -30,9 +30,6 @@
   .credit-curtain {
     padding-top: 80vh;
     @include old-timey-terminal-styling();
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   h1 {
