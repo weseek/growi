@@ -14,7 +14,6 @@ class LoginForm extends React.Component {
     super(props);
 
     this.switchForm = this.switchForm.bind(this);
-    this.handleLoginWithExternalAuth = this.handleLoginWithExternalAuth.bind(this);
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
@@ -41,10 +40,6 @@ class LoginForm extends React.Component {
     else {
       $('#login-dialog').removeClass('to-flip');
     }
-  }
-
-  handleLoginWithExternalAuth(e) {
-    this.props.loginContainer.loginWithExternalAuth(e.currentTarget.id);
   }
 
   renderLocalOrLdapLoginForm() {
@@ -93,17 +88,22 @@ class LoginForm extends React.Component {
   }
 
   renderExternalAuthInput(auth) {
-    const { t } = this.props;
+    const { t, csrf } = this.props;
     return (
       <div key={auth} className="input-group justify-content-center d-flex mt-5">
-        <button type="button" className="btn btn-fill px-0 py-2" id={auth} onClick={this.handleLoginWithExternalAuth}>
-          <div className="eff"></div>
-          <span className="btn-label p-3">
-            <i className={`fa fa-${auth}`}></i>
-          </span>
-          <span className="btn-label-text p-3">{t('Sign in')}</span>
-        </button>
-        <div className="small text-center">by {auth} Account</div>
+        {/* [TODO][GW-2112] use onClick, and delete form tag */}
+        <form role="form" action={`/passport/${auth}`} className="d-inline-flex flex-column">
+          {/* [TODO][GW-2112] An AppContainer gets csrf data */}
+          <input type="hidden" name="_csrf" value={csrf} />
+          <button type="submit" className="btn btn-fill px-0 py-2" id={auth}>
+            <div className="eff"></div>
+            <span className="btn-label p-3">
+              <i className={`fa fa-${auth}`}></i>
+            </span>
+            <span className="btn-label-text p-3">{t('Sign in')}</span>
+          </button>
+          <div className="small text-center">by {auth} Account</div>
+        </form>
       </div>
     );
   }
