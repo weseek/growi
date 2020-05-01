@@ -165,21 +165,3 @@
 .admin-navigation > a + a {
   margin-top: 2px;
 }
-
-.dropdown .grw-button-width {
-  @include media-breakpoint-up(md) {
-    width: auto !important;
-  }
-}
-
-.admin-security {
-  #admin-security-setting {
-    @include media-breakpoint-down(md) {
-      .dropdown-toggle::after {
-        position: absolute;
-        top: 40%;
-        right: 2%;
-      }
-    }
-  }
-}
