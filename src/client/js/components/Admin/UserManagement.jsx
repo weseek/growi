@@ -172,7 +172,7 @@ class UserManagement extends React.Component {
               </span>
             </div>
 
-            <div className="mx-5">
+            <div className="mx-md-5">
               <div className="form-inline">
                 {this.renderCheckbox('all', 'All', 'primary')}
                 {this.renderCheckbox('registered', 'Approval Pending', 'info')}
