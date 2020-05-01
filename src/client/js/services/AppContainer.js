@@ -31,7 +31,6 @@ export default class AppContainer extends Container {
 
     this.state = {
       editorMode: null,
-      willUpdateImageUrlCacheUserIds: []
     };
 
     const body = document.querySelector('body');
@@ -40,7 +39,7 @@ export default class AppContainer extends Container {
     this.csrfToken = body.dataset.csrftoken;
     this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
     this.isLoggedin = document.querySelector('.main-container.nologin') == null;
-
+    this.willUpdateImageUrlCacheUserIds = [];
     this.config = JSON.parse(document.getElementById('growi-context-hydrate').textContent || '{}');
 
     const currentUserElem = document.getElementById('growi-current-user');
@@ -160,14 +159,13 @@ export default class AppContainer extends Container {
     this.containerInstances[className] = instance;
   }
 
-  /**
-   * add user id that will be update imageUrlCached
-   * @param {id} userId added user id
-   */
-  addUserIdWillUpdateImageUrlCached(userId) {
-    const willUpdateImageUrlCacheUserIds = this.state.willUpdateImageUrlCacheUserIds;
-    willUpdateImageUrlCacheUserIds.push(userId);
-    this.setState({ willUpdateImageUrlCacheUserIds });
+  async updateImageUrlCached() {
+    if (this.willUpdateImageUrlCacheUserIds.length === 0) {
+      return;
+    }
+    const res = await this.apiv3Post('/user/update.imageUrlCache', { userIds: this.willUpdateImageUrlCacheUserIds });
+    console.log(res);
+    this.willUpdateImageUrlCacheUserIds = [];
   }
 
   /**

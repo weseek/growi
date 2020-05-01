@@ -23,6 +23,10 @@ class UserTable extends React.Component {
     this.getUserStatusLabel = this.getUserStatusLabel.bind(this);
   }
 
+  async componentDidUpdate() {
+    this.props.appContainer.updateImageUrlCached();
+  }
+
   /**
    * return status label element by `userStatus`
    * @param {string} userStatus
@@ -86,7 +90,6 @@ class UserTable extends React.Component {
     const { t, adminUsersContainer } = this.props;
 
     const isCurrentSortOrderAsc = adminUsersContainer.state.sortOrder === 'asc';
-
     return (
       <Fragment>
         <table className="table table-default table-bordered table-user-list">
