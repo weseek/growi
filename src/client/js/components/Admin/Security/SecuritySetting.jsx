@@ -59,7 +59,7 @@ class SecuritySetting extends React.Component {
             </div>
           )}
           <div className="row">
-            <strong className="col-xs-3 text-right"> {t('security_setting.Guest Users Access')} </strong>
+            <strong className="col-xs-3 text-right"> {t('security_setting.guest_users_access')} </strong>
             <div className="col-xs-9 text-left">
               <div className="my-0 btn-group">
                 <div className="dropdown">

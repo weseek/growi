@@ -389,7 +389,7 @@
     "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
   },
   "security_setting": {
-    "Guest Users Access": "ゲストユーザーのアクセス",
+    "guest_users_access": "ゲストユーザーのアクセス",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
     "Register limitation": "登録の制限",
     "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
