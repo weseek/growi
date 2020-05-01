@@ -49,6 +49,11 @@ export default class StaffCredit extends React.Component {
         const scrollTargetHeight = target.children().innerHeight();
         const duration = scrollTargetHeight / scrollSpeed;
         target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+        target.slimScroll({
+          height: target.innerHeight(),
+          start: 'bottom',
+          color: '#FFFFFF',
+        });
       }
       else {
         // add UserCommand
@@ -97,7 +102,7 @@ export default class StaffCredit extends React.Component {
         });
         return (
           <React.Fragment key={`${contributor.sectionName}-fragment`}>
-            <div className={`row staff-credit-my-10 ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
+            <div className={`row ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
               <h2 className="col-md-12 dev-team mt-5 staff-credit-mb-10" key={contributor.sectionName}>{contributor.sectionName}</h2>
               {memberGroups}
             </div>
@@ -106,7 +111,7 @@ export default class StaffCredit extends React.Component {
         );
       });
       return (
-        <div className="text-center" onClick={this.deleteCredit}>
+        <div className="text-center staff-credit-pb-10" onClick={this.deleteCredit}>
           <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
           <div className="clearfix"></div>
           {credit}
