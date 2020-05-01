@@ -51,7 +51,7 @@ class LoginForm extends React.Component {
   }
 
   renderLocalOrLdapLoginForm() {
-    const { t, csrf } = this.props;
+    const { t, appContainer } = this.props;
 
     return (
       <form role="form" action="/login" method="post">
@@ -81,8 +81,7 @@ class LoginForm extends React.Component {
         </div>
 
         <div className="input-group justify-content-center d-flex mt-5">
-          {/* [TODO][GW-1913] An AppContainer gets csrf data */}
-          <input type="hidden" name="_csrf" value={csrf} />
+          <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
           <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
             <div className="eff"></div>
             <span className="btn-label p-3">
@@ -149,7 +148,7 @@ class LoginForm extends React.Component {
   }
 
   renderRegisterForm() {
-    const { t, loginContainer, csrf } = this.props;
+    const { t, appContainer, loginContainer } = this.props;
     return (
       <div className="back">
         {this.registrationMode === 'Restricted' && (
@@ -215,8 +214,7 @@ class LoginForm extends React.Component {
           </div>
 
           <div className="input-group justify-content-center mt-5">
-            {/* [TODO][GW-1913] An AppContainer gets csrf data */}
-            <input type="hidden" name="_csrf" value={csrf} />
+            <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
             <button type="submit" className="btn btn-fill px-0 py-2" id="register">
               <div className="eff"></div>
               <span className="btn-label p-3">
@@ -293,7 +291,6 @@ LoginForm.propTypes = {
   username: PropTypes.string,
   name: PropTypes.string,
   email: PropTypes.string,
-  csrf: PropTypes.string,
 };
 
 export default withTranslation()(LoginFormWrapper);
