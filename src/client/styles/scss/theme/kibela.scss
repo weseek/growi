@@ -68,10 +68,10 @@ html[light] {
 // Dark Mode ( same as Light Mode )
 html[dark] {
   // Background colors
-  $bgcolor-navbar: transparent;
+  $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: #e3e5e7;
+  $bgcolor-card: $lightthemecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
 
   $color-header: $bgcolor-theme;
@@ -92,7 +92,7 @@ html[dark] {
   $color-list-hover: $color-reversal;
 
   // Logo colors
-  $bgcolor-logo: red;
+  $bgcolor-logo: transparent;
   $fillcolor-logo-mark: lighten($bgcolor-theme, 20%);
 
   // Icon colors
@@ -114,10 +114,10 @@ html[dark] {
   $color-dropdown-link-hover: $color-global;
 
   // alert
-  $color-alert: $color-global;
+  $color-alert: $color-reversal;
 
   // badge
-  $color-badge: $color-global;
+  $color-badge: $color-reversal;
 
   @import 'apply-colors';
   @import 'apply-colors-light';
