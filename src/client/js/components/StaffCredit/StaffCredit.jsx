@@ -8,6 +8,7 @@ import {
 
 import contributors from './Contributor';
 
+// Unit is px / milli sec
 const scrollSpeed = 0.3;
 
 /**
