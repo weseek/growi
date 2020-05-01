@@ -15,6 +15,10 @@ body.kibela {
     background-color: $primary !important;
   }
 
+  .grw-subnavbar {
+    background-color: rgba(lighten($bgcolor-global, 50%), 1);
+  }
+
   /* kibela block */
   .kibela-block {
     border-top: solid 0.4em $thickborder;

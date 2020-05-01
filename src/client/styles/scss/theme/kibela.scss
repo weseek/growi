@@ -12,9 +12,8 @@ html[light] {
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
   $bgcolor-global: $themelight;
-  $bgcolor-card: $lightthemecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
-
+  $bgcolor-card: $lightthemecolor;
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
@@ -59,6 +58,11 @@ html[light] {
 
   // badge
   $color-badge: $color-reversal;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-theme;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-theme, 10%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -73,7 +77,6 @@ html[dark] {
   $bgcolor-global: $themelight;
   $bgcolor-card: $lightthemecolor;
   $bgcolor-inline-code: lighten($subthemecolor, 70%);
-
   $color-header: $bgcolor-theme;
   $color-global: #3c4a60;
   $color-link: rgb(74, 109, 204);
@@ -118,6 +121,11 @@ html[dark] {
 
   // badge
   $color-badge: $color-reversal;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-theme;
+  $color-sidebar-context: $color-reversal;
+  $bgcolor-sidebar-context: lighten($bgcolor-theme, 5%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';

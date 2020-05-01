@@ -14,35 +14,37 @@ class ArchiveFilesTable extends React.Component {
     const { t } = this.props;
 
     return (
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>{t('admin:export_management.file')}</th>
-            <th>{t('admin:export_management.growi_version')}</th>
-            <th>{t('admin:export_management.collections')}</th>
-            <th>{t('admin:export_management.exported_at')}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.zipFileStats.map(({ meta, fileName, innerFileStats }) => {
-            return (
-              <tr key={fileName}>
-                <th>{fileName}</th>
-                <td>{meta.version}</td>
-                <td className="text-capitalize">{innerFileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
-                <td>{meta.exportedAt ? format(new Date(meta.exportedAt), 'yyyy/MM/dd HH:mm:ss') : ''}</td>
-                <td>
-                  <ArchiveFilesTableMenu
-                    fileName={fileName}
-                    onZipFileStatRemove={this.props.onZipFileStatRemove}
-                  />
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className="table-responsive text-nowrap">
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>{t('admin:export_management.file')}</th>
+              <th>{t('admin:export_management.growi_version')}</th>
+              <th>{t('admin:export_management.collections')}</th>
+              <th>{t('admin:export_management.exported_at')}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.zipFileStats.map(({ meta, fileName, innerFileStats }) => {
+              return (
+                <tr key={fileName}>
+                  <th>{fileName}</th>
+                  <td>{meta.version}</td>
+                  <td className="text-capitalize">{innerFileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
+                  <td>{meta.exportedAt ? format(new Date(meta.exportedAt), 'yyyy/MM/dd HH:mm:ss') : ''}</td>
+                  <td>
+                    <ArchiveFilesTableMenu
+                      fileName={fileName}
+                      onZipFileStatRemove={this.props.onZipFileStatRemove}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
