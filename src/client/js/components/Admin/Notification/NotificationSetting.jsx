@@ -42,7 +42,7 @@ class NotificationSetting extends React.Component {
               <a href="#slack-configuration" data-toggle="tab" role="tab"><i className="icon-settings"></i> Slack configuration</a>
             </li>
             <li>
-              <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User Trigger notification</a>
+              <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> User trigger notification</a>
             </li>
             <li>
               <a href="#global-notification" data-toggle="tab" role="tab"><i className="icon-settings"></i> Global notification</a>

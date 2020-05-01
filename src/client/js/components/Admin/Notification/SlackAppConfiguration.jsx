@@ -52,10 +52,10 @@ class SlackAppConfiguration extends React.Component {
                 {/* TODO adjust dropdown after BS4 */}
                 <ul className="dropdown-menu" role="menu">
                   <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
-                    <a role="menuitem">Slack incoming webhooks</a>
+                    <a role="menuitem">Slack Incoming Webhooks</a>
                   </li>
                   <li type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>
-                    <a role="menuitem">Slack app</a>
+                    <a role="menuitem">Slack App</a>
                   </li>
                 </ul>
               </div>
@@ -118,7 +118,7 @@ class SlackAppConfiguration extends React.Component {
               </div>
 
               <div className="row mb-5">
-                <label className="col-xs-3 text-right">OAuth Access Token</label>
+                <label className="col-xs-3 text-right">OAuth access token</label>
                 <div className="col-xs-6">
                   <input
                     className="form-control"
