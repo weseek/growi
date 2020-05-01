@@ -64,15 +64,18 @@ class SecuritySetting extends React.Component {
           <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className={`btn btn-outline-secondary dropdown-toggle ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
+                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
-                {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                <span className="float-left">
+                  {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
+                  {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
@@ -144,17 +147,19 @@ class SecuritySetting extends React.Component {
           <div className="col-md-6 ml-md-5">
             <div className="dropdown">
               <button
-                className="btn btn-outline-secondary dropdown-toggle"
+                className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                {currentPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
-                {currentPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
-                {(currentPageCompleteDeletionAuthority === 'adminAndAuthor' || currentPageCompleteDeletionAuthority == null)
-                    && t('security_setting.admin_and_author')}
+                <span className="float-left">
+                  {currentPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
+                  {currentPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
+                  {(currentPageCompleteDeletionAuthority === 'adminAndAuthor' || currentPageCompleteDeletionAuthority == null)
+                      && t('security_setting.admin_and_author')}
+                </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a className="dropdown-item" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
@@ -174,7 +179,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
         <div className="row my-3">
-          <div className="offset-3 col-5">
+          <div className="text-center text-md-left offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={this.state.retrieveError != null} onClick={this.putSecuritySetting}>
               {t('Update')}
             </button>
