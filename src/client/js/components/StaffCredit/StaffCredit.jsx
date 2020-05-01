@@ -49,8 +49,10 @@ export default class StaffCredit extends React.Component {
         const scrollTargetHeight = target.children().innerHeight();
         const duration = scrollTargetHeight / scrollSpeed;
         target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+
         target.slimScroll({
           height: target.innerHeight(),
+          // スクロールできるようになるのは、自動スクロールが完了した後なので bottom を設定し、一番下からスクロールできるようにする
           start: 'bottom',
           color: '#FFFFFF',
         });
