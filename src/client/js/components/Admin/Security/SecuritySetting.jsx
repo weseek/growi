@@ -61,7 +61,7 @@ class SecuritySetting extends React.Component {
         <h4 className="mt-4">
           { t('page_list_and_search_results') }
         </h4>
-        <table className="table col-lg-9">
+        <table className="table table-bordered col-lg-9">
           <thead>
             <tr>
               <th scope="col">{ t('scope_of_page_disclosure') }</th>
