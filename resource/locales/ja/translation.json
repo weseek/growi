@@ -116,6 +116,7 @@
   "always_displayed": "表示 (固定)",
   "always_hidden": "非表示 (固定)",
   "displayed_or_hidden": "表示 / 非表示",
+  "page_access_and_delete_rights": "ページの観覧・削除権限",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",

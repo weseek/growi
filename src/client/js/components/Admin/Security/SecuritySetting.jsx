@@ -61,7 +61,7 @@ class SecuritySetting extends React.Component {
         <h4 className="mt-4">
           { t('page_list_and_search_results') }
         </h4>
-        <table className="table table-bordered col-lg-9">
+        <table className="table table-bordered col-lg-9 mb-5">
           <thead>
             <tr>
               <th scope="col">{ t('scope_of_page_disclosure') }</th>
@@ -113,7 +113,7 @@ class SecuritySetting extends React.Component {
             </tr>
           </tbody>
         </table>
-
+        <h4>{t('page_access_and_delete_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
