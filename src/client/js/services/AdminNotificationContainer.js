@@ -19,7 +19,7 @@ export default class AdminNotificationContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      selectSlackOption: 'Incoming Webhooks',
+      selectSlackOption: 'incoming webhooks',
       webhookUrl: '',
       isIncomingWebhookPrioritized: false,
       slackToken: '',
