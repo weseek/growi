@@ -544,5 +544,42 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg + err.message, 'extenral-account-delete-failed'));
     }
   });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/update.imageUrlCache:
+   *      put:
+   *        tags: [Users]
+   *        operationId: update.imageUrlCache
+   *        summary: /users/update.imageUrlCache
+   *        description: update imageUrlCache
+   *        parameters:
+   *          - userIds: user id list
+   *        responses:
+   *          200:
+   *            description: success creating imageUrlCached
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: users updated with imageUrlCached
+   */
+  router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    try {
+      const userIds = req.body.userIds;
+      // [TODO] update cache
+      const updatedUsers = await User.find({ _id: { $in: userIds } });
+      return res.apiv3({ updatedUsers });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
   return router;
 };
