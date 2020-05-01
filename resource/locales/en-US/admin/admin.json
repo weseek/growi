@@ -51,18 +51,18 @@
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <cod>{{variable}}</code> is used."
   },
   "markdown_setting": {
-    "lineBreak_header": "Line Break Setting",
+    "lineBreak_header": "Line break setting",
     "lineBreak_desc": "You can change line break settings.",
     "lineBreak_options": {
-      "enable_lineBreak": "Enable Line Break",
+      "enable_lineBreak": "Enable line break",
       "enable_lineBreak_desc": "Convert line break in the text page to<code>&lt;br&gt;</code>in HTML",
-      "enable_lineBreak_for_comment": "Enable Line Break in comment",
+      "enable_lineBreak_for_comment": "Enable line break in comment",
       "enable_lineBreak_for_comment_desc": "Convert line break in comment to<code>&lt;br&gt;</code>in HTML"
     },
-    "presentation_header": "Presentation Setting",
+    "presentation_header": "Presentation setting",
     "presentation_desc": "You can change presentation settings.",
     "presentation_options": {
-      "page_break_setting": "Page break Setting",
+      "page_break_setting": "Page break setting",
       "preset_one_separator": "Preset 1",
       "preset_one_separator_desc": "3 Blank lines",
       "preset_one_separator_value": "\\n\\n\\n",
@@ -70,16 +70,16 @@
       "preset_two_separator_desc": "5 Hyphens",
       "preset_two_separator_value": "-----",
       "custom_separator": "Custom",
-      "custom_separator_desc": "Regular Expression"
+      "custom_separator_desc": "Regular expression"
     },
-    "xss_header": "Prevent XSS(Cross Site Scripting) Setting",
+    "xss_header": "Prevent XSS(cross site scripting) setting",
     "xss_desc": "You can change the handling of HTML tags in markdown text.",
     "xss_options": {
-      "enable_xss_prevention": "Enable XSS Prevention",
-      "remove_all_tags": "Remove All Tags",
+      "enable_xss_prevention": "Enable XSS prevention",
+      "remove_all_tags": "Remove all tags",
       "remove_all_tags_desc": "Stripe all HTML tags and attributes",
-      "recommended_setting": "Recommended Setting",
-      "custom_whitelist": "Custom Whitelist",
+      "recommended_setting": "Recommended setting",
+      "custom_whitelist": "Custom whitelist",
       "tag_names": "Tag names",
       "tag_attributes": "Tag attributes",
       "import_recommended": "Import recommended {{target}}"
@@ -90,18 +90,18 @@
     "layout": "Layout",
     "theme": "Theme",
     "layout_desc": {
-      "growi_title": "Simple and Clear",
+      "growi_title": "Simple and clear",
       "growi_text1": "Full screen layout and thin margins/paddings",
       "growi_text2": "Show and post comments at the bottom of the page",
-      "growi_text3": "Affix Table-of-contents",
-      "kibela_title": "Easy Viewing Structure",
+      "growi_text3": "Affix table-of-contents",
+      "kibela_title": "Easy viewing structure",
       "kibela_text1": "Center aligned contents",
       "kibela_text2": "Show and post comments at the bottom of the page",
       "kibela_text3": "Affix Table-of-contents",
-      "crowi_title": "Separated Functions",
+      "crowi_title": "Separated functions",
       "crowi_text1": "Collapsible Sidebar",
       "crowi_text2": "Show and post comments in Sidebar",
-      "crowi_text3": "Collapsible Table-of-contents"
+      "crowi_text3": "Collapsible table-of-contents"
     },
     "behavior": "Behavior",
     "behavior_desc": {
@@ -126,22 +126,22 @@
       "tab_switch_desc2": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
       "attach_title_header": "Add h1 section when create new page automatically",
       "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
-      "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
+      "recent_created__n_draft_num_desc": "Number of recently created pages & drafts displayed",
       "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page",
-      "stale_notification": "Display Notification on Stale Pages",
+      "stale_notification": "Display notification on stale pages",
       "stale_notification_desc": "Displays the notification to pages more than 1 year since the last update.",
       "show_all_reply_comments": "Show all reply comments",
       "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted."
     },
-    "code_highlight": "Code Highlight",
+    "code_highlight": "Code highlight",
     "nocdn_desc": "This function is disabled when the environment variable <code>NO_CDN=true</code>.<br>Github style has been forcibly applied.",
-    "custom_title": "Custom Title",
+    "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag.<br><code>&#123;&#123;sitename&#125;&#125;</code> will be automatically replaced with the app name, and <code>&#123;&#123;page&#125;&#125;</code> will be replaced with the page name/path.",
-    "custom_header": "Custom HTML Header",
+    "custom_header": "Custom HTML header",
     "custom_header_detail": "You can customize HTML header that applies all pages. Your custom script will be inserted in <code>&lt;header&gt;</code> but above other <code>&lt;script&gt;</code> tags.<br>Relaod page to see changes.",
     "custom_css": "Custom CSS",
     "write_css": "You can write CSS that is applied to whole system.",
-    "ctrl_space": "Ctrl+Space to Autocomplete",
+    "ctrl_space": "Ctrl+Space to autocomplete",
     "custom_script": "Custom script",
     "write_java": "You can write Javascript that is applied to whole system.",
     "reflect_change": "You need to reload the page to reflect the change."
@@ -149,7 +149,7 @@
   "importer_management": {
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
-    "import_growi_archive": "Import GROWI Archive",
+    "import_growi_archive": "Import GROWI archive",
     "growi_settings": {
       "overwrite_documents": "Imported documents will overwrite existing documents",
       "growi_archive_file": "GROWI Archive File",
@@ -157,7 +157,7 @@
       "extracted_file": "Extracted File",
       "collection": "Collection",
       "upload": "Upload",
-      "discard": "Discard Uploaded Data",
+      "discard": "Discard uploaded data",
       "errors": {
         "at_least_one": "Select one or more collections.",
         "page_and_revision": "'Pages' and 'Revisions' must be imported both.",
@@ -202,7 +202,7 @@
     },
     "import": "Import",
     "page_skip": "Pages with a name that already exists on GROWI are not imported",
-    "Directory_hierarchy_tag": "Directory Hierarchy Tag"
+    "Directory_hierarchy_tag": "Directory hierarchy tag"
   },
   "export_management": {
     "exporting_collection_list": "Exporting Collection List",
