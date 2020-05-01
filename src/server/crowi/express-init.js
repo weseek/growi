@@ -98,7 +98,7 @@ module.exports = function(crowi, app) {
 
   // configure express-session
   app.use((req, res, next) => {
-    // test whether the route is listed in avoidSessionTroutes
+    // test whether the route is listed in avoidSessionRoutes
     for (const regex of avoidSessionRoutes) {
       if (regex.test(req.path)) {
         return next();
