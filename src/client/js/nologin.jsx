@@ -44,7 +44,7 @@ if (loginFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[loginContainer]}>
+      <Provider inject={[appContainer, loginContainer]}>
         <LoginForm isRegistering={isRegistering} username={username} name={name} email={email} csrf={csrf} />
       </Provider>
     </I18nextProvider>,

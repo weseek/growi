@@ -60,21 +60,4 @@ export default class LoginForm extends Container {
     }
   }
 
-  async loginWithExternalAuth(auth) {
-    try {
-      const axios = require('axios').create({
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        responseType: 'json',
-      });
-      await axios.get(`/passport/${auth}`, { params: { csrf: this.appContainer.csrfToken } });
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error(`Failed to access ${auth} login page`));
-    }
-  }
-
 }

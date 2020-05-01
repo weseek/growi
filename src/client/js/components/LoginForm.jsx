@@ -4,6 +4,7 @@ import loggerFactory from '@alias/logger';
 import { withTranslation } from 'react-i18next';
 
 import LoginContainer from '../services/LoginContainer';
+import AppContainer from '../services/AppContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:loginForm');
@@ -44,7 +45,9 @@ class LoginForm extends React.Component {
   }
 
   handleLoginWithExternalAuth(e) {
-    this.props.loginContainer.loginWithExternalAuth(e.currentTarget.id);
+    const auth = e.currentTarget.id;
+    const csrf = this.props.appContainer.csrfToken;
+    window.location.href = `/passport/${auth}?_csrf=${csrf}`;
   }
 
   renderLocalOrLdapLoginForm() {
@@ -278,13 +281,14 @@ class LoginForm extends React.Component {
  * Wrapper component for using unstated
  */
 const LoginFormWrapper = (props) => {
-  return createSubscribedElement(LoginForm, props, [LoginContainer]);
+  return createSubscribedElement(LoginForm, props, [AppContainer, LoginContainer]);
 };
 
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
   loginContainer: PropTypes.instanceOf(LoginContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
