@@ -459,9 +459,9 @@ class ImportService {
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
-    // if (meta.version !== this.crowi.version) {
-    //   throw new Error('the version of this growi and the growi that exported the data are not met');
-    // }
+    if (meta.version !== this.crowi.version) {
+      throw new Error('the version of this growi and the growi that exported the data are not met');
+    }
 
     // TODO: check if all migrations are completed
     // - export: throw err if there are pending migrations
