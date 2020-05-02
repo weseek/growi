@@ -21,12 +21,10 @@
 
   {% include 'page_alerts.html' %}
 
-  {% if !isTrashPage() %}
-    {% if !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}
-      {% include 'page_tabs_kibela.html' %}
-    {% else %}
-      {% include 'page_tabs.html' %}
-    {% endif %}
+  {% if !getConfig('crowi', 'customize:layout') || 'kibela' === getConfig('crowi', 'customize:layout') %}
+    {% include 'page_tabs_kibela.html' %}
+  {% else %}
+    {% include 'page_tabs.html' %}
   {% endif %}
 
   <div class="tab-content">
@@ -47,7 +45,7 @@
       </div>
     {% endif %}
 
-    {% if not page.isDeleted() %}
+    {% if !isTrashPage() %}
       {# edit form #}
       <div class="tab-pane" id="edit">
         <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
