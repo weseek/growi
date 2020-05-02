@@ -189,26 +189,26 @@ class SelectCollectionsModal extends React.Component {
             </div>
             <div className="row mt-4">
               <div className="col-xs-12">
-                <legend>Page Collections</legend>
+                <legend>MongoDB Page Collections</legend>
                 {this.renderGroups(GROUPS_PAGE)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-xs-12">
-                <legend>User Collections</legend>
+                <legend>MongoDB User Collections</legend>
                 {this.renderGroups(GROUPS_USER, 'danger')}
                 {this.renderWarnForUser()}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-xs-12">
-                <legend>Config Collections</legend>
+                <legend>MongoDB Config Collections</legend>
                 {this.renderGroups(GROUPS_CONFIG)}
               </div>
             </div>
             <div className="row mt-4">
               <div className="col-xs-12">
-                <legend>Other Collections</legend>
+                <legend>MongoDB Other Collections</legend>
                 {this.renderOthers()}
               </div>
             </div>

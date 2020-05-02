@@ -71,4 +71,8 @@
 
 {% block content_main_after %}
   {% include 'widget/comments.html' %}
+
+  {% if page %}
+    {% include '../widget/page_attachments.html' %}
+  {% endif %}
 {% endblock %}

@@ -182,9 +182,11 @@
   "Update API Token": "Update API Token",
   "header_search_box": {
     "label": {
+      "All pages": "All pages",
       "This tree": "This tree"
     },
     "item_label": {
+      "All pages": "All pages",
       "This tree": "Only children of this tree"
     }
   },
