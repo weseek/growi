@@ -1,8 +1,10 @@
 # CHANGES
 
-## v3.7.5
+## v3.7.5-RC
 
-*
+* Fix: Draw.io diagrams rendered twice
+* Fix: Behavior of password reset modal is strange
+* Fix: Attachments list on root page and users top pages
 
 ## v3.7.4
 
