@@ -97,28 +97,27 @@ class ImportService {
    * @param {any} value value from imported document
    * @param {{ document: object, schema: object, propertyName: string }}
    * @return {any} new value for the document
+   *
+   * @see https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-cast
    */
   keepOriginal(value, { document, schema, propertyName }) {
-    let _value = value;
+    // Model
+    if (schema != null && schema.path(propertyName) != null) {
+      const schemaType = schema.path(propertyName);
+      return schemaType.cast(value);
+    }
 
     // _id
     if (propertyName === '_id' && ObjectId.isValid(value)) {
-      _value = ObjectId(value);
+      return ObjectId(value);
     }
+
     // Date
-    else if (isIsoDate(value)) {
-      _value = parseISO(value);
+    if (isIsoDate(value)) {
+      return parseISO(value);
     }
 
-    // Model
-    if (schema != null) {
-      // ObjectID
-      if (schema[propertyName] != null && schema[propertyName].instance === 'ObjectID' && ObjectId.isValid(value)) {
-        _value = ObjectId(value);
-      }
-    }
-
-    return _value;
+    return value;
   }
 
   /**
@@ -409,7 +408,7 @@ class ImportService {
    */
   convertDocuments(collectionName, document, overwriteParams) {
     const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
-    const schema = (Model != null) ? Model.schema.paths : null;
+    const schema = (Model != null) ? Model.schema : null;
     const convertMap = this.convertMap[collectionName];
 
     const _document = {};
@@ -460,9 +459,9 @@ class ImportService {
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
-    if (meta.version !== this.crowi.version) {
-      throw new Error('the version of this growi and the growi that exported the data are not met');
-    }
+    // if (meta.version !== this.crowi.version) {
+    //   throw new Error('the version of this growi and the growi that exported the data are not met');
+    // }
 
     // TODO: check if all migrations are completed
     // - export: throw err if there are pending migrations
