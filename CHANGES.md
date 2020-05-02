@@ -5,9 +5,18 @@
 * Support: Upgrade libs
     * bootstrap
 
-## v3.7.5
+## v3.7.6
 
 *
+
+## v3.7.5
+
+* Fix: Draw.io diagrams rendered twice
+* Fix: Behavior of password reset modal is strange
+* Fix: Import GROWI Archive doesn't restore some data correctly
+* Fix: Attachments list on root page and users top pages
+* Fix: Trash page shouldn't be editable
+* Fix: Rendering Timeline on /trash
 
 ## v3.7.4
 
