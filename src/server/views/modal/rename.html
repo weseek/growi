@@ -27,6 +27,7 @@
 
           <hr>
 
+          {% if page.grant != 2 %}
           <div class="checkbox checkbox-warning">
             <input name="recursively" id="cbRenameRecursively" value="1" type="checkbox" checked>
             <label for="cbRenameRecursively">
@@ -34,6 +35,7 @@
               <p class="help-block mt-0">{{ t('modal_rename.help.recursive', page.path) }}</p>
             </label>
           </div>
+          {% endif %}
 
           <div class="checkbox checkbox-success">
             <input name="create_redirect" id="cbRenameRedirect" value="1" type="checkbox">
