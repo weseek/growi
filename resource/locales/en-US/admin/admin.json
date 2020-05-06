@@ -2,7 +2,7 @@
   "admin_top": {
     "management_wiki": "Management Wiki",
     "system_information": "System Information",
-    "wiki_administrator": "Only Wiki administrator can access this page",
+    "wiki_administrator": "Only wiki administrator can access this page",
     "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give Admin Access' button",
     "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
@@ -10,11 +10,11 @@
     "installed_version": "Installed version",
     "list_of_env_vars":"List of environment variables",
     "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
-    "about_security": "Check <a href='/admin/security'>Securtiy Management</a> for security environment variables."
+    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables."
   },
   "app_setting": {
     "site_name": "Site name",
-    "sitename_change": "You can change Site Name which is used for header and HTML title.",
+    "sitename_change": "You can change site name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
     "site_url_desc": "This is for the site URL setting.",
     "site_url_warn": "Some features don't work because the site URL is not set.",
