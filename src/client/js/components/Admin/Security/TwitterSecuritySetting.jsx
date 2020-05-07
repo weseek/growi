@@ -68,8 +68,8 @@ class TwitterSecurityManagement extends React.Component {
           </div>
         )}
 
-        <div className="row mb-5">
-          <div className="offset-md-3 col-md-6">
+        <div className="form-group row">
+          <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
                 id="isTwitterEnabled"
