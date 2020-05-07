@@ -1509,25 +1509,6 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @api {post} /empty.trash Empty trash
-   * @apiName EmptyTrash
-   * @apiGroup Page
-   */
-  api.emptyTrash = async function(req, res) {
-
-    try {
-      const pages = await Page.deleteMany({
-        path: { $in: /^\/trash/ },
-      });
-      res.json(ApiResponse.success({ pages }));
-    }
-    catch (err) {
-      logger.error('Delete trash pages failed', err);
-      return res.json(ApiResponse.error('Failed to delete trash pages.', 'unknown'));
-    }
-  };
-
-  /**
    * @api {post} /pages.revertRemove Revert removed page
    * @apiName RevertRemovePage
    * @apiGroup Page

@@ -370,19 +370,15 @@ $(() => {
       nameValueMap[obj.name] = obj.value;
     });
     $.ajax({
-      type: 'POST',
-      url: '/_api/empty-trash',
+      type: 'DELETE',
+      url: '/_api/v3/pages/empty-trash',
       data: nameValueMap,
       dataType: 'json',
     }).done((res) => {
-      // error
-      if (!res.ok) {
-        $('#emptyTrash .msg').hide();
-        $(`#emptyTrash .msg-${res.code}`).show();
-      }
-      else {
-        window.location.href = '/trash';
-      }
+      window.location.href = '/trash';
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      $('#emptyTrash .msg').hide();
+      $('#emptyTrash .msg-unknown').show();
     });
 
     return false;

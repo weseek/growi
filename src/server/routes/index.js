@@ -149,7 +149,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.seen'         , accessTokenParser , loginRequired , page.api.seen);
   app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequiredStrictly , csrf, page.api.remove); // (Avoid from API Token)
-  app.post('/_api/empty-trash'       , loginRequiredStrictly , adminRequired, csrf, page.api.emptyTrash); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, csrf, page.api.duplicate);
