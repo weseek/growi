@@ -75,8 +75,8 @@ Object.assign(componentMappings, {
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls />,
 
-  'user-created-list': <RecentCreated />,
-  'user-draft-list': <MyDraftList />,
+  'page-timeline': <PageTimeline />,
+
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
 });
 
@@ -86,13 +86,15 @@ if (pageContainer.state.pageId != null) {
     'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment': <PageAttachment />,
-    'page-timeline': <PageTimeline />,
     'page-comment-write': <CommentEditorLazyRenderer />,
     'revision-toc': <TableOfContents />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
     'rename-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
     'duplicate-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+
+    'user-created-list': <RecentCreated />,
+    'user-draft-list': <MyDraftList />,
   });
 }
 if (pageContainer.state.path != null) {

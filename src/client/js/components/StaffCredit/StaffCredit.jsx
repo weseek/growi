@@ -2,8 +2,14 @@ import React from 'react';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 import loggerFactory from '@alias/logger';
+import {
+  Modal, ModalBody,
+} from 'reactstrap';
 
 import contributors from './Contributor';
+
+// Unit is px / milli sec
+const scrollSpeed = 0.3;
 
 /**
  * Page staff credit component
@@ -39,6 +45,10 @@ export default class StaffCredit extends React.Component {
           isShown: true,
           userCommand: [],
         });
+        const target = $('.credit-curtain');
+        const scrollTargetHeight = target.children().innerHeight();
+        const duration = scrollTargetHeight / scrollSpeed;
+        target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
       }
       else {
         // add UserCommand
@@ -96,12 +106,10 @@ export default class StaffCredit extends React.Component {
         );
       });
       return (
-        <div className="text-center credit-curtain" onClick={this.deleteCredit}>
-          <div className="credit-body">
-            <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
-            <div className="clearfix"></div>
-            {credit}
-          </div>
+        <div className="text-center" onClick={this.deleteCredit}>
+          <h1 className="staff-credit-mb-10">GROWI Contributors</h1>
+          <div className="clearfix"></div>
+          {credit}
         </div>
       );
     }
@@ -113,7 +121,11 @@ export default class StaffCredit extends React.Component {
     const handlers = { check: (event) => { return this.check(event) } };
     return (
       <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        {this.renderContributors()}
+        <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
+          <ModalBody className="credit-curtain">
+            {this.renderContributors()}
+          </ModalBody>
+        </Modal>
       </GlobalHotKeys>
     );
   }

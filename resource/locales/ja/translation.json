@@ -110,6 +110,13 @@
   "Specified users": "特定ユーザーのみ",
   "Just me": "自分のみ",
   "Only inside the group": "特定グループのみ",
+  "page_list_and_search_results": "ページリスト・検索結果",
+  "scope_of_page_disclosure": "ページの公開範囲",
+  "set_point": "設定値",
+  "always_displayed": "表示 (固定)",
+  "always_hidden": "非表示 (固定)",
+  "displayed_or_hidden": "表示 / 非表示",
+  "page_access_and_delete_rights": "ページの閲覧・削除権限",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -181,9 +188,11 @@
   "Update API Token": "API Tokenを更新",
   "header_search_box": {
     "label": {
+      "All pages": "全てのページ",
       "This tree": "この階層"
     },
     "item_label": {
+      "All pages": "全てのページ",
       "This tree": "この階層下の子ページのみ"
     }
   },
