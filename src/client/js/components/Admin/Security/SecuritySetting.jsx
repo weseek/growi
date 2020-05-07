@@ -57,8 +57,65 @@ class SecuritySetting extends React.Component {
           <p>{t('Error occurred')} : {this.state.retrieveError}</p>
         </div>
           )}
-        <div className="row mb-5">
-          <div className="col-md-3 text-md-right text-nowrap py-2 mr-md-5">
+
+        <h4 className="mt-4">
+          { t('page_list_and_search_results') }
+        </h4>
+        <table className="table table-bordered col-lg-9 mb-5">
+          <thead>
+            <tr>
+              <th scope="col">{ t('scope_of_page_disclosure') }</th>
+              <th scope="col">{ t('set_point') }</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{ t('Public') }</th>
+              <td>{ t('always_displayed') }</td>
+            </tr>
+            <tr>
+              <th scope="row">{ t('Anyone with the link') }</th>
+              <td>{ t('always_hidden') }</td>
+            </tr>
+            <tr>
+              <th scope="row">{ t('Just me') }</th>
+              <td>
+                <div className="custom-control custom-switch custom-checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="isShowRestrictedByOwner"
+                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
+                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
+                  />
+                  <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                    {t('displayed_or_hidden')}
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">{ t('Only inside the group') }</th>
+              <td>
+                <div className="custom-control custom-switch custom-checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="isShowRestrictedByGroup"
+                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
+                  />
+                  <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                    {t('displayed_or_hidden')}
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4>{t('page_access_and_delete_rights')}</h4>
+        <div className="row mb-4">
+          <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
           <div className="col-md-6 ml-md-5">
@@ -89,7 +146,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
         {adminGeneralSecurityContainer.isWikiModeForced && (
-        <div className="row mb-5">
+        <div className="row mb-4">
           <div className="col-xs-offset-3 col-xs-6 text-left">
             <p className="alert alert-warning mt-2 text-left">
               <i className="icon-exclamation icon-fw">
@@ -104,44 +161,9 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
           )}
-        <div className="row mb-5">
-          <strong className="col-md-3 text-md-right text-nowrap mb-2 mr-md-5" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_1') }} />
-          <div className="col-md-6">
-            <div className="custom-control custom-checkbox custom-checkbox-success ml-md-5">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="isShowRestrictedByOwner"
-                checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
-                onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
-              />
-              <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                {t('security_setting.page_listing_1_desc')}
-              </label>
-            </div>
-          </div>
-        </div>
 
-        <div className="row mb-5">
-          <strong className="col-md-3 text-md-right text-nowrap mr-md-5 mb-2" dangerouslySetInnerHTML={{ __html: t('security_setting.page_listing_2') }} />
-          <div className="col-md-6 ml-md-5">
-            <div className="custom-control custom-checkbox custom-checkbox-success">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="isShowRestrictedByGroup"
-                checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
-                onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
-              />
-              <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
-                {t('security_setting.page_listing_2_desc')}
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="row mb-5">
-          <div className="col-md-3 text-md-right mr-md-5 mb-2">
+        <div className="row mb-4">
+          <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
           <div className="col-md-6 ml-md-5">
