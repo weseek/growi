@@ -131,11 +131,13 @@ class UserInviteModal extends React.Component {
         {userList.map((user) => {
           const copyText = `Email:${user.email} Password:${user.password} `;
           return (
-            <CopyToClipboard key={user.email} text={copyText} onCopy={this.showToaster}>
-              <li key={user.email} className="btn btn-outline-secondary my-1">
+            <div className="my-1">
+              <CopyToClipboard key={user.email} text={copyText} onCopy={this.showToaster}>
+                <li key={user.email} className="btn btn-outline-secondary">
                 Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
-              </li>
-            </CopyToClipboard>
+                </li>
+              </CopyToClipboard>
+            </div>
           );
         })}
       </ul>
