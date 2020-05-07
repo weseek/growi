@@ -20,10 +20,16 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
 
   /**
-   * @api {post} /empty.trash Empty trash
-   * @apiName EmptyTrash
-   * @apiGroup Page
-   */
+  * @swagger
+  *
+  *    /pages/empty-trash:
+  *      delete:
+  *        tags: [Pages]
+  *        description: empty trash
+  *        responses:
+  *          200:
+  *            description: Succeeded to remove all trash pages
+  */
   router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
     try {
       const pages = await Page.deleteMany({
