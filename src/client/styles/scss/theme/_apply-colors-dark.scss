@@ -82,8 +82,15 @@ textarea.form-control {
  * Pagination
  */
 ul.pagination {
-  li.page-item > button.page-link {
-    @extend .btn-dark;
+  li.page-item {
+    button.page-link {
+      @extend .btn-dark;
+    }
+    &.active {
+      button {
+        @extend .active;
+      }
+    }
   }
 }
 
