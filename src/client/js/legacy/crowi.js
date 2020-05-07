@@ -360,8 +360,28 @@ $(() => {
   });
 
   // empty trash
+  $('#emptyTrash').on('shown.bs.modal', (e) => {
+    $('#emptyTrash .msg').hide();
+  });
   $('#empty-trash-form').submit((e) => {
-    // TODO GW-2060 create api
+    // create name-value map
+    const nameValueMap = {};
+    $('#empty-trash-form').serializeArray().forEach((obj) => {
+      nameValueMap[obj.name] = obj.value;
+    });
+    $.ajax({
+      type: 'DELETE',
+      url: '/_api/v3/pages/empty-trash',
+      data: nameValueMap,
+      dataType: 'json',
+    }).done((res) => {
+      window.location.href = '/trash';
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      $('#emptyTrash .msg').hide();
+      $('#emptyTrash .msg-unknown').show();
+    });
+
+    return false;
   });
   // delete
   $('#deletePage').on('shown.bs.modal', (e) => {
