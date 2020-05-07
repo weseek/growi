@@ -75,6 +75,15 @@ textarea.form-control {
   @extend .bg-dark;
 }
 
+/*
+ * Pagination
+ */
+ul.pagination {
+  li.page-item > button.page-link {
+    @extend .btn-dark;
+  }
+}
+
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
