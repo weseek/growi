@@ -277,6 +277,9 @@
     "recursively": "Delete children of under <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
   },
+  "modal_empty":{
+    "empty_the_trash": "Empty The Trash"
+  },
   "modal_duplicate": {
     "label": {
       "Duplicate page": "Duplicate page",
