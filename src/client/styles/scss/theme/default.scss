@@ -83,7 +83,6 @@ html[dark] {
   $bgcolor-navbar: #151515;
   $bgcolor-inline-code: darken($basecolor, 5%);
   $bgcolor-card: darken($basecolor, 5%);
-  $input-bg: $bgcolor-global;
 
   // Font colors
   $color-global: #eeeeee;
@@ -95,6 +94,9 @@ html[dark] {
   $color-link-wiki-hover: darken($color-link-wiki, 5%);
   $color-link-nabvar: $color-global;
   $color-inline-code: #c7254e;
+
+  $input-color: $color-global;
+  $input-bg: $bgcolor-global;
 
   // List Group colors
   $color-list: $color-global;
