@@ -50,7 +50,7 @@
       </div>
     {% endif %}
 
-    {% if not page.isDeleted() %}
+    {% if !isTrashPage() %}
       {# edit form #}
       <div class="tab-pane" id="edit">
         <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
