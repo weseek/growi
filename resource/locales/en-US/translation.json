@@ -445,10 +445,10 @@
     "Local": {
       "name": "ID/Password",
       "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
-      "enable_local": "enable ID/Password"
+      "enable_local": "Enable ID/Password"
     },
     "ldap": {
-      "enable_ldap": "enable LDAP",
+      "enable_ldap": "Enable LDAP",
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
       "bind_manager": "Manager Bind",
@@ -482,7 +482,7 @@
     },
     "SAML": {
       "name": "SAML",
-      "enable_saml": "enable SAML",
+      "enable_saml": "Enable SAML",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "mapping_detail": "Specification of mappings for {{target}} when creating new users",
@@ -495,18 +495,18 @@
       "updated_saml": "Succeeded to update SAML setting"
     },
     "Basic": {
-      "enable_basic": "enable Basic",
+      "enable_basic": "Enable Basic",
       "name": "Basic Authentication",
       "desc_1": "Login with <code>username</code> in Authorization header.",
       "desc_2": "User will be automatically generated if not exist.",
       "updated_basic": "Succeeded to update Basic setting"
     },
     "OAuth": {
-      "enable_oidc": "enable OIDC",
+      "enable_oidc": "Enable OIDC",
       "register": "Register for %s",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
-        "enable_google": "enable Google OAuth",
+        "enable_google": "Enable Google OAuth",
         "name": "Google OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Create Project if no projects exist",
@@ -519,7 +519,7 @@
         "name": "Facebook OAuth"
       },
       "Twitter": {
-        "enable_twitter": "enable Twitter OAuth",
+        "enable_twitter": "Enable Twitter OAuth",
         "name": "Twitter OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Sign in Twitter",
@@ -529,7 +529,7 @@
         "updated_twitter": "Succeeded to update Twitter OAuth setting"
       },
       "GitHub": {
-        "enable_github": "enable GitHub OAuth",
+        "enable_github": "Enable GitHub OAuth",
         "name": "GitHub OAuth",
         "register_1": "Access {{link}}",
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
