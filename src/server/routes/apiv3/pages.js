@@ -35,7 +35,7 @@ module.exports = (crowi) => {
       const pages = await Page.deleteMany({
         path: { $in: /^\/trash/ },
       });
-      return res.apiv3({ pages, ok: true });
+      return res.apiv3({ pages });
     }
     catch (err) {
       res.code = 'unknown';
