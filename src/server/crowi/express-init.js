@@ -97,15 +97,16 @@ module.exports = function(crowi, app) {
   app.use(cookieParser());
 
   // configure express-session
+  const sessionMiddleware = expressSession(crowi.sessionConfig);
   app.use((req, res, next) => {
-    // test whether the route is listed in avoidSessionTroutes
+    // test whether the route is listed in avoidSessionRoutes
     for (const regex of avoidSessionRoutes) {
       if (regex.test(req.path)) {
         return next();
       }
     }
 
-    expressSession(crowi.sessionConfig)(req, res, next);
+    sessionMiddleware(req, res, next);
   });
 
   // passport
