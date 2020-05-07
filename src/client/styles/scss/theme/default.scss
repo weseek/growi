@@ -83,6 +83,7 @@ html[dark] {
   $bgcolor-navbar: #151515;
   $bgcolor-inline-code: darken($basecolor, 5%);
   $bgcolor-card: darken($basecolor, 5%);
+  $input-bg: $bgcolor-global;
 
   // Font colors
   $color-global: #eeeeee;
