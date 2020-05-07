@@ -19,6 +19,9 @@ input.form-control,
 textarea.form-control {
   color: lighten($color-global, 30%);
   background-color: darken($bgcolor-global, 5%);
+  &:focus {
+    background-color: $bgcolor-global;
+  }
   // FIXME: accent color
   // border: 1px solid darken($border, 30%);
 }
