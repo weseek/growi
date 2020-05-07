@@ -1,19 +1,14 @@
 // Staff Credit
-#staff-credit {
+.staff-credit {
+  // attached !important for updating from .modal-dialog class style
+  width: 80vw !important;
+  height: 80vh !important;
+  max-width: initial !important;
   // see https://css-tricks.com/old-timey-terminal-styling/
   @mixin old-timey-terminal-styling() {
     text-shadow: 0 0 10px #c8c8c8;
     background-color: black;
     background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
-    &::after {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      content: '';
-      background: repeating-linear-gradient(0deg, rgba(black, 0.15), rgba(black, 0.15) 2px, transparent 2px, transparent 4px);
-    }
   }
 
   font-family: 'Press Start 2P', $basefont1;
@@ -33,33 +28,8 @@
 
   // see https://css-tricks.com/old-timey-terminal-styling/
   .credit-curtain {
-    position: fixed;
-    top: 10vh;
-    left: 20vh;
-    width: 80vw;
-    height: 80vh;
-    overflow-y: hidden;
-
+    padding-top: 80vh;
     @include old-timey-terminal-styling();
-  }
-
-  .credit-body {
-    position: relative;
-    top: $credit-length;
-    animation-name: Credit;
-    // credit duration
-    animation-duration: 20s;
-    animation-timing-function: linear;
-  }
-
-  @keyframes Credit {
-    from {
-      top: 100%;
-    }
-    to {
-      // credit length
-      top: $credit-length;
-    }
   }
 
   h1 {

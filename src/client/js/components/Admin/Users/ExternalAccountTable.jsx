@@ -80,7 +80,7 @@ class ExternalAccountTable extends React.Component {
                   <td>
                     {ea.user.password
                       ? (
-                        <span className="label label-info">
+                        <span className="badge badge-info">
                           {t('admin:user_management.set')}
                         </span>
                       )

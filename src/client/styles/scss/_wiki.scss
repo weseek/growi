@@ -123,6 +123,10 @@ div.body {
     }
   }
 
+  pre {
+    white-space: pre-line;
+  }
+
   // only inline code blocks
   p code {
     font-family: $font-family-monospace-not-strictly;
