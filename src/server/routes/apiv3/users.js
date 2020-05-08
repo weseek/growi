@@ -571,9 +571,21 @@ module.exports = (crowi) => {
   router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     try {
       const userIds = req.body.userIds;
-      // [TODO] update cache
-      const updatedUsers = await User.find({ _id: { $in: userIds } });
-      return res.apiv3({ updatedUsers });
+      const users = await User.find({ _id: { $in: userIds } });
+      const requests = users.map((user) => {
+        return {
+          updateOne: {
+            filter: { _id: user._id },
+            update: { $set: { imageUrlCached: user.generateImageUrlCached() } },
+          },
+        };
+      });
+
+      if (requests.length > 0) {
+        await User.bulkWrite(requests);
+      }
+
+      return res.apiv3({});
     }
     catch (err) {
       logger.error('Error', err);
