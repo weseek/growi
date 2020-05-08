@@ -8,6 +8,10 @@ class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isRegistering: false,
+    };
+
     this.isRegistrationEnabled = false;
     this.registrationMode = 'Closed';
     this.registrationWhiteList = [];
@@ -15,7 +19,7 @@ class LoginForm extends React.Component {
     this.isLdapStrategySetup = false;
     this.objOfIsExternalAuthEnableds = {};
 
-    this.switchForm = this.switchForm.bind(this);
+    this.onClickSwitchFormBtn = this.onClickSwitchFormBtn.bind(this);
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
@@ -38,16 +42,16 @@ class LoginForm extends React.Component {
       saml: true,
       basic: true,
     };
+
+    const { hash } = window.location;
+    if (hash === '#register') {
+      this.setState({ isRegistering: true });
+    }
+
   }
 
-  // for flip [TODO][GW-1865] use state or react component for flip
-  switchForm(e) {
-    if (e.target.id === 'register') {
-      $('#login-dialog').addClass('to-flip');
-    }
-    else {
-      $('#login-dialog').removeClass('to-flip');
-    }
+  onClickSwitchFormBtn() {
+    this.setState({ isRegistering: !this.state.isRegistering });
   }
 
   renderLocalOrLdapLoginForm() {
@@ -235,7 +239,7 @@ class LoginForm extends React.Component {
 
         <div className="row">
           <div className="text-right col-12 py-1">
-            <a href="#login" id="login" className="link-switch" onClick={this.handleClick}>
+            <a href="#login" id="login" className="link-switch" onClick={this.onClickSwitchFormBtn}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -246,10 +250,10 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const { t, isRegistering } = this.props;
+    const { t } = this.props;
 
     const isLocalOrLdapStrategiesEnabled = this.isLocalStrategySetup || this.isLdapStrategySetup;
-    const registerFormClass = isRegistering ? 'to-flip' : '';
+    const registerFormClass = this.state.isRegistering ? 'to-flip' : '';
     const isSomeExternalAuthEnabled = Object.values(this.objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
@@ -262,7 +266,7 @@ class LoginForm extends React.Component {
               {this.isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
-                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
+                    <a href="#register" id="register" className="link-switch" onClick={this.onClickSwitchFormBtn}>
                       <i className="ti-check-box"></i> {t('Sign up is here')}
                     </a>
                   </div>
@@ -284,7 +288,6 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
-  isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
   email: PropTypes.string,
