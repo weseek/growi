@@ -39,13 +39,17 @@
   cursor: pointer;
   background-color: rgba(lighten(black, 20%), 0.4);
   border: none;
+  padding: 0px;
+  min-width: 130px;
+  display: flex;
+  justify-content: space-between;
 
   .btn-label {
     position: relative;
     z-index: 1;
     color: white;
     text-decoration: none;
-    padding: 10px 15px;
+    padding: 9px 15px;
   }
 
   .btn-label-text {
@@ -53,6 +57,8 @@
     z-index: 1;
     color: white;
     text-decoration: none;
+    margin: auto;
+    text-align: center;
   }
 
   // effect

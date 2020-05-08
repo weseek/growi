@@ -97,16 +97,26 @@ class LoginForm extends React.Component {
 
   renderExternalAuthInput(auth) {
     const { t, csrf } = this.props;
+    const authIconNames = {
+      google: 'google',
+      github: 'github',
+      facebook: 'facebook',
+      twitter: 'twitter',
+      oidc: 'openid',
+      saml: 'key',
+      basic: 'lock',
+    };
+
     return (
       <div className="col-6">
         {/* [TODO][GW-1913] use onClick, and delete form tag */}
-        <form key={auth} role="form" action={`/passport/${auth}`}>
+        <form key={auth} role="form" action={`/passport/${auth}`} className="mb-2">
           {/* [TODO][GW-1913] An AppContainer gets csrf data */}
           <input type="hidden" name="_csrf" value={csrf} />
-          <button type="submit" className="btn btn-fill w-100" id={auth}>
+          <button type="submit" className="btn btn-fill" id={auth}>
             <div className="eff"></div>
             <span className="btn-label">
-              <i className={`fa fa-${auth}`}></i>
+              <i className={`fa fa-${authIconNames[auth]}`}></i>
             </span>
             <span className="btn-label-text">{t('Sign in')}</span>
           </button>
@@ -122,18 +132,18 @@ class LoginForm extends React.Component {
 
     return (
       <>
-        <div className="border-bottom"></div>
-        <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
-          <div className="row my-2">
-            {Object.keys(this.objOfIsExternalAuthEnableds).map((auth) => {
-              if (!this.objOfIsExternalAuthEnableds[auth]) {
-                return;
-              }
-              return this.renderExternalAuthInput(auth);
-            })}
+        <div className="border-top border-bottom">
+          <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
+            <div className="row mt-2">
+              {Object.keys(this.objOfIsExternalAuthEnableds).map(auth => {
+                if (!this.objOfIsExternalAuthEnableds[auth]) {
+                  return;
+                }
+                return this.renderExternalAuthInput(auth);
+              })}
+            </div>
           </div>
         </div>
-        <div className="border-bottom"></div>
         <div className="text-center">
           <button
             type="button"
