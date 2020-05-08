@@ -219,12 +219,12 @@ class LoginForm extends React.Component {
           <div className="input-group justify-content-center mt-5">
             {/* [TODO][GW-1913] An AppContainer gets csrf data */}
             <input type="hidden" name="_csrf" value={csrf} />
-            <button type="submit" className="btn btn-fill px-0 py-2" id="register">
+            <button type="submit" className="btn btn-fill" id="register">
               <div className="eff"></div>
-              <span className="btn-label p-3">
+              <span className="btn-label">
                 <i className="icon-user-follow"></i>
               </span>
-              <span className="btn-label-text p-3">{t('Sign up')}</span>
+              <span className="btn-label-text">{t('Sign up')}</span>
             </button>
           </div>
         </form>
