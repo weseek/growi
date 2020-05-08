@@ -42,12 +42,13 @@ class LoginForm extends React.Component {
       saml: true,
       basic: true,
     };
+  }
 
+  componentDidMount() {
     const { hash } = window.location;
     if (hash === '#register') {
       this.setState({ isRegistering: true });
     }
-
   }
 
   onClickSwitchFormBtn() {
