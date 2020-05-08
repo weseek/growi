@@ -31,7 +31,7 @@
 }
 
 // fill button style
-.btn-fill {
+:root .btn.btn-fill {
   position: relative;
   overflow: hidden;
   color: white;
@@ -45,6 +45,7 @@
     z-index: 1;
     color: white;
     text-decoration: none;
+    padding: 10px 15px;
   }
 
   .btn-label-text {

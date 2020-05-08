@@ -98,19 +98,19 @@ class LoginForm extends React.Component {
   renderExternalAuthInput(auth) {
     const { t, csrf } = this.props;
     return (
-      <div key={auth} className="input-group justify-content-center d-flex mt-5">
+      <div className="col-6">
         {/* [TODO][GW-1913] use onClick, and delete form tag */}
-        <form role="form" action={`/passport/${auth}`} className="d-inline-flex flex-column">
+        <form key={auth} role="form" action={`/passport/${auth}`}>
           {/* [TODO][GW-1913] An AppContainer gets csrf data */}
           <input type="hidden" name="_csrf" value={csrf} />
-          <button type="submit" className="btn btn-fill px-0 py-2" id={auth}>
+          <button type="submit" className="btn btn-fill w-100" id={auth}>
             <div className="eff"></div>
-            <span className="btn-label p-3">
+            <span className="btn-label">
               <i className={`fa fa-${auth}`}></i>
             </span>
-            <span className="btn-label-text p-3">{t('Sign in')}</span>
+            <span className="btn-label-text">{t('Sign in')}</span>
           </button>
-          <div className="small text-center">by {auth} Account</div>
+          <div className="small text-right">by {auth} Account</div>
         </form>
       </div>
     );
@@ -124,8 +124,7 @@ class LoginForm extends React.Component {
       <>
         <div className="border-bottom"></div>
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
-          <div className="spacer"></div>
-          <div className="d-flex flex-row justify-content-between flex-wrap">
+          <div className="row my-2">
             {Object.keys(this.objOfIsExternalAuthEnableds).map((auth) => {
               if (!this.objOfIsExternalAuthEnableds[auth]) {
                 return;
@@ -133,7 +132,6 @@ class LoginForm extends React.Component {
               return this.renderExternalAuthInput(auth);
             })}
           </div>
-          <div className="spacer"></div>
         </div>
         <div className="border-bottom"></div>
         <div className="text-center">
