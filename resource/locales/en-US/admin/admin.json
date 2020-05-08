@@ -294,16 +294,16 @@
     "created_group": "Group was created",
     "is_loading_data": "fetch data...",
     "no_pages": "There are no pages the group has view permission",
-    "remove_from_group": "Remove this user",
+    "remove_from_group": "Remove This User",
     "delete_modal": {
       "header": "Delete Group",
-      "desc": "Once deleted, the deleted group and its private pages cannot be retrieved",
-      "dropdown_desc": "Choose an action for private pages",
-      "select_group": "Select a group",
+      "desc": "Once deleted, the deleted group and its private pages cannot be retrieved.",
+      "dropdown_desc": "Choose an Action for Private Pages",
+      "select_group": "Select a Group",
       "no_groups": "No groups to select",
       "publish_pages": "Publish All",
       "delete_pages": "Delete All",
-      "transfer_pages": "Transfer to another group"
+      "transfer_pages": "Transfer to Another Group"
     }
   }
 }
