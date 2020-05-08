@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
 import { withTranslation } from 'react-i18next';
 
 import LoginContainer from '../services/LoginContainer';
 import { createSubscribedElement } from './UnstatedUtils';
-
-const logger = loggerFactory('growi:loginForm');
 
 class LoginForm extends React.Component {
 
@@ -20,18 +17,6 @@ class LoginForm extends React.Component {
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
   }
 
-  async componentDidMount() {
-    const { loginContainer } = this.props;
-
-    try {
-      await loginContainer.retrieveData();
-    }
-    catch (err) {
-      loginContainer.setState({ retrieveError: err.message });
-      logger.error(err);
-    }
-  }
-
   // for flip [TODO][GW-1865] use state or react component for flip
   switchForm(e) {
     if (e.target.id === 'register') {
@@ -43,7 +28,7 @@ class LoginForm extends React.Component {
   }
 
   renderLocalOrLdapLoginForm() {
-    const { t, csrf } = this.props;
+    const { t, csrf, isLdapStrategySetup } = this.props;
 
     return (
       <form role="form" action="/login" method="post">
@@ -54,7 +39,7 @@ class LoginForm extends React.Component {
             </span>
           </div>
           <input type="text" className="form-control" placeholder="Username or E-mail" name="loginForm[username]" />
-          {this.isLdapStrategySetup && (
+          {isLdapStrategySetup && (
             <div className="input-group-append">
               <small className="input-group-text text-success">
                 <i className="icon-fw icon-check"></i> LDAP
@@ -73,7 +58,7 @@ class LoginForm extends React.Component {
         </div>
 
         <div className="input-group justify-content-center d-flex mt-5">
-          {/* [TODO][GW-1913] An AppContainer gets csrf data */}
+          {/* [TODO][GW-2112] An AppContainer gets csrf data */}
           <input type="hidden" name="_csrf" value={csrf} />
           <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
             <div className="eff"></div>
@@ -109,8 +94,8 @@ class LoginForm extends React.Component {
   }
 
   renderExternalAuthLoginForm() {
-    const { loginContainer } = this.props;
-    const isExternalAuthCollapsible = loginContainer.state.isLocalStrategySetup || loginContainer.state.isLdapStrategySetup;
+    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = this.props;
+    const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth collapse-anchor' : '';
 
     return (
@@ -119,8 +104,8 @@ class LoginForm extends React.Component {
         <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
           <div className="spacer"></div>
           <div className="d-flex flex-row justify-content-between flex-wrap">
-            {Object.keys(loginContainer.state.objOfIsExternalAuthEnableds).map((auth) => {
-              if (!loginContainer.state.objOfIsExternalAuthEnableds[auth]) {
+            {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
+              if (!objOfIsExternalAuthEnableds[auth]) {
                 return;
               }
               return this.renderExternalAuthInput(auth);
@@ -146,10 +131,10 @@ class LoginForm extends React.Component {
   }
 
   renderRegisterForm() {
-    const { t, loginContainer, csrf } = this.props;
+    const { t, csrf, registrationMode, registrationWhiteList } = this.props;
     return (
       <div className="back">
-        {this.registrationMode === 'Restricted' && (
+        {registrationMode === 'Restricted' && (
           <p className="alert alert-warning">
             {t('page_register.notice.restricted')}
             <br />
@@ -187,11 +172,11 @@ class LoginForm extends React.Component {
             <input type="email" className="form-control" placeholder={t('Email')} name="registerForm[email]" defaultValue={this.props.email} required />
           </div>
 
-          {loginContainer.state.registrationWhiteList.length > 0 && (
+          {registrationWhiteList.length > 0 && (
             <>
               <p className="form-text">{t('page_register.form_help.email')}</p>
               <ul>
-                {loginContainer.state.registrationWhiteList.map((elem) => {
+                {registrationWhiteList.map((elem) => {
                   return (
                     <li key={elem}>
                       <code>{elem}</code>
@@ -212,7 +197,7 @@ class LoginForm extends React.Component {
           </div>
 
           <div className="input-group justify-content-center mt-5">
-            {/* [TODO][GW-1913] An AppContainer gets csrf data */}
+            {/* [TODO][GW-2112] An AppContainer gets csrf data */}
             <input type="hidden" name="_csrf" value={csrf} />
             <button type="submit" className="btn btn-fill px-0 py-2" id="register">
               <div className="eff"></div>
@@ -239,11 +224,18 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    const { t, loginContainer, isRegistering } = this.props;
+    const {
+      t,
+      isRegistering,
+      isLocalStrategySetup,
+      isLdapStrategySetup,
+      isRegistrationEnabled,
+      objOfIsExternalAuthEnableds,
+    } = this.props;
 
-    const isLocalOrLdapStrategiesEnabled = loginContainer.state.isLocalStrategySetup || loginContainer.state.isLdapStrategySetup;
+    const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
     const registerFormClass = isRegistering ? 'to-flip' : '';
-    const isSomeExternalAuthEnabled = Object.values(loginContainer.state.objOfIsExternalAuthEnableds).some(elem => elem);
+    const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
       <div className={`login-dialog mx-auto flipper ${registerFormClass}`} id="login-dialog">
@@ -252,7 +244,7 @@ class LoginForm extends React.Component {
             <div className="front">
               {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
               {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-              {loginContainer.state.isRegistrationEnabled && (
+              {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
@@ -262,7 +254,7 @@ class LoginForm extends React.Component {
                 </div>
               )}
             </div>
-            {loginContainer.state.isRegistrationEnabled && this.renderRegisterForm()}
+            {isRegistrationEnabled && this.renderRegisterForm()}
             <a href="https://growi.org" className="link-growi-org pl-3">
               <span className="growi">GROWI</span>.<span className="org">ORG</span>
             </a>
@@ -290,6 +282,12 @@ LoginForm.propTypes = {
   name: PropTypes.string,
   email: PropTypes.string,
   csrf: PropTypes.string,
+  isRegistrationEnabled: PropTypes.bool,
+  registrationMode: PropTypes.string,
+  registrationWhiteList: PropTypes.array,
+  isLocalStrategySetup: PropTypes.bool,
+  isLdapStrategySetup: PropTypes.bool,
+  objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
 export default withTranslation()(LoginFormWrapper);
