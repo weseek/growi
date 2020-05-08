@@ -11,48 +11,56 @@ const AdminNavigation = (props) => {
     return (pathname.startsWith(urljoin('/admin', path)));
   };
 
-  return (
-    <div>
-      <div className="list-group admin-navigation d-none d-md-block">
-        <a href="/admin" className={`list-group-item list-group-item-action border-0 round-corner ${pathname === '/admin' && 'active'}`}>
+  const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
+    return (
+      <>
+        <a href="/admin" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${pathname === '/admin' && 'active'}`}>
           <i className="icon-fw icon-home"></i> {t('Management Wiki Home')}
         </a>
-        <a href="/admin/app" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/app') && 'active'}`}>
+        <a href="/admin/app" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/app') && 'active'}`}>
           <i className="icon-fw icon-settings"></i> {t('App Settings')}
         </a>
-        <a href="/admin/security" className={`list-group-item list-group-item-action border-0 round-corner  ${isActiveMenu('/security') && 'active'}`}>
+        <a href="/admin/security" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}  ${isActiveMenu('/security') && 'active'}`}>
           <i className="icon-fw icon-shield"></i> {t('security_settings')}
         </a>
-        <a href="/admin/markdown" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/markdown') && 'active'}`}>
+        <a href="/admin/markdown" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/markdown') && 'active'}`}>
           <i className="icon-fw icon-note"></i> {t('Markdown Settings')}
         </a>
-        <a href="/admin/customize" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/customize') && 'active'}`}>
+        <a href="/admin/customize" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/customize') && 'active'}`}>
           <i className="icon-fw icon-wrench"></i> {t('Customize')}
         </a>
-        <a href="/admin/importer" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/importer') && 'active'}`}>
+        <a href="/admin/importer" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/importer') && 'active'}`}>
           <i className="icon-fw icon-cloud-upload"></i> {t('Import Data')}
         </a>
-        <a href="/admin/export" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/export') && 'active'}`}>
+        <a href="/admin/export" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/export') && 'active'}`}>
           <i className="icon-fw icon-cloud-download"></i> {t('Export Archive Data')}
         </a>
         <a
           href="/admin/notification"
           className={
-            `list-group-item list-group-item-action border-0 round-corner
+            `${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
             ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`
           }
         >
           <i className="icon-fw icon-bell"></i> {t('Notification Settings')}
         </a>
-        <a href="/admin/users" className={`list-group-item list-group-item-action border-0 round-corner ${(isActiveMenu('/users')) && 'active'}`}>
+        <a href="/admin/users" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${(isActiveMenu('/users')) && 'active'}`}>
           <i className="icon-fw icon-user"></i> {t('User_Management')}
         </a>
-        <a href="/admin/user-groups" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/user-group') && 'active'}`}>
+        <a href="/admin/user-groups" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/user-group') && 'active'}`}>
           <i className="icon-fw icon-people"></i> {t('UserGroup Management')}
         </a>
-        <a href="/admin/search" className={`list-group-item list-group-item-action border-0 round-corner ${isActiveMenu('/search') && 'active'}`}>
+        <a href="/admin/search" className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'} ${isActiveMenu('/search') && 'active'}`}>
           <i className="icon-fw icon-magnifier"></i> {t('Full Text Search Management')}
         </a>
+      </>
+    );
+  };
+
+  return (
+    <div>
+      <div className="list-group admin-navigation d-none d-md-block">
+        {getListGroupItemOrDropdownItemList(true)}
       </div>
       <div className="dropdown d-block d-md-none">
         <button
@@ -78,44 +86,7 @@ const AdminNavigation = (props) => {
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
-          <a href="/admin" className={`dropdown-item ${pathname === '/admin' && 'active'}`}>
-            <i className="icon-fw icon-home"></i> {t('Management Wiki Home')}
-          </a>
-          <a href="/admin/app" className={`dropdown-item ${isActiveMenu('/app') && 'active'}`}>
-            <i className="icon-fw icon-settings"></i> {t('App Settings')}
-          </a>
-          <a href="/admin/security" className={`dropdown-item  ${isActiveMenu('/security') && 'active'}`}>
-            <i className="icon-fw icon-shield"></i> {t('security_settings')}
-          </a>
-          <a href="/admin/markdown" className={`dropdown-item ${isActiveMenu('/markdown') && 'active'}`}>
-            <i className="icon-fw icon-note"></i> {t('Markdown Settings')}
-          </a>
-          <a href="/admin/customize" className={`dropdown-item ${isActiveMenu('/customize') && 'active'}`}>
-            <i className="icon-fw icon-wrench"></i> {t('Customize')}
-          </a>
-          <a href="/admin/importer" className={`dropdown-item ${isActiveMenu('/importer') && 'active'}`}>
-            <i className="icon-fw icon-cloud-upload"></i> {t('Import Data')}
-          </a>
-          <a href="/admin/export" className={`dropdown-item ${isActiveMenu('/export') && 'active'}`}>
-            <i className="icon-fw icon-cloud-download"></i> {t('Export Archive Data')}
-          </a>
-          <a
-            href="/admin/notification"
-            className={
-              `dropdown-item ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`
-            }
-          >
-            <i className="icon-fw icon-bell"></i> {t('Notification Settings')}
-          </a>
-          <a href="/admin/users" className={`dropdown-item ${(isActiveMenu('/users')) && 'active'}`}>
-            <i className="icon-fw icon-user"></i> {t('User_Management')}
-          </a>
-          <a href="/admin/user-groups" className={`dropdown-item ${isActiveMenu('/user-group') && 'active'}`}>
-            <i className="icon-fw icon-people"></i> {t('UserGroup Management')}
-          </a>
-          <a href="/admin/search" className={`dropdown-item ${isActiveMenu('/search') && 'active'}`}>
-            <i className="icon-fw icon-magnifier"></i> {t('Full Text Search Management')}
-          </a>
+          {getListGroupItemOrDropdownItemList(false)}
         </div>
       </div>
     </div>
