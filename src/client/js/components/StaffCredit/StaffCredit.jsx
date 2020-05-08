@@ -52,7 +52,7 @@ export default class StaffCredit extends React.Component {
 
         target.slimScroll({
           height: target.innerHeight(),
-          // スクロールできるようになるのは、自動スクロールが完了した後なので bottom を設定し、一番下からスクロールできるようにする
+          // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
           start: 'bottom',
           color: '#FFFFFF',
         });
