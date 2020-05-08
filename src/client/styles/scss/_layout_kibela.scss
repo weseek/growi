@@ -1,3 +1,5 @@
+$navbar-height-adjustment: $grw-navbar-height -10px;
+
 body.kibela {
   /* navbar for kibela */
   #page-wrapper {
@@ -124,7 +126,7 @@ body.kibela {
       + 1px //                    .page-editor-footer border-top
       + 60px; //                  .page-editor-footer min-height
 
-    @include expand-editor($header-plus-footer, 10px);
+    @include expand-editor($header-plus-footer, $navbar-height-adjustment);
 
     .kibela-block {
       top: 0px;
