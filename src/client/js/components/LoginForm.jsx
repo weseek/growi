@@ -80,15 +80,15 @@ class LoginForm extends React.Component {
           <input type="password" className="form-control" placeholder="Password" name="loginForm[password]" />
         </div>
 
-        <div className="input-group justify-content-center d-flex mt-5">
+        <div className="input-group mt-5">
           {/* [TODO][GW-1913] An AppContainer gets csrf data */}
           <input type="hidden" name="_csrf" value={csrf} />
-          <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
+          <button type="submit" id="login" className="btn btn-fill login mx-auto">
             <div className="eff"></div>
-            <span className="btn-label p-3">
+            <span className="btn-label">
               <i className="icon-login"></i>
             </span>
-            <span className="btn-label-text p-3">{t('Sign in')}</span>
+            <span className="btn-label-text">{t('Sign in')}</span>
           </button>
         </div>
       </form>
@@ -268,11 +268,11 @@ class LoginForm extends React.Component {
               )}
             </div>
             {this.isRegistrationEnabled && this.renderRegisterForm()}
-            <a href="https://growi.org" className="link-growi-org pl-3">
-              <span className="growi">GROWI</span>.<span className="org">ORG</span>
-            </a>
           </div>
         </div>
+        <a href="https://growi.org" className="link-growi-org pl-3">
+          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+        </a>
       </div>
     );
   }
