@@ -258,7 +258,7 @@ export default class Editor extends AbstractEditor {
     return (
       <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
         <Modal.Header closeButton>
-          <Modal.Title><i className="icon-fw icon-question" />Markdown Help</Modal.Title>
+          <Modal.Title><i className="icon-fw icon-question" />Markdown help</Modal.Title>
         </Modal.Header>
         <Modal.Body className="pt-1">
           <Cheatsheet />

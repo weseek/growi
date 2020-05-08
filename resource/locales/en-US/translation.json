@@ -54,7 +54,7 @@
   "Share": "Share",
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
-  "Create/Edit Template": "Create/Edit Template Page",
+  "Create/Edit Template": "Create/Edit template page",
   "Unportalize": "Unportalize",
   "Go to this version": "View this version",
   "View diff": "View diff",
@@ -87,7 +87,7 @@
   "Memo": "memo",
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
-  "New Page": "New Page",
+  "New Page": "New page",
   "Create under": "Create page under below:",
   "Table of Contents": "Table of Contents",
   "Wiki Management Home Page": "Wiki management home page",
@@ -264,13 +264,13 @@
       "recursive": "Move/Rename children of under <code>%s</code> recursively"
     }
   },
-  "Put Back": "Put Back",
-  "Delete Completely": "Delete Completely",
+  "Put Back": "Put back",
+  "Delete Completely": "Delete completely",
   "modal_delete": {
-    "delete_page": "Delete Page",
-    "deleting_page": "Deleting Page",
-    "delete_recursively": "Delete Child Pages Recursively.",
-    "delete_completely": "Delete Completely",
+    "delete_page": "Delete page",
+    "deleting_page": "Deleting page",
+    "delete_recursively": "Delete child pages recursively.",
+    "delete_completely": "Delete completely",
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
     "recursively": "Delete children of <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
@@ -284,11 +284,11 @@
   },
   "modal_putback": {
     "label": {
-      "Put Back Page": "Put Back Page",
-      "recursively": "Put Back recursively"
+      "Put Back Page": "Put back page",
+      "recursively": "Put back recursively"
     },
     "help": {
-      "recursively": "Put Back children of under <code>%s</code> recursively"
+      "recursively": "Put back children of under <code>%s</code> recursively"
     }
   },
   "modal_shortcuts": {
@@ -324,11 +324,11 @@
   },
   "template": {
     "modal_label": {
-      "Create/Edit Template Page": "Create/Edit Template Page",
+      "Create/Edit Template Page": "Create/Edit template page",
       "Create template under": "Create template page under:<br /><code><small>%s</small></code>"
     },
     "option_label": {
-      "create/edit": "Create/Edit Template page..",
+      "create/edit": "Create/Edit template page..",
       "select": "Select template page type"
     },
     "children": {
