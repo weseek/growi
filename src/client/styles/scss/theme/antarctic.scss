@@ -96,6 +96,10 @@ html[light] {
   $color-sidebar-context: $color-reversal;
   $bgcolor-sidebar-context: lighten($bgcolor-navbar, 10%);
 
+  .table {
+    background-color: $themelight;
+  }
+
   @import 'apply-colors';
   @import 'apply-colors-light';
 }
