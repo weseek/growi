@@ -52,3 +52,4 @@ jobs:
         channel: '#general'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         icon_emoji: 'tada'
+        isReleaseMode: true
