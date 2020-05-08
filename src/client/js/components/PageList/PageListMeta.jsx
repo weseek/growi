@@ -19,13 +19,13 @@ export default class PageListMeta extends React.Component {
     // portal check
     let portalLabel;
     if (this.isPortalPath(page.path)) {
-      portalLabel = <span className="label label-info">PORTAL</span>;
+      portalLabel = <span className="badge badge-info">PORTAL</span>;
     }
 
     // template check
     let templateLabel;
     if (templateChecker(page.path)) {
-      templateLabel = <span className="label label-info">TMPL</span>;
+      templateLabel = <span className="badge badge-info">TMPL</span>;
     }
 
     let commentCount;

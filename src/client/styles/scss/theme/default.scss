@@ -62,6 +62,11 @@ html[light] {
   // badge
   $color-badge: $color-reversal;
 
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: darken($bgcolor-global, 10%);
+
   @import 'apply-colors';
   @import 'apply-colors-light';
 }
@@ -117,6 +122,11 @@ html[dark] {
 
   // badge
   $color-badge: $color-reversal;
+
+  // Sidebar
+  $bgcolor-sidebar: $bgcolor-navbar;
+  $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
