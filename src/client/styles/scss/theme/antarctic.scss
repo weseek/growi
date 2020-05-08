@@ -48,7 +48,7 @@ html[light] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-navbar: #334455;
+  $bgcolor-navbar: $themecolor;
   $bgcolor-inline-code: #f9f2f4;
   $bgcolor-card: #f5f5f5;
 
@@ -56,7 +56,7 @@ html[light] {
   $color-global: black;
   $color-reversal: #eeeeee;
   // $color-header: #2b2b2b;
-  $color-link: lighten($primary, 20%);
+  $color-link: lighten($color-global, 20%);
   $color-link-hover: lighten($color-link, 20%);
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
@@ -72,7 +72,7 @@ html[light] {
 
   // Logo colors
   $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+  $fillcolor-logo-mark: lighten(desaturate($bgcolor-inline-code, 10%), 15%);
 
   // Icon colors
   $color-editor-icons: $color-global;
