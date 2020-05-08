@@ -89,122 +89,124 @@ class UserTable extends React.Component {
 
     return (
       <Fragment>
-        <table className="table table-default table-bordered table-user-list">
-          <thead>
-            <tr>
-              <th width="100px">#</th>
-              <th>
-                <div className="d-flex align-items-center">
-                  <div className="mr-3">
-                    {t('status')}
+        <div className="table-responsive text-nowrap">
+          <table className="table table-default table-bordered table-user-list">
+            <thead>
+              <tr>
+                <th width="100px">#</th>
+                <th>
+                  <div className="d-flex align-items-center">
+                    <div className="mr-3">
+                      {t('status')}
+                    </div>
+                    <SortIcons
+                      isSelected={adminUsersContainer.state.sort === 'status'}
+                      isAsc={isCurrentSortOrderAsc}
+                      onClick={(sortOrder) => {
+                        this.sortIconsClickedHandler('status', sortOrder);
+                      }}
+                    />
                   </div>
-                  <SortIcons
-                    isSelected={adminUsersContainer.state.sort === 'status'}
-                    isAsc={isCurrentSortOrderAsc}
-                    onClick={(sortOrder) => {
-                      this.sortIconsClickedHandler('status', sortOrder);
-                    }}
-                  />
-                </div>
-              </th>
-              <th>
-                <div className="d-flex align-items-center">
-                  <div className="mr-3">
-                    <code>username</code>
+                </th>
+                <th>
+                  <div className="d-flex align-items-center">
+                    <div className="mr-3">
+                      <code>username</code>
+                    </div>
+                    <SortIcons
+                      isSelected={adminUsersContainer.state.sort === 'username'}
+                      isAsc={isCurrentSortOrderAsc}
+                      onClick={(sortOrder) => {
+                        this.sortIconsClickedHandler('username', sortOrder);
+                      }}
+                    />
                   </div>
-                  <SortIcons
-                    isSelected={adminUsersContainer.state.sort === 'username'}
-                    isAsc={isCurrentSortOrderAsc}
-                    onClick={(sortOrder) => {
-                      this.sortIconsClickedHandler('username', sortOrder);
-                    }}
-                  />
-                </div>
-              </th>
-              <th>
-                <div className="d-flex align-items-center">
-                  <div className="mr-3">
-                    {t('Name')}
+                </th>
+                <th>
+                  <div className="d-flex align-items-center">
+                    <div className="mr-3">
+                      {t('Name')}
+                    </div>
+                    <SortIcons
+                      isSelected={adminUsersContainer.state.sort === 'name'}
+                      isAsc={isCurrentSortOrderAsc}
+                      onClick={(sortOrder) => {
+                        this.sortIconsClickedHandler('name', sortOrder);
+                      }}
+                    />
                   </div>
-                  <SortIcons
-                    isSelected={adminUsersContainer.state.sort === 'name'}
-                    isAsc={isCurrentSortOrderAsc}
-                    onClick={(sortOrder) => {
-                      this.sortIconsClickedHandler('name', sortOrder);
-                    }}
-                  />
-                </div>
-              </th>
-              <th>
-                <div className="d-flex align-items-center">
-                  <div className="mr-3">
-                    {t('Email')}
+                </th>
+                <th>
+                  <div className="d-flex align-items-center">
+                    <div className="mr-3">
+                      {t('Email')}
+                    </div>
+                    <SortIcons
+                      isSelected={adminUsersContainer.state.sort === 'email'}
+                      isAsc={isCurrentSortOrderAsc}
+                      onClick={(sortOrder) => {
+                        this.sortIconsClickedHandler('email', sortOrder);
+                      }}
+                    />
                   </div>
-                  <SortIcons
-                    isSelected={adminUsersContainer.state.sort === 'email'}
-                    isAsc={isCurrentSortOrderAsc}
-                    onClick={(sortOrder) => {
-                      this.sortIconsClickedHandler('email', sortOrder);
-                    }}
-                  />
-                </div>
-              </th>
-              <th width="100px">
-                <div className="d-flex align-items-center">
-                  <div className="mr-3">
-                    {t('Created')}
+                </th>
+                <th width="100px">
+                  <div className="d-flex align-items-center">
+                    <div className="mr-3">
+                      {t('Created')}
+                    </div>
+                    <SortIcons
+                      isSelected={adminUsersContainer.state.sort === 'createdAt'}
+                      isAsc={isCurrentSortOrderAsc}
+                      onClick={(sortOrder) => {
+                        this.sortIconsClickedHandler('createdAt', sortOrder);
+                      }}
+                    />
                   </div>
-                  <SortIcons
-                    isSelected={adminUsersContainer.state.sort === 'createdAt'}
-                    isAsc={isCurrentSortOrderAsc}
-                    onClick={(sortOrder) => {
-                      this.sortIconsClickedHandler('createdAt', sortOrder);
-                    }}
-                  />
-                </div>
-              </th>
-              <th width="150px">
-                <div className="d-flex align-items-center">
-                  <div className="mr-3">
-                    {t('Last_Login')}
+                </th>
+                <th width="150px">
+                  <div className="d-flex align-items-center">
+                    <div className="mr-3">
+                      {t('Last_Login')}
+                    </div>
+                    <SortIcons
+                      isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
+                      isAsc={isCurrentSortOrderAsc}
+                      onClick={(sortOrder) => {
+                        this.sortIconsClickedHandler('lastLoginAt', sortOrder);
+                      }}
+                    />
                   </div>
-                  <SortIcons
-                    isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
-                    isAsc={isCurrentSortOrderAsc}
-                    onClick={(sortOrder) => {
-                      this.sortIconsClickedHandler('lastLoginAt', sortOrder);
-                    }}
-                  />
-                </div>
-              </th>
-              <th width="70px"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {adminUsersContainer.state.users.map((user) => {
-              return (
-                <tr key={user._id}>
-                  <td>
-                    <UserPicture user={user} className="picture rounded-circle" />
-                  </td>
-                  <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
-                  <td>
-                    <strong>{user.username}</strong>
-                  </td>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{dateFnsFormat(new Date(user.createdAt), 'yyyy-MM-dd')}</td>
-                  <td>
-                    {user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span>}
-                  </td>
-                  <td>
-                    <UserMenu user={user} />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                </th>
+                <th width="70px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {adminUsersContainer.state.users.map((user) => {
+                return (
+                  <tr key={user._id}>
+                    <td>
+                      <UserPicture user={user} className="picture rounded-circle" />
+                    </td>
+                    <td>{this.getUserStatusLabel(user.status)} {this.getUserAdminLabel(user.admin)}</td>
+                    <td>
+                      <strong>{user.username}</strong>
+                    </td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{dateFnsFormat(new Date(user.createdAt), 'yyyy-MM-dd')}</td>
+                    <td>
+                      {user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span>}
+                    </td>
+                    <td>
+                      <UserMenu user={user} />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </Fragment>
     );
   }

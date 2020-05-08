@@ -262,7 +262,7 @@ class PageEditorByHackmd extends React.Component {
               <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
               <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced.substr(-8)}</span></a>
 
                 <div className="text-center mt-3">
                   <button
