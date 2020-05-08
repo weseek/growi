@@ -166,7 +166,7 @@ ___
 
 ### Italic
 
-Enclose the string with one asterisk `*` or one underscore `_`.
+Enclose the description or words with one asterisk `*` or one underscore `_`.
 
 ```
 This is *Italic* .
@@ -193,16 +193,16 @@ This is __bold__.
 To bold and Italic text, add three asterisks or underscores before and after a word or phrase.
 
 ```
-This is ***Italic&Bold***.
-This is ___Italic&Bold___.
+This is ***Italic & Bold***.
+This is ___Italic & Bold___.
 ```
 
-This is ***Italic&Bold***.
-This is ___Italic&Bold___.
+This is ***Italic & Bold***.
+This is ___Italic & Bold___.
 
 # :pencil: Images
 
-You can insert `<img>` tag using `![Alt string](URL)`.
+You can insert `<img>` tag using `![Alt description](URL)`.
 
 ```markdown
 ![Minion](https://octodex.github.com/images/minion.png)
@@ -212,7 +212,7 @@ You can insert `<img>` tag using `![Alt string](URL)`.
 ![Minion](https://octodex.github.com/images/minion.png)
 ![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
 
-Use the img tag to set the size of the image.
+The size of the image can be set by using an HTML image tag
 
 ```html
 <img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
