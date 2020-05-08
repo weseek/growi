@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import LoginContainer from '../services/LoginContainer';
-import { createSubscribedElement } from './UnstatedUtils';
-
 class LoginForm extends React.Component {
 
   constructor(props) {
@@ -273,17 +270,9 @@ class LoginForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const LoginFormWrapper = (props) => {
-  return createSubscribedElement(LoginForm, props, [LoginContainer]);
-};
-
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
-  loginContainer: PropTypes.instanceOf(LoginContainer).isRequired,
   isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
@@ -297,4 +286,4 @@ LoginForm.propTypes = {
   objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
-export default withTranslation()(LoginFormWrapper);
+export default withTranslation()(LoginForm);

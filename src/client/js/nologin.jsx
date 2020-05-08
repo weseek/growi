@@ -1,17 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
 import i18nFactory from './util/i18n';
 
 import InstallerForm from './components/InstallerForm';
 import LoginForm from './components/LoginForm';
-
-import AppContainer from './services/AppContainer';
-import LoginContainer from './services/LoginContainer';
-
-const appContainer = new AppContainer();
 
 const i18n = i18nFactory();
 
@@ -33,8 +27,6 @@ if (installerFormElem) {
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
-  const loginContainer = new LoginContainer(appContainer);
-
   const isRegistering = loginFormElem.dataset.isRegistering === 'true';
   const username = loginFormElem.dataset.username;
   const name = loginFormElem.dataset.name;
@@ -58,21 +50,19 @@ if (loginFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[loginContainer]}>
-        <LoginForm
-          isRegistering={isRegistering}
-          username={username}
-          name={name}
-          email={email}
-          csrf={csrf}
-          isRegistrationEnabled={isRegistrationEnabled}
-          registrationMode={registrationMode}
-          registrationWhiteList={registrationWhiteList}
-          isLocalStrategySetup={isLocalStrategySetup}
-          isLdapStrategySetup={isLdapStrategySetup}
-          objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
-        />
-      </Provider>
+      <LoginForm
+        isRegistering={isRegistering}
+        username={username}
+        name={name}
+        email={email}
+        csrf={csrf}
+        isRegistrationEnabled={isRegistrationEnabled}
+        registrationMode={registrationMode}
+        registrationWhiteList={registrationWhiteList}
+        isLocalStrategySetup={isLocalStrategySetup}
+        isLdapStrategySetup={isLdapStrategySetup}
+        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
+      />
     </I18nextProvider>,
     loginFormElem,
   );
