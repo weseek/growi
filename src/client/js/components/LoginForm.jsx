@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { withTranslation } from 'react-i18next';
 
 import LoginContainer from '../services/LoginContainer';
@@ -131,7 +132,13 @@ class LoginForm extends React.Component {
   }
 
   renderRegisterForm() {
-    const { t, csrf, registrationMode, registrationWhiteList } = this.props;
+    const {
+      t,
+      csrf,
+      registrationMode,
+      registrationWhiteList,
+    } = this.props;
+
     return (
       <div className="back">
         {registrationMode === 'Restricted' && (
