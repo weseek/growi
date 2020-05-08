@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-# Table of contents
+# Table Of Contents
 
 ```
 @[toc]
@@ -14,9 +14,9 @@
 
 # :pencil: Block Elements
 
-## Headers Heading
+## Headers
 
-Write `#` per level at the beginning
+Add one `#` per level at the start of the line
 
 ```
 # Header 1
@@ -37,7 +37,8 @@ Write `#` per level at the beginning
 
 ## Block paragraph
 
-Paragraphs are created by inserting blank lines.
+Pararaphs are created by inserting a newline character
+A paragraph can be created by pressing Enter at the end of the previous paragraph.
 
 ```
 paragraph1
@@ -51,12 +52,12 @@ paragraph2
 
 ## Br break(new line)
 
-Write two  half spaces`` before break 
-***This behavior is Editable by option***
+Add two `` spaces before break.
+***This behaviour can be modified in the options menu.***
 
 ```
 hoge
-fuga(two space)
+fuga(two spaces)
 piyo
 ```
 
@@ -64,29 +65,29 @@ hoge
 fuga
 piyo
 
-## Blockquotes quotes
+## Blockquotes
 
-Write `>` at the beginning. Write multiple `>` quotes for nest.
+Write `>` at the beginning. Write multiple `>` for nested quotes.
 
 ```
-> qupte
-> qupte
->> multiple quote
+> quote
+> quote
+>> nested quotes
 ```
 
 > qupte
 > qupte
->> multiple qupte
+>> nested quotes
 
 ## Code
 
-`` `back quote` `` three back qupte or wrap three of tildes
+Wrap the code with three back quotes or tildes.
 
 ```
 print 'hoge'
 ```
 
-### syntax highlight and file name
+### Syntax highlight and file name
 
 - corresponding [highlight.js Demo](https://highlightjs.org/static/demo/) of common category
 
@@ -117,7 +118,7 @@ function MersenneTwister(seed) {
 
 ### Inline code
 
-It will be Inline code wrapped word by `` `Back quote` ``
+Words wrapped by `` `back quotes` `` will be formatted as inline code.
 
 ```
 This is `Inline Code`.
@@ -125,9 +126,9 @@ This is `Inline Code`.
 
 This is  `Inline Code`.
 
-## pre arranged text
+## Pre arranged text
 
-It can show code block by four half space or tab
+Code blocks should be preceded by four spaces or one tab.
 
 ```
     class Hoge
@@ -143,7 +144,7 @@ It can show code block by four half space or tab
         end
     end
 
-## Hr Horizon
+## Hr Horizontal Line
 
 Write three Underscores `_`, or asterisks`*`.
 
@@ -161,9 +162,9 @@ ___
 
 # :pencil: Typography
 
-## Strong
+## Bold
 
-### em
+### Italic
 
 Enclose the string with one asterisk `*` or one underscore `_`.
 
@@ -175,9 +176,9 @@ This is _Italic_ .
 This is *Italic* .
 This is _Italic_ .
 
-### strong
+### Bold
 
-Enclose the string with two asterisks `*` or underscores `_`.
+To bold text, add two asterisks or underscores before and after a word or phrase.
 
 ```
 This is **bold**.
@@ -187,9 +188,9 @@ This is __bold__.
 This is **bold**.
 This is __bold__.
 
-### em + strong
+### em + Bold
 
-Enclose the string with three asterisks `*` or underscores `_`.
+To bold and Italic text, add three asterisks or underscores before and after a word or phrase.
 
 ```
 This is ***Italic&Bold***.
@@ -262,8 +263,8 @@ Example of Bootstrap3 is[[here>./Bootstrap3]]
 
 ## Ul Bulleted list
 
-Enter either hyphen `-`, plus` + `, or asterisk` * `at the beginning.
-Nests are represented by tabs.
+To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items. 
+Indent one or more items to create a nested list.
 
 ```
 - List1
@@ -285,8 +286,8 @@ Nests are represented by tabs.
 
 ## Ol Numbered List
 
-Describe `number.` at the beginning. Nests are represented by tabs.
-The number is automatically assigned, so it is recommended to write all lines as 1.
+To create an ordered list, add line items with numbers followed by periods. 
+The numbers don’t have to be in numerical order, but the list should start with the number one.
 
 ```
 1. Numbered list 1
