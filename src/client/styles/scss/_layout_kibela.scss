@@ -46,7 +46,7 @@ body.kibela {
     left: 0px;
     z-index: absolute;
     max-width: 840px;
-    height: 8em;
+    min-height: 8em;
     margin: auto;
     border-radius: 0.35em;
   }
@@ -57,6 +57,10 @@ body.kibela {
 
     svg {
       display: none;
+    }
+
+    &.grw-subnav-user-page {
+      min-height: 128px;
     }
 
     @media screen and (max-width: 765px) {
