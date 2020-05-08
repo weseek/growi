@@ -43,7 +43,7 @@ if (loginFormElem) {
   const csrf = loginFormElem.dataset.csrf;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
-  const registrationWhiteList = loginFormElem.dataset.registrationWhiteList;
+  const registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
   const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
   const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
   const objOfIsExternalAuthEnableds = {
