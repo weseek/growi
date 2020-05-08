@@ -1,28 +1,28 @@
 {
   "admin_top": {
     "management_wiki": "Management Wiki",
-    "system_information": "System Information",
-    "wiki_administrator": "Only Wiki administrator can access this page",
-    "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give Admin Access' button",
+    "system_information": "System information",
+    "wiki_administrator": "Only wiki administrator can access this page",
+    "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give admin access' button",
     "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
     "specified_version": "Specified version",
     "installed_version": "Installed version",
     "list_of_env_vars":"List of environment variables",
     "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
-    "about_security": "Check <a href='/admin/security'>Securtiy Management</a> for security environment variables."
+    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables."
   },
   "app_setting": {
     "site_name": "Site name",
-    "sitename_change": "You can change Site Name which is used for header and HTML title.",
+    "sitename_change": "You can change site name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
     "site_url_desc": "This is for the site URL setting.",
     "site_url_warn": "Some features don't work because the site URL is not set.",
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "confidential_name": "Confidential name",
     "confidential_example": "ex): internal use only",
-    "default_language": "Default Language for new users",
-    "file_uploading": "File Uploading",
+    "default_language": "Default language for new users",
+    "file_uploading": "File uploading",
     "enable_files_except_image": "Enabling this option will allow upload of any file type. Without this option, only image file upload is supported.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
     "update": "Update",
@@ -244,7 +244,7 @@
       "your_own": "You cannot deactivate your own account",
       "remove_admin_access": "Remove Admin Access",
       "cannot_remove": "You cannot remove yourself from administrator",
-      "give_admin_access": "Give Admin Access"
+      "give_admin_access": "Give admin access"
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {
