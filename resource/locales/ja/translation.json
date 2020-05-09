@@ -615,6 +615,7 @@
     "connection_status_label_unconfigured": "設定されていません",
     "connection_status_label_connected": "接続されています",
     "connection_status_label_disconnected": "切断されています",
+    "connection_status_label_erroroccured": "SearchService でエラーが発生しています",
     "indices_status": "インデックスの状態",
     "indices_status_label_normalized": "正規化されています",
     "indices_status_label_unnormalized": "リビルド中 または 破損しています",

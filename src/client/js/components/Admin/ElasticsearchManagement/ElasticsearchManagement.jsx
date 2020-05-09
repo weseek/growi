@@ -18,8 +18,10 @@ class ElasticsearchManagement extends React.Component {
     super(props);
 
     this.state = {
-      isConfigured: null,
-      isConnected: null,
+      isInitialized: false,
+
+      isConnected: false,
+      isConfigured: false,
       isRebuildingProcessing: false,
       isRebuildingCompleted: false,
 
@@ -69,8 +71,8 @@ class ElasticsearchManagement extends React.Component {
       const { info } = await appContainer.apiv3Get('/search/indices');
 
       this.setState({
-        isConfigured: true,
         isConnected: true,
+        isConfigured: true,
 
         indicesData: info.indices,
         aliasesData: info.aliases,
@@ -89,10 +91,15 @@ class ElasticsearchManagement extends React.Component {
 
       toastError(errors);
     }
+    finally {
+      this.setState({ isInitialized: true });
+    }
   }
 
   async reconnect() {
     const { appContainer } = this.props;
+
+    this.setState({ isInitialized: false });
 
     try {
       await appContainer.apiv3Post('/search/connection');
@@ -138,19 +145,26 @@ class ElasticsearchManagement extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, appContainer } = this.props;
     const {
-      isConfigured, isConnected, isRebuildingProcessing, isRebuildingCompleted,
+      isInitialized,
+      isConnected, isConfigured, isRebuildingProcessing, isRebuildingCompleted,
       isNormalized, indicesData, aliasesData,
     } = this.state;
+
+    const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
+
+    const isReconnectBtnEnabled = !isInitialized || !isConnected || isErrorOccuredOnSearchService;
 
     return (
       <>
         <div className="row">
           <div className="col-xs-12">
             <StatusTable
-              isConfigured={isConfigured}
+              isInitialized={isInitialized}
+              isErrorOccuredOnSearchService={isErrorOccuredOnSearchService}
               isConnected={isConnected}
+              isConfigured={isConfigured}
               isNormalized={isNormalized}
               indicesData={indicesData}
               aliasesData={aliasesData}
@@ -165,8 +179,7 @@ class ElasticsearchManagement extends React.Component {
           <label className="col-xs-3 control-label">{ t('full_text_search_management.reconnect') }</label>
           <div className="col-xs-6">
             <ReconnectControls
-              isConfigured={isConfigured}
-              isConnected={isConnected}
+              isEnabled={isReconnectBtnEnabled}
               onReconnectingRequested={this.reconnect}
             />
           </div>

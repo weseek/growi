@@ -7,9 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 class ReconnectControls extends React.PureComponent {
 
   render() {
-    const { t, isConfigured, isConnected } = this.props;
-
-    const isEnabled = (isConfigured == null || isConfigured === true) && isConnected === false;
+    const { t, isEnabled } = this.props;
 
     return (
       <>
@@ -41,8 +39,7 @@ const ReconnectControlsWrapper = (props) => {
 ReconnectControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  isConfigured: PropTypes.bool,
-  isConnected: PropTypes.bool,
+  isEnabled: PropTypes.bool,
   onReconnectingRequested: PropTypes.func.isRequired,
 };
 
