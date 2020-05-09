@@ -8,7 +8,7 @@
 
 ### BREAKING CHANGES
 
-- Elasticsearch require the privilege `cluster:monitor/health` instead of `cluster:monitor/nodes/info`
+- Now Elasticsearch requires the privilege `cluster:monitor/health` instead of `cluster:monitor/nodes/info`
 
 Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
 
