@@ -119,7 +119,6 @@ class SearchService {
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {
     try {
-      throw new Error('hoge');
       return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
