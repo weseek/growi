@@ -7,7 +7,7 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 class ReconnectControls extends React.PureComponent {
 
   render() {
-    const { t, isEnabled } = this.props;
+    const { t, isEnabled, isProcessing } = this.props;
 
     return (
       <>
@@ -17,6 +17,7 @@ class ReconnectControls extends React.PureComponent {
           onClick={() => { this.props.onReconnectingRequested() }}
           disabled={!isEnabled}
         >
+          { isProcessing && <i className="fa fa-spinner fa-pulse mr-2"></i> }
           { t('full_text_search_management.reconnect_button') }
         </button>
 
@@ -40,6 +41,7 @@ ReconnectControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   isEnabled: PropTypes.bool,
+  isProcessing: PropTypes.bool,
   onReconnectingRequested: PropTypes.func.isRequired,
 };
 

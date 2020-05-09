@@ -22,6 +22,7 @@ class ElasticsearchManagement extends React.Component {
 
       isConnected: false,
       isConfigured: false,
+      isReconnectingProcessing: false,
       isRebuildingProcessing: false,
       isRebuildingCompleted: false,
 
@@ -99,18 +100,18 @@ class ElasticsearchManagement extends React.Component {
   async reconnect() {
     const { appContainer } = this.props;
 
-    this.setState({ isInitialized: false });
+    this.setState({ isReconnectingProcessing: true });
 
     try {
       await appContainer.apiv3Post('/search/connection');
-      toastSuccess('Reconnecting to Elasticsearch has succeeded');
     }
     catch (e) {
       toastError(e);
       return;
     }
 
-    await this.retrieveIndicesStatus();
+    // reload
+    window.location.reload();
   }
 
   async normalizeIndices() {
@@ -148,13 +149,13 @@ class ElasticsearchManagement extends React.Component {
     const { t, appContainer } = this.props;
     const {
       isInitialized,
-      isConnected, isConfigured, isRebuildingProcessing, isRebuildingCompleted,
+      isConnected, isConfigured, isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted,
       isNormalized, indicesData, aliasesData,
     } = this.state;
 
     const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
 
-    const isReconnectBtnEnabled = !isInitialized || !isConnected || isErrorOccuredOnSearchService;
+    const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 
     return (
       <>
@@ -180,6 +181,7 @@ class ElasticsearchManagement extends React.Component {
           <div className="col-xs-6">
             <ReconnectControls
               isEnabled={isReconnectBtnEnabled}
+              isProcessing={isReconnectingProcessing}
               onReconnectingRequested={this.reconnect}
             />
           </div>
