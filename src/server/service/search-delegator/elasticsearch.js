@@ -126,6 +126,10 @@ class ElasticsearchDelegator {
     return { esVersion, esNodeInfos };
   }
 
+  async getInfoForHealth() {
+    return this.client.cluster.health();
+  }
+
   /**
    * Return information for Admin Full Text Search Management page
    */

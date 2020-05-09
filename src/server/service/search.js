@@ -80,18 +80,27 @@ class SearchService {
   }
 
   async getInfo() {
-
     try {
-      const result = await this.delegator.getInfo();
+      return await this.delegator.getInfo();
+    }
+    catch (err) {
+      logger.error(err);
+      throw err;
+    }
+  }
 
-      this.isErrorOccuredOnGettingInfo = false;
+  async getInfoForHealth() {
+    try {
+      const result = await this.delegator.getInfoForHealth();
+
+      this.isErrorOccuredOnHealthcheck = false;
       return result;
     }
     catch (err) {
       logger.error(err);
 
-      // switch error flag, `isReachable` to be `false`
-      this.isErrorOccuredOnGettingInfo = true;
+      // switch error flag, `isErrorOccuredOnHealthcheck` to be `false`
+      this.isErrorOccuredOnHealthcheck = true;
       throw err;
     }
   }
@@ -110,6 +119,7 @@ class SearchService {
 
   async searchKeyword(keyword, user, userGroups, searchOpts) {
     try {
+      throw new Error('hoge');
       return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
