@@ -1,8 +1,20 @@
 # CHANGES
 
-## v3.8.0-RC
+## v3.8.1-RC
 
 *
+
+## v3.8.0
+
+### BREAKING CHANGES
+
+- Elasticsearch require the privilege `cluster:monitor/health` instead of `cluster:monitor/nodes/info`
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
+
+### Updates
+
+* Improvement: Change the health check method for Elasticsearch
 
 ## v3.7.6
 
@@ -53,6 +65,14 @@
 * I18n: HackMD integration
 
 ## v3.7.0
+
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/37x.html>
+
+### Updates
 
 * Feature: [Draw.io](https://www.draw.io/) Integration
 * Feature: SAML Attribute-based Login Control
