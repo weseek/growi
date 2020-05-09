@@ -626,6 +626,7 @@
     "connection_status_label_unconfigured": "UNCONFIGURED",
     "connection_status_label_connected": "CONNECTED",
     "connection_status_label_disconnected": "DISCONNECTED",
+    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
     "indices_status": "Indices Status",
     "indices_status_label_normalized": "NORMALIZED",
     "indices_status_label_unnormalized": "REBUILDING or BROKEN",
