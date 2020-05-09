@@ -27,7 +27,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
 * Fix: Behavior of password reset modal is strange
 * Fix: Import GROWI Archive doesn't restore some data correctly
 * Fix: Attachments list on root page and users top pages
-* Fix: Trash page shouldn't be editable
+* Fix: Trash page is no longer editable
 * Fix: Rendering Timeline on /trash
 
 ## v3.7.4
