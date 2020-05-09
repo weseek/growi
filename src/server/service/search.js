@@ -7,7 +7,7 @@ class SearchService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
-    this.isErrorOccuredOnGettingInfo = null;
+    this.isErrorOccuredOnHealthcheck = null;
     this.isErrorOccuredOnSearching = null;
 
     try {
@@ -28,7 +28,7 @@ class SearchService {
   }
 
   get isReachable() {
-    return this.isConfigured && !this.isErrorOccuredOnGettingInfo && !this.isErrorOccuredOnSearching;
+    return this.isConfigured && !this.isErrorOccuredOnHealthcheck && !this.isErrorOccuredOnSearching;
   }
 
   get isSearchboxEnabled() {
@@ -73,7 +73,7 @@ class SearchService {
 
   async initClient() {
     // reset error flag
-    this.isErrorOccuredOnGettingInfo = false;
+    this.isErrorOccuredOnHealthcheck = false;
     this.isErrorOccuredOnSearching = false;
 
     return this.delegator.initClient();
