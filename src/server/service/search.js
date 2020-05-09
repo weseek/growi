@@ -7,7 +7,8 @@ class SearchService {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
 
-    this.isErrorOccured = null;
+    this.isErrorOccuredOnGettingInfo = null;
+    this.isErrorOccuredOnSearching = null;
 
     try {
       this.delegator = this.initDelegator();
@@ -27,7 +28,7 @@ class SearchService {
   }
 
   get isReachable() {
-    return this.isConfigured && !this.isErrorOccured;
+    return this.isConfigured && !this.isErrorOccuredOnGettingInfo && !this.isErrorOccuredOnSearching;
   }
 
   get isSearchboxEnabled() {
@@ -72,18 +73,25 @@ class SearchService {
 
   async initClient() {
     // reset error flag
-    this.isErrorOccured = false;
+    this.isErrorOccuredOnGettingInfo = false;
+    this.isErrorOccuredOnSearching = false;
 
     return this.delegator.initClient();
   }
 
   async getInfo() {
+
     try {
-      return await this.delegator.getInfo();
+      const result = await this.delegator.getInfo();
+
+      this.isErrorOccuredOnGettingInfo = false;
+      return result;
     }
     catch (err) {
+      logger.error(err);
+
       // switch error flag, `isReachable` to be `false`
-      this.isErrorOccured = true;
+      this.isErrorOccuredOnGettingInfo = true;
       throw err;
     }
   }
@@ -105,8 +113,10 @@ class SearchService {
       return await this.delegator.searchKeyword(keyword, user, userGroups, searchOpts);
     }
     catch (err) {
+      logger.error(err);
+
       // switch error flag, `isReachable` to be `false`
-      this.isErrorOccured = true;
+      this.isErrorOccuredOnSearching = true;
       throw err;
     }
   }

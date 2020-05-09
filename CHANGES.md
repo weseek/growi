@@ -1,8 +1,10 @@
 # CHANGES
 
-## v3.7.6-RC
 
-* 
+## v3.7.6
+
+* Feature: Empty trash pages
+* Improvement: Behavior of Reconnect to Elasticsearch button
 
 ## v3.7.5
 
