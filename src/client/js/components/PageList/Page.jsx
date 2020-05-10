@@ -3,24 +3,24 @@ import PropTypes from 'prop-types';
 
 import UserPicture from '../User/UserPicture';
 import PageListMeta from './PageListMeta';
-import PagePath from './PagePath';
+import PagePathLabel from './PagePathLabel';
 
 export default class Page extends React.Component {
 
   render() {
     const {
-      page, noLink, excludePathString,
+      page, noLink,
     } = this.props;
 
-    let pagePath = <PagePath page={page} excludePathString={excludePathString} />;
+    let pagePathElem = <PagePathLabel page={page} />;
     if (!noLink != null) {
-      pagePath = <a className="text-break" href={page.path}>{pagePath}</a>;
+      pagePathElem = <a className="text-break" href={page.path}>{pagePathElem}</a>;
     }
 
     return (
       <>
         <UserPicture user={page.lastUpdateUser} noLink={noLink} />
-        {pagePath}
+        {pagePathElem}
         <PageListMeta page={page} />
       </>
     );
@@ -30,11 +30,9 @@ export default class Page extends React.Component {
 
 Page.propTypes = {
   page: PropTypes.object.isRequired,
-  excludePathString: PropTypes.string,
   noLink: PropTypes.bool,
 };
 
 Page.defaultProps = {
-  excludePathString: '',
   noLink: false,
 };

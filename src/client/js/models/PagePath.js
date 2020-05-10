@@ -1,3 +1,5 @@
+import { pathUtils } from 'growi-commons';
+
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 // https://regex101.com/r/WVpPpY/1
@@ -5,9 +7,12 @@ const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
 
 export default class PagePath {
 
-  constructor(pagePath, evalDatePath = false) {
+  constructor(path, evalDatePath = false) {
+
+    const pagePath = pathUtils.normalizePath(path);
+
     this.former = null;
-    this.latter = null;
+    this.latter = pagePath;
 
     // root
     if (pagePath === '/') {
@@ -25,8 +30,10 @@ export default class PagePath {
     }
 
     const matchDefault = pagePath.match(PATTERN_DEFAULT);
-    this.former = matchDefault[2];
-    this.latter = matchDefault[3];
+    if (matchDefault != null) {
+      this.former = matchDefault[2];
+      this.latter = matchDefault[3];
+    }
   }
 
 }
