@@ -8,21 +8,24 @@ class LoginForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isRegistering: false,
+    };
+
     this.switchForm = this.switchForm.bind(this);
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
+
+    const { hash } = window.location;
+    if (hash === '#register') {
+      this.state.isRegistering = true;
+    }
   }
 
-  // for flip [TODO][GW-1865] use state or react component for flip
-  switchForm(e) {
-    if (e.target.id === 'register') {
-      $('#login-dialog').addClass('to-flip');
-    }
-    else {
-      $('#login-dialog').removeClass('to-flip');
-    }
+  switchForm() {
+    this.setState({ isRegistering: !this.state.isRegistering });
   }
 
   renderLocalOrLdapLoginForm() {
@@ -217,7 +220,7 @@ class LoginForm extends React.Component {
 
         <div className="row">
           <div className="text-right col-12 py-1">
-            <a href="#login" id="login" className="link-switch" onClick={this.handleClick}>
+            <a href="#login" id="login" className="link-switch" onClick={this.switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -230,7 +233,6 @@ class LoginForm extends React.Component {
   render() {
     const {
       t,
-      isRegistering,
       isLocalStrategySetup,
       isLdapStrategySetup,
       isRegistrationEnabled,
@@ -238,7 +240,7 @@ class LoginForm extends React.Component {
     } = this.props;
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-    const registerFormClass = isRegistering ? 'to-flip' : '';
+    const registerFormClass = this.state.isRegistering ? 'to-flip' : '';
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
