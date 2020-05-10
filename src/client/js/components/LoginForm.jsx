@@ -19,7 +19,7 @@ class LoginForm extends React.Component {
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
 
     const { hash } = window.location;
-    if (hash === '#register' || props.isRegistering) {
+    if (hash === '#register') {
       this.state.isRegistering = true;
     }
   }
