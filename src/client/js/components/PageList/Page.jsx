@@ -14,7 +14,7 @@ export default class Page extends React.Component {
 
     let pagePath = <PagePath page={page} excludePathString={excludePathString} />;
     if (!noLink != null) {
-      pagePath = <a className="text-break" href={page.pagePath}>{pagePath}</a>;
+      pagePath = <a className="text-break" href={page.path}>{pagePath}</a>;
     }
 
     return (
