@@ -12,46 +12,14 @@ class LoginForm extends React.Component {
       isRegistering: false,
     };
 
-    this.isRegistrationEnabled = false;
-    this.registrationMode = 'Closed';
-    this.registrationWhiteList = [];
-    this.isLocalStrategySetup = false;
-    this.isLdapStrategySetup = false;
-    this.objOfIsExternalAuthEnableds = {};
-
-    this.onClickSwitchFormBtn = this.onClickSwitchFormBtn.bind(this);
+    this.switchForm = this.switchForm.bind(this);
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
   }
 
-  componentWillMount() {
-    // [TODO][GW-1913] get params from server with axios
-    this.isRegistrationEnabled = true;
-    this.registrationMode = 'Open';
-    this.registrationWhiteList = [];
-    this.isLocalStrategySetup = true;
-    this.isLdapStrategySetup = true;
-    this.objOfIsExternalAuthEnableds = {
-      google: true,
-      github: true,
-      facebook: true,
-      twitter: true,
-      oidc: true,
-      saml: true,
-      basic: true,
-    };
-  }
-
-  componentDidMount() {
-    const { hash } = window.location;
-    if (hash === '#register') {
-      this.setState({ isRegistering: true });
-    }
-  }
-
-  onClickSwitchFormBtn() {
+  switchForm() {
     this.setState({ isRegistering: !this.state.isRegistering });
   }
 
@@ -247,7 +215,7 @@ class LoginForm extends React.Component {
 
         <div className="row">
           <div className="text-right col-12 py-1">
-            <a href="#login" id="login" className="link-switch" onClick={this.onClickSwitchFormBtn}>
+            <a href="#login" id="login" className="link-switch" onClick={this.switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -281,7 +249,7 @@ class LoginForm extends React.Component {
               {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
-                    <a href="#register" id="register" className="link-switch" onClick={this.onClickSwitchFormBtn}>
+                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
                       <i className="ti-check-box"></i> {t('Sign up is here')}
                     </a>
                   </div>
@@ -303,6 +271,7 @@ class LoginForm extends React.Component {
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
+  isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
   email: PropTypes.string,
