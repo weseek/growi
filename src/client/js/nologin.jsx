@@ -30,8 +30,22 @@ if (loginFormElem) {
   const username = loginFormElem.dataset.username;
   const name = loginFormElem.dataset.name;
   const email = loginFormElem.dataset.email;
-  // [TODO][GW-1913] An AppContainer gets csrf data
+  // [TODO][GW-2112] An AppContainer gets csrf data
   const csrf = loginFormElem.dataset.csrf;
+  const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
+  const registrationMode = loginFormElem.dataset.registrationMode;
+  const registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
+  const isLocalStrategySetup = loginFormElem.dataset.isLocalStrategySetup === 'true';
+  const isLdapStrategySetup = loginFormElem.dataset.isLdapStrategySetup === 'true';
+  const objOfIsExternalAuthEnableds = {
+    google: loginFormElem.dataset.isGoogleAuthEnabled === 'true',
+    github: loginFormElem.dataset.isGithubAuthEnabled === 'true',
+    facebook: loginFormElem.dataset.isFacebookAuthEnabled === 'true',
+    twitter: loginFormElem.dataset.isTwitterAuthEnabled === 'true',
+    saml: loginFormElem.dataset.isSamlAuthEnabled === 'true',
+    oidc: loginFormElem.dataset.isOidcAuthEnabled === 'true',
+    basic: loginFormElem.dataset.isBasicAuthEnabled === 'true',
+  };
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
@@ -40,6 +54,12 @@ if (loginFormElem) {
         name={name}
         email={email}
         csrf={csrf}
+        isRegistrationEnabled={isRegistrationEnabled}
+        registrationMode={registrationMode}
+        registrationWhiteList={registrationWhiteList}
+        isLocalStrategySetup={isLocalStrategySetup}
+        isLdapStrategySetup={isLdapStrategySetup}
+        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
       />
     </I18nextProvider>,
     loginFormElem,

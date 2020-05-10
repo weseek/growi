@@ -104,14 +104,30 @@
           </div>
         </div>
       </div>
-        {% set isRegistrationEnabled = passportService.isLocalStrategySetup && getConfig('crowi', 'security:registrationMode') != 'Closed' %}
 
-      <!-- [TODO][GW-1913] An AppContainer gets csrf data -->
-      <div id="login-form"
+      {% set registrationMode = getConfig('crowi', 'security:registrationMode') %}
+      {% set isRegistrationEnabled = passportService.isLocalStrategySetup && registrationMode != 'Closed' %}
+
+      <!-- [TODO][GW-2112] An AppContainer gets csrf data -->
+      <div
+        id="login-form"
+        data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
         data-username ="{{ req.body.registerForm.username }}"
         data-name ="{{ req.body.registerForm.name }}"
         data-email ="{{ req.body.registerForm.email }}"
         data-csrf="{{ csrf() }}"
+        data-is-registration-enabled="{{ isRegistrationEnabled }}"
+        data-registration-mode = "{{ registrationMode }}"
+        data-registration-white-list = "{{ getConfig('crowi', 'security:registrationWhiteList') }}"
+        data-is-local-strategy-setup = "{{ passportService.isLocalStrategySetup }}"
+        data-is-ldap-strategy-setup = "{{ passportService.isLdapStrategySetup}}"
+        data-is-google-auth-enabled = "{{ getConfig('crowi', 'security:passport-google:isEnabled') }}"
+        data-is-github-auth-enabled = "{{ getConfig('crowi', 'security:passport-github:isEnabled') }}"
+        data-is-facebook-auth-enabled = "{{ getConfig('crowi', 'security:passport-facebook:isEnabled') }}"
+        data-is-twitter-auth-enabled = "{{ getConfig('crowi', 'security:passport-twitter:isEnabled') }}"
+        data-is-saml-auth-enabled = "{{ getConfig('crowi', 'security:passport-saml:isEnabled') }}"
+        data-is-oidc-auth-enabled = "{{ getConfig('crowi', 'security:passport-oidc:isEnabled') }}"
+        data-is-basic-auth-enabled = "{{ getConfig('crowi', 'security:passport-basic:isEnabled') }}"
       ></div>
     </div>
   </div>
