@@ -17,6 +17,11 @@ class LoginForm extends React.Component {
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
+
+    const { hash } = window.location;
+    if (hash === '#register' || props.isRegistering) {
+      this.state.isRegistering = true;
+    }
   }
 
   switchForm() {
@@ -228,7 +233,6 @@ class LoginForm extends React.Component {
   render() {
     const {
       t,
-      isRegistering,
       isLocalStrategySetup,
       isLdapStrategySetup,
       isRegistrationEnabled,
@@ -236,7 +240,7 @@ class LoginForm extends React.Component {
     } = this.props;
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-    const registerFormClass = isRegistering ? 'to-flip' : '';
+    const registerFormClass = this.state.isRegistering ? 'to-flip' : '';
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
     return (
