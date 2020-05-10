@@ -37,9 +37,7 @@ module.exports = (crowi) => {
 
   router.use('/search', require('./search')(crowi));
 
-  router.use('/page', require('./page')(crowi));
-
-  router.use('/bookmarks', require('./bookmarks')(crowi));
+  router.use('/pages', require('./pages')(crowi));
 
   return router;
 };
