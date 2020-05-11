@@ -33,7 +33,7 @@ const GrowiSubNavigationForUserPage = (props) => {
   return (
     <div className={`px-3 ${additionalClassNames.join(' ')}`}>
       <h4 className="grw-user-page-path">
-        <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
+        <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
       </h4>
 
       <div className="d-flex align-items-center justify-content-between">
