@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { format, formatDistanceStrict } from 'date-fns';
-import { UncontrolledTooltip } from 'reactstrap';
-
 import {
   HeaderSection,
   MenuSection,
@@ -21,6 +18,7 @@ import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import { toastError } from '../../util/apiNotification';
 
+import FormattedDistanceDate from '../FormattedDistanceDate';
 import UserPicture from '../User/UserPicture';
 
 const logger = loggerFactory('growi:History');
@@ -59,12 +57,6 @@ class History extends React.Component {
       </div>
     );
 
-    const date = new Date(page.updatedAt);
-    const baseDate = new Date();
-    const updatedDateId = `commentDate-${page._id}`;
-    const updatedDate = <span id={updatedDateId}>{formatDistanceStrict(date, baseDate)}</span>;
-    const updatedDateFormatted = format(date, 'yyyy/MM/dd HH:mm');
-
     return (
       <li className="list-group-item">
         <div className="d-flex w-100">
@@ -74,8 +66,9 @@ class History extends React.Component {
             <h4 className="mb-1">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             </h4>
-            <div className="text-right small">{updatedDate}</div>
-            <UncontrolledTooltip placement="bottom" fade={false} target={updatedDateId}>{updatedDateFormatted}</UncontrolledTooltip>
+            <div className="text-right small">
+              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+            </div>
           </div>
         </div>
       </li>
