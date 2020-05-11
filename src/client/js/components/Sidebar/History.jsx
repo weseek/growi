@@ -8,9 +8,13 @@ import {
   MenuSection,
 } from '@atlaskit/navigation-next';
 
+import loggerFactory from '@alias/logger';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import { toastSuccess, toastError } from '../../util/apiNotification';
 
+const logger = loggerFactory('growi:History');
 class History extends React.Component {
 
   static propTypes = {
@@ -18,8 +22,24 @@ class History extends React.Component {
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   };
 
-  state = {
-  };
+  constructor(props) {
+    super(props);
+
+    this.reloadData = this.reloadData.bind(this);
+  }
+
+  async reloadData() {
+    const { t, appContainer } = this.props;
+
+    try {
+      await appContainer.retrieveRecentlyUpdated();
+      toastSuccess(t('toaster.update_successed', { target: t('History') }));
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      toastError(error, 'Error occurred in updating History');
+    }
+  }
 
   PageItem = (page) => {
     return (
@@ -36,6 +56,7 @@ class History extends React.Component {
 
   render() {
     const { PageItem } = this;
+    const { t } = this.props;
     const { recentlyUpdatedPages } = this.props.appContainer.state;
 
     return (
@@ -43,8 +64,10 @@ class History extends React.Component {
         <HeaderSection>
           { () => (
             <div className="grw-sidebar-header-container p-3 d-flex">
-              <h3>History</h3>
-              <button type="button" className="btn xs btn-secondary ml-auto"><i className="icon icon-reload"></i></button>
+              <h3>{t('History')}</h3>
+              <button type="button" className="btn xs btn-secondary ml-auto" onClick={this.reloadData}>
+                <i className="icon icon-reload"></i>
+              </button>
             </div>
           ) }
         </HeaderSection>
