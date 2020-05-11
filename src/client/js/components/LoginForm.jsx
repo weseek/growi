@@ -130,7 +130,7 @@ class LoginForm extends React.Component {
         <div className="text-center">
           <button
             type="button"
-            className="collapse-anchor btn btn-xs btn-collapse-external-auth mb-3"
+            className="collapse-anchor btn btn-sm btn-collapse-external-auth mb-3"
             data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-target="#external-auth"
             aria-expanded="false"
