@@ -31,10 +31,8 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex align-items-center px-3 py-3 grw-subnavbar">
         <h1 className="m-0">
           <RevisionPath
-            behaviorType={appContainer.config.behaviorType}
             pageId={pageId}
             pagePath={pageContainer.state.path}
-            isPageNotFound={isPageNotFound}
             isPageForbidden={isPageForbidden}
             isPageInTrash={isPageInTrash}
           />
@@ -61,7 +59,7 @@ const GrowiSubNavigation = (props) => {
       {/* Page Path */}
       <div>
         <h1 className="m-0">
-          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
+          <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
         { !isPageNotFound && !isPageForbidden && (
           <TagLabels />
