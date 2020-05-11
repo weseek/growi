@@ -255,6 +255,8 @@
       "new_password": "新しいパスワード"
     },
     "external_account": "外部アカウントの管理",
+    "external_accounts": "外部アカウント",
+    "create_external_account":"外部アカウントの作成",
     "external_account_list": "外部アカウント一覧",
     "invite": "招待する",
     "invited": "ユーザーを招待しました",

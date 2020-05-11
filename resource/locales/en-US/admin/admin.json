@@ -256,6 +256,7 @@
     },
     "external_account": "External Account Management",
     "external_accounts":"External accounts",
+    "create_external_account":"Create external account",
     "external_account_list": "External Account List",
     "invite": "Invite",
     "invited": "User was invited",
