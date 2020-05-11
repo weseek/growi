@@ -38,26 +38,26 @@
   text-align: center;
   cursor: pointer;
   background-color: rgba(lighten(black, 20%), 0.4);
-  border: none;
-  padding: 0px;
-  min-width: 130px;
   display: flex;
+  min-width: 130px;
+  padding: 0px;
+  border: none;
   justify-content: space-between;
 
   .btn-label {
     position: relative;
     z-index: 1;
     color: white;
-    text-decoration: none;
     padding: 9px 15px;
+    text-decoration: none;
   }
 
   .btn-label-text {
     position: relative;
     z-index: 1;
     color: white;
-    text-decoration: none;
     margin: auto;
+    text-decoration: none;
     text-align: center;
   }
 
