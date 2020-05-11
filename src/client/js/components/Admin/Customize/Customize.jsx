@@ -10,7 +10,6 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
-import CustomizeBehaviorSetting from './CustomizeBehaviorSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeCssSetting from './CustomizeCssSetting';
@@ -51,9 +50,6 @@ class Customize extends React.Component {
       <Fragment>
         <div className="mb-5">
           <CustomizeLayoutSetting />
-        </div>
-        <div className="mb-5">
-          <CustomizeBehaviorSetting />
         </div>
         <div className="mb-5">
           <CustomizeFunctionSetting />
