@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import PagePath from '../../models/PagePath';
-import LinkedPagePath from '../../models/LinkedPagePath';
-import PagePathHierarchicalLink from '../PageList/PagePathHierarchicalLink';
+import DevidedPagePath from '@commons/models/devided-page-path';
+import LinkedPagePath from '@commons/models/linked-page-path';
+import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
 import CopyDropdown from './CopyDropdown';
 
@@ -20,13 +20,13 @@ const RevisionPath = (props) => {
     pageId, isPageInTrash, isPageForbidden,
   } = props;
 
-  const pagePathModel = new PagePath(props.pagePath, false, true);
-  const linkedPagePathLatter = new LinkedPagePath(pagePathModel.latter);
+  const dPagePath = new DevidedPagePath(props.pagePath, false, true);
+  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
   return (
     <>
       <span className="d-flex align-items-center flex-wrap">
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={pagePathModel.isRoot ? undefined : pagePathModel.former} />
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
         <CopyDropdown pagePath={props.pagePath} pageId={pageId} buttonStyle={buttonStyle} />
         { !isPageInTrash && !isPageForbidden && (
           <a href="#edit" className="d-block d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>

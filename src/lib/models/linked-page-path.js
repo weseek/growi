@@ -1,6 +1,6 @@
 import { pathUtils } from 'growi-commons';
 
-import PagePath from './PagePath';
+import DevidedPagePath from './devided-page-path';
 
 /**
  * Linked Array Structured PagePath Model
@@ -9,7 +9,7 @@ export default class LinkedPagePath {
 
   constructor(path, skipNormalize = false) {
 
-    const pagePath = new PagePath(path, skipNormalize);
+    const pagePath = new DevidedPagePath(path, skipNormalize);
 
     this.pathName = pagePath.latter;
     this.isRoot = pagePath.isRoot;

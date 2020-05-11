@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PagePath from '../../models/PagePath';
+import DevidedPagePath from '@commons/models/devided-page-path';
 
 const PagePathLabel = (props) => {
 
-  const pagePath = new PagePath(props.page.path, false, true);
+  const dPagePath = new DevidedPagePath(props.page.path, false, true);
 
   let classNames = ['page-path'];
   classNames = classNames.concat(props.additionalClassNames);
 
   if (props.isLatterOnly) {
-    return <span className={classNames.join(' ')}>{pagePath.latter}</span>;
+    return <span className={classNames.join(' ')}>{dPagePath.latter}</span>;
   }
 
-  const textElem = (pagePath.former == null && pagePath.latter == null)
+  const textElem = (dPagePath.former == null && dPagePath.latter == null)
     ? <><strong>/</strong></>
-    : <>{pagePath.former}/<strong>{pagePath.latter}</strong></>;
+    : <>{dPagePath.former}/<strong>{dPagePath.latter}</strong></>;
 
   return <span className={classNames.join(' ')}>{textElem}</span>;
 };

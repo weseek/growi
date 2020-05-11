@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
 
-import LinkedPagePath from '../../models/LinkedPagePath';
+import LinkedPagePath from '../models/linked-page-path';
 
 
 const PagePathHierarchicalLink = (props) => {

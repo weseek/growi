@@ -5,7 +5,7 @@ const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d
 // https://regex101.com/r/WVpPpY/1
 const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
 
-export default class PagePath {
+export default class DevidedPagePath {
 
   constructor(path, skipNormalize = false, evalDatePath = false) {
 

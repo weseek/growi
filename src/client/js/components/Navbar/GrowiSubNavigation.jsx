@@ -5,12 +5,12 @@ import { withTranslation } from 'react-i18next';
 
 import { isTrashPage } from '@commons/util/path-utils';
 
+import DevidedPagePath from '@commons/models/devided-page-path';
+import LinkedPagePath from '@commons/models/linked-page-path';
+import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-
-import PagePath from '../../models/PagePath';
-import LinkedPagePath from '../../models/LinkedPagePath';
-import PagePathHierarchicalLink from '../PageList/PagePathHierarchicalLink';
 
 import RevisionPath from '../Page/RevisionPath';
 import PageContainer from '../../services/PageContainer';
@@ -31,11 +31,11 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
-  const pagePathModel = new PagePath(pageContainer.state.path, false, true);
-  const linkedPagePathFormer = new LinkedPagePath(pagePathModel.former);
+  const dPagePath = new DevidedPagePath(pageContainer.state.path, false, true);
+  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const renderFormerLink = () => (
     <>
-      { !pagePathModel.isRoot && <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} /> }
+      { !dPagePath.isRoot && <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} /> }
     </>
   );
 
