@@ -28,6 +28,8 @@ module.exports = (crowi) => {
    *        description: Get recently updated pages
    *        responses:
    *          200:
+   *            description: Return pages recently updated
+   *
    */
   router.get('/recent', loginRequired, async(req, res) => {
     const limit = 20;
