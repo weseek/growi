@@ -257,17 +257,6 @@ body.on-edit {
   }
 }
 
-/*
- * for creating portal
- */
-.nav-tabs-create-portal {
-  display: none;
-}
-
-.on-edit .nav-tabs-create-portal {
-  display: block;
-}
-
 // overwrite .CodeMirror pre
 .CodeMirror pre.CodeMirror-line {
   font-family: $font-family-monospace;

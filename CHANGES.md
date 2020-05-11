@@ -5,9 +5,26 @@
 * Support: Upgrade libs
     * bootstrap
 
-## v3.7.6
+## v3.8.1-RC
 
 *
+
+## v3.8.0
+
+### BREAKING CHANGES
+
+- Now Elasticsearch requires the privilege `cluster:monitor/health` instead of `cluster:monitor/nodes/info`
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/38x.html>
+
+### Updates
+
+* Improvement: Change the health check method for Elasticsearch
+
+## v3.7.6
+
+* Feature: Empty trash pages
+* Improvement: Behavior of Reconnect to Elasticsearch button
 
 ## v3.7.5
 
@@ -15,7 +32,7 @@
 * Fix: Behavior of password reset modal is strange
 * Fix: Import GROWI Archive doesn't restore some data correctly
 * Fix: Attachments list on root page and users top pages
-* Fix: Trash page shouldn't be editable
+* Fix: Trash page is no longer editable
 * Fix: Rendering Timeline on /trash
 
 ## v3.7.4
@@ -53,6 +70,14 @@
 * I18n: HackMD integration
 
 ## v3.7.0
+
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/37x.html>
+
+### Updates
 
 * Feature: [Draw.io](https://www.draw.io/) Integration
 * Feature: SAML Attribute-based Login Control
