@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { format, formatDistanceStrict } from 'date-fns';
+import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -9,6 +9,8 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import { createSubscribedElement } from '../UnstatedUtils';
+
+import FormattedDistanceDate from '../FormattedDistanceDate';
 import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
@@ -175,9 +177,6 @@ class Comment extends React.PureComponent {
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const commentedDateId = `commentDate-${comment._id}`;
-    const commentedDate = <span id={commentedDateId}>{formatDistanceStrict(createdAt, new Date())}</span>;
-    const commentedDateFormatted = format(createdAt, 'yyyy/MM/dd HH:mm');
     const editedDateId = `editedDate-${comment._id}`;
     const editedDateFormatted = isEdited
       ? format(updatedAt, 'yyyy/MM/dd HH:mm')
@@ -206,8 +205,9 @@ class Comment extends React.PureComponent {
               </div>
               <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
-                <span><a href={`#${commentId}`}>{commentedDate}</a></span>
-                <UncontrolledTooltip placement="bottom" fade={false} target={commentedDateId}>{commentedDateFormatted}</UncontrolledTooltip>
+                <a href={`#${commentId}`}>
+                  <FormattedDistanceDate id={commentId} date={comment.createdAt} />
+                </a>
                 { isEdited && (
                   <>
                     <span id={editedDateId}>&nbsp;(edited)</span>
