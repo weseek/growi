@@ -46,12 +46,15 @@ $link-hover-color: $color-link-hover;
   .list-group-item {
     color: $color-list;
     background-color: $bgcolor-list;
-    &:hover {
-      background-color: $color-list-hover;
-    }
-    &.active {
-      color: $color-list-active;
-      background-color: $bgcolor-list-active;
+
+    &.list-group-item-action {
+      &:hover {
+        background-color: $color-list-hover;
+      }
+      &.active {
+        color: $color-list-active;
+        background-color: $bgcolor-list-active;
+      }
     }
   }
 }
@@ -117,12 +120,12 @@ $link-hover-color: $color-link-hover;
     }
   }
   div[data-testid='GlobalNavigation'] {
-    div {
+    > div {
       background-color: $bgcolor-sidebar;
     }
   }
   div[data-testid='ContextualNavigation'] {
-    div {
+    > div {
       color: $color-sidebar-context;
       background-color: $bgcolor-sidebar-context;
     }
