@@ -137,23 +137,6 @@
 
 
 {% block body_end %}
-<!-- [TODO][GW-1865] -->
-{% if isExternalAuthCollapsible %}
-<script>
-  const isMobile = /iphone|ipad|android/.test(window.navigator.userAgent.toLowerCase());
-
-  if (!isMobile) {
-    $(".collapse-anchor").hover(
-      function() {
-        $('.collapse-external-auth').collapse('show');
-      },
-      function() {
-        $('.collapse-external-auth').collapse('hide');
-      }
-    );
-  }
-</script>
-{% endif %}
 <script>
   $('#register-form input[name="registerForm[username]"]').change(function(e) {
     var username = $(this).val();
