@@ -556,7 +556,11 @@ module.exports = (crowi) => {
    *        summary: /users/update.imageUrlCache
    *        description: update imageUrlCache
    *        parameters:
-   *          - userIds: user id list
+   *          - name:  userIds
+   *            in: query
+   *            description: user id list
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: success creating imageUrlCached
