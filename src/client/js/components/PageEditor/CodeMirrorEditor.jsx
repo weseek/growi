@@ -567,7 +567,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           ? (
             <div className="text-right">
               {cheatsheetModalButton}
-              <div className="mb-2">
+              <div className="mb-2 d-none d-md-block">
                 <SimpleCheatsheet />
               </div>
             </div>

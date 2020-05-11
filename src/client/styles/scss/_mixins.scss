@@ -17,7 +17,8 @@
   }
 }
 
-@mixin expand-editor($editor-header-plus-footer) {
+@mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
+  $grw-navbar-height: $grw-navbar-height + $navbar-height-adjustment;
   $header-plus-footer: $grw-navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
 
   $editor-margin: $header-plus-footer //

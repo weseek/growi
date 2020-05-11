@@ -159,8 +159,8 @@ class UserManagement extends React.Component {
         <h2>{t('User_Management')}</h2>
         <div className="border-top border-bottom">
 
-          <div className="d-flex justify-content-start align-items-center my-2">
-            <div className="d-flex align-items-baseline">
+          <div className="row d-flex justify-content-start align-items-center my-2">
+            <div className="col-md-4 d-flex align-items-center my-2">
               <i className="icon-magnifier mr-1"></i>
               <span className="search-typeahead">
                 <input
@@ -172,7 +172,7 @@ class UserManagement extends React.Component {
               </span>
             </div>
 
-            <div className="mx-5">
+            <div className="col-md-6 my-2">
               <div className="form-inline">
                 {this.renderCheckbox('all', 'All', 'primary')}
                 {this.renderCheckbox('registered', 'Approval Pending', 'info')}
@@ -188,7 +188,7 @@ class UserManagement extends React.Component {
               </div>
             </div>
 
-            <div>
+            <div className="col-md-2 my-2">
               <button
                 type="button"
                 className="btn btn-outline-secondary btn-sm"
