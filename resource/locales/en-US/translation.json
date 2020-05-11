@@ -63,16 +63,16 @@
   "User ID": "User ID",
   "Home": "Home",
   "User Settings": "User Settings",
-  "User Information": "User Information",
-  "Basic Info": "Basic Info",
+  "User Information": "User information",
+  "Basic Info": "Basic info",
   "Name": "Name",
   "Email": "Email",
   "Language": "Language",
   "English": "English",
   "Japanese": "Japanese",
-  "Set Profile Image": "Set Profile Image",
-  "Upload Image": "Upload Image",
-  "Current Image": "Current Image",
+  "Set Profile Image": "Set profile image",
+  "Upload Image": "Upload image",
+  "Current Image": "Current image",
   "Delete Image": "Delete Image",
   "Delete this image?": "Delete this image?",
   "Updated": "Updated",
@@ -157,29 +157,29 @@
   },
   "page_me_apitoken": {
     "notice": {
-      "apitoken_issued": "API Token is not issued.",
-      "update_token1": "You can update to generate a new API Token.",
-      "update_token2": "You will need to update the API Token in any existing processes."
+      "apitoken_issued": "API token is not issued.",
+      "update_token1": "You can update to generate a new API token.",
+      "update_token2": "You will need to update the API token in any existing processes."
     },
     "form_help": {}
   },
   "Password": "Password",
-  "Password Settings": "Password Settings",
+  "Password Settings": "Password settings",
     "personal_settings": {
     "disassociate_external_account": "Disassociate External Account",
     "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
     "set_new_password": "Set new Password",
-    "update_password": "Update Password",
+    "update_password": "Update password",
       "current_password": "Current password",
       "new_password": "New password",
       "new_password_confirm": "Re-enter new password",
       "password_is_not_set": "Password is not set"
     },
   "security_settings": "Security settings",
-  "API Settings": "API Settings",
-  "API Token Settings": "API Token Settings",
-  "Current API Token": "Current API Token",
-  "Update API Token": "Update API Token",
+  "API Settings": "API settings",
+  "API Token Settings": "API token settings",
+  "Current API Token": "Current API token",
+  "Update API Token": "Update API token",
   "header_search_box": {
     "label": {
       "This tree": "This tree"
