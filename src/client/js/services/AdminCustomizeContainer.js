@@ -118,13 +118,6 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch behaviorType
-   */
-  switchBehaviorType(behaviorName) {
-    this.setState({ currentBehavior: behaviorName });
-  }
-
-  /**
    * Switch enabledTimeLine
    */
   switchEnableTimeline() {
