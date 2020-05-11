@@ -97,11 +97,7 @@
       "kibela_title": "Easy Viewing Structure",
       "kibela_text1": "Center aligned contents",
       "kibela_text2": "Show and post comments at the bottom of the page",
-      "kibela_text3": "Affix Table-of-contents",
-      "crowi_title": "Separated Functions",
-      "crowi_text1": "Collapsible Sidebar",
-      "crowi_text2": "Show and post comments in Sidebar",
-      "crowi_text3": "Collapsible Table-of-contents"
+      "kibela_text3": "Affix Table-of-contents"
     },
     "behavior": "Behavior",
     "behavior_desc": {

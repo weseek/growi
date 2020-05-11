@@ -97,11 +97,7 @@
       "kibela_title": "閲覧重視の構造",
       "kibela_text1": "コンテンツが中心に表示されます。",
       "kibela_text2": "コメントはページの下部に表示されます。",
-      "kibela_text3": "ページ情報は下部に表示されます。",
-      "crowi_title": "ビュー・コントロールの分離",
-      "crowi_text1": "サイドバーを開くと情報が表示されます。",
-      "crowi_text2": "コメントはサイドバーに表示されます。",
-      "crowi_text3": "ページ情報はサイドバーに表示されます。"
+      "kibela_text3": "ページ情報は下部に表示されます。"
     },
     "behavior": "動作",
     "behavior_desc": {
