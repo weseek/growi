@@ -108,14 +108,12 @@
       {% set registrationMode = getConfig('crowi', 'security:registrationMode') %}
       {% set isRegistrationEnabled = passportService.isLocalStrategySetup && registrationMode != 'Closed' %}
 
-      <!-- [TODO][GW-2112] An AppContainer gets csrf data -->
       <div
         id="login-form"
         data-is-registering="{{ req.query.register or req.body.registerForm or isRegistering }}"
         data-username ="{{ req.body.registerForm.username }}"
         data-name ="{{ req.body.registerForm.name }}"
         data-email ="{{ req.body.registerForm.email }}"
-        data-csrf="{{ csrf() }}"
         data-is-registration-enabled="{{ isRegistrationEnabled }}"
         data-registration-mode = "{{ registrationMode }}"
         data-registration-white-list = "{{ getConfig('crowi', 'security:registrationWhiteList') }}"

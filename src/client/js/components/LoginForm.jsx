@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from './UnstatedUtils';
+import NoLoginContainer from '../services/NoLoginContainer';
+
 class LoginForm extends React.Component {
 
   constructor(props) {
@@ -13,6 +16,7 @@ class LoginForm extends React.Component {
     };
 
     this.switchForm = this.switchForm.bind(this);
+    this.handleLoginWithExternalAuth = this.handleLoginWithExternalAuth.bind(this);
     this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
@@ -28,8 +32,14 @@ class LoginForm extends React.Component {
     this.setState({ isRegistering: !this.state.isRegistering });
   }
 
+  handleLoginWithExternalAuth(e) {
+    const auth = e.currentTarget.id;
+    const csrf = this.props.noLoginContainer.csrfToken;
+    window.location.href = `/passport/${auth}?_csrf=${csrf}`;
+  }
+
   renderLocalOrLdapLoginForm() {
-    const { t, csrf, isLdapStrategySetup } = this.props;
+    const { t, noLoginContainer, isLdapStrategySetup } = this.props;
 
     return (
       <form role="form" action="/login" method="post">
@@ -59,8 +69,7 @@ class LoginForm extends React.Component {
         </div>
 
         <div className="input-group justify-content-center d-flex mt-5">
-          {/* [TODO][GW-2112] An AppContainer gets csrf data */}
-          <input type="hidden" name="_csrf" value={csrf} />
+          <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
           <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
             <div className="eff"></div>
             <span className="btn-label p-3">
@@ -74,22 +83,17 @@ class LoginForm extends React.Component {
   }
 
   renderExternalAuthInput(auth) {
-    const { t, csrf } = this.props;
+    const { t } = this.props;
     return (
       <div key={auth} className="input-group justify-content-center d-flex mt-5">
-        {/* [TODO][GW-2112] use onClick, and delete form tag */}
-        <form role="form" action={`/passport/${auth}`} className="d-inline-flex flex-column">
-          {/* [TODO][GW-2112] An AppContainer gets csrf data */}
-          <input type="hidden" name="_csrf" value={csrf} />
-          <button type="submit" className="btn btn-fill px-0 py-2" id={auth}>
-            <div className="eff"></div>
-            <span className="btn-label p-3">
-              <i className={`fa fa-${auth}`}></i>
-            </span>
-            <span className="btn-label-text p-3">{t('Sign in')}</span>
-          </button>
-          <div className="small text-center">by {auth} Account</div>
-        </form>
+        <button type="button" className="btn btn-fill px-0 py-2" id={auth} onClick={this.handleLoginWithExternalAuth}>
+          <div className="eff"></div>
+          <span className="btn-label p-3">
+            <i className={`fa fa-${auth}`}></i>
+          </span>
+          <span className="btn-label-text p-3">{t('Sign in')}</span>
+        </button>
+        <div className="small text-center">by {auth} Account</div>
       </div>
     );
   }
@@ -134,7 +138,7 @@ class LoginForm extends React.Component {
   renderRegisterForm() {
     const {
       t,
-      csrf,
+      noLoginContainer,
       registrationMode,
       registrationWhiteList,
     } = this.props;
@@ -204,8 +208,7 @@ class LoginForm extends React.Component {
           </div>
 
           <div className="input-group justify-content-center mt-5">
-            {/* [TODO][GW-2112] An AppContainer gets csrf data */}
-            <input type="hidden" name="_csrf" value={csrf} />
+            <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
             <button type="submit" className="btn btn-fill px-0 py-2" id="register">
               <div className="eff"></div>
               <span className="btn-label p-3">
@@ -272,14 +275,21 @@ class LoginForm extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const LoginFormWrapper = (props) => {
+  return createSubscribedElement(LoginForm, props, [NoLoginContainer]);
+};
+
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
+  noLoginContainer: PropTypes.instanceOf(NoLoginContainer).isRequired,
   isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
   email: PropTypes.string,
-  csrf: PropTypes.string,
   isRegistrationEnabled: PropTypes.bool,
   registrationMode: PropTypes.string,
   registrationWhiteList: PropTypes.array,
@@ -288,4 +298,4 @@ LoginForm.propTypes = {
   objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
-export default withTranslation()(LoginForm);
+export default withTranslation()(LoginFormWrapper);

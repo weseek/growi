@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
 import i18nFactory from './util/i18n';
+
+import NoLoginContainer from './services/NoLoginContainer';
 
 import InstallerForm from './components/InstallerForm';
 import LoginForm from './components/LoginForm';
@@ -27,11 +30,11 @@ if (installerFormElem) {
 // render loginForm
 const loginFormElem = document.getElementById('login-form');
 if (loginFormElem) {
+  const noLoginContainer = new NoLoginContainer();
+
   const username = loginFormElem.dataset.username;
   const name = loginFormElem.dataset.name;
   const email = loginFormElem.dataset.email;
-  // [TODO][GW-2112] An AppContainer gets csrf data
-  const csrf = loginFormElem.dataset.csrf;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
   const registrationWhiteList = loginFormElem.dataset.registrationWhiteList.split(',');
@@ -49,18 +52,19 @@ if (loginFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <LoginForm
-        username={username}
-        name={name}
-        email={email}
-        csrf={csrf}
-        isRegistrationEnabled={isRegistrationEnabled}
-        registrationMode={registrationMode}
-        registrationWhiteList={registrationWhiteList}
-        isLocalStrategySetup={isLocalStrategySetup}
-        isLdapStrategySetup={isLdapStrategySetup}
-        objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
-      />
+      <Provider inject={[noLoginContainer]}>
+        <LoginForm
+          username={username}
+          name={name}
+          email={email}
+          isRegistrationEnabled={isRegistrationEnabled}
+          registrationMode={registrationMode}
+          registrationWhiteList={registrationWhiteList}
+          isLocalStrategySetup={isLocalStrategySetup}
+          isLdapStrategySetup={isLdapStrategySetup}
+          objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
+        />
+      </Provider>
     </I18nextProvider>,
     loginFormElem,
   );
