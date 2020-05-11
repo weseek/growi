@@ -6,6 +6,46 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 
 class StatusTable extends React.PureComponent {
 
+  renderPreInitializedLabel() {
+    return <span className="badge badge-pill badge-default">――</span>;
+  }
+
+  renderConnectionStatusLabels() {
+    const { t } = this.props;
+    const {
+      isErrorOccuredOnSearchService,
+      isConnected, isConfigured,
+    } = this.props;
+
+    const errorOccuredLabel = isErrorOccuredOnSearchService
+      ? <span className="badge badge-pill badge-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
+      : null;
+
+    let connectionStatusLabel = null;
+    if (!isConfigured) {
+      connectionStatusLabel = <span className="badge badge-pill badge-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+    }
+    else {
+      connectionStatusLabel = isConnected
+        ? <span className="badge badge-pill badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="badge badge-pill badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+    }
+
+    return (
+      <>
+        {connectionStatusLabel}{errorOccuredLabel}
+      </>
+    );
+  }
+
+  renderIndicesStatusLabel() {
+    const { t, isNormalized } = this.props;
+
+    return isNormalized
+      ? <span className="badge badge-pill badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+      : <span className="badge badge-pill badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+  }
+
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
     const collapseId = `collapse-${indexName}`;
 
@@ -94,40 +134,24 @@ class StatusTable extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-    const { isConfigured, isConnected, isNormalized } = this.props;
-
-
-    let connectionStatusLabel = <span className="badge badge-pill badge-secondary">――</span>;
-    if (isConfigured != null && !isConfigured) {
-      connectionStatusLabel = <span className="badge badge-pill badge-secondary">{t('full_text_search_management.connection_status_label_unconfigured')}</span>;
-    }
-    else if (isConnected != null) {
-      connectionStatusLabel = isConnected
-        ? <span className="badge badge-pill badge-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="badge badge-pill badge-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
-    }
-
-    let indicesStatusLabel = <span className="badge badge-pill badge-secondary">――</span>;
-    if (isNormalized != null) {
-      indicesStatusLabel = isNormalized
-        ? <span className="badge badge-pill badge-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-        : <span className="badge badge-pill badge-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
-    }
+    const {
+      isInitialized,
+    } = this.props;
 
     return (
       <table className="table table-bordered">
         <tbody>
           <tr>
             <th className="w-25">{t('full_text_search_management.connection_status')}</th>
-            <td className="w-75">{connectionStatusLabel}</td>
+            <td className="w-75">{ isInitialized ? this.renderConnectionStatusLabels() : this.renderPreInitializedLabel() }</td>
           </tr>
           <tr>
             <th className="w-25">{t('full_text_search_management.indices_status')}</th>
-            <td className="w-75">{indicesStatusLabel}</td>
+            <td className="w-75">{ isInitialized ? this.renderIndicesStatusLabel() : this.renderPreInitializedLabel() }</td>
           </tr>
           <tr>
             <th className="w-25">{t('full_text_search_management.indices_summary')}</th>
-            <td className="p-4 w-75">{this.renderIndexInfoPanels()}</td>
+            <td className="p-4 w-75">{ isInitialized && this.renderIndexInfoPanels() }</td>
           </tr>
         </tbody>
       </table>
@@ -146,8 +170,11 @@ const StatusTableWrapper = (props) => {
 StatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  isConfigured: PropTypes.bool,
+  isInitialized: PropTypes.bool,
+  isErrorOccuredOnSearchService: PropTypes.bool,
+
   isConnected: PropTypes.bool,
+  isConfigured: PropTypes.bool,
   isNormalized: PropTypes.bool,
   indicesData: PropTypes.object,
   aliasesData: PropTypes.object,

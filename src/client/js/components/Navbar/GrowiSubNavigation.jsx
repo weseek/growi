@@ -5,13 +5,19 @@ import { withTranslation } from 'react-i18next';
 
 import { isTrashPage } from '@commons/util/path-utils';
 
+import DevidedPagePath from '@commons/models/devided-page-path';
+import LinkedPagePath from '@commons/models/linked-page-path';
+import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+
 import RevisionPath from '../Page/RevisionPath';
 import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
+
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 
@@ -25,16 +31,23 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
+  const dPagePath = new DevidedPagePath(pageContainer.state.path, false, true);
+  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+  const renderFormerLink = () => (
+    <>
+      { !dPagePath.isRoot && <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} /> }
+    </>
+  );
+
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden || isPageInTrash) {
     return (
-      <div className="d-flex align-items-center px-3 py-3 grw-subnavbar">
+      <div className="px-3 py-3 grw-subnavbar">
+        { renderFormerLink() }
         <h1 className="m-0">
           <RevisionPath
-            behaviorType={appContainer.config.behaviorType}
             pageId={pageId}
             pagePath={pageContainer.state.path}
-            isPageNotFound={isPageNotFound}
             isPageForbidden={isPageForbidden}
             isPageInTrash={isPageInTrash}
           />
@@ -60,8 +73,9 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Path */}
       <div>
+        { renderFormerLink() }
         <h1 className="m-0">
-          <RevisionPath behaviorType={appContainer.config.behaviorType} pageId={pageId} pagePath={pageContainer.state.path} />
+          <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
         { !isPageNotFound && !isPageForbidden && (
           <TagLabels />
