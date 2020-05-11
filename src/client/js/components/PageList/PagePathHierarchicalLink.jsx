@@ -7,7 +7,7 @@ import LinkedPagePath from '../../models/LinkedPagePath';
 const PagePathHierarchicalLink = (props) => {
   const { linkedPagePath } = props;
 
-  const RootLink = () => {
+  if (linkedPagePath.isRoot) {
     return props.isPageInTrash
       ? (
         <>
@@ -27,10 +27,10 @@ const PagePathHierarchicalLink = (props) => {
           </span>
         </>
       );
-  };
+  }
 
   const isParentExists = linkedPagePath.parent != null;
-  const isParentRoot = isParentExists && linkedPagePath.parent.parent == null;
+  const isParentRoot = isParentExists && linkedPagePath.parent.isRoot;
   return (
     <>
       { isParentExists && (
@@ -41,7 +41,6 @@ const PagePathHierarchicalLink = (props) => {
           ) }
         </>
       ) }
-      { !isParentExists && <RootLink /> }
 
       <a className="page-segment" href={encodeURI(linkedPagePath.href)}>{linkedPagePath.pathName}</a>
     </>

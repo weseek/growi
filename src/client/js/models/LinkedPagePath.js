@@ -9,18 +9,19 @@ export default class LinkedPagePath {
 
   constructor(path, skipNormalize = false) {
 
-    const pagePath = new PagePath(path, false, skipNormalize);
+    const pagePath = new PagePath(path, skipNormalize);
 
     this.pathName = pagePath.latter;
-    this.parent = pagePath.former != null
-      ? new LinkedPagePath(pagePath.former, true)
-      : null;
+    this.isRoot = pagePath.isRoot;
+    this.parent = pagePath.isRoot
+      ? null
+      : new LinkedPagePath(pagePath.former, true);
 
   }
 
   get href() {
-    if (this.parent == null) {
-      return '/';
+    if (this.isRoot) {
+      return '';
     }
 
     return pathUtils.normalizePath(`${this.parent.href}/${this.pathName}`);

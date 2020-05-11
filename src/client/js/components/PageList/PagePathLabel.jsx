@@ -5,7 +5,7 @@ import PagePath from '../../models/PagePath';
 
 const PagePathLabel = (props) => {
 
-  const pagePath = new PagePath(props.page.path, true);
+  const pagePath = new PagePath(props.page.path, false, true);
 
   let classNames = ['page-path'];
   classNames = classNames.concat(props.additionalClassNames);

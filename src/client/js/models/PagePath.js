@@ -7,17 +7,21 @@ const PATTERN_DEFAULT = /^((.*)\/)?([^/]+)$/;
 
 export default class PagePath {
 
-  constructor(path, evalDatePath = false, skipNormalize = false) {
+  constructor(path, skipNormalize = false, evalDatePath = false) {
 
-    const pagePath = skipNormalize ? path : pathUtils.normalizePath(path);
-
+    this.isRoot = false;
     this.former = null;
-    this.latter = pagePath;
+    this.latter = null;
 
     // root
-    if (pagePath === '/') {
+    if (path == null || path === '' || path === '/') {
+      this.isRoot = true;
+      this.latter = '/';
       return;
     }
+
+    const pagePath = skipNormalize ? path : pathUtils.normalizePath(path);
+    this.latter = pagePath;
 
     // evaluate date path
     if (evalDatePath) {
