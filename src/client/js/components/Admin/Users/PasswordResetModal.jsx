@@ -7,7 +7,6 @@ import Modal from 'react-bootstrap/es/Modal';
 import { toastError } from '../../../util/apiNotification';
 import { createSubscribedElement } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class PasswordResetModal extends React.Component {
 
@@ -23,10 +22,9 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { appContainer, adminUsersContainer } = this.props;
-    const user = adminUsersContainer.state.userForPasswordResetModal;
+    const { appContainer, userForPasswordResetModal } = this.props;
 
-    const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: user._id });
+    const res = await appContainer.apiPost('/admin/users.resetPassword', { user_id: userForPasswordResetModal._id });
     if (res.ok) {
       this.setState({ temporaryPassword: res.newPassword, isPasswordResetDone: true });
     }
@@ -36,14 +34,13 @@ class PasswordResetModal extends React.Component {
   }
 
   renderModalBodyBeforeReset() {
-    const { t, adminUsersContainer } = this.props;
-    const user = adminUsersContainer.state.userForPasswordResetModal;
+    const { t, userForPasswordResetModal } = this.props;
 
     return (
       <div>
         <p className="alert alert-danger">{t('admin:user_management.reset_password_modal.password_reset_message')}</p>
         <p>
-          {t('admin:user_management.reset_password_modal.target_user')}: <code>{user.email}</code>
+          {t('admin:user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <p>
           {t('admin:user_management.reset_password_modal.new_password')}: <code>{this.state.temporaryPassword}</code>
@@ -53,8 +50,7 @@ class PasswordResetModal extends React.Component {
   }
 
   returnModalBodyAfterReset() {
-    const { t, adminUsersContainer } = this.props;
-    const user = adminUsersContainer.state.userForPasswordResetModal;
+    const { t, userForPasswordResetModal } = this.props;
 
     return (
       <div>
@@ -63,7 +59,7 @@ class PasswordResetModal extends React.Component {
           <span className="text-danger">{t('admin:user_management.reset_password_modal.send_new_password')}</span>
         </p>
         <p>
-          {t('admin:user_management.reset_password_modal.target_user')}: <code>{user.email}</code>
+          {t('admin:user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <button type="submit" className="btn btn-primary" onClick={this.resetPassword}>
           {t('admin:user_management.reset_password')}
@@ -75,17 +71,17 @@ class PasswordResetModal extends React.Component {
   returnModalFooter() {
     return (
       <div>
-        <button type="submit" className="btn btn-primary" onClick={this.props.adminUsersContainer.hidePasswordResetModal}>OK</button>
+        <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>OK</button>
       </div>
     );
   }
 
 
   render() {
-    const { t, adminUsersContainer } = this.props;
+    const { t } = this.props;
 
     return (
-      <Modal show={adminUsersContainer.state.isPasswordResetModalShown} onHide={adminUsersContainer.hidePasswordResetModal}>
+      <Modal show={this.props.isOpen} onHide={this.props.onClose}>
         <Modal.Header className="modal-header" closeButton>
           <Modal.Title>
             {t('admin:user_management.reset_password')}
@@ -107,13 +103,17 @@ class PasswordResetModal extends React.Component {
  * Wrapper component for using unstated
  */
 const PasswordResetModalWrapper = (props) => {
-  return createSubscribedElement(PasswordResetModal, props, [AppContainer, AdminUsersContainer]);
+  return createSubscribedElement(PasswordResetModal, props, [AppContainer]);
 };
 
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
+
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  userForPasswordResetModal: PropTypes.object,
+
 };
 
 export default withTranslation()(PasswordResetModalWrapper);

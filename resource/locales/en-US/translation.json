@@ -182,9 +182,11 @@
   "Update API Token": "Update API token",
   "header_search_box": {
     "label": {
+      "All pages": "All pages",
       "This tree": "This tree"
     },
     "item_label": {
+      "All pages": "All pages",
       "This tree": "Only children of this tree"
     }
   },
@@ -274,6 +276,9 @@
     "delete_completely_restriction": "You don't have the authority to delete pages completely.",
     "recursively": "Delete children of <code>%s</code> recursively.",
     "completely": "Delete completely instead of putting it into trash."
+  },
+  "modal_empty":{
+    "empty_the_trash": "Empty The Trash"
   },
   "modal_duplicate": {
     "label": {
@@ -621,7 +626,8 @@
     "connection_status_label_unconfigured": "UNCONFIGURED",
     "connection_status_label_connected": "CONNECTED",
     "connection_status_label_disconnected": "DISCONNECTED",
-    "indices_status": "Indices status",
+    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
+    "indices_status": "Indices Status",
     "indices_status_label_normalized": "NORMALIZED",
     "indices_status_label_unnormalized": "REBUILDING or BROKEN",
     "indices_summary": "Indices summary",
