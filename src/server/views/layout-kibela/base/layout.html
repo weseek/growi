@@ -11,9 +11,9 @@
 
   <div class="row body m-0 p-0">
 
-    <div id="main" class="main col-12 kibela-block round-corner border-0 {% if page %}{{ css.grant(page) }}{% endif %}{% block main_css_class %}{% endblock %}">
+    <div id="main" class="main col-12 kibela-block round-corner {% if page %}{{ css.grant(page) }}{% endif %}{% block main_css_class %}{% endblock %}">
       <div class="row grw-subnav d-edit-none">
-        <div class="col px-0 mx-0 kibela-block">
+        <div class="col px-0 mx-0 bg-white kibela-border-top round-corner">
           {% block content_header %} {% endblock %}
         </div>
         <div class="col-xl-3 col-lg-4"></div>
