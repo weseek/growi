@@ -42,23 +42,33 @@ const PagePathHierarchicalLink = (props) => {
 
   const href = encodeURI(urljoin(basePath || '/', linkedPagePath.href));
 
+  // eslint-disable-next-line react/prop-types
+  const RootElm = ({ children }) => {
+    return props.isInnerElem
+      ? <>{children}</>
+      : <span className="grw-page-path-hierarchical-link">{children}</span>;
+  };
+
   return (
-    <>
+    <RootElm>
       { isParentExists && (
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} basePath={basePath} />
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} basePath={basePath} isInnerElem />
       ) }
       { isSeparatorRequired && (
         <span className="separator">/</span>
       ) }
 
       <a className="page-segment" href={href}>{linkedPagePath.pathName}</a>
-    </>
+    </RootElm>
   );
 };
 
 PagePathHierarchicalLink.propTypes = {
   linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
   basePath: PropTypes.string,
+
+  // !!INTERNAL USE ONLY!!
+  isInnerElem: PropTypes.bool,
 
   isPageInTrash: PropTypes.bool, // TODO: omit
 };

@@ -33,17 +33,17 @@ const GrowiSubNavigation = (props) => {
 
   const dPagePath = new DevidedPagePath(pageContainer.state.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-  const renderFormerLink = () => (
-    <>
-      { !dPagePath.isRoot && <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} /> }
-    </>
+  const FormerLink = () => (
+    <div className="grw-page-path-text-muted-container">
+      <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
+    </div>
   );
 
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden || isPageInTrash) {
     return (
       <div className="px-3 py-3 grw-subnavbar">
-        { renderFormerLink() }
+        { !dPagePath.isRoot && <FormerLink /> }
         <h1 className="m-0">
           <RevisionPath
             pageId={pageId}
@@ -73,7 +73,7 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Path */}
       <div>
-        { renderFormerLink() }
+        { !dPagePath.isRoot && <FormerLink /> }
         <h1 className="m-0">
           <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
