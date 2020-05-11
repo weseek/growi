@@ -47,16 +47,24 @@
     Right Tabs
   #}
 
+  {# to place right side #}
+  <div class="mr-auto"></div>
+
   <!-- presentation -->
   {% if not page.isPortal() %}
-    <li class="nav-item ml-md-auto">
+    <li class="nav-item">
       <a href="?presentation=1" class="nav-link toggle-presentation">
+<<<<<<< HEAD
         <i class="icon-film"></i><span class="d-none d-md-inline-block hidden-xs">{{ t('Presentation Mode') }}</span>
+=======
+        <i class="icon-film"></i><span class="d-none d-md-inline"> {{ t('Presentation Mode') }}</span>
+>>>>>>> support/apply-bootstrap4
       </a>
     </li>
   {% endif %}
 
   <!-- revision-history -->
+<<<<<<< HEAD
   {% if page.isPortal() %}
     <li class="nav-item ml-md-auto">
     {% else %}
@@ -66,6 +74,13 @@
           <i class="icon-layers"></i><span class="d-none d-md-inline-block hidden-xs">{{ t('History') }}</span>
         </a>
       </li>
+=======
+  <li class="nav-item">
+    <a class="nav-link" href="#revision-history" role="tab" data-toggle="tab">
+      <i class="icon-layers"></i><span class="d-none d-md-inline"> {{ t('History') }}</span>
+    </a>
+  </li>
+>>>>>>> support/apply-bootstrap4
 
   <!-- icon-options-vertical -->
   {% if !isTrashPage() %}

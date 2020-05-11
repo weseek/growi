@@ -7,7 +7,7 @@
 
 {% block content_header %}
   {% if pageUser %}
-    <header id="grw-subnav-for-user-page" class="grw- subnav grw-subnav-user-page" data-page-user="{{ pageUser|json }}"></header>
+    <header id="grw-subnav-for-user-page" class="grw-subnav grw-subnav-user-page" data-page-user="{{ pageUser|json }}"></header>
   {% else %}
     {% parent %}
   {% endif %}
@@ -53,7 +53,7 @@
 
   {% if 'growi' === getConfig('crowi', 'customize:behavior') || 'crowi-plus' === getConfig('crowi', 'customize:behavior') %}
   <div class="row page-list mt-5 d-edit-none">
-    <div class="col-xs-12">
+    <div class="col-12">
       {% include '../widget/page_list_and_timeline_kibela.html' %}
     </div>
   </div>
@@ -64,4 +64,8 @@
 
 {% block content_main_after %}
   {% include 'widget/comments.html' %}
+
+  {% if page %}
+    {% include '../widget/page_attachments.html' %}
+  {% endif %}
 {% endblock %}

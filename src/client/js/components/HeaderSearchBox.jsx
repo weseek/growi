@@ -60,7 +60,7 @@ class HeaderSearchBox extends React.Component {
     const { t, appContainer } = this.props;
     const scopeLabel = this.state.isScopeChildren
       ? t('header_search_box.label.This tree')
-      : 'All pages';
+      : t('header_search_box.label.All pages');
 
     const config = appContainer.getConfig();
     const isReachable = config.isSearchServiceReachable;
@@ -73,7 +73,7 @@ class HeaderSearchBox extends React.Component {
               {scopeLabel}
             </button>
             <div className="dropdown-menu">
-              <button className="dropdown-item" type="button" onClick={this.onClickAllPages}>All pages</button>
+              <button className="dropdown-item" type="button" onClick={this.onClickAllPages}>{ t('header_search_box.item_label.All pages') }</button>
               <button className="dropdown-item" type="button" onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</button>
             </div>
           </div>
