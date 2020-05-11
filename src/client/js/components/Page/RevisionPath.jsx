@@ -26,7 +26,7 @@ const RevisionPath = (props) => {
 
       <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
 
-      <CopyDropdown t={props.t} pagePath={pagePath} pageId={pageId} buttonStyle={buttonStyle}></CopyDropdown>
+      <CopyDropdown pagePath={pagePath} pageId={pageId} buttonStyle={buttonStyle} />
 
       { !isPageInTrash && !isPageForbidden && (
         <a href="#edit" className="d-block d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
@@ -39,6 +39,7 @@ const RevisionPath = (props) => {
 
 RevisionPath.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   isPageForbidden: PropTypes.bool,

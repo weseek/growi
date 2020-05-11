@@ -5,10 +5,7 @@ import LinkedPagePath from '../../models/LinkedPagePath';
 
 
 const PagePathHierarchicalLink = (props) => {
-  const { linkedPagePath, additionalClassNames } = props;
-
-  let classNames = ['page-segment'];
-  classNames = classNames.concat(additionalClassNames);
+  const { linkedPagePath } = props;
 
   const RootLink = () => {
     return props.isPageInTrash
@@ -46,20 +43,14 @@ const PagePathHierarchicalLink = (props) => {
       ) }
       { !isParentExists && <RootLink /> }
 
-      <a classNames={classNames} href={encodeURI(linkedPagePath.href)}>{linkedPagePath.pathName}</a>
+      <a className="page-segment" href={encodeURI(linkedPagePath.href)}>{linkedPagePath.pathName}</a>
     </>
   );
 };
 
 PagePathHierarchicalLink.propTypes = {
   linkedPagePath: PropTypes.instanceOf(LinkedPagePath).isRequired,
-  additionalClassNames: PropTypes.array,
-
   isPageInTrash: PropTypes.bool,
-};
-
-PagePathHierarchicalLink.defaultProps = {
-  additionalClassNames: [],
 };
 
 export default PagePathHierarchicalLink;
