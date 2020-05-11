@@ -36,12 +36,6 @@ body.on-edit {
     display: none !important;
   }
 
-  // hide unnecessary elements for crowi layout
-  #toggle-crowi-sidebar,
-  .crowi-sidebar {
-    display: none;
-  }
-
   // show only either Edit button or HackMD button
   &.hackmd .nav-tab-edit {
     display: none;
@@ -261,17 +255,6 @@ body.on-edit {
       vertical-align: unset;
     }
   }
-}
-
-/*
- * for creating portal
- */
-.nav-tabs-create-portal {
-  display: none;
-}
-
-.on-edit .nav-tabs-create-portal {
-  display: block;
 }
 
 // overwrite .CodeMirror pre

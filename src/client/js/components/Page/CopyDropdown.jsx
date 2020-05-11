@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
+
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
   Tooltip,
@@ -8,7 +10,7 @@ import {
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-export default class CopyDropdown extends React.Component {
+class CopyDropdown extends React.Component {
 
   constructor(props) {
     super(props);
@@ -127,7 +129,10 @@ export default class CopyDropdown extends React.Component {
 
 CopyDropdown.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   buttonStyle: PropTypes.object,
 };
+
+export default withTranslation()(CopyDropdown);

@@ -1,6 +1,6 @@
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:bookmark'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body } = require('express-validator');

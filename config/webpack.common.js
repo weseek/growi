@@ -39,11 +39,12 @@ module.exports = (options) => {
       // 'styles/theme-future':          './src/client/styles/scss/theme/future.scss',
       // 'styles/theme-blue-night':      './src/client/styles/scss/theme/blue-night.scss',
       'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
-      // 'styles/theme-halloween':       './src/client/styles/scss/theme/halloween.scss',
+      'styles/theme-halloween':       './src/client/styles/scss/theme/halloween.scss',
       // 'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
       // 'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',
       // 'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
       'styles/theme-antarctic':      './src/client/styles/scss/theme/antarctic.scss',
+      'styles/theme-spring':         './src/client/styles/scss/theme/spring.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
     }, options.entry || {}), // Merge with env dependent settings

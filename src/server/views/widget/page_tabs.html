@@ -116,22 +116,4 @@
   {% endif %}
 </ul>
 
-{% else %} {# for creating portal #}
-
-<ul class="nav nav-tabs nav-tabs-create-portal hidden-print" role="tablist">
-
-  <li class="nav-item">
-    <a id="portal-form-close" role="tab" data-toggle="tab" class="nav-link" href="#cancel-creating-portal">
-      <i class="icon-action-undo"></i> {{ t('Cancel') }}
-    </a>
-  </li>
-
-  <li class="nav-item">
-    <a {% if user %}href="#edit" role="tab" data-toggle="tab" {% endif %} class="nav-link edit-button {% if not user %}edit-button-disabled{% endif %}">
-      <i class="icon-note"></i> {{ t('Create') }}
-    </a>
-  </li>
-
 {% endif %}
-
-</ul>

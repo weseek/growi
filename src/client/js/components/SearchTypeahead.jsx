@@ -6,7 +6,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
-import PagePath from './PageList/PagePath';
+import PagePathLabel from './PageList/PagePathLabel';
 import AppContainer from '../services/AppContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 
@@ -164,7 +164,7 @@ class SearchTypeahead extends React.Component {
     return (
       <span>
         <UserPicture user={page.lastUpdateUser} size="sm" noLink />
-        <PagePath page={page} />
+        <PagePathLabel page={page} />
         <PageListMeta page={page} />
       </span>
     );
