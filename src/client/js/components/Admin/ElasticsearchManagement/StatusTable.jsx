@@ -6,6 +6,46 @@ import { createSubscribedElement } from '../../UnstatedUtils';
 
 class StatusTable extends React.PureComponent {
 
+  renderPreInitializedLabel() {
+    return <span className="label label-default">――</span>;
+  }
+
+  renderConnectionStatusLabels() {
+    const { t } = this.props;
+    const {
+      isErrorOccuredOnSearchService,
+      isConnected, isConfigured,
+    } = this.props;
+
+    const errorOccuredLabel = isErrorOccuredOnSearchService
+      ? <span className="label label-danger ml-2">{ t('full_text_search_management.connection_status_label_erroroccured') }</span>
+      : null;
+
+    let connectionStatusLabel = null;
+    if (!isConfigured) {
+      connectionStatusLabel = <span className="label label-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
+    }
+    else {
+      connectionStatusLabel = isConnected
+        ? <span className="label label-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
+        : <span className="label label-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
+    }
+
+    return (
+      <>
+        {connectionStatusLabel}{errorOccuredLabel}
+      </>
+    );
+  }
+
+  renderIndicesStatusLabel() {
+    const { t, isNormalized } = this.props;
+
+    return isNormalized
+      ? <span className="label label-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
+      : <span className="label label-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
+  }
+
   renderIndexInfoPanel(indexName, body = {}, aliases = []) {
     const collapseId = `collapse-${indexName}`;
 
@@ -95,41 +135,29 @@ class StatusTable extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-    const { isConfigured, isConnected, isNormalized } = this.props;
-
-
-    let connectionStatusLabel = <span className="label label-default">――</span>;
-    if (isConfigured != null && !isConfigured) {
-      connectionStatusLabel = <span className="label label-default">{ t('full_text_search_management.connection_status_label_unconfigured') }</span>;
-    }
-    else if (isConnected != null) {
-      connectionStatusLabel = isConnected
-        ? <span className="label label-success">{ t('full_text_search_management.connection_status_label_connected') }</span>
-        : <span className="label label-danger">{ t('full_text_search_management.connection_status_label_disconnected') }</span>;
-    }
-
-    let indicesStatusLabel = <span className="label label-default">――</span>;
-    if (isNormalized != null) {
-      indicesStatusLabel = isNormalized
-        ? <span className="label label-info">{ t('full_text_search_management.indices_status_label_normalized') }</span>
-        : <span className="label label-warning">{ t('full_text_search_management.indices_status_label_unnormalized') }</span>;
-    }
+    const {
+      isInitialized,
+    } = this.props;
 
     return (
       <table className="table table-bordered">
         <tbody>
           <tr>
             <th>{ t('full_text_search_management.connection_status') }</th>
-            <td>{connectionStatusLabel}</td>
+            <td>
+              { isInitialized ? this.renderConnectionStatusLabels() : this.renderPreInitializedLabel() }
+            </td>
           </tr>
           <tr>
             <th>{ t('full_text_search_management.indices_status') }</th>
-            <td>{indicesStatusLabel}</td>
+            <td>
+              { isInitialized ? this.renderIndicesStatusLabel() : this.renderPreInitializedLabel() }
+            </td>
           </tr>
           <tr>
             <th className="col-sm-4">{ t('full_text_search_management.indices_summary') }</th>
             <td className="p-4">
-              { this.renderIndexInfoPanels() }
+              { isInitialized && this.renderIndexInfoPanels() }
             </td>
           </tr>
         </tbody>
@@ -149,8 +177,11 @@ const StatusTableWrapper = (props) => {
 StatusTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  isConfigured: PropTypes.bool,
+  isInitialized: PropTypes.bool,
+  isErrorOccuredOnSearchService: PropTypes.bool,
+
   isConnected: PropTypes.bool,
+  isConfigured: PropTypes.bool,
   isNormalized: PropTypes.bool,
   indicesData: PropTypes.object,
   aliasesData: PropTypes.object,
