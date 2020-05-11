@@ -10,9 +10,15 @@ import {
 
 import loggerFactory from '@alias/logger';
 
+import DevidedPagePath from '@commons/models/devided-page-path';
+import LinkedPagePath from '@commons/models/linked-page-path';
+import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastError } from '../../util/apiNotification';
+
+import UserPicture from '../User/UserPicture';
 
 const logger = loggerFactory('growi:History');
 class History extends React.Component {
@@ -29,11 +35,10 @@ class History extends React.Component {
   }
 
   async reloadData() {
-    const { t, appContainer } = this.props;
+    const { appContainer } = this.props;
 
     try {
       await appContainer.retrieveRecentlyUpdated();
-      toastSuccess(t('toaster.update_successed', { target: t('History') }));
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -41,15 +46,28 @@ class History extends React.Component {
     }
   }
 
-  PageItem = (page) => {
+  PageItem = ({ page }) => {
+    const dPagePath = new DevidedPagePath(page.path, false, true);
+    const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+    const FormerLink = () => (
+      <div className="grw-page-path-text-muted-container small">
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
+      </div>
+    );
+
     return (
       <li className="list-group-item">
-        <div className="d-flex w-100 justify-content-between">
-          <h5 className="mb-1">List group item heading</h5>
-          <small>3 days ago</small>
+        <div className="d-flex w-100">
+          <UserPicture user={page.lastUpdatedUser} size="md" />
+          <div className="ml-2">
+            { !dPagePath.isRoot && <FormerLink /> }
+            <h4 className="mb-1">
+              <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+            </h4>
+            <small>Donec id elit non mi porta.</small>
+          </div>
         </div>
-        <p className="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small>Donec id elit non mi porta.</small>
       </li>
     );
   }
@@ -60,7 +78,7 @@ class History extends React.Component {
     const { recentlyUpdatedPages } = this.props.appContainer.state;
 
     return (
-      <>
+      <div className="grw-sidebar-history">
         <HeaderSection>
           { () => (
             <div className="grw-sidebar-header-container p-3 d-flex">
@@ -75,12 +93,12 @@ class History extends React.Component {
           { () => (
             <div className="grw-sidebar-content-container p-3">
               <ul className="list-group">
-                { recentlyUpdatedPages.map(page => <PageItem page={page} />) }
+                { recentlyUpdatedPages.map(page => <PageItem key={page.id} page={page} />) }
               </ul>
             </div>
           ) }
         </MenuSection>
-      </>
+      </div>
     );
   }
 
