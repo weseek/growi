@@ -29,12 +29,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: string
  *          themeType:
  *            type: string
- *      CustomizeBehavior:
- *        description: CustomizeBehavior
- *        type: object
- *        properties:
- *          behaviorType:
- *            type: string
  *      CustomizeFunction:
  *        description: CustomizeFunction
  *        type: object
@@ -104,9 +98,6 @@ module.exports = (crowi) => {
       body('themeType').isString().isIn([
         'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'blue-night', 'halloween', 'spring',
       ]),
-    ],
-    behavior: [
-      body('behaviorType').isString().isIn(['growi', 'crowi-plus']),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
