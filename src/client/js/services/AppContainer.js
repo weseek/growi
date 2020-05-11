@@ -275,8 +275,8 @@ export default class AppContainer extends Container {
   }
 
   async retrieveRecentlyUpdated() {
-    const result = await this.apiv3Get('/pages/recent');
-    this.setState({ recentlyUpdatedPages: result.pages });
+    const { data } = await this.apiv3Get('/pages/recent');
+    this.setState({ recentlyUpdatedPages: data.pages });
   }
 
   fetchUsers() {
