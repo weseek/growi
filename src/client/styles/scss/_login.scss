@@ -108,11 +108,6 @@
 
   .collapse-external-auth {
     overflow: hidden;
-
-    &:not(.show) {
-      height: 0;
-      padding: 0 !important;
-    }
   }
 
   $btn-fill-colors: (
@@ -170,15 +165,6 @@
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
     border: none;
-
-    .btn-label {
-      padding: 9px 15px;
-      margin: -8px 20px -8px -20px;
-    }
-
-    &:focus {
-      border: none;
-    }
   }
 
   // footer link text
