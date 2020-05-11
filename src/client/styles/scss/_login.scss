@@ -225,22 +225,6 @@
     }
   }
 
-  // external-auth
-  .btn-collapse-external-auth {
-    color: white;
-    background-color: rgba(lighten(black, 20%), 0.4);
-    border: none;
-
-    .btn-label {
-      padding: 9px 15px;
-      margin: -8px 20px -8px -20px;
-    }
-
-    &:focus {
-      border: none;
-    }
-  }
-
   // footer link text
   .link-growi-org {
     font-size: smaller;

@@ -97,7 +97,7 @@ class LoginForm extends React.Component {
   renderExternalAuthLoginForm() {
     const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = this.props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
-    const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth collapse-anchor' : '';
+    const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth' : '';
 
     return (
       <>
@@ -118,7 +118,7 @@ class LoginForm extends React.Component {
         <div className="text-center">
           <button
             type="button"
-            className="collapse-anchor btn btn-xs btn-collapse-external-auth mb-3"
+            className="btn btn-secondary btn-xs mb-3"
             data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-target="#external-auth"
             aria-expanded="false"
