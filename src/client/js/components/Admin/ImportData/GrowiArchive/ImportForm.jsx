@@ -456,7 +456,6 @@ class ImportForm extends React.Component {
             </button>
           </div>
         </form>
-        
         <div className="well well-sm small my-4">
           <ul>
             <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
