@@ -135,7 +135,7 @@ Crowi.initAffix = () => {
       $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
       return false;
     });
-    $affixContentContainer.css({ 'min-height': containerHeight });
+    $affixContentContainer.css({ minHeight: containerHeight });
   }
 };
 
@@ -359,6 +359,30 @@ $(() => {
     return false;
   });
 
+  // empty trash
+  $('#emptyTrash').on('shown.bs.modal', (e) => {
+    $('#emptyTrash .msg').hide();
+  });
+  $('#empty-trash-form').submit((e) => {
+    // create name-value map
+    const nameValueMap = {};
+    $('#empty-trash-form').serializeArray().forEach((obj) => {
+      nameValueMap[obj.name] = obj.value;
+    });
+    $.ajax({
+      type: 'DELETE',
+      url: '/_api/v3/pages/empty-trash',
+      data: nameValueMap,
+      dataType: 'json',
+    }).done((res) => {
+      window.location.href = '/trash';
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      $('#emptyTrash .msg').hide();
+      $('#emptyTrash .msg-unknown').show();
+    });
+
+    return false;
+  });
   // delete
   $('#deletePage').on('shown.bs.modal', (e) => {
     $('#deletePage .msg').hide();
