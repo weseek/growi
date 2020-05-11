@@ -7,11 +7,17 @@ import { isTrashPage } from '@commons/util/path-utils';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+
+import PagePath from '../../models/PagePath';
+import LinkedPagePath from '../../models/LinkedPagePath';
+import PagePathHierarchicalLink from '../PageList/PagePathHierarchicalLink';
+
 import RevisionPath from '../Page/RevisionPath';
 import PageContainer from '../../services/PageContainer';
 import TagLabels from '../Page/TagLabels';
 import LikeButton from '../LikeButton';
 import BookmarkButton from '../BookmarkButton';
+
 import PageCreator from './PageCreator';
 import RevisionAuthor from './RevisionAuthor';
 
@@ -25,10 +31,19 @@ const GrowiSubNavigation = (props) => {
   const isPageNotFound = pageId == null;
   const isPageInTrash = isTrashPage(path);
 
+  const pagePathModel = new PagePath(pageContainer.state.path, false, true);
+  const linkedPagePathFormer = new LinkedPagePath(pagePathModel.former);
+  const renderFormerLink = () => (
+    <>
+      { !pagePathModel.isRoot && <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} /> }
+    </>
+  );
+
   // Display only the RevisionPath
   if (isPageNotFound || isPageForbidden || isPageInTrash) {
     return (
-      <div className="d-flex align-items-center px-3 py-3 grw-subnavbar">
+      <div className="px-3 py-3 grw-subnavbar">
+        { renderFormerLink() }
         <h1 className="m-0">
           <RevisionPath
             pageId={pageId}
@@ -58,6 +73,7 @@ const GrowiSubNavigation = (props) => {
 
       {/* Page Path */}
       <div>
+        { renderFormerLink() }
         <h1 className="m-0">
           <RevisionPath pageId={pageId} pagePath={pageContainer.state.path} />
         </h1>
