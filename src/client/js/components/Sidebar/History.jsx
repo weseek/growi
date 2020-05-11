@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { format, formatDistanceStrict } from 'date-fns';
+import { UncontrolledTooltip } from 'reactstrap';
+
 import {
   HeaderSection,
   MenuSection,
@@ -56,16 +59,23 @@ class History extends React.Component {
       </div>
     );
 
+    const date = new Date(page.updatedAt);
+    const baseDate = new Date();
+    const updatedDateId = `commentDate-${page._id}`;
+    const updatedDate = <span id={updatedDateId}>{formatDistanceStrict(date, baseDate)}</span>;
+    const updatedDateFormatted = format(date, 'yyyy/MM/dd HH:mm');
+
     return (
       <li className="list-group-item">
         <div className="d-flex w-100">
           <UserPicture user={page.lastUpdatedUser} size="md" />
-          <div className="ml-2">
+          <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
             <h4 className="mb-1">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             </h4>
-            <small>Donec id elit non mi porta.</small>
+            <div className="text-right small">{updatedDate}</div>
+            <UncontrolledTooltip placement="bottom" fade={false} target={updatedDateId}>{updatedDateFormatted}</UncontrolledTooltip>
           </div>
         </div>
       </li>
@@ -92,7 +102,7 @@ class History extends React.Component {
         <MenuSection>
           { () => (
             <div className="grw-sidebar-content-container p-3">
-              <ul className="list-group">
+              <ul className="list-group list-group-flush">
                 { recentlyUpdatedPages.map(page => <PageItem key={page.id} page={page} />) }
               </ul>
             </div>
