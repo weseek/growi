@@ -254,8 +254,8 @@
       "target_user": "Target User",
       "new_password": "New Password"
     },
-    "external_accounts":"External accounts",
     "external_account": "External Account Management",
+    "external_accounts":"External accounts",
     "external_account_list": "External Account List",
     "invite": "Invite",
     "invited": "User was invited",
