@@ -12,84 +12,72 @@ const AdminNavigation = (props) => {
   };
 
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
+    const pageTransitionClassName = isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item';
     return (
       <>
         <a
           href="/admin"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-                      ${pathname === '/admin' && 'active'}`}
+          className={`${pageTransitionClassName} ${pathname === '/admin' && 'active'}`}
         >
           <i className="icon-fw icon-home"></i> {t('Management Wiki Home')}
         </a>
         <a
           href="/admin/app"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-                      ${isActiveMenu('/app') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/app') && 'active'}`}
         >
           <i className="icon-fw icon-settings"></i> {t('App Settings')}
         </a>
         <a
           href="/admin/security"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-                      ${isActiveMenu('/security') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/security') && 'active'}`}
         >
           <i className="icon-fw icon-shield"></i> {t('security_settings')}
         </a>
         <a
           href="/admin/markdown"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-          ${isActiveMenu('/markdown') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/markdown') && 'active'}`}
         >
           <i className="icon-fw icon-note"></i> {t('Markdown Settings')}
         </a>
         <a
           href="/admin/customize"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-                      ${isActiveMenu('/customize') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/customize') && 'active'}`}
         >
           <i className="icon-fw icon-wrench"></i> {t('Customize')}
         </a>
         <a
           href="/admin/importer"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-          ${isActiveMenu('/importer') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/importer') && 'active'}`}
         >
           <i className="icon-fw icon-cloud-upload"></i> {t('Import Data')}
         </a>
         <a
           href="/admin/export"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-          ${isActiveMenu('/export') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/export') && 'active'}`}
         >
           <i className="icon-fw icon-cloud-download"></i> {t('Export Archive Data')}
         </a>
         <a
           href="/admin/notification"
-          className={
-            `${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-            ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`
-          }
+          className={`${pageTransitionClassName} ${(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && 'active'}`}
         >
           <i className="icon-fw icon-bell"></i> {t('Notification Settings')}
         </a>
         <a
           href="/admin/users"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-          ${(isActiveMenu('/users')) && 'active'}`}
+          className={`${pageTransitionClassName} ${(isActiveMenu('/users')) && 'active'}`}
         >
           <i className="icon-fw icon-user"></i> {t('User_Management')}
         </a>
         <a
           href="/admin/user-groups"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-                      ${isActiveMenu('/user-group') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/user-group') && 'active'}`}
         >
           <i className="icon-fw icon-people"></i> {t('UserGroup Management')}
         </a>
         <a
           href="/admin/search"
-          className={`${isListGroupItems ? 'list-group-item list-group-item-action border-0 round-corner' : 'dropdown-item'}
-                      ${isActiveMenu('/search') && 'active'}`}
+          className={`${pageTransitionClassName} ${isActiveMenu('/search') && 'active'}`}
         >
           <i className="icon-fw icon-magnifier"></i> {t('Full Text Search Management')}
         </a>
