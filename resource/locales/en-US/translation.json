@@ -158,8 +158,8 @@
   "page_me_apitoken": {
     "notice": {
       "apitoken_issued": "API token is not issued.",
-      "update_token1": "You can update to generate a new API Token.",
-      "update_token2": "You will need to update the API Token in any existing processes."
+      "update_token1": "You can update to generate a new API token.",
+      "update_token2": "You will need to update the API token in any existing processes."
     },
     "form_help": {}
   },
