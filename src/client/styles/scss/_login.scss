@@ -220,8 +220,6 @@
     transition: min-height 0.2s;
 
     &.to-flip {
-      min-height: 295px;
-
       // has-error
       &.has-error {
         min-height: #{295px + 32px};
