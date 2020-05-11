@@ -1,7 +1,8 @@
 // increase specificity with ':root' for GROWI theming
 :root {
   font-size: $font-size-root;
-  > body {
+
+  >body {
     font-family: $font-family-sans-serif;
   }
 
@@ -48,16 +49,26 @@
   .nav-tabs {
     .nav-item {
       margin-right: 0.15rem;
+
       a.active {
         cursor: default;
       }
     }
+
+    @media (max-width: 765px) {
+      .grw-main-nav-item-left {
+        width: 45px;
+      }
+    }
   }
+
+
 
   // Custom Control
   .custom-control {
+
     .custom-control-input,
-    .custom-control-input + .custom-control-label {
+    .custom-control-input+.custom-control-label {
       cursor: pointer;
     }
   }
@@ -106,13 +117,13 @@
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
   }
 
-  .dropdown-menu > li > a {
+  .dropdown-menu>li>a {
     width: 100%;
     padding: 9px 20px;
   }
 
-  .dropdown-menu > li > a:focus,
-  .dropdown-menu > li > a:hover {
+  .dropdown-menu>li>a:focus,
+  .dropdown-menu>li>a:hover {
     background: $extralight;
   }
 
@@ -188,6 +199,7 @@
   // badge
   .badge {
     letter-spacing: 0.05em;
+
     &.badge-warning {
       // badge-warning text is white color in bootstrap3
       color: white;
