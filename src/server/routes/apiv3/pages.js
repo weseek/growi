@@ -19,6 +19,34 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
 
+  router.get('/recent', loginRequired, async(req, res) => {
+    const limit = 50;
+    const offset = parseInt(req.query.offset) || 0;
+
+    const queryOptions = {
+      offset,
+      limit,
+      includeTrashed: false,
+      isRegExpEscapedFromPath: true,
+      sort: 'updatedAt',
+      desc: -1,
+    };
+
+    try {
+      const result = await Page.findListWithDescendants('/', req.user, queryOptions);
+      if (result.pages.length > limit) {
+        result.pages.pop();
+      }
+
+      return res.apiv3(result);
+    }
+    catch (err) {
+      res.code = 'unknown';
+      logger.error('Failed to get recent pages', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   /**
   * @swagger
   *
