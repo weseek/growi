@@ -37,13 +37,15 @@ const PagePathHierarchicalLink = (props) => {
   return (
     <>
       { isParentExists && (
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} />
+        <>
+          <PagePathHierarchicalLink linkedPagePath={linkedPagePath.parent} />
+          { !isParentRoot && (
+            <span className="separator">/</span>
+          ) }
+        </>
       ) }
-      { isParentExists && !isParentRoot && (
-        <span className="separator">/</span>
-      ) }
-
       { !isParentExists && <RootLink /> }
+
       <a classNames={classNames} href={encodeURI(linkedPagePath.href)}>{linkedPagePath.pathName}</a>
     </>
   );

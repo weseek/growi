@@ -2,6 +2,9 @@ import { pathUtils } from 'growi-commons';
 
 import PagePath from './PagePath';
 
+/**
+ * Linked Array Structured PagePath Model
+ */
 export default class LinkedPagePath {
 
   constructor(path, skipNormalize = false) {
@@ -21,11 +24,6 @@ export default class LinkedPagePath {
     }
 
     return pathUtils.normalizePath(`${this.parent.href}/${this.pathName}`);
-  }
-
-  get escapedPathName() {
-    // TODO: impl
-    return this.pathName;
   }
 
 }
