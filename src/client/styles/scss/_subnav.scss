@@ -75,6 +75,11 @@ header.grw-header {
   h1 {
     @include variable-font-size(28px);
     line-height: 1.1em;
+
+    .separator {
+      margin-right: 0.2em;
+      margin-left: 0.2em;
+    }
   }
 
   ul.authors {

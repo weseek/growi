@@ -5,6 +5,9 @@ import { withTranslation } from 'react-i18next';
 
 import urljoin from 'url-join';
 
+import LinkedPagePath from '../../models/LinkedPagePath';
+import PagePathHierarchicalLink from '../PageList/PagePathHierarchicalLink';
+
 import CopyDropdown from './CopyDropdown';
 
 class RevisionPath extends React.Component {
@@ -91,72 +94,82 @@ class RevisionPath extends React.Component {
     /* eslint-enable no-else-return */
   }
 
+  // render() {
+  //   // define styles
+  //   const separatorStyle = {
+  //     marginLeft: '0.2em',
+  //     marginRight: '0.2em',
+  //   };
+  //   const buttonStyle = {
+  //     marginLeft: '0.5em',
+  //     padding: '0 2px',
+  //   };
+
+  //   const { isPageInTrash, isPageForbidden } = this.props;
+  //   const pageLength = this.state.pages.length;
+
+  //   const rootElement = isPageInTrash
+  //     ? (
+  //       <>
+  //         <span className="path-segment">
+  //           <a href="/trash"><i className="icon-trash"></i></a>
+  //         </span>
+  //         <span className="separator" style={separatorStyle}><a href="/">/</a></span>
+  //       </>
+  //     )
+  //     : (
+  //       <>
+  //         <span className="path-segment">
+  //           <a href="/">
+  //             <i className="icon-home"></i>
+  //             <span className="separator" style={separatorStyle}>/</span>
+  //           </a>
+  //         </span>
+  //       </>
+  //     );
+
+  //   const afterElements = [];
+  //   this.state.pages.forEach((page, index) => {
+  //     const isLastElement = (index === pageLength - 1);
+
+  //     // add elements for page
+  //     afterElements.push(
+  //       <span key={page.pagePath} className="path-segment">
+  //         <a href={page.pagePath}>{page.pageName}</a>
+  //       </span>,
+  //     );
+
+  //     // add elements for '/'
+  //     afterElements.push(
+  //       <span key={`${page.pagePath}/`} className="separator" style={separatorStyle}>
+  //         {this.generateLinkElementToListPage(page.pagePath, this.state.isLinkToListPage, isLastElement)}
+  //       </span>,
+  //     );
+  //   });
+
+  //   return (
+  //     <span className="d-flex align-items-center flex-wrap">
+
+  //       {rootElement}
+  //       {afterElements}
+
+  //       <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
+
+  //       { !isPageInTrash && !isPageForbidden && (
+  //         <a href="#edit" className="d-block d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
+  //           <i className="icon-note" />
+  //         </a>
+  //       ) }
+  //     </span>
+  //   );
+  // }
+
   render() {
-    // define styles
-    const separatorStyle = {
-      marginLeft: '0.2em',
-      marginRight: '0.2em',
-    };
-    const buttonStyle = {
-      marginLeft: '0.5em',
-      padding: '0 2px',
-    };
-
-    const { isPageInTrash, isPageForbidden } = this.props;
-    const pageLength = this.state.pages.length;
-
-    const rootElement = isPageInTrash
-      ? (
-        <>
-          <span className="path-segment">
-            <a href="/trash"><i className="icon-trash"></i></a>
-          </span>
-          <span className="separator" style={separatorStyle}><a href="/">/</a></span>
-        </>
-      )
-      : (
-        <>
-          <span className="path-segment">
-            <a href="/">
-              <i className="icon-home"></i>
-              <span className="separator" style={separatorStyle}>/</span>
-            </a>
-          </span>
-        </>
-      );
-
-    const afterElements = [];
-    this.state.pages.forEach((page, index) => {
-      const isLastElement = (index === pageLength - 1);
-
-      // add elements for page
-      afterElements.push(
-        <span key={page.pagePath} className="path-segment">
-          <a href={page.pagePath}>{page.pageName}</a>
-        </span>,
-      );
-
-      // add elements for '/'
-      afterElements.push(
-        <span key={`${page.pagePath}/`} className="separator" style={separatorStyle}>
-          {this.generateLinkElementToListPage(page.pagePath, this.state.isLinkToListPage, isLastElement)}
-        </span>,
-      );
-    });
+    const linkedPagePath = new LinkedPagePath(this.props.pagePath);
 
     return (
       <span className="d-flex align-items-center flex-wrap">
-
-        {rootElement}
-        {afterElements}
-
-        <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
-
-        { !isPageInTrash && !isPageForbidden && (
-          <a href="#edit" className="d-block d-edit-none text-muted btn btn-secondary bg-transparent btn-edit border-0" style={buttonStyle}>
-            <i className="icon-note" />
-          </a>
-        ) }
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
       </span>
     );
   }
