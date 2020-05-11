@@ -19,8 +19,18 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
 
+  /**
+   * @swagger
+   *
+   *    /pages/recent:
+   *      get:
+   *        tags: [Pages]
+   *        description: Get recently updated pages
+   *        responses:
+   *          200:
+   */
   router.get('/recent', loginRequired, async(req, res) => {
-    const limit = 50;
+    const limit = 20;
     const offset = parseInt(req.query.offset) || 0;
 
     const queryOptions = {
