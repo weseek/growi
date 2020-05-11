@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
+import NoLoginContainer from '../services/NoLoginContainer';
 
 class LoginForm extends React.Component {
 
@@ -34,12 +34,12 @@ class LoginForm extends React.Component {
 
   handleLoginWithExternalAuth(e) {
     const auth = e.currentTarget.id;
-    const csrf = this.props.appContainer.csrfToken;
+    const csrf = this.props.noLoginContainer.csrfToken;
     window.location.href = `/passport/${auth}?_csrf=${csrf}`;
   }
 
   renderLocalOrLdapLoginForm() {
-    const { t, appContainer, isLdapStrategySetup } = this.props;
+    const { t, noLoginContainer, isLdapStrategySetup } = this.props;
 
     return (
       <form role="form" action="/login" method="post">
@@ -69,7 +69,7 @@ class LoginForm extends React.Component {
         </div>
 
         <div className="input-group justify-content-center d-flex mt-5">
-          <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
+          <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
           <button type="submit" id="login" className="btn btn-fill login px-0 py-2">
             <div className="eff"></div>
             <span className="btn-label p-3">
@@ -138,7 +138,7 @@ class LoginForm extends React.Component {
   renderRegisterForm() {
     const {
       t,
-      appContainer,
+      noLoginContainer,
       registrationMode,
       registrationWhiteList,
     } = this.props;
@@ -208,7 +208,7 @@ class LoginForm extends React.Component {
           </div>
 
           <div className="input-group justify-content-center mt-5">
-            <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
+            <input type="hidden" name="_csrf" value={noLoginContainer.csrfToken} />
             <button type="submit" className="btn btn-fill px-0 py-2" id="register">
               <div className="eff"></div>
               <span className="btn-label p-3">
@@ -279,13 +279,13 @@ class LoginForm extends React.Component {
  * Wrapper component for using unstated
  */
 const LoginFormWrapper = (props) => {
-  return createSubscribedElement(LoginForm, props, [AppContainer]);
+  return createSubscribedElement(LoginForm, props, [NoLoginContainer]);
 };
 
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  noLoginContainer: PropTypes.instanceOf(NoLoginContainer).isRequired,
   isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
