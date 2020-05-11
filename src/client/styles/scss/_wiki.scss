@@ -11,7 +11,11 @@ div.body {
 
 .wiki {
   font-size: 15px;
-  line-height: 1.8em;
+
+  // override line-height except hljs and child of it.
+  :not(pre*) {
+    line-height: 1.8em;
+  }
 
   h1,
   h2,

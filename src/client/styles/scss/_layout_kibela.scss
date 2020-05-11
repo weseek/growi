@@ -1,4 +1,11 @@
+$navbar-height-adjustment: 10px;
+
 body.kibela {
+  /* navbar for kibela */
+  #page-wrapper {
+    margin-top: 60px;
+  }
+
   /* Logo */
   .logo {
     .logo-mark {
@@ -40,13 +47,13 @@ body.kibela {
 
   .kibela-block {
     position: relative;
-    top: 20px;
+    top: 10px;
     right: 100px;
     bottom: 0px;
     left: 0px;
     z-index: absolute;
-    max-width: 840px;
-    height: 8em;
+    max-width: 1024px;
+    min-height: 8em;
     margin: auto;
     border-radius: 0.35em;
   }
@@ -57,6 +64,10 @@ body.kibela {
 
     svg {
       display: none;
+    }
+
+    &.grw-subnav-user-page {
+      min-height: 128px;
     }
 
     @media screen and (max-width: 765px) {
@@ -119,10 +130,13 @@ body.kibela {
       + 1px //                    .page-editor-footer border-top
       + 60px; //                  .page-editor-footer min-height
 
-    @include expand-editor($header-plus-footer);
+    @include expand-editor($header-plus-footer, $navbar-height-adjustment);
 
     .kibela-block {
+      top: 0px;
       max-width: unset;
+      padding-top: 0px;
+      border: 0px;
     }
 
     .tab-content {
@@ -151,11 +165,5 @@ body.kibela {
       padding: 13px;
       margin: 0;
     }
-  }
-}
-
-.on-edit {
-  .kibela-block {
-    border: 0px;
   }
 }
