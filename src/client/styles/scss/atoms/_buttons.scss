@@ -33,32 +33,32 @@
 // fill button style
 :root .btn.btn-fill {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  min-width: 130px;
+  padding: 0px;
   overflow: hidden;
   color: white;
   text-align: center;
   cursor: pointer;
   background-color: rgba(lighten(black, 20%), 0.4);
-  display: flex;
-  min-width: 130px;
-  padding: 0px;
   border: none;
-  justify-content: space-between;
 
   .btn-label {
     position: relative;
     z-index: 1;
-    color: white;
     padding: 9px 15px;
+    color: white;
     text-decoration: none;
   }
 
   .btn-label-text {
     position: relative;
     z-index: 1;
-    color: white;
     margin: auto;
-    text-decoration: none;
+    color: white;
     text-align: center;
+    text-decoration: none;
   }
 
   // effect
