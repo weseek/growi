@@ -414,7 +414,7 @@
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
     "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
-    "xss_prevent_setting_link": "Go to markdown settings",
+    "xss_prevent_setting_link": "Go to Markdown Settings",
     "callback_URL": "Callback URL",
     "providerName": "Provider Name",
     "issuerHost": "Issuer Host",
